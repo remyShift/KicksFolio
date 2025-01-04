@@ -50,33 +50,37 @@ export function useSession() {
 export function SessionProvider({ children }: PropsWithChildren) {
     const appState = useAppState();
     const [[isLoading, sessionToken], setSessionToken] = useStorageState('sessionToken');
-    const [[, storedUser], setStoredUser] = useStorageState('user');
-    const [[, storedCollection], setStoredCollection] = useStorageState('collection');
-    const [[, storedSneakers], setStoredSneakers] = useStorageState('sneakers');
-    
-    const [user, setUser] = useState<User | null>(storedUser ? JSON.parse(storedUser) : null);
-    const [userCollection, setUserCollection] = useState<Collection | null>(storedCollection ? JSON.parse(storedCollection) : null);
-    const [userSneakers, setUserSneakers] = useState<Sneaker[] | null>(storedSneakers ? JSON.parse(storedSneakers) : null);
+    const [user, setUser] = useState<User | null>(null);
+    const [userCollection, setUserCollection] = useState<Collection | null>(null);
+    const [userSneakers, setUserSneakers] = useState<Sneaker[] | null>(null);
     const [isLoadingSneakers, setIsLoadingSneakers] = useState(true);
 
     useEffect(() => {
-        const initializeFromStorage = async () => {
-            if (storedUser && storedCollection && storedSneakers) {
-                Promise.resolve()
-                    .then(() => {
-                        setUser(JSON.parse(storedUser));
-                        setUserCollection(JSON.parse(storedCollection));
-                        setUserSneakers(JSON.parse(storedSneakers));
-                        setIsLoadingSneakers(false);
-                    })
-                    .catch(error => {
-                        console.error('Error parsing stored data:', error);
-                    });
+        const initializeSession = async () => {
+            try {
+                const storedUser = await AsyncStorage.getItem('user');
+                const storedCollection = await AsyncStorage.getItem('collection');
+                const storedSneakers = await AsyncStorage.getItem('sneakers');
+
+                if (storedUser) setUser(JSON.parse(storedUser));
+                if (storedCollection) setUserCollection(JSON.parse(storedCollection));
+                if (storedSneakers) setUserSneakers(JSON.parse(storedSneakers));
+
+                if (sessionToken) {
+                    const isValid = await verifyToken();
+                    if (!isValid) {
+                        await logout();
+                    }
+                }
+            } catch (error) {
+                console.error('Error initializing session:', error);
+            } finally {
+                setIsLoadingSneakers(false);
             }
         };
 
-        initializeFromStorage();
-    }, []);
+        initializeSession();
+    }, [sessionToken]);
 
     useEffect(() => {
         if (appState === 'active' && sessionToken) {
@@ -84,9 +88,9 @@ export function SessionProvider({ children }: PropsWithChildren) {
         }
 
         if (appState === 'background') {
-            if (user) setStoredUser(JSON.stringify(user));
-            if (userCollection) setStoredCollection(JSON.stringify(userCollection));
-            if (userSneakers) setStoredSneakers(JSON.stringify(userSneakers));
+            if (user) storeData('user', user);
+            if (userCollection) storeData('collection', userCollection);
+            if (userSneakers) storeData('sneakers', userSneakers);
         }
     }, [appState]);
 
@@ -224,9 +228,9 @@ export function SessionProvider({ children }: PropsWithChildren) {
             }
         });
         setSessionToken(null);
-        setStoredUser(null);
-        setStoredCollection(null);
-        setStoredSneakers(null);
+        storeData('user', null);
+        storeData('collection', null);
+        storeData('sneakers', null);
         setUser(null);
         setUserCollection(null);
         setUserSneakers(null);
@@ -255,7 +259,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
         })
         .then(async data => {
             await setUser(data.user);
-            await setStoredUser(JSON.stringify(data.user));
+            await storeData('user', data.user);
             await getUserCollection();
             await getUserSneakers();
         })
@@ -289,14 +293,14 @@ export function SessionProvider({ children }: PropsWithChildren) {
             const data = await response.json();
             if (data && data.collection) {
                 setUserCollection(data.collection);
-                setStoredCollection(JSON.stringify(data.collection));
+                storeData('collection', data.collection);
                 return data.collection;
             }
             return null;
         } catch (error) {
             console.error('Error when getting collection:', error);
             setUserCollection(null);
-            setStoredCollection(null);
+            storeData('collection', null);
             throw error;
         }
     };
@@ -319,14 +323,14 @@ export function SessionProvider({ children }: PropsWithChildren) {
             const data = await response.json();
             if (data && data.sneakers) {
                 setUserSneakers(data.sneakers);
-                setStoredSneakers(JSON.stringify(data.sneakers));
+                storeData('sneakers', data.sneakers);
                 return data.sneakers;
             }
             return null;
         } catch (error) {
             console.error('Error when getting sneakers:', error);
             setUserSneakers(null);
-            setStoredSneakers(null);
+            storeData('sneakers', null);
             return null;
         } finally {
             setIsLoadingSneakers(false);
