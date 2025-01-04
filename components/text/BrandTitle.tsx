@@ -1,4 +1,5 @@
-import { View, Text, ImageBackground } from 'react-native';
+import { View, Text } from 'react-native';
+import { Image } from 'expo-image';
 
 export default function BrandTitle({ content, brandLogo }: { content: string, brandLogo: any }) {
     return (
@@ -10,7 +11,16 @@ export default function BrandTitle({ content, brandLogo }: { content: string, br
                 <Text className="font-syne-extrabold text-lg">
                     {content}
                 </Text>
-                <ImageBackground source={brandLogo} className="w-10 h-10 rounded-sm" resizeMode="contain"/>
+                <Image source={brandLogo}
+                    style={{
+                        width: 32,
+                        height: 32,
+                        borderRadius: 3
+                    }}
+                    contentFit="contain"
+                    contentPosition="center"
+                    cachePolicy="memory-disk"
+                />
             </View>
         </View>
     );

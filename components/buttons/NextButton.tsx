@@ -1,5 +1,4 @@
-import { Pressable, View } from 'react-native';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { Pressable } from 'react-native';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { useDownScaleAnimation } from '@/hooks';
 import { Text } from 'react-native';

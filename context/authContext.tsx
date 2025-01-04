@@ -1,6 +1,8 @@
-import { useStorageState } from '@/hooks/useStorageState';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext, useContext, type PropsWithChildren, useState, useEffect } from 'react';
 import { User, Collection, Sneaker } from '@/types/Models';
+import { useAppState } from '@react-native-community/hooks';
+import { useStorageState, setStorageItemAsync } from '@/hooks/useStorageState';
 
 const AuthContext = createContext<{
     login: (email: string, password: string) => Promise<void>;
@@ -11,12 +13,12 @@ const AuthContext = createContext<{
     user?: User | null;
     userCollection?: Collection | null;
     userSneakers?: Sneaker[] | null;
-    userFriends?: User[] | null;
     getUser: () => Promise<void | undefined>;
     getUserCollection: () => Promise<void | undefined>;
     getUserSneakers: () => Promise<void | undefined>;
-    getUserFriends: () => Promise<void | undefined>;
     verifyToken: () => Promise<boolean>;
+    isLoadingSneakers: boolean;
+    loadInitialData: () => Promise<void | [void, void, void]>;
     }>({
         login: async () => {},
         signUp: async () => {},
@@ -26,12 +28,12 @@ const AuthContext = createContext<{
         user: null,
         userCollection: null,
         userSneakers: null,
-        userFriends: null,
         getUser: async () => {},
         getUserCollection: async () => {},
         getUserSneakers: async () => {},
-        getUserFriends: async () => {},
-        verifyToken: async () => false
+        verifyToken: async () => false,
+        isLoadingSneakers: true,
+        loadInitialData: async () => {}
 });
 
 export function useSession() {
@@ -46,28 +48,98 @@ export function useSession() {
 }
 
 export function SessionProvider({ children }: PropsWithChildren) {
+    const appState = useAppState();
     const [[isLoading, sessionToken], setSessionToken] = useStorageState('sessionToken');
-    const [userCollection, setUserCollection] = useState<Collection | null>(null);
-    const [userSneakers, setUserSneakers] = useState<Sneaker[] | null>(null);
-    const [user, setUser] = useState<User | null>(null);
-    const [userFriends, setUserFriends] = useState<User[] | null>(null);
+    const [[, storedUser], setStoredUser] = useStorageState('user');
+    const [[, storedCollection], setStoredCollection] = useStorageState('collection');
+    const [[, storedSneakers], setStoredSneakers] = useStorageState('sneakers');
+    
+    const [user, setUser] = useState<User | null>(storedUser ? JSON.parse(storedUser) : null);
+    const [userCollection, setUserCollection] = useState<Collection | null>(storedCollection ? JSON.parse(storedCollection) : null);
+    const [userSneakers, setUserSneakers] = useState<Sneaker[] | null>(storedSneakers ? JSON.parse(storedSneakers) : null);
+    const [isLoadingSneakers, setIsLoadingSneakers] = useState(true);
 
     useEffect(() => {
-        if (sessionToken) {
-            if (!verifyToken()) {
-                setUser(null);
-                setUserCollection(null);
-                setUserSneakers(null);
-                setUserFriends(null);
+        const initializeFromStorage = async () => {
+            if (storedUser && storedCollection && storedSneakers) {
+                Promise.resolve()
+                    .then(() => {
+                        setUser(JSON.parse(storedUser));
+                        setUserCollection(JSON.parse(storedCollection));
+                        setUserSneakers(JSON.parse(storedSneakers));
+                        setIsLoadingSneakers(false);
+                    })
+                    .catch(error => {
+                        console.error('Error parsing stored data:', error);
+                    });
             }
-            getUser();
-        } else {
+        };
+
+        initializeFromStorage();
+    }, []);
+
+    useEffect(() => {
+        if (appState === 'active' && sessionToken) {
+            loadInitialData();
+        }
+
+        if (appState === 'background') {
+            if (user) setStoredUser(JSON.stringify(user));
+            if (userCollection) setStoredCollection(JSON.stringify(userCollection));
+            if (userSneakers) setStoredSneakers(JSON.stringify(userSneakers));
+        }
+    }, [appState]);
+
+    useEffect(() => {
+        if (!sessionToken) {
             setUser(null);
             setUserCollection(null);
             setUserSneakers(null);
-            setUserFriends(null);
+            return;
         }
+
+        if (user && userCollection && userSneakers) {
+            return;
+        }
+
+        verifyToken()
+            .then(isValid => {
+                if (!isValid) {
+                    return logout();
+                }
+                return getUser();
+            })
+            .catch(error => {
+                console.error('Error initializing session:', error);
+                return logout();
+            });
     }, [sessionToken]);
+
+    const storeData = async (key: string, value: any) => {
+        try {
+            if (key === 'sessionToken') {
+                await setStorageItemAsync(key, JSON.stringify(value));
+            } else {
+                await AsyncStorage.setItem(key, JSON.stringify(value));
+            }
+        } catch (error) {
+            console.error('Error storing data:', error);
+        }
+    };
+    
+    const loadData = async () => {
+        try {
+            const storedUser = await AsyncStorage.getItem('user');
+            const storedCollection = await AsyncStorage.getItem('collection');
+            const storedSneakers = await AsyncStorage.getItem('sneakers');
+    
+            if (storedUser) setUser(JSON.parse(storedUser));
+            if (storedCollection) setUserCollection(JSON.parse(storedCollection));
+            if (storedSneakers) setUserSneakers(JSON.parse(storedSneakers));
+        } catch (error) {
+            console.error('Error loading data:', error);
+        }
+    };
 
     const login = async (email: string, password: string) => {
         return fetch(`${process.env.EXPO_PUBLIC_BASE_API_URL}/login`, {
@@ -144,21 +216,20 @@ export function SessionProvider({ children }: PropsWithChildren) {
     };
 
     const logout = async () => {
-        if (sessionToken) {
-            await fetch(`${process.env.EXPO_PUBLIC_BASE_API_URL}/logout`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${sessionToken}`,
-                    'Accept': 'application/json'
-                }
-            });
-        }
-        
+        await fetch(`${process.env.EXPO_PUBLIC_BASE_API_URL}/logout`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${sessionToken}`,
+                'Accept': 'application/json'
+            }
+        });
         setSessionToken(null);
+        setStoredUser(null);
+        setStoredCollection(null);
+        setStoredSneakers(null);
         setUser(null);
         setUserCollection(null);
         setUserSneakers(null);
-        setUserFriends(null);
     };
 
     const getUser = async () => {
@@ -171,123 +242,143 @@ export function SessionProvider({ children }: PropsWithChildren) {
             }
         })
         .then(async response => {
-            const text = await response.text();
-            console.log('Get user response:', text);
-            const data = JSON.parse(text);
-            
             if (response.status === 401) {
-                logout();
+                await logout();
                 return;
             }
-            
+
             if (!response.ok) {
-                throw new Error(data.message || 'Error when getting user');
+                throw new Error('Error when getting user');
             }
 
-            setUser(data.user);
+            return response.json();
+        })
+        .then(async data => {
+            await setUser(data.user);
+            await setStoredUser(JSON.stringify(data.user));
             await getUserCollection();
             await getUserSneakers();
-            await getUserFriends();
         })
-        .catch(error => {
+        .catch(async error => {
             console.error('Complete get user error:', error);
-            logout();
+            await logout();
             throw error;
         });
     };
 
     const getUserCollection = async () => {
-        if (!user?.id || !sessionToken) return;
+        if (!user?.id || !sessionToken) return null;
         
-        return fetch(`${process.env.EXPO_PUBLIC_BASE_API_URL}/users/${user.id}/collection`, {
-            headers: {
-                'Authorization': `Bearer ${sessionToken}`
+        try {
+            const response = await fetch(`${process.env.EXPO_PUBLIC_BASE_API_URL}/users/${user.id}/collection`, {
+                headers: {
+                    'Authorization': `Bearer ${sessionToken}`,
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (response.status === 401) {
+                await logout();
+                return null;
             }
-        })
-        .then(response => {
-            if (!response.ok) return;
-            return response.json();
-        })
-        .then(data => {
-            if (data) {
+
+            if (!response.ok) {
+                throw new Error('Error when getting collection');
+            }
+
+            const data = await response.json();
+            if (data && data.collection) {
                 setUserCollection(data.collection);
+                setStoredCollection(JSON.stringify(data.collection));
+                return data.collection;
             }
-        })
-        .catch(error => {
+            return null;
+        } catch (error) {
             console.error('Error when getting collection:', error);
+            setUserCollection(null);
+            setStoredCollection(null);
             throw error;
-        });
+        }
     };
 
     const getUserSneakers = async () => {
-        if (!user?.id || !sessionToken) return;
-        
-        return fetch(`${process.env.EXPO_PUBLIC_BASE_API_URL}/users/${user.id}/collection/sneakers`, {
-            headers: {
-                'Authorization': `Bearer ${sessionToken}`
-            }
-        })
-        .then(response => {
-            if (!response.ok) return;
-            return response.json();
-        })
-        .then(data => {
-            if (data) {
-                setUserSneakers(data.sneakers);
-            }
-        })
-        .catch(error => {
-            console.error('Error when getting sneakers:', error);
-            throw error;
-        });
-    };
+        if (!user?.id || !sessionToken) {
+            setIsLoadingSneakers(false);
+            return null;
+        }
 
-    const getUserFriends = async () => {
-        if (!user?.id || !sessionToken) return;
-        
-        return fetch(`${process.env.EXPO_PUBLIC_BASE_API_URL}/users/${user.id}/collection/friends`, {
-            headers: {
-                'Authorization': `Bearer ${sessionToken}`
+        try {
+            const response = await fetch(`${process.env.EXPO_PUBLIC_BASE_API_URL}/users/${user.id}/collection/sneakers`, {
+                headers: {
+                    'Authorization': `Bearer ${sessionToken}`
+                }
+            });
+
+            if (!response.ok) return null;
+            
+            const data = await response.json();
+            if (data && data.sneakers) {
+                setUserSneakers(data.sneakers);
+                setStoredSneakers(JSON.stringify(data.sneakers));
+                return data.sneakers;
             }
-        })
-        .then(response => {
-            if (!response.ok) return;
-            return response.json();
-        })
-        .then(data => {
-            if (data) {
-                setUserFriends(data.friends);
-            }
-        })
-        .catch(error => {
-            console.error('Error when getting friends:', error);
-            throw error;
-        });
+            return null;
+        } catch (error) {
+            console.error('Error when getting sneakers:', error);
+            setUserSneakers(null);
+            setStoredSneakers(null);
+            return null;
+        } finally {
+            setIsLoadingSneakers(false);
+        }
     };
 
     const verifyToken = async () => {
         if (!sessionToken) return false;
 
-        const response = await fetch(`${process.env.EXPO_PUBLIC_BASE_API_URL}/verify_token`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${sessionToken}`,
-                'Accept': 'application/json'
-            }
-        }).catch(() => {
-            console.error('Error when verifying token');
-            return new Response(null, { status: 500 });
-        });
+        try {
+            const response = await fetch(`${process.env.EXPO_PUBLIC_BASE_API_URL}/verify_token`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${sessionToken}`,
+                    'Accept': 'application/json'
+                }
+            });
 
-        if (!response.ok) {
-            if (response.status === 401) {
-                await logout();
+            if (!response.ok) {
+                if (response.status === 401) {
+                    await logout();
+                }
+                return false;
+            }
+
+            const data = await response.json();
+            if (data && data.valid) {
+                await getUser();
+                return true;
             }
             return false;
+        } catch (error) {
+            console.error('Error when verifying token:', error);
+            return false;
         }
+    };
 
-        const data = await response.json().catch(() => ({ valid: false }));
-        return data.valid;
+    const loadInitialData = async () => {
+        if (!sessionToken || !user) return;
+        
+        setIsLoadingSneakers(true);
+
+        try {
+            const collection = await getUserCollection();
+            if (collection) {
+                const sneakers = await getUserSneakers();
+            }
+        } catch (error) {
+            console.error('Error loading initial data:', error);
+        } finally {
+            setIsLoadingSneakers(false);
+        }
     };
 
     return (
@@ -300,13 +391,13 @@ export function SessionProvider({ children }: PropsWithChildren) {
                 isLoading,
                 userCollection,
                 userSneakers,
-                userFriends,
                 user,
                 getUser,
                 getUserCollection,
                 getUserSneakers,
-                getUserFriends,
-                verifyToken
+                verifyToken,
+                isLoadingSneakers,
+                loadInitialData
             }}>
             {children}
         </AuthContext.Provider>

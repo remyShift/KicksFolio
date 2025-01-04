@@ -1,4 +1,5 @@
-import { View, Text, Image } from 'react-native';
+import { View, Text } from 'react-native';
+import { Image } from 'expo-image';
 
 export default function FriendTitle({ content }: { content: string }) {
     return (
@@ -15,7 +16,17 @@ export default function FriendTitle({ content }: { content: string }) {
                         76 followers
                     </Text>
                 </View>
-                <Image source={require('@/assets/images/adaptive-icon.png')} className="w-10 h-10 rounded-sm" />
+                <Image source={require('@/assets/images/adaptive-icon.png')}
+                    style={{
+                        width: 24,
+                        height: 24,
+                        borderRadius: 3
+                    }}
+                    contentFit="contain"
+                    contentPosition="center"
+                    cachePolicy="memory-disk"
+                    transition={200}
+                />
             </View>
         </View>
     );

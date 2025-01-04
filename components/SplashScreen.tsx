@@ -1,22 +1,12 @@
 import { View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
-type SplashScreenProps = {
-  handleAnimationFinish: () => void;
-}
-
-export default function SplashScreen({ handleAnimationFinish }: SplashScreenProps) {
+export default function SplashScreen() {
   const [textAnimationFinished, setTextAnimationFinished] = useState(false);
   const letters = 'KicksFolio'.split('');
   const AnimatedShoeIcon = Animated.createAnimatedComponent(MaterialCommunityIcons);
-
-  useEffect(() => {
-    setTimeout(() => {
-      handleAnimationFinish();
-    }, 2500);
-  }, [textAnimationFinished]);
 
   return (
     <View className="flex-1 items-center justify-center bg-primary">

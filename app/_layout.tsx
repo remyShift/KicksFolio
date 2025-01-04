@@ -7,41 +7,47 @@ import { useState, useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const FONTS = {
-  'Actonia': require('../assets/fonts/Actonia.ttf'),
-  'Spacemono': require('../assets/fonts/SpaceMono-Regular.ttf'),
-  'Syne-ExtraBold': require('../assets/fonts/Syne-ExtraBold.ttf'),
-  'Syne-SemiBold': require('../assets/fonts/Syne-SemiBold.ttf'),
-  'SpaceMono-Bold': require('../assets/fonts/SpaceMono-Bold.ttf'),
-  'SpaceMono-BoldItalic': require('../assets/fonts/SpaceMono-BoldItalic.ttf'),
+    'Actonia': require('../assets/fonts/Actonia.ttf'),
+    'Spacemono': require('../assets/fonts/SpaceMono-Regular.ttf'),
+    'Syne-ExtraBold': require('../assets/fonts/Syne-ExtraBold.ttf'),
+    'Syne-SemiBold': require('../assets/fonts/Syne-SemiBold.ttf'),
+    'SpaceMono-Bold': require('../assets/fonts/SpaceMono-Bold.ttf'),
+    'SpaceMono-BoldItalic': require('../assets/fonts/SpaceMono-BoldItalic.ttf'),
 } as const;
 
-export default function RootLayout() {
-  const { sessionToken, verifyToken } = useSession();
-  const [fontsLoaded] = useFonts(FONTS);
+function AppContent() {
+    const [isSplashScreenVisible, setIsSplashScreenVisible] = useState(true);
+    const [fontsLoaded] = useFonts(FONTS);
+    const { user, sessionToken, loadInitialData } = useSession();
 
-  const [isSplashScreenVisible, setIsSplashScreenVisible] = useState(true);
-  
-  useEffect(() => {
-    if (sessionToken) {
-      verifyToken();
+    useEffect(() => {
+        const initializeApp = async () => {
+            if (sessionToken && user) {
+                await loadInitialData();
+            }
+            setIsSplashScreenVisible(false);
+        };
+
+        initializeApp();
+    }, [sessionToken, user]);
+
+    if (!fontsLoaded) {
+        return null;
     }
-  }, []);
 
-  if (!fontsLoaded) {
-    return null;
-  }
+    if (isSplashScreenVisible) {
+        return <SplashScreen />;
+    }
 
-  if (isSplashScreenVisible) {
-    return <SplashScreen handleAnimationFinish={() => setIsSplashScreenVisible(false)} />;
-  }
-
-  return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <SessionProvider>
-        <Slot />
-      </SessionProvider>
-    </GestureHandlerRootView>
-  );
+    return <Slot />;
 }
 
-
+export default function RootLayout() {
+    return (
+        <GestureHandlerRootView style={{ flex: 1 }}>
+            <SessionProvider>
+                <AppContent />
+            </SessionProvider>
+        </GestureHandlerRootView>
+    );
+}

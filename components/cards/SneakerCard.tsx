@@ -1,5 +1,6 @@
-import { View, Text, Image, Pressable } from 'react-native';
+import { View, Text, Pressable } from 'react-native';
 import { Sneaker } from '@/types/Models';
+import { Image } from 'expo-image';
 
 export default function SneakerCard({ sneaker, setModalStep, setModalVisible, setSneaker }: { 
     sneaker: Sneaker, 
@@ -16,7 +17,17 @@ export default function SneakerCard({ sneaker, setModalStep, setModalVisible, se
                 setModalVisible(true);
             }}
         >
-            <Image source={{ uri: sneaker.images?.[0]?.url }} className="w-full h-40 rounded-md" resizeMode="center" />
+            <Image source={{ uri: sneaker.images?.[0]?.url }}
+                style={{
+                    width: '100%',
+                    height: 150,
+                    borderRadius: 3
+                }}
+                contentFit="cover"
+                contentPosition="center"
+                cachePolicy="memory-disk"
+                transition={200}
+            />
             <View className="flex flex-row justify-between items-center px-1">
                 <Text className="font-spacemono-bold text-lg flex-1 mr-2 flex-shrink" numberOfLines={1} ellipsizeMode="tail">
                     {sneaker.model}

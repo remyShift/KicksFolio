@@ -1,5 +1,6 @@
 import { Link, router } from 'expo-router';
-import { View, TextInput, Text, KeyboardAvoidingView, Platform, ScrollView, Image, Pressable, Alert } from 'react-native';
+import { View, TextInput, Text, KeyboardAvoidingView, Platform, ScrollView, Pressable, Alert } from 'react-native';
+import { Image } from 'expo-image';
 import { useSignUpProps } from '@/context/signUpPropsContext';
 import PageTitle from '@/components/text/PageTitle';
 import MainButton from '@/components/buttons/MainButton';
@@ -176,8 +177,14 @@ export default function SUSecond() {
                                 <View className='w-24 h-24 rounded-full bg-gray-400 flex items-center justify-center'>
                                     <Image 
                                         source={{ uri: signUpProps.profile_picture }} 
-                                        className='w-full h-full rounded-full' 
-                                        resizeMode='cover'
+                                        style={{
+                                            width: '100%',
+                                            height: '100%',
+                                            borderRadius: 100
+                                        }}
+                                        contentFit="cover"
+                                        contentPosition="center"
+                                        cachePolicy="memory-disk"
                                     /> 
                                 </View>
                                 : 

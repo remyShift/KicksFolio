@@ -1,4 +1,5 @@
-import { Text, View, Pressable, Image, KeyboardAvoidingView, ScrollView, Platform } from 'react-native';
+import { Text, View, Pressable, KeyboardAvoidingView, ScrollView, Platform } from 'react-native';
+import { Image } from 'expo-image';
 import BackButton from '@/components/buttons/BackButton';
 import NextButton from '@/components/buttons/NextButton';
 import MainButton from '@/components/buttons/MainButton';
@@ -59,7 +60,6 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
 
     const scrollViewRef = useRef<ScrollView>(null);
 
-    console.log(userSneakers);
     const indexTitle = userSneakers?.length === 0 ? 'Add your first sneaker' : 'Add a new sneaker';
 
     const scrollToBottom = () => {
@@ -279,8 +279,14 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                                 {sneakerImage ? (
                                     <Image
                                         source={{ uri: sneakerImage }} 
-                                        className="h-56 w-full rounded-md"
-                                        resizeMode="center"
+                                        style={{
+                                            width: '100%',
+                                            height: 150,
+                                            borderRadius: 3
+                                        }}
+                                        contentFit="cover"
+                                        contentPosition="center"
+                                        cachePolicy="memory-disk"
                                     />
                                 ) : (
                                     <MaterialIcons name="add-a-photo" size={30} color="white" />
@@ -443,8 +449,14 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                 <View className="flex-1 gap-4">
                     <Image 
                         source={{ uri: sneaker?.images?.[0]?.url }} 
-                        className="w-full h-56 rounded-xl" 
-                        resizeMode="cover"
+                        style={{
+                            width: '100%',
+                            height: 150,
+                            borderRadius: 3
+                        }}
+                        contentFit="cover"
+                        contentPosition="center"
+                        cachePolicy="memory-disk"
                     />
 
                     <View className="flex-row justify-between items-center px-2">

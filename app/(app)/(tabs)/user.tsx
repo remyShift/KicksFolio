@@ -1,5 +1,6 @@
 import MainButton from '@/components/buttons/MainButton';
-import { ScrollView, Text, View, Modal, Image } from 'react-native';
+import { ScrollView, Text, View, Modal } from 'react-native';
+import { Image } from 'expo-image';
 import { useSession } from '@/context/authContext';
 import PageTitle from '@/components/text/PageTitle';
 import Title from '@/components/text/Title';
@@ -58,7 +59,15 @@ export default function User() {
                 
                 {user?.profile_picture_url ? (
                   <View className='w-24 h-24 rounded-full'>
-                    <Image source={{ uri: user?.profile_picture_url }} className='w-full h-full rounded-full' />
+                    <Image source={{ uri: user?.profile_picture_url }} 
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        borderRadius: 100
+                      }}
+                      contentFit="cover"
+                      contentPosition="center" 
+                      cachePolicy="memory-disk"/>
                   </View>
                 ) : (
                   <View className='w-24 h-24 bg-primary rounded-full items-center justify-center'>

@@ -13,7 +13,7 @@ import { Sneaker } from '@/types/Models';
 export default function Index() {
     const params = useLocalSearchParams();
     const isNewUser = params.newUser === 'true';
-    const { userCollection, userSneakers, userFriends } = useSession();
+    const { userCollection, userSneakers, userFriends, isLoadingSneakers } = useSession();
     const [modalVisible, setModalVisible] = useState(false);
     const [modalStep, setModalStep] = useState<'index' | 'box' | 'noBox' | 'sneakerInfo'>('index');
     const [currentSneaker, setCurrentSneaker] = useState<Sneaker | null>(null);
@@ -24,10 +24,10 @@ export default function Index() {
     };
 
     useEffect(() => {
-        if (isNewUser || (userSneakers && userSneakers.length === 0 || !userSneakers)) {
+        if (!isLoadingSneakers && (isNewUser || !userSneakers || userSneakers.length === 0)) {
             setModalVisible(true);
         }
-    }, [isNewUser, userSneakers]);
+    }, [isNewUser, userSneakers, isLoadingSneakers]);
 
     useEffect(() => {
         if (userSneakers) {
