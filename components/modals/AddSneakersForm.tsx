@@ -53,7 +53,6 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
     const [isPricePaidError, setIsPricePaidError] = useState(false);
     const [isPricePaidFocused, setIsPricePaidFocused] = useState(false);
     const [sneakerPricePaid, setSneakerPricePaid] = useState('');
-    const [showScanner, setShowScanner] = useState(false);
 
     const { user, userSneakers, sessionToken, getUserSneakers } = useSession();
     const userId = user?.id;
@@ -207,7 +206,6 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
 
     const handleBarCodeScanned = ({ data }: { data: string }) => {
         console.log("Barcode detected:", data);
-        setShowScanner(false);
     };
 
     switch (modalStep) {
@@ -232,32 +230,28 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
             );
         case 'box':
             return (
-                <View className="flex-1 justify-center items-center gap-8">
-                    <Text className="font-actonia text-primary text-4xl text-center">Scan your sneaker box</Text>
-                    <Text className="font-spacemono-bold text-lg text-center px-6">Click the camera icon to scan your sneaker box barcode</Text>
-                    <View className="flex flex-row justify-center items-center gap-2 w-full">
-                        <Pressable onPress={() => setShowScanner(true)}>
-                            <MaterialIcons name="photo-camera" size={24} color="black" />
-                        </Pressable>
-                    </View>
-                    {showScanner && (
-                        <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 999 }}>
+                <View className="flex-1 justify-between items-center gap-8">
+                    <View className="flex-1 w-full justify-center items-center gap-8">
+                        <Text className="font-spacemono-bold text-lg text-center px-6">Scan the barcode on the sneaker box to add to your collection.</Text>
+                        <View className="w-4/5 h-1/4 border-2 border-primary">
                             <CameraView
                                 onBarcodeScanned={handleBarCodeScanned}
+                                autofocus='on'
+                                zoom={0.6}
+                                flash='auto'
                                 barcodeScannerSettings={{
                                     barcodeTypes: ['ean13', 'ean8', 'upc_e', 'upc_a'],
                                 }}
                                 style={{ flex: 1 }}
                             >
-                                <Pressable 
-                                    onPress={() => setShowScanner(false)}
-                                    style={{ position: 'absolute', top: 20, right: 20 }}
-                                >
-                                    <MaterialIcons name="close" size={30} color="white" />
-                                </Pressable>
                             </CameraView>
                         </View>
-                    )}
+                    </View>
+                    <View className="justify-end items-start w-full pb-5">
+                        <BackButton 
+                            onPressAction={() => setModalStep('index')} 
+                        />
+                    </View>
                 </View>
             );
         case 'noBox':
