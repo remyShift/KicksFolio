@@ -45,8 +45,7 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Allow KicksFolio to access your camera.",
-          "barCodeScanner": true
+          "cameraPermission": "Allow KicksFolio to access your camera."
         }
       ], 
       [

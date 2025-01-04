@@ -245,7 +245,7 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                             <CameraView
                                 onBarcodeScanned={handleBarCodeScanned}
                                 barcodeScannerSettings={{
-                                    barcodeTypes: ['ean13', 'ean8'],
+                                    barcodeTypes: ['ean13', 'ean8', 'upc_e', 'upc_a'],
                                 }}
                                 style={{ flex: 1 }}
                             >
