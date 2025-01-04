@@ -13,7 +13,7 @@ import { Sneaker } from '@/types/Models';
 export default function Index() {
     const params = useLocalSearchParams();
     const isNewUser = params.newUser === 'true';
-    const { userCollection, userSneakers, userFriends, isLoadingSneakers } = useSession();
+    const { userCollection, userSneakers } = useSession();
     const [modalVisible, setModalVisible] = useState(false);
     const [modalStep, setModalStep] = useState<'index' | 'box' | 'noBox' | 'sneakerInfo'>('index');
     const [currentSneaker, setCurrentSneaker] = useState<Sneaker | null>(null);
@@ -24,10 +24,12 @@ export default function Index() {
     };
 
     useEffect(() => {
-        if (!isLoadingSneakers && (isNewUser || !userSneakers || userSneakers.length === 0)) {
+        if (isNewUser || (userSneakers && userSneakers.length === 0)) {
             setModalVisible(true);
+        } else {
+            setModalVisible(false);
         }
-    }, [isNewUser, userSneakers, isLoadingSneakers]);
+    }, [isNewUser, userSneakers]);
 
     useEffect(() => {
         if (userSneakers) {
@@ -50,22 +52,14 @@ export default function Index() {
                                 <CollectionCard userCollection={userCollection} userSneakers={userSneakers} />
                             </View>
                         </View>
-
-                        {userFriends && userFriends.length > 0 ? (
-                            userFriends.map((friend) => (
-                                <View className="flex-1 gap-4">
-                                    <FriendTitle content={`${friend.username}`} />
-                                    <CollectionCard userCollection={friend.collection} userSneakers={friend.sneakers} />
-                                </View>
-                            ))
-                        ) : (
+                        <View className="flex-1 gap-4">
                             <View className="flex-1 gap-4 items-center justify-center">
                                 <Title content="Add some friends" isTextCenter={true} />
                                 <MainButton content="Browse" backgroundColor="bg-primary" onPressAction={() => {
                                     alert('Feature in development ...');
                                 }} />
                             </View>
-                        )}
+                        </View>
                     </View>
                 </View>
             </ScrollView>

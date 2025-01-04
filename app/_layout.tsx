@@ -22,14 +22,14 @@ function AppContent() {
 
     useEffect(() => {
         const initializeApp = async () => {
-            if (sessionToken && user) {
+            if (sessionToken) {
                 await loadInitialData();
             }
             setIsSplashScreenVisible(false);
         };
 
         initializeApp();
-    }, [sessionToken, user]);
+    }, [sessionToken]);
 
     if (!fontsLoaded) {
         return null;

@@ -17,7 +17,6 @@ const AuthContext = createContext<{
     getUserCollection: () => Promise<void | undefined>;
     getUserSneakers: () => Promise<void | undefined>;
     verifyToken: () => Promise<boolean>;
-    isLoadingSneakers: boolean;
     loadInitialData: () => Promise<void | [void, void, void]>;
     }>({
         login: async () => {},
@@ -32,7 +31,6 @@ const AuthContext = createContext<{
         getUserCollection: async () => {},
         getUserSneakers: async () => {},
         verifyToken: async () => false,
-        isLoadingSneakers: true,
         loadInitialData: async () => {}
 });
 
@@ -53,7 +51,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
     const [user, setUser] = useState<User | null>(null);
     const [userCollection, setUserCollection] = useState<Collection | null>(null);
     const [userSneakers, setUserSneakers] = useState<Sneaker[] | null>(null);
-    const [isLoadingSneakers, setIsLoadingSneakers] = useState(true);
 
     useEffect(() => {
         const initializeSession = async () => {
@@ -74,8 +71,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
                 }
             } catch (error) {
                 console.error('Error initializing session:', error);
-            } finally {
-                setIsLoadingSneakers(false);
             }
         };
 
@@ -146,27 +141,33 @@ export function SessionProvider({ children }: PropsWithChildren) {
     };
 
     const login = async (email: string, password: string) => {
-        return fetch(`${process.env.EXPO_PUBLIC_BASE_API_URL}/login`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email, password }),
-        })
-        .then(response => {
+        try {
+            const response = await fetch(`${process.env.EXPO_PUBLIC_BASE_API_URL}/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ authentication: { email, password } }),
+            });
+
             if (!response.ok) {
-                throw new Error('Error when logging in');
+                throw new Error('Erreur lors de la connexion');
             }
-            return response.json();
-        })
-        .then(async data => {
-            const { token } = data;
+
+            const data = await response.json();
+            const { token, user: userData } = data;
+            
+            await setStorageItemAsync('sessionToken', token);
+            await AsyncStorage.setItem('user', JSON.stringify(userData));
+            
             setSessionToken(token);
-            await getUser();
-        })
-        .catch(error => {
-            throw new Error('Invalid email or password');
-        });
+            setUser(userData);
+            
+            return data;
+        } catch (error) {
+            console.error('Erreur de connexion:', error);
+            throw new Error('Email ou mot de passe invalide');
+        }
     };
 
     const signUp = async (email: string, password: string, username: string, first_name: string, last_name: string, sneaker_size: number, profile_picture: string): Promise<void> => {
@@ -307,7 +308,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
 
     const getUserSneakers = async () => {
         if (!user?.id || !sessionToken) {
-            setIsLoadingSneakers(false);
             return null;
         }
 
@@ -332,8 +332,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
             setUserSneakers(null);
             storeData('sneakers', null);
             return null;
-        } finally {
-            setIsLoadingSneakers(false);
         }
     };
 
@@ -371,8 +369,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
     const loadInitialData = async () => {
         if (!sessionToken || !user) return;
         
-        setIsLoadingSneakers(true);
-
         try {
             const collection = await getUserCollection();
             if (collection) {
@@ -380,8 +376,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
             }
         } catch (error) {
             console.error('Error loading initial data:', error);
-        } finally {
-            setIsLoadingSneakers(false);
         }
     };
 
@@ -400,7 +394,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
                 getUserCollection,
                 getUserSneakers,
                 verifyToken,
-                isLoadingSneakers,
                 loadInitialData
             }}>
             {children}

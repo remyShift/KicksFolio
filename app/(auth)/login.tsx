@@ -60,21 +60,20 @@ export default function Login() {
 
     const handleLogin = async () => {
         if (!email || !password) {
-            setErrorMsg('Please put your email and password.');
+            setErrorMsg('Veuillez entrer votre email et mot de passe.');
             if (!email) setIsEmailError(true);
             if (!password) setIsPasswordError(true);
             return;
         }
 
-        if (email && password) {
-            login(email, password).then(() => {
-                setErrorMsg('');
-                router.replace('/(app)/(tabs)');
-            }).catch((error) => {
-                setErrorMsg('Invalid email or password.');
-                setIsEmailError(true);
-                setIsPasswordError(true);
-            });
+        try {
+            setErrorMsg('');
+            await login(email, password);
+            router.replace('/(app)/(tabs)');
+        } catch (error) {
+            setErrorMsg('Email ou mot de passe invalide');
+            setIsEmailError(true);
+            setIsPasswordError(true);
         }
     };
 
