@@ -43,6 +43,13 @@
         }
       ],
       [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow KicksFolio to access your camera.",
+          "barCodeScanner": true
+        }
+      ], 
+      [
         "expo-splash-screen",
         {
           "image": "./assets/images/splash-icon.png",

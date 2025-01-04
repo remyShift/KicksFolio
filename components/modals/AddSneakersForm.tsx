@@ -17,6 +17,7 @@ import { Sneaker } from '@/types/Models';
 import ShareButton from '../buttons/ShareButton';
 import { ConditionBar } from '../ConditionBar';
 import EditButton from '../buttons/EditButton';
+import { CameraView } from 'expo-camera';
 
 type AddSneakersModalProps = {
     modalStep: 'index' | 'box' | 'noBox' | 'sneakerInfo';
@@ -52,6 +53,7 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
     const [isPricePaidError, setIsPricePaidError] = useState(false);
     const [isPricePaidFocused, setIsPricePaidFocused] = useState(false);
     const [sneakerPricePaid, setSneakerPricePaid] = useState('');
+    const [showScanner, setShowScanner] = useState(false);
 
     const { user, userSneakers, sessionToken, getUserSneakers } = useSession();
     const userId = user?.id;
@@ -203,41 +205,60 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
         setModalStep('index');
     };
 
+    const handleBarCodeScanned = ({ data }: { data: string }) => {
+        console.log("Barcode detected:", data);
+        setShowScanner(false);
+    };
+
     switch (modalStep) {
         case 'index':
             return (
-                <>
-                    <View className="flex-1 justify-center items-center gap-8">
-                        <Text className="font-actonia text-primary text-4xl text-center">{indexTitle}</Text>
-                        <Text className="font-spacemono-bold text-xl text-center">Do you have the box ?</Text>
-                        <View className="flex justify-center items-center gap-4">
-                            <MainButton
-                                content="Yes" 
-                                backgroundColor="bg-primary" 
-                                onPressAction={() => setModalStep('box')} 
-                            />
-                            <MainButton 
-                                content="No" 
-                                backgroundColor="bg-gray-400" 
-                                onPressAction={() => setModalStep('noBox')} 
-                            />
-                        </View>
+                <View className="flex-1 justify-center items-center gap-8">
+                    <Text className="font-actonia text-primary text-4xl text-center">{indexTitle}</Text>
+                    <Text className="font-spacemono-bold text-xl text-center">Do you have the box ?</Text>
+                    <View className="flex justify-center items-center gap-4">
+                        <MainButton
+                            content="Yes" 
+                            backgroundColor="bg-primary" 
+                            onPressAction={() => setModalStep('box')} 
+                        />
+                        <MainButton 
+                            content="No" 
+                            backgroundColor="bg-gray-400" 
+                            onPressAction={() => setModalStep('noBox')} 
+                        />
                     </View>
-                </>
+                </View>
             );
         case 'box':
             return (
-                <>
+                <View className="flex-1 justify-center items-center gap-8">
                     <Text className="font-actonia text-primary text-4xl text-center">Scan your sneaker box</Text>
-                    <View className="flex-1 justify-center items-center gap-8">
-                        <Text className="font-spacemono-bold text-2xl text-center">Feature incoming 🚀</Text>
-                        <MainButton 
-                            content="Back" 
-                            backgroundColor="bg-gray-400" 
-                            onPressAction={() => setModalStep('index')} 
-                        />
+                    <Text className="font-spacemono-bold text-lg text-center px-6">Click the camera icon to scan your sneaker box barcode</Text>
+                    <View className="flex flex-row justify-center items-center gap-2 w-full">
+                        <Pressable onPress={() => setShowScanner(true)}>
+                            <MaterialIcons name="photo-camera" size={24} color="black" />
+                        </Pressable>
                     </View>
-                </>
+                    {showScanner && (
+                        <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 999 }}>
+                            <CameraView
+                                onBarcodeScanned={handleBarCodeScanned}
+                                barcodeScannerSettings={{
+                                    barcodeTypes: ['ean13', 'ean8'],
+                                }}
+                                style={{ flex: 1 }}
+                            >
+                                <Pressable 
+                                    onPress={() => setShowScanner(false)}
+                                    style={{ position: 'absolute', top: 20, right: 20 }}
+                                >
+                                    <MaterialIcons name="close" size={30} color="white" />
+                                </Pressable>
+                            </CameraView>
+                        </View>
+                    )}
+                </View>
             );
         case 'noBox':
             return (
