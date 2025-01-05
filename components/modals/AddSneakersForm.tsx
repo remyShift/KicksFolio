@@ -4,7 +4,7 @@ import BackButton from '@/components/buttons/BackButton';
 import NextButton from '@/components/buttons/NextButton';
 import MainButton from '@/components/buttons/MainButton';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { TextInput } from 'react-native-gesture-handler';
+import { TextInput } from 'react-native';
 import { useState, useRef } from 'react';
 import DropdownInput from '../inputs/DropDownInput';
 import * as ImagePicker from 'expo-image-picker';
@@ -57,7 +57,7 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
     const { user, userSneakers, sessionToken, getUserSneakers } = useSession();
     const userId = user?.id;
 
-    const currentSneakerId = userSneakers ? userSneakers.findIndex(s => s.id === sneaker?.id) : -1;
+    const currentSneakerId = userSneakers ? userSneakers.findIndex((s: Sneaker) => s.id === sneaker?.id) : -1;
 
     const scrollViewRef = useRef<ScrollView>(null);
 
@@ -237,7 +237,7 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                             <CameraView
                                 onBarcodeScanned={handleBarCodeScanned}
                                 autofocus='on'
-                                zoom={0.6}
+                                zoom={0.3}
                                 flash='auto'
                                 barcodeScannerSettings={{
                                     barcodeTypes: ['ean13', 'ean8', 'upc_e', 'upc_a'],
