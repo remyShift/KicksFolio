@@ -14,7 +14,7 @@
       "backgroundColor": "#F27329"
     },
     "ios": {
-      "supportsTablet": true,
+      "supportsTablet": false,
       "bundleIdentifier": "com.remyshift.KicksFolio"
     },
     "android": {
