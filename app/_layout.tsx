@@ -18,25 +18,20 @@ const FONTS = {
 function AppContent() {
     const [isSplashScreenVisible, setIsSplashScreenVisible] = useState(true);
     const [fontsLoaded] = useFonts(FONTS);
-    const { user, sessionToken, loadInitialData } = useSession();
+    const { sessionToken, loadInitialData } = useSession();
 
-    useEffect(() => {
-        const initializeApp = async () => {
-            if (sessionToken) {
-                await loadInitialData();
-            }
-            setIsSplashScreenVisible(false);
-        };
 
-        initializeApp();
-    }, [sessionToken]);
 
     if (!fontsLoaded) {
         return null;
     }
 
     if (isSplashScreenVisible) {
-        return <SplashScreen />;
+        return <SplashScreen 
+            sessionToken={sessionToken} 
+            loadInitialData={async () => { await loadInitialData() }} 
+            setIsSplashScreenVisible={setIsSplashScreenVisible} 
+        />;
     }
 
     return <Slot />;

@@ -18,11 +18,6 @@ export default function Index() {
     const [modalStep, setModalStep] = useState<'index' | 'box' | 'noBox' | 'sneakerInfo'>('index');
     const [currentSneaker, setCurrentSneaker] = useState<Sneaker | null>(null);
 
-    const preloadImages = async (imageUris: string[]) => {
-        const prefetchTasks = imageUris.map(uri => Image.prefetch(uri));
-        await Promise.all(prefetchTasks);
-    };
-
     useEffect(() => {
         if (isNewUser || (userSneakers && userSneakers.length === 0)) {
             setModalVisible(true);
@@ -30,14 +25,6 @@ export default function Index() {
             setModalVisible(false);
         }
     }, [isNewUser, userSneakers]);
-
-    useEffect(() => {
-        if (userSneakers) {
-            const sneakerImages = userSneakers.map(sneaker => sneaker.images[0]);
-            const imageUris = sneakerImages.map(image => image.url);
-            preloadImages(imageUris);
-        }
-    }, []);
 
     return (
         <View className="flex-1">
