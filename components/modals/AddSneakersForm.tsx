@@ -293,10 +293,6 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
     };
 
     useEffect(() => {
-        handleBarCodeScanned({ data: lastScannedCode || '' });
-    },[isScanning, lastScannedCode]);
-
-    useEffect(() => {
         return () => {
             if (timeoutRef) {
                 clearTimeout(timeoutRef);

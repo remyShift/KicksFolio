@@ -1,5 +1,5 @@
 import MainButton from '@/components/buttons/MainButton';
-import { ScrollView, Text, View, Modal } from 'react-native';
+import { ScrollView, Text, View, Modal, Alert } from 'react-native';
 import { Image } from 'expo-image';
 import { useSession } from '@/context/authContext';
 import PageTitle from '@/components/text/PageTitle';
@@ -11,6 +11,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { renderModalContent } from '@/components/modals/AddSneakersForm';
 import BrandTitle from '@/components/text/BrandTitle';
 import { Sneaker } from '@/types/Models';
+import { Ionicons } from '@expo/vector-icons';
 
 const brandLogos: Record<string, any> = {
   nike: require('@/assets/images/brands/nike.png'),
@@ -50,7 +51,31 @@ export default function User() {
     <>
       <ScrollView className="flex-1">
         <View className="flex-1 gap-12">
-          <PageTitle content="Profile" />
+          <View className="flex-row justify-center items-center">
+            <PageTitle content="Profile" />
+            <Pressable 
+              className="p-4 absolute right-0 mt-2 top-10"
+              onPress={() => {
+                Alert.alert(
+                  'Logout',
+                  'Are you sure you want to logout ?',
+                  [
+                    {
+                      text: 'Cancel',
+                      style: 'cancel'
+                    },
+                    {
+                      text: 'Logout',
+                      style: 'destructive',
+                      onPress: () => logout()
+                    }
+                  ]
+                );
+              }}
+            >
+              <Ionicons name="exit-outline" size={24} color="#666" />
+            </Pressable>
+          </View>
           <View className="flex-1 gap-12">
             <View className="flex-col gap-4">
               <Title content={user?.username || ''} />
@@ -133,14 +158,6 @@ export default function User() {
                   ))}
                 </View>
               )}
-
-              <View className="flex-1 w-full items-center">
-                <MainButton content='Logout' backgroundColor='bg-gray-400' onPressAction={() => {
-                  setTimeout(() => {
-                    logout();
-                  }, 300);
-                }} />
-              </View>
           </View>
         </View>
 
