@@ -238,10 +238,16 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
             .then(data => {
                 console.log("API response:", data);
                 const brandName = data.products[0].manufacturer;
-                setSneakerBrand(brandName);
+                setSneakerBrand(brandName.toUpperCase());
 
-                const fullTitle = data.products[0].title.replace(/[^a-zA-Z0-9\s]/g, '');
-                setSneakerName(fullTitle.replace(brandName, '').trim());
+                const cleanTitle = data.products[0].title
+                    .replace(/[^a-zA-Z0-9\s]/g, '')
+                    .replace(/\b(US|EU|UK|CM)\b/gi, '')
+                    .replace(/\d+\.?\d*/g, '');
+                setSneakerName(cleanTitle.replace(brandName, '').trim());
+                setSneakerDescription(data.products[0].description);
+
+                setModalStep('noBox');
 
                 const sizeString = data.products[0].size || '';
                 let usSize = '';
@@ -261,6 +267,12 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                 setSneakerSize(usSize);
                 setSneakerDescription(data.products[0].description);
 
+                setErrorMsg('Please check the data fetched from the barcode and edit it if needed.');
+                setIsSneakerNameError(true);
+                setIsSneakerBrandError(true);
+                setIsSneakerSizeError(true);
+                setIsSneakerDescriptionError(true);
+
                 setModalStep('noBox');
 
                 setTimeoutRef(null);
@@ -279,6 +291,10 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
 
         setTimeoutRef(timeout);
     };
+
+    useEffect(() => {
+        handleBarCodeScanned({ data: lastScannedCode || '' });
+    },[isScanning, lastScannedCode]);
 
     useEffect(() => {
         return () => {
