@@ -10,6 +10,7 @@ import { useState, useRef } from 'react';
 import { handleInputChange, checkBeforeNext, checkName, checkSize } from '@/scripts/formUtils';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import * as ImagePicker from 'expo-image-picker';
+import PrivacyPolicy from '@/components/text/PrivacyPolicy';
 
 export default function SUSecond() {
     const { signUpProps, setSignUpProps } = useSignUpProps();
@@ -161,7 +162,7 @@ export default function SUSecond() {
             keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
             <ScrollView 
                 ref={scrollViewRef}
-                className='flex-1'
+                contentContainerStyle={{ flexGrow: 1 }}
                 keyboardShouldPersistTaps="handled"
                 scrollEnabled={isFirstNameFocused || isLastNameFocused || isSizeFocused}>
                 <View className="flex-1 items-center gap-12 p-4">
@@ -316,6 +317,9 @@ export default function SUSecond() {
                             </Link>
                         </View>
                     </View>
+                </View>
+                <View className='flex-1 h-full justify-center items-center'>
+                    <PrivacyPolicy />
                 </View>
             </ScrollView>
         </KeyboardAvoidingView>

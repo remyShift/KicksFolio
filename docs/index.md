@@ -1,15 +1,15 @@
-# Politique de confidentialité de KicksFolio
+# KicksFolio Privacy Policy
 
 Last update : 05/01/2025
 
-## 1. Collecte des données
+## 1. Collected data
 KicksFolio collect the following data :
 - Email
 - Photos from the library
 - Access to the camera
 - Biometric data (Face ID)
 
-## 2. Utilisation des données
+## 2. Data usage
 These data are used for :
 - User authentication
 - Sneakers collection management

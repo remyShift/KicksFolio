@@ -6,6 +6,7 @@ import PageTitle from '@/components/text/PageTitle';
 import MainButton from '@/components/buttons/MainButton';
 import ErrorMsg from '@/components/text/ErrorMsg';
 import { handleInputChange, checkBeforeNext } from '@/scripts/formUtils';
+import PrivacyPolicy from '@/components/text/PrivacyPolicy';
 
 export default function Login() {
     const [email, setEmail] = useState('');
@@ -84,7 +85,7 @@ export default function Login() {
             keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
             <ScrollView 
                 ref={scrollViewRef}
-                className='flex-1'
+                contentContainerStyle={{ flexGrow: 1 }}
                 keyboardShouldPersistTaps="handled"
                 scrollEnabled={isEmailFocused || isPasswordFocused}>
                 <View className="flex-1 items-center gap-12 p-4">
@@ -155,6 +156,9 @@ export default function Login() {
                             </Link>
                         </View>
                     </View>
+                </View>
+                <View className='flex-1 justify-center items-center'>
+                    <PrivacyPolicy />
                 </View>
             </ScrollView>
         </KeyboardAvoidingView>
