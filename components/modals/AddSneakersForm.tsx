@@ -234,6 +234,7 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
 
                 setTimeoutRef(null);
                 setIsScanning(false);
+                setIsCameraActive(true);
                 setLastScannedCode(null);
             })
             .catch(error => {
@@ -290,11 +291,13 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                                     <CameraView
                                         active={isCameraActive && !isScanning}
                                         onBarcodeScanned={(data) => {
-                                            console.log('-------------------------');
+                                            console.log('-------------------------', {isScanning, isCameraActive, timeoutRef, lastScannedCode});
                                             handleBarCodeScanned(data);
                                         }}
                                         animateShutter={isScanning}
                                         autofocus='on'
+                                        enableTorch={true}
+                                        
                                         zoom={0.4}
                                         flash='auto'
                                         barcodeScannerSettings={{
