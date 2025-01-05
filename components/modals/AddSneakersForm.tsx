@@ -570,7 +570,7 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                                                 userId: userId || '',
                                                 price_paid: Number(sneakerPricePaid),
                                                 purchase_date: '',
-                                                description: '',
+                                                description: sneakerDescription,
                                                 estimated_value: 0,
                                             }, sessionToken || null)
                                             .then(async data => {
