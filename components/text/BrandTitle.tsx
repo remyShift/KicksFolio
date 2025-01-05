@@ -15,7 +15,8 @@ export default function BrandTitle({ content, brandLogo }: { content: string, br
                     style={{
                         width: 32,
                         height: 32,
-                        borderRadius: 3
+                        borderRadius: 3,
+                        zIndex: 1000
                     }}
                     contentFit="contain"
                     contentPosition="center"

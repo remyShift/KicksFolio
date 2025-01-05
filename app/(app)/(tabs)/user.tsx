@@ -108,7 +108,11 @@ export default function User() {
                     <View key={brand} className="flex-1">
                       <BrandTitle
                         content={brand} 
-                        brandLogo={brandLogos[brand.toLowerCase()]} 
+                        brandLogo={
+                          brand === 'New Balance' ? 
+                            require('@/assets/images/brands/newbalance.png') : 
+                            brandLogos[brand.toLowerCase()]
+                        } 
                       />
                       <ScrollView
                         horizontal

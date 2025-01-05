@@ -5,7 +5,7 @@ import NextButton from '@/components/buttons/NextButton';
 import MainButton from '@/components/buttons/MainButton';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { TextInput } from 'react-native';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import DropdownInput from '../inputs/DropDownInput';
 import * as ImagePicker from 'expo-image-picker';
 import { Alert } from 'react-native';
@@ -53,6 +53,10 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
     const [isPricePaidError, setIsPricePaidError] = useState(false);
     const [isPricePaidFocused, setIsPricePaidFocused] = useState(false);
     const [sneakerPricePaid, setSneakerPricePaid] = useState('');
+    const [isCameraActive, setIsCameraActive] = useState(true);
+    const [isScanning, setIsScanning] = useState(false);
+    const [timeoutRef, setTimeoutRef] = useState<NodeJS.Timeout | null>(null);
+    const [lastScannedCode, setLastScannedCode] = useState<string | null>(null);
 
     const { user, userSneakers, sessionToken, getUserSneakers } = useSession();
     const userId = user?.id;
@@ -201,12 +205,56 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
         setIsSneakerConditionFocused(false);
         setIsPricePaidFocused(false);
 
+        setIsScanning(false);
+        setLastScannedCode(null);
         setModalStep('index');
     };
 
     const handleBarCodeScanned = ({ data }: { data: string }) => {
-        console.log("Barcode detected:", data);
+        console.log("Barcode scanned:", data);
+        if (isScanning || timeoutRef || lastScannedCode === data) {
+            console.log("Scan ignored:", { isScanning, timeoutRef, lastScannedCode });
+            return;
+        }
+        
+        setIsScanning(true);
+        setIsCameraActive(false);
+        setLastScannedCode(data);
+        
+        const timeout = setTimeout(() => {
+            fetch(`${process.env.EXPO_PUBLIC_UPC_API_URL}${data}&formatted=y&key=${process.env.EXPO_PUBLIC_UPC_API_KEY}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log("API response:", data);
+                setSneakerBrand(data.products[0].manufacturer);
+                setSneakerName(data.products[0].title.replace(/[^a-zA-Z0-9\s]/g, ''));
+                setSneakerSize(data.products[0].size?.split(' ')[1] || '');
+
+                setModalStep('noBox');
+
+                setTimeoutRef(null);
+                setIsScanning(false);
+                setLastScannedCode(null);
+            })
+            .catch(error => {
+                console.error('Error fetching UPC data:', error);
+                setIsScanning(false);
+                setIsCameraActive(true);
+                setTimeoutRef(null);
+                setLastScannedCode(null);
+            });
+        }, 2500);
+
+        setTimeoutRef(timeout);
     };
+
+    useEffect(() => {
+        return () => {
+            if (timeoutRef) {
+                clearTimeout(timeoutRef);
+            }
+        };
+    }, [timeoutRef]);
 
     switch (modalStep) {
         case 'index':
@@ -232,24 +280,40 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
             return (
                 <View className="flex-1 justify-between items-center gap-8">
                     <View className="flex-1 w-full justify-center items-center gap-8">
-                        <Text className="font-spacemono-bold text-lg text-center px-6">Scan the barcode on the sneaker box to add to your collection.</Text>
-                        <View className="w-4/5 h-1/4 border-2 border-primary">
-                            <CameraView
-                                onBarcodeScanned={handleBarCodeScanned}
-                                autofocus='on'
-                                zoom={0.3}
-                                flash='auto'
-                                barcodeScannerSettings={{
-                                    barcodeTypes: ['ean13', 'ean8', 'upc_e', 'upc_a'],
-                                }}
-                                style={{ flex: 1 }}
-                            >
-                            </CameraView>
-                        </View>
+                        {isCameraActive ? (
+                            <View className="flex-1 w-full justify-center items-center gap-8">
+                                <View className="flex-col justify-center items-center gap-1">
+                                    <Text className="font-spacemono-bold text-lg text-center px-6">Scan your sneaker box barcode</Text>
+                                    <Text className="font-spacemono-bold text-base text-center px-6">Make sure the barcode is in the center of the image.</Text>
+                                </View>
+                                <View className="w-4/5 h-1/4 border-2 border-primary">
+                                    <CameraView
+                                        active={isCameraActive && !isScanning}
+                                        onBarcodeScanned={(data) => {
+                                            console.log('-------------------------');
+                                            handleBarCodeScanned(data);
+                                        }}
+                                        animateShutter={isScanning}
+                                        autofocus='on'
+                                        zoom={0.4}
+                                        flash='auto'
+                                        barcodeScannerSettings={{
+                                            barcodeTypes: ['ean13', 'ean8', 'upc_e', 'upc_a'],
+                                        }}
+                                        style={{ flex: 1 }}
+                                    />
+                                    </View>
+                                </View>
+                            ) : (
+                                <Text className="font-spacemono-bold text-lg text-center px-6">Fetching data...</Text>
+                            )}
                     </View>
                     <View className="justify-end items-start w-full pb-5">
                         <BackButton 
-                            onPressAction={() => setModalStep('index')} 
+                            onPressAction={() => {
+                                setIsCameraActive(true);
+                                setModalStep('index');
+                            }} 
                         />
                     </View>
                 </View>
@@ -296,7 +360,7 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                                         source={{ uri: sneakerImage }} 
                                         style={{
                                             width: '100%',
-                                            height: 150,
+                                            height: '100%',
                                             borderRadius: 3
                                         }}
                                         contentFit="cover"
