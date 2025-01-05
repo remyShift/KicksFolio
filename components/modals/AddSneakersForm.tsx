@@ -1,10 +1,9 @@
-import { Text, View, Pressable, KeyboardAvoidingView, ScrollView, Platform } from 'react-native';
+import { Text, View, Pressable, KeyboardAvoidingView, ScrollView, Platform, TextInput } from 'react-native';
 import { Image } from 'expo-image';
 import BackButton from '@/components/buttons/BackButton';
 import NextButton from '@/components/buttons/NextButton';
 import MainButton from '@/components/buttons/MainButton';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { TextInput } from 'react-native';
 import { useState, useRef, useEffect } from 'react';
 import DropdownInput from '../inputs/DropDownInput';
 import * as ImagePicker from 'expo-image-picker';
@@ -27,7 +26,7 @@ type AddSneakersModalProps = {
     setSneaker: (sneaker: Sneaker | null) => void;
 }
 
-type InputTypeProps = 'name' | 'size' | 'condition' | 'status' | 'pricePaid' | 'brand';
+type InputTypeProps = 'name' | 'size' | 'condition' | 'status' | 'pricePaid' | 'brand' | 'description';
 
 const BRANDS = ['NIKE', 'ADIDAS', 'JORDAN', 'NEW BALANCE', 'ASICS', 'PUMA', 'REEBOK', 'CONVERSE', 'VANS', ];
 const STATUS = ['STOCKING', 'SELLING', 'ROCKING'];
@@ -57,8 +56,11 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
     const [isScanning, setIsScanning] = useState(false);
     const [timeoutRef, setTimeoutRef] = useState<NodeJS.Timeout | null>(null);
     const [lastScannedCode, setLastScannedCode] = useState<string | null>(null);
-
+    const [sneakerDescription, setSneakerDescription] = useState('');
+    const [isSneakerDescriptionFocused, setIsSneakerDescriptionFocused] = useState(false);
+    const [isSneakerDescriptionError, setIsSneakerDescriptionError] = useState(false);
     const { user, userSneakers, sessionToken, getUserSneakers } = useSession();
+
     const userId = user?.id;
 
     const currentSneakerId = userSneakers ? userSneakers.findIndex((s: Sneaker) => s.id === sneaker?.id) : -1;
@@ -97,9 +99,13 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
             case 'pricePaid':
                 setIsPricePaidFocused(true);
                 break;
+            case 'description':
+                setIsSneakerDescriptionFocused(true);
+                break;
         }
         setIsSneakerNameError(false);
         setIsSneakerBrandError(false);
+        setIsSneakerDescriptionError(false);
         setIsSneakerSizeError(false);
         setIsSneakerConditionError(false);
         setIsSneakerStatusError(false);
@@ -140,6 +146,9 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
             case 'pricePaid':
                 setIsPricePaidFocused(false);
                 checkPricePaid(value, setErrorMsg, setIsPricePaidError);
+                break;
+            case 'description':
+                setIsSneakerDescriptionFocused(false);
                 break;
         }
     };
@@ -190,20 +199,22 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
         setSneakerImage(null);
         setSneakerPricePaid('');
         setErrorMsg('');
-        
+        setSneakerDescription('');
+
         setIsSneakerNameError(false);
         setIsSneakerBrandError(false);
         setIsSneakerStatusError(false);
         setIsSneakerSizeError(false);
         setIsSneakerConditionError(false);
         setIsPricePaidError(false);
-        
+        setIsSneakerDescriptionError(false);
         setIsSneakerNameFocused(false);
         setIsSneakerBrandFocused(false);
         setIsSneakerStatusFocused(false);
         setIsSneakerSizeFocused(false);
         setIsSneakerConditionFocused(false);
         setIsPricePaidFocused(false);
+        setIsSneakerDescriptionFocused(false);
 
         setIsScanning(false);
         setLastScannedCode(null);
@@ -226,9 +237,29 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
             .then(response => response.json())
             .then(data => {
                 console.log("API response:", data);
-                setSneakerBrand(data.products[0].manufacturer);
-                setSneakerName(data.products[0].title.replace(/[^a-zA-Z0-9\s]/g, ''));
-                setSneakerSize(data.products[0].size?.split(' ')[1] || '');
+                const brandName = data.products[0].manufacturer;
+                setSneakerBrand(brandName);
+
+                const fullTitle = data.products[0].title.replace(/[^a-zA-Z0-9\s]/g, '');
+                setSneakerName(fullTitle.replace(brandName, '').trim());
+
+                const sizeString = data.products[0].size || '';
+                let usSize = '';
+
+                const usMatch = sizeString.match(/US\s*(\d+\.?\d*)/i);
+                if (usMatch) {
+                    usSize = usMatch[1];
+                }
+                else if (sizeString.includes('US')) {
+                    const sizes = sizeString.split(' ');
+                    const usIndex = sizes.findIndex((s: string) => s.toUpperCase() === 'US');
+                    if (usIndex !== -1 && usIndex + 1 < sizes.length) {
+                        usSize = sizes[usIndex + 1];
+                    }
+                }
+
+                setSneakerSize(usSize);
+                setSneakerDescription(data.products[0].description);
 
                 setModalStep('noBox');
 
@@ -326,7 +357,7 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                 <KeyboardAvoidingView 
                     className="flex-1" 
                     behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                    keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 20}>
+                    keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 20}>
                     <ScrollView 
                         ref={scrollViewRef}
                         className='flex-1'
@@ -334,7 +365,7 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                         nestedScrollEnabled={true}
                         contentContainerStyle={{ minHeight: '100%' }}
                     >
-                        <View className="flex-1 h-full p-2 gap-8">
+                        <View className="flex-1 h-full p-2 gap-2">
                             <Pressable
                                 onPress={() => {
                                     Alert.alert(
@@ -375,7 +406,7 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                                 )}
                             </Pressable>
 
-                            <View className="flex flex-col gap-8">
+                            <View className="flex flex-col gap-6 mt-2">
                                 <View className="flex flex-col gap-4">
                                     <View className='flex flex-col gap-2 w-full justify-center'>
                                         <ErrorMsg content={errorMsg} display={errorMsg !== ''}/>
@@ -471,12 +502,44 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                                         </View>
                                     </View>
                                 </View>
+
+                                <View className="flex-1 items-center w-full">
+                                    <View className="relative w-full">
+                                        <TextInput
+                                            className="bg-white rounded-md p-2 w-full font-spacemono-bold pr-10"
+                                            value={sneakerDescription}
+                                            onChangeText={(text) => {
+                                                setSneakerDescription(text);
+                                                scrollToBottom();
+                                            }}
+                                            placeholder="Description"
+                                            placeholderTextColor='gray'
+                                            multiline={true}
+                                            textAlignVertical="top"
+                                            style={{
+                                                minHeight: 80,
+                                                maxHeight: 200
+                                            }}
+                                            onFocus={() => handleInputFocus('description')}
+                                            onBlur={() => handleInputBlur('description', sneakerDescription)}
+                                        />
+                                        <Pressable 
+                                            className="absolute right-2 top-2"
+                                            onPress={() => setSneakerDescription('')}
+                                        >
+                                            <MaterialIcons name="delete" size={24} color="gray" />
+                                        </Pressable>
+                                    </View>
+                                </View>
                             </View>
 
                             <View className="flex-1 justify-end pb-4">
                                 <View className="flex-row justify-between w-full">
                                     <BackButton 
-                                        onPressAction={() => setModalStep('index')} 
+                                        onPressAction={() => {
+                                            resetFields();
+                                            setModalStep('index');
+                                        }} 
                                     />
                                     <NextButton
                                         content="Add"
