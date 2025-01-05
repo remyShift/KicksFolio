@@ -2,7 +2,7 @@
   "expo": {
     "name": "KicksFolio",
     "slug": "KicksFolio-Frontend",
-    "version": "1.0.0",
+    "version": "0.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
@@ -15,14 +15,14 @@
     },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.remyshift.KicksFolio"
+      "bundleIdentifier": "app.kicksfolio"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.remyshift.KicksFolio"
+      "package": "app.kicksfolio"
     },
     "web": {
       "bundler": "metro",
