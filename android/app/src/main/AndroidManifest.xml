@@ -27,7 +27,7 @@
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="myapp"/>
-        <data android:scheme="com.remyshift.KicksFolio"/>
+        <data android:scheme="app.kicksfolio"/>
         <data android:scheme="exp+kicksfolio-frontend"/>
       </intent-filter>
     </activity>
