@@ -70,7 +70,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
                     }
                 }
             } catch (error) {
-                console.error('Error initializing session:', error);
+                return;
             }
         };
 
@@ -109,7 +109,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
                 return getUser();
             })
             .catch(error => {
-                console.error('Error initializing session:', error);
                 return logout();
             });
     }, [sessionToken]);
@@ -122,7 +121,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
                 await AsyncStorage.setItem(key, JSON.stringify(value));
             }
         } catch (error) {
-            console.error('Error storing data:', error);
+            return;
         }
     };
     
@@ -136,7 +135,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
             if (storedCollection) setUserCollection(JSON.parse(storedCollection));
             if (storedSneakers) setUserSneakers(JSON.parse(storedSneakers));
         } catch (error) {
-            console.error('Error loading data:', error);
+            return;
         }
     };
 
@@ -151,7 +150,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
             });
 
             if (!response.ok) {
-                throw new Error('Erreur lors de la connexion');
+                throw new Error('Error logging in');
             }
 
             const data = await response.json();
@@ -165,8 +164,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
             
             return data;
         } catch (error) {
-            console.error('Erreur de connexion:', error);
-            throw new Error('Email ou mot de passe invalide');
+            throw error;
         }
     };
 
@@ -205,17 +203,12 @@ export function SessionProvider({ children }: PropsWithChildren) {
             
             if (!response.ok) {
                 const errorMessage = data.message || data.error || 'Error when creating account';
-                console.error('Error on server:', {
-                    status: response.status,
-                    data: data
-                });
                 throw new Error(errorMessage);
             }
 
             return data;
         })
         .catch(error => {
-            console.error('Complete error:', error);
             throw error;
         });
     };
@@ -265,7 +258,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
             await getUserSneakers();
         })
         .catch(async error => {
-            console.error('Complete get user error:', error);
             await logout();
             throw error;
         });
@@ -299,7 +291,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
             }
             return null;
         } catch (error) {
-            console.error('Error when getting collection:', error);
             setUserCollection(null);
             storeData('collection', null);
             throw error;
@@ -328,7 +319,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
             }
             return null;
         } catch (error) {
-            console.error('Error when getting sneakers:', error);
             setUserSneakers(null);
             storeData('sneakers', null);
             return null;
@@ -361,7 +351,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
             }
             return false;
         } catch (error) {
-            console.error('Error when verifying token:', error);
             return false;
         }
     };
@@ -375,7 +364,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
                 const sneakers = await getUserSneakers();
             }
         } catch (error) {
-            console.error('Error loading initial data:', error);
+            return;
         }
     };
 

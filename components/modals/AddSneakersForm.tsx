@@ -243,8 +243,14 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                 const cleanTitle = data.products[0].title
                     .replace(/[^a-zA-Z0-9\s]/g, '')
                     .replace(/\b(US|EU|UK|CM)\b/gi, '')
-                    .replace(/\d+\.?\d*/g, '');
+                    .replace(/\d+\.?\d*/g, '')
+                    .trim()
+                    .split(' ')
+                    .filter((word: string) => word.length > 0 && word.trim() !== '')
+                    .join(' ');
+            
                 setSneakerName(cleanTitle.replace(brandName, '').trim());
+
                 setSneakerDescription(data.products[0].description);
 
                 setModalStep('noBox');
@@ -281,11 +287,12 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                 setLastScannedCode(null);
             })
             .catch(error => {
-                console.error('Error fetching UPC data:', error);
+                setErrorMsg('Something went wrong when fetching UPC data, please try again or complete the form manually.');
                 setIsScanning(false);
                 setIsCameraActive(true);
                 setTimeoutRef(null);
                 setLastScannedCode(null);
+                setModalStep('noBox');
             });
         }, 2500);
 
@@ -369,7 +376,7 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                 <KeyboardAvoidingView 
                     className="flex-1" 
                     behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                    keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 20}>
+                    keyboardVerticalOffset={Platform.OS === 'ios' ? 120 : 20}>
                     <ScrollView 
                         ref={scrollViewRef}
                         className='flex-1'
@@ -529,8 +536,8 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                                             multiline={true}
                                             textAlignVertical="top"
                                             style={{
-                                                minHeight: 80,
-                                                maxHeight: 200
+                                                minHeight: 60,
+                                                maxHeight: 80
                                             }}
                                             onFocus={() => handleInputFocus('description')}
                                             onBlur={() => handleInputBlur('description', sneakerDescription)}
@@ -591,7 +598,7 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                                                 closeModal();
                                             })
                                             .catch(error => {
-                                                console.error('Error adding sneaker:', error);
+                                                setErrorMsg('Something went wrong when adding the sneaker, please try again.');
                                             });
                                         }}
                                     />

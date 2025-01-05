@@ -61,7 +61,7 @@ export default function Login() {
 
     const handleLogin = async () => {
         if (!email || !password) {
-            setErrorMsg('Veuillez entrer votre email et mot de passe.');
+            setErrorMsg('Please enter your email and password.');
             if (!email) setIsEmailError(true);
             if (!password) setIsPasswordError(true);
             return;
@@ -72,13 +72,14 @@ export default function Login() {
             await login(email, password);
             router.replace('/(app)/(tabs)');
         } catch (error) {
-            setErrorMsg('Email ou mot de passe invalide');
+            setErrorMsg('Invalid email or password');
             setIsEmailError(true);
             setIsPasswordError(true);
         }
     };
 
     return (
+        <>
         <KeyboardAvoidingView 
             className="flex-1 bg-background" 
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -157,10 +158,11 @@ export default function Login() {
                         </View>
                     </View>
                 </View>
-                <View className='flex-1 justify-center items-center'>
-                    <PrivacyPolicy />
-                </View>
-            </ScrollView>
-        </KeyboardAvoidingView>
+                </ScrollView>
+            </KeyboardAvoidingView>
+            <View className='flex justify-center items-center bg-background pb-10'>
+                <PrivacyPolicy />
+            </View>
+        </>
     );
 }

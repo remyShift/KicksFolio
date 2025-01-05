@@ -47,7 +47,6 @@ export const handleAddSneaker = async (sneaker: SneakerProps, sessionToken: stri
     })
     .then(async response => {
         const text = await response.text();
-        console.log(text);
         return JSON.parse(text);
     })
     .catch(error => {
