@@ -60,6 +60,8 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
     const [isSneakerDescriptionFocused, setIsSneakerDescriptionFocused] = useState(false);
     const [isSneakerDescriptionError, setIsSneakerDescriptionError] = useState(false);
     const { user, userSneakers, sessionToken, getUserSneakers } = useSession();
+    const [isSneakerImageFocused, setIsSneakerImageFocused] = useState(false);
+    const [isSneakerImageError, setIsSneakerImageError] = useState(false);
 
     const userId = user?.id;
 
@@ -110,6 +112,7 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
         setIsSneakerConditionError(false);
         setIsSneakerStatusError(false);
         setIsPricePaidError(false);
+        setIsSneakerImageError(false);
         setErrorMsg('');
         scrollToBottom();
     };
@@ -121,6 +124,7 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
         setIsSneakerConditionError(false);
         setIsSneakerStatusError(false);
         setIsPricePaidError(false);
+        setIsSneakerImageError(false);
 
         switch(inputType) {
             case 'name':
@@ -215,6 +219,8 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
         setIsSneakerConditionFocused(false);
         setIsPricePaidFocused(false);
         setIsSneakerDescriptionFocused(false);
+        setIsSneakerImageFocused(false);
+        setIsSneakerImageError(false);
 
         setIsScanning(false);
         setLastScannedCode(null);
@@ -253,7 +259,7 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                     .split(' ')
                     .filter((word: string) => word.length > 0 && word.trim() !== '')
                     .join(' ');
-            
+
                 setSneakerName(cleanTitle.replace(brandName, '').trim());
 
                 setSneakerDescription(data.products[0].description);
@@ -280,6 +286,7 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
 
                 setErrorMsg('Please check the data fetched from the barcode and edit it if needed.');
                 setIsSneakerNameError(true);
+                setIsSneakerImageError(true);
                 setIsSneakerBrandError(true);
                 setIsSneakerSizeError(true);
                 setIsSneakerDescriptionError(true);
@@ -416,11 +423,7 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                                 {sneakerImage ? (
                                     <Image
                                         source={{ uri: sneakerImage }} 
-                                        style={{
-                                            width: '100%',
-                                            height: '100%',
-                                            borderRadius: 3
-                                        }}
+                                        className={`w-full h-full border-2 ${isSneakerImageError ? 'border-red-500' : ''} ${isSneakerImageFocused ? 'border-primary' : ''} rounded-md`}
                                         contentFit="cover"
                                         contentPosition="center"
                                         cachePolicy="memory-disk"
@@ -571,15 +574,17 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                                             const isValid = validateAllFields(
                                                 sneakerName, 
                                                 sneakerBrand, 
-                                                sneakerSize, 
-                                                sneakerCondition, 
+                                                sneakerSize,
+                                                sneakerCondition || '',
                                                 sneakerStatus, 
+                                                sneakerImage || '',
                                                 setErrorMsg, 
                                                 setIsSneakerNameError, 
                                                 setIsSneakerBrandError, 
                                                 setIsSneakerSizeError, 
                                                 setIsSneakerConditionError, 
-                                                setIsSneakerStatusError
+                                                setIsSneakerStatusError,
+                                                setIsSneakerImageError
                                             );
                                             if (!isValid) {
                                                 return;

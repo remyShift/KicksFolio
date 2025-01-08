@@ -109,15 +109,6 @@ export const checkSneakerStatus = (status: string, setErrorMsg: (msg: string) =>
     return true;
 };
 
-export const checkSneakerImage = (image: string, setErrorMsg: (msg: string) => void, setIsError: (isError: boolean) => void): boolean => {
-    if (!image) {
-        setErrorMsg('Please select an image.');
-        setIsError(true);
-        return false;
-    }
-    return true;
-};
-
 export const checkPricePaid = (pricePaid: string, setErrorMsg: (msg: string) => void, setIsError: (isError: boolean) => void): boolean => {
     if (pricePaid) {
         if (isNaN(parseFloat(pricePaid)) || parseFloat(pricePaid) < 0) {
@@ -129,12 +120,22 @@ export const checkPricePaid = (pricePaid: string, setErrorMsg: (msg: string) => 
     return true;
 };
 
-export const validateAllFields = (sneakerName: string, sneakerBrand: string, sneakerSize: string, sneakerCondition: string, sneakerStatus: string, setErrorMsg: (msg: string) => void, setIsSneakerNameError: (isError: boolean) => void, setIsSneakerBrandError: (isError: boolean) => void, setIsSneakerSizeError: (isError: boolean) => void, setIsSneakerConditionError: (isError: boolean) => void, setIsSneakerStatusError: (isError: boolean) => void) => {
+export const checkSneakerImage = (image: string, setErrorMsg: (msg: string) => void, setIsSneakerImageError: (isError: boolean) => void): boolean => {
+    if (!image) {
+        setErrorMsg('Please select an image.');
+        setIsSneakerImageError(true);
+        return false;
+    }
+    return true;
+};
+
+export const validateAllFields = (sneakerName: string, sneakerBrand: string, sneakerSize: string, sneakerCondition: string, sneakerStatus: string, sneakerImage: string, setErrorMsg: (msg: string) => void, setIsSneakerNameError: (isError: boolean) => void, setIsSneakerBrandError: (isError: boolean) => void, setIsSneakerSizeError: (isError: boolean) => void, setIsSneakerConditionError: (isError: boolean) => void, setIsSneakerStatusError: (isError: boolean) => void, setIsSneakerImageError: (isError: boolean) => void) => {
     const isNameValid = checkSneakerName(sneakerName, setErrorMsg, setIsSneakerNameError);
     const isBrandValid = checkSneakerBrand(sneakerBrand, setErrorMsg, setIsSneakerBrandError);
     const isSizeValid = checkSneakerSize(sneakerSize, setErrorMsg, setIsSneakerSizeError);
     const isConditionValid = checkSneakerCondition(sneakerCondition, setErrorMsg, setIsSneakerConditionError);
     const isStatusValid = checkSneakerStatus(sneakerStatus, setErrorMsg, setIsSneakerStatusError);
+    const isImageValid = checkSneakerImage(sneakerImage, setErrorMsg, setIsSneakerImageError);
 
-    return isNameValid && isBrandValid && isSizeValid && isConditionValid && isStatusValid;
+    return isNameValid && isBrandValid && isSizeValid && isConditionValid && isStatusValid && isImageValid;
 };
