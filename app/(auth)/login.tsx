@@ -59,7 +59,7 @@ export default function Login() {
         }
     };
 
-    const handleLogin = async () => {
+    const handleLogin = () => {
         if (!email || !password) {
             setErrorMsg('Please enter your email and password.');
             if (!email) setIsEmailError(true);
@@ -67,15 +67,16 @@ export default function Login() {
             return;
         }
 
-        try {
-            setErrorMsg('');
-            await login(email, password);
-            router.replace('/(app)/(tabs)');
-        } catch (error) {
-            setErrorMsg('Invalid email or password');
-            setIsEmailError(true);
-            setIsPasswordError(true);
-        }
+        setErrorMsg('');
+        login(email, password)
+            .then(() => {
+                router.replace('/(app)/(tabs)');
+            })
+            .catch((error) => {
+                setErrorMsg('Invalid email or password');
+                setIsEmailError(true);
+                setIsPasswordError(true);
+            });
     };
 
     return (

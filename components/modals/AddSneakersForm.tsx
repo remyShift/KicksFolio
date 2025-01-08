@@ -224,8 +224,7 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
     const handleBarCodeScanned = ({ data }: { data: string }) => {
         if (isScanning || timeoutRef || lastScannedCode === data) {
             return;
-        }
-        
+        }        
         setIsScanning(true);
         setIsCameraActive(false);
         setLastScannedCode(data);
@@ -241,6 +240,8 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
             })
             .then(response => response.json())
             .then(data => {
+                setSneakerImage(data.products[0].images[0]);
+
                 const brandName = data.products[0].manufacturer;
                 setSneakerBrand(brandName.toUpperCase());
 
@@ -291,7 +292,7 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                 setLastScannedCode(null);
             })
             .catch(error => {
-                setErrorMsg('Une erreur est survenue lors de la récupération des données');
+                setErrorMsg('Error when fetching UPC data, please try again or complete the form manually.');
                 setIsScanning(false);
                 setIsCameraActive(true);
                 setTimeoutRef(null);
