@@ -222,9 +222,7 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
     };
 
     const handleBarCodeScanned = ({ data }: { data: string }) => {
-        console.log("Barcode scanned:", data);
         if (isScanning || timeoutRef || lastScannedCode === data) {
-            console.log("Scan ignored:", { isScanning, timeoutRef, lastScannedCode });
             return;
         }
         
@@ -233,10 +231,16 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
         setLastScannedCode(data);
         
         const timeout = setTimeout(() => {
-            fetch(`${process.env.EXPO_PUBLIC_UPC_API_URL}${data}&formatted=y&key=${process.env.EXPO_PUBLIC_UPC_API_KEY}`)
+            fetch(`${process.env.EXPO_PUBLIC_BASE_API_URL}/upc_lookup`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${sessionToken}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ barcode: data })
+            })
             .then(response => response.json())
             .then(data => {
-                console.log("API response:", data);
                 const brandName = data.products[0].manufacturer;
                 setSneakerBrand(brandName.toUpperCase());
 
@@ -287,7 +291,7 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                 setLastScannedCode(null);
             })
             .catch(error => {
-                setErrorMsg('Something went wrong when fetching UPC data, please try again or complete the form manually.');
+                setErrorMsg('Une erreur est survenue lors de la récupération des données');
                 setIsScanning(false);
                 setIsCameraActive(true);
                 setTimeoutRef(null);

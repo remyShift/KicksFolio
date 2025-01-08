@@ -83,7 +83,7 @@ export default function SignUp() {
         }
 
         setErrorMsg('');
-        router.replace('/su-second');
+        router.replace('/sign-up-second');
     };
 
     return (
@@ -225,7 +225,7 @@ export default function SignUp() {
                                 onPressAction={() => {
                                     setTimeout(() => {
                                         handleNextSignUpPage();
-                                    }, 300);
+                                    }, 500);
                                 }} 
                             />
                             <View className='flex gap-0 w-full justify-center items-center'>
