@@ -59,7 +59,7 @@ export default function Login() {
         }
     };
 
-    const handleLogin = () => {
+    const handleLogin = async () => {
         if (!email || !password) {
             setErrorMsg('Please enter your email and password.');
             if (!email) setIsEmailError(true);
@@ -68,7 +68,7 @@ export default function Login() {
         }
 
         setErrorMsg('');
-        login(email, password)
+        await login(email, password)
             .then(() => {
                 router.replace('/(app)/(tabs)');
             })
@@ -144,10 +144,8 @@ export default function Login() {
                         </View>
                     </View>
                     <View className='flex gap-5 w-full justify-center items-center'>                      
-                        <MainButton content='Login' backgroundColor='bg-primary' onPressAction={() => {
-                            setTimeout(() => {
-                                handleLogin();
-                            }, 300);
+                        <MainButton content='Login' backgroundColor='bg-primary' onPressAction={async () => {
+                            await handleLogin();
                         }} />
                         <View className='flex gap-0 justify-center items-center'>
                             <Text className='font-spacemono-bold text-sm'>Don't have an account ?</Text>

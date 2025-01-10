@@ -1,13 +1,23 @@
 import { Text } from 'react-native';
 import { Redirect, Stack } from 'expo-router';
-
 import { useSession } from '@/context/authContext';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function AppLayout() {
-    const { sessionToken, isLoading, user, userCollection } = useSession();
+    const { sessionToken, isLoading, user, userCollection, getUserCollection } = useSession();
+    const [isCheckingCollection, setIsCheckingCollection] = useState(true);
 
-    if (isLoading) {
+    useEffect(() => {
+        if (user && sessionToken) {
+            getUserCollection()
+                .then(() => setIsCheckingCollection(false))
+                .catch(() => setIsCheckingCollection(false));
+        } else {
+            setIsCheckingCollection(false);
+        }
+    }, [user, sessionToken]);
+
+    if (isLoading || isCheckingCollection) {
         return <Text>Loading...</Text>;
     }
 
@@ -15,7 +25,7 @@ export default function AppLayout() {
         return <Redirect href="/login" />;
     }
 
-    if (!userCollection || userCollection.name === '') {
+    if (!userCollection && !isCheckingCollection) {
         return <Redirect href="/collection" />;
     }
 

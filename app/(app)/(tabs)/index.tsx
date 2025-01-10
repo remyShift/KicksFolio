@@ -19,7 +19,7 @@ export default function Index() {
     const [currentSneaker, setCurrentSneaker] = useState<Sneaker | null>(null);
 
     useEffect(() => {
-        if (isNewUser || !userSneakers || userSneakers.length === 0 || !userCollection || userCollection.name === '') {
+        if (isNewUser || !userSneakers || userSneakers.length === 0) {
             setModalVisible(true);
         } else {
             setModalVisible(false);

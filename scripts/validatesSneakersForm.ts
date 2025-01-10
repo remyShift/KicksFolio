@@ -130,12 +130,12 @@ export const checkSneakerImage = (image: string, setErrorMsg: (msg: string) => v
 };
 
 export const validateAllFields = (sneakerName: string, sneakerBrand: string, sneakerSize: string, sneakerCondition: string, sneakerStatus: string, sneakerImage: string, setErrorMsg: (msg: string) => void, setIsSneakerNameError: (isError: boolean) => void, setIsSneakerBrandError: (isError: boolean) => void, setIsSneakerSizeError: (isError: boolean) => void, setIsSneakerConditionError: (isError: boolean) => void, setIsSneakerStatusError: (isError: boolean) => void, setIsSneakerImageError: (isError: boolean) => void) => {
+    const isImageValid = checkSneakerImage(sneakerImage, setErrorMsg, setIsSneakerImageError);
     const isNameValid = checkSneakerName(sneakerName, setErrorMsg, setIsSneakerNameError);
     const isBrandValid = checkSneakerBrand(sneakerBrand, setErrorMsg, setIsSneakerBrandError);
+    const isStatusValid = checkSneakerStatus(sneakerStatus, setErrorMsg, setIsSneakerStatusError);
     const isSizeValid = checkSneakerSize(sneakerSize, setErrorMsg, setIsSneakerSizeError);
     const isConditionValid = checkSneakerCondition(sneakerCondition, setErrorMsg, setIsSneakerConditionError);
-    const isStatusValid = checkSneakerStatus(sneakerStatus, setErrorMsg, setIsSneakerStatusError);
-    const isImageValid = checkSneakerImage(sneakerImage, setErrorMsg, setIsSneakerImageError);
 
     return isNameValid && isBrandValid && isSizeValid && isConditionValid && isStatusValid && isImageValid;
 };

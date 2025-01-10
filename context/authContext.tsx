@@ -53,28 +53,29 @@ export function SessionProvider({ children }: PropsWithChildren) {
     const [userSneakers, setUserSneakers] = useState<Sneaker[] | null>(null);
 
     useEffect(() => {
-        const initializeSession = async () => {
-            try {
-                const storedUser = await AsyncStorage.getItem('user');
-                const storedCollection = await AsyncStorage.getItem('collection');
-                const storedSneakers = await AsyncStorage.getItem('sneakers');
-
+        AsyncStorage.getItem('user')
+            .then(storedUser => {
                 if (storedUser) setUser(JSON.parse(storedUser));
+                return AsyncStorage.getItem('collection');
+            })
+            .then(storedCollection => {
                 if (storedCollection) setUserCollection(JSON.parse(storedCollection));
+                return AsyncStorage.getItem('sneakers');
+            })
+            .then(storedSneakers => {
                 if (storedSneakers) setUserSneakers(JSON.parse(storedSneakers));
-
                 if (sessionToken) {
-                    const isValid = await verifyToken();
-                    if (!isValid) {
-                        await logout();
-                    }
+                    return verifyToken();
                 }
-            } catch (error) {
+            })
+            .then(isValid => {
+                if (isValid === false) {
+                    return logout();
+                }
+            })
+            .catch(() => {
                 return;
-            }
-        };
-
-        initializeSession();
+            });
     }, [sessionToken]);
 
     useEffect(() => {
@@ -113,59 +114,50 @@ export function SessionProvider({ children }: PropsWithChildren) {
             });
     }, [sessionToken]);
 
-    const storeData = async (key: string, value: any) => {
-        try {
+    const storeData = (key: string, value: any) => {
+        return new Promise((resolve, reject) => {
             if (key === 'sessionToken') {
-                await setStorageItemAsync(key, JSON.stringify(value));
+                setStorageItemAsync(key, JSON.stringify(value))
+                    .then(() => resolve(value))
+                    .catch(() => reject(value));
             } else {
-                await AsyncStorage.setItem(key, JSON.stringify(value));
+                AsyncStorage.setItem(key, JSON.stringify(value))
+                    .then(() => resolve(value))
+                    .catch(() => reject(value));
             }
-        } catch (error) {
-            return;
-        }
-    };
-    
-    const loadData = async () => {
-        try {
-            const storedUser = await AsyncStorage.getItem('user');
-            const storedCollection = await AsyncStorage.getItem('collection');
-            const storedSneakers = await AsyncStorage.getItem('sneakers');
-    
-            if (storedUser) setUser(JSON.parse(storedUser));
-            if (storedCollection) setUserCollection(JSON.parse(storedCollection));
-            if (storedSneakers) setUserSneakers(JSON.parse(storedSneakers));
-        } catch (error) {
-            return;
-        }
+        });
     };
 
     const login = async (email: string, password: string) => {
-        try {
-            const response = await fetch(`${process.env.EXPO_PUBLIC_BASE_API_URL}/login`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ authentication: { email, password } }),
-            });
-
+        return fetch(`${process.env.EXPO_PUBLIC_BASE_API_URL}/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ authentication: { email, password } }),
+        })
+        .then(response => {
             if (!response.ok) {
                 throw new Error('Error logging in');
             }
-
-            const data = await response.json();
+            return response.json();
+        })
+        .then(data => {
             const { token, user: userData } = data;
             
-            await setStorageItemAsync('sessionToken', token);
-            await AsyncStorage.setItem('user', JSON.stringify(userData));
-            
-            setSessionToken(token);
-            setUser(userData);
-            
-            return data;
-        } catch (error) {
+            return Promise.all([
+                setStorageItemAsync('sessionToken', token),
+                AsyncStorage.setItem('user', JSON.stringify(userData))
+            ])
+            .then(() => {
+                setSessionToken(token);
+                setUser(userData);
+                return data;
+            });
+        })
+        .catch(error => {
             throw error;
-        }
+        });
     };
 
     const signUp = async (email: string, password: string, username: string, first_name: string, last_name: string, sneaker_size: number, profile_picture: string): Promise<void> => {
@@ -252,7 +244,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
             return response.json();
         })
         .then(async data => {
-            await setUser(data.user);
+            setUser(data.user);
             await storeData('user', data.user);
             await getUserCollection();
             await getUserSneakers();
@@ -264,108 +256,112 @@ export function SessionProvider({ children }: PropsWithChildren) {
     };
 
     const getUserCollection = async () => {
-        if (!user?.id || !sessionToken) return null;
+        if (!user?.id || !sessionToken) return Promise.resolve(null);
         
-        try {
-            const response = await fetch(`${process.env.EXPO_PUBLIC_BASE_API_URL}/users/${user.id}/collection`, {
-                headers: {
-                    'Authorization': `Bearer ${sessionToken}`,
-                    'Accept': 'application/json'
-                }
-            });
-
+        return fetch(`${process.env.EXPO_PUBLIC_BASE_API_URL}/users/${user.id}/collection`, {
+            headers: {
+                'Authorization': `Bearer ${sessionToken}`,
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => {
             if (response.status === 401) {
-                await logout();
-                return null;
+                return logout().then(() => null);
             }
 
             if (!response.ok) {
                 throw new Error('Error when getting collection');
             }
 
-            const data = await response.json();
+            return response.json();
+        })
+        .then(data => {
             if (data && data.collection) {
                 setUserCollection(data.collection);
                 storeData('collection', data.collection);
                 return data.collection;
             }
             return null;
-        } catch (error) {
+        })
+        .catch(error => {
             setUserCollection(null);
             storeData('collection', null);
             throw error;
-        }
+        });
     };
 
     const getUserSneakers = async () => {
         if (!user?.id || !sessionToken) {
-            return null;
+            return Promise.resolve(null);
         }
 
-        try {
-            const response = await fetch(`${process.env.EXPO_PUBLIC_BASE_API_URL}/users/${user.id}/collection/sneakers`, {
-                headers: {
-                    'Authorization': `Bearer ${sessionToken}`
-                }
-            });
-
+        return fetch(`${process.env.EXPO_PUBLIC_BASE_API_URL}/users/${user.id}/collection/sneakers`, {
+            headers: {
+                'Authorization': `Bearer ${sessionToken}`
+            }
+        })
+        .then(response => {
             if (!response.ok) return null;
-            
-            const data = await response.json();
+            return response.json();
+        })
+        .then(data => {
             if (data && data.sneakers) {
                 setUserSneakers(data.sneakers);
                 storeData('sneakers', data.sneakers);
                 return data.sneakers;
             }
             return null;
-        } catch (error) {
+        })
+        .catch(error => {
             setUserSneakers(null);
             storeData('sneakers', null);
             return null;
-        }
+        });
     };
 
     const verifyToken = async () => {
-        if (!sessionToken) return false;
+        if (!sessionToken) return Promise.resolve(false);
 
-        try {
-            const response = await fetch(`${process.env.EXPO_PUBLIC_BASE_API_URL}/verify_token`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${sessionToken}`,
-                    'Accept': 'application/json'
-                }
-            });
-
+        return fetch(`${process.env.EXPO_PUBLIC_BASE_API_URL}/verify_token`, {
+            method: 'POST', 
+            headers: {
+                'Authorization': `Bearer ${sessionToken}`,
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => {
             if (!response.ok) {
                 if (response.status === 401) {
-                    await logout();
+                    return logout().then(() => false);
                 }
                 return false;
             }
-
-            const data = await response.json();
+            return response.json();
+        })
+        .then(data => {
             if (data && data.valid) {
-                await getUser();
-                return true;
+                return getUser().then(() => true);
             }
             return false;
-        } catch (error) {
+        })
+        .catch(() => {
             return false;
-        }
+        });
     };
 
     const loadInitialData = async () => {
         if (!sessionToken || !user) return;
         
-        try {
-            const collection = await getUserCollection();
-            if (collection) {
-                const sneakers = await getUserSneakers();
-            }
-        } catch (error) {
-            return;
-        }
+        await getUserCollection()
+            .then(collection => {
+                if (collection) {
+                    return getUserSneakers();
+                }
+                return null;
+            })
+            .catch(() => {
+                return null;
+            });
     };
 
     return (

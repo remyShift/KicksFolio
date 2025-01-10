@@ -47,7 +47,7 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
     const [sneakerCondition, setSneakerCondition] = useState('');
     const [isSneakerConditionFocused, setIsSneakerConditionFocused] = useState(false);
     const [isSneakerConditionError, setIsSneakerConditionError] = useState(false);
-    const [sneakerImage, setSneakerImage] = useState<string | null>(null);
+    const [sneakerImage, setSneakerImage] = useState('');
     const [errorMsg, setErrorMsg] = useState('');
     const [isPricePaidError, setIsPricePaidError] = useState(false);
     const [isPricePaidFocused, setIsPricePaidFocused] = useState(false);
@@ -173,6 +173,9 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
 
         if (!result.canceled) {
             setSneakerImage(result.assets[0].uri);
+        } else {
+            setSneakerImage('');
+            setIsSneakerImageError(true);
         }
     };
 
@@ -191,6 +194,9 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
 
         if (!result.canceled) {
             setSneakerImage(result.assets[0].uri);
+        } else {
+            setSneakerImage('');
+            setIsSneakerImageError(true);
         }
     };
 
@@ -200,7 +206,7 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
         setSneakerStatus('');
         setSneakerSize('');
         setSneakerCondition('');
-        setSneakerImage(null);
+        setSneakerImage('');
         setSneakerPricePaid('');
         setErrorMsg('');
         setSneakerDescription('');
@@ -418,12 +424,16 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                                         ]
                                     );
                                 }}
-                                className="bg-gray-400 rounded-md h-48 w-full flex items-center justify-center"
+                                className={`bg-gray-400 rounded-md h-48 w-full flex items-center justify-center ${isSneakerImageError ? 'border-2 border-red-500' : ''} ${isSneakerImageFocused ? 'border-2 border-primary' : ''}`}
                             >
                                 {sneakerImage ? (
                                     <Image
-                                        source={{ uri: sneakerImage }} 
-                                        className={`w-full h-full border-2 ${isSneakerImageError ? 'border-red-500' : ''} ${isSneakerImageFocused ? 'border-primary' : ''} rounded-md`}
+                                        source={{ uri: sneakerImage }}
+                                        style={{
+                                            width: '100%',
+                                            height: '100%',
+                                            borderRadius: 3
+                                        }}
                                         contentFit="cover"
                                         contentPosition="center"
                                         cachePolicy="memory-disk"
@@ -575,9 +585,9 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                                                 sneakerName, 
                                                 sneakerBrand, 
                                                 sneakerSize,
-                                                sneakerCondition || '',
+                                                sneakerCondition,
                                                 sneakerStatus, 
-                                                sneakerImage || '',
+                                                sneakerImage,
                                                 setErrorMsg, 
                                                 setIsSneakerNameError, 
                                                 setIsSneakerBrandError, 
@@ -590,7 +600,7 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                                                 return;
                                             }
                                             await handleAddSneaker({
-                                                image: sneakerImage || '',
+                                                image: sneakerImage,
                                                 name: sneakerName,
                                                 brand: sneakerBrand,
                                                 size: Number(sneakerSize),
@@ -625,7 +635,7 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                         source={{ uri: sneaker?.images?.[0]?.url }} 
                         style={{
                             width: '100%',
-                            height: 150,
+                            height: 170,
                             borderRadius: 3
                         }}
                         contentFit="cover"
