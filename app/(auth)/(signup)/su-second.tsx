@@ -273,24 +273,25 @@ export default function SUSecond() {
                             <Text className='font-spacemono-bold text-lg'>*Sneaker Size (US)</Text>
                             <TextInput
                                 ref={sizeInputRef}
-                                placeholder="11"
-                                value={signUpProps.sneaker_size ? String(signUpProps.sneaker_size) : ''}
-                                autoComplete='off'
-                                autoCorrect={false}
-                                placeholderTextColor='gray'
+                                className={`bg-white rounded-md p-2 w-full font-spacemono-bold text-center relative ${
+                                    isSizeError ? 'border-2 border-red-500' : ''
+                                } ${isSizeFocused ? 'border-2 border-primary' : ''}`} 
+                                placeholder="9.5"
                                 clearButtonMode='while-editing'
-                                returnKeyType='next'
+                                returnKeyType='done'
                                 enablesReturnKeyAutomatically={true}
-                                onSubmitEditing={() => handleSignUp()}
+                                autoComplete='off'
+                                placeholderTextColor='gray'
+                                value={signUpProps.sneaker_size ? String(signUpProps.sneaker_size).replace('.', ',') : ''}
+                                onChangeText={(text) => {
+                                    const formattedText = text.replace(/,/g, '.');
+                                    if (!isNaN(Number(formattedText))) {
+                                        setSignUpProps({ ...signUpProps, sneaker_size: Number(formattedText) });
+                                        handleInputChange(formattedText, (t) => setSignUpProps({ ...signUpProps, sneaker_size: Number(t) }), setErrorMsg);
+                                    }
+                                }}
                                 onFocus={() => handleInputFocus('size')}
                                 onBlur={() => handleInputBlur('size', String(signUpProps.sneaker_size))}
-                                onChangeText={(text) => {
-                                    setSignUpProps({ ...signUpProps, sneaker_size: Number(text) });
-                                    handleInputChange(text, (t) => setSignUpProps({ ...signUpProps, sneaker_size: Number(t) }), setErrorMsg);
-                                }}
-                                className={`bg-white rounded-md p-3 w-2/3 font-spacemono-bold ${
-                                    isSizeError ? 'border-2 border-red-500' : ''
-                                } ${isSizeFocused ? 'border-2 border-primary' : ''}`}
                             />
                         </View>
                     </View>
