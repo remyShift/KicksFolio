@@ -7,7 +7,7 @@ const SignUpPropsContext = createContext<{
         username: string,
         first_name: string,
         last_name: string,
-        sneaker_size: number,
+        sneaker_size: string,
         profile_picture: string,
         confirmPassword: string
     },
@@ -17,7 +17,7 @@ const SignUpPropsContext = createContext<{
         username: string,
         first_name: string,
         last_name: string,
-        sneaker_size: number,
+        sneaker_size: string,
         profile_picture: string,
         confirmPassword: string
     }) => void
@@ -28,7 +28,7 @@ const SignUpPropsContext = createContext<{
         username: '',
         first_name: '',
         last_name: '',
-        sneaker_size: 0,
+        sneaker_size: '',
         profile_picture: '',
         confirmPassword: ''
     },
@@ -52,7 +52,7 @@ export function SignUpPropsProvider({ children }: PropsWithChildren) {
         username: string,
         first_name: string,
         last_name: string,
-        sneaker_size: number,
+        sneaker_size: string,
         profile_picture: string,
         confirmPassword: string
     }>({
@@ -61,7 +61,7 @@ export function SignUpPropsProvider({ children }: PropsWithChildren) {
         username: '',
         first_name: '',
         last_name: '',
-        sneaker_size: 0,
+        sneaker_size: '',
         profile_picture: '',
         confirmPassword: ''
     });

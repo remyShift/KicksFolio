@@ -489,53 +489,77 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                                     <View className='flex-col items-center p-2 gap-1 w-1/3 border-r-2 border-gray-300'>
                                         <Text className='font-spacemono text-center'>Size (US)</Text>
                                         <View className="w-4/5">
-                                            <TextInput
-                                                className={`bg-white rounded-md p-2 w-full font-spacemono-bold text-center relative ${
-                                                    isSneakerSizeError ? 'border-2 border-red-500' : ''
-                                                } ${isSneakerSizeFocused ? 'border-2 border-primary' : ''}`} 
-                                                placeholder="9.5"
-                                                placeholderTextColor='gray'
-                                                value={sneakerSize}
-                                                onChangeText={setSneakerSize}
-                                                onFocus={() => handleInputFocus('size')}
-                                                onBlur={() => handleInputBlur('size', sneakerSize)}
-                                            />
+                                        <TextInput
+                                            className={`bg-white rounded-md p-2 w-full font-spacemono-bold relative ${
+                                                isSneakerSizeError ? 'border-2 border-red-500' : ''
+                                            } ${isSneakerSizeFocused ? 'border-2 border-primary' : ''}`} 
+                                            placeholder="9.5"
+                                            inputMode='decimal'
+                                            keyboardType='decimal-pad'
+                                            maxLength={4}
+                                            autoComplete='off'
+                                            placeholderTextColor='gray'
+                                            value={sneakerSize ? String(sneakerSize) : ''}
+                                            onChangeText={(text) => {
+                                                const formattedText = text.replace(',', '.');
+                                                if (formattedText === '' || !isNaN(Number(formattedText))) {
+                                                    setSneakerSize(formattedText);
+                                                }
+                                            }}
+                                            onFocus={() => handleInputFocus('size')}
+                                            onBlur={() => handleInputBlur('size', String(sneakerSize))}
+                                        />
                                         </View>
                                     </View>
 
                                     <View className='flex-col items-center p-2 gap-1 w-1/3 border-r-2 border-gray-300'>
                                         <Text className='font-spacemono text-center'>Price Paid</Text>
                                         <View className="w-4/5">
-                                            <TextInput
-                                                className={`bg-white rounded-md p-2 w-full font-spacemono-bold text-center relative ${
-                                                    isPricePaidError ? 'border-2 border-red-500' : ''
-                                                } ${isPricePaidFocused ? 'border-2 border-primary' : ''}`} 
-                                                placeholder="150"
-                                                keyboardType="numeric"
-                                                placeholderTextColor='gray'
-                                                value={sneakerPricePaid}
-                                                onChangeText={setSneakerPricePaid}
-                                                onFocus={() => handleInputFocus('pricePaid')}
-                                                onBlur={() => handleInputBlur('pricePaid', sneakerPricePaid)}
-                                            />
+                                        <TextInput
+                                            className={`bg-white rounded-md p-2 w-full font-spacemono-bold relative ${
+                                                isPricePaidError ? 'border-2 border-red-500' : ''
+                                            } ${isPricePaidFocused ? 'border-2 border-primary' : ''}`} 
+                                            placeholder="150"
+                                            inputMode='decimal'
+                                            keyboardType='decimal-pad'
+                                            autoComplete='off'
+                                            placeholderTextColor='gray'
+                                            value={sneakerPricePaid ? String(sneakerPricePaid) : ''}
+                                            onChangeText={(text) => {
+                                                const formattedText = text.replace(',', '.');
+                                                if (formattedText === '' || !isNaN(Number(formattedText))) {
+                                                    setSneakerPricePaid(formattedText);
+                                                }
+                                            }}
+                                            onFocus={() => handleInputFocus('pricePaid')}
+                                            onBlur={() => handleInputBlur('pricePaid', String(sneakerPricePaid))}
+                                        />
                                         </View>
                                     </View>
 
                                     <View className='flex-col items-center p-2 gap-1 w-1/3'>
                                         <Text className='font-spacemono text-center'>Condition</Text>
                                         <View className="w-4/5">
-                                            <TextInput
-                                                className={`bg-white rounded-md p-2 w-full font-spacemono-bold text-center relative ${
-                                                    isSneakerConditionError ? 'border-2 border-red-500' : ''
-                                                } ${isSneakerConditionFocused ? 'border-2 border-primary' : ''}`} 
-                                                placeholder="0 - 10" 
-                                                keyboardType="numeric"
-                                                placeholderTextColor='gray'
-                                                value={sneakerCondition}
-                                                onChangeText={setSneakerCondition}
-                                                onFocus={() => handleInputFocus('condition')}
-                                                onBlur={() => handleInputBlur('condition', sneakerCondition)}
-                                            />
+                                        <TextInput
+                                            className={`bg-white rounded-md p-2 w-full font-spacemono-bold relative ${
+                                                isSneakerConditionError ? 'border-2 border-red-500' : ''
+                                            } ${isSneakerConditionFocused ? 'border-2 border-primary' : ''}`} 
+                                            placeholder="0 - 10"
+                                            inputMode='decimal'
+                                            keyboardType='decimal-pad'
+                                            maxLength={3}
+                                            autoComplete='off'
+                                            placeholderTextColor='gray'
+                                            value={sneakerCondition ? String(sneakerCondition) : ''}
+                                            onChangeText={(text) => {
+                                                const formattedText = text.replace(',', '.');
+                                                if (formattedText === '' || !isNaN(Number(formattedText))) {
+                                                    setSneakerCondition(formattedText);
+                                                }
+                                            }}
+                                            onFocus={() => handleInputFocus('condition')}
+                                            onBlur={() => handleInputBlur('condition', String(sneakerCondition))}
+                                        />
                                         </View>
                                     </View>
                                 </View>

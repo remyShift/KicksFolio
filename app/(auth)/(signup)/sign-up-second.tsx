@@ -91,7 +91,7 @@ export default function SUSecond() {
             return;
         }
 
-        if (!signUpProps.sneaker_size || signUpProps.sneaker_size <= 0) {
+        if (!signUpProps.sneaker_size || Number(signUpProps.sneaker_size) <= 0) {
             setErrorMsg('Please put a valid sneaker size.');
             setIsSizeError(true);
             return;
@@ -104,11 +104,11 @@ export default function SUSecond() {
             signUpProps.username,
             signUpProps.first_name,
             signUpProps.last_name,
-            signUpProps.sneaker_size,
+            Number(signUpProps.sneaker_size),
             signUpProps.profile_picture
         ).then(() => {
             login(signUpProps.email, signUpProps.password).then(() => {
-                setSignUpProps({ ...signUpProps, email: '', password: '', username: '', first_name: '', last_name: '', sneaker_size: 0, profile_picture: '' });
+                setSignUpProps({ ...signUpProps, email: '', password: '', username: '', first_name: '', last_name: '', sneaker_size: '', profile_picture: '' });
                 router.replace('/collection');
             }).catch((error) => {
                 setErrorMsg(`Something went wrong. Please try again 1. ${error}`);
@@ -272,29 +272,31 @@ export default function SUSecond() {
                             </View>
 
                             <View className='flex flex-col gap-2 w-full justify-center items-center'>
-                                <Text className='font-spacemono-bold text-lg'>*Sneaker Size (US)</Text>
+                                <Text className='font-spacemono-bold text-lg'>*Sneaker prout (US)</Text>
                                 <TextInput
                                     ref={sizeInputRef}
-                                    placeholder="11"
-                                    inputMode='text'
-                                    value={signUpProps.sneaker_size ? String(signUpProps.sneaker_size) : ''}
-                                    autoComplete='off'
-                                    autoCorrect={false}
-                                    keyboardType='numeric'
-                                    placeholderTextColor='gray'
+                                    className={`bg-white rounded-md p-2 w-2/3 font-spacemono-bold relative ${
+                                        isSizeError ? 'border-2 border-red-500' : ''
+                                    } ${isSizeFocused ? 'border-2 border-primary' : ''}`} 
+                                    placeholder="9.5"
+                                    inputMode='decimal'
+                                    keyboardType='decimal-pad'
+                                    maxLength={4}
                                     clearButtonMode='while-editing'
-                                    returnKeyType='next'
+                                    returnKeyType='done'
                                     enablesReturnKeyAutomatically={true}
-                                    onSubmitEditing={() => handleSignUp()}
+                                    autoComplete='off'
+                                    placeholderTextColor='gray'
+                                    value={signUpProps.sneaker_size ? String(signUpProps.sneaker_size) : ''}
+                                    onChangeText={(text) => {
+                                        const formattedText = text.replace(',', '.');
+                                        if (formattedText === '' || !isNaN(Number(formattedText))) {
+                                            setSignUpProps({ ...signUpProps, sneaker_size: formattedText });
+                                            handleInputChange(formattedText, (t) => setSignUpProps({ ...signUpProps, sneaker_size: t }), setErrorMsg);
+                                        }
+                                    }}
                                     onFocus={() => handleInputFocus('size')}
                                     onBlur={() => handleInputBlur('size', String(signUpProps.sneaker_size))}
-                                    onChangeText={(text) => {
-                                        setSignUpProps({ ...signUpProps, sneaker_size: Number(text) });
-                                        handleInputChange(text, (t) => setSignUpProps({ ...signUpProps, sneaker_size: Number(t) }), setErrorMsg);
-                                    }}
-                                    className={`bg-white rounded-md p-3 w-2/3 font-spacemono-bold ${
-                                        isSizeError ? 'border-2 border-red-500' : ''
-                                    } ${isSizeFocused ? 'border-2 border-primary' : ''}`}
                                 />
                             </View>
                         </View>

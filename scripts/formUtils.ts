@@ -139,6 +139,10 @@ export const checkSize = (size: number, setErrorMsg: (msg: string) => void, setI
         setErrorMsg('Please put your size.');
         setIsSizeError(true);
         return false;
+    } else if (size % 0.5 !== 0) {
+        setErrorMsg('Size must be a multiple of 0.5.');
+        setIsSizeError(true);
+        return false;
     } else if (isNaN(size) || size < 1 || size > 15) {
         setErrorMsg('Please put a valid size between 1 and 15.');
         setIsSizeError(true);

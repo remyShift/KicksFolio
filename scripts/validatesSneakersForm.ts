@@ -63,15 +63,22 @@ export const checkSneakerSize = (size: string, setErrorMsg: (msg: string) => voi
 };
 
 export const checkSneakerCondition = (condition: string, setErrorMsg: (msg: string) => void, setIsError: (isError: boolean) => void): boolean => {
+    
     if (!condition) {
         setErrorMsg('Please enter a condition.');
         setIsError(true);
         return false;
     }
 
-    const conditionNum = parseInt(condition);
+    const conditionNum = Number(condition);
     if (isNaN(conditionNum) || conditionNum < 0 || conditionNum > 10) {
         setErrorMsg('Condition invalid, condition must be between 0 and 10.');
+        setIsError(true);
+        return false;
+    }
+
+    if (conditionNum % 0.5 !== 0) {
+        setErrorMsg('Condition invalid, condition must be a multiple of 0.5.');
         setIsError(true);
         return false;
     }
