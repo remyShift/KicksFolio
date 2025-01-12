@@ -8,7 +8,7 @@ import { useState, useRef, useEffect } from 'react';
 import DropdownInput from '../inputs/DropDownInput';
 import * as ImagePicker from 'expo-image-picker';
 import { Alert } from 'react-native';
-import { handleAddSneaker } from '@/scripts/handleSneakers';
+import { fetchSkuSneakerData, handleAddSneaker } from '@/scripts/handleSneakers';
 import { useSession } from '@/context/authContext';
 import { checkSneakerName, checkSneakerSize, checkSneakerCondition, checkSneakerBrand, checkSneakerStatus, validateAllFields, checkPricePaid } from '@/scripts/validatesSneakersForm';
 import ErrorMsg from '@/components/text/ErrorMsg';
@@ -17,6 +17,9 @@ import ShareButton from '../buttons/ShareButton';
 import { ConditionBar } from '../ConditionBar';
 import EditButton from '../buttons/EditButton';
 import { CameraView } from 'expo-camera';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import { Link, Redirect, router } from 'expo-router';
+
 
 type AddSneakersModalProps = {
     modalStep: 'index' | 'box' | 'noBox' | 'sku' | 'sneakerInfo';
@@ -73,6 +76,10 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
     const scrollViewRef = useRef<ScrollView>(null);
 
     const indexTitle = userSneakers?.length === 0 ? 'Add your first sneaker' : 'Add a new sneaker';
+
+    if (!sessionToken) {
+        router.push('/login');
+    };
 
     const scrollToBottom = () => {
         setTimeout(() => {
@@ -419,32 +426,80 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
             case 'sku':
                 return (
                     <View className="flex-1 justify-between items-center gap-8">
-                        <View className="flex-1 w-full justify-center items-center gap-12">
-                            <Text className="font-spacemono-bold text-xl text-center px-6">Put you sneakers SKU below</Text>
-                            <Text className="font-spacemono-bold text-sm text-center px-6">NB : For Nike sneakers dont forget the "-" and the 3 numbers following it or it will not work.</Text>
-                            <View className="flex items-center w-full gap-2">
-                                <TextInput
-                                    className="bg-white rounded-md p-2 w-3/5 font-spacemono-bold"
-                                    placeholder="SKU"
-                                    placeholderTextColor='gray'
-                                    value={sneakerSKU}
-                                    onChangeText={setSneakerSKU}
-                                />
-
-                            </View>
-
-                        </View>
+                        <KeyboardAvoidingView 
+                            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                            keyboardVerticalOffset={Platform.OS === 'ios' ? 120 : 20}
+                            className="flex-1 w-full"
+                        >
+                            <ScrollView 
+                                ref={scrollViewRef}
+                                className="flex-1"
+                                keyboardShouldPersistTaps="handled"
+                            >
+                                <View className="flex-1 w-full justify-center items-center gap-12 pt-10">
+                                    <View className="flex-row items-center">
+                                        <Text className="font-spacemono-bold text-xl text-center px-6">
+                                            Put you sneakers SKU below
+                                        </Text>
+                                        <Link href="https://www.wikihow.com/Find-Model-Numbers-on-Nike-Shoes" 
+                                            className="flex-row justify-center items-center gap-2">
+                                            <FontAwesome6 name="lightbulb" size={20} color="#F27329" />
+                                        </Link>
+                                    </View>
+                                    <Text className="font-spacemono-bold text-sm text-center px-6">
+                                        NB : For Nike sneakers dont forget the "-" and the 3 numbers following it or it will not work.
+                                    </Text>
+                                    <View className="flex items-center w-full gap-2">
+                                        <TextInput
+                                            className="bg-white rounded-md p-2 w-3/5 font-spacemono-bold"
+                                            placeholder="SKU"
+                                            onFocus={() => {
+                                                handleInputFocus('sku');
+                                                setTimeout(() => {
+                                                    scrollViewRef.current?.scrollToEnd({ animated: true });
+                                                }, 100);
+                                            }}
+                                            onBlur={() => handleInputBlur('sku', sneakerSKU)}
+                                            placeholderTextColor="gray"
+                                            value={sneakerSKU}
+                                            onChangeText={setSneakerSKU}
+                                        />
+                                    </View>
+                                </View>
+                            </ScrollView>
+                        </KeyboardAvoidingView>
                         <View className="justify-end items-start w-full pb-5">
                             <View className="flex-row justify-between w-full">
                                 <BackButton 
-                                    onPressAction={() => {
-                                        setIsCameraActive(true);
-                                        setModalStep('index');
-                                    }} 
+                                    onPressAction={() => setModalStep('index')} 
                                 />
                                 <NextButton
                                     content="Next"
-                                    onPressAction={() => setModalStep('noBox')}
+                                    onPressAction={() => {
+                                        fetchSkuSneakerData(sneakerSKU, sessionToken)
+                                            .then(data => {
+                                                if (data.results && data.results.length > 0) {
+                                                    const sneakerData = data.results[0];
+                                                    setSneakerImage(sneakerData.image.original);
+                                                    setSneakerName(sneakerData.name);
+                                                    setSneakerBrand(sneakerData.brand.toUpperCase());
+                                                    setSneakerDescription(sneakerData.story || '');
+
+                                                    setIsSneakerImageError(true);
+                                                    setIsSneakerNameError(true);
+                                                    setIsSneakerBrandError(true);
+                                                    setIsSneakerDescriptionError(true);
+                                                    setErrorMsg('Please check the data fetched from the SKU and edit it if needed.');
+                                                    setModalStep('noBox');
+                                                } else {
+                                                    setErrorMsg('No data found for this SKU, check the SKU or add it manually.');
+                                                }
+                                            })
+                                            .catch(error => {
+                                                setErrorMsg('Impossible to find the informations for this SKU. Please check the SKU or add it manually.');
+                                                console.error('Error when fetching SKU data:', error);
+                                            });
+                                    }}
                                 />
                             </View>
                         </View>
@@ -628,7 +683,9 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                                 <View className="flex-1 items-center w-full">
                                     <View className="relative w-full">
                                         <TextInput
-                                            className="bg-white rounded-md p-2 w-full font-spacemono-bold pr-10"
+                                            className={`bg-white rounded-md p-2 w-full font-spacemono-bold pr-10 ${
+                                                isSneakerDescriptionError ? 'border-2 border-red-500' : ''
+                                            } ${isSneakerDescriptionFocused ? 'border-2 border-primary' : ''}`}
                                             value={sneakerDescription}
                                             onChangeText={(text) => {
                                                 setSneakerDescription(text);
