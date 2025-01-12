@@ -19,14 +19,14 @@ import EditButton from '../buttons/EditButton';
 import { CameraView } from 'expo-camera';
 
 type AddSneakersModalProps = {
-    modalStep: 'index' | 'box' | 'noBox' | 'sneakerInfo';
-    setModalStep: (step: 'index' | 'box' | 'noBox' | 'sneakerInfo') => void;
+    modalStep: 'index' | 'box' | 'noBox' | 'sku' | 'sneakerInfo';
+    setModalStep: (step: 'index' | 'box' | 'noBox' | 'sku' | 'sneakerInfo') => void;
     closeModal: () => void;
     sneaker: Sneaker | null | undefined;
     setSneaker: (sneaker: Sneaker | null) => void;
 }
 
-type InputTypeProps = 'name' | 'size' | 'condition' | 'status' | 'pricePaid' | 'brand' | 'description';
+type InputTypeProps = 'name' | 'size' | 'condition' | 'status' | 'pricePaid' | 'brand' | 'description' | 'sku';
 
 const BRANDS = ['NIKE', 'ADIDAS', 'JORDAN', 'NEW BALANCE', 'ASICS', 'PUMA', 'REEBOK', 'CONVERSE', 'VANS', ];
 const STATUS = ['STOCKING', 'SELLING', 'ROCKING'];
@@ -62,6 +62,9 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
     const { user, userSneakers, sessionToken, getUserSneakers } = useSession();
     const [isSneakerImageFocused, setIsSneakerImageFocused] = useState(false);
     const [isSneakerImageError, setIsSneakerImageError] = useState(false);
+    const [sneakerSKU, setSneakerSKU] = useState('');
+    const [isSneakerSKUError, setIsSneakerSKUError] = useState(false);
+    const [isSneakerSKUFocused, setIsSneakerSKUFocused] = useState(false);
 
     const userId = user?.id;
 
@@ -104,6 +107,9 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
             case 'description':
                 setIsSneakerDescriptionFocused(true);
                 break;
+            case 'sku':
+                setIsSneakerSKUFocused(true);
+                break;
         }
         setIsSneakerNameError(false);
         setIsSneakerBrandError(false);
@@ -113,6 +119,7 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
         setIsSneakerStatusError(false);
         setIsPricePaidError(false);
         setIsSneakerImageError(false);
+        setIsSneakerSKUError(false);
         setErrorMsg('');
         scrollToBottom();
     };
@@ -125,7 +132,7 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
         setIsSneakerStatusError(false);
         setIsPricePaidError(false);
         setIsSneakerImageError(false);
-
+        setIsSneakerSKUError(false);
         switch(inputType) {
             case 'name':
                 setIsSneakerNameFocused(false);
@@ -153,6 +160,9 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                 break;
             case 'description':
                 setIsSneakerDescriptionFocused(false);
+                break;
+            case 'sku':
+                setIsSneakerSKUFocused(false);
                 break;
         }
     };
@@ -210,6 +220,7 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
         setSneakerPricePaid('');
         setErrorMsg('');
         setSneakerDescription('');
+        setSneakerSKU('');
 
         setIsSneakerNameError(false);
         setIsSneakerBrandError(false);
@@ -227,6 +238,8 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
         setIsSneakerDescriptionFocused(false);
         setIsSneakerImageFocused(false);
         setIsSneakerImageError(false);
+        setIsSneakerSKUFocused(false);
+        setIsSneakerSKUError(false);
 
         setIsScanning(false);
         setLastScannedCode(null);
@@ -330,18 +343,32 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
             return (
                 <View className="flex-1 justify-center items-center gap-8">
                     <Text className="font-actonia text-primary text-4xl text-center">{indexTitle}</Text>
-                    <Text className="font-spacemono-bold text-xl text-center">Do you have the box ?</Text>
-                    <View className="flex justify-center items-center gap-4">
-                        <MainButton
-                            content="Yes" 
-                            backgroundColor="bg-primary" 
-                            onPressAction={() => setModalStep('box')} 
-                        />
-                        <MainButton 
-                            content="No" 
-                            backgroundColor="bg-gray-400" 
-                            onPressAction={() => setModalStep('noBox')} 
-                        />
+                    <Text className="font-spacemono-bold text-xl text-center">How do you want to proceed ?</Text>
+                    <View className="flex justify-center items-center gap-12">
+                        <View className="flex-col justify-center items-center gap-1 px-6">
+                            <Pressable
+                                onPress={() => setModalStep('box')}
+                            >
+                                <Text className="font-spacemono-bold text-lg text-center text-primary">Scan your sneaker box barcode</Text>
+                            </Pressable>
+                            <Text className="font-spacemono-bold text-sm text-center">Can make mistakes and not always accurate.</Text>
+                        </View>
+                        <View className="flex-col justify-center items-center gap-1 px-6">
+                            <Pressable
+                                onPress={() => setModalStep('sku')}
+                            >
+                                <Text className="font-spacemono-bold text-lg text-center text-primary">By sneakers SKU</Text>
+                            </Pressable>
+                                <Text className="font-spacemono-bold text-sm text-center">You can find the SKU on the sneaker box or on the sneaker itself.</Text>
+                        </View>
+                        <View className="flex-col justify-center items-center gap-1 px-6">
+                            <Pressable
+                                onPress={() => setModalStep('noBox')}
+                            >
+                                <Text className="font-spacemono-bold text-lg text-center text-primary">Add manually</Text>
+                            </Pressable>
+                                <Text className="font-spacemono-bold text-sm text-center">You do it by yourself.</Text>
+                        </View>
                     </View>
                 </View>
             );
@@ -389,6 +416,40 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                     </View>
                 </View>
             );
+            case 'sku':
+                return (
+                    <View className="flex-1 justify-between items-center gap-8">
+                        <View className="flex-1 w-full justify-center items-center gap-12">
+                            <Text className="font-spacemono-bold text-xl text-center px-6">Put you sneakers SKU below</Text>
+                            <Text className="font-spacemono-bold text-sm text-center px-6">NB : For Nike sneakers dont forget the "-" and the 3 numbers following it or it will not work.</Text>
+                            <View className="flex items-center w-full gap-2">
+                                <TextInput
+                                    className="bg-white rounded-md p-2 w-3/5 font-spacemono-bold"
+                                    placeholder="SKU"
+                                    placeholderTextColor='gray'
+                                    value={sneakerSKU}
+                                    onChangeText={setSneakerSKU}
+                                />
+
+                            </View>
+
+                        </View>
+                        <View className="justify-end items-start w-full pb-5">
+                            <View className="flex-row justify-between w-full">
+                                <BackButton 
+                                    onPressAction={() => {
+                                        setIsCameraActive(true);
+                                        setModalStep('index');
+                                    }} 
+                                />
+                                <NextButton
+                                    content="Next"
+                                    onPressAction={() => setModalStep('noBox')}
+                                />
+                            </View>
+                        </View>
+                    </View>
+                );
         case 'noBox':
             return (
                 <KeyboardAvoidingView 
