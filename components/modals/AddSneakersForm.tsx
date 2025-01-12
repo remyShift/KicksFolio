@@ -819,9 +819,22 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
 
                         <ConditionBar condition={sneaker?.condition || 0} />
 
-                        <View className="flex justify-center w-full px-2 gap-2">
-                            <Text className='font-spacemono-bold'>Description :</Text>
-                            <Text className='font-spacemono text-sm'>{sneaker?.description || 'No description yet'}</Text>
+                        <View className="flex-1 items-center w-full">
+                        <ScrollView 
+                            className="bg-white/60 rounded-md p-2 w-full"
+                            showsVerticalScrollIndicator={true}
+                            indicatorStyle="black"
+                            persistentScrollbar={true}
+                            style={{
+                                minHeight: 180,
+                                maxHeight: 180
+                            }}
+                        >
+                                    <Text className='font-spacemono-bold'>Description :</Text>
+                                    <Text className='font-spacemono text-sm'>
+                                        {sneaker?.description || 'No description available'}
+                                    </Text>
+                                </ScrollView>
                         </View>
                     </View>
 
