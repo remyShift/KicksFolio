@@ -52,13 +52,9 @@
       <true/>
     </dict>
     <key>NSCameraUsageDescription</key>
-    <string>Allow KicksFolio to access your camera.</string>
-    <key>NSFaceIDUsageDescription</key>
-    <string>Allow $(PRODUCT_NAME) to access your Face ID biometric data.</string>
-    <key>NSMicrophoneUsageDescription</key>
-    <string>Allow $(PRODUCT_NAME) to access your microphone</string>
+    <string>KicksFolio need to access your camera to take photos of your sneakers and add them to your personal collection.</string>
     <key>NSPhotoLibraryUsageDescription</key>
-    <string>Allow KicksFolio to access your photos.</string>
+    <string>KicksFolio need to access your photos to select existing sneakers photos and add them to your personal collection.</string>
     <key>NSUserActivityTypes</key>
     <array>
       <string>$(PRODUCT_BUNDLE_IDENTIFIER).expo.index_route</string>

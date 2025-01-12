@@ -3,11 +3,11 @@
 Last update : 05/01/2025
 
 ## 1. Collecte des données
-KicksFolio collect the following data :
-- Email
-- Photos from the library
-- Access to the camera
-- Biometric data (Face ID)
+KicksFolio collects the following data:
+- Email: for authentication and account management
+- Photo library: to allow you to select and add photos of your sneakers to your collection 
+- Camera access: to allow you to take photos of your sneakers directly from the app
+- Biometric data (Face ID): to secure access to your account
 
 ## 2. Utilisation des données
 These data are used for :
