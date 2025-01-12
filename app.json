@@ -35,14 +35,14 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "Allow KicksFolio to access your photos.",
-          "cameraPermission": "Allow KicksFolio to access your camera."
+          "photosPermission": "KicksFolio need to access your photos to select existing sneakers photos and add them to your personal collection.",
+          "cameraPermission": "KicksFolio need to access your camera to take photos of your sneakers and add them to your personal collection."
         }
       ],
       [
         "expo-camera",
         {
-          "cameraPermission": "Allow KicksFolio to access your camera."
+          "cameraPermission": "KicksFolio need to access your camera to take photos of your sneakers and add them to your personal collection."
         }
       ], 
       [
