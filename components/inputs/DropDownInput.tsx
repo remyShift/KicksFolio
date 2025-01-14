@@ -61,7 +61,7 @@ export default function DropdownInput({
     });
 
     return (
-        <View className='w-3/5'>
+        <View className='w-full'>
             <Pressable
                 className={`bg-white rounded-md p-2 font-spacemono-bold flex-row justify-between items-center
                     ${isOpen ? 'border-2 border-primary' : ''}

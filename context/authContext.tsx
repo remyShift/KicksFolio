@@ -12,7 +12,8 @@ const AuthContext = createContext<{
     isLoading: boolean;
     user?: User | null;
     userCollection?: Collection | null;
-    userSneakers?: Sneaker[] | null;
+    userSneakers: Sneaker[] | null;
+    setUserSneakers: React.Dispatch<React.SetStateAction<Sneaker[] | null>>;
     getUser: () => Promise<void | undefined>;
     getUserCollection: () => Promise<void | undefined>;
     getUserSneakers: () => Promise<void | undefined>;
@@ -27,6 +28,7 @@ const AuthContext = createContext<{
         user: null,
         userCollection: null,
         userSneakers: null,
+        setUserSneakers: () => {},
         getUser: async () => {},
         getUserCollection: async () => {},
         getUserSneakers: async () => {},
@@ -375,6 +377,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
                 userCollection,
                 userSneakers,
                 user,
+                setUserSneakers,
                 getUser,
                 getUserCollection,
                 getUserSneakers,

@@ -28,9 +28,9 @@ const brandLogos: Record<string, any> = {
 };
 
 export default function User() {
-  const { logout, user, userSneakers } = useSession();
+  const { logout, user, userSneakers, getUserSneakers } = useSession();
   const [modalVisible, setModalVisible] = useState(false);
-  const [modalStep, setModalStep] = useState<'index' | 'box' | 'noBox' | 'sneakerInfo'>('index');
+  const [modalStep, setModalStep] = useState<'index' | 'box' | 'noBox' | 'sneakerInfo' | 'sku'>('index');
   const [sneaker, setSneaker] = useState<Sneaker | null>(null);
   const [currentSneaker, setCurrentSneaker] = useState<Sneaker | null>(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -39,6 +39,10 @@ export default function User() {
   useEffect(() => {
     setCurrentSneaker(sneaker);
   }, [sneaker]);
+
+  useEffect(() => {
+    getUserSneakers();
+  }, [userSneakers]);
 
   const sneakersByBrand = useMemo(() => {
     if (!userSneakers) return {};

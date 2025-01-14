@@ -8,7 +8,7 @@ import { useState, useRef, useEffect } from 'react';
 import DropdownInput from '../inputs/DropDownInput';
 import * as ImagePicker from 'expo-image-picker';
 import { Alert } from 'react-native';
-import { fetchSkuSneakerData, handleSneakerSubmit } from '@/scripts/handleSneakers';
+import { fetchSkuSneakerData, handleSneakerDelete, handleSneakerSubmit } from '@/scripts/handleSneakers';
 import { useSession } from '@/context/authContext';
 import { checkSneakerName, checkSneakerSize, checkSneakerCondition, checkSneakerBrand, checkSneakerStatus, validateAllFields, checkPricePaid } from '@/scripts/validatesSneakersForm';
 import ErrorMsg from '@/components/text/ErrorMsg';
@@ -19,7 +19,7 @@ import EditButton from '../buttons/EditButton';
 import { CameraView } from 'expo-camera';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { Link, Redirect, router } from 'expo-router';
-
+import DeleteButton from '../buttons/DeleteButton';
 
 type AddSneakersModalProps = {
     modalStep: 'index' | 'box' | 'noBox' | 'sku' | 'sneakerInfo';
@@ -62,7 +62,7 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
     const [sneakerDescription, setSneakerDescription] = useState('');
     const [isSneakerDescriptionFocused, setIsSneakerDescriptionFocused] = useState(false);
     const [isSneakerDescriptionError, setIsSneakerDescriptionError] = useState(false);
-    const { user, userSneakers, sessionToken, getUserSneakers } = useSession();
+    const { user, userSneakers, sessionToken, getUserSneakers, setUserSneakers } = useSession();
     const [isSneakerImageFocused, setIsSneakerImageFocused] = useState(false);
     const [isSneakerImageError, setIsSneakerImageError] = useState(false);
     const [sneakerSKU, setSneakerSKU] = useState('');
@@ -561,11 +561,11 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                             </Pressable>
 
                             <View className="flex flex-col gap-6 mt-2">
-                                <View className="flex flex-col gap-4">
+                                <View className="flex flex-col gap-4 w-4/5">
                                     <View className='flex flex-col gap-2 w-full justify-center'>
                                         <ErrorMsg content={errorMsg} display={errorMsg !== ''}/>
                                         <TextInput 
-                                            className={`bg-white rounded-md p-2 w-3/5 font-spacemono-bold ${
+                                            className={`bg-white rounded-md p-2 w-full font-spacemono-bold ${
                                                 isSneakerNameError ? 'border-2 border-red-500' : ''
                                             } ${isSneakerNameFocused ? 'border-2 border-primary' : ''}`} 
                                             placeholder="Air Max 1"
@@ -715,12 +715,50 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
 
                             <View className="flex-1 justify-end pb-4">
                                 <View className="flex-row justify-between w-full">
-                                    <BackButton 
-                                        onPressAction={() => {
-                                            resetFields();
-                                            setModalStep('index');
-                                        }} 
-                                    />
+                                    <View className="flex-row gap-3">
+                                        <BackButton 
+                                            onPressAction={() => {
+                                                if (!isNewSneaker) {
+                                                    setIsNewSneaker(true);
+                                                    closeModal();
+                                                }
+                                                resetFields();
+                                                setModalStep('index');
+                                            }} 
+                                        />
+
+                                        {!isNewSneaker && (
+                                            <DeleteButton 
+                                                onPressAction={async () => {
+                                                    Alert.alert('Delete sneaker', 'Are you sure you want to delete this sneaker ?', [
+                                                        {
+                                                            text: 'Cancel',
+                                                            style: 'cancel'
+                                                        },
+                                                        {
+                                                            text: 'Delete',
+                                                            style: 'destructive',
+                                                            onPress: async () => {
+                                                                if (!currentSneakerId || !userId || !sessionToken) return;
+                                                                setIsNewSneaker(true);
+                                                                resetFields();
+                                                                await handleSneakerDelete(currentSneakerId, userId, sessionToken)
+                                                                    .then(() => {
+                                                                        setUserSneakers((prevSneakers: Sneaker[] | null) => 
+                                                                            prevSneakers ? prevSneakers.filter(s => s.id !== currentSneakerId) : []
+                                                                        );
+                                                                        closeModal();
+                                                                    })
+                                                                    .catch(error => {
+                                                                        setErrorMsg(`Une erreur est survenue lors de la suppression: ${error}`);
+                                                                    });
+                                                            }
+                                                        }
+                                                    ]);
+                                                }}
+                                            />
+                                        )}
+                                    </View>
                                     <NextButton
                                         content="Add"
                                         onPressAction={async () => {
@@ -743,6 +781,7 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                                                 return;
                                             }
                                             if (isNewSneaker) {
+                                                setIsNewSneaker(false);
                                                 await handleSneakerSubmit({
                                                     image: sneakerImage,
                                                     model: sneakerName,
@@ -770,9 +809,7 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                                                     setErrorMsg('Something went wrong when adding the sneaker, please try again.');
                                                     return;
                                                 }
-                                                console.log('sneakerId', sneakerId);
-                                                console.log('sneaker', sneakerName);
-                                                console.log('userId', userId);
+                                                setIsNewSneaker(true);
                                                 await handleSneakerSubmit({
                                                     image: sneakerImage,
                                                     model: sneakerName,
@@ -806,7 +843,7 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
             );
         case 'sneakerInfo':
             return (
-                sneaker && (
+                sneaker && userSneakers?.find(s => s.id === sneaker.id) && (
                     <View className="flex-1 gap-4">
                         <Image 
                             source={{ uri: sneaker?.images?.[0]?.url }} 
@@ -903,15 +940,12 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                                     content="Next" 
                                     onPressAction={() => {
                                         if (!userSneakers || !currentSneakerId) return;
-                                        
                                         const currentIndex = userSneakers.findIndex((s: Sneaker) => s.id === currentSneakerId);
                                         const nextId = currentIndex < userSneakers.length - 1 
                                             ? userSneakers[currentIndex + 1].id 
                                             : userSneakers[0].id;
-                                        
                                         const nextSneaker = userSneakers.find((s: Sneaker) => s.id === nextId);
                                         if (!nextSneaker) return;
-                                        
                                         setSneaker(nextSneaker);
                                         setModalStep('sneakerInfo');
                                     }}
