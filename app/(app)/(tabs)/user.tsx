@@ -303,6 +303,13 @@ export default function User() {
                 </View>
               </Pressable>
 
+              <Pressable onPress={() => router.push('/edit-profile')}>
+                <View className="flex-row items-center gap-4">
+                  <Ionicons name="person-outline" size={24} color="#666" />
+                  <Text className="font-spacemono-bold text-base">Edit profile</Text>
+                </View>
+              </Pressable>
+
               <Pressable onPress={handleDeleteAccount}>
                 <View className="flex-row items-center gap-4">
                   <Ionicons name="trash-outline" size={24} color="#dc2626" />
