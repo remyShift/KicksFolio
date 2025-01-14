@@ -754,6 +754,7 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                                                                         setUserSneakers((prevSneakers: Sneaker[] | null) => 
                                                                             prevSneakers ? prevSneakers.filter(s => s.id !== currentSneakerId) : []
                                                                         );
+                                                                        setIsLoading(false);
                                                                         closeModal();
                                                                     })
                                                                     .catch(error => {
@@ -809,6 +810,7 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                                                 .then(async data => {
                                                     resetFields();
                                                     await getUserSneakers();
+                                                    setIsLoading(false);
                                                     closeModal();
                                                 })
                                                 .catch(error => {
@@ -841,10 +843,14 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                                                     resetFields();
                                                     const userSneakers = await getUserSneakers();
                                                     console.log('userSneakers', userSneakers);
+                                                    setIsLoading(false);
                                                     closeModal();
                                                 })
                                                 .catch(error => {
                                                     setErrorMsg('Something went wrong when updating the sneaker, please try again.');
+                                                })
+                                                .finally(() => {
+                                                    setIsLoading(false);
                                                 });
                                             }
                                         }}
@@ -929,6 +935,7 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                                     <BackButton 
                                         onPressAction={() => {
                                             setModalStep('index');
+                                            setIsLoading(false);
                                             closeModal();
                                         }}
                                     />
