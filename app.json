@@ -5,7 +5,7 @@
     "version": "0.0.2",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "kicksfolio",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
@@ -15,14 +15,28 @@
     },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "app.kicksfolio"
+      "bundleIdentifier": "app.kicksfolio",
+      "associatedDomains": ["applinks:kicksfolio.app"]
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "app.kicksfolio"
+      "package": "app.kicksfolio",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "kicksfolio",
+              "host": "*"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
     },
     "web": {
       "bundler": "metro",
