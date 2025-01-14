@@ -154,6 +154,11 @@ export default function Login() {
                                     Sign Up
                                 </Text>
                             </Link>
+                            <Link href='/forgot-password'>
+                                <Text className='text-primary font-spacemono-bold text-sm'>
+                                    Forgot Password ?
+                                </Text>
+                            </Link>
                         </View>
                     </View>
                 </View>
