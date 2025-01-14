@@ -20,6 +20,7 @@ import { CameraView } from 'expo-camera';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { Link, Redirect, router } from 'expo-router';
 import DeleteButton from '../buttons/DeleteButton';
+import { Loader } from '@/components/Loader';
 
 type AddSneakersModalProps = {
     modalStep: 'index' | 'box' | 'noBox' | 'sku' | 'sneakerInfo';
@@ -69,6 +70,7 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
     const [isSneakerSKUError, setIsSneakerSKUError] = useState(false);
     const [isSneakerSKUFocused, setIsSneakerSKUFocused] = useState(false);
     const [isNewSneaker, setIsNewSneaker] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
 
     const userId = user?.id;
 
@@ -346,42 +348,48 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
         };
     }, [timeoutRef]);
 
-    switch (modalStep) {
-        case 'index':
-            return (
-                <View className="flex-1 justify-center items-center gap-8">
-                    <Text className="font-actonia text-primary text-4xl text-center">{indexTitle}</Text>
-                    <Text className="font-spacemono-bold text-xl text-center">How do you want to proceed ?</Text>
-                    <View className="flex justify-center items-center gap-12">
-                        <View className="flex-col justify-center items-center gap-1 px-6">
-                            <Pressable
-                                onPress={() => setModalStep('box')}
-                            >
-                                <Text className="font-spacemono-bold text-lg text-center text-primary">Scan your sneaker box barcode</Text>
-                            </Pressable>
-                            <Text className="font-spacemono-bold text-sm text-center">Can make mistakes and not always accurate.</Text>
-                        </View>
-                        <View className="flex-col justify-center items-center gap-1 px-6">
-                            <Pressable
-                                onPress={() => setModalStep('sku')}
-                            >
-                                <Text className="font-spacemono-bold text-lg text-center text-primary">By sneakers SKU</Text>
-                            </Pressable>
-                                <Text className="font-spacemono-bold text-sm text-center">You can find the SKU on the sneaker box or on the sneaker itself.</Text>
-                        </View>
-                        <View className="flex-col justify-center items-center gap-1 px-6">
-                            <Pressable
-                                onPress={() => setModalStep('noBox')}
-                            >
-                                <Text className="font-spacemono-bold text-lg text-center text-primary">Add manually</Text>
-                            </Pressable>
-                                <Text className="font-spacemono-bold text-sm text-center">You do it by yourself.</Text>
+    return (
+        <>
+            {isLoading && (
+                <View className="absolute inset-0 z-50">
+                    <Loader />
+                </View>
+            )}
+            {modalStep === 'index' && (
+                <>
+                    <View className="flex-1 justify-center items-center gap-8">
+                        <Text className="font-actonia text-primary text-4xl text-center">{indexTitle}</Text>
+                        <Text className="font-spacemono-bold text-xl text-center">How do you want to proceed ?</Text>
+                        <View className="flex justify-center items-center gap-12">
+                            <View className="flex-col justify-center items-center gap-1 px-6">
+                                <Pressable
+                                    onPress={() => setModalStep('box')}
+                                >
+                                    <Text className="font-spacemono-bold text-lg text-center text-primary">Scan your sneaker box barcode</Text>
+                                </Pressable>
+                                <Text className="font-spacemono-bold text-sm text-center">Can make mistakes and not always accurate.</Text>
+                            </View>
+                            <View className="flex-col justify-center items-center gap-1 px-6">
+                                <Pressable
+                                    onPress={() => setModalStep('sku')}
+                                >
+                                    <Text className="font-spacemono-bold text-lg text-center text-primary">By sneakers SKU</Text>
+                                </Pressable>
+                                    <Text className="font-spacemono-bold text-sm text-center">You can find the SKU on the sneaker box or on the sneaker itself.</Text>
+                            </View>
+                            <View className="flex-col justify-center items-center gap-1 px-6">
+                                <Pressable
+                                    onPress={() => setModalStep('noBox')}
+                                >
+                                    <Text className="font-spacemono-bold text-lg text-center text-primary">Add manually</Text>
+                                </Pressable>
+                                    <Text className="font-spacemono-bold text-sm text-center">You do it by yourself.</Text>
+                            </View>
                         </View>
                     </View>
-                </View>
-            );
-        case 'box':
-            return (
+                </>
+            )}
+            {modalStep === 'box' && (
                 <View className="flex-1 justify-between items-center gap-8">
                     <View className="flex-1 w-full justify-center items-center gap-8">
                         {isCameraActive ? (
@@ -423,91 +431,89 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                         />
                     </View>
                 </View>
-            );
-            case 'sku':
-                return (
-                    <View className="flex-1 justify-between items-center gap-8">
-                        <KeyboardAvoidingView 
-                            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                            keyboardVerticalOffset={Platform.OS === 'ios' ? 120 : 20}
-                            className="flex-1 w-full"
+            )}
+            {modalStep === 'sku' && (
+                <View className="flex-1 justify-between items-center gap-8">
+                    <KeyboardAvoidingView 
+                        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                        keyboardVerticalOffset={Platform.OS === 'ios' ? 120 : 20}
+                        className="flex-1 w-full"
+                    >
+                        <ScrollView 
+                            ref={scrollViewRef}
+                            className="flex-1"
+                            keyboardShouldPersistTaps="handled"
                         >
-                            <ScrollView 
-                                ref={scrollViewRef}
-                                className="flex-1"
-                                keyboardShouldPersistTaps="handled"
-                            >
-                                <View className="flex-1 w-full justify-center items-center gap-12 pt-10">
-                                    <View className="flex-row items-center">
-                                        <Text className="font-spacemono-bold text-xl text-center px-6">
-                                            Put you sneakers SKU below
-                                        </Text>
-                                        <Link href="https://www.wikihow.com/Find-Model-Numbers-on-Nike-Shoes" 
-                                            className="flex-row justify-center items-center gap-2">
-                                            <FontAwesome6 name="lightbulb" size={20} color="#F27329" />
-                                        </Link>
-                                    </View>
-                                    <Text className="font-spacemono-bold text-sm text-center px-6">
-                                        NB : For Nike sneakers dont forget the "-" and the 3 numbers following it or it will not work.
+                            <View className="flex-1 w-full justify-center items-center gap-12 pt-10">
+                                <View className="flex-row items-center">
+                                    <Text className="font-spacemono-bold text-xl text-center px-6">
+                                        Put you sneakers SKU below
                                     </Text>
-                                    <View className="flex items-center w-full gap-2">
-                                        <TextInput
-                                            className="bg-white rounded-md p-2 w-3/5 font-spacemono-bold"
-                                            placeholder="SKU"
-                                            onFocus={() => {
-                                                handleInputFocus('sku');
-                                                setTimeout(() => {
-                                                    scrollViewRef.current?.scrollToEnd({ animated: true });
-                                                }, 100);
-                                            }}
-                                            onBlur={() => handleInputBlur('sku', sneakerSKU)}
-                                            placeholderTextColor="gray"
-                                            value={sneakerSKU}
-                                            onChangeText={setSneakerSKU}
-                                        />
-                                    </View>
+                                    <Link href="https://www.wikihow.com/Find-Model-Numbers-on-Nike-Shoes" 
+                                        className="flex-row justify-center items-center gap-2">
+                                        <FontAwesome6 name="lightbulb" size={20} color="#F27329" />
+                                    </Link>
                                 </View>
-                            </ScrollView>
-                        </KeyboardAvoidingView>
-                        <View className="justify-end items-start w-full pb-5">
-                            <View className="flex-row justify-between w-full">
-                                <BackButton 
-                                    onPressAction={() => setModalStep('index')} 
-                                />
-                                <NextButton
-                                    content="Next"
-                                    onPressAction={() => {
-                                        fetchSkuSneakerData(sneakerSKU, sessionToken)
-                                            .then(data => {
-                                                if (data.results && data.results.length > 0) {
-                                                    const sneakerData = data.results[0];
-                                                    setSneakerImage(sneakerData.image.original);
-                                                    setSneakerName(sneakerData.name);
-                                                    setSneakerBrand(sneakerData.brand.toUpperCase());
-                                                    setSneakerDescription(sneakerData.story || '');
-
-                                                    setIsSneakerImageError(true);
-                                                    setIsSneakerNameError(true);
-                                                    setIsSneakerBrandError(true);
-                                                    setIsSneakerDescriptionError(true);
-                                                    setErrorMsg('Please check the data fetched from the SKU and edit it if needed.');
-                                                    setModalStep('noBox');
-                                                } else {
-                                                    setErrorMsg('No data found for this SKU, check the SKU or add it manually.');
-                                                }
-                                            })
-                                            .catch(error => {
-                                                setErrorMsg('Impossible to find the informations for this SKU. Please check the SKU or add it manually.');
-                                                console.error('Error when fetching SKU data:', error);
-                                            });
-                                    }}
-                                />
+                                <Text className="font-spacemono-bold text-sm text-center px-6">
+                                    NB : For Nike sneakers dont forget the "-" and the 3 numbers following it or it will not work.
+                                </Text>
+                                <View className="flex items-center w-full gap-2">
+                                    <TextInput
+                                        className="bg-white rounded-md p-2 w-3/5 font-spacemono-bold"
+                                        placeholder="SKU"
+                                        onFocus={() => {
+                                            handleInputFocus('sku');
+                                            setTimeout(() => {
+                                                scrollViewRef.current?.scrollToEnd({ animated: true });
+                                            }, 100);
+                                        }}
+                                        onBlur={() => handleInputBlur('sku', sneakerSKU)}
+                                        placeholderTextColor="gray"
+                                        value={sneakerSKU}
+                                        onChangeText={setSneakerSKU}
+                                    />
+                                </View>
                             </View>
+                        </ScrollView>
+                    </KeyboardAvoidingView>
+                    <View className="justify-end items-start w-full pb-5">
+                        <View className="flex-row justify-between w-full">
+                            <BackButton 
+                                onPressAction={() => setModalStep('index')} 
+                            />
+                            <NextButton
+                                content="Next"
+                                onPressAction={() => {
+                                    fetchSkuSneakerData(sneakerSKU, sessionToken)
+                                        .then(data => {
+                                            if (data.results && data.results.length > 0) {
+                                                const sneakerData = data.results[0];
+                                                setSneakerImage(sneakerData.image.original);
+                                                setSneakerName(sneakerData.name);
+                                                setSneakerBrand(sneakerData.brand.toUpperCase());
+                                                setSneakerDescription(sneakerData.story || '');
+
+                                                setIsSneakerImageError(true);
+                                                setIsSneakerNameError(true);
+                                                setIsSneakerBrandError(true);
+                                                setIsSneakerDescriptionError(true);
+                                                setErrorMsg('Please check the data fetched from the SKU and edit it if needed.');
+                                                setModalStep('noBox');
+                                            } else {
+                                                setErrorMsg('No data found for this SKU, check the SKU or add it manually.');
+                                            }
+                                        })
+                                        .catch(error => {
+                                            setErrorMsg('Impossible to find the informations for this SKU. Please check the SKU or add it manually.');
+                                            console.error('Error when fetching SKU data:', error);
+                                        });
+                                }}
+                            />
                         </View>
                     </View>
-                );
-        case 'noBox':
-            return (
+                </View>
+            )}
+            {modalStep === 'noBox' && (
                 <KeyboardAvoidingView 
                     className="flex-1" 
                     behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -740,9 +746,10 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                                                             style: 'destructive',
                                                             onPress: async () => {
                                                                 if (!currentSneakerId || !userId || !sessionToken) return;
+                                                                setIsLoading(true);
                                                                 setIsNewSneaker(true);
                                                                 resetFields();
-                                                                await handleSneakerDelete(currentSneakerId, userId, sessionToken)
+                                                                handleSneakerDelete(currentSneakerId, userId, sessionToken)
                                                                     .then(() => {
                                                                         setUserSneakers((prevSneakers: Sneaker[] | null) => 
                                                                             prevSneakers ? prevSneakers.filter(s => s.id !== currentSneakerId) : []
@@ -751,6 +758,9 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                                                                     })
                                                                     .catch(error => {
                                                                         setErrorMsg(`Une erreur est survenue lors de la suppression: ${error}`);
+                                                                    })
+                                                                    .finally(() => {
+                                                                        setIsLoading(false);
                                                                     });
                                                             }
                                                         }
@@ -777,12 +787,13 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                                                 setIsSneakerStatusError,
                                                 setIsSneakerImageError
                                             );
-                                            if (!isValid) {
-                                                return;
-                                            }
+                                            if (!isValid) return;
+                                            
+                                            setIsLoading(true);
+                                            
                                             if (isNewSneaker) {
                                                 setIsNewSneaker(false);
-                                                await handleSneakerSubmit({
+                                                handleSneakerSubmit({
                                                     image: sneakerImage,
                                                     model: sneakerName,
                                                     brand: sneakerBrand,
@@ -802,6 +813,9 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                                                 })
                                                 .catch(error => {
                                                     setErrorMsg('Something went wrong when adding the sneaker, please try again.');
+                                                })
+                                                .finally(() => {
+                                                    setIsLoading(false);
                                                 });
                                             } else {
                                                 const sneakerId = currentSneakerId;
@@ -840,9 +854,8 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                         </View>
                     </ScrollView>
                 </KeyboardAvoidingView>
-            );
-        case 'sneakerInfo':
-            return (
+            )}
+            {modalStep === 'sneakerInfo' && (
                 sneaker && userSneakers?.find(s => s.id === sneaker.id) && (
                     <View className="flex-1 gap-4">
                         <Image 
@@ -954,6 +967,7 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                         </View>
                     </View>
                 )
-            );
-    }
+            )}
+        </>
+    );
 };
