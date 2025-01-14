@@ -8,7 +8,7 @@ import { useState, useRef, useEffect } from 'react';
 import DropdownInput from '../inputs/DropDownInput';
 import * as ImagePicker from 'expo-image-picker';
 import { Alert } from 'react-native';
-import { fetchSkuSneakerData, handleAddSneaker } from '@/scripts/handleSneakers';
+import { fetchSkuSneakerData, handleSneakerSubmit } from '@/scripts/handleSneakers';
 import { useSession } from '@/context/authContext';
 import { checkSneakerName, checkSneakerSize, checkSneakerCondition, checkSneakerBrand, checkSneakerStatus, validateAllFields, checkPricePaid } from '@/scripts/validatesSneakersForm';
 import ErrorMsg from '@/components/text/ErrorMsg';
@@ -68,10 +68,11 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
     const [sneakerSKU, setSneakerSKU] = useState('');
     const [isSneakerSKUError, setIsSneakerSKUError] = useState(false);
     const [isSneakerSKUFocused, setIsSneakerSKUFocused] = useState(false);
+    const [isNewSneaker, setIsNewSneaker] = useState(true);
 
     const userId = user?.id;
 
-    const currentSneakerId = userSneakers ? userSneakers.findIndex((s: Sneaker) => s.id === sneaker?.id) : -1;
+    const currentSneakerId = userSneakers ? userSneakers.find((s: Sneaker) => s.id === sneaker?.id)?.id : null;
 
     const scrollViewRef = useRef<ScrollView>(null);
 
@@ -741,27 +742,60 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                                             if (!isValid) {
                                                 return;
                                             }
-                                            await handleAddSneaker({
-                                                image: sneakerImage,
-                                                name: sneakerName,
-                                                brand: sneakerBrand,
-                                                size: Number(sneakerSize),
-                                                condition: Number(sneakerCondition),
-                                                status: sneakerStatus,
-                                                userId: userId || '',
-                                                price_paid: Number(sneakerPricePaid),
-                                                purchase_date: '',
-                                                description: sneakerDescription,
-                                                estimated_value: 0,
-                                            }, sessionToken || null)
-                                            .then(async data => {
-                                                resetFields();
-                                                await getUserSneakers();
-                                                closeModal();
-                                            })
-                                            .catch(error => {
-                                                setErrorMsg('Something went wrong when adding the sneaker, please try again.');
-                                            });
+                                            if (isNewSneaker) {
+                                                await handleSneakerSubmit({
+                                                    image: sneakerImage,
+                                                    model: sneakerName,
+                                                    brand: sneakerBrand,
+                                                    size: Number(sneakerSize),
+                                                    condition: Number(sneakerCondition),
+                                                    status: sneakerStatus,
+                                                    userId: userId || '',
+                                                    price_paid: Number(sneakerPricePaid),
+                                                    purchase_date: '',
+                                                    description: sneakerDescription,
+                                                    estimated_value: 0,
+                                                }, null, sessionToken || null)
+                                                .then(async data => {
+                                                    resetFields();
+                                                    await getUserSneakers();
+                                                    closeModal();
+                                                })
+                                                .catch(error => {
+                                                    setErrorMsg('Something went wrong when adding the sneaker, please try again.');
+                                                });
+                                            } else {
+                                                const sneakerId = currentSneakerId;
+                                                if (!sneakerId) {
+                                                    setErrorMsg('Something went wrong when adding the sneaker, please try again.');
+                                                    return;
+                                                }
+                                                console.log('sneakerId', sneakerId);
+                                                console.log('sneaker', sneakerName);
+                                                console.log('userId', userId);
+                                                await handleSneakerSubmit({
+                                                    image: sneakerImage,
+                                                    model: sneakerName,
+                                                    brand: sneakerBrand,
+                                                    size: Number(sneakerSize),
+                                                    condition: Number(sneakerCondition),
+                                                    status: sneakerStatus,
+                                                    price_paid: Number(sneakerPricePaid),
+                                                    purchase_date: '',
+                                                    description: sneakerDescription,
+                                                    estimated_value: 0,
+                                                    userId: userId || '',
+                                                }, sneakerId, sessionToken || null)
+                                                .then(async data => {
+                                                    resetFields();
+                                                    const userSneakers = await getUserSneakers();
+                                                    console.log('userSneakers', userSneakers);
+                                                    closeModal();
+                                                })
+                                                .catch(error => {
+                                                    setErrorMsg('Something went wrong when updating the sneaker, please try again.');
+                                                });
+                                            }
                                         }}
                                     />
                                 </View>
@@ -772,105 +806,120 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
             );
         case 'sneakerInfo':
             return (
-                <View className="flex-1 gap-4">
-                    <Image 
-                        source={{ uri: sneaker?.images?.[0]?.url }} 
-                        style={{
-                            width: '100%',
-                            height: 170,
-                            borderRadius: 3
-                        }}
-                        contentFit="cover"
-                        contentPosition="center"
-                        cachePolicy="memory-disk"
-                    />
-
-                    <View className="flex-row justify-between items-center px-2">
-                        <View className="flex gap-0">
-                            <Text className="font-spacemono-bold text-lg">{sneaker?.model}</Text>
-                            <Text className="font-spacemono-bold-italic text-base">{sneaker?.brand}</Text>
-                        </View>
-                        <ShareButton />
-                    </View>
-
-                    <View className='flex gap-8'>
-                        <View className="flex-row items-center w-full border-t-2 border-gray-300">
-                            <View className='flex-col items-center p-2 gap-1 w-1/3 border-r-2 border-gray-300'>
-                                <Text className='font-spacemono text-center text-sm'>Size</Text>
-                                <View className="w-4/5">
-                                    <Text className="font-spacemono-bold text-xl text-center">{sneaker?.size}US</Text>
-                                </View>
-                            </View>
-
-                            <View className='flex-col items-center p-2 gap-1 w-1/3 border-r-2 border-gray-300'>
-                                <Text className='font-spacemono text-center text-sm'>Status</Text>
-                                <View className="w-4/5">
-                                    <Text className="font-spacemono-bold text-xl text-center">{sneaker?.status.toUpperCase()}</Text>
-                                </View>
-                            </View>
-
-                            <View className='flex-col items-center p-2 gap-1 w-1/3'>
-                                <Text className='font-spacemono text-center text-sm'>Price Paid</Text>
-                                <View className="w-4/5">
-                                    <Text className="font-spacemono-bold text-xl text-center">{sneaker?.price_paid ? sneaker?.price_paid + '$' : 'N/A'}</Text>
-                                </View>
-                            </View>
-                        </View>
-
-                        <ConditionBar condition={sneaker?.condition || 0} />
-
-                        <View className="flex-1 items-center w-full">
-                        <ScrollView 
-                            className="bg-white/60 rounded-md p-2 w-full"
-                            showsVerticalScrollIndicator={true}
-                            indicatorStyle="black"
-                            persistentScrollbar={true}
+                sneaker && (
+                    <View className="flex-1 gap-4">
+                        <Image 
+                            source={{ uri: sneaker?.images?.[0]?.url }} 
                             style={{
-                                minHeight: 180,
-                                maxHeight: 180
+                                width: '100%',
+                                height: 170,
+                                borderRadius: 3
                             }}
-                        >
-                                    <Text className='font-spacemono-bold'>Description :</Text>
-                                    <Text className='font-spacemono text-sm'>
-                                        {sneaker?.description || 'No description available'}
-                                    </Text>
-                                </ScrollView>
-                        </View>
-                    </View>
+                            contentFit="cover"
+                            contentPosition="center"
+                            cachePolicy="memory-disk"
+                        />
 
-                    <View className="flex-1 justify-end pb-5 px-2">
-                        <View className="flex-row justify-between w-full">
-                            <View className="flex flex-row gap-3">
-                                <BackButton 
-                                    onPressAction={() => {
-                                        setModalStep('index');
-                                        closeModal();
-                                    }}
-                                />
-                                <EditButton 
-                                    onPressAction={() => alert('Feature coming soon')}
-                                />
+                        <View className="flex-row justify-between items-center px-2">
+                            <View className="flex gap-0">
+                                <Text className="font-spacemono-bold text-lg">{sneaker?.model}</Text>
+                                <Text className="font-spacemono-bold-italic text-base">{sneaker?.brand}</Text>
+                            </View>
+                            <ShareButton />
+                        </View>
+
+                        <View className='flex gap-8'>
+                            <View className="flex-row items-center w-full border-t-2 border-gray-300">
+                                <View className='flex-col items-center p-2 gap-1 w-1/3 border-r-2 border-gray-300'>
+                                    <Text className='font-spacemono text-center text-sm'>Size</Text>
+                                    <View className="w-4/5">
+                                        <Text className="font-spacemono-bold text-xl text-center">{sneaker?.size}US</Text>
+                                    </View>
+                                </View>
+
+                                <View className='flex-col items-center p-2 gap-1 w-1/3 border-r-2 border-gray-300'>
+                                    <Text className='font-spacemono text-center text-sm'>Status</Text>
+                                    <View className="w-4/5">
+                                        <Text className="font-spacemono-bold text-xl text-center">{sneaker?.status.toUpperCase()}</Text>
+                                    </View>
+                                </View>
+
+                                <View className='flex-col items-center p-2 gap-1 w-1/3'>
+                                    <Text className='font-spacemono text-center text-sm'>Price Paid</Text>
+                                    <View className="w-4/5">
+                                        <Text className="font-spacemono-bold text-xl text-center">{sneaker?.price_paid ? sneaker?.price_paid + '$' : 'N/A'}</Text>
+                                    </View>
+                                </View>
                             </View>
 
-                            <NextButton 
-                                content="Next" 
-                                onPressAction={() => {
-                                    if (!userSneakers || currentSneakerId === -1) return;
-                                    
-                                    if (currentSneakerId < userSneakers.length - 1) {
-                                        const nextSneaker = userSneakers[currentSneakerId + 1];
+                            <ConditionBar condition={sneaker?.condition || 0} />
+
+                            <View className="flex-1 items-center w-full">
+                            <ScrollView 
+                                className="bg-white/60 rounded-md p-2 w-full"
+                                showsVerticalScrollIndicator={true}
+                                indicatorStyle="black"
+                                persistentScrollbar={true}
+                                style={{
+                                    minHeight: 180,
+                                    maxHeight: 180
+                                }}
+                            >
+                                        <Text className='font-spacemono-bold'>Description :</Text>
+                                        <Text className='font-spacemono text-sm'>
+                                            {sneaker?.description || 'No description available'}
+                                        </Text>
+                                    </ScrollView>
+                            </View>
+                        </View>
+
+                        <View className="flex-1 justify-end pb-5 px-2">
+                            <View className="flex-row justify-between w-full">
+                                <View className="flex flex-row gap-3">
+                                    <BackButton 
+                                        onPressAction={() => {
+                                            setModalStep('index');
+                                            closeModal();
+                                        }}
+                                    />
+                                    <EditButton 
+                                        sneaker={sneaker}
+                                        onPressAction={() => {
+                                            setIsNewSneaker(false);
+                                            setSneakerBrand(sneaker.brand);
+                                            setSneakerName(sneaker.model);
+                                            setSneakerImage(sneaker.images[0].url);
+                                            setSneakerSize(sneaker.size.toString());
+                                            setSneakerCondition(sneaker.condition.toString());
+                                            setSneakerStatus(sneaker.status);
+                                            setSneakerPricePaid(sneaker.price_paid.toString());
+                                            setSneakerDescription(sneaker.description);
+                                            setModalStep('noBox');
+                                        }}
+                                    />
+                                </View>
+
+                                <NextButton 
+                                    content="Next" 
+                                    onPressAction={() => {
+                                        if (!userSneakers || !currentSneakerId) return;
+                                        
+                                        const currentIndex = userSneakers.findIndex((s: Sneaker) => s.id === currentSneakerId);
+                                        const nextId = currentIndex < userSneakers.length - 1 
+                                            ? userSneakers[currentIndex + 1].id 
+                                            : userSneakers[0].id;
+                                        
+                                        const nextSneaker = userSneakers.find((s: Sneaker) => s.id === nextId);
+                                        if (!nextSneaker) return;
+                                        
                                         setSneaker(nextSneaker);
                                         setModalStep('sneakerInfo');
-                                    } else {
-                                        const firstSneaker = userSneakers[0];
-                                        setSneaker(firstSneaker);
-                                        setModalStep('sneakerInfo');
-                                    }
-                                }}
-                            />
+                                    }}
+                                />
+                            </View>
                         </View>
                     </View>
-                </View>
+                )
             );
     }
 };

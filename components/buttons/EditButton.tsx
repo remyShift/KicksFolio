@@ -2,8 +2,9 @@ import { Pressable } from 'react-native';
 import Feather from '@expo/vector-icons/Feather';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { useDownScaleAnimation } from '@/hooks';
+import { Sneaker } from '@/types/Models';
 
-export default function EditButton({ onPressAction }: { onPressAction: () => void }) {
+export default function EditButton({ sneaker, onPressAction }: { sneaker: Sneaker, onPressAction: () => void }) {
     const { scale, triggerAnimation } = useDownScaleAnimation();
 
     const animatedStyle = useAnimatedStyle(() => {
