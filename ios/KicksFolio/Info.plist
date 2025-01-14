@@ -27,7 +27,7 @@
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
-          <string>myapp</string>
+          <string>kicksfolio</string>
           <string>app.kicksfolio</string>
         </array>
       </dict>
