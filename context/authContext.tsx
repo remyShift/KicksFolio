@@ -1,8 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext, useContext, type PropsWithChildren, useState, useEffect } from 'react';
-import { User, Collection, Sneaker } from '@/types/Models';
+import { User, Collection, Sneaker, ProfileData } from '@/types/Models';
 import { useAppState } from '@react-native-community/hooks';
 import { useStorageState, setStorageItemAsync } from '@/hooks/useStorageState';
+import { router } from 'expo-router';
 
 const AuthContext = createContext<{
     login: (email: string, password: string) => Promise<void>;
@@ -19,6 +20,7 @@ const AuthContext = createContext<{
     getUserSneakers: () => Promise<void | undefined>;
     verifyToken: () => Promise<boolean>;
     loadInitialData: () => Promise<void | [void, void, void]>;
+    updateUser: (user: User, profileData: ProfileData, sessionToken: string) => Promise<void>;
     }>({
         login: async () => {},
         signUp: async () => {},
@@ -33,7 +35,8 @@ const AuthContext = createContext<{
         getUserCollection: async () => {},
         getUserSneakers: async () => {},
         verifyToken: async () => false,
-        loadInitialData: async () => {}
+        loadInitialData: async () => {},
+        updateUser: async () => {}
 });
 
 export function useSession() {
@@ -366,6 +369,68 @@ export function SessionProvider({ children }: PropsWithChildren) {
             });
     };
 
+    const updateUser = async (user: User, profileData: ProfileData, sessionToken: string) => {
+        if (!user?.id) {
+            return;
+        }
+    
+        const formData = new FormData();
+        
+        if (profileData.newUsername !== user.username) {
+            formData.append('user[username]', profileData.newUsername);
+        }
+        if (profileData.newFirstName !== user.first_name) {
+            formData.append('user[first_name]', profileData.newFirstName);
+        }
+        if (profileData.newLastName !== user.last_name) {
+            formData.append('user[last_name]', profileData.newLastName);
+        }
+        if (profileData.newSneakerSize !== user.sneaker_size) {
+            formData.append('user[sneaker_size]', profileData.newSneakerSize.toString());
+        }
+    
+        if (profileData.newProfilePicture && profileData.newProfilePicture !== user.profile_picture?.url) {
+            const imageUriParts = profileData.newProfilePicture.split('.');
+            const fileType = imageUriParts[imageUriParts.length - 1];
+            
+            const imageFile = {
+                uri: profileData.newProfilePicture,
+                type: 'image/jpeg',
+                name: `profile_picture.${fileType}`
+            };
+    
+            formData.append('user[profile_picture]', imageFile as any);
+        }
+    
+        fetch(`${process.env.EXPO_PUBLIC_BASE_API_URL}/users/${user.id}`, {
+            method: 'PATCH',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${sessionToken}`
+            },
+            body: formData
+        })
+        .then(async response => {
+            const text = await response.text();
+            const data = JSON.parse(text);
+            
+            if (!response.ok) {
+                const errorMessage = data.message || data.error || 'Error when updating profile';
+                console.log(errorMessage);
+                throw new Error(errorMessage);
+            }
+            return data;
+        })
+        .then(() => {
+            getUser()
+                .then(() => router.replace('/(app)/(tabs)/user'));
+        })
+        .catch(error => {
+            console.log(error);
+            throw error;
+        });
+    }
+
     return (
         <AuthContext.Provider
             value={{
@@ -382,7 +447,8 @@ export function SessionProvider({ children }: PropsWithChildren) {
                 getUserCollection,
                 getUserSneakers,
                 verifyToken,
-                loadInitialData
+                loadInitialData,
+                updateUser
             }}>
             {children}
         </AuthContext.Provider>

@@ -9,16 +9,17 @@ import PageTitle from '@/components/text/PageTitle'
 import MainButton from '@/components/buttons/MainButton'
 import ErrorMsg from '@/components/text/ErrorMsg'
 import { useSession } from '@/context/authContext'
+import { ProfileData } from '@/types/Models'
 
 export default function EditProfile() {
-    const { user } = useSession()
+    const { user, sessionToken, updateUser } = useSession()
     const [errorMsg, setErrorMsg] = useState('')
-    const [profileData, setProfileData] = useState({
+    const [profileData, setProfileData] = useState<ProfileData>({
         newUsername: user?.username || '',
         newFirstName: user?.first_name || '',
         newLastName: user?.last_name || '',
-        newSneakerSize: user?.sneaker_size || '',
-        newProfilePicture: user?.profile_picture || '',
+        newSneakerSize: user?.sneaker_size || 0,
+        newProfilePicture: user?.profile_picture?.url || '',
         newEmail: user?.email || '',
     })
 
@@ -75,8 +76,9 @@ export default function EditProfile() {
         }
     }
 
-    const handleSubmit = () => {
-        // Logique de mise à jour du profil
+    const handleSubmit = async () => {
+        if (!user || !sessionToken) return;
+        await updateUser(user, profileData, sessionToken);
     }
 
     const handleInputFocus = (inputType: 'username' | 'firstName' | 'lastName' | 'sneakerSize') => {
@@ -291,7 +293,7 @@ export default function EditProfile() {
                                 onSubmitEditing={() => handleSubmit()}
                                 placeholderTextColor='gray'
                                 onChangeText={(text) => {
-                                    setProfileData({...profileData, newSneakerSize: text});
+                                    setProfileData({...profileData, newSneakerSize: Number(text)});
                                     setErrorMsg('');
                                 }}
                                 className={`bg-white rounded-md p-3 w-2/3 font-spacemono-bold ${
