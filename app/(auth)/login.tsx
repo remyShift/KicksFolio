@@ -18,7 +18,6 @@ export default function Login() {
     const [isPasswordError, setIsPasswordError] = useState(false);
 
     const { login } = useSession();
-
     const scrollViewRef = useRef<ScrollView>(null);
     const passwordInputRef = useRef<TextInput>(null);
     const emailInputRef = useRef<TextInput>(null);
@@ -81,87 +80,88 @@ export default function Login() {
 
     return (
         <>
-        <KeyboardAvoidingView 
-            className="flex-1 bg-background" 
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
-            <ScrollView 
-                ref={scrollViewRef}
-                contentContainerStyle={{ flexGrow: 1 }}
-                keyboardShouldPersistTaps="handled"
-                scrollEnabled={isEmailFocused || isPasswordFocused}>
-                <View className="flex-1 items-center gap-12 p-4">
-                    <PageTitle content='Login' />
-                    <View className='flex justify-cente r items-center gap-8 w-full mt-48'>
-                        <View className="absolute w-full flex items-center" style={{ top: -50 }}>
-                            <ErrorMsg content={errorMsg} display={errorMsg !== ''} />
-                        </View>
-                        <View className='flex flex-col gap-2 w-full justify-center items-center'>
-                            <Text className='font-spacemono-bold text-lg'>Email</Text>
-                            <TextInput
-                                placeholder="john@doe.com"
-                                ref={emailInputRef}
-                                inputMode='email'
-                                autoComplete='email'
-                                textContentType='emailAddress'
-                                clearButtonMode='while-editing'
-                                onFocus={() => handleInputFocus('email')}
-                                onBlur={() => handleInputBlur('email', email)}
-                                returnKeyType='next'
-                                enablesReturnKeyAutomatically={true}
-                                onSubmitEditing={() => checkBeforeNext(email, 'email', true, setErrorMsg, setIsEmailError, passwordInputRef)}
-                                autoCorrect={false}
-                                placeholderTextColor='gray'
-                                onChangeText={(text) => handleInputChange(text, setEmail, setErrorMsg)}
-                                className={`bg-white rounded-md p-3 w-2/3 font-spacemono-bold ${
-                                    isEmailError ? 'border-2 border-red-500' : ''
-                                } ${isEmailFocused ? 'border-2 border-primary' : ''}`}
-                            />
-                        </View>
+            <KeyboardAvoidingView 
+                className="flex-1 bg-background" 
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
+                <ScrollView 
+                    ref={scrollViewRef}
+                    contentContainerStyle={{ flexGrow: 1 }}
+                    keyboardShouldPersistTaps="handled"
+                    scrollEnabled={isEmailFocused || isPasswordFocused}>
+                    <View className="flex-1 items-center gap-12 p-4">
+                        <PageTitle content='Login' />
+                        <View className='flex justify-center items-center gap-8 w-full mt-36'>
+                            <View className="absolute w-full flex items-center" style={{ top: -50 }}>
+                                <ErrorMsg content={errorMsg} display={errorMsg !== ''} />
+                            </View>
+                            <View className='flex flex-col gap-2 w-full justify-center items-center'>
+                                <Text className='font-spacemono-bold text-lg'>Email</Text>
+                                <TextInput
+                                    placeholder="john@doe.com"
+                                    ref={emailInputRef}
+                                    inputMode='email'
+                                    autoComplete='email'
+                                    textContentType='emailAddress'
+                                    clearButtonMode='while-editing'
+                                    onFocus={() => handleInputFocus('email')}
+                                    onBlur={() => handleInputBlur('email', email)}
+                                    returnKeyType='next'
+                                    enablesReturnKeyAutomatically={true}
+                                    autoCorrect={false}
+                                    placeholderTextColor='gray'
+                                    onChangeText={(text) => handleInputChange(text, setEmail, setErrorMsg)}
+                                    className={`bg-white rounded-md p-3 w-2/3 font-spacemono-bold ${
+                                        isEmailError ? 'border-2 border-red-500' : ''
+                                    } ${isEmailFocused ? 'border-2 border-primary' : ''}`}
+                                />
+                            </View>
 
-                        <View className='flex flex-col gap-2 w-full justify-center items-center'>
-                            <Text className='font-spacemono-bold text-lg'>Password</Text>
-                            <TextInput 
-                                placeholder="********" 
-                                ref={passwordInputRef}
-                                inputMode='text'
-                                textContentType='password'
-                                autoComplete='current-password'
-                                clearButtonMode='while-editing'
-                                autoCorrect={false}
-                                secureTextEntry={true}
-                                onFocus={() => handleInputFocus('password')}
-                                onBlur={() => handleInputBlur('password', password)}
-                                returnKeyType='done'
-                                enablesReturnKeyAutomatically={true}
-                                onSubmitEditing={() => handleLogin()}
-                                placeholderTextColor='gray'
-                                onChangeText={(text) => handleInputChange(text, setPassword, setErrorMsg)}
-                                className={`bg-white rounded-md p-3 w-2/3 font-spacemono-bold ${
-                                    isPasswordError ? 'border-2 border-red-500' : ''
-                                } ${isPasswordFocused ? 'border-2 border-primary' : ''}`}
-                            />
+                            <View className='flex flex-col gap-2 w-full justify-center items-center'>
+                                <Text className='font-spacemono-bold text-lg'>Password</Text>
+                                <TextInput 
+                                    placeholder="********" 
+                                    ref={passwordInputRef}
+                                    inputMode='text'
+                                    textContentType='password'
+                                    autoComplete='current-password'
+                                    clearButtonMode='while-editing'
+                                    autoCorrect={false}
+                                    secureTextEntry={true}
+                                    onFocus={() => handleInputFocus('password')}
+                                    onBlur={() => handleInputBlur('password', password)}
+                                    returnKeyType='done'
+                                    enablesReturnKeyAutomatically={true}
+                                    onSubmitEditing={() => handleLogin()}
+                                    placeholderTextColor='gray'
+                                    onChangeText={(text) => handleInputChange(text, setPassword, setErrorMsg)}
+                                    className={`bg-white rounded-md p-3 w-2/3 font-spacemono-bold ${
+                                        isPasswordError ? 'border-2 border-red-500' : ''
+                                    } ${isPasswordFocused ? 'border-2 border-primary' : ''}`}
+                                />
+                            </View>
+                        </View>
+                        <View className='flex gap-5 w-full justify-center items-center'>                      
+                            <MainButton content='Login' backgroundColor='bg-primary' onPressAction={async () => {
+                                await handleLogin();
+                            }} />
+                            <View className='flex gap-1 justify-center items-center'>
+                                <View className='flex flex-row gap-1 justify-center items-center'>
+                                    <Text className='font-spacemono-bold text-sm'>Don't have an account?</Text>
+                                    <Link href='/sign-up'>
+                                        <Text className='text-primary font-spacemono-bold text-sm'>
+                                            Sign Up
+                                        </Text>
+                                    </Link>
+                                </View>
+                                <Link href='/forgot-password'>
+                                    <Text className='text-primary font-spacemono-bold text-sm'>
+                                        Forgot Password?
+                                    </Text>
+                                </Link>
+                            </View>
                         </View>
                     </View>
-                    <View className='flex gap-5 w-full justify-center items-center'>                      
-                        <MainButton content='Login' backgroundColor='bg-primary' onPressAction={async () => {
-                            await handleLogin();
-                        }} />
-                        <View className='flex gap-0 justify-center items-center'>
-                            <Text className='font-spacemono-bold text-sm'>Don't have an account ?</Text>
-                            <Link href='/sign-up'>
-                                <Text className='text-primary font-spacemono-bold text-sm'>
-                                    Sign Up
-                                </Text>
-                            </Link>
-                            <Link href='/forgot-password'>
-                                <Text className='text-primary font-spacemono-bold text-sm'>
-                                    Forgot Password ?
-                                </Text>
-                            </Link>
-                        </View>
-                    </View>
-                </View>
                 </ScrollView>
             </KeyboardAvoidingView>
             <View className='flex justify-center items-center bg-background pb-10'>
