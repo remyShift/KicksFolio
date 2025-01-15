@@ -1,11 +1,9 @@
 import { Pressable, Dimensions } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Animated, { useAnimatedStyle, useSharedValue, runOnJS } from 'react-native-reanimated';
-import { useUpScaleAnimation } from '@/hooks';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 
 export default function AddButton({ onPress }: { onPress: () => void }) {
-    const { scale, triggerAnimation } = useUpScaleAnimation();
     const translateX = useSharedValue(0);
     const translateY = useSharedValue(0);
     const isDragging = useSharedValue(false);
@@ -35,7 +33,6 @@ export default function AddButton({ onPress }: { onPress: () => void }) {
         })
         .onFinalize(() => {
             if (!isDragging.value || (Math.abs(translateX.value - startX.value) < 5 && Math.abs(translateY.value - startY.value) < 5)) {
-                runOnJS(triggerAnimation)();
                 runOnJS(onPress)();
             }
             isDragging.value = false;
@@ -46,7 +43,6 @@ export default function AddButton({ onPress }: { onPress: () => void }) {
             transform: [
                 { translateX: translateX.value },
                 { translateY: translateY.value },
-                { scale: scale.value }
             ],
             position: 'absolute',
             bottom: 20,
