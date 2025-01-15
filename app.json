@@ -2,7 +2,7 @@
   "expo": {
     "name": "KicksFolio",
     "slug": "KicksFolio-Frontend",
-    "version": "0.0.3",
+    "version": "0.0.32",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "kicksfolio",
