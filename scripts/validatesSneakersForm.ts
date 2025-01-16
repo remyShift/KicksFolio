@@ -4,14 +4,7 @@ export const checkSneakerName = (name: string, setErrorMsg: (msg: string) => voi
         setIsError(true);
         return false;
     }
-    
-    const nameRegex = /^[a-zA-Z0-9\s-]+$/;
-    if (!nameRegex.test(name)) {
-        setErrorMsg('Name invalid, name must contain only letters, numbers and dashes.');
-        setIsError(true);
-        return false;
-    }
-    
+
     setErrorMsg('');
     setIsError(false);
     return true;

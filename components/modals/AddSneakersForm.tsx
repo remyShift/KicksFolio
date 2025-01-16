@@ -489,7 +489,15 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                                             if (data.results && data.results.length > 0) {
                                                 const sneakerData = data.results[0];
                                                 setSneakerImage(sneakerData.image.original);
-                                                setSneakerName(sneakerData.name);
+                                                const sneakerName = sneakerData.name
+                                                                .replace(sneakerData.brand, '').trim()
+                                                                .replace(/\b(US|EU|UK|CM)\b/gi, '')
+                                                                .replace(/\s+/g, ' ')
+                                                                .trim()
+                                                                .split(' ')
+                                                                .filter((word: string) => word.length > 0 && word.trim() !== '')
+                                                                .join(' ');
+                                                setSneakerName(sneakerName);
                                                 setSneakerBrand(sneakerData.brand.toUpperCase());
                                                 setSneakerDescription(sneakerData.story || '');
 
@@ -940,7 +948,6 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                                         }}
                                     />
                                     <EditButton 
-                                        sneaker={sneaker}
                                         onPressAction={() => {
                                             setIsNewSneaker(false);
                                             setSneakerBrand(sneaker.brand);
