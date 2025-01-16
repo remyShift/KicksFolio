@@ -14,7 +14,7 @@ export const ConditionBar = ({ condition }: { condition: number }) => {
                     {segments.length <= 10 && segments.map((_, index) => (
                         <View
                             key={index}
-                            className='bg-primary w-7 h-full'
+                            className='bg-primary w-[8.7%] h-full'
                             style={{ transform: [{ skewX: '-30deg' }], marginLeft: index === 0 ? -5 : undefined, marginRight: index === 9 ? 0 : 3 }}
                         />
                     ))}
