@@ -96,7 +96,7 @@ export default function ResetPassword() {
                     <PageTitle content='Reset Password' />
                     <ErrorMsg content={errorMsg} display={errorMsg !== ''} />
 
-                    <View className='flex gap-6 w-full justify-center items-center'>
+                    <View className='flex gap-6 w-full justify-center items-center mt-36'>
                         <View className='flex flex-col gap-2 w-full justify-center items-center'>
                             <Text className='font-spacemono-bold text-lg'>New Password</Text>
                             <TextInput
@@ -139,7 +139,7 @@ export default function ResetPassword() {
                     </View>
 
                     <MainButton 
-                        content='Reset Password' 
+                        content='Confirm' 
                         backgroundColor='bg-primary' 
                         onPressAction={handleResetPassword} 
                     />

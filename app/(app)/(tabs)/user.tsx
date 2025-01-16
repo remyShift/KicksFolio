@@ -321,7 +321,7 @@ export default function User() {
         </>
       )}
 
-      {userSneakers && userSneakers.length > 0 && (
+      {userSneakers && userSneakers.length > 0 || userSneakers && (
         <AddButton onPress={() => {
           setModalStep('index');
           setModalVisible(true);
