@@ -3,6 +3,8 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Animated, { useAnimatedStyle, useSharedValue, runOnJS } from 'react-native-reanimated';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
 export default function AddButton({ onPress }: { onPress: () => void }) {
     const translateX = useSharedValue(0);
     const translateY = useSharedValue(0);
@@ -14,7 +16,15 @@ export default function AddButton({ onPress }: { onPress: () => void }) {
     const screenWidth = Dimensions.get('window').width;
     const buttonSize = 64;
 
-    const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+    const animatedStyle = useAnimatedStyle(() => ({
+        transform: [
+            { translateX: translateX.value },
+            { translateY: translateY.value },
+        ],
+        position: 'absolute',
+        bottom: 20,
+        right: 20,
+    }), []);
 
     const panGesture = Gesture.Pan()
         .onBegin(() => {
@@ -38,21 +48,10 @@ export default function AddButton({ onPress }: { onPress: () => void }) {
             isDragging.value = false;
         });
 
-    const animatedStyle = useAnimatedStyle(() => {
-        return {
-            transform: [
-                { translateX: translateX.value },
-                { translateY: translateY.value },
-            ],
-            position: 'absolute',
-            bottom: 20,
-            right: 20,
-        };
-    });
-
     return (
         <GestureDetector gesture={panGesture}>
-            <AnimatedPressable style={animatedStyle}
+            <AnimatedPressable 
+                style={animatedStyle}
                 className="bg-primary w-16 h-16 rounded-full flex items-center justify-center shadow-sm"
             >
                 <FontAwesome name="plus" size={28} color="white" />
