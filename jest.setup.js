@@ -21,4 +21,5 @@ jest.mock('expo-secure-store', () => ({
     deleteItemAsync: jest.fn(),
 }));
 
+
 global.fetch = jest.fn(); 

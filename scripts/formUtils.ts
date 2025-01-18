@@ -89,29 +89,29 @@ export const checkUsername = async (
     if (!username) {
         setErrorMsg('Please put your username.');
         setIsUsernameError(true);
-        return Promise.resolve(false);
+        return false;
     } else if (username.length < 4) {
         setErrorMsg('Username must be at least 4 characters long.');
         setIsUsernameError(true);
-        return Promise.resolve(false);
+        return false;
     } else if (username.length > 16) {
         setErrorMsg('Username must be less than 16 characters.');
         setIsUsernameError(true);
-        return Promise.resolve(false);
+        return false;
     } else if (username.match(/[^\w\s]/)) {
         setErrorMsg('Username must not contain special characters.');
         setIsUsernameError(true);
-        return Promise.resolve(false);
+        return false;
     }
 
     if (await checkUsernameExists(username)) {
         setErrorMsg('This username is already taken.');
         setIsUsernameError(true);
-        return Promise.resolve(false);
+        return false;
     }
     setErrorMsg('');
     setIsUsernameError(false);
-    return Promise.resolve(true);
+    return true;
 };
 
 export const checkEmail = async (email: string, isLoginPage: boolean, setErrorMsg: (msg: string) => void, setIsEmailError: (isError: boolean) => void): Promise<boolean> => {
@@ -163,7 +163,7 @@ export const checkName = (name: string, setErrorMsg: (msg: string) => void, setI
         setErrorMsg('Name must be at least 2 characters long.');
         setIsNameError(true);
         return false;
-    } else if (name.match(/[^\w\s] /)) {
+    } else if (name.match(/[^a-zA-Z\s]/)) {
         setErrorMsg('Name must not contain special characters or numbers.');
         setIsNameError(true);
         return false;
