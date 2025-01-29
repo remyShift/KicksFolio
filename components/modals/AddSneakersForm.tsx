@@ -402,7 +402,6 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                                     <CameraView
                                         active={isCameraActive && !isScanning}
                                         onBarcodeScanned={(data) => {
-                                            console.log('-------------------------', {isScanning, isCameraActive, timeoutRef, lastScannedCode});
                                             handleBarCodeScanned(data);
                                         }}
                                         animateShutter={isScanning}
@@ -850,7 +849,6 @@ export const renderModalContent = ({ modalStep, setModalStep, closeModal, sneake
                                                 .then(async data => {
                                                     resetFields();
                                                     const userSneakers = await getUserSneakers();
-                                                    console.log('userSneakers', userSneakers);
                                                     setIsLoading(false);
                                                     closeModal();
                                                 })

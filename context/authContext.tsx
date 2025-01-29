@@ -416,7 +416,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
             
             if (!response.ok) {
                 const errorMessage = data.message || data.error || 'Error when updating profile';
-                console.log(errorMessage);
                 throw new Error(errorMessage);
             }
             return data;
@@ -426,7 +425,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
                 .then(() => router.replace('/(app)/(tabs)/user'));
         })
         .catch(error => {
-            console.log(error);
             throw error;
         });
     }

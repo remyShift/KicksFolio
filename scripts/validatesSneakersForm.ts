@@ -82,10 +82,10 @@ export const checkSneakerCondition = (condition: string, setErrorMsg: (msg: stri
 };
 
 export const checkSneakerStatus = (status: string, setErrorMsg: (msg: string) => void, setIsError: (isError: boolean) => void): boolean => {
-    const validStatuses = ['rocking', 'stocking', 'selling', 'other'];
-    
+    const validStatuses = ['rocking', 'stocking', 'selling'];
+
     if (!status) {
-        setErrorMsg('Status invalid, status must be one of the following: rocking, stocking, selling, other.');
+        setErrorMsg('Status invalid, status must be one of the following: rocking, stocking, selling.');
         setIsError(true);
         return false;
     }
@@ -95,11 +95,11 @@ export const checkSneakerStatus = (status: string, setErrorMsg: (msg: string) =>
     if (!statusRegex.test(status)) {
         setErrorMsg('Status invalid, status must contain only letters.');
         setIsError(true);
-            return false;
+        return false;
     }
 
     if (!validStatuses.includes(status.toLowerCase())) {
-        setErrorMsg('Status invalid, status must be one of the following: rocking, stocking, selling, other.');
+        setErrorMsg('Status invalid, status must be one of the following: rocking, stocking, selling.');
         setIsError(true);
         return false;
     }
@@ -110,13 +110,20 @@ export const checkSneakerStatus = (status: string, setErrorMsg: (msg: string) =>
 };
 
 export const checkPricePaid = (pricePaid: string, setErrorMsg: (msg: string) => void, setIsError: (isError: boolean) => void): boolean => {
-    if (pricePaid) {
-        if (isNaN(parseFloat(pricePaid)) || parseFloat(pricePaid) < 0) {
-            setErrorMsg('Price paid invalid, price paid must be a positive number.');
-            setIsError(true);
-            return false;
-        }
+    if (!pricePaid) {
+        setErrorMsg('Veuillez entrer un prix.');
+        setIsError(true);
+        return false;
     }
+
+    if (isNaN(Number(pricePaid)) || Number(pricePaid) < 0) {
+        setErrorMsg('Le prix doit être un nombre positif.');
+        setIsError(true);
+        return false;
+    }
+
+    setErrorMsg('');
+    setIsError(false);
     return true;
 };
 

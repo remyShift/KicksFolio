@@ -3,7 +3,7 @@ import { checkConfirmPassword, checkEmail, checkName, checkPassword, checkSize, 
 const mockSetErrorMsg = jest.fn();
 const mockSetError = jest.fn();
 
-describe('Checing inputs forms', () => {
+describe('Checking user inputs', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         global.fetch = jest.fn();

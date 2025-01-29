@@ -44,7 +44,6 @@ export default function ForgotPassword() {
     };
 
     const handlePasswordReset = async () => {
-        console.log('handlePasswordReset', email);
         if (!email) {
             setErrorMsg('Please enter your email.');
             setIsEmailError(true);

@@ -52,6 +52,9 @@ export const handleSneakerSubmit = async (sneaker: SneakerProps, sneakerId: stri
     })
     .then(async response => {
         const text = await response.text();
+        if (!response.ok) {
+            throw new Error(text);
+        }
         return JSON.parse(text);
     })
     .then(data => {
@@ -78,8 +81,6 @@ export const handleSneakerDelete = async (sneakerId: string, userId: string, ses
 
 
 export const fetchSkuSneakerData = async (sku: string, sessionToken: string | undefined | null) => {
-    console.log('sessionToken', sessionToken);
-    console.log('sku', sku);
     if (!sessionToken) return;
 
     return fetch(`${process.env.EXPO_PUBLIC_BASE_API_URL}/sku_lookup?sku=${sku}`, {
