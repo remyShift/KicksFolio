@@ -1,4 +1,4 @@
-package com.kicksfolio
+package app.kicksfolio
 
 import android.app.Application
 import android.content.res.Configuration
