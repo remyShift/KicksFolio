@@ -1,104 +1,213 @@
 import { mockAuth } from '../../__mocks__/api/auth';
 import { useSession } from '@/context/authContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { mockUser } from '../../__mocks__/api/user';
+import { User } from '@/types/Models';
 
-jest.mock('../../context/authContext');
+const typedMockUser: User = {
+    ...mockUser,
+    created_at: '2024-01-01',
+    updated_at: '2024-01-01',
+    friends: [],
+    profile_picture: {
+        id: '1',
+        url: mockUser.profile_picture || ''
+    },
+    profile_picture_url: mockUser.profile_picture || '',
+    collection: {
+        id: '1',
+        name: 'My Collection',
+        user_id: '1',
+        created_at: '2024-01-01',
+        updated_at: '2024-01-01'
+    },
+    sneakers: []
+};
+
+type UpdateUserResponse = {
+    user: User;
+    message: string;
+};
+
+jest.mock('../../context/authContext', () => ({
+    useSession: jest.fn(() => ({
+        user: typedMockUser,
+        signUp: mockAuth.signUp,
+        login: async (email: string, password: string) => {
+            const result = await mockAuth.login(email, password);
+            await AsyncStorage.setItem('user', JSON.stringify(typedMockUser));
+            return result;
+        },
+        logout: mockAuth.logout,
+        updateUser: async (user: User, profileData: any, token: string): Promise<UpdateUserResponse> => {
+            return mockAuth.updateUser(user, profileData, token);
+        },
+        deleteAccount: async (userId: string, token: string): Promise<{ message: string }> => {
+            return mockAuth.deleteAccount(userId, token);
+        }
+    }))
+}));
+
 jest.mock('@react-native-async-storage/async-storage');
 
 describe('Authentication Tests', () => {
-    const mockUser = {
-        email: 'test@example.com',
-        password: 'Password123',
-        username: 'testuser',
-        first_name: 'John',
-        last_name: 'Doe',
-        sneaker_size: 10,
-        profile_picture: ''
-    };
-
     beforeEach(() => {
         jest.clearAllMocks();
-        (useSession as jest.Mock).mockReturnValue({
-            signUp: mockAuth.signUp,
-            login: async (email: string, password: string) => {
-                const result = await mockAuth.login(email, password);
-                await AsyncStorage.setItem('user', JSON.stringify(mockUser));
-                return result;
-            },
-            logout: mockAuth.logout
-        });
         jest.mocked(AsyncStorage.setItem).mockClear();
     });
 
     describe('Sign Up Tests', () => {
-        it('devrait créer un nouvel utilisateur avec succès', async () => {
+        it('should create a new user successfully', async () => {
             mockAuth.signUp.mockResolvedValueOnce({ 
-                user: mockUser,
+                user: typedMockUser,
                 message: 'User created'
             });
 
             const { signUp } = useSession();
             const result = await signUp(
-                mockUser.email,
-                mockUser.password,
-                mockUser.username,
-                mockUser.first_name,
-                mockUser.last_name,
-                mockUser.sneaker_size,
-                mockUser.profile_picture
+                typedMockUser.email,
+                typedMockUser.password,
+                typedMockUser.username,
+                typedMockUser.first_name,
+                typedMockUser.last_name,
+                typedMockUser.sneaker_size,
+                typedMockUser.profile_picture.url
             );
 
             expect(result).toHaveProperty('user');
             expect(result).toHaveProperty('message', 'User created');
             expect(mockAuth.signUp).toHaveBeenCalledWith(
-                mockUser.email,
-                mockUser.password,
-                mockUser.username,
-                mockUser.first_name,
-                mockUser.last_name,
-                mockUser.sneaker_size,
-                mockUser.profile_picture
+                typedMockUser.email,
+                typedMockUser.password,
+                typedMockUser.username,
+                typedMockUser.first_name,
+                typedMockUser.last_name,
+                typedMockUser.sneaker_size,
+                typedMockUser.profile_picture.url
             );
         });
 
-        it('devrait gérer les erreurs lors de l\'inscription', async () => {
+        it('should handle errors during signup', async () => {
             mockAuth.signUp.mockRejectedValueOnce(new Error('Email already exists'));
 
             const { signUp } = useSession();
             await expect(signUp(
-                mockUser.email,
-                mockUser.password,
-                mockUser.username,
-                mockUser.first_name,
-                mockUser.last_name,
-                mockUser.sneaker_size,
-                mockUser.profile_picture
+                typedMockUser.email,
+                typedMockUser.password,
+                typedMockUser.username,
+                typedMockUser.first_name,
+                typedMockUser.last_name,
+                typedMockUser.sneaker_size,
+                typedMockUser.profile_picture.url
             )).rejects.toThrow('Email already exists');
         });
     });
 
     describe('Login Tests', () => {
-        it('devrait connecter un utilisateur avec succès', async () => {
+        it('should log in a user successfully', async () => {
             const mockToken = 'fake-token';
             mockAuth.login.mockResolvedValueOnce({
                 token: mockToken,
-                user: mockUser
+                user: typedMockUser
             });
 
             const { login } = useSession();
-            const result = await login(mockUser.email, mockUser.password);
+            const result = await login(typedMockUser.email, typedMockUser.password);
 
             expect(result).toHaveProperty('token');
             expect(result).toHaveProperty('user');
-            expect(AsyncStorage.setItem).toHaveBeenCalledWith('user', JSON.stringify(mockUser));
+            expect(AsyncStorage.setItem).toHaveBeenCalledWith('user', JSON.stringify(typedMockUser));
         });
 
-        it('devrait gérer les erreurs de connexion', async () => {
+        it('should handle login errors', async () => {
             mockAuth.login.mockRejectedValueOnce(new Error('Invalid credentials'));
 
             const { login } = useSession();
-            await expect(login(mockUser.email, 'wrongpassword'))
+            await expect(login(typedMockUser.email, 'wrongpassword'))
                 .rejects.toThrow('Invalid credentials');
+        });
+    });
+
+    describe('Account Management Tests', () => {
+        describe('Delete Account Tests', () => {
+            it('should delete account successfully', async () => {
+                mockAuth.deleteAccount.mockResolvedValueOnce({
+                    message: 'Account deleted successfully'
+                });
+
+                const { deleteAccount } = useSession();
+                const result = await deleteAccount(typedMockUser.id, 'fake-token');
+
+                expect(result).toHaveProperty('message', 'Account deleted successfully');
+                expect(mockAuth.deleteAccount).toHaveBeenCalledWith(typedMockUser.id, 'fake-token');
+                expect(AsyncStorage.removeItem).toHaveBeenCalledWith('user');
+                expect(AsyncStorage.removeItem).toHaveBeenCalledWith('sessionToken');
+            });
+
+            it('should handle errors during account deletion', async () => {
+                mockAuth.deleteAccount.mockRejectedValueOnce(new Error('Unauthorized'));
+
+                const { deleteAccount } = useSession();
+                await expect(deleteAccount(typedMockUser.id, 'invalid-token'))
+                    .rejects.toThrow('Unauthorized');
+            });
+        });
+
+        describe('Update Profile Tests', () => {
+            const updatedData = {
+                newUsername: 'newuser',
+                newFirstName: 'Jane',
+                newLastName: 'Smith',
+                newSneakerSize: 11,
+                newEmail: 'new@example.com',
+                newProfilePicture: 'new-picture.jpg'
+            };
+
+            it('should update user profile successfully', async () => {
+                const updatedUser = { ...typedMockUser, ...updatedData };
+                mockAuth.updateUser.mockResolvedValueOnce({
+                    user: updatedUser,
+                    message: 'Profile updated successfully'
+                });
+
+                const { updateUser } = useSession();
+                const result = await updateUser(typedMockUser, updatedData, 'fake-token');
+
+                expect(result.user).toMatchObject(updatedUser);
+                expect(mockAuth.updateUser).toHaveBeenCalledWith(typedMockUser, updatedData, 'fake-token');
+                expect(AsyncStorage.setItem).toHaveBeenCalledWith('user', JSON.stringify(updatedUser));
+            });
+
+            it('should handle validation errors during update', async () => {
+                mockAuth.updateUser.mockRejectedValueOnce(new Error('Invalid sneaker size'));
+
+                const { updateUser } = useSession();
+                const invalidData = { ...updatedData, newSneakerSize: 0 };
+                
+                await expect(updateUser(typedMockUser, invalidData, 'fake-token'))
+                    .rejects.toThrow('Invalid sneaker size');
+            });
+
+            it('should handle profile picture update', async () => {
+                const dataWithPicture = {
+                    ...updatedData,
+                    newProfilePicture: 'data:image/jpeg;base64,fake-image-data'
+                };
+                const updatedUser = { 
+                    ...typedMockUser, 
+                    profile_picture: { url: dataWithPicture.newProfilePicture }
+                };
+
+                mockAuth.updateUser.mockResolvedValueOnce({
+                    user: updatedUser,
+                    message: 'Profile updated successfully'
+                });
+
+                const { updateUser } = useSession();
+                const result = await updateUser(typedMockUser, dataWithPicture, 'fake-token');
+
+                expect(result.user.profile_picture.url).toBe(dataWithPicture.newProfilePicture);
+            });
         });
     });
 }); 

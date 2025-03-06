@@ -20,7 +20,8 @@ const AuthContext = createContext<{
     getUserSneakers: () => Promise<void | undefined>;
     verifyToken: () => Promise<boolean>;
     loadInitialData: () => Promise<void | [void, void, void]>;
-    updateUser: (user: User, profileData: ProfileData, sessionToken: string) => Promise<void>;
+    updateUser: (user: User, profileData: ProfileData, sessionToken: string) => Promise<{ user: User }>;
+    deleteAccount: (userId: string, token: string) => Promise<{ message: string }>;
     }>({
         login: async () => {},
         signUp: async () => {},
@@ -36,7 +37,8 @@ const AuthContext = createContext<{
         getUserSneakers: async () => {},
         verifyToken: async () => false,
         loadInitialData: async () => {},
-        updateUser: async () => {}
+        updateUser: async () => ({ user: {} as User }),
+        deleteAccount: async () => ({ message: '' })
 });
 
 export function useSession() {
@@ -369,9 +371,9 @@ export function SessionProvider({ children }: PropsWithChildren) {
             });
     };
 
-    const updateUser = async (user: User, profileData: ProfileData, sessionToken: string) => {
+    const updateUser = async (user: User, profileData: ProfileData, sessionToken: string): Promise<{ user: User }> => {
         if (!user?.id) {
-            return;
+            return { user: {} as User };
         }
     
         const formData = new FormData();
@@ -402,7 +404,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
             formData.append('user[profile_picture]', imageFile as any);
         }
     
-        fetch(`${process.env.EXPO_PUBLIC_BASE_API_URL}/users/${user.id}`, {
+        return fetch(`${process.env.EXPO_PUBLIC_BASE_API_URL}/users/${user.id}`, {
             method: 'PATCH',
             headers: {
                 'Accept': 'application/json',
@@ -420,9 +422,32 @@ export function SessionProvider({ children }: PropsWithChildren) {
             }
             return data;
         })
-        .then(() => {
+        .then((data) => {
             getUser()
                 .then(() => router.replace('/(app)/(tabs)/user'));
+            return data;
+        })
+        .catch(error => {
+            throw error;
+        });
+    }
+
+    const deleteAccount = async (userId: string, token: string) => {
+        return fetch(`${process.env.EXPO_PUBLIC_BASE_API_URL}/users/${userId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json'
+            }
+        })
+        .then(async response => {
+            if (!response.ok) {
+                throw new Error('Error when deleting account');
+            }
+            return response.json();
+        })
+        .then(data => {
+            return data;
         })
         .catch(error => {
             throw error;
@@ -446,7 +471,8 @@ export function SessionProvider({ children }: PropsWithChildren) {
                 getUserSneakers,
                 verifyToken,
                 loadInitialData,
-                updateUser
+                updateUser,
+                deleteAccount
             }}>
             {children}
         </AuthContext.Provider>

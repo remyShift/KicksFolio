@@ -4,5 +4,6 @@ export const mockAuth = {
     logout: jest.fn(),
     updateUser: jest.fn(),
     checkEmail: jest.fn(),
-    checkUsername: jest.fn()
+    checkUsername: jest.fn(),
+    deleteAccount: jest.fn(),
 }; 
