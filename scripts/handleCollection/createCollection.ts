@@ -15,7 +15,6 @@ export const createCollection = async (name: string, userId: string, sessionToke
         return data;
     })
     .catch(error => {
-        console.error(`Error when creating collection: ${error}`);
-        throw error;
+        throw new Error(`Error when creating collection: ${error}`);
     });
 };

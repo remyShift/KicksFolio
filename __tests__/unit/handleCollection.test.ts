@@ -1,4 +1,4 @@
-import { createCollection } from '../../scripts/handleCollection';
+import { createCollection } from '@/scripts/handleCollection/createCollection';
 import { mockUser } from '../../__mocks__/context/mockData';
 
 describe('Handle Collection', () => {

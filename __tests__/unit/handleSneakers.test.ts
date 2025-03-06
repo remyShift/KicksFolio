@@ -1,7 +1,9 @@
 import { mockHandleSneakers } from '../../__mocks__/api/handleSneakers';
 import { mockSneaker } from '../../__mocks__/context/mockData';
 
-jest.mock('../../scripts/handleSneakers', () => mockHandleSneakers);
+jest.mock('@/scripts/handleSneakers/addSneaker', () => mockHandleSneakers);
+jest.mock('@/scripts/handleSneakers/deleteSneaker', () => mockHandleSneakers);
+jest.mock('@/scripts/handleSneakers/skuLookUp', () => mockHandleSneakers);
 
 describe('Handle Sneakers', () => {
     const mockSessionToken = 'fake-token';

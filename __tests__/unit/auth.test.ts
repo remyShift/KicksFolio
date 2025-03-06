@@ -24,28 +24,32 @@ const typedMockUser: User = {
     sneakers: []
 };
 
-type UpdateUserResponse = {
-    user: User;
-    message: string;
-};
+const mockUseSession = jest.fn(() => ({
+    user: typedMockUser,
+    signUp: mockAuth.signUp,
+    login: async (email: string, password: string) => {
+        const result = await mockAuth.login(email, password);
+        await AsyncStorage.setItem('user', JSON.stringify(typedMockUser));
+        return result;
+    },
+    logout: mockAuth.logout,
+    updateUser: async (user: User, profileData: any, token: string) => {
+        const result = await mockAuth.updateUser(user, profileData, token);
+        if (result.user) {
+            await AsyncStorage.setItem('user', JSON.stringify(result.user));
+        }
+        return result;
+    },
+    deleteAccount: async (userId: string, token: string) => {
+        const result = await mockAuth.deleteAccount(userId, token);
+        await AsyncStorage.removeItem('user');
+        await AsyncStorage.removeItem('sessionToken');
+        return result;
+    }
+}));
 
 jest.mock('../../context/authContext', () => ({
-    useSession: jest.fn(() => ({
-        user: typedMockUser,
-        signUp: mockAuth.signUp,
-        login: async (email: string, password: string) => {
-            const result = await mockAuth.login(email, password);
-            await AsyncStorage.setItem('user', JSON.stringify(typedMockUser));
-            return result;
-        },
-        logout: mockAuth.logout,
-        updateUser: async (user: User, profileData: any, token: string): Promise<UpdateUserResponse> => {
-            return mockAuth.updateUser(user, profileData, token);
-        },
-        deleteAccount: async (userId: string, token: string): Promise<{ message: string }> => {
-            return mockAuth.deleteAccount(userId, token);
-        }
-    }))
+    useSession: () => mockUseSession()
 }));
 
 jest.mock('@react-native-async-storage/async-storage');
@@ -54,6 +58,9 @@ describe('Authentication Tests', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         jest.mocked(AsyncStorage.setItem).mockClear();
+        jest.mocked(AsyncStorage.removeItem).mockClear();
+        jest.mocked(AsyncStorage.setItem).mockImplementation(() => Promise.resolve());
+        jest.mocked(AsyncStorage.removeItem).mockImplementation(() => Promise.resolve());
     });
 
     describe('Sign Up Tests', () => {
@@ -140,8 +147,8 @@ describe('Authentication Tests', () => {
 
                 expect(result).toHaveProperty('message', 'Account deleted successfully');
                 expect(mockAuth.deleteAccount).toHaveBeenCalledWith(typedMockUser.id, 'fake-token');
-                expect(AsyncStorage.removeItem).toHaveBeenCalledWith('user');
-                expect(AsyncStorage.removeItem).toHaveBeenCalledWith('sessionToken');
+                expect(AsyncStorage.removeItem).toHaveBeenNthCalledWith(1, 'user');
+                expect(AsyncStorage.removeItem).toHaveBeenNthCalledWith(2, 'sessionToken');
             });
 
             it('should handle errors during account deletion', async () => {
@@ -175,7 +182,7 @@ describe('Authentication Tests', () => {
 
                 expect(result.user).toMatchObject(updatedUser);
                 expect(mockAuth.updateUser).toHaveBeenCalledWith(typedMockUser, updatedData, 'fake-token');
-                expect(AsyncStorage.setItem).toHaveBeenCalledWith('user', JSON.stringify(updatedUser));
+                expect(AsyncStorage.setItem).toHaveBeenCalledWith('user', JSON.stringify(result.user));
             });
 
             it('should handle validation errors during update', async () => {
