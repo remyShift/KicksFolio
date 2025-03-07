@@ -217,4 +217,25 @@ describe('Authentication Tests', () => {
             });
         });
     });
+
+    describe('Session Management', () => {
+        it('should persist user data correctly', async () => {
+            const { login } = useSession();
+            const userData = {
+                email: 'test@example.com',
+                password: 'Password123'
+            };
+
+            await login(userData.email, userData.password);
+
+            expect(AsyncStorage.setItem).toHaveBeenCalledWith(
+                'user',
+                expect.any(String)
+            );
+            expect(AsyncStorage.setItem).toHaveBeenCalledWith(
+                'tokens',
+                expect.any(String)
+            );
+        });
+    });
 }); 
