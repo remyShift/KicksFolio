@@ -1,45 +1,13 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext, useContext, type PropsWithChildren, useState, useEffect } from 'react';
-import { User, Collection, Sneaker, ProfileData } from '@/types/Models';
+import { AuthContextType } from '@/types/auth';
+import { authApi } from '@/services/authApi';
+import { storageService } from '@/services/storage';
 import { useAppState } from '@react-native-community/hooks';
-import { useStorageState, setStorageItemAsync } from '@/hooks/useStorageState';
+import { useStorageState } from '@/hooks/useStorageState';
 import { router } from 'expo-router';
+import { User, Sneaker, Collection, ProfileData } from '@/types/Models';
 
-const AuthContext = createContext<{
-    login: (email: string, password: string) => Promise<void>;
-    signUp: (email: string, password: string, username: string, first_name: string, last_name: string, sneaker_size: number, profile_picture: string) => Promise<void>;
-    logout: () => void;
-    sessionToken?: string | null;
-    isLoading: boolean;
-    user?: User | null;
-    userCollection?: Collection | null;
-    userSneakers: Sneaker[] | null;
-    setUserSneakers: React.Dispatch<React.SetStateAction<Sneaker[] | null>>;
-    getUser: () => Promise<void | undefined>;
-    getUserCollection: () => Promise<void | undefined>;
-    getUserSneakers: () => Promise<void | undefined>;
-    verifyToken: () => Promise<boolean>;
-    loadInitialData: () => Promise<void | [void, void, void]>;
-    updateUser: (user: User, profileData: ProfileData, sessionToken: string) => Promise<{ user: User }>;
-    deleteAccount: (userId: string, token: string) => Promise<{ message: string }>;
-    }>({
-        login: async () => {},
-        signUp: async () => {},
-        logout: () => {},
-        sessionToken: null,
-        isLoading: false,
-        user: null,
-        userCollection: null,
-        userSneakers: null,
-        setUserSneakers: () => {},
-        getUser: async () => {},
-        getUserCollection: async () => {},
-        getUserSneakers: async () => {},
-        verifyToken: async () => false,
-        loadInitialData: async () => {},
-        updateUser: async () => ({ user: {} as User }),
-        deleteAccount: async () => ({ message: '' })
-});
+const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
 export function useSession() {
     const value = useContext(AuthContext);
@@ -60,112 +28,35 @@ export function SessionProvider({ children }: PropsWithChildren) {
     const [userSneakers, setUserSneakers] = useState<Sneaker[] | null>(null);
 
     useEffect(() => {
-        AsyncStorage.getItem('user')
-            .then(storedUser => {
-                if (storedUser) setUser(JSON.parse(storedUser));
-                return AsyncStorage.getItem('collection');
-            })
-            .then(storedCollection => {
-                if (storedCollection) setUserCollection(JSON.parse(storedCollection));
-                return AsyncStorage.getItem('sneakers');
-            })
-            .then(storedSneakers => {
-                if (storedSneakers) setUserSneakers(JSON.parse(storedSneakers));
-                if (sessionToken) {
-                    return verifyToken();
-                }
-            })
-            .then(isValid => {
-                if (isValid === false) {
-                    return logout();
-                }
-            })
-            .catch(() => {
-                return;
-            });
+        initializeData();
     }, [sessionToken]);
 
     useEffect(() => {
-        if (appState === 'active' && sessionToken) {
-            loadInitialData();
-        }
-
-        if (appState === 'background') {
-            if (user) storeData('user', user);
-            if (userCollection) storeData('collection', userCollection);
-            if (userSneakers) storeData('sneakers', userSneakers);
-        }
+        handleAppStateChange();
     }, [appState]);
 
-    useEffect(() => {
-        if (!sessionToken) {
-            setUser(null);
-            setUserCollection(null);
-            setUserSneakers(null);
-            return;
+    const initializeData = async () => {
+        const storedUser = await storageService.getItem('user');
+        if (storedUser) setUser(storedUser);
+        
+        const storedCollection = await storageService.getItem('collection');
+        if (storedCollection) setUserCollection(storedCollection);
+        
+        const storedSneakers = await storageService.getItem('sneakers');
+        if (storedSneakers) setUserSneakers(storedSneakers);
+        
+        if (sessionToken) {
+            const isValid = await verifyToken();
+            if (!isValid) await logout();
         }
-
-        if (user && userCollection && userSneakers) {
-            return;
-        }
-
-        verifyToken()
-            .then(isValid => {
-                if (!isValid) {
-                    return logout();
-                }
-                return getUser();
-            })
-            .catch(error => {
-                return logout();
-            });
-    }, [sessionToken]);
-
-    const storeData = (key: string, value: any) => {
-        return new Promise((resolve, reject) => {
-            if (key === 'sessionToken') {
-                setStorageItemAsync(key, JSON.stringify(value))
-                    .then(() => resolve(value))
-                    .catch(() => reject(value));
-            } else {
-                AsyncStorage.setItem(key, JSON.stringify(value))
-                    .then(() => resolve(value))
-                    .catch(() => reject(value));
-            }
-        });
     };
 
     const login = async (email: string, password: string) => {
-        return fetch(`${process.env.EXPO_PUBLIC_BASE_API_URL}/login`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ authentication: { email, password } }),
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Error logging in');
-            }
-            return response.json();
-        })
-        .then(data => {
-            const { token, user: userData } = data;
-            
-            return Promise.all([
-                setStorageItemAsync('sessionToken', token),
-                AsyncStorage.setItem('user', JSON.stringify(userData))
-            ])
-            .then(() => {
-                setSessionToken(token);
-                setUser(userData);
-                return data;
-            });
-        })
-        .catch(error => {
-            throw error;
-        });
-    };
+        const data = await authApi.login(email, password);
+        setSessionToken(data.token);
+        setUser(data.user);
+        await storageService.setItem('user', data.user);
+    }
 
     const signUp = async (email: string, password: string, username: string, first_name: string, last_name: string, sneaker_size: number, profile_picture: string): Promise<void> => {
         const formData = new FormData();
@@ -208,7 +99,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
             return data;
         })
         .catch(error => {
-            throw error;
+            throw new Error(`Error when signing up: ${error}`);
         });
     };
 
@@ -221,9 +112,9 @@ export function SessionProvider({ children }: PropsWithChildren) {
             }
         });
         setSessionToken(null);
-        storeData('user', null);
-        storeData('collection', null);
-        storeData('sneakers', null);
+        await storageService.setItem('user', null);
+        await storageService.setItem('collection', null);
+        await storageService.setItem('sneakers', null);
         setUser(null);
         setUserCollection(null);
         setUserSneakers(null);
@@ -252,18 +143,18 @@ export function SessionProvider({ children }: PropsWithChildren) {
         })
         .then(async data => {
             setUser(data.user);
-            await storeData('user', data.user);
+            await storageService.setItem('user', data.user);
             await getUserCollection();
             await getUserSneakers();
         })
         .catch(async error => {
             await logout();
-            throw error;
+            throw new Error(`Error when getting user: ${error}`);
         });
     };
 
     const getUserCollection = async () => {
-        if (!user?.id || !sessionToken) return Promise.resolve(null);
+        if (!user?.id || !sessionToken) return null;
         
         return fetch(`${process.env.EXPO_PUBLIC_BASE_API_URL}/users/${user.id}/collection`, {
             headers: {
@@ -271,29 +162,26 @@ export function SessionProvider({ children }: PropsWithChildren) {
                 'Accept': 'application/json'
             }
         })
-        .then(response => {
+        .then(async response => {
             if (response.status === 401) {
-                return logout().then(() => null);
+                await logout();
+                return null;
             }
-
-            if (!response.ok) {
-                throw new Error('Error when getting collection');
-            }
-
+            if (!response.ok) throw new Error('Error when getting collection');
             return response.json();
         })
-        .then(data => {
-            if (data && data.collection) {
+        .then(async data => {
+            if (data?.collection) {
                 setUserCollection(data.collection);
-                storeData('collection', data.collection);
+                await storageService.setItem('collection', data.collection);
                 return data.collection;
             }
             return null;
         })
-        .catch(error => {
+        .catch(async error => {
             setUserCollection(null);
-            storeData('collection', null);
-            throw error;
+            await storageService.setItem('collection', null);
+            throw new Error(`Error when getting collection: ${error}`);
         });
     };
 
@@ -311,18 +199,18 @@ export function SessionProvider({ children }: PropsWithChildren) {
             if (!response.ok) return null;
             return response.json();
         })
-        .then(data => {
+        .then(async data => {
             if (data && data.sneakers) {
                 setUserSneakers(data.sneakers);
-                storeData('sneakers', data.sneakers);
+                await storageService.setItem('sneakers', data.sneakers);
                 return data.sneakers;
             }
             return null;
         })
-        .catch(error => {
+        .catch(async error => {
             setUserSneakers(null);
-            storeData('sneakers', null);
-            return null;
+            await storageService.setItem('sneakers', null);
+            throw new Error(`Error when getting sneakers: ${error}`);
         });
     };
 
@@ -351,8 +239,8 @@ export function SessionProvider({ children }: PropsWithChildren) {
             }
             return false;
         })
-        .catch(() => {
-            return false;
+        .catch((error) => {
+            throw new Error(`Error when verifying token: ${error}`);
         });
     };
 
@@ -366,8 +254,8 @@ export function SessionProvider({ children }: PropsWithChildren) {
                 }
                 return null;
             })
-            .catch(() => {
-                return null;
+            .catch((error) => {
+                throw new Error(`Error when loading initial data: ${error}`);
             });
     };
 
@@ -428,7 +316,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
             return data;
         })
         .catch(error => {
-            throw error;
+            throw new Error(`Error when updating user: ${error}`);
         });
     }
 
@@ -450,9 +338,23 @@ export function SessionProvider({ children }: PropsWithChildren) {
             return data;
         })
         .catch(error => {
-            throw error;
+            throw new Error(`Error when deleting account: ${error}`);
         });
     }
+
+    const handleAppStateChange = async () => {
+        if (appState === 'active' && sessionToken) {
+            await loadInitialData();
+        }
+
+        if (appState === 'background') {
+            await storageService.saveAppState({
+                user,
+                collection: userCollection,
+                sneakers: userSneakers
+            });
+        }
+    };
 
     return (
         <AuthContext.Provider
