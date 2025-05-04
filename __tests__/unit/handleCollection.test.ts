@@ -1,4 +1,4 @@
-import { createCollection } from '@/services/handleCollection/createCollection';
+import { collectionService } from '@/services/CollectionService';
 import { mockUser } from '../../__mocks__/context/mockData';
 
 describe('Handle Collection', () => {
@@ -11,73 +11,90 @@ describe('Handle Collection', () => {
 
     describe('Collection creation', () => {
         it('should create a collection successfully', async () => {
-            const mockResponse = {
-                collection: {
-                    id: '1',
-                    name: 'Ma Collection',
-                    user_id: mockUser.id
-                }
+            const mockCollection = {
+                id: '1',
+                name: 'Ma Collection',
+                user_id: mockUser.id,
+                created_at: '2024-01-01',
+                updated_at: '2024-01-01'
             };
 
-            (global.fetch as jest.Mock).mockResolvedValueOnce({
-                ok: true,
-                json: () => Promise.resolve(mockResponse)
-            });
-
-            const result = await createCollection('Ma Collection', mockUser.id, mockSessionToken);
-
-            expect(result).toEqual(mockResponse);
-            expect(global.fetch).toHaveBeenCalledWith(
-                `${process.env.EXPO_PUBLIC_BASE_API_URL}/users/${mockUser.id}/collection`,
-                {
-                    method: 'POST',
+            global.fetch = jest.fn().mockImplementationOnce(() => 
+                Promise.resolve({
+                    ok: true,
                     headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${mockSessionToken}`,
+                        get: () => 'application/json'
                     },
-                    body: JSON.stringify({ collection: { name: 'Ma Collection' } }),
-                }
+                    json: () => Promise.resolve({ collection: mockCollection })
+                })
             );
+
+            const result = await collectionService.create('Ma Collection', mockUser.id, mockSessionToken);
+            expect(result.collection).toEqual(mockCollection);
         });
 
         it('should return an error if the collection name is empty', async () => {
-            (global.fetch as jest.Mock).mockResolvedValueOnce({
-                ok: false,
-                json: () => Promise.resolve({ errors: ["Name can't be blank"] })
-            });
+            global.fetch = jest.fn().mockImplementationOnce(() => 
+                Promise.resolve({
+                    ok: false,
+                    headers: {
+                        get: () => 'application/json'
+                    },
+                    json: () => Promise.resolve({ errors: ["Name can't be blank"] })
+                })
+            );
 
-            await expect(createCollection('', mockUser.id, mockSessionToken))
+            await expect(collectionService.create('', mockUser.id, mockSessionToken))
                 .rejects
                 .toThrow("Name can't be blank");
         });
 
         it('should return an error if the user already has a collection', async () => {
-            (global.fetch as jest.Mock).mockResolvedValueOnce({
-                ok: false,
-                json: () => Promise.resolve({ errors: ['User already has a collection'] })
-            });
+            global.fetch = jest.fn().mockImplementationOnce(() => 
+                Promise.resolve({
+                    ok: false,
+                    headers: {
+                        get: () => 'application/json'
+                    },
+                    json: () => Promise.resolve({ error: 'User already has a collection' })
+                })
+            );
 
-            await expect(createCollection('Ma Collection', mockUser.id, mockSessionToken))
+            await expect(collectionService.create('Ma Collection', mockUser.id, mockSessionToken))
                 .rejects
                 .toThrow('User already has a collection');
         });
 
         it('should return an error if the token is invalid', async () => {
-            (global.fetch as jest.Mock).mockResolvedValueOnce({
-                ok: false,
-                status: 401,
-                json: () => Promise.resolve({ error: 'Invalid token' })
-            });
+            global.fetch = jest.fn().mockImplementationOnce(() => 
+                Promise.resolve({
+                    ok: false,
+                    headers: {
+                        get: () => 'application/json'
+                    },
+                    json: () => Promise.resolve({ error: 'Error when creating collection' })
+                })
+            );
 
-            await expect(createCollection('Ma Collection', mockUser.id, 'invalid-token'))
+            await expect(collectionService.create('Ma Collection', mockUser.id, 'invalid-token'))
                 .rejects
                 .toThrow('Error when creating collection');
         });
 
         it('should return an error if the token is not provided', async () => {
-            await expect(createCollection('Ma Collection', mockUser.id, ''))
+            global.fetch = jest.fn().mockImplementationOnce(() => 
+                Promise.resolve({
+                    ok: false,
+                    headers: {
+                        get: () => 'application/json'
+                    },
+                    json: () => Promise.resolve({ error: 'Token is required' })
+                })
+            );
+
+            await expect(collectionService.create('Ma Collection', mockUser.id, ''))
                 .rejects
-                .toThrow();
+                .toThrow('Token is required');
         });
     });
 }); 

@@ -10,8 +10,16 @@ interface UserData {
     profile_picture?: string;
 }
 
+interface LoginResponse {
+    user: UserData;
+    tokens: {
+        access: string;
+        refresh: string;
+    };
+}
+
 export class AuthService extends BaseApiService {
-    async login(email: string, password: string) {
+    async login(email: string, password: string): Promise<LoginResponse> {
         const response = await fetch(`${this.baseUrl}/login`, {
             method: 'POST',
             headers: {

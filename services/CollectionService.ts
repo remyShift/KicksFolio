@@ -32,7 +32,3 @@ export class CollectionService extends BaseApiService {
 }
 
 export const collectionService = new CollectionService();
-
-export const createCollection = (name: string, userId: string, sessionToken: string) => {
-    return collectionService.create(name, userId, sessionToken);
-}; 

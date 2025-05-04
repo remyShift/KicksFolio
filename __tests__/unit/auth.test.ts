@@ -2,7 +2,7 @@ import { mockAuth } from '../../__mocks__/api/auth';
 import { useSession } from '@/context/authContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { mockUser } from '../../__mocks__/api/user';
-import { User } from '@/types/ProfileData';
+import { User } from '@/types/User';
 
 const typedMockUser: User = {
     ...mockUser,
@@ -27,10 +27,18 @@ const typedMockUser: User = {
 const mockUseSession = jest.fn(() => ({
     user: typedMockUser,
     signUp: mockAuth.signUp,
-    login: async (email: string, password: string) => {
+    login: async (email: string, password: string): Promise<{ tokens: { access: string; refresh: string }; user: User }> => {
         const result = await mockAuth.login(email, password);
-        await AsyncStorage.setItem('user', JSON.stringify(typedMockUser));
-        return result;
+        const loginResponse = {
+            user: typedMockUser,
+            tokens: {
+                access: 'fake-access-token',
+                refresh: 'fake-refresh-token'
+            }
+        };
+        await AsyncStorage.setItem('user', JSON.stringify(loginResponse.user));
+        await AsyncStorage.setItem('tokens', JSON.stringify(loginResponse.tokens));
+        return loginResponse;
     },
     logout: mockAuth.logout,
     updateUser: async (user: User, profileData: any, token: string) => {
@@ -112,18 +120,20 @@ describe('Authentication Tests', () => {
 
     describe('Login Tests', () => {
         it('should log in a user successfully', async () => {
-            const mockToken = 'fake-token';
+            const mockTokens = {
+                access: 'fake-access-token',
+                refresh: 'fake-refresh-token'
+            };
             mockAuth.login.mockResolvedValueOnce({
-                token: mockToken,
+                tokens: mockTokens,
                 user: typedMockUser
             });
 
             const { login } = useSession();
-            const result = await login(typedMockUser.email, typedMockUser.password);
+            await login(typedMockUser.email, typedMockUser.password);
 
-            expect(result).toHaveProperty('token');
-            expect(result).toHaveProperty('user');
             expect(AsyncStorage.setItem).toHaveBeenCalledWith('user', JSON.stringify(typedMockUser));
+            expect(AsyncStorage.setItem).toHaveBeenCalledWith('tokens', JSON.stringify(mockTokens));
         });
 
         it('should handle login errors', async () => {
@@ -226,15 +236,20 @@ describe('Authentication Tests', () => {
                 password: 'Password123'
             };
 
-            await login(userData.email, userData.password);
+            const mockTokens = {
+                access: 'fake-access-token',
+                refresh: 'fake-refresh-token'
+            };
 
-            expect(AsyncStorage.setItem).toHaveBeenCalledWith(
+            const result = await login(userData.email, userData.password);
+
+            expect(AsyncStorage.setItem).toHaveBeenNthCalledWith(1,
                 'user',
-                expect.any(String)
+                JSON.stringify(typedMockUser)
             );
-            expect(AsyncStorage.setItem).toHaveBeenCalledWith(
+            expect(AsyncStorage.setItem).toHaveBeenNthCalledWith(2,
                 'tokens',
-                expect.any(String)
+                JSON.stringify(mockTokens)
             );
         });
     });

@@ -1,5 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { User, Collection, Sneaker } from '@/types/ProfileData';
+import { User } from '@/types/User';
+import { Collection } from '@/types/Collection';
+import { Sneaker } from '@/types/Sneaker';
 import { setStorageItemAsync } from '@/hooks/useStorageState';
 
 interface AppState {

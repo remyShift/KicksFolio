@@ -23,9 +23,10 @@ export class FormValidationService {
 
     public async validateField(
         value: string,
-        inputType: 'username' | 'email' | 'password' | 'firstName' | 'lastName' | 'size',
+        inputType: 'username' | 'email' | 'password' | 'firstName' | 'lastName' | 'size' | 'confirmPassword',
         isLoginPage: boolean = false,
-        nextRef: RefObject<TextInput> | null = null
+        nextRef: RefObject<TextInput> | null = null,
+        password?: string
     ): Promise<boolean> {
         let isValid = false;
         
@@ -42,6 +43,12 @@ export class FormValidationService {
             case 'firstName':
             case 'lastName':
                 isValid = this.validateName(value);
+                break;
+            case 'confirmPassword':
+                if (!password) {
+                    throw new Error('Password is required');
+                }
+                isValid = this.validateConfirmPassword(value, password);
                 break;
             case 'size':
                 isValid = this.validateSize(Number(value));
