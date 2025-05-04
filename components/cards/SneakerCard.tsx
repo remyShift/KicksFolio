@@ -1,5 +1,5 @@
 import { View, Text, Pressable } from 'react-native';
-import { Sneaker } from '@/types/Models';
+import { Sneaker } from '@/types/ProfileData';
 import { Image } from 'expo-image';
 
 export default function SneakerCard({ sneaker, setModalStep, setModalVisible, setSneaker }: { 

@@ -3,7 +3,7 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { useEffect, useState, useCallback } from 'react';
 import { useSession } from '@/context/authContext';
-import { Sneaker } from '@/types/Models';
+import { Sneaker } from '@/types/ProfileData';
 import { Image } from 'expo-image';
 
 export default function SplashScreen({ sessionToken, loadInitialData, setIsSplashScreenVisible }: { sessionToken: string | null | undefined, loadInitialData: () => Promise<void>, setIsSplashScreenVisible: (value: boolean) => void }) {

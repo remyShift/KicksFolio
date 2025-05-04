@@ -1,7 +1,7 @@
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { Text, View, Pressable } from 'react-native';
-import { Collection } from '@/types/Models';
-import { Sneaker } from '@/types/Models';
+import { Collection } from '@/types/ProfileData';
+import { Sneaker } from '@/types/ProfileData';
 import { router } from 'expo-router';
 import { Image } from 'expo-image';
 

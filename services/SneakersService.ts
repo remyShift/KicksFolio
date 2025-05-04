@@ -1,4 +1,4 @@
-import { Sneaker } from "@/types/Models";
+import { Sneaker } from "@/types/ProfileData";
 import { addSneaker } from "@/scripts/handleSneakers/addSneaker";
 import { deleteSneaker } from "@/scripts/handleSneakers/deleteSneaker";
 import { skuLookUp } from "@/scripts/handleSneakers/skuLookUp";

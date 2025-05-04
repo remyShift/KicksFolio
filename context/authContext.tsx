@@ -5,7 +5,7 @@ import { storageService } from '@/services/storage';
 import { useAppState } from '@react-native-community/hooks';
 import { useStorageState } from '@/hooks/useStorageState';
 import { router } from 'expo-router';
-import { User, Sneaker, Collection, ProfileData } from '@/types/Models';
+import { User, Sneaker, Collection, ProfileData } from '@/types/ProfileData';
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 

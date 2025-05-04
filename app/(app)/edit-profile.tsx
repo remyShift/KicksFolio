@@ -9,7 +9,7 @@ import PageTitle from '@/components/text/PageTitle'
 import MainButton from '@/components/buttons/MainButton'
 import ErrorMsg from '@/components/text/ErrorMsg'
 import { useSession } from '@/context/authContext'
-import { ProfileData } from '@/types/Models'
+import { ProfileData } from '@/types/ProfileData'
 
 export default function EditProfile() {
     const { user, sessionToken, updateUser } = useSession()

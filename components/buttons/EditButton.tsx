@@ -1,6 +1,6 @@
 import { Pressable } from 'react-native';
 import Feather from '@expo/vector-icons/Feather';
-import { Sneaker } from '@/types/Models';
+import { Sneaker } from '@/types/ProfileData';
 
 export default function EditButton({ onPressAction }: { onPressAction: () => void }) {
     return (

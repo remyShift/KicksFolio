@@ -1,4 +1,7 @@
-import { User, Collection, Sneaker, ProfileData } from '@/types/Models';
+import { User } from '@/types/User';
+import { Collection } from '@/types/Collection';
+import { Sneaker } from '@/types/Sneaker';
+import { ProfileData } from '@/types/ProfileData';
 
 export interface AuthContextType {
     login: (email: string, password: string) => Promise<void>;

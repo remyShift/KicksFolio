@@ -12,7 +12,7 @@ import { fetchSkuSneakerData, handleSneakerDelete, handleSneakerSubmit } from '@
 import { useSession } from '@/context/authContext';
 import { checkSneakerName, checkSneakerSize, checkSneakerCondition, checkSneakerBrand, checkSneakerStatus, validateAllFields, checkPricePaid } from '@/scripts/validatesSneakersForm';
 import ErrorMsg from '@/components/text/ErrorMsg';
-import { Sneaker } from '@/types/Models';
+import { Sneaker } from '@/types/ProfileData';
 import ShareButton from '../buttons/ShareButton';
 import { ConditionBar } from '../ConditionBar';
 import EditButton from '../buttons/EditButton';

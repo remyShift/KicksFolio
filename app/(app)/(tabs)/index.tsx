@@ -8,7 +8,7 @@ import { useSession } from '@/context/authContext';
 import { router, useLocalSearchParams } from "expo-router";
 import { useState, useEffect } from 'react';
 import { renderModalContent } from '@/components/modals/AddSneakersForm';
-import { Sneaker } from '@/types/Models';
+import { Sneaker } from '@/types/ProfileData';
 
 export default function Index() {
     const params = useLocalSearchParams();

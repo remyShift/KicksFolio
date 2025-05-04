@@ -2,7 +2,7 @@ import { mockAuth } from '../../__mocks__/api/auth';
 import { useSession } from '@/context/authContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { mockUser } from '../../__mocks__/api/user';
-import { User } from '@/types/Models';
+import { User } from '@/types/ProfileData';
 
 const typedMockUser: User = {
     ...mockUser,

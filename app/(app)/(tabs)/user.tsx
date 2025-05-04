@@ -10,7 +10,7 @@ import { Pressable } from 'react-native';
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { renderModalContent } from '@/components/modals/AddSneakersForm';
 import BrandTitle from '@/components/text/BrandTitle';
-import { Sneaker } from '@/types/Models';
+import { Sneaker } from '@/types/ProfileData';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
