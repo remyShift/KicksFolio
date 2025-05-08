@@ -1,12 +1,12 @@
 import { Link, router } from 'expo-router';
 import { View, TextInput, KeyboardAvoidingView, Text, Platform, ScrollView } from 'react-native';
 import { useSignUpProps } from '@/context/signUpPropsContext';
-import PageTitle from '@/components/text/PageTitle';
-import MainButton from '@/components/buttons/MainButton';
-import ErrorMsg from '@/components/text/ErrorMsg';
+import PageTitle from '@/components/ui/text/PageTitle';
+import MainButton from '@/components/ui/buttons/MainButton';
+import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import { useState, useRef } from 'react';
 import { handleInputChange, checkUsername, checkEmail, checkPassword, checkBeforeNext, checkConfirmPassword } from '@/scripts/formUtils';
-import PrivacyPolicy from '@/components/text/PrivacyPolicy';
+import PrivacyPolicy from '@/components/ui/text/PrivacyPolicy';
 
 export default function SignUp() {
     const { signUpProps, setSignUpProps } = useSignUpProps();

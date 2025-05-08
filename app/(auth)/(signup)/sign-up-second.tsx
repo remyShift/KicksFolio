@@ -2,15 +2,15 @@ import { Link, router } from 'expo-router';
 import { View, TextInput, Text, KeyboardAvoidingView, Platform, ScrollView, Pressable, Alert } from 'react-native';
 import { Image } from 'expo-image';
 import { useSignUpProps } from '@/context/signUpPropsContext';
-import PageTitle from '@/components/text/PageTitle';
-import MainButton from '@/components/buttons/MainButton';
+import PageTitle from '@/components/ui/text/PageTitle';
+import MainButton from '@/components/ui/buttons/MainButton';
 import { useSession } from '@/context/authContext';
-import ErrorMsg from '@/components/text/ErrorMsg';
+import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import { useState, useRef } from 'react';
 import { handleInputChange, checkBeforeNext, checkName, checkSize } from '@/scripts/formUtils';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import * as ImagePicker from 'expo-image-picker';
-import PrivacyPolicy from '@/components/text/PrivacyPolicy';
+import PrivacyPolicy from '@/components/ui/text/PrivacyPolicy';
 
 export default function SUSecond() {
     const { signUpProps, setSignUpProps } = useSignUpProps();

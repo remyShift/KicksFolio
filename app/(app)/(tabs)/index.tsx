@@ -1,8 +1,8 @@
-import CollectionCard from '@/components/cards/CollectionCard';
-import FriendTitle from '@/components/text/FriendTitle';
-import PageTitle from '@/components/text/PageTitle';
-import Title from '@/components/text/Title';
-import MainButton from '@/components/buttons/MainButton';
+import CollectionCard from '@/components/ui/cards/CollectionCard';
+import FriendTitle from '@/components/ui/text/FriendTitle';
+import PageTitle from '@/components/ui/text/PageTitle';
+import Title from '@/components/ui/text/Title';
+import MainButton from '@/components/ui/buttons/MainButton';
 import { ScrollView, View, Modal, Pressable, Image } from 'react-native';
 import { useSession } from '@/context/authContext';
 import { router, useLocalSearchParams } from "expo-router";

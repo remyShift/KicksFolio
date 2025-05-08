@@ -1,6 +1,6 @@
-import MainButton from '@/components/buttons/MainButton';
-import PageTitle from '@/components/text/PageTitle';
-import Title from '@/components/text/Title';
+import MainButton from '@/components/ui/buttons/MainButton';
+import PageTitle from '@/components/ui/text/PageTitle';
+import Title from '@/components/ui/text/Title';
 import { Text, View } from 'react-native';
 
 export default function Wishlist() {

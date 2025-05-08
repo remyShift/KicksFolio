@@ -5,9 +5,9 @@ import { Image } from 'expo-image'
 import * as ImagePicker from 'expo-image-picker'
 import { Ionicons } from '@expo/vector-icons'
 
-import PageTitle from '@/components/text/PageTitle'
-import MainButton from '@/components/buttons/MainButton'
-import ErrorMsg from '@/components/text/ErrorMsg'
+import PageTitle from '@/components/ui/text/PageTitle'
+import MainButton from '@/components/ui/buttons/MainButton'
+import ErrorMsg from '@/components/ui/text/ErrorMsg'
 import { useSession } from '@/context/authContext'
 import { ProfileData } from '@/types/ProfileData'
 

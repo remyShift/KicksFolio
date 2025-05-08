@@ -1,26 +1,24 @@
 import { Text, View, Pressable, KeyboardAvoidingView, ScrollView, Platform, TextInput } from 'react-native';
 import { Image } from 'expo-image';
-import BackButton from '@/components/buttons/BackButton';
-import NextButton from '@/components/buttons/NextButton';
-import MainButton from '@/components/buttons/MainButton';
+import BackButton from '@/components/ui/buttons/BackButton';
+import NextButton from '@/components/ui/buttons/NextButton';
+import MainButton from '@/components/ui/buttons/MainButton';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useState, useRef, useEffect } from 'react';
 import DropdownInput from '../inputs/DropDownInput';
 import * as ImagePicker from 'expo-image-picker';
 import { Alert } from 'react-native';
-import { fetchSkuSneakerData, handleSneakerDelete, handleSneakerSubmit } from '@/scripts/handleSneakers';
 import { useSession } from '@/context/authContext';
-import { checkSneakerName, checkSneakerSize, checkSneakerCondition, checkSneakerBrand, checkSneakerStatus, validateAllFields, checkPricePaid } from '@/scripts/validatesSneakersForm';
-import ErrorMsg from '@/components/text/ErrorMsg';
-import { Sneaker } from '@/types/ProfileData';
-import ShareButton from '../buttons/ShareButton';
-import { ConditionBar } from '../ConditionBar';
-import EditButton from '../buttons/EditButton';
+import ErrorMsg from '@/components/ui/text/ErrorMsg';
+import ShareButton from '../ui/buttons/ShareButton';
+import { ConditionBar } from '../ui/indicators/ConditionBar';
+import EditButton from '../ui/buttons/EditButton';
 import { CameraView } from 'expo-camera';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { Link, Redirect, router } from 'expo-router';
-import DeleteButton from '../buttons/DeleteButton';
-import { Loader } from '@/components/Loader';
+import DeleteButton from '../ui/buttons/DeleteButton';
+import { Loader } from '@/components/ui/indicators/Loader';
+import { Sneaker } from '@/types/Sneaker';
 
 type AddSneakersModalProps = {
     modalStep: 'index' | 'box' | 'noBox' | 'sku' | 'sneakerInfo';

@@ -1,10 +1,10 @@
 import { Link, router } from 'expo-router';
 import { View, TextInput, KeyboardAvoidingView, Text, Platform, ScrollView } from 'react-native';
-import PageTitle from '@/components/text/PageTitle';
-import MainButton from '@/components/buttons/MainButton';
-import ErrorMsg from '@/components/text/ErrorMsg';
+import PageTitle from '@/components/ui/text/PageTitle';
+import MainButton from '@/components/ui/buttons/MainButton';
+import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import { handleInputChange } from '@/scripts/formUtils';
-import PrivacyPolicy from '@/components/text/PrivacyPolicy';
+import PrivacyPolicy from '@/components/ui/text/PrivacyPolicy';
 import { useRef } from 'react';
 import { useState } from 'react';
 

@@ -1,9 +1,9 @@
 import { View, TextInput, KeyboardAvoidingView, Platform, ScrollView, Text } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { useState, useRef } from 'react';
-import PageTitle from '@/components/text/PageTitle';
-import MainButton from '@/components/buttons/MainButton';
-import ErrorMsg from '@/components/text/ErrorMsg';
+import PageTitle from '@/components/ui/text/PageTitle';
+import MainButton from '@/components/ui/buttons/MainButton';
+import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import { checkPassword, checkConfirmPassword, handleInputChange } from '@/scripts/formUtils';
 
 export default function ResetPassword() {

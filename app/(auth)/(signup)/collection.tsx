@@ -1,8 +1,8 @@
 import { View, Text, TextInput, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
-import MainButton from "@/components/buttons/MainButton";
+import MainButton from "@/components/ui/buttons/MainButton";
 import { useState, useRef } from "react";
-import PageTitle from "@/components/text/PageTitle";
-import ErrorMsg from "@/components/text/ErrorMsg";
+import PageTitle from "@/components/ui/text/PageTitle";
+import ErrorMsg from "@/components/ui/text/ErrorMsg";
 import { router } from "expo-router";
 import { useSession } from "@/context/authContext";
 import { createCollection } from "@/scripts/handleCollection";
