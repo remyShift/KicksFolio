@@ -1,4 +1,4 @@
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, Alert } from 'react-native';
 import { Image } from 'expo-image';
 import { ModalStep } from '../../types';
 import BackButton from '@/components/ui/buttons/BackButton';
@@ -7,6 +7,10 @@ import EditButton from '@/components/ui/buttons/EditButton';
 import ShareButton from '@/components/ui/buttons/ShareButton';
 import { ConditionBar } from '@/components/ui/indicators/ConditionBar';
 import { Sneaker } from '@/types/Sneaker';
+import { useSession } from '@/context/authContext';
+import { useSneakerAPI } from '../../hooks/useSneakerAPI';
+import { useState } from 'react';
+import ErrorMsg from '@/components/ui/text/ErrorMsg';
 
 interface ViewStepProps {
     setModalStep: (step: ModalStep) => void;
@@ -14,9 +18,21 @@ interface ViewStepProps {
     sneaker: Sneaker;
     setSneaker: (sneaker: Sneaker | null) => void;
     userSneakers: Sneaker[] | null;
+    setUserSneakers: (sneakers: Sneaker[] | null) => void;
 }
 
-export const ViewStep = ({ setModalStep, closeModal, sneaker, setSneaker, userSneakers }: ViewStepProps) => {
+export const ViewStep = ({ 
+    setModalStep, 
+    closeModal, 
+    sneaker, 
+    setSneaker,
+    userSneakers,
+    setUserSneakers 
+}: ViewStepProps) => {
+    const { user, sessionToken } = useSession();
+    const { handleSneakerDelete } = useSneakerAPI(sessionToken || null);
+    const [errorMsg, setErrorMsg] = useState('');
+
     const currentSneakerId = userSneakers ? userSneakers.find((s: Sneaker) => s.id === sneaker?.id)?.id : null;
 
     const handleNext = () => {
@@ -30,8 +46,37 @@ export const ViewStep = ({ setModalStep, closeModal, sneaker, setSneaker, userSn
         setSneaker(nextSneaker);
     };
 
+    const handleDelete = () => {
+        if (!sneaker.id || !user?.id) return;
+
+        Alert.alert('Delete sneaker', 'Are you sure you want to delete this sneaker ?', [
+            {
+                text: 'Cancel',
+                style: 'cancel'
+            },
+            {
+                text: 'Delete',
+                style: 'destructive',
+                onPress: () => {
+                    handleSneakerDelete(sneaker.id, user.id)
+                        .then(() => {
+                            const updatedSneakers = userSneakers ? userSneakers.filter(s => s.id !== sneaker.id) : [];
+                            setUserSneakers(updatedSneakers);
+                            setSneaker(null);
+                            closeModal();
+                        })
+                        .catch((error) => {
+                            setErrorMsg(`An error occurred while deleting the sneaker: ${error}`);
+                        });
+                }
+            }
+        ]);
+    };
+
     return (
         <View className="flex-1 gap-4">
+            <ErrorMsg content={errorMsg} display={errorMsg !== ''}/>
+            
             <Image 
                 source={{ uri: sneaker?.images?.[0]?.url }} 
                 style={{
@@ -110,7 +155,7 @@ export const ViewStep = ({ setModalStep, closeModal, sneaker, setSneaker, userSn
                         />
                         <EditButton 
                             onPressAction={() => {
-                                setModalStep('noBox');
+                                setModalStep('addForm');
                             }}
                         />
                     </View>

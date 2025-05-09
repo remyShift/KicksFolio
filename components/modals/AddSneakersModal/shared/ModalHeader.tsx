@@ -13,7 +13,7 @@ export const ModalHeader = ({ currentStep, onClose }: ModalHeaderProps) => {
                 return 'Add Sneakers';
             case 'sku':
                 return 'Enter SKU';
-            case 'noBox':
+            case 'addForm':
                 return 'Add Details';
             case 'view':
                 return 'Sneaker Details';

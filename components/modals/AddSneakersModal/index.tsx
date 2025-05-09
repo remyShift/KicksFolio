@@ -28,7 +28,7 @@ export const AddSneakersModal = ({
     const handleBack = () => {
         switch (currentStep) {
             case 'sku':
-            case 'noBox':
+            case 'addForm':
                 setCurrentStep('index');
                 break;
             case 'view':
@@ -47,7 +47,7 @@ export const AddSneakersModal = ({
             case 'sku':
                 // This will be handled by the SkuStep component
                 break;
-            case 'noBox':
+            case 'addForm':
                 setCurrentStep('view');
                 break;
             case 'view':
@@ -81,7 +81,7 @@ export const AddSneakersModal = ({
                     />
                 )}
 
-                {currentStep === 'noBox' && (
+                {currentStep === 'addForm' && (
                     <FormStep 
                         setModalStep={setCurrentStep}
                         closeModal={onClose}
@@ -93,12 +93,13 @@ export const AddSneakersModal = ({
                 )}
 
                 {currentStep === 'view' && sneaker && (
-                    <ViewStep 
+                    <ViewStep
                         setModalStep={setCurrentStep}
                         closeModal={onClose}
                         sneaker={sneaker}
                         setSneaker={setSneaker}
                         userSneakers={userSneakers}
+                        setUserSneakers={setUserSneakers}
                     />
                 )}
             </View>

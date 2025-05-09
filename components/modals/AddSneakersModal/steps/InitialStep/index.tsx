@@ -17,18 +17,6 @@ export const InitialStep = ({ setModalStep, closeModal, userSneakersLength = 0 }
             <View className="flex justify-center items-center gap-12">
                 <View className="flex-col justify-center items-center gap-1 px-6">
                     <Pressable
-                        onPress={() => setModalStep('box')}
-                    >
-                        <Text className="font-spacemono-bold text-lg text-center text-primary">
-                            Scan your sneaker box barcode
-                        </Text>
-                    </Pressable>
-                    <Text className="font-spacemono-bold text-sm text-center">
-                        Can make mistakes and not always accurate.
-                    </Text>
-                </View>
-                <View className="flex-col justify-center items-center gap-1 px-6">
-                    <Pressable
                         onPress={() => setModalStep('sku')}
                     >
                         <Text className="font-spacemono-bold text-lg text-center text-primary">
@@ -41,14 +29,14 @@ export const InitialStep = ({ setModalStep, closeModal, userSneakersLength = 0 }
                 </View>
                 <View className="flex-col justify-center items-center gap-1 px-6">
                     <Pressable
-                        onPress={() => setModalStep('noBox')}
+                        onPress={() => setModalStep('addForm')}
                     >
                         <Text className="font-spacemono-bold text-lg text-center text-primary">
                             Add manually
                         </Text>
                     </Pressable>
                     <Text className="font-spacemono-bold text-sm text-center">
-                        You do it by yourself.
+                        You provide yourself the information about the sneaker.
                     </Text>
                 </View>
             </View>

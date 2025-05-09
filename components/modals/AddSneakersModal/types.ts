@@ -1,6 +1,6 @@
 import { Sneaker } from '@/types/Sneaker';
 
-export type ModalStep = 'index' | 'sku' | 'noBox' | 'view' | 'box';
+export type ModalStep = 'index' | 'sku' | 'addForm' | 'view';
 
 export type InputType = 'name' | 'brand' | 'size' | 'condition' | 'status' | 'pricePaid' | 'sku';
 

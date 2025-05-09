@@ -28,22 +28,23 @@ export const SkuStep = ({ setModalStep, closeModal, setSneaker }: SkuStepProps) 
         handleInputBlur,
     } = useSneakerForm();
 
-    const { fetchSkuSneakerData } = useSneakerAPI(sessionToken || null);
+    const { handleSkuLookup } = useSneakerAPI(sessionToken || null);
 
     const handleNext = async () => {
-        try {
-            const data = await fetchSkuSneakerData(sneakerSKU);
-            if (data.results && data.results.length > 0) {
-                const sneakerData = data.results[0];
-                // TODO: Set form data with fetched sneaker data
-                setModalStep('noBox');
-            } else {
-                setErrorMsg('No data found for this SKU, check the SKU or add it manually.');
-            }
-        } catch (error) {
-            setErrorMsg('Impossible to find the informations for this SKU. Please check the SKU or add it manually.');
-            console.error('Error when fetching SKU data:', error);
-        }
+        handleSkuLookup(sneakerSKU)
+            .then(data => {
+                if (data.results && data.results.length > 0) {
+                    const sneakerData = data.results[0];
+                    setSneaker(sneakerData);
+                    setModalStep('addForm');
+                } else {
+                    setErrorMsg('No data found for this SKU, check the SKU and try again or add it manually.');
+                }
+            })
+            .catch(error => {
+                setErrorMsg('Impossible to find the informations for this SKU. Please check the SKU and try again or add it manually.');
+                console.error('Error when fetching SKU data:', error);
+            });
     };
 
     return (

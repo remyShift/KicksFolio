@@ -1,10 +1,8 @@
 import { useState } from 'react';
 import { InputType } from '../types';
-import { useSneakerValidation } from './useSneakerValidation';
+import { SneakerValidationService } from '@/services/SneakerValidationService';
 
 export const useSneakerForm = () => {
-    const { validateField } = useSneakerValidation();
-
     // Form states
     const [sneakerName, setSneakerName] = useState('');
     const [sneakerBrand, setSneakerBrand] = useState('');
@@ -36,6 +34,8 @@ export const useSneakerForm = () => {
     const [isPricePaidFocused, setIsPricePaidFocused] = useState(false);
     const [isSneakerImageFocused, setIsSneakerImageFocused] = useState(false);
     const [isSneakerSKUFocused, setIsSneakerSKUFocused] = useState(false);
+
+    const validationService = new SneakerValidationService(setErrorMsg, () => {});
 
     const handleInputFocus = (inputType: InputType) => {
         switch(inputType) {
@@ -69,57 +69,44 @@ export const useSneakerForm = () => {
         switch(inputType) {
             case 'name':
                 setIsSneakerNameFocused(false);
-                const nameError = validateField('name', value);
-                if (nameError) {
-                    setErrorMsg(nameError.message);
+                if (!validationService.validateName(value)) {
                     setIsSneakerNameError(true);
                 }
                 break;
             case 'brand':
                 setIsSneakerBrandFocused(false);
-                const brandError = validateField('brand', value);
-                if (brandError) {
-                    setErrorMsg(brandError.message);
+                if (!validationService.validateBrand(value)) {
                     setIsSneakerBrandError(true);
                 }
                 break;
             case 'size':
                 setIsSneakerSizeFocused(false);
-                const sizeError = validateField('size', value);
-                if (sizeError) {
-                    setErrorMsg(sizeError.message);
+                if (!validationService.validateSize(value)) {
                     setIsSneakerSizeError(true);
                 }
                 break;
             case 'condition':
                 setIsSneakerConditionFocused(false);
-                const conditionError = validateField('condition', value);
-                if (conditionError) {
-                    setErrorMsg(conditionError.message);
+                if (!validationService.validateCondition(value)) {
                     setIsSneakerConditionError(true);
                 }
                 break;
             case 'status':
                 setIsSneakerStatusFocused(false);
-                const statusError = validateField('status', value);
-                if (statusError) {
-                    setErrorMsg(statusError.message);
+                if (!validationService.validateStatus(value)) {
                     setIsSneakerStatusError(true);
                 }
                 break;
             case 'pricePaid':
                 setIsPricePaidFocused(false);
-                const priceError = validateField('pricePaid', value);
-                if (priceError) {
-                    setErrorMsg(priceError.message);
+                if (!validationService.validatePrice(value)) {
                     setIsPricePaidError(true);
                 }
                 break;
             case 'sku':
                 setIsSneakerSKUFocused(false);
-                const skuError = validateField('sku', value);
-                if (skuError) {
-                    setErrorMsg(skuError.message);
+                if (!value) {
+                    setErrorMsg('Please enter a SKU');
                     setIsSneakerSKUError(true);
                 }
                 break;

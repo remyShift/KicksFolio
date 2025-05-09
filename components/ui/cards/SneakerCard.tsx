@@ -1,10 +1,10 @@
 import { View, Text, Pressable } from 'react-native';
-import { Sneaker } from '@/types/ProfileData';
+import { Sneaker } from '@/types/Sneaker';
 import { Image } from 'expo-image';
 
 export default function SneakerCard({ sneaker, setModalStep, setModalVisible, setSneaker }: { 
     sneaker: Sneaker, 
-    setModalStep: (step: 'index' | 'box' | 'noBox' | 'sneakerInfo') => void, 
+    setModalStep: (step: 'index' | 'box' | 'addForm' | 'view') => void, 
     setModalVisible: (visible: boolean) => void,
     setSneaker: (sneaker: Sneaker) => void 
 }) {
@@ -13,7 +13,7 @@ export default function SneakerCard({ sneaker, setModalStep, setModalVisible, se
         <Pressable className="flex-1 bg-white rounded-md p-3 w-full gap-2 shadow-card"
             onPress={() => {
                 setSneaker(sneaker);
-                setModalStep('sneakerInfo');
+                setModalStep('view');
                 setModalVisible(true);
             }}
         >
