@@ -19,17 +19,31 @@ interface FormFieldsProps {
     sneakerDescription: string;
     setSneakerDescription: (value: string) => void;
     isSneakerNameError: boolean;
+    setIsSneakerNameError: (value: boolean) => void;
     isSneakerBrandError: boolean;
+    setIsSneakerBrandError: (value: boolean) => void;
     isSneakerStatusError: boolean;
+    setIsSneakerStatusError: (value: boolean) => void;
     isSneakerSizeError: boolean;
+    setIsSneakerSizeError: (value: boolean) => void;
     isSneakerConditionError: boolean;
+    setIsSneakerConditionError: (value: boolean) => void;
     isPricePaidError: boolean;
+    setIsPricePaidError: (value: boolean) => void;
     isSneakerNameFocused: boolean;
+    setIsSneakerNameFocused: (value: boolean) => void;
     isSneakerBrandFocused: boolean;
+    setIsSneakerBrandFocused: (value: boolean) => void;
     isSneakerStatusFocused: boolean;
+    setIsSneakerStatusFocused: (value: boolean) => void;
     isSneakerSizeFocused: boolean;
+    setIsSneakerSizeFocused: (value: boolean) => void;
     isSneakerConditionFocused: boolean;
+    setIsSneakerConditionFocused: (value: boolean) => void;
     isPricePaidFocused: boolean;
+    isSneakerImageFocused: boolean;
+    setIsPricePaidFocused: (value: boolean) => void;
+    setIsSneakerImageFocused: (value: boolean) => void;
     handleInputFocus: (type: InputType) => void;
     handleInputBlur: (type: InputType, value: string) => void;
 }
@@ -48,6 +62,13 @@ export const FormFields = ({
     isSneakerNameFocused, isSneakerBrandFocused,
     isSneakerStatusFocused, isSneakerSizeFocused,
     isSneakerConditionFocused, isPricePaidFocused,
+    isSneakerImageFocused, setIsSneakerImageFocused,
+    setIsSneakerNameError, setIsSneakerBrandError,
+    setIsSneakerStatusError, setIsSneakerSizeError,
+    setIsSneakerConditionError, setIsPricePaidError,
+    setIsSneakerNameFocused, setIsSneakerBrandFocused,
+    setIsSneakerStatusFocused, setIsSneakerSizeFocused,
+    setIsSneakerConditionFocused, setIsPricePaidFocused,
     handleInputFocus, handleInputBlur
 }: FormFieldsProps) => {
     return (
