@@ -1,7 +1,7 @@
 import { View, Text, TextInput } from 'react-native';
 import DropdownInput from '@/components/ui/inputs/DropDownInput';
-import { BRANDS, STATUS } from '@/components/modals/AddSneakersModal/constants';
-import { InputType } from '@/components/modals/AddSneakersModal/types';
+import { BRANDS, STATUS } from '@/components/modals/SneakersModal/constants';
+import { InputType } from '@/components/modals/SneakersModal/types';
 
 interface FormFieldsProps {
     sneakerName: string;
