@@ -16,7 +16,9 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "app.kicksfolio",
-      "associatedDomains": ["applinks:kicksfolio.app"]
+      "associatedDomains": [
+        "applinks:kicksfolio.app"
+      ]
     },
     "android": {
       "adaptiveIcon": {
@@ -34,7 +36,10 @@
               "host": "*"
             }
           ],
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         }
       ]
     },
@@ -58,7 +63,7 @@
         {
           "cameraPermission": "KicksFolio need to access your camera to take photos of your sneakers and add them to your personal collection."
         }
-      ], 
+      ],
       [
         "expo-splash-screen",
         {
@@ -69,7 +74,8 @@
           "imageHeight": 600,
           "backgroundColor": "#F27329"
         }
-      ]
+      ],
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true

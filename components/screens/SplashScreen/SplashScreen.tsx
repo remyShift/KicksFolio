@@ -51,7 +51,7 @@ export default function SplashScreen({ sessionToken, loadInitialData, setIsSplas
                 onAnimationComplete={() => {
                     setTimeout(() => {
                         setTextAnimationFinished(true);
-                    }, 3500);
+                    }, 1500);
                 }}
             />
         </AnimatedView>

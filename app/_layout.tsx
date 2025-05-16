@@ -3,7 +3,7 @@ import { SessionProvider, useSession } from '@/context/authContext';
 import { useFonts } from 'expo-font';
 import "../global.css";
 import SplashScreen from '@/components/screens/SplashScreen/SplashScreen';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const FONTS = {
@@ -20,16 +20,22 @@ function AppContent() {
     const [fontsLoaded] = useFonts(FONTS);
     const { sessionToken, loadInitialData } = useSession();
 
+    const handleSplashScreenComplete = useCallback(() => {
+        setIsSplashScreenVisible(false);
+    }, []);
+
     if (!fontsLoaded) {
         return null;
     }
 
     if (isSplashScreenVisible) {
-        return <SplashScreen 
-            sessionToken={sessionToken} 
-            loadInitialData={async () => { await loadInitialData() }} 
-            setIsSplashScreenVisible={setIsSplashScreenVisible} 
-        />;
+        return (
+            <SplashScreen 
+                sessionToken={sessionToken} 
+                loadInitialData={loadInitialData} 
+                setIsSplashScreenVisible={handleSplashScreenComplete} 
+            />
+        );
     }
 
     return <Slot />;
