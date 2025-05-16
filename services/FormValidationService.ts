@@ -1,29 +1,38 @@
 import { TextInput } from "react-native";
 import { RefObject } from "react";
 
+type ErrorSetters = {
+    [key: string]: (isError: boolean) => void;
+};
+
 export class FormValidationService {
     private setErrorMsg: (msg: string) => void;
-    private setIsError: (isError: boolean) => void;
+    private errorSetters: ErrorSetters;
 
     constructor(
         setErrorMsg: (msg: string) => void,
-        setIsError: (isError: boolean) => void
+        errorSetters: ErrorSetters
     ) {
         this.setErrorMsg = setErrorMsg;
-        this.setIsError = setIsError;
+        this.errorSetters = errorSetters;
     }
 
     public handleInputChange(
         text: string, 
-        setter: (text: string) => void
+        setter: (text: string) => void,
+        fieldName?: string
     ): void {
         setter(text);
         this.setErrorMsg('');
+        if (fieldName && this.errorSetters[fieldName]) {
+            this.errorSetters[fieldName](false);
+        }
     }
 
     public async validateField(
         value: string,
         inputType: 'username' | 'email' | 'password' | 'firstName' | 'lastName' | 'size' | 'confirmPassword',
+        fieldName: string,
         isLoginPage: boolean = false,
         nextRef: RefObject<TextInput> | null = null,
         password?: string
@@ -55,6 +64,12 @@ export class FormValidationService {
                 break;
         }
 
+        if (!isValid && this.errorSetters[fieldName]) {
+            this.errorSetters[fieldName](true);
+        } else if (isValid && this.errorSetters[fieldName]) {
+            this.errorSetters[fieldName](false);
+        }
+
         if (isValid && nextRef?.current) {
             nextRef.current.focus();
         }
@@ -65,17 +80,14 @@ export class FormValidationService {
     private validatePassword(password: string): boolean {
         if (!password) {
             this.setErrorMsg('Please put your password.');
-            this.setIsError(true);
             return false;
         }
         if (password.length < 8) {
             this.setErrorMsg('Password must be at least 8 characters long.');
-            this.setIsError(true);
             return false;
         }
         if (!password.match(/^(?=.*[A-Z])(?=.*\d).+$/)) {
             this.setErrorMsg('Password must contain at least one uppercase letter and one number.');
-            this.setIsError(true);
             return false;
         }
         
@@ -86,12 +98,10 @@ export class FormValidationService {
     public validateConfirmPassword(confirmPassword: string, password: string): boolean {
         if (!confirmPassword) {
             this.setErrorMsg('Please confirm your password.');
-            this.setIsError(true);
             return false;
         }
         if (confirmPassword !== password) {
             this.setErrorMsg('Passwords do not match.');
-            this.setIsError(true);
             return false;
         }
 
@@ -102,27 +112,22 @@ export class FormValidationService {
     private async validateUsername(username: string): Promise<boolean> {
         if (!username) {
             this.setErrorMsg('Please put your username.');
-            this.setIsError(true);
             return false;
         }
         if (username.length < 4) {
             this.setErrorMsg('Username must be at least 4 characters long.');
-            this.setIsError(true);
             return false;
         }
         if (username.length > 16) {
             this.setErrorMsg('Username must be less than 16 characters.');
-            this.setIsError(true);
             return false;
         }
         if (username.match(/[^\w\s]/)) {
             this.setErrorMsg('Username must not contain special characters.');
-            this.setIsError(true);
             return false;
         }
         if (await this.checkUsernameExists(username)) {
             this.setErrorMsg('This username is already taken.');
-            this.setIsError(true);
             return false;
         }
 
@@ -134,17 +139,14 @@ export class FormValidationService {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!email) {
             this.setErrorMsg('Please put your email.');
-            this.setIsError(true);
             return false;
         }
         if (!emailRegex.test(email)) {
             this.setErrorMsg('Please put a valid email.');
-            this.setIsError(true);
             return false;
         }
         if (await this.checkEmailExists(email) && !isLoginPage) {
             this.setErrorMsg('This email is already taken.');
-            this.setIsError(true);
             return false;
         }
 
@@ -155,17 +157,14 @@ export class FormValidationService {
     private validateSize(size: number): boolean {
         if (!size) {
             this.setErrorMsg('Please put your size.');
-            this.setIsError(true);
             return false;
         }
         if (size % 0.5 !== 0) {
             this.setErrorMsg('Size must be a multiple of 0.5.');
-            this.setIsError(true);
             return false;
         }
         if (isNaN(size) || size < 1 || size > 15) {
             this.setErrorMsg('Please put a valid size between 1 and 15.');
-            this.setIsError(true);
             return false;
         }
 
@@ -176,17 +175,14 @@ export class FormValidationService {
     private validateName(name: string): boolean {
         if (!name) {
             this.setErrorMsg('Please put your name.');
-            this.setIsError(true);
             return false;
         }
         if (name.length < 2) {
             this.setErrorMsg('Name must be at least 2 characters long.');
-            this.setIsError(true);
             return false;
         }
         if (name.match(/[^a-zA-Z\s]/)) {
             this.setErrorMsg('Name must not contain special characters or numbers.');
-            this.setIsError(true);
             return false;
         }
 
@@ -224,6 +220,6 @@ export class FormValidationService {
 
     private clearErrors(): void {
         this.setErrorMsg('');
-        this.setIsError(false);
+        Object.values(this.errorSetters).forEach(setter => setter(false));
     }
 } 

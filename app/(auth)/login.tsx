@@ -5,7 +5,7 @@ import { useState, useRef } from 'react';
 import PageTitle from '@/components/ui/text/PageTitle';
 import MainButton from '@/components/ui/buttons/MainButton';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
-import { handleInputChange, checkBeforeNext } from '@/scripts/formUtils';
+import { FormValidationService } from '@/services/FormValidationService';
 import PrivacyPolicy from '@/components/ui/text/PrivacyPolicy';
 
 export default function Login() {
@@ -16,6 +16,10 @@ export default function Login() {
     const [isEmailError, setIsEmailError] = useState(false);
     const [isPasswordFocused, setIsPasswordFocused] = useState(false);
     const [isPasswordError, setIsPasswordError] = useState(false);
+    const formValidation = new FormValidationService(setErrorMsg, {
+        email: setIsEmailError,
+        password: setIsPasswordError
+    });
 
     const { login } = useSession();
     const scrollViewRef = useRef<ScrollView>(null);
@@ -110,7 +114,7 @@ export default function Login() {
                                     enablesReturnKeyAutomatically={true}
                                     autoCorrect={false}
                                     placeholderTextColor='gray'
-                                    onChangeText={(text) => handleInputChange(text, setEmail, setErrorMsg)}
+                                    onChangeText={(text) => formValidation.handleInputChange(text, setEmail)}
                                     className={`bg-white rounded-md p-3 w-2/3 font-spacemono-bold ${
                                         isEmailError ? 'border-2 border-red-500' : ''
                                     } ${isEmailFocused ? 'border-2 border-primary' : ''}`}
@@ -134,7 +138,7 @@ export default function Login() {
                                     enablesReturnKeyAutomatically={true}
                                     onSubmitEditing={() => handleLogin()}
                                     placeholderTextColor='gray'
-                                    onChangeText={(text) => handleInputChange(text, setPassword, setErrorMsg)}
+                                    onChangeText={(text) => formValidation.handleInputChange(text, setPassword)}
                                     className={`bg-white rounded-md p-3 w-2/3 font-spacemono-bold ${
                                         isPasswordError ? 'border-2 border-red-500' : ''
                                     } ${isPasswordFocused ? 'border-2 border-primary' : ''}`}

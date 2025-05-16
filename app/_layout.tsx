@@ -2,8 +2,8 @@ import { Slot } from 'expo-router';
 import { SessionProvider, useSession } from '@/context/authContext';
 import { useFonts } from 'expo-font';
 import "../global.css";
-import SplashScreen from '@/components/SplashScreen';
-import { useState, useEffect } from 'react';
+import SplashScreen from '@/components/screens/SplashScreen/SplashScreen';
+import { useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const FONTS = {
@@ -19,8 +19,6 @@ function AppContent() {
     const [isSplashScreenVisible, setIsSplashScreenVisible] = useState(true);
     const [fontsLoaded] = useFonts(FONTS);
     const { sessionToken, loadInitialData } = useSession();
-
-
 
     if (!fontsLoaded) {
         return null;

@@ -4,7 +4,7 @@ import { useState, useRef } from 'react';
 import PageTitle from '@/components/ui/text/PageTitle';
 import MainButton from '@/components/ui/buttons/MainButton';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
-import { checkPassword, checkConfirmPassword, handleInputChange } from '@/scripts/formUtils';
+import { FormValidationService } from '@/services/FormValidationService';
 
 export default function ResetPassword() {
     const { token } = useLocalSearchParams();
@@ -15,6 +15,11 @@ export default function ResetPassword() {
     const [isConfirmPasswordError, setIsConfirmPasswordError] = useState(false);
     const [isPasswordFocused, setIsPasswordFocused] = useState(false);
     const [isConfirmPasswordFocused, setIsConfirmPasswordFocused] = useState(false);
+
+    const formValidation = new FormValidationService(setErrorMsg, {
+        password: setIsPasswordError,
+        confirmPassword: setIsConfirmPasswordError
+    });
 
     const scrollViewRef = useRef<ScrollView>(null);
 
@@ -51,11 +56,11 @@ export default function ResetPassword() {
     };
 
     const handleResetPassword = () => {
-        if (!checkPassword(newPassword, setErrorMsg, setIsPasswordError)) {
+        if (!formValidation.validateField(newPassword, 'password', 'password')) {
             return;
         }
 
-        if (!checkConfirmPassword(newPassword, confirmNewPassword, setErrorMsg, setIsConfirmPasswordError)) {
+        if (!formValidation.validateField(confirmNewPassword, 'confirmPassword', 'confirmPassword', false, null, newPassword)) {
             return;
         }
 
@@ -111,7 +116,7 @@ export default function ResetPassword() {
                                 enablesReturnKeyAutomatically={true}
                                 autoCorrect={false}
                                 placeholderTextColor='gray'
-                                onChangeText={(text) => handleInputChange(text, setNewPassword, setErrorMsg)}
+                                onChangeText={(text) => formValidation.handleInputChange(text, setNewPassword, 'password')}
                                 className={`bg-white rounded-md p-3 w-2/3 font-spacemono-bold ${
                                     isPasswordError ? 'border-2 border-red-500' : ''
                                 } ${isPasswordFocused ? 'border-2 border-primary' : ''}`}
@@ -130,7 +135,7 @@ export default function ResetPassword() {
                                 enablesReturnKeyAutomatically={true}
                                 autoCorrect={false}
                                 placeholderTextColor='gray'
-                                onChangeText={(text) => handleInputChange(text, setConfirmNewPassword, setErrorMsg)}
+                                onChangeText={(text) => formValidation.handleInputChange(text, setConfirmNewPassword, 'confirmPassword')}
                                 className={`bg-white rounded-md p-3 w-2/3 font-spacemono-bold ${
                                     isConfirmPasswordError ? 'border-2 border-red-500' : ''
                                 } ${isConfirmPasswordFocused ? 'border-2 border-primary' : ''}`}
