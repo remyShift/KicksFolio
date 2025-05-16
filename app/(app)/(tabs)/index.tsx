@@ -7,13 +7,13 @@ import { ScrollView, View, Modal, Pressable, Image } from 'react-native';
 import { useSession } from '@/context/authContext';
 import { router, useLocalSearchParams } from "expo-router";
 import { useState, useEffect } from 'react';
-import { renderModalContent } from '@/components/modals/AddSneakersForm';
-import { Sneaker } from '@/types/ProfileData';
+import { SneakersModal } from '@/components/modals/SneakersModal';
+import { Sneaker } from '@/types/Sneaker';
 
 export default function Index() {
     const params = useLocalSearchParams();
     const isNewUser = params.newUser === 'true';
-    const { userCollection, userSneakers } = useSession();
+    const { userCollection, userSneakers, setUserSneakers } = useSession();
     const [modalVisible, setModalVisible] = useState(false);
     const [modalStep, setModalStep] = useState<'index' | 'box' | 'noBox' | 'sneakerInfo'>('index');
     const [currentSneaker, setCurrentSneaker] = useState<Sneaker | null>(null);
@@ -68,16 +68,7 @@ export default function Index() {
                                 e.stopPropagation();
                             }}
                         >
-                            {renderModalContent({ 
-                                modalStep,
-                                sneaker: currentSneaker,
-                                setSneaker: setCurrentSneaker,
-                                setModalStep,
-                                closeModal: () => {
-                                    setModalVisible(false);
-                                    router.replace('/(app)/(tabs)');
-                                }
-                            })}
+                            <SneakersModal isVisible={modalVisible} onClose={() => setModalVisible(false)} userSneakers={userSneakers} setUserSneakers={setUserSneakers} />
                         </Pressable>
                     </View>
                 </Pressable>

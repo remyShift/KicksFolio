@@ -16,7 +16,7 @@ interface AddSneakersModalProps {
     setUserSneakers: (sneakers: Sneaker[] | null) => void;
 }
 
-export const AddSneakersModal = ({ 
+export const SneakersModal = ({ 
     isVisible, 
     onClose, 
     userSneakers,
