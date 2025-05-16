@@ -1,6 +1,7 @@
 import { BaseApiService } from "@/services/BaseApiService";
+import { User } from "@/types/User";
 
-interface UserData {
+export interface UserData {
     email: string;
     password: string;
     username: string;
@@ -11,7 +12,7 @@ interface UserData {
 }
 
 interface LoginResponse {
-    user: UserData;
+    user: User;
     tokens: {
         access: string;
         refresh: string;
@@ -32,7 +33,7 @@ export class AuthService extends BaseApiService {
         return this.handleResponse(response);
     }
 
-    async getUser(token: string) {
+    async getUser(token: string): Promise<{ user: User }> {
         const response = await fetch(`${this.baseUrl}/users/me`, {
             headers: this.getAuthHeaders(token)
         });
@@ -40,7 +41,7 @@ export class AuthService extends BaseApiService {
         return this.handleResponse(response);
     }
 
-    async signUp(userData: UserData) {
+    async signUp(userData: UserData): Promise<{ user: User }> {
         const formData = new FormData();
         
         Object.entries(userData).forEach(([key, value]) => {
@@ -89,7 +90,7 @@ export class AuthService extends BaseApiService {
         return data.valid;
     }
 
-    async updateUser(userId: string, profileData: Partial<UserData>, token: string) {
+    async updateUser(userId: string, profileData: Partial<UserData>, token: string): Promise<{ user: User }> {
         const formData = new FormData();
         
         Object.entries(profileData).forEach(([key, value]) => {
@@ -118,7 +119,7 @@ export class AuthService extends BaseApiService {
         return this.handleResponse(response);
     }
 
-    async deleteAccount(userId: string, token: string) {
+    async deleteAccount(userId: string, token: string): Promise<{ message: string }> {
         const response = await fetch(`${this.baseUrl}/users/${userId}`, {
             method: 'DELETE',
             headers: this.getAuthHeaders(token)
