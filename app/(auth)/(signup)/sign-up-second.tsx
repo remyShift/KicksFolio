@@ -7,7 +7,7 @@ import MainButton from '@/components/ui/buttons/MainButton';
 import { useSession } from '@/context/authContext';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import { useState, useRef } from 'react';
-import { handleInputChange, checkBeforeNext, checkName, checkSize } from '@/scripts/formUtils';
+import { FormValidationService } from '@/services/FormValidationService';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import * as ImagePicker from 'expo-image-picker';
 import PrivacyPolicy from '@/components/ui/text/PrivacyPolicy';
@@ -16,7 +16,6 @@ export default function SUSecond() {
     const { signUpProps, setSignUpProps } = useSignUpProps();
     const { signUp, login } = useSession();
     const [errorMsg, setErrorMsg] = useState('');
-    
     const [isFirstNameFocused, setIsFirstNameFocused] = useState(false);
     const [isFirstNameError, setIsFirstNameError] = useState(false);
     const [isLastNameFocused, setIsLastNameFocused] = useState(false);
@@ -28,6 +27,12 @@ export default function SUSecond() {
     const lastNameInputRef = useRef<TextInput>(null);
     const sizeInputRef = useRef<TextInput>(null);
     const firstNameInputRef = useRef<TextInput>(null);
+
+    const formValidation = new FormValidationService(setErrorMsg, {
+        firstName: setIsFirstNameError,
+        lastName: setIsLastNameError,
+        size: setIsSizeError
+    });
 
     const scrollToBottom = () => {
         scrollViewRef.current?.scrollToEnd({ animated: true });
@@ -51,7 +56,7 @@ export default function SUSecond() {
             if (!value) {
                 setErrorMsg('Please put your first name.');
                 setIsFirstNameError(true);
-            } else if (!checkName(value, setErrorMsg, setIsFirstNameError)) {
+            } else if (!formValidation.validateField(value, 'firstName', 'firstName')) {
                 return;
             }
         } else if (inputType === 'lastName') {
@@ -59,7 +64,7 @@ export default function SUSecond() {
             if (!value) {
                 setErrorMsg('Please put your last name.');
                 setIsLastNameError(true);
-            } else if (!checkName(value, setErrorMsg, setIsLastNameError)) {
+            } else if (!formValidation.validateField(value, 'lastName', 'lastName')) {
                 return;
             }
         } else if (inputType === 'size') {
@@ -67,7 +72,7 @@ export default function SUSecond() {
             if (!value || isNaN(Number(value)) || Number(value) <= 0) {
                 setErrorMsg('Please put a valid sneaker size.');
                 setIsSizeError(true);
-            } else if (!checkSize(Number(value), setErrorMsg, setIsSizeError)) {
+            } else if (!formValidation.validateField(String(value), 'size', 'size')) {
                 return;
             }
         }
@@ -231,12 +236,12 @@ export default function SUSecond() {
                                     placeholderTextColor='gray'
                                     returnKeyType='next'
                                     enablesReturnKeyAutomatically={true}
-                                    onSubmitEditing={() => checkBeforeNext(signUpProps.first_name, 'firstName', false, setErrorMsg, setIsFirstNameError, lastNameInputRef)}
+                                    onSubmitEditing={() => formValidation.validateField(signUpProps.first_name, 'firstName', 'firstName')}
                                     onFocus={() => handleInputFocus('firstName')}
                                     onBlur={() => handleInputBlur('firstName', signUpProps.first_name)}
                                     onChangeText={(text) => {
                                         setSignUpProps({ ...signUpProps, first_name: text });
-                                        handleInputChange(text, (t) => setSignUpProps({ ...signUpProps, first_name: t }), setErrorMsg);
+                                        formValidation.handleInputChange(text, (t) => setSignUpProps({ ...signUpProps, first_name: t }));
                                     }}
                                     className={`bg-white rounded-md p-3 w-2/3 font-spacemono-bold ${
                                         isFirstNameError ? 'border-2 border-red-500' : ''
@@ -258,12 +263,12 @@ export default function SUSecond() {
                                     clearButtonMode='while-editing'
                                     returnKeyType='next'
                                     enablesReturnKeyAutomatically={true}
-                                    onSubmitEditing={() => checkBeforeNext(signUpProps.last_name, 'lastName', false, setErrorMsg, setIsLastNameError, sizeInputRef)}
+                                    onSubmitEditing={() => formValidation.validateField(signUpProps.last_name, 'lastName', 'lastName')}
                                     onFocus={() => handleInputFocus('lastName')}
                                     onBlur={() => handleInputBlur('lastName', signUpProps.last_name)}
                                     onChangeText={(text) => {
                                         setSignUpProps({ ...signUpProps, last_name: text });
-                                        handleInputChange(text, (t) => setSignUpProps({ ...signUpProps, last_name: t }), setErrorMsg);
+                                        formValidation.handleInputChange(text, (t) => setSignUpProps({ ...signUpProps, last_name: t }));
                                     }}
                                     className={`bg-white rounded-md p-3 w-2/3 font-spacemono-bold ${
                                         isLastNameError ? 'border-2 border-red-500' : ''
@@ -292,7 +297,7 @@ export default function SUSecond() {
                                         const formattedText = text.replace(',', '.');
                                         if (formattedText === '' || !isNaN(Number(formattedText))) {
                                             setSignUpProps({ ...signUpProps, sneaker_size: formattedText });
-                                            handleInputChange(formattedText, (t) => setSignUpProps({ ...signUpProps, sneaker_size: t }), setErrorMsg);
+                                            formValidation.handleInputChange(formattedText, (t) => setSignUpProps({ ...signUpProps, sneaker_size: t }));
                                         }
                                     }}
                                     onFocus={() => handleInputFocus('size')}

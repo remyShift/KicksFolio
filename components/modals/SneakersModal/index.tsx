@@ -9,7 +9,9 @@ import { FormStep } from './steps/FormStep';
 import { ViewStep } from './steps/ViewStep';
 import { Sneaker } from '@/types/Sneaker';
 
-interface AddSneakersModalProps {
+interface SneakersModalProps {
+    modalStep: ModalStep;
+    sneaker: Sneaker | null;
     isVisible: boolean;
     onClose: () => void;
     userSneakers: Sneaker[] | null;
@@ -17,13 +19,15 @@ interface AddSneakersModalProps {
 }
 
 export const SneakersModal = ({ 
-    isVisible, 
+    modalStep,
+    sneaker,
+    isVisible,
     onClose, 
     userSneakers,
-    setUserSneakers 
-}: AddSneakersModalProps) => {
-    const [currentStep, setCurrentStep] = useState<ModalStep>('index');
-    const [sneaker, setSneaker] = useState<Sneaker | null>(null);
+    setUserSneakers
+}: SneakersModalProps) => {
+    const [currentStep, setCurrentStep] = useState<ModalStep>(modalStep);
+    const [currentSneaker, setCurrentSneaker] = useState<Sneaker | null>(sneaker);
 
     const handleBack = () => {
         switch (currentStep) {
@@ -77,7 +81,7 @@ export const SneakersModal = ({
                     <SkuStep 
                         setModalStep={setCurrentStep}
                         closeModal={onClose}
-                        setSneaker={setSneaker}
+                        setSneaker={setCurrentSneaker}
                     />
                 )}
 
@@ -85,19 +89,19 @@ export const SneakersModal = ({
                     <FormStep 
                         setModalStep={setCurrentStep}
                         closeModal={onClose}
-                        sneaker={sneaker}
-                        setSneaker={setSneaker}
+                        sneaker={currentSneaker}
+                        setSneaker={setCurrentSneaker}
                         userSneakers={userSneakers}
                         setUserSneakers={setUserSneakers}
                     />
                 )}
 
-                {currentStep === 'view' && sneaker && (
+                {currentStep === 'view' && currentSneaker && (
                     <ViewStep
                         setModalStep={setCurrentStep}
                         closeModal={onClose}
-                        sneaker={sneaker}
-                        setSneaker={setSneaker}
+                        sneaker={currentSneaker}
+                        setSneaker={setCurrentSneaker}
                         userSneakers={userSneakers}
                         setUserSneakers={setUserSneakers}
                     />

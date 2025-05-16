@@ -5,7 +5,7 @@ import PageTitle from '@/components/ui/text/PageTitle';
 import MainButton from '@/components/ui/buttons/MainButton';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import { useState, useRef } from 'react';
-import { handleInputChange, checkUsername, checkEmail, checkPassword, checkBeforeNext, checkConfirmPassword } from '@/scripts/formUtils';
+import { FormValidationService } from '@/services/FormValidationService';
 import PrivacyPolicy from '@/components/ui/text/PrivacyPolicy';
 
 export default function SignUp() {
@@ -25,6 +25,13 @@ export default function SignUp() {
     const emailInputRef = useRef<TextInput>(null);
     const passwordInputRef = useRef<TextInput>(null);
     const confirmPasswordInputRef = useRef<TextInput>(null);
+
+    const formValidation = new FormValidationService(setErrorMsg, {
+        username: setIsUsernameError,
+        email: setIsEmailError,
+        password: setIsPasswordError,
+        confirmPassword: setIsConfirmPasswordError
+    });
 
     const scrollToBottom = () => {
         scrollViewRef.current?.scrollToEnd({ animated: true });
@@ -54,24 +61,24 @@ export default function SignUp() {
     const handleInputBlur = (inputType: 'username' | 'email' | 'password' | 'confirmPassword', value: string) => {
         if (inputType === 'username') {
             setIsUsernameFocused(false);
-            checkUsername(value, setErrorMsg, setIsUsernameError);
+            formValidation.validateField(value, 'username', 'username');
         } else if (inputType === 'email') {
             setIsEmailFocused(false);
-            checkEmail(value, false, setErrorMsg, setIsEmailError);
+            formValidation.validateField(value, 'email', 'email');
         } else if (inputType === 'password') {
             setIsPasswordFocused(false);
-            checkPassword(value, setErrorMsg, setIsPasswordError);
+            formValidation.validateField(value, 'password', 'password');
         } else if (inputType === 'confirmPassword') {
             setIsConfirmPasswordFocused(false);
-            checkConfirmPassword(value, signUpProps.password, setErrorMsg, setIsConfirmPasswordError);
+            formValidation.validateField(value, 'confirmPassword', 'confirmPassword');
         }
     };
 
     const handleNextSignUpPage = async () => {
-        const isUsernameValid = await checkUsername(signUpProps.username, setErrorMsg, setIsUsernameError);
-        const isEmailValid = await checkEmail(signUpProps.email, false, setErrorMsg, setIsEmailError);
-        const isPasswordValid = checkPassword(signUpProps.password, setErrorMsg, setIsPasswordError);
-        const isConfirmPasswordValid = checkConfirmPassword(signUpProps.confirmPassword, signUpProps.password, setErrorMsg, setIsConfirmPasswordError);
+        const isUsernameValid = await formValidation.validateField(signUpProps.username, 'username', 'username');
+        const isEmailValid = await formValidation.validateField(signUpProps.email, 'email', 'email');
+        const isPasswordValid = await formValidation.validateField(signUpProps.password, 'password', 'password');
+        const isConfirmPasswordValid = await formValidation.validateField(signUpProps.confirmPassword, 'confirmPassword', 'confirmPassword');
 
         if (!isUsernameValid || !isEmailValid || !isPasswordValid || !isConfirmPasswordValid) {
             setErrorMsg('Please correct your inputs before continuing');
@@ -119,12 +126,12 @@ export default function SignUp() {
                                     placeholderTextColor='gray'
                                     returnKeyType='next'
                                     enablesReturnKeyAutomatically={true}
-                                    onSubmitEditing={() => checkBeforeNext(signUpProps.username, 'username', false, setErrorMsg, setIsUsernameError, emailInputRef)}
+                                    onSubmitEditing={() => formValidation.validateField(signUpProps.username, 'username', 'username')}
                                     onFocus={() => handleInputFocus('username')}
                                     onBlur={() => handleInputBlur('username', signUpProps.username)}
                                     onChangeText={(text) => {
                                         setSignUpProps({ ...signUpProps, username: text });
-                                        handleInputChange(text, (t) => setSignUpProps({ ...signUpProps, username: t }), setErrorMsg);
+                                        formValidation.handleInputChange(text, (t) => setSignUpProps({ ...signUpProps, username: t }));
                                     }}
                                     className={`bg-white rounded-md p-3 w-2/3 font-spacemono-bold ${
                                         isUsernameError ? 'border-2 border-red-500' : ''
@@ -146,12 +153,12 @@ export default function SignUp() {
                                     clearButtonMode='while-editing'
                                     returnKeyType='next'
                                     enablesReturnKeyAutomatically={true}
-                                    onSubmitEditing={() => checkBeforeNext(signUpProps.email, 'email', false, setErrorMsg, setIsEmailError, passwordInputRef)}
+                                    onSubmitEditing={() => formValidation.validateField(signUpProps.email, 'email', 'email')}
                                     onFocus={() => handleInputFocus('email')}
                                     onBlur={() => handleInputBlur('email', signUpProps.email)}
                                     onChangeText={(text) => {
                                         setSignUpProps({ ...signUpProps, email: text });
-                                        handleInputChange(text, (t) => setSignUpProps({ ...signUpProps, email: t }), setErrorMsg);
+                                        formValidation.handleInputChange(text, (t) => setSignUpProps({ ...signUpProps, email: t }));
                                     }}
                                     className={`bg-white rounded-md p-3 w-2/3 font-spacemono-bold ${
                                         isEmailError ? 'border-2 border-red-500' : ''
@@ -177,12 +184,12 @@ export default function SignUp() {
                                     placeholderTextColor='gray'
                                     returnKeyType='next'
                                     enablesReturnKeyAutomatically={true}
-                                    onSubmitEditing={() => checkBeforeNext(signUpProps.password, 'password', false, setErrorMsg, setIsPasswordError, confirmPasswordInputRef)}
+                                    onSubmitEditing={() => formValidation.validateField(signUpProps.password, 'password', 'password')}
                                     onFocus={() => handleInputFocus('password')}
                                     onBlur={() => handleInputBlur('password', signUpProps.password)}
                                     onChangeText={(text) => {
                                         setSignUpProps({ ...signUpProps, password: text });
-                                        handleInputChange(text, (t) => setSignUpProps({ ...signUpProps, password: t }), setErrorMsg);
+                                        formValidation.handleInputChange(text, (t) => setSignUpProps({ ...signUpProps, password: t }));
                                     }}
                                     className={`bg-white rounded-md p-3 w-2/3 font-spacemono-bold ${
                                         isPasswordError ? 'border-2 border-red-500' : ''
@@ -209,7 +216,7 @@ export default function SignUp() {
                                     onBlur={() => handleInputBlur('confirmPassword', signUpProps.confirmPassword)}
                                     onChangeText={(text) => {
                                         setSignUpProps({ ...signUpProps, confirmPassword: text });
-                                        handleInputChange(text, (t) => setSignUpProps({ ...signUpProps, confirmPassword: t }), setErrorMsg);
+                                        formValidation.handleInputChange(text, (t) => setSignUpProps({ ...signUpProps, confirmPassword: t }));
                                     }}
                                     className={`bg-white rounded-md p-3 w-2/3 font-spacemono-bold ${
                                         isConfirmPasswordError ? 'border-2 border-red-500' : ''

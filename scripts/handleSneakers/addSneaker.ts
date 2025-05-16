@@ -1,4 +1,4 @@
-import { Sneaker } from "@/types/ProfileData";
+import { Sneaker } from "@/types/Sneaker";
 
 
 export const addSneaker = async (sneaker: Sneaker, sneakerId: string, sessionToken: string, userId: string) => {

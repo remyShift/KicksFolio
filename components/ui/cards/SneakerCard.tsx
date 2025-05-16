@@ -1,10 +1,11 @@
 import { View, Text, Pressable } from 'react-native';
 import { Sneaker } from '@/types/Sneaker';
 import { Image } from 'expo-image';
+import { ModalStep } from '@/components/modals/SneakersModal/types';
 
 export default function SneakerCard({ sneaker, setModalStep, setModalVisible, setSneaker }: { 
     sneaker: Sneaker, 
-    setModalStep: (step: 'index' | 'box' | 'addForm' | 'view') => void, 
+    setModalStep: (step: ModalStep) => void, 
     setModalVisible: (visible: boolean) => void,
     setSneaker: (sneaker: Sneaker) => void 
 }) {

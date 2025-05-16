@@ -3,7 +3,7 @@ import { View, TextInput, KeyboardAvoidingView, Text, Platform, ScrollView } fro
 import PageTitle from '@/components/ui/text/PageTitle';
 import MainButton from '@/components/ui/buttons/MainButton';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
-import { handleInputChange } from '@/scripts/formUtils';
+import { FormValidationService } from '@/services/FormValidationService';
 import PrivacyPolicy from '@/components/ui/text/PrivacyPolicy';
 import { useRef } from 'react';
 import { useState } from 'react';
@@ -14,6 +14,9 @@ export default function ForgotPassword() {
     const [isEmailError, setIsEmailError] = useState(false);
     const [isEmailFocused, setIsEmailFocused] = useState(false);
     const scrollViewRef = useRef<ScrollView>(null);
+    const formValidation = new FormValidationService(setErrorMsg, {
+        email: setIsEmailError
+    });
 
     const scrollToBottom = () => {
         scrollViewRef.current?.scrollToEnd({ animated: true });
@@ -100,7 +103,7 @@ export default function ForgotPassword() {
                                     enablesReturnKeyAutomatically={true}
                                     autoCorrect={false}
                                     placeholderTextColor='gray'
-                                    onChangeText={(text) => handleInputChange(text, setEmail, setErrorMsg)}
+                                    onChangeText={(text) => formValidation.handleInputChange(text, setEmail)}
                                     className={`bg-white rounded-md p-3 w-2/3 font-spacemono-bold ${
                                         isEmailError ? 'border-2 border-red-500' : ''
                                     } ${isEmailFocused ? 'border-2 border-primary' : ''}`}

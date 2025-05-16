@@ -19,14 +19,10 @@ export class FormValidationService {
 
     public handleInputChange(
         text: string, 
-        setter: (text: string) => void,
-        fieldName?: string
+        setter: (text: string) => void
     ): void {
         setter(text);
         this.setErrorMsg('');
-        if (fieldName && this.errorSetters[fieldName]) {
-            this.errorSetters[fieldName](false);
-        }
     }
 
     public async validateField(

@@ -5,7 +5,7 @@ import PageTitle from "@/components/ui/text/PageTitle";
 import ErrorMsg from "@/components/ui/text/ErrorMsg";
 import { router } from "expo-router";
 import { useSession } from "@/context/authContext";
-import { createCollection } from "@/scripts/handleCollection";
+import { CollectionService } from "@/services/CollectionService";
 
 export default function Collection() {
     const [isCollectionNameFocused, setIsCollectionNameFocused] = useState(false);
@@ -14,6 +14,8 @@ export default function Collection() {
     const [errorMsg, setErrorMsg] = useState('');
     const scrollViewRef = useRef<ScrollView>(null);
     const { user, sessionToken, getUserCollection } = useSession();
+
+    const collectionService = new CollectionService();
 
     return (
         <KeyboardAvoidingView 
@@ -52,7 +54,7 @@ export default function Collection() {
                                     setIsCollectionNameError(false);
                                     setErrorMsg('');
                                     if (user && sessionToken) {
-                                        createCollection(collectionName, user.id, sessionToken).then(() => {
+                                        collectionService.create(collectionName, user.id, sessionToken).then(() => {
                                             getUserCollection().then(() => {
                                                 router.replace('/(app)/(tabs)?newUser=true');
                                             }).catch(error => {

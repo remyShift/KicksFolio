@@ -116,7 +116,7 @@ export default function ResetPassword() {
                                 enablesReturnKeyAutomatically={true}
                                 autoCorrect={false}
                                 placeholderTextColor='gray'
-                                onChangeText={(text) => formValidation.handleInputChange(text, setNewPassword, 'password')}
+                                onChangeText={(text) => formValidation.handleInputChange(text, setNewPassword)}
                                 className={`bg-white rounded-md p-3 w-2/3 font-spacemono-bold ${
                                     isPasswordError ? 'border-2 border-red-500' : ''
                                 } ${isPasswordFocused ? 'border-2 border-primary' : ''}`}
@@ -135,7 +135,7 @@ export default function ResetPassword() {
                                 enablesReturnKeyAutomatically={true}
                                 autoCorrect={false}
                                 placeholderTextColor='gray'
-                                onChangeText={(text) => formValidation.handleInputChange(text, setConfirmNewPassword, 'confirmPassword')}
+                                onChangeText={(text) => formValidation.handleInputChange(text, setConfirmNewPassword)}
                                 className={`bg-white rounded-md p-3 w-2/3 font-spacemono-bold ${
                                     isConfirmPasswordError ? 'border-2 border-red-500' : ''
                                 } ${isConfirmPasswordFocused ? 'border-2 border-primary' : ''}`}

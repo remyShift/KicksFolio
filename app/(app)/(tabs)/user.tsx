@@ -8,9 +8,9 @@ import SneakerCard from '@/components/ui/cards/SneakerCard';
 import AddButton from '@/components/ui/buttons/AddButton';
 import { Pressable } from 'react-native';
 import { useState, useMemo, useEffect, useRef } from 'react';
-import { renderModalContent } from '@/components/modals/AddSneakersForm';
+import { SneakersModal } from '@/components/modals/SneakersModal';
 import BrandTitle from '@/components/ui/text/BrandTitle';
-import { Sneaker } from '@/types/ProfileData';
+import { Sneaker } from '@/types/Sneaker';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -30,7 +30,7 @@ const brandLogos: Record<string, any> = {
 export default function User() {
   const { logout, user, userSneakers, getUserSneakers } = useSession();
   const [modalVisible, setModalVisible] = useState(false);
-  const [modalStep, setModalStep] = useState<'index' | 'box' | 'noBox' | 'sneakerInfo' | 'sku'>('index');
+  const [modalStep, setModalStep] = useState<'index' | 'sku' | 'addForm' | 'view'>('index');
   const [sneaker, setSneaker] = useState<Sneaker | null>(null);
   const [currentSneaker, setCurrentSneaker] = useState<Sneaker | null>(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -248,13 +248,14 @@ export default function User() {
                           e.stopPropagation();
                       }}
                   >
-                      {renderModalContent({ 
-                          modalStep,
-                          sneaker: currentSneaker,
-                          setSneaker: setCurrentSneaker,
-                          setModalStep,
-                          closeModal: () => setModalVisible(false) 
-                      })}
+                      <SneakersModal 
+                          modalStep={modalStep}
+                          sneaker={currentSneaker}
+                          isVisible={modalVisible}
+                          onClose={() => setModalVisible(false)}
+                          userSneakers={userSneakers}
+                          setUserSneakers={getUserSneakers}
+                      />
                   </Pressable>
               </View>
             </Pressable>

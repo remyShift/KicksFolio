@@ -3,20 +3,17 @@ import FriendTitle from '@/components/ui/text/FriendTitle';
 import PageTitle from '@/components/ui/text/PageTitle';
 import Title from '@/components/ui/text/Title';
 import MainButton from '@/components/ui/buttons/MainButton';
-import { ScrollView, View, Modal, Pressable, Image } from 'react-native';
+import { ScrollView, View, Modal, Pressable } from 'react-native';
 import { useSession } from '@/context/authContext';
 import { router, useLocalSearchParams } from "expo-router";
 import { useState, useEffect } from 'react';
 import { SneakersModal } from '@/components/modals/SneakersModal';
-import { Sneaker } from '@/types/Sneaker';
 
 export default function Index() {
     const params = useLocalSearchParams();
     const isNewUser = params.newUser === 'true';
     const { userCollection, userSneakers, setUserSneakers } = useSession();
     const [modalVisible, setModalVisible] = useState(false);
-    const [modalStep, setModalStep] = useState<'index' | 'box' | 'noBox' | 'sneakerInfo'>('index');
-    const [currentSneaker, setCurrentSneaker] = useState<Sneaker | null>(null);
 
     useEffect(() => {
         if (isNewUser || !userSneakers || userSneakers.length === 0) {
@@ -68,7 +65,14 @@ export default function Index() {
                                 e.stopPropagation();
                             }}
                         >
-                            <SneakersModal isVisible={modalVisible} onClose={() => setModalVisible(false)} userSneakers={userSneakers} setUserSneakers={setUserSneakers} />
+                            <SneakersModal 
+                                isVisible={modalVisible} 
+                                onClose={() => setModalVisible(false)} 
+                                userSneakers={userSneakers} 
+                                setUserSneakers={setUserSneakers} 
+                                modalStep="index" 
+                                sneaker={null} 
+                            />
                         </Pressable>
                     </View>
                 </Pressable>
