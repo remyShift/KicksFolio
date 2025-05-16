@@ -1,6 +1,6 @@
 import { View } from 'react-native';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
-import { useEffect, useState, useCallback } from 'react';
+import Animated, { FadeOut } from 'react-native-reanimated';
+import { useEffect, useState } from 'react';
 import { useSession } from '@/context/authContext';
 import { Image } from 'expo-image';
 import { AnimatedIcon } from '@/components/screens/SplashScreen/AnimatedIcon';
