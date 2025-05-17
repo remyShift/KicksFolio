@@ -1,7 +1,7 @@
 import { View, Pressable, Alert } from 'react-native';
 import { Image } from 'expo-image';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import * as ImagePicker from 'expo-image-picker';
+import { imageService } from '@/services/ImageService';
 
 interface ImageUploaderProps {
     image: string;
@@ -12,83 +12,37 @@ interface ImageUploaderProps {
 }
 
 export const ImageUploader = ({ image, setImage, isError, isFocused, setIsError }: ImageUploaderProps) => {
-    const pickImage = () => {
-        ImagePicker.requestMediaLibraryPermissionsAsync()
-            .then(({ status }) => {
-                if (status !== 'granted') {
-                    Alert.alert('Permission refusée', 'Nous avons besoin de votre permission pour accéder à vos photos.');
-                    return;
-                }
-                return ImagePicker.launchImageLibraryAsync({
-                    mediaTypes: "images",
-                    allowsEditing: true,
-                    aspect: [1, 1],
-                    quality: 1,
-                });
-            })
-            .then((result) => {
-                if (!result) {
-                    setIsError(true);
-                    return;
-                }
+    const handleImageSelection = async (type: 'camera' | 'gallery') => {
+        const imageUri = type === 'camera' 
+            ? await imageService.takePhoto()
+            : await imageService.pickImage();
 
-                if (!result.canceled) {
-                    setImage(result.assets[0].uri);
-                } else {
-                    setImage('');
-                    setIsError(true);
-                }
-            })
-            .catch((error) => {
-                console.error('Error when picking image:', error);
-            });
-    };
+        if (!imageUri) {
+            setIsError(true);
+            return;
+        }
 
-    const takePhoto = () => {
-        ImagePicker.requestCameraPermissionsAsync()
-            .then(({ status }) => {
-                if (status !== 'granted') {
-                    Alert.alert('Permission refusée', 'Nous avons besoin de votre permission pour accéder à votre caméra.');
-                    return;
-                }
-                return ImagePicker.launchCameraAsync({
-                    allowsEditing: true,
-                    aspect: [16, 9],
-                    quality: 0.8,
-                });
-            })
-            .then((result) => {
-                if (!result) {
-                    setIsError(true);
-                    return;
-                }
-
-                if (!result.canceled) {
-                    setImage(result.assets[0].uri);
-                } else {
-                    setImage('');
-                    setIsError(true);
-                }
-            });
+        setImage(imageUri);
+        setIsError(false);
     };
 
     return (
         <Pressable
             onPress={() => {
                 Alert.alert(
-                    'Ajouter une photo',
-                    'Assurez-vous que la sneaker est au centre de l\'image.',
+                    'Add a photo',
+                    'Make sure the sneaker is in the center of the image.',
                     [
                         {
-                            text: 'Prendre une photo',
-                            onPress: takePhoto
+                            text: 'Take a photo',
+                            onPress: () => handleImageSelection('camera')
                         },
                         {
-                            text: 'Choisir depuis la galerie',
-                            onPress: pickImage
+                            text: 'Choose from gallery',
+                            onPress: () => handleImageSelection('gallery')
                         },
                         {
-                            text: 'Annuler',
+                            text: 'Cancel',
                             style: 'cancel'
                         }
                     ]

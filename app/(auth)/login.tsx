@@ -1,12 +1,12 @@
 import { Link, router } from 'expo-router';
 import { View, TextInput, KeyboardAvoidingView, Text, Platform, ScrollView } from 'react-native';
-import { useSession } from '@/context/authContext';
 import { useState, useRef } from 'react';
 import PageTitle from '@/components/ui/text/PageTitle';
 import MainButton from '@/components/ui/buttons/MainButton';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
-import { FormValidationService } from '@/services/FormValidationService';
+import { FormService } from '@/services/FormService';
 import PrivacyPolicy from '@/components/ui/text/PrivacyPolicy';
+import { AuthService } from '@/services/AuthService';
 
 export default function Login() {
     const [email, setEmail] = useState('');
@@ -20,7 +20,7 @@ export default function Login() {
     const passwordInputRef = useRef<TextInput>(null);
     const emailInputRef = useRef<TextInput>(null);
 
-    const formValidation = new FormValidationService(setErrorMsg, {
+    const formValidation = new FormService(setErrorMsg, {
         email: setIsEmailError,
         password: setIsPasswordError
     }, {
@@ -28,26 +28,13 @@ export default function Login() {
         password: setIsPasswordFocused
     }, scrollViewRef);
 
-    const { login } = useSession();
+    const authService = new AuthService();
 
     const handleLogin = async () => {
-        if (!email || !password) {
-            setErrorMsg('Please enter your email and password.');
-            if (!email) setIsEmailError(true);
-            if (!password) setIsPasswordError(true);
-            return;
+        const success = await authService.handleLogin(email, password, formValidation);
+        if (success) {
+            router.replace('/(app)/(tabs)');
         }
-
-        setErrorMsg('');
-        await login(email, password)
-            .then(() => {
-                router.replace('/(app)/(tabs)');
-            })
-            .catch((error) => {
-                setErrorMsg('Invalid email or password');
-                setIsEmailError(true);
-                setIsPasswordError(true);
-            });
     };
 
     return (
@@ -77,7 +64,7 @@ export default function Login() {
                                     textContentType='emailAddress'
                                     clearButtonMode='while-editing'
                                     onFocus={() => formValidation.handleInputFocus('email')}
-                                    onBlur={() => formValidation.handleInputBlur('email', email, 'email')}
+                                    onBlur={() => formValidation.handleInputBlur('email', email)}
                                     returnKeyType='next'
                                     enablesReturnKeyAutomatically={true}
                                     autoCorrect={false}
@@ -101,7 +88,7 @@ export default function Login() {
                                     autoCorrect={false}
                                     secureTextEntry={true}
                                     onFocus={() => formValidation.handleInputFocus('password')}
-                                    onBlur={() => formValidation.handleInputBlur('password', password, 'password')}
+                                    onBlur={() => formValidation.handleInputBlur('password', password)}
                                     returnKeyType='done'
                                     enablesReturnKeyAutomatically={true}
                                     onSubmitEditing={() => handleLogin()}

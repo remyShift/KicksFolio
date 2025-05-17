@@ -1,75 +1,34 @@
 import { Link, router } from 'expo-router';
 import { View, TextInput, KeyboardAvoidingView, Text, Platform, ScrollView } from 'react-native';
+import { useState, useRef } from 'react';
 import PageTitle from '@/components/ui/text/PageTitle';
 import MainButton from '@/components/ui/buttons/MainButton';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
-import { FormValidationService } from '@/services/FormValidationService';
+import { FormService } from '@/services/FormService';
 import PrivacyPolicy from '@/components/ui/text/PrivacyPolicy';
-import { useRef } from 'react';
-import { useState } from 'react';
+import { AuthService } from '@/services/AuthService';
 
 export default function ForgotPassword() {
     const [email, setEmail] = useState('');
     const [errorMsg, setErrorMsg] = useState('');
-    const [isEmailError, setIsEmailError] = useState(false);
     const [isEmailFocused, setIsEmailFocused] = useState(false);
+    const [isEmailError, setIsEmailError] = useState(false);
     const scrollViewRef = useRef<ScrollView>(null);
-    const formValidation = new FormValidationService(setErrorMsg, {
+    const emailInputRef = useRef<TextInput>(null);
+
+    const formValidation = new FormService(setErrorMsg, {
         email: setIsEmailError
-    });
+    }, {
+        email: setIsEmailFocused
+    }, scrollViewRef);
 
-    const scrollToBottom = () => {
-        scrollViewRef.current?.scrollToEnd({ animated: true });
-    };
-
-    const handleInputFocus = () => {
-        setErrorMsg('');
-        setIsEmailFocused(true);
-        scrollToBottom();
-    };
-
-    const handleInputBlur = (inputType: 'email', value: string) => {
-        const isEmail = inputType === 'email';
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const errorMessage = isEmail ? 'Please put your email.' : 'Please put your password.';
-
-        setIsEmailFocused(false);
-        if (!value) {
-            setErrorMsg(errorMessage);
-            setIsEmailError(true);
-        } else if (isEmail && !emailRegex.test(value)) {
-            setErrorMsg('Please put a valid email.');
-            setIsEmailError(true);
-        } else if (isEmail && emailRegex.test(value)) {
-            setErrorMsg('');
-            setIsEmailError(false);
-        }
-    };
+    const authService = new AuthService();
 
     const handlePasswordReset = async () => {
-        if (!email) {
-            setErrorMsg('Please enter your email.');
-            setIsEmailError(true);
-            return;
+        const success = await authService.handleForgotPassword(email, formValidation);
+        if (success) {
+            router.replace('/login');
         }
-
-        await fetch(`${process.env.EXPO_PUBLIC_BASE_API_URL}/passwords/forgot`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email }),
-        })
-        .then(response => {
-            return response.json();
-        })
-        .then(data => {
-            if (data.error) {
-                setErrorMsg(data.error);
-            } else {
-                router.replace('/login');
-            }
-        });
     };
 
     return (
@@ -84,8 +43,8 @@ export default function ForgotPassword() {
                     keyboardShouldPersistTaps="handled"
                     scrollEnabled={isEmailFocused}>
                     <View className="flex-1 items-center gap-12 p-4">
-                        <PageTitle content='Login' />
-                        <View className='flex justify-cente r items-center gap-8 w-full mt-48'>
+                        <PageTitle content='Forgot Password' />
+                        <View className='flex justify-center items-center gap-8 w-full mt-36'>
                             <View className="absolute w-full flex items-center" style={{ top: -50 }}>
                                 <ErrorMsg content={errorMsg} display={errorMsg !== ''} />
                             </View>
@@ -93,13 +52,14 @@ export default function ForgotPassword() {
                                 <Text className='font-spacemono-bold text-lg'>Email</Text>
                                 <TextInput
                                     placeholder="john@doe.com"
+                                    ref={emailInputRef}
                                     inputMode='email'
                                     autoComplete='email'
                                     textContentType='emailAddress'
                                     clearButtonMode='while-editing'
-                                    onFocus={() => handleInputFocus()}
-                                    onBlur={() => handleInputBlur('email', email)}
-                                    returnKeyType='next'
+                                    onFocus={() => formValidation.handleInputFocus('email')}
+                                    onBlur={() => formValidation.handleInputBlur('email', email)}
+                                    returnKeyType='done'
                                     enablesReturnKeyAutomatically={true}
                                     autoCorrect={false}
                                     placeholderTextColor='gray'
@@ -109,15 +69,15 @@ export default function ForgotPassword() {
                                     } ${isEmailFocused ? 'border-2 border-primary' : ''}`}
                                 />
                             </View>
-
-                            <View className='flex gap-6 w-full justify-center items-center'>                      
-                                <MainButton content='Send' backgroundColor='bg-primary' onPressAction={async () => {
-                                    await handlePasswordReset();
-                                }} />
-                                <View className='flex gap-1 justify-center items-center'>
+                        </View>
+                        <View className='flex gap-5 w-full justify-center items-center'>                      
+                            <MainButton content='Send Reset Link' backgroundColor='bg-primary' onPressAction={handlePasswordReset} />
+                            <View className='flex gap-1 justify-center items-center'>
+                                <View className='flex flex-row gap-1 justify-center items-center'>
+                                    <Text className='font-spacemono-bold text-sm'>Remember your password?</Text>
                                     <Link href='/login'>
                                         <Text className='text-primary font-spacemono-bold text-sm'>
-                                            Back to Login
+                                            Login
                                         </Text>
                                     </Link>
                                 </View>
@@ -126,7 +86,6 @@ export default function ForgotPassword() {
                     </View>
                 </ScrollView>
             </KeyboardAvoidingView>
-
             <View className='flex justify-center items-center bg-background pb-10'>
                 <PrivacyPolicy />
             </View>

@@ -9,7 +9,9 @@ type FocusSetters = {
     [key: string]: (isFocused: boolean) => void;
 };
 
-export class FormValidationService {
+export type FieldName = 'username' | 'email' | 'password' | 'firstName' | 'lastName' | 'confirmPassword' | 'size';
+
+export class FormService {
     private setErrorMsg: (msg: string) => void;
     private errorSetters: ErrorSetters;
     private focusSetters: FocusSetters;
@@ -27,7 +29,11 @@ export class FormValidationService {
         this.scrollViewRef = scrollViewRef || null;
     }
 
-    public handleInputFocus(inputType: string): void {
+    public setErrorMessage(msg: string): void {
+        this.setErrorMsg(msg);
+    }
+
+    public handleInputFocus(inputType: FieldName): void {
         if (this.focusSetters[inputType]) {
             this.focusSetters[inputType](true);
         }
@@ -35,13 +41,11 @@ export class FormValidationService {
         this.scrollToBottom();
     }
 
-    public handleInputBlur(inputType: string, value: string, validationType?: string): void {
+    public handleInputBlur(inputType: FieldName, value: string): void {
         if (this.focusSetters[inputType]) {
             this.focusSetters[inputType](false);
         }
-        if (validationType) {
-            this.validateField(value, validationType as any, inputType);
-        }
+        this.validateField(value, inputType);
     }
 
     private scrollToBottom(): void {
@@ -60,11 +64,10 @@ export class FormValidationService {
 
     public async validateField(
         value: string,
-        inputType: 'username' | 'email' | 'password' | 'firstName' | 'lastName' | 'size' | 'confirmPassword',
-        fieldName: string,
-        isLoginPage: boolean = false,
-        nextRef: RefObject<TextInput> | null = null,
-        password?: string
+        inputType: FieldName,
+        password?: string,
+        isLoginPage?: boolean,
+        nextRef?: RefObject<TextInput>
     ): Promise<boolean> {
         let isValid = false;
         
@@ -73,7 +76,7 @@ export class FormValidationService {
                 isValid = await this.validateUsername(value);
                 break;
             case 'email':
-                isValid = await this.validateEmail(value, isLoginPage);
+                isValid = await this.validateEmail(value, isLoginPage || false);
                 break;
             case 'password':
                 isValid = this.validatePassword(value);
@@ -84,7 +87,8 @@ export class FormValidationService {
                 break;
             case 'confirmPassword':
                 if (!password) {
-                    throw new Error('Password is required');
+                    this.setErrorMsg('Password is required');
+                    return false;
                 }
                 isValid = this.validateConfirmPassword(value, password);
                 break;
@@ -93,10 +97,10 @@ export class FormValidationService {
                 break;
         }
 
-        if (!isValid && this.errorSetters[fieldName]) {
-            this.errorSetters[fieldName](true);
-        } else if (isValid && this.errorSetters[fieldName]) {
-            this.errorSetters[fieldName](false);
+        if (!isValid && this.errorSetters[inputType]) {
+            this.errorSetters[inputType](true);
+        } else if (isValid && this.errorSetters[inputType]) {
+            this.errorSetters[inputType](false);
         }
 
         if (isValid && nextRef?.current) {

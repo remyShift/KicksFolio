@@ -4,17 +4,16 @@ import { Image } from 'expo-image';
 import { useSignUpProps } from '@/context/signUpPropsContext';
 import PageTitle from '@/components/ui/text/PageTitle';
 import MainButton from '@/components/ui/buttons/MainButton';
-import { useSession } from '@/context/authContext';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import { useState, useRef } from 'react';
-import { FormValidationService } from '@/services/FormValidationService';
+import { FormService, FieldName } from '@/services/FormService';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import * as ImagePicker from 'expo-image-picker';
 import PrivacyPolicy from '@/components/ui/text/PrivacyPolicy';
+import { imageService } from '@/services/ImageService';
+import { authService } from '@/services/AuthService';
 
 export default function SUSecond() {
     const { signUpProps, setSignUpProps } = useSignUpProps();
-    const { signUp, login } = useSession();
     const [errorMsg, setErrorMsg] = useState('');
     const [isFirstNameFocused, setIsFirstNameFocused] = useState(false);
     const [isFirstNameError, setIsFirstNameError] = useState(false);
@@ -28,135 +27,50 @@ export default function SUSecond() {
     const sizeInputRef = useRef<TextInput>(null);
     const firstNameInputRef = useRef<TextInput>(null);
 
-    const formValidation = new FormValidationService(setErrorMsg, {
+    const formValidation = new FormService(setErrorMsg, {
         firstName: setIsFirstNameError,
         lastName: setIsLastNameError,
         size: setIsSizeError
-    });
+    }, {
+        firstName: setIsFirstNameFocused,
+        lastName: setIsLastNameFocused,
+        size: setIsSizeFocused
+    }, scrollViewRef);
 
-    const scrollToBottom = () => {
-        scrollViewRef.current?.scrollToEnd({ animated: true });
+    const handleInputFocus = (inputType: FieldName) => {
+        formValidation.handleInputFocus(inputType);
     };
 
-    const handleInputFocus = (inputType: 'firstName' | 'lastName' | 'size') => {
-        if (inputType === 'firstName') setIsFirstNameFocused(true);
-        else if (inputType === 'lastName') setIsLastNameFocused(true);
-        else if (inputType === 'size') setIsSizeFocused(true);
-
-        setIsFirstNameError(false);
-        setIsLastNameError(false);
-        setIsSizeError(false);
-        setErrorMsg('');
-        scrollToBottom();
+    const handleInputBlur = (inputType: FieldName, value: string) => {
+        formValidation.handleInputBlur(inputType, value);
     };
 
-    const handleInputBlur = (inputType: 'firstName' | 'lastName' | 'size', value: string) => {
-        if (inputType === 'firstName') {
-            setIsFirstNameFocused(false);
-            if (!value) {
-                setErrorMsg('Please put your first name.');
-                setIsFirstNameError(true);
-            } else if (!formValidation.validateField(value, 'firstName', 'firstName')) {
-                return;
-            }
-        } else if (inputType === 'lastName') {
-            setIsLastNameFocused(false);
-            if (!value) {
-                setErrorMsg('Please put your last name.');
-                setIsLastNameError(true);
-            } else if (!formValidation.validateField(value, 'lastName', 'lastName')) {
-                return;
-            }
-        } else if (inputType === 'size') {
-            setIsSizeFocused(false);
-            if (!value || isNaN(Number(value)) || Number(value) <= 0) {
-                setErrorMsg('Please put a valid sneaker size.');
-                setIsSizeError(true);
-            } else if (!formValidation.validateField(String(value), 'size', 'size')) {
-                return;
-            }
-        }
-    };
-
-    const handleSignUp = () => {
-        if (!signUpProps.username.trim()) {
-            setErrorMsg('Please put your username.');
-            return;
-        }
-
-        if (!signUpProps.first_name) {
-            setErrorMsg('Please put your first name.');
-            setIsFirstNameError(true);
-            return;
-        }
-
-        if (!signUpProps.last_name) {
-            setErrorMsg('Please put your last name.');
-            setIsLastNameError(true);
-            return;
-        }
-
-        if (!signUpProps.sneaker_size || Number(signUpProps.sneaker_size) <= 0) {
-            setErrorMsg('Please put a valid sneaker size.');
-            setIsSizeError(true);
-            return;
-        }
-
-        setErrorMsg('');
-        signUp(
+    const handleSignUp = async () => {
+        const success = await authService.handleSignUp(
             signUpProps.email,
             signUpProps.password,
             signUpProps.username,
             signUpProps.first_name,
             signUpProps.last_name,
-            Number(signUpProps.sneaker_size),
-            signUpProps.profile_picture
-        ).then(() => {
-            login(signUpProps.email, signUpProps.password).then(() => {
-                setSignUpProps({ ...signUpProps, email: '', password: '', username: '', first_name: '', last_name: '', sneaker_size: '', profile_picture: '' });
-                router.replace('/collection');
-            }).catch((error) => {
-                setErrorMsg(`Something went wrong. Please try again 1. ${error}`);
-            });
-        }).catch((error) => {
-            setErrorMsg(`Something went wrong. Please try again 2. ${error}`);
-        });
-    };
+            signUpProps.sneaker_size,
+            signUpProps.profile_picture,
+            formValidation,
+            setSignUpProps,
+            signUpProps
+        );
 
-    const pickImage = async () => {
-        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (status !== 'granted') {
-            alert('Désolé, nous avons besoin des permissions pour accéder à vos photos !');
-            return;
-        }
-
-        const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: "images",
-            allowsEditing: true,
-            aspect: [1, 1],
-            quality: 1
-        });
-
-        if (!result.canceled) {
-            setSignUpProps({ ...signUpProps, profile_picture: result.assets[0].uri });
+        if (success) {
+            router.replace('/collection');
         }
     };
 
-    const takePhoto = async () => {
-        const { status } = await ImagePicker.requestCameraPermissionsAsync();
-        if (status !== 'granted') {
-            alert('Désolé, nous avons besoin des permissions pour accéder à votre caméra !');
-            return;
-        }
+    const handleImageSelection = async (type: 'camera' | 'gallery') => {
+        const imageUri = type === 'camera' 
+            ? await imageService.takePhoto()
+            : await imageService.pickImage();
 
-        const result = await ImagePicker.launchCameraAsync({
-            allowsEditing: true,
-            aspect: [1, 1],
-            quality: 0.8
-        });
-
-        if (!result.canceled) {
-            setSignUpProps({ ...signUpProps, profile_picture: result.assets[0].uri });
+        if (imageUri) {
+            setSignUpProps({ ...signUpProps, profile_picture: imageUri });
         }
     };
 
@@ -204,11 +118,11 @@ export default function SUSecond() {
                                                 [
                                                     {
                                                         text: 'Take a photo',
-                                                        onPress: takePhoto
+                                                        onPress: () => handleImageSelection('camera')
                                                     },
                                                     {
                                                         text: 'Choose from gallery',
-                                                        onPress: pickImage
+                                                        onPress: () => handleImageSelection('gallery')
                                                     },
                                                     {
                                                         text: 'Cancel',
@@ -236,7 +150,7 @@ export default function SUSecond() {
                                     placeholderTextColor='gray'
                                     returnKeyType='next'
                                     enablesReturnKeyAutomatically={true}
-                                    onSubmitEditing={() => formValidation.validateField(signUpProps.first_name, 'firstName', 'firstName')}
+                                    onSubmitEditing={() => formValidation.validateField(signUpProps.first_name, 'firstName')}
                                     onFocus={() => handleInputFocus('firstName')}
                                     onBlur={() => handleInputBlur('firstName', signUpProps.first_name)}
                                     onChangeText={(text) => {
@@ -263,7 +177,7 @@ export default function SUSecond() {
                                     clearButtonMode='while-editing'
                                     returnKeyType='next'
                                     enablesReturnKeyAutomatically={true}
-                                    onSubmitEditing={() => formValidation.validateField(signUpProps.last_name, 'lastName', 'lastName')}
+                                    onSubmitEditing={() => formValidation.validateField(signUpProps.last_name, 'lastName')}
                                     onFocus={() => handleInputFocus('lastName')}
                                     onBlur={() => handleInputBlur('lastName', signUpProps.last_name)}
                                     onChangeText={(text) => {

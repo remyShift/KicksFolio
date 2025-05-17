@@ -25,7 +25,7 @@ export const FormStep = ({
     sneaker, 
     setSneaker,
     userSneakers,
-    setUserSneakers 
+    setUserSneakers
 }: FormStepProps) => {
     const { user, sessionToken, getUserSneakers } = useSession();
     const { 
@@ -58,7 +58,7 @@ export const FormStep = ({
     } = useSneakerForm();
 
     const { validateSneakerForm } = useSneakerValidation();
-    const { handleSneakerSubmit, isLoading } = useSneakerAPI(sessionToken || null);
+    const { handleSneakerSubmit } = useSneakerAPI(sessionToken || null);
 
     const currentSneakerId = userSneakers ? userSneakers.find((s: Sneaker) => s.id === sneaker?.id)?.id : null;
     const isNewSneaker = !currentSneakerId;

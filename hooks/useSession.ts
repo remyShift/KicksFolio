@@ -5,28 +5,35 @@ export const useSession = () => {
     const [sessionToken, setSessionToken] = useState<string | null>(null);
 
     useEffect(() => {
-        const loadSession = async () => {
-            try {
-                const token = await AsyncStorage.getItem('sessionToken');
-                setSessionToken(token);
-            } catch (error) {
-                console.error('Error loading session:', error);
-            }
+        const loadSession = () => {
+            AsyncStorage.getItem('sessionToken')
+                .then((token) => {
+                    setSessionToken(token);
+                })
+                .catch((error) => {
+                    console.error('Error loading session:', error);
+                });
         };
 
         loadSession();
     }, []);
-
-    const updateSession = async (token: string | null) => {
-        try {
-            if (token) {
-                await AsyncStorage.setItem('sessionToken', token);
-            } else {
-                await AsyncStorage.removeItem('sessionToken');
-            }
-            setSessionToken(token);
-        } catch (error) {
-            console.error('Error updating session:', error);
+    const updateSession = (token: string | null) => {
+        if (token) {
+            AsyncStorage.setItem('sessionToken', token)
+                .then(() => {
+                    setSessionToken(token);
+                })
+                .catch((error) => {
+                    console.error('Error updating session:', error);
+                });
+        } else {
+            AsyncStorage.removeItem('sessionToken')
+                .then(() => {
+                    setSessionToken(null);
+                })
+                .catch((error) => {
+                    console.error('Error updating session:', error);
+                });
         }
     };
 

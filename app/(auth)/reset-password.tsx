@@ -4,7 +4,8 @@ import { useState, useRef } from 'react';
 import PageTitle from '@/components/ui/text/PageTitle';
 import MainButton from '@/components/ui/buttons/MainButton';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
-import { FormValidationService } from '@/services/FormValidationService';
+import { FormService } from '@/services/FormService';
+import { AuthService } from '@/services/AuthService';
 
 export default function ResetPassword() {
     const { token } = useLocalSearchParams();
@@ -17,7 +18,7 @@ export default function ResetPassword() {
     const [isConfirmPasswordFocused, setIsConfirmPasswordFocused] = useState(false);
     const scrollViewRef = useRef<ScrollView>(null);
 
-    const formValidation = new FormValidationService(setErrorMsg, {
+    const formValidation = new FormService(setErrorMsg, {
         password: setIsPasswordError,
         confirmPassword: setIsConfirmPasswordError
     }, {
@@ -25,36 +26,19 @@ export default function ResetPassword() {
         confirmPassword: setIsConfirmPasswordFocused
     }, scrollViewRef);
 
-    const handleResetPassword = () => {
-        if (!formValidation.validateField(newPassword, 'password', 'password')) {
-            return;
-        }
+    const authService = new AuthService();
 
-        if (!formValidation.validateField(confirmNewPassword, 'confirmPassword', 'confirmPassword', false, null, newPassword)) {
-            return;
-        }
+    const handleResetPassword = async () => {
+        const success = await authService.handleResetPassword(
+            token as string,
+            newPassword,
+            confirmNewPassword,
+            formValidation
+        );
 
-        fetch(`${process.env.EXPO_PUBLIC_BASE_API_URL}/password/reset`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                token: token,
-                password: newPassword
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.error) {
-                setErrorMsg(data.error);
-            } else {
-                router.replace('/login');
-            }
-        })
-        .then(() => {
+        if (success) {
             router.replace('/login');
-        });
+        }
     };
 
     return (
@@ -81,7 +65,7 @@ export default function ResetPassword() {
                                 secureTextEntry={true}
                                 clearButtonMode='while-editing'
                                 onFocus={() => formValidation.handleInputFocus('password')}
-                                onBlur={() => formValidation.handleInputBlur('password', newPassword, 'password')}
+                                onBlur={() => formValidation.handleInputBlur('password', newPassword)}
                                 returnKeyType='next'
                                 enablesReturnKeyAutomatically={true}
                                 autoCorrect={false}
@@ -100,7 +84,7 @@ export default function ResetPassword() {
                                 secureTextEntry={true}
                                 clearButtonMode='while-editing'
                                 onFocus={() => formValidation.handleInputFocus('confirmPassword')}
-                                onBlur={() => formValidation.handleInputBlur('confirmPassword', confirmNewPassword, 'confirmPassword')}
+                                onBlur={() => formValidation.handleInputBlur('confirmPassword', confirmNewPassword)}
                                 returnKeyType='done'
                                 enablesReturnKeyAutomatically={true}
                                 autoCorrect={false}
