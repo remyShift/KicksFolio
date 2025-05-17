@@ -228,7 +228,7 @@ PODS:
     - ExpoModulesCore
     - ZXingObjC/OneD
     - ZXingObjC/PDF417
-  - ExpoFileSystem (18.0.11):
+  - ExpoFileSystem (18.0.12):
     - ExpoModulesCore
   - ExpoFont (13.0.4):
     - ExpoModulesCore
@@ -2402,7 +2402,7 @@ SPEC CHECKSUMS:
   ExpoAsset: 4033893dfb333b444bf45e951351254137b658d5
   ExpoBlur: 392c1207f71d0ecf22371621c1fbd44ba84d9742
   ExpoCamera: 166a23592a0133c162ea7334feb9e75e0231134b
-  ExpoFileSystem: 2d804c73034c0d65eb2a640e0a77627033b69edc
+  ExpoFileSystem: 42d363d3b96f9afab980dcef60d5657a4443c655
   ExpoFont: f354e926f8feae5e831ec8087f36652b44a0b188
   ExpoHaptics: 8d199b2f33245ea85289ff6c954c7ee7c00a5b5d
   ExpoHead: 5d1c5c20e3933db5d9ca349424cb3b9a4a84b706
