@@ -16,51 +16,19 @@ export default function Login() {
     const [isEmailError, setIsEmailError] = useState(false);
     const [isPasswordFocused, setIsPasswordFocused] = useState(false);
     const [isPasswordError, setIsPasswordError] = useState(false);
-    const formValidation = new FormValidationService(setErrorMsg, {
-        email: setIsEmailError,
-        password: setIsPasswordError
-    });
-
-    const { login } = useSession();
     const scrollViewRef = useRef<ScrollView>(null);
     const passwordInputRef = useRef<TextInput>(null);
     const emailInputRef = useRef<TextInput>(null);
 
-    const scrollToBottom = () => {
-        scrollViewRef.current?.scrollToEnd({ animated: true });
-    };
+    const formValidation = new FormValidationService(setErrorMsg, {
+        email: setIsEmailError,
+        password: setIsPasswordError
+    }, {
+        email: setIsEmailFocused,
+        password: setIsPasswordFocused
+    }, scrollViewRef);
 
-    const handleInputFocus = (inputType: 'email' | 'password') => {
-        if (inputType === 'email') {
-            setIsEmailFocused(true);
-        } else {
-            setIsPasswordFocused(true);
-        }
-        setIsEmailError(false);
-        setIsPasswordError(false);
-        setErrorMsg('');
-        scrollToBottom();
-    };
-
-    const handleInputBlur = (inputType: 'email' | 'password', value: string) => {
-        const isEmail = inputType === 'email';
-        const setFocused = isEmail ? setIsEmailFocused : setIsPasswordFocused;
-        const setError = isEmail ? setIsEmailError : setIsPasswordError;
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const errorMessage = isEmail ? 'Please put your email.' : 'Please put your password.';
-
-        setFocused(false);
-        if (!value) {
-            setErrorMsg(errorMessage);
-            setError(true);
-        } else if (isEmail && !emailRegex.test(value)) {
-            setErrorMsg('Please put a valid email.');
-            setError(true);
-        } else if (isEmail && emailRegex.test(value)) {
-            setErrorMsg('');
-            setError(false);
-        }
-    };
+    const { login } = useSession();
 
     const handleLogin = async () => {
         if (!email || !password) {
@@ -108,8 +76,8 @@ export default function Login() {
                                     autoComplete='email'
                                     textContentType='emailAddress'
                                     clearButtonMode='while-editing'
-                                    onFocus={() => handleInputFocus('email')}
-                                    onBlur={() => handleInputBlur('email', email)}
+                                    onFocus={() => formValidation.handleInputFocus('email')}
+                                    onBlur={() => formValidation.handleInputBlur('email', email, 'email')}
                                     returnKeyType='next'
                                     enablesReturnKeyAutomatically={true}
                                     autoCorrect={false}
@@ -132,8 +100,8 @@ export default function Login() {
                                     clearButtonMode='while-editing'
                                     autoCorrect={false}
                                     secureTextEntry={true}
-                                    onFocus={() => handleInputFocus('password')}
-                                    onBlur={() => handleInputBlur('password', password)}
+                                    onFocus={() => formValidation.handleInputFocus('password')}
+                                    onBlur={() => formValidation.handleInputBlur('password', password, 'password')}
                                     returnKeyType='done'
                                     enablesReturnKeyAutomatically={true}
                                     onSubmitEditing={() => handleLogin()}

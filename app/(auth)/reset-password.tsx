@@ -15,45 +15,15 @@ export default function ResetPassword() {
     const [isConfirmPasswordError, setIsConfirmPasswordError] = useState(false);
     const [isPasswordFocused, setIsPasswordFocused] = useState(false);
     const [isConfirmPasswordFocused, setIsConfirmPasswordFocused] = useState(false);
+    const scrollViewRef = useRef<ScrollView>(null);
 
     const formValidation = new FormValidationService(setErrorMsg, {
         password: setIsPasswordError,
         confirmPassword: setIsConfirmPasswordError
-    });
-
-    const scrollViewRef = useRef<ScrollView>(null);
-
-    const scrollToBottom = () => {
-        scrollViewRef.current?.scrollToEnd({ animated: true });
-    };
-
-    const handleInputFocus = (inputType: 'password' | 'confirmPassword') => {
-        setErrorMsg('');
-        setIsPasswordFocused(inputType === 'password');
-        setIsConfirmPasswordFocused(inputType === 'confirmPassword');
-        scrollToBottom();
-    };
-
-    const handleInputBlur = (value: string, confirmNewPassword: string) => {
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-        setIsPasswordFocused(false);
-        setIsConfirmPasswordFocused(false);
-
-        if (!value) {
-            setErrorMsg('Please put your password.');
-            setIsPasswordError(true);
-        } else if (!passwordRegex.test(value)) {
-            setErrorMsg('Please put a valid password.');
-            setIsPasswordError(true);
-        } else if (confirmNewPassword !== value) {
-            setErrorMsg('Please put the same password.');
-            setIsConfirmPasswordError(true);
-        } else {
-            setErrorMsg('');
-            setIsPasswordError(false);
-            setIsConfirmPasswordError(false);
-        }
-    };
+    }, {
+        password: setIsPasswordFocused,
+        confirmPassword: setIsConfirmPasswordFocused
+    }, scrollViewRef);
 
     const handleResetPassword = () => {
         if (!formValidation.validateField(newPassword, 'password', 'password')) {
@@ -110,8 +80,8 @@ export default function ResetPassword() {
                                 textContentType='password'
                                 secureTextEntry={true}
                                 clearButtonMode='while-editing'
-                                onFocus={() => handleInputFocus('password')}
-                                onBlur={() => handleInputBlur(newPassword, confirmNewPassword)}
+                                onFocus={() => formValidation.handleInputFocus('password')}
+                                onBlur={() => formValidation.handleInputBlur('password', newPassword, 'password')}
                                 returnKeyType='next'
                                 enablesReturnKeyAutomatically={true}
                                 autoCorrect={false}
@@ -129,8 +99,8 @@ export default function ResetPassword() {
                                 placeholder="Confirm Password"
                                 secureTextEntry={true}
                                 clearButtonMode='while-editing'
-                                onFocus={() => handleInputFocus('confirmPassword')}
-                                onBlur={() => handleInputBlur(newPassword, confirmNewPassword)}
+                                onFocus={() => formValidation.handleInputFocus('confirmPassword')}
+                                onBlur={() => formValidation.handleInputBlur('confirmPassword', confirmNewPassword, 'confirmPassword')}
                                 returnKeyType='done'
                                 enablesReturnKeyAutomatically={true}
                                 autoCorrect={false}

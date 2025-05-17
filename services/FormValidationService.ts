@@ -1,20 +1,53 @@
-import { TextInput } from "react-native";
+import { TextInput, ScrollView } from "react-native";
 import { RefObject } from "react";
 
 type ErrorSetters = {
     [key: string]: (isError: boolean) => void;
 };
 
+type FocusSetters = {
+    [key: string]: (isFocused: boolean) => void;
+};
+
 export class FormValidationService {
     private setErrorMsg: (msg: string) => void;
     private errorSetters: ErrorSetters;
+    private focusSetters: FocusSetters;
+    private scrollViewRef: RefObject<ScrollView> | null;
 
     constructor(
         setErrorMsg: (msg: string) => void,
-        errorSetters: ErrorSetters
+        errorSetters: ErrorSetters,
+        focusSetters?: FocusSetters,
+        scrollViewRef?: RefObject<ScrollView>
     ) {
         this.setErrorMsg = setErrorMsg;
         this.errorSetters = errorSetters;
+        this.focusSetters = focusSetters || {};
+        this.scrollViewRef = scrollViewRef || null;
+    }
+
+    public handleInputFocus(inputType: string): void {
+        if (this.focusSetters[inputType]) {
+            this.focusSetters[inputType](true);
+        }
+        this.setErrorMsg('');
+        this.scrollToBottom();
+    }
+
+    public handleInputBlur(inputType: string, value: string, validationType?: string): void {
+        if (this.focusSetters[inputType]) {
+            this.focusSetters[inputType](false);
+        }
+        if (validationType) {
+            this.validateField(value, validationType as any, inputType);
+        }
+    }
+
+    private scrollToBottom(): void {
+        if (this.scrollViewRef?.current) {
+            this.scrollViewRef.current.scrollToEnd({ animated: true });
+        }
     }
 
     public handleInputChange(

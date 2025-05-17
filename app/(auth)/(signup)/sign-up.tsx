@@ -31,48 +31,12 @@ export default function SignUp() {
         email: setIsEmailError,
         password: setIsPasswordError,
         confirmPassword: setIsConfirmPasswordError
-    });
-
-    const scrollToBottom = () => {
-        scrollViewRef.current?.scrollToEnd({ animated: true });
-    };
-
-    const handleInputFocus = (inputType: 'username' | 'email' | 'password' | 'confirmPassword') => {
-        if (inputType === 'username') {
-            setIsUsernameFocused(true);
-        } else if (inputType === 'email') {
-            setIsEmailFocused(true);
-        } else if (inputType === 'password') {
-            setIsPasswordFocused(true);
-        } else if (inputType === 'confirmPassword') {
-            setIsConfirmPasswordFocused(true);
-        }
-        setIsUsernameError(false);
-        setIsEmailError(false);
-        setIsPasswordError(false);
-        setIsConfirmPasswordError(false);
-        setErrorMsg('');
-
-        if (inputType === 'password' || inputType === 'confirmPassword') {
-            scrollToBottom();
-        }
-    };
-
-    const handleInputBlur = (inputType: 'username' | 'email' | 'password' | 'confirmPassword', value: string) => {
-        if (inputType === 'username') {
-            setIsUsernameFocused(false);
-            formValidation.validateField(value, 'username', 'username');
-        } else if (inputType === 'email') {
-            setIsEmailFocused(false);
-            formValidation.validateField(value, 'email', 'email');
-        } else if (inputType === 'password') {
-            setIsPasswordFocused(false);
-            formValidation.validateField(value, 'password', 'password');
-        } else if (inputType === 'confirmPassword') {
-            setIsConfirmPasswordFocused(false);
-            formValidation.validateField(value, 'confirmPassword', 'confirmPassword');
-        }
-    };
+    }, {
+        username: setIsUsernameFocused,
+        email: setIsEmailFocused,
+        password: setIsPasswordFocused,
+        confirmPassword: setIsConfirmPasswordFocused
+    }, scrollViewRef);
 
     const handleNextSignUpPage = async () => {
         const isUsernameValid = await formValidation.validateField(signUpProps.username, 'username', 'username');
@@ -127,8 +91,8 @@ export default function SignUp() {
                                     returnKeyType='next'
                                     enablesReturnKeyAutomatically={true}
                                     onSubmitEditing={() => formValidation.validateField(signUpProps.username, 'username', 'username')}
-                                    onFocus={() => handleInputFocus('username')}
-                                    onBlur={() => handleInputBlur('username', signUpProps.username)}
+                                    onFocus={() => formValidation.handleInputFocus('username')}
+                                    onBlur={() => formValidation.handleInputBlur('username', signUpProps.username, 'username')}
                                     onChangeText={(text) => {
                                         setSignUpProps({ ...signUpProps, username: text });
                                         formValidation.handleInputChange(text, (t) => setSignUpProps({ ...signUpProps, username: t }));
@@ -154,8 +118,8 @@ export default function SignUp() {
                                     returnKeyType='next'
                                     enablesReturnKeyAutomatically={true}
                                     onSubmitEditing={() => formValidation.validateField(signUpProps.email, 'email', 'email')}
-                                    onFocus={() => handleInputFocus('email')}
-                                    onBlur={() => handleInputBlur('email', signUpProps.email)}
+                                    onFocus={() => formValidation.handleInputFocus('email')}
+                                    onBlur={() => formValidation.handleInputBlur('email', signUpProps.email, 'email')}
                                     onChangeText={(text) => {
                                         setSignUpProps({ ...signUpProps, email: text });
                                         formValidation.handleInputChange(text, (t) => setSignUpProps({ ...signUpProps, email: t }));
@@ -185,8 +149,8 @@ export default function SignUp() {
                                     returnKeyType='next'
                                     enablesReturnKeyAutomatically={true}
                                     onSubmitEditing={() => formValidation.validateField(signUpProps.password, 'password', 'password')}
-                                    onFocus={() => handleInputFocus('password')}
-                                    onBlur={() => handleInputBlur('password', signUpProps.password)}
+                                    onFocus={() => formValidation.handleInputFocus('password')}
+                                    onBlur={() => formValidation.handleInputBlur('password', signUpProps.password, 'password')}
                                     onChangeText={(text) => {
                                         setSignUpProps({ ...signUpProps, password: text });
                                         formValidation.handleInputChange(text, (t) => setSignUpProps({ ...signUpProps, password: t }));
@@ -212,8 +176,8 @@ export default function SignUp() {
                                     returnKeyType='done'
                                     enablesReturnKeyAutomatically={true}
                                     onSubmitEditing={handleNextSignUpPage}
-                                    onFocus={() => handleInputFocus('confirmPassword')}
-                                    onBlur={() => handleInputBlur('confirmPassword', signUpProps.confirmPassword)}
+                                    onFocus={() => formValidation.handleInputFocus('confirmPassword')}
+                                    onBlur={() => formValidation.handleInputBlur('confirmPassword', signUpProps.confirmPassword, 'confirmPassword')}
                                     onChangeText={(text) => {
                                         setSignUpProps({ ...signUpProps, confirmPassword: text });
                                         formValidation.handleInputChange(text, (t) => setSignUpProps({ ...signUpProps, confirmPassword: t }));
