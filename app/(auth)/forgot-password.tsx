@@ -7,6 +7,7 @@ import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import { FormService } from '@/services/FormService';
 import PrivacyPolicy from '@/components/ui/text/PrivacyPolicy';
 import { AuthService } from '@/services/AuthService';
+import { FormValidationService } from '@/services/FormValidationService';
 
 export default function ForgotPassword() {
     const [email, setEmail] = useState('');
@@ -16,11 +17,15 @@ export default function ForgotPassword() {
     const scrollViewRef = useRef<ScrollView>(null);
     const emailInputRef = useRef<TextInput>(null);
 
-    const formValidation = new FormService(setErrorMsg, {
+    const handleForm = new FormService(setErrorMsg, {
         email: setIsEmailError
     }, {
         email: setIsEmailFocused
     }, scrollViewRef);
+    
+    const formValidation = new FormValidationService(setErrorMsg, {
+        email: setIsEmailError
+    })
 
     const authService = new AuthService();
 
@@ -57,13 +62,13 @@ export default function ForgotPassword() {
                                     autoComplete='email'
                                     textContentType='emailAddress'
                                     clearButtonMode='while-editing'
-                                    onFocus={() => formValidation.handleInputFocus('email')}
-                                    onBlur={() => formValidation.handleInputBlur('email', email)}
+                                    onFocus={() => handleForm.inputFocus('email')}
+                                    onBlur={() => handleForm.inputBlur('email', email)}
                                     returnKeyType='done'
                                     enablesReturnKeyAutomatically={true}
                                     autoCorrect={false}
                                     placeholderTextColor='gray'
-                                    onChangeText={(text) => formValidation.handleInputChange(text, setEmail)}
+                                    onChangeText={(text) => handleForm.inputChange(text, setEmail)}
                                     className={`bg-white rounded-md p-3 w-2/3 font-spacemono-bold ${
                                         isEmailError ? 'border-2 border-red-500' : ''
                                     } ${isEmailFocused ? 'border-2 border-primary' : ''}`}

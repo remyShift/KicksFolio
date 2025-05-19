@@ -4,6 +4,7 @@ import ErrorMsg from "@/components/ui/text/ErrorMsg"
 import MainButton from "@/components/ui/buttons/MainButton"
 import { useState } from "react"
 import { FormService } from "@/services/FormService"
+import { FormValidationService } from "@/services/FormValidationService"
 import { router, useLocalSearchParams } from "expo-router";
 import { authService } from "@/services/AuthService";
 
@@ -21,12 +22,17 @@ export default function ResetPasswordForm({ setIsPasswordFocused, isPasswordFocu
     const [isPasswordError, setIsPasswordError] = useState(false)
     const [isConfirmPasswordError, setIsConfirmPasswordError] = useState(false)
 
-    const handleFormService = new FormService(setErrorMsg, {
+    const handleForm = new FormService(setErrorMsg, {
         password: setIsPasswordError,
         confirmPassword: setIsConfirmPasswordError
     }, {
         password: setIsPasswordFocused,
         confirmPassword: setIsConfirmPasswordFocused
+    })
+
+    const formValidation = new FormValidationService(setErrorMsg, {
+        password: setIsPasswordError,
+        confirmPassword: setIsConfirmPasswordError
     })
 
 
@@ -35,7 +41,7 @@ export default function ResetPasswordForm({ setIsPasswordFocused, isPasswordFocu
             token as string,
             newPassword,
             confirmNewPassword,
-            handleFormService
+            formValidation
         );
 
         if (success) {
@@ -57,13 +63,13 @@ export default function ResetPasswordForm({ setIsPasswordFocused, isPasswordFocu
                         textContentType='password'
                         secureTextEntry={true}
                         clearButtonMode='while-editing'
-                        onFocus={() => handleFormService.handleInputFocus('password')}
-                        onBlur={() => handleFormService.handleInputBlur('password', newPassword)}
+                        onFocus={() => handleForm.inputFocus('password')}
+                        onBlur={() => handleForm.inputBlur('password', newPassword)}
                         returnKeyType='next'
                         enablesReturnKeyAutomatically={true}
                         autoCorrect={false}
                         placeholderTextColor='gray'
-                        onChangeText={(text) => handleFormService.handleInputChange(text, setNewPassword)}
+                        onChangeText={(text) => handleForm.inputChange(text, setNewPassword)}
                         className={`bg-white rounded-md p-3 w-2/3 font-spacemono-bold ${
                             isPasswordError ? 'border-2 border-red-500' : ''
                         } ${isPasswordFocused ? 'border-2 border-primary' : ''}`}
@@ -76,13 +82,13 @@ export default function ResetPasswordForm({ setIsPasswordFocused, isPasswordFocu
                         placeholder="Confirm Password"
                         secureTextEntry={true}
                         clearButtonMode='while-editing'
-                        onFocus={() => handleFormService.handleInputFocus('confirmPassword')}
-                        onBlur={() => handleFormService.handleInputBlur('confirmPassword', confirmNewPassword)}
+                        onFocus={() => handleForm.inputFocus('confirmPassword')}
+                        onBlur={() => handleForm.inputBlur('confirmPassword', confirmNewPassword)}
                         returnKeyType='done'
                         enablesReturnKeyAutomatically={true}
                         autoCorrect={false}
                         placeholderTextColor='gray'
-                        onChangeText={(text) => handleFormService.handleInputChange(text, setConfirmNewPassword)}
+                        onChangeText={(text) => handleForm.inputChange(text, setConfirmNewPassword)}
                         className={`bg-white rounded-md p-3 w-2/3 font-spacemono-bold ${
                             isConfirmPasswordError ? 'border-2 border-red-500' : ''
                         } ${isConfirmPasswordFocused ? 'border-2 border-primary' : ''}`}

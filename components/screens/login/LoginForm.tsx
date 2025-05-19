@@ -2,11 +2,12 @@ import { TextInput } from "react-native";
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import PageTitle from '@/components/ui/text/PageTitle';
 import { View, Text } from 'react-native'
-import { FormService } from "@/services/FormService";
 import { useState, useRef } from "react";
 import { authService } from "@/services/AuthService";
 import MainButton from "@/components/ui/buttons/MainButton";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
+import { FormValidationService } from "@/services/FormValidationService";
+import { FormService } from "@/services/FormService";
 
 interface LoginFormProps {
     isEmailFocused: boolean,
@@ -29,16 +30,24 @@ export default function LoginForm({
     const emailInputRef = useRef<TextInput>(null);
     const passwordInputRef = useRef<TextInput>(null);
 
-    const formValidation = new FormService(setErrorMsg, {
+    const formValidation = new FormValidationService(setErrorMsg, {
         email: setIsEmailError,
         password: setIsPasswordError
-    }, {
+    })
+
+    const handleForm = new FormService(setErrorMsg, {
         email: setIsEmailFocused,
         password: setIsPasswordFocused
     })
 
     const handleLogin = async () => {
         const success = await authService.handleLogin(email, password, formValidation);
+
+        if (success) {
+            setIsEmailFocused(false);
+            setIsPasswordFocused(false);
+            router.replace('/');
+        }
     }
 
     return (
@@ -57,13 +66,13 @@ export default function LoginForm({
                         autoComplete='email'
                         textContentType='emailAddress'
                         clearButtonMode='while-editing'
-                        onFocus={() => formValidation.handleInputFocus('email')}
-                        onBlur={() => formValidation.handleInputBlur('email', email)}
+                        onFocus={() => handleForm.inputFocus('email')}
+                        onBlur={() => handleForm.inputBlur('email', email)}
                         returnKeyType='next'
                         enablesReturnKeyAutomatically={true}
                         autoCorrect={false}
                         placeholderTextColor='gray'
-                        onChangeText={(text) => formValidation.handleInputChange(text, setEmail)}
+                        onChangeText={(text) => handleForm.inputChange(text, setEmail)}
                         className={`bg-white rounded-md p-3 w-2/3 font-spacemono-bold ${
                             isEmailError ? 'border-2 border-red-500' : ''
                         } ${isEmailFocused ? 'border-2 border-primary' : ''}`}
@@ -81,13 +90,13 @@ export default function LoginForm({
                         clearButtonMode='while-editing'
                         autoCorrect={false}
                         secureTextEntry={true}
-                        onFocus={() => formValidation.handleInputFocus('password')}
-                        onBlur={() => formValidation.handleInputBlur('password', password)}
+                        onFocus={() => handleForm.inputFocus('password')}
+                        onBlur={() => handleForm.inputBlur('password', password)}
                         returnKeyType='done'
                         enablesReturnKeyAutomatically={true}
                         onSubmitEditing={() => handleLogin()}
                         placeholderTextColor='gray'
-                        onChangeText={(text) => formValidation.handleInputChange(text, setPassword)}
+                        onChangeText={(text) => handleForm.inputChange(text, setPassword)}
                         className={`bg-white rounded-md p-3 w-2/3 font-spacemono-bold ${
                             isPasswordError ? 'border-2 border-red-500' : ''
                         } ${isPasswordFocused ? 'border-2 border-primary' : ''}`}

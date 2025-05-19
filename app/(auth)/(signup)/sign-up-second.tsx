@@ -11,6 +11,7 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import PrivacyPolicy from '@/components/ui/text/PrivacyPolicy';
 import { imageService } from '@/services/ImageService';
 import { authService } from '@/services/AuthService';
+import { FormValidationService } from '@/services/FormValidationService';
 
 export default function SUSecond() {
     const { signUpProps, setSignUpProps } = useSignUpProps();
@@ -27,7 +28,7 @@ export default function SUSecond() {
     const sizeInputRef = useRef<TextInput>(null);
     const firstNameInputRef = useRef<TextInput>(null);
 
-    const formValidation = new FormService(setErrorMsg, {
+    const handleForm = new FormService(setErrorMsg, {
         firstName: setIsFirstNameError,
         lastName: setIsLastNameError,
         size: setIsSizeError
@@ -37,13 +38,11 @@ export default function SUSecond() {
         size: setIsSizeFocused
     }, scrollViewRef);
 
-    const handleInputFocus = (inputType: FieldName) => {
-        formValidation.handleInputFocus(inputType);
-    };
-
-    const handleInputBlur = (inputType: FieldName, value: string) => {
-        formValidation.handleInputBlur(inputType, value);
-    };
+    const formValidation = new FormValidationService(setErrorMsg, {
+        firstName: setIsFirstNameError,
+        lastName: setIsLastNameError,
+        size: setIsSizeError
+    })
 
     const handleSignUp = async () => {
         const success = await authService.handleSignUp(
@@ -151,11 +150,11 @@ export default function SUSecond() {
                                     returnKeyType='next'
                                     enablesReturnKeyAutomatically={true}
                                     onSubmitEditing={() => formValidation.validateField(signUpProps.first_name, 'firstName')}
-                                    onFocus={() => handleInputFocus('firstName')}
-                                    onBlur={() => handleInputBlur('firstName', signUpProps.first_name)}
+                                    onFocus={() => handleForm.inputFocus('firstName')}
+                                    onBlur={() => handleForm.inputBlur('firstName', signUpProps.first_name)}
                                     onChangeText={(text) => {
                                         setSignUpProps({ ...signUpProps, first_name: text });
-                                        formValidation.handleInputChange(text, (t) => setSignUpProps({ ...signUpProps, first_name: t }));
+                                        handleForm.inputChange(text, (t) => setSignUpProps({ ...signUpProps, first_name: t }));
                                     }}
                                     className={`bg-white rounded-md p-3 w-2/3 font-spacemono-bold ${
                                         isFirstNameError ? 'border-2 border-red-500' : ''
@@ -178,11 +177,11 @@ export default function SUSecond() {
                                     returnKeyType='next'
                                     enablesReturnKeyAutomatically={true}
                                     onSubmitEditing={() => formValidation.validateField(signUpProps.last_name, 'lastName')}
-                                    onFocus={() => handleInputFocus('lastName')}
-                                    onBlur={() => handleInputBlur('lastName', signUpProps.last_name)}
+                                    onFocus={() => handleForm.inputFocus('lastName')}
+                                    onBlur={() => handleForm.inputBlur('lastName', signUpProps.last_name)}
                                     onChangeText={(text) => {
                                         setSignUpProps({ ...signUpProps, last_name: text });
-                                        formValidation.handleInputChange(text, (t) => setSignUpProps({ ...signUpProps, last_name: t }));
+                                        handleForm.inputChange(text, (t) => setSignUpProps({ ...signUpProps, last_name: t }));
                                     }}
                                     className={`bg-white rounded-md p-3 w-2/3 font-spacemono-bold ${
                                         isLastNameError ? 'border-2 border-red-500' : ''
@@ -211,11 +210,11 @@ export default function SUSecond() {
                                         const formattedText = text.replace(',', '.');
                                         if (formattedText === '' || !isNaN(Number(formattedText))) {
                                             setSignUpProps({ ...signUpProps, sneaker_size: formattedText });
-                                            formValidation.handleInputChange(formattedText, (t) => setSignUpProps({ ...signUpProps, sneaker_size: t }));
+                                            handleForm.inputChange(formattedText, (t) => setSignUpProps({ ...signUpProps, sneaker_size: t }));
                                         }
                                     }}
-                                    onFocus={() => handleInputFocus('size')}
-                                    onBlur={() => handleInputBlur('size', String(signUpProps.sneaker_size))}
+                                    onFocus={() => handleForm.inputFocus('size')}
+                                    onBlur={() => handleForm.inputBlur('size', String(signUpProps.sneaker_size))}
                                 />
                             </View>
                         </View>

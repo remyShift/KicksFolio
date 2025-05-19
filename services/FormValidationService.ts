@@ -17,14 +17,6 @@ export class FormValidationService {
         this.errorSetters = errorSetters;
     }
 
-    public handleInputChange(
-        text: string, 
-        setter: (text: string) => void
-    ): void {
-        setter(text);
-        this.setErrorMsg('');
-    }
-
     public async validateField(
         value: string,
         inputType: 'username' | 'email' | 'password' | 'firstName' | 'lastName' | 'size' | 'confirmPassword',

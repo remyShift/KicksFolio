@@ -28,7 +28,7 @@ export class FormService {
         this.validationService = new FormValidationService(setErrorMsg, errorSetters);
     }
 
-    public handleInputFocus(inputType: FieldName): void {
+    public inputFocus(inputType: FieldName): void {
         if (this.focusSetters[inputType]) {
             this.focusSetters[inputType](true);
         }
@@ -36,7 +36,7 @@ export class FormService {
         this.scrollToBottom();
     }
 
-    public handleInputBlur(inputType: FieldName, value: string, password?: string, isLoginPage?: boolean, nextRef?: RefObject<TextInput>): void {
+    public inputBlur(inputType: FieldName, value: string, password?: string, isLoginPage?: boolean, nextRef?: RefObject<TextInput>): void {
         if (this.focusSetters[inputType]) {
             this.focusSetters[inputType](false);
         }
@@ -49,7 +49,7 @@ export class FormService {
         );
     }
     
-    public handleInputChange(
+    public inputChange(
         text: string, 
         setter: (text: string) => void
     ): void {
