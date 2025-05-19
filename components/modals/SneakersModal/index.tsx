@@ -46,16 +46,16 @@ export const SneakersModal = ({
     const handleNext = () => {
         switch (currentStep) {
             case 'index':
-                // This will be handled by the InitialStep component
+                setCurrentStep('sku');
                 break;
             case 'sku':
-                // This will be handled by the SkuStep component
+                setCurrentStep('addForm');
                 break;
             case 'addForm':
                 setCurrentStep('view');
                 break;
             case 'view':
-                // This will be handled by the ViewStep component
+                onClose();
                 break;
         }
     };
