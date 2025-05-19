@@ -28,7 +28,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
     const [user, setUser] = useState<User | null>(null);
     const [userCollection, setUserCollection] = useState<Collection | null>(null);
     const [userSneakers, setUserSneakers] = useState<Sneaker[] | null>(null);
-    const { formValidation } = useAuth();
 
     useEffect(() => {
         initializeData();
