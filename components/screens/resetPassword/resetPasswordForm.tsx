@@ -7,7 +7,12 @@ import { FormService } from "@/services/FormService"
 import { router, useLocalSearchParams } from "expo-router";
 import { authService } from "@/services/AuthService";
 
-export default function ResetPasswordForm({ setIsPasswordFocused, isPasswordFocused }: { setIsPasswordFocused: (isFocused: boolean) => void, isPasswordFocused: boolean }) {
+interface ResetPasswordFormProps {  
+    setIsPasswordFocused: (isFocused: boolean) => void,
+    isPasswordFocused: boolean
+}
+
+export default function ResetPasswordForm({ setIsPasswordFocused, isPasswordFocused }: ResetPasswordFormProps) {
     const { token } = useLocalSearchParams();
     const [newPassword, setNewPassword] = useState('')
     const [confirmNewPassword, setConfirmNewPassword] = useState('')

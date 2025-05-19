@@ -28,7 +28,6 @@ export class FormValidationService {
     public async validateField(
         value: string,
         inputType: 'username' | 'email' | 'password' | 'firstName' | 'lastName' | 'size' | 'confirmPassword',
-        fieldName: string,
         isLoginPage: boolean = false,
         nextRef: RefObject<TextInput> | null = null,
         password?: string
@@ -60,10 +59,10 @@ export class FormValidationService {
                 break;
         }
 
-        if (!isValid && this.errorSetters[fieldName]) {
-            this.errorSetters[fieldName](true);
-        } else if (isValid && this.errorSetters[fieldName]) {
-            this.errorSetters[fieldName](false);
+        if (!isValid && this.errorSetters[inputType]) {
+            this.errorSetters[inputType](true);
+        } else if (isValid && this.errorSetters[inputType]) {
+            this.errorSetters[inputType](false);
         }
 
         if (isValid && nextRef?.current) {
