@@ -2,7 +2,7 @@ import { Slot } from 'expo-router';
 import { SessionProvider, useSession } from '@/context/authContext';
 import { useFonts } from 'expo-font';
 import "../global.css";
-import SplashScreen from '@/components/screens/SplashScreen/SplashScreen';
+import SplashScreen from '@/components/screens/splashScreen/SplashScreen';
 import { useState, useCallback } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
