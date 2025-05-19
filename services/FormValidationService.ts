@@ -213,8 +213,12 @@ export class FormValidationService {
         return data.users.some((user: { email: string }) => user.email === email);
     }
 
-    private clearErrors(): void {
+    public clearErrors(): void {
         this.setErrorMsg('');
         Object.values(this.errorSetters).forEach(setter => setter(false));
+    }
+
+    public setErrorMessage(msg: string): void {
+        this.setErrorMsg(msg);
     }
 } 

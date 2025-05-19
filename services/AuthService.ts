@@ -1,6 +1,6 @@
 import { BaseApiService } from "@/services/BaseApiService";
 import { User } from "@/types/User";
-import { FormService } from "./FormService";
+import { FormValidationService } from "./FormValidationService";
 
 export interface UserData {
     email: string;
@@ -24,10 +24,10 @@ export class AuthService extends BaseApiService {
     async handleLogin(
         email: string, 
         password: string, 
-        formService: FormService
+        formValidationService: FormValidationService
     ): Promise<boolean> {
-        const isEmailValid = await formService.validateField(email, 'email', undefined, true);
-        const isPasswordValid = formService.validateField(password, 'password');
+        const isEmailValid = await formValidationService.validateField(email, 'email', undefined);
+        const isPasswordValid = formValidationService.validateField(password, 'password');
 
         if (!isEmailValid || !isPasswordValid) {
             return false;
@@ -38,7 +38,7 @@ export class AuthService extends BaseApiService {
                 return true;
             })
             .catch(() => {
-                formService.setErrorMessage('Invalid email or password');
+                formValidationService.setErrorMessage('Invalid email or password');
                 return false;
             });
     }
@@ -155,10 +155,10 @@ export class AuthService extends BaseApiService {
         token: string,
         newPassword: string,
         confirmPassword: string,
-        formService: FormService
+        formValidationService: FormValidationService
     ): Promise<boolean> {
-        const isPasswordValid = formService.validateField(newPassword, 'password');
-        const isConfirmPasswordValid = formService.validateField(confirmPassword, 'confirmPassword', newPassword);
+        const isPasswordValid = formValidationService.validateField(newPassword, 'password');
+        const isConfirmPasswordValid = formValidationService.validateField(confirmPassword, 'confirmPassword');
 
         if (!isPasswordValid || !isConfirmPasswordValid) {
             return false;
@@ -167,7 +167,7 @@ export class AuthService extends BaseApiService {
         return this.resetPassword(token, newPassword)
             .then(() => true)
             .catch(() => {
-                formService.setErrorMessage('An error occurred while resetting your password, please try again.');
+                formValidationService.setErrorMessage('An error occurred while resetting your password, please try again.');
                 return false;
             });
     }
@@ -201,9 +201,9 @@ export class AuthService extends BaseApiService {
 
     async handleForgotPassword(
         email: string,
-        formService: FormService
+        formValidationService: FormValidationService
     ): Promise<boolean> {
-        const isEmailValid = await formService.validateField(email, 'email', undefined, true);
+        const isEmailValid = await formValidationService.validateField(email, 'email');
 
         if (!isEmailValid) {
             return false;
@@ -212,7 +212,7 @@ export class AuthService extends BaseApiService {
         return this.forgotPassword(email)
             .then(() => true)
             .catch(() => {
-                formService.setErrorMessage('An error occurred while sending the reset email, please try again.');
+                formValidationService.setErrorMessage('An error occurred while sending the reset email, please try again.');
                 return false;
             });
     }
@@ -240,27 +240,27 @@ export class AuthService extends BaseApiService {
         lastName: string,
         sneakerSize: string,
         profilePicture: string | undefined,
-        formService: FormService,
+        formValidationService: FormValidationService,
         setSignUpProps: (props: any) => void,
         signUpProps: any
     ): Promise<boolean> {
         if (!username.trim()) {
-            formService.setErrorMessage('Please put your username.');
+            formValidationService.setErrorMessage('Please put your username.');
             return false;
         }
 
         if (!firstName) {
-            formService.setErrorMessage('Please put your first name.');
+            formValidationService.setErrorMessage('Please put your first name.');
             return false;
         }
 
         if (!lastName) {
-            formService.setErrorMessage('Please put your last name.');
+            formValidationService.setErrorMessage('Please put your last name.');
             return false;
         }
 
         if (!sneakerSize || Number(sneakerSize) <= 0) {
-            formService.setErrorMessage('Please put a valid sneaker size.');
+            formValidationService.setErrorMessage('Please put a valid sneaker size.');
             return false;
         }
 
@@ -281,7 +281,7 @@ export class AuthService extends BaseApiService {
             return true;
         })
         .catch((error) => {
-            formService.setErrorMessage(`Something went wrong. Please try again. ${error}`);
+            formValidationService.setErrorMessage(`Something went wrong. Please try again. ${error}`);
             return false;
         });
     }

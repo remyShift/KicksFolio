@@ -13,8 +13,6 @@ type FocusSetters = {
 export type FieldName = 'username' | 'email' | 'password' | 'firstName' | 'lastName' | 'confirmPassword' | 'size';
 
 export class FormService {
-    private setErrorMsg: (msg: string) => void;
-    private errorSetters: ErrorSetters;
     private focusSetters: FocusSetters;
     private scrollViewRef: RefObject<ScrollView> | null;
     private validationService: FormValidationService;
@@ -25,22 +23,16 @@ export class FormService {
         focusSetters?: FocusSetters,
         scrollViewRef?: RefObject<ScrollView>
     ) {
-        this.setErrorMsg = setErrorMsg;
-        this.errorSetters = errorSetters;
         this.focusSetters = focusSetters || {};
         this.scrollViewRef = scrollViewRef || null;
         this.validationService = new FormValidationService(setErrorMsg, errorSetters);
-    }
-
-    public setErrorMessage(msg: string): void {
-        this.setErrorMsg(msg);
     }
 
     public handleInputFocus(inputType: FieldName): void {
         if (this.focusSetters[inputType]) {
             this.focusSetters[inputType](true);
         }
-        this.setErrorMsg('');
+        this.validationService.clearErrors();
         this.scrollToBottom();
     }
 
@@ -56,13 +48,13 @@ export class FormService {
             password
         );
     }
-
+    
     public handleInputChange(
         text: string, 
         setter: (text: string) => void
     ): void {
         setter(text);
-        this.setErrorMsg('');
+        this.validationService.clearErrors();
     }
 
     private scrollToBottom(): void {
