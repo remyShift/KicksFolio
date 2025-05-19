@@ -1,17 +1,7 @@
 import { BaseApiService } from "@/services/BaseApiService";
 import { User } from "@/types/User";
 import { FormValidationService } from "./FormValidationService";
-
-export interface UserData {
-    email: string;
-    password: string;
-    username: string;
-    first_name: string;
-    last_name: string;
-    sneaker_size: number;
-    profile_picture?: string;
-}
-
+import { UserData } from "@/types/auth";
 interface LoginResponse {
     user: User;
     tokens: {
@@ -65,29 +55,23 @@ export class AuthService extends BaseApiService {
     }
 
     async signUp(
-        email: string,
-        password: string,
-        username: string,
-        firstName: string,
-        lastName: string,
-        sneakerSize: number,
-        profilePicture?: string
+        userData: UserData
     ): Promise<{ user: User }> {
         const formData = new FormData();
         
-        formData.append('user[email]', email);
-        formData.append('user[password]', password);
-        formData.append('user[username]', username);
-        formData.append('user[first_name]', firstName);
-        formData.append('user[last_name]', lastName);
-        formData.append('user[sneaker_size]', sneakerSize.toString());
+        formData.append('user[email]', userData.email);
+        formData.append('user[password]', userData.password);
+        formData.append('user[username]', userData.username);
+        formData.append('user[first_name]', userData.first_name);
+        formData.append('user[last_name]', userData.last_name);
+        formData.append('user[sneaker_size]', userData.sneaker_size.toString());
 
-        if (profilePicture) {
-            const imageUriParts = profilePicture.split('.');
+        if (userData.profile_picture) {
+            const imageUriParts = userData.profile_picture.split('.');
             const fileType = imageUriParts[imageUriParts.length - 1];
             
             formData.append('user[profile_picture]', {
-                uri: profilePicture,
+                uri: userData.profile_picture,
                 type: 'image/jpeg',
                 name: `profile_picture.${fileType}`
             } as any);
@@ -233,48 +217,34 @@ export class AuthService extends BaseApiService {
     }
 
     async handleSignUp(
-        email: string,
-        password: string,
-        username: string,
-        firstName: string,
-        lastName: string,
-        sneakerSize: string,
-        profilePicture: string | undefined,
+        userData: UserData,
         formValidationService: FormValidationService,
         setSignUpProps: (props: any) => void,
         signUpProps: any
     ): Promise<boolean> {
-        if (!username.trim()) {
+        if (!userData.username.trim()) {
             formValidationService.setErrorMessage('Please put your username.');
             return false;
         }
 
-        if (!firstName) {
+        if (!userData.first_name.trim()) {
             formValidationService.setErrorMessage('Please put your first name.');
             return false;
         }
 
-        if (!lastName) {
+        if (!userData.last_name.trim()) {
             formValidationService.setErrorMessage('Please put your last name.');
             return false;
         }
 
-        if (!sneakerSize || Number(sneakerSize) <= 0) {
+        if (!userData.sneaker_size || userData.sneaker_size <= 0) {
             formValidationService.setErrorMessage('Please put a valid sneaker size.');
             return false;
         }
 
-        return this.signUp(
-            email,
-            password, 
-            username,
-            firstName,
-            lastName,
-            Number(sneakerSize),
-            profilePicture
-        )
+        return this.signUp(userData)
         .then(() => {
-            return this.login(email, password);
+            return this.login(userData.email, userData.password);
         })
         .then(() => {
             setSignUpProps({ ...signUpProps, email: '', password: '', username: '', first_name: '', last_name: '', sneaker_size: '', profile_picture: '' });

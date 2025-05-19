@@ -1,6 +1,5 @@
 import { createContext, useContext, type PropsWithChildren, useState, useEffect } from 'react';
 import { AuthContextType } from '@/types/auth';
-import { authService, UserData } from '@/services/AuthService';
 import { storageService } from '@/services/StorageService';
 import { useAppState } from '@react-native-community/hooks';
 import { useStorageState } from '@/hooks/useStorageState';
@@ -9,6 +8,7 @@ import { User } from '@/types/User';
 import { Collection } from '@/types/Collection';
 import { Sneaker } from '@/types/Sneaker';
 import { ProfileData } from '@/types/ProfileData';
+import { useAuth } from '@/hooks/useAuth';
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
@@ -19,7 +19,6 @@ export function useSession() {
             throw new Error('useSession must be wrapped in a <SessionProvider />');
         }
     }
-
     return value;
 }
 
@@ -29,6 +28,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
     const [user, setUser] = useState<User | null>(null);
     const [userCollection, setUserCollection] = useState<Collection | null>(null);
     const [userSneakers, setUserSneakers] = useState<Sneaker[] | null>(null);
+    const { formValidation } = useAuth();
 
     useEffect(() => {
         initializeData();
@@ -54,64 +54,37 @@ export function SessionProvider({ children }: PropsWithChildren) {
         }
     };
 
-    const login = async (email: string, password: string) => {
-        const data = await authService.login(email, password);
-        setSessionToken(data.tokens.access);
-        setUser(data.user);
-        await storageService.setItem('user', data.user);
-    }
-
-    const signUp = async (email: string, password: string, username: string, first_name: string, last_name: string, sneaker_size: number, profile_picture: string): Promise<void> => {
-        const userData: UserData = {
-            email,
-            password,
-            username,
-            first_name,
-            last_name,
-            sneaker_size,
-            profile_picture
-        };
-
-        return authService.signUp(userData)
-            .then(data => {
-                if (!data) {
-                    throw new Error('Error when creating account');
-                }
-                setUser(data.user);
-                return;
-            })
-            .catch(error => {
-                throw new Error(`Error when signing up: ${error}`);
-            });
-    };
-
-    const logout = async () => {
-        if (sessionToken) {
-            await authService.logout(sessionToken);
-        }
-        setSessionToken(null);
-        await storageService.setItem('user', null);
-        await storageService.setItem('collection', null);
-        await storageService.setItem('sneakers', null);
-        setUser(null);
-        setUserCollection(null);
-        setUserSneakers(null);
-    };
-
     const getUser = async () => {
         if (!sessionToken) return;
 
-        return authService.getUser(sessionToken)
-            .then(async data => {
+        return fetch(`${process.env.EXPO_PUBLIC_BASE_API_URL}/users/me`, {
+            headers: {
+                'Authorization': `Bearer ${sessionToken}`,
+                'Accept': 'application/json'
+            }
+        })
+        .then(async response => {
+            if (response.status === 401) {
+                await logout();
+                return null;
+            }
+            if (!response.ok) throw new Error('Error when getting user');
+            return response.json();
+        })
+        .then(async data => {
+            if (data?.user) {
                 setUser(data.user);
                 await storageService.setItem('user', data.user);
                 await getUserCollection();
                 await getUserSneakers();
-            })
-            .catch(async error => {
-                await logout();
-                throw new Error(`Error when getting user: ${error}`);
-            });
+                return data.user;
+            }
+            return null;
+        })
+        .catch(async error => {
+            await logout();
+            throw new Error(`Error when getting user: ${error}`);
+        });
     };
 
     const getUserCollection = async () => {
@@ -178,16 +151,45 @@ export function SessionProvider({ children }: PropsWithChildren) {
     const verifyToken = async () => {
         if (!sessionToken) return Promise.resolve(false);
 
-        return authService.verifyToken(sessionToken)
-            .then(isValid => {
-                if (isValid) {
-                    return getUser().then(() => true);
+        return fetch(`${process.env.EXPO_PUBLIC_BASE_API_URL}/auth/verify`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${sessionToken}`,
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => {
+            if (!response.ok) return false;
+            return response.json();
+        })
+        .then(isValid => {
+            if (isValid) {
+                return getUser().then(() => true);
+            }
+            return false;
+        })
+        .catch((error) => {
+            throw new Error(`Error when verifying token: ${error}`);
+        });
+    };
+
+    const logout = async () => {
+        if (sessionToken) {
+            await fetch(`${process.env.EXPO_PUBLIC_BASE_API_URL}/auth/logout`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${sessionToken}`,
+                    'Accept': 'application/json'
                 }
-                return false;
-            })
-            .catch((error) => {
-                throw new Error(`Error when verifying token: ${error}`);
             });
+        }
+        setSessionToken(null);
+        await storageService.setItem('user', null);
+        await storageService.setItem('collection', null);
+        await storageService.setItem('sneakers', null);
+        setUser(null);
+        setUserCollection(null);
+        setUserSneakers(null);
     };
 
     const loadInitialData = async () => {
@@ -210,7 +212,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
             return { user: {} as User };
         }
 
-        const userData: Partial<UserData> = {
+        const userData = {
             username: profileData.newUsername,
             first_name: profileData.newFirstName,
             last_name: profileData.newLastName,
@@ -218,25 +220,47 @@ export function SessionProvider({ children }: PropsWithChildren) {
             profile_picture: profileData.newProfilePicture
         };
 
-        return authService.updateUser(user.id, userData, sessionToken)
-            .then((data) => {
-                getUser()
-                    .then(() => router.replace('/(app)/(tabs)/user'));
-                return data;
-            })
-            .catch(error => {
-                throw new Error(`Error when updating user: ${error}`);
-            });
+        return fetch(`${process.env.EXPO_PUBLIC_BASE_API_URL}/users/${user.id}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${sessionToken}`,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(userData)
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Error when updating user');
+            return response.json();
+        })
+        .then((data) => {
+            getUser()
+                .then(() => router.replace('/(app)/(tabs)/user'));
+            return data;
+        })
+        .catch(error => {
+            throw new Error(`Error when updating user: ${error}`);
+        });
     }
 
     const deleteAccount = async (userId: string, token: string) => {
-        return authService.deleteAccount(userId, token)
-            .then(data => {
-                return data;
-            })
-            .catch(error => {
-                throw new Error(`Error when deleting account: ${error}`);
-            });
+        return fetch(`${process.env.EXPO_PUBLIC_BASE_API_URL}/users/${userId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Error when deleting account');
+            return response.json();
+        })
+        .then(data => {
+            return data;
+        })
+        .catch(error => {
+            throw new Error(`Error when deleting account: ${error}`);
+        });
     }
 
     const handleAppStateChange = async () => {
@@ -256,9 +280,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
     return (
         <AuthContext.Provider
             value={{
-                login,
-                signUp,
-                logout,
                 sessionToken,
                 isLoading,
                 userCollection,
@@ -271,7 +292,8 @@ export function SessionProvider({ children }: PropsWithChildren) {
                 verifyToken,
                 loadInitialData,
                 updateUser,
-                deleteAccount
+                deleteAccount,
+                logout
             }}>
             {children}
         </AuthContext.Provider>

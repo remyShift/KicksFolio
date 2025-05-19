@@ -3,10 +3,9 @@ import PageTitle from "@/components/ui/text/PageTitle"
 import ErrorMsg from "@/components/ui/text/ErrorMsg"
 import MainButton from "@/components/ui/buttons/MainButton"
 import { useState } from "react"
-import { FormService } from "@/services/FormService"
-import { FormValidationService } from "@/services/FormValidationService"
-import { router, useLocalSearchParams } from "expo-router";
-import { authService } from "@/services/AuthService";
+import { useLocalSearchParams } from "expo-router";
+import { useForm } from "@/hooks/useForm";
+import { useAuth } from "@/hooks/useAuth";
 
 interface ResetPasswordFormProps {  
     setIsPasswordFocused: (isFocused: boolean) => void,
@@ -17,37 +16,22 @@ export default function ResetPasswordForm({ setIsPasswordFocused, isPasswordFocu
     const { token } = useLocalSearchParams();
     const [newPassword, setNewPassword] = useState('')
     const [confirmNewPassword, setConfirmNewPassword] = useState('')
-    const [errorMsg, setErrorMsg] = useState('')
     const [isConfirmPasswordFocused, setIsConfirmPasswordFocused] = useState(false)
     const [isPasswordError, setIsPasswordError] = useState(false)
     const [isConfirmPasswordError, setIsConfirmPasswordError] = useState(false)
 
-    const handleForm = new FormService(setErrorMsg, {
-        password: setIsPasswordError,
-        confirmPassword: setIsConfirmPasswordError
-    }, {
-        password: setIsPasswordFocused,
-        confirmPassword: setIsConfirmPasswordFocused
-    })
-
-    const formValidation = new FormValidationService(setErrorMsg, {
-        password: setIsPasswordError,
-        confirmPassword: setIsConfirmPasswordError
-    })
-
-
-    const handleResetPassword = async () => {
-        const success = await authService.handleResetPassword(
-            token as string,
-            newPassword,
-            confirmNewPassword,
-            formValidation
-        );
-
-        if (success) {
-            router.replace('/login');
+    const { errorMsg, handleForm } = useForm({
+        errorSetters: {
+            password: setIsPasswordError,
+            confirmPassword: setIsConfirmPasswordError
+        },
+        focusSetters: {
+            password: setIsPasswordFocused,
+            confirmPassword: setIsConfirmPasswordFocused
         }
-    };
+    });
+
+    const { resetPassword } = useAuth();
 
     return (
         <View className="flex-1 items-center gap-12 p-4">
@@ -99,7 +83,7 @@ export default function ResetPasswordForm({ setIsPasswordFocused, isPasswordFocu
             <MainButton 
                 content='Confirm' 
                 backgroundColor='bg-primary' 
-                onPressAction={handleResetPassword} 
+                onPressAction={() => resetPassword(token as string, newPassword, confirmNewPassword)} 
             />
         </View>
     )

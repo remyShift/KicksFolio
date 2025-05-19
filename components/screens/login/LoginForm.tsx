@@ -3,11 +3,10 @@ import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import PageTitle from '@/components/ui/text/PageTitle';
 import { View, Text } from 'react-native'
 import { useState, useRef } from "react";
-import { authService } from "@/services/AuthService";
 import MainButton from "@/components/ui/buttons/MainButton";
-import { Link, router } from "expo-router";
-import { FormValidationService } from "@/services/FormValidationService";
-import { FormService } from "@/services/FormService";
+import { Link } from "expo-router";
+import { useForm } from "@/hooks/useForm";
+import { useAuth } from "@/hooks/useAuth";
 
 interface LoginFormProps {
     isEmailFocused: boolean,
@@ -24,31 +23,23 @@ export default function LoginForm({
 }: LoginFormProps) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [errorMsg, setErrorMsg] = useState('');
     const [isEmailError, setIsEmailError] = useState(false);
     const [isPasswordError, setIsPasswordError] = useState(false);
     const emailInputRef = useRef<TextInput>(null);
     const passwordInputRef = useRef<TextInput>(null);
 
-    const formValidation = new FormValidationService(setErrorMsg, {
-        email: setIsEmailError,
-        password: setIsPasswordError
-    })
-
-    const handleForm = new FormService(setErrorMsg, {
-        email: setIsEmailFocused,
-        password: setIsPasswordFocused
-    })
-
-    const handleLogin = async () => {
-        const success = await authService.handleLogin(email, password, formValidation);
-
-        if (success) {
-            setIsEmailFocused(false);
-            setIsPasswordFocused(false);
-            router.replace('/');
+    const { errorMsg, handleForm } = useForm({
+        errorSetters: {
+            email: setIsEmailError,
+            password: setIsPasswordError
+        },
+        focusSetters: {
+            email: setIsEmailFocused,
+            password: setIsPasswordFocused
         }
-    }
+    });
+
+    const { login } = useAuth();
 
     return (
         <View className="flex-1 items-center gap-12 p-4">
@@ -94,7 +85,7 @@ export default function LoginForm({
                         onBlur={() => handleForm.inputBlur('password', password)}
                         returnKeyType='done'
                         enablesReturnKeyAutomatically={true}
-                        onSubmitEditing={() => handleLogin()}
+                        onSubmitEditing={() => login(email, password)}
                         placeholderTextColor='gray'
                         onChangeText={(text) => handleForm.inputChange(text, setPassword)}
                         className={`bg-white rounded-md p-3 w-2/3 font-spacemono-bold ${
@@ -104,9 +95,7 @@ export default function LoginForm({
                 </View>
             </View>
             <View className='flex gap-5 w-full justify-center items-center'>                      
-                <MainButton content='Login' backgroundColor='bg-primary' onPressAction={async () => {
-                    await handleLogin();
-                }} />
+                <MainButton content='Login' backgroundColor='bg-primary' onPressAction={() => login(email, password)} />
                 <View className='flex gap-1 justify-center items-center'>
                     <View className='flex flex-row gap-1 justify-center items-center'>
                         <Text className='font-spacemono-bold text-sm'>Don't have an account?</Text>

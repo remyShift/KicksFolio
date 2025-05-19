@@ -1,40 +1,30 @@
 import ErrorMsg from "@/components/ui/text/ErrorMsg";
 import PageTitle from "@/components/ui/text/PageTitle";
 import { TextInput, View, Text, ScrollView } from "react-native";
-import { Link, router } from "expo-router";
+import { Link } from "expo-router";
 import MainButton from "@/components/ui/buttons/MainButton";
-import { useState } from "react";
-import { AuthService } from "@/services/AuthService";
-import { FormValidationService } from "@/services/FormValidationService";
-import { useRef } from "react";
-import { FormService } from "@/services/FormService";
+import { useState, useRef } from "react";
+import { useForm } from "@/hooks/useForm";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function ForgotPasswordForm() {
     const [email, setEmail] = useState('');
-    const [errorMsg, setErrorMsg] = useState('');
     const [isEmailFocused, setIsEmailFocused] = useState(false);
     const [isEmailError, setIsEmailError] = useState(false);
     const scrollViewRef = useRef<ScrollView>(null);
     const emailInputRef = useRef<TextInput>(null);
 
-    const handleForm = new FormService(setErrorMsg, {
-        email: setIsEmailError
-    }, {
-        email: setIsEmailFocused
-    }, scrollViewRef);
-    
-    const formValidation = new FormValidationService(setErrorMsg, {
-        email: setIsEmailError
-    })
+    const { errorMsg, handleForm } = useForm({
+        errorSetters: {
+            email: setIsEmailError
+        },
+        focusSetters: {
+            email: setIsEmailFocused
+        },
+        scrollViewRef
+    });
 
-    const authService = new AuthService();
-
-    const handlePasswordReset = async () => {
-        const success = await authService.handleForgotPassword(email, formValidation);
-        if (success) {
-            router.replace('/login');
-        }
-    };
+    const { forgotPassword } = useAuth();
 
     return (
         <ScrollView 
@@ -71,7 +61,7 @@ export default function ForgotPasswordForm() {
                     </View>
                 </View>
                 <View className='flex gap-5 w-full justify-center items-center'>                      
-                    <MainButton content='Send Reset Link' backgroundColor='bg-primary' onPressAction={handlePasswordReset} />
+                    <MainButton content='Send Reset Link' backgroundColor='bg-primary' onPressAction={() => forgotPassword(email)} />
                     <View className='flex gap-1 justify-center items-center'>
                         <View className='flex flex-row gap-1 justify-center items-center'>
                             <Text className='font-spacemono-bold text-sm'>Remember your password?</Text>
