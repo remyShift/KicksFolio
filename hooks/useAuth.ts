@@ -16,10 +16,10 @@ export const useAuth = () => {
         }
     };
 
-    const signUp = async (userData: UserData, setSignUpProps: (props: any) => void, signUpProps: any) => {
-        const success = await authService.handleSignUp(userData, formValidation, setSignUpProps, signUpProps);
+    const signUp = async (userData: UserData, setSignUpProps: (props: any) => void) => {
+        const success = await authService.handleSignUp(userData, formValidation, setSignUpProps);
         if (success) {
-            router.replace('/');
+            router.replace('/collection');
         }
     };
 

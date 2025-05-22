@@ -220,7 +220,6 @@ export class AuthService extends BaseApiService {
         userData: UserData,
         formValidationService: FormValidationService,
         setSignUpProps: (props: any) => void,
-        signUpProps: any
     ): Promise<boolean> {
         if (!userData.username.trim()) {
             formValidationService.setErrorMessage('Please put your username.');

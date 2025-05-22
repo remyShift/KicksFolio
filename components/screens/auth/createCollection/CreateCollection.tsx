@@ -6,6 +6,8 @@ import { router } from 'expo-router';
 import PageTitle from '@/components/ui/text/PageTitle';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import MainButton from '@/components/ui/buttons/MainButton';
+import { CollectionNameInput } from '@/components/ui/inputs/CollectionNameInput';
+import { useForm } from '@/hooks/useForm';
 
 export default function CreateCollection() {
     const [isCollectionNameFocused, setIsCollectionNameFocused] = useState(false);
@@ -15,6 +17,17 @@ export default function CreateCollection() {
     const scrollViewRef = useRef<ScrollView>(null);
     const { user, sessionToken, getUserCollection } = useSession();
 
+    const { formValidation, errorMsg } = useForm({
+        errorSetters: {
+            collectionName: setIsCollectionNameError
+        },
+        focusSetters: {
+            collectionName: setIsCollectionNameFocused
+        },
+        scrollViewRef
+    });
+
+    // TODO: extract this to a hook
     const collectionService = new CollectionService();
 
     return (
@@ -34,15 +47,16 @@ export default function CreateCollection() {
                             <ErrorMsg content={errorMsg} display={errorMsg !== ''} />
                         </View>
                         <Text className="text-lg font-spacemono-bold">Please give a name to your collection :</Text>
-                        <TextInput
-                            placeholder="Collection name"
-                            value={collectionName}
-                            onChangeText={setCollectionName}
-                            className={`bg-white rounded-md p-3 w-2/3 font-spacemono-bold ${
-                                isCollectionNameError ? 'border-2 border-red-500' : ''
-                            } ${isCollectionNameFocused ? 'border-2 border-primary' : ''}`}
+
+                        <CollectionNameInput
+                            collectionName={collectionName}
+                            setCollectionName={setCollectionName}
+                            isCollectionNameError={isCollectionNameError}
+                            isCollectionNameFocused={isCollectionNameFocused}
                         />
-                        <MainButton 
+
+                        <MainButton
+                            // TODO: extract this to a service and a hook
                             content='Create' 
                             backgroundColor='bg-primary' 
                             onPressAction={async () => {
