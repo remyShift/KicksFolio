@@ -1,5 +1,5 @@
 import { useForm } from "@/hooks/useForm";
-import { UserData } from "@/types/auth";
+import { UserData } from "@/types/Auth";
 import { Text, TextInput, View, ScrollView } from "react-native";
 
 interface PasswordInputProps {

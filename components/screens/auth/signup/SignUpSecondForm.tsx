@@ -1,23 +1,20 @@
-import { View, Text, TextInput, KeyboardAvoidingView, Platform, ScrollView, Pressable, Alert } from 'react-native';
+import { View, Text, TextInput, KeyboardAvoidingView, Platform, ScrollView, Pressable, Alert, Image } from 'react-native';
 import { useSignUpProps } from '@/context/signUpPropsContext';
 import { useState, useRef } from 'react';
-import { FormService } from '@/services/FormService';
-import { FormValidationService } from '@/services/FormValidationService';
-import { authService } from '@/services/AuthService';
 import { imageService } from '@/services/ImageService';
 import FirstNameInput from '@/components/ui/inputs/FirstNameInput';
 import { FontAwesome5 } from '@expo/vector-icons';
-import { router } from 'expo-router';
-import { MainButton } from '@/components/ui/buttons/MainButton';
+import MainButton from '@/components/ui/buttons/MainButton';
 import { Link } from 'expo-router';
 import LastNameInput from '@/components/ui/inputs/LastNameInput';
 import SizeInput from '@/components/ui/inputs/SizeInput';
 import { useAuth } from '@/hooks/useAuth';
 import { useForm } from '@/hooks/useForm';
+import PageTitle from '@/components/ui/text/PageTitle';
+import ErrorMsg from '@/components/ui/text/ErrorMsg';
 
 export default function SignUpSecondForm() {
     const { signUpProps, setSignUpProps } = useSignUpProps();
-    const [errorMsg, setErrorMsg] = useState('');
     const [isFirstNameFocused, setIsFirstNameFocused] = useState(false);
     const [isFirstNameError, setIsFirstNameError] = useState(false);
     const [isLastNameFocused, setIsLastNameFocused] = useState(false);
@@ -32,7 +29,7 @@ export default function SignUpSecondForm() {
 
     const { signUp } = useAuth();
 
-    const { formValidation, errorMsg } = useForm({
+    const { errorMsg } = useForm({
         errorSetters: {
             firstName: (isError: boolean) => setIsFirstNameError(isError),
             lastName: (isError: boolean) => setIsLastNameError(isError),
@@ -78,9 +75,7 @@ export default function SignUpSecondForm() {
                                             height: '100%',
                                             borderRadius: 100
                                         }}
-                                        contentFit="cover"
-                                        contentPosition="center"
-                                        cachePolicy="memory-disk"
+                                        resizeMode='cover'
                                     /> 
                                 </View>
                                 : 
@@ -118,6 +113,9 @@ export default function SignUpSecondForm() {
                             setSignUpProps={setSignUpProps}
                             isFirstNameError={isFirstNameError}
                             isFirstNameFocused={isFirstNameFocused}
+                            scrollViewRef={scrollViewRef}
+                            setIsFirstNameError={setIsFirstNameError}
+                            setIsFirstNameFocused={setIsFirstNameFocused}
                         />
 
                         <LastNameInput 
@@ -126,6 +124,9 @@ export default function SignUpSecondForm() {
                             setSignUpProps={setSignUpProps}
                             isLastNameError={isLastNameError}
                             isLastNameFocused={isLastNameFocused}
+                            scrollViewRef={scrollViewRef}
+                            setIsLastNameError={setIsLastNameError}
+                            setIsLastNameFocused={setIsLastNameFocused}
                         />
 
                         <SizeInput 
@@ -134,6 +135,9 @@ export default function SignUpSecondForm() {
                             setSignUpProps={setSignUpProps}
                             isSizeError={isSizeError}
                             isSizeFocused={isSizeFocused}
+                            scrollViewRef={scrollViewRef}
+                            setIsSizeError={setIsSizeError}
+                            setIsSizeFocused={setIsSizeFocused}
                         />
                     </View>
 

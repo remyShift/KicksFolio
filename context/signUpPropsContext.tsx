@@ -1,26 +1,9 @@
 import { createContext, useContext, type PropsWithChildren, useState } from 'react';
+import { UserData } from '@/types/Auth';
 
 const SignUpPropsContext = createContext<{
-    signUpProps: {
-        email: string,
-        password: string,
-        username: string,
-        first_name: string,
-        last_name: string,
-        sneaker_size: string,
-        profile_picture: string,
-        confirmPassword: string
-    },
-    setSignUpProps: (signUpProps: {
-        email: string,
-        password: string,
-        username: string,
-        first_name: string,
-        last_name: string,
-        sneaker_size: string,
-        profile_picture: string,
-        confirmPassword: string
-    }) => void
+    signUpProps: UserData
+    setSignUpProps: (signUpProps: UserData) => void
 }>({
     signUpProps: {
         email: '',
@@ -28,7 +11,7 @@ const SignUpPropsContext = createContext<{
         username: '',
         first_name: '',
         last_name: '',
-        sneaker_size: '',
+        sneaker_size: 0,
         profile_picture: '',
         confirmPassword: ''
     },
@@ -46,22 +29,13 @@ export function useSignUpProps() {
 }
 
 export function SignUpPropsProvider({ children }: PropsWithChildren) {
-    const [signUpProps, setSignUpProps] = useState<{
-        email: string,
-        password: string,
-        username: string,
-        first_name: string,
-        last_name: string,
-        sneaker_size: string,
-        profile_picture: string,
-        confirmPassword: string
-    }>({
+    const [signUpProps, setSignUpProps] = useState<UserData>({
         email: '',
         password: '',
         username: '',
         first_name: '',
         last_name: '',
-        sneaker_size: '',
+        sneaker_size: 0,
         profile_picture: '',
         confirmPassword: ''
     });

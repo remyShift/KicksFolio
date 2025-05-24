@@ -1,5 +1,5 @@
 import { createContext, useContext, type PropsWithChildren, useState, useEffect } from 'react';
-import { AuthContextType } from '@/types/auth';
+import { AuthContextType } from '@/types/Auth';
 import { storageService } from '@/services/StorageService';
 import { useAppState } from '@react-native-community/hooks';
 import { useStorageState } from '@/hooks/useStorageState';
@@ -8,7 +8,6 @@ import { User } from '@/types/User';
 import { Collection } from '@/types/Collection';
 import { Sneaker } from '@/types/Sneaker';
 import { ProfileData } from '@/types/ProfileData';
-import { useAuth } from '@/hooks/useAuth';
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
