@@ -6,18 +6,17 @@ import { router } from 'expo-router';
 import PageTitle from '@/components/ui/text/PageTitle';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import MainButton from '@/components/ui/buttons/MainButton';
-import { CollectionNameInput } from '@/components/ui/inputs/CollectionNameInput';
+import CollectionNameInput from '@/components/ui/inputs/CollectionNameInput';
 import { useForm } from '@/hooks/useForm';
 
 export default function CreateCollection() {
     const [isCollectionNameFocused, setIsCollectionNameFocused] = useState(false);
     const [isCollectionNameError, setIsCollectionNameError] = useState(false);
     const [collectionName, setCollectionName] = useState('');
-    const [errorMsg, setErrorMsg] = useState('');
     const scrollViewRef = useRef<ScrollView>(null);
     const { user, sessionToken, getUserCollection } = useSession();
 
-    const { formValidation, errorMsg } = useForm({
+    const { errorMsg } = useForm({
         errorSetters: {
             collectionName: setIsCollectionNameError
         },
@@ -53,6 +52,8 @@ export default function CreateCollection() {
                             setCollectionName={setCollectionName}
                             isCollectionNameError={isCollectionNameError}
                             isCollectionNameFocused={isCollectionNameFocused}
+                            setIsCollectionNameError={setIsCollectionNameError}
+                            setIsCollectionNameFocused={setIsCollectionNameFocused}
                         />
 
                         <MainButton

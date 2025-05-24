@@ -4,8 +4,8 @@ import { Text, TextInput, View, ScrollView } from "react-native";
 
 interface PasswordInputProps {
     inputRef: React.RefObject<TextInput>;
-    signUpProps: UserData;
-    setSignUpProps: (props: UserData) => void;
+    signUpProps?: UserData;
+    setSignUpProps?: (props: UserData) => void;
     isPasswordError: boolean;
     isPasswordFocused: boolean;
     scrollViewRef: React.RefObject<ScrollView>;
@@ -33,7 +33,7 @@ export default function PasswordInput({ inputRef, signUpProps, setSignUpProps, i
         </Text>
         <TextInput
             ref={inputRef}
-            value={signUpProps.password}
+            value={signUpProps?.password}
             placeholder="********"
             inputMode='text'
             textContentType='newPassword'
@@ -44,12 +44,12 @@ export default function PasswordInput({ inputRef, signUpProps, setSignUpProps, i
             placeholderTextColor='gray'
             returnKeyType='next'
             enablesReturnKeyAutomatically={true}
-            onSubmitEditing={() => formValidation.validateField(signUpProps.password, 'password')}
+            onSubmitEditing={() => formValidation.validateField(signUpProps?.password!, 'password')}
             onFocus={() => handleForm.inputFocus('password')}
-            onBlur={() => handleForm.inputBlur('password', signUpProps.password)}
+            onBlur={() => handleForm.inputBlur('password', signUpProps?.password!)}
             onChangeText={(text) => {
-                setSignUpProps({ ...signUpProps, password: text });
-                handleForm.inputChange(text, (t) => setSignUpProps({ ...signUpProps, password: t }));
+                setSignUpProps?.({ ...signUpProps!, password: text });
+                handleForm.inputChange(text, (t) => setSignUpProps?.({ ...signUpProps!, password: t }));
             }}
             className={`bg-white rounded-md p-3 w-2/3 font-spacemono-bold ${
                 isPasswordError ? 'border-2 border-red-500' : ''

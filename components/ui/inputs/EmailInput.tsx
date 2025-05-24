@@ -4,8 +4,8 @@ import { Text, TextInput, View, ScrollView } from "react-native";
 
 interface EmailInputProps {
     inputRef: React.RefObject<TextInput>;
-    signUpProps: UserData;
-    setSignUpProps: (props: UserData) => void;
+    signUpProps?: UserData;
+    setSignUpProps?: (props: UserData) => void;
     isEmailError: boolean;
     isEmailFocused: boolean;
     scrollViewRef: React.RefObject<ScrollView>;
@@ -33,7 +33,7 @@ export default function EmailInput({ inputRef, signUpProps, setSignUpProps, isEm
             ref={inputRef}
             placeholder="johndoe@gmail.com"
             inputMode='email'
-            value={signUpProps.email}
+            value={signUpProps?.email}
             autoComplete='email'
             textContentType='emailAddress'
             autoCorrect={false}
@@ -41,12 +41,12 @@ export default function EmailInput({ inputRef, signUpProps, setSignUpProps, isEm
             clearButtonMode='while-editing'
             returnKeyType='next'
             enablesReturnKeyAutomatically={true}
-            onSubmitEditing={() => formValidation.validateField(signUpProps.email, 'email')}
+            onSubmitEditing={() => formValidation.validateField(signUpProps?.email!, 'email')}
             onFocus={() => handleForm.inputFocus('email')}
-            onBlur={() => handleForm.inputBlur('email', signUpProps.email)}
+            onBlur={() => handleForm.inputBlur('email', signUpProps?.email!)}
             onChangeText={(text) => {
-                setSignUpProps({ ...signUpProps, email: text });
-                handleForm.inputChange(text, (t) => setSignUpProps({ ...signUpProps, email: t }));
+                setSignUpProps?.({ ...signUpProps!, email: text });
+                handleForm.inputChange(text, (t) => setSignUpProps?.({ ...signUpProps!, email: t }));
             }}
             className={`bg-white rounded-md p-3 w-2/3 font-spacemono-bold ${
                 isEmailError ? 'border-2 border-red-500' : ''

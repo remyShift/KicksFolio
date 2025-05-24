@@ -1,4 +1,4 @@
-import CreateCollection from "@/components/screens/createCollection/CreateCollection";
+import CreateCollection from "@/components/screens/auth/createCollection/CreateCollection";
 
 export default function Collection() {
     return (

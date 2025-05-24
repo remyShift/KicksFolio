@@ -5,10 +5,10 @@ import { View, Text } from 'react-native'
 import { useState, useRef } from "react";
 import MainButton from "@/components/ui/buttons/MainButton";
 import { Link } from "expo-router";
-import { useForm } from "@/hooks/useForm";
 import { useAuth } from "@/hooks/useAuth";
 import PasswordInput from "@/components/ui/inputs/PasswordInput";
 import EmailInput from "@/components/ui/inputs/EmailInput";
+import { useForm } from "@/hooks/useForm";
 
 export default function LoginForm() {
     const [isEmailFocused, setIsEmailFocused] = useState(false);
@@ -22,6 +22,13 @@ export default function LoginForm() {
     const passwordInputRef = useRef<TextInput>(null);
 
     const { login } = useAuth();
+
+    const { errorMsg } = useForm({
+        errorSetters: {
+            email: (isError: boolean) => setIsEmailError(isError),
+            password: (isError: boolean) => setIsPasswordError(isError),
+        },
+    });
 
     return (
         <KeyboardAvoidingView 
@@ -45,6 +52,8 @@ export default function LoginForm() {
                             isEmailError={isEmailError}
                             isEmailFocused={isEmailFocused}
                             scrollViewRef={scrollViewRef}
+                            setIsEmailError={setIsEmailError}
+                            setIsEmailFocused={setIsEmailFocused}
                         />
                         
                         <PasswordInput
@@ -52,6 +61,9 @@ export default function LoginForm() {
                             isPasswordError={isPasswordError}
                             isPasswordFocused={isPasswordFocused}
                             scrollViewRef={scrollViewRef}
+                            setIsPasswordError={setIsPasswordError}
+                            setIsPasswordFocused={setIsPasswordFocused}
+                            title='*Password'
                         />
                     </View>
                     <View className='flex gap-5 w-full justify-center items-center'>                      

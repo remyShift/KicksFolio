@@ -17,6 +17,12 @@ export default function ForgotPasswordForm() {
 
     const { forgotPassword } = useAuth();
 
+    const { errorMsg } = useForm({
+        errorSetters: {
+            email: (isError: boolean) => setIsEmailError(isError),
+        },
+    });
+
     return (
         <KeyboardAvoidingView 
         className="flex-1 bg-background" 
@@ -39,6 +45,8 @@ export default function ForgotPasswordForm() {
                             isEmailError={isEmailError}
                             isEmailFocused={isEmailFocused}
                             scrollViewRef={scrollViewRef}
+                            setIsEmailError={setIsEmailError}
+                            setIsEmailFocused={setIsEmailFocused}
                         />
                     </View>
                     <View className='flex gap-5 w-full justify-center items-center'>                      
