@@ -1,17 +1,20 @@
 import { useForm } from "@/hooks/useForm";
+import { UserData } from "@/types/auth";
 import { Text, TextInput, View, ScrollView } from "react-native";
 
 interface PasswordInputProps {
     inputRef: React.RefObject<TextInput>;
-    signUpProps: SignUpProps;
-    setSignUpProps: (props: SignUpProps) => void;
+    signUpProps: UserData;
+    setSignUpProps: (props: UserData) => void;
     isPasswordError: boolean;
     isPasswordFocused: boolean;
     scrollViewRef: React.RefObject<ScrollView>;
     title: string;
+    setIsPasswordError: (isError: boolean) => void;
+    setIsPasswordFocused: (isFocused: boolean) => void;
 }
 
-export function PasswordInput({ inputRef, signUpProps, setSignUpProps, isPasswordError, isPasswordFocused, scrollViewRef, title }: PasswordInputProps) {
+export default function PasswordInput({ inputRef, signUpProps, setSignUpProps, isPasswordError, isPasswordFocused, scrollViewRef, title, setIsPasswordError, setIsPasswordFocused }: PasswordInputProps) {
     const { formValidation, handleForm } = useForm({
         errorSetters: {
             password: (isError: boolean) => setIsPasswordError(isError),

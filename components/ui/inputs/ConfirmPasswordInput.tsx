@@ -1,17 +1,20 @@
 import { useForm } from "@/hooks/useForm";
+import { UserData } from "@/types/auth";
 import { Text, TextInput, View, ScrollView } from "react-native";
 
 interface ConfirmPasswordProps {
     inputRef: React.RefObject<TextInput>;
-    signUpProps: SignUpProps;
-    setSignUpProps: (props: SignUpProps) => void;
+    signUpProps: UserData;
+    setSignUpProps: (props: UserData) => void;
     isConfirmPasswordError: boolean;
     isConfirmPasswordFocused: boolean;
     scrollViewRef: React.RefObject<ScrollView>;
+    setIsConfirmPasswordError: (isError: boolean) => void;
+    setIsConfirmPasswordFocused: (isFocused: boolean) => void;
 }
 
-export function ConfirmPasswordInput({ inputRef, signUpProps, setSignUpProps, isConfirmPasswordError, isConfirmPasswordFocused, scrollViewRef }: ConfirmPasswordProps) {
-    const { formValidation, handleForm } = useForm({
+export default function ConfirmPasswordInput({ inputRef, signUpProps, setSignUpProps, isConfirmPasswordError, isConfirmPasswordFocused, scrollViewRef, setIsConfirmPasswordError, setIsConfirmPasswordFocused }: ConfirmPasswordProps) {
+    const { handleForm } = useForm({
         errorSetters: {
             confirmPassword: (isError: boolean) => setIsConfirmPasswordError(isError),
         },
@@ -36,7 +39,8 @@ export function ConfirmPasswordInput({ inputRef, signUpProps, setSignUpProps, is
                 placeholderTextColor='gray'
                 returnKeyType='done'
                 enablesReturnKeyAutomatically={true}
-                onSubmitEditing={handleNextSignupPage}
+                // TODO: Add onSubmitEditing
+                // onSubmitEditing={handleNextSignupPage}
                 onFocus={() => handleForm.inputFocus('confirmPassword')}
                 onBlur={() => handleForm.inputBlur('confirmPassword', signUpProps.confirmPassword)}
                 onChangeText={(text) => {

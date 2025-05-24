@@ -1,16 +1,19 @@
 import { Text, TextInput, View, ScrollView } from "react-native";
 import { useForm } from "@/hooks/useForm";
+import { UserData } from "@/types/auth";
 
 interface UsernameInputProps {
     inputRef: React.RefObject<TextInput>;
-    signUpProps: SignUpProps;
-    setSignUpProps: (props: SignUpProps) => void;
+    signUpProps: UserData;
+    setSignUpProps: (props: UserData) => void;
     isUsernameError: boolean;
     isUsernameFocused: boolean;
     scrollViewRef: React.RefObject<ScrollView>;
+    setIsUsernameError: (isError: boolean) => void;
+    setIsUsernameFocused: (isFocused: boolean) => void;
 }
 
-export default function UsernameInput({ inputRef, signUpProps, setSignUpProps, isUsernameError, isUsernameFocused, scrollViewRef }: UsernameInputProps) {
+export default function UsernameInput({ inputRef, signUpProps, setSignUpProps, isUsernameError, isUsernameFocused, scrollViewRef, setIsUsernameError, setIsUsernameFocused }: UsernameInputProps) {
     const { formValidation, handleForm } = useForm({
         errorSetters: {
             username: (isError: boolean) => setIsUsernameError(isError),

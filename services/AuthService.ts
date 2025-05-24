@@ -2,6 +2,7 @@ import { BaseApiService } from "@/services/BaseApiService";
 import { User } from "@/types/User";
 import { FormValidationService } from "./FormValidationService";
 import { UserData } from "@/types/auth";
+
 interface LoginResponse {
     user: User;
     tokens: {
@@ -246,7 +247,7 @@ export class AuthService extends BaseApiService {
             return this.login(userData.email, userData.password);
         })
         .then(() => {
-            setSignUpProps({ ...signUpProps, email: '', password: '', username: '', first_name: '', last_name: '', sneaker_size: '', profile_picture: '' });
+            setSignUpProps({ ...userData, email: '', password: '', username: '', first_name: '', last_name: '', sneaker_size: '', profile_picture: '' });
             return true;
         })
         .catch((error) => {

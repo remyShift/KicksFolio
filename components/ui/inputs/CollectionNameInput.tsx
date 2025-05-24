@@ -6,10 +6,12 @@ interface CollectionNameInputProps {
     setCollectionName: (text: string) => void;
     isCollectionNameError: boolean;
     isCollectionNameFocused: boolean;
+    setIsCollectionNameError: (isError: boolean) => void;
+    setIsCollectionNameFocused: (isFocused: boolean) => void;
 }
 
-export function CollectionNameInput({ collectionName, setCollectionName, isCollectionNameError, isCollectionNameFocused }: CollectionNameInputProps) {
-    const { handleForm, formValidation } = useForm({
+export default function CollectionNameInput({ collectionName, setCollectionName, isCollectionNameError, isCollectionNameFocused, setIsCollectionNameError, setIsCollectionNameFocused }: CollectionNameInputProps) {
+    const { handleForm } = useForm({
         errorSetters: {
             collectionName: setIsCollectionNameError
         },
@@ -23,6 +25,8 @@ export function CollectionNameInput({ collectionName, setCollectionName, isColle
             placeholder="Collection name"
             value={collectionName}
             onChangeText={setCollectionName}
+            onBlur={() => handleForm.inputFocus('collectionName')}
+            onFocus={() => handleForm.inputFocus('collectionName')}
             className={`bg-white rounded-md p-3 w-2/3 font-spacemono-bold ${
                 isCollectionNameError ? 'border-2 border-red-500' : ''
             } ${isCollectionNameFocused ? 'border-2 border-primary' : ''}`}

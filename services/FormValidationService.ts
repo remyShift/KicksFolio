@@ -1,5 +1,6 @@
 import { TextInput } from "react-native";
 import { RefObject } from "react";
+import { FieldName } from "./FormService";
 
 type ErrorSetters = {
     [key: string]: (isError: boolean) => void;
@@ -19,7 +20,7 @@ export class FormValidationService {
 
     public async validateField(
         value: string,
-        inputType: 'username' | 'email' | 'password' | 'firstName' | 'lastName' | 'size' | 'confirmPassword',
+        inputType: FieldName,
         isLoginPage: boolean = false,
         nextRef: RefObject<TextInput> | null = null,
         password?: string

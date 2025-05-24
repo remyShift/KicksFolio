@@ -1,16 +1,19 @@
 import { useForm } from "@/hooks/useForm";
+import { UserData } from "@/types/auth";
 import { Text, TextInput, View, ScrollView } from "react-native";
 
 interface EmailInputProps {
     inputRef: React.RefObject<TextInput>;
-    signUpProps: SignUpProps;
-    setSignUpProps: (props: SignUpProps) => void;
+    signUpProps: UserData;
+    setSignUpProps: (props: UserData) => void;
     isEmailError: boolean;
     isEmailFocused: boolean;
     scrollViewRef: React.RefObject<ScrollView>;
+    setIsEmailError: (isError: boolean) => void;
+    setIsEmailFocused: (isFocused: boolean) => void;
 }
 
-export default function EmailInput({ inputRef, signUpProps, setSignUpProps, isEmailError, isEmailFocused, scrollViewRef }: EmailInputProps) {
+export default function EmailInput({ inputRef, signUpProps, setSignUpProps, isEmailError, isEmailFocused, scrollViewRef, setIsEmailError, setIsEmailFocused }: EmailInputProps) {
     const { formValidation, handleForm } = useForm(
         {
             errorSetters: {

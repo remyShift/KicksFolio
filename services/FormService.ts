@@ -10,7 +10,7 @@ type FocusSetters = {
     [key: string]: (isFocused: boolean) => void;
 };
 
-export type FieldName = 'username' | 'email' | 'password' | 'firstName' | 'lastName' | 'confirmPassword' | 'size';
+export type FieldName = 'username' | 'email' | 'password' | 'firstName' | 'lastName' | 'confirmPassword' | 'size' | 'collectionName';
 
 export class FormService {
     private focusSetters: FocusSetters;

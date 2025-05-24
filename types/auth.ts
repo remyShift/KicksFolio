@@ -24,6 +24,7 @@ export interface AuthContextType {
 export interface UserData {
     email: string;
     password: string;
+    confirmPassword: string;
     username: string;
     first_name: string;
     last_name: string;

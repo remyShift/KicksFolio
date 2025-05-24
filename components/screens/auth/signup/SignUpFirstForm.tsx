@@ -1,6 +1,6 @@
 import ErrorMsg from "@/components/ui/text/ErrorMsg";
 import PageTitle from "@/components/ui/text/PageTitle";
-import { ScrollView, View, Text, TextInput, KeyboardAvoidingView, Platform } from "react-native";
+import { ScrollView, View, TextInput, KeyboardAvoidingView, Platform } from "react-native";
 import { useState, useRef } from "react";
 import { useForm } from "@/hooks/useForm";
 import MainButton from "@/components/ui/buttons/MainButton";
@@ -12,7 +12,6 @@ import PasswordInput from "@/components/ui/inputs/PasswordInput";
 import ConfirmPasswordInput from "@/components/ui/inputs/ConfirmPasswordInput";
 
 export default function SignUpFirstForm() {
-    const { signUpProps, setSignUpProps } = useSignUpProps();
     const [isUsernameError, setIsUsernameError] = useState(false);
     const [isEmailError, setIsEmailError] = useState(false);
     const [isPasswordError, setIsPasswordError] = useState(false);
@@ -88,6 +87,7 @@ export default function SignUpFirstForm() {
                             setSignUpProps={setSignUpProps}
                             isUsernameError={isUsernameError}
                             isUsernameFocused={isUsernameFocused}
+                            scrollViewRef={scrollViewRef}
                         />
 
                         <EmailInput
@@ -96,14 +96,17 @@ export default function SignUpFirstForm() {
                             setSignUpProps={setSignUpProps}
                             isEmailError={isEmailError}
                             isEmailFocused={isEmailFocused}
+                            scrollViewRef={scrollViewRef}
                         />
 
                         <PasswordInput
+                            title='*Password'
                             inputRef={passwordInputRef}
                             signUpProps={signUpProps}
                             setSignUpProps={setSignUpProps}
                             isPasswordError={isPasswordError}
                             isPasswordFocused={isPasswordFocused}
+                            scrollViewRef={scrollViewRef}
                         />
 
                         <ConfirmPasswordInput
@@ -112,6 +115,7 @@ export default function SignUpFirstForm() {
                             setSignUpProps={setSignUpProps}
                             isConfirmPasswordError={isConfirmPasswordError}
                             isConfirmPasswordFocused={isConfirmPasswordFocused}
+                            scrollViewRef={scrollViewRef}
                         />
                     </View>
 

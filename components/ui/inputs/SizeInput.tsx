@@ -1,16 +1,19 @@
 import { Text, TextInput, View, ScrollView } from "react-native";
 import { useForm } from "@/hooks/useForm";
+import { UserData } from "@/types/auth";
 
 interface SizeInputProps {
     inputRef: React.RefObject<TextInput>;
-    signUpProps: SignUpProps;
-    setSignUpProps: (props: SignUpProps) => void;
+    signUpProps: UserData;
+    setSignUpProps: (props: UserData) => void;
     isSizeError: boolean;
     isSizeFocused: boolean;
     scrollViewRef: React.RefObject<ScrollView>;
+    setIsSizeError: (isError: boolean) => void;
+    setIsSizeFocused: (isFocused: boolean) => void;
 }
 
-export default function SizeInput({ inputRef, signUpProps, setSignUpProps, isSizeError, isSizeFocused, scrollViewRef }: SizeInputProps) {
+export default function SizeInput({ inputRef, signUpProps, setSignUpProps, isSizeError, isSizeFocused, scrollViewRef, setIsSizeError, setIsSizeFocused }: SizeInputProps) {
     const { formValidation, handleForm } = useForm(
         {
             errorSetters: {
@@ -44,8 +47,8 @@ export default function SizeInput({ inputRef, signUpProps, setSignUpProps, isSiz
                 onChangeText={(text) => {
                     const formattedText = text.replace(',', '.');
                     if (formattedText === '' || !isNaN(Number(formattedText))) {
-                        setSignUpProps({ ...signUpProps, sneaker_size: formattedText });
-                        handleForm.inputChange(formattedText, (t) => setSignUpProps({ ...signUpProps, sneaker_size: t }));
+                        setSignUpProps({ ...signUpProps, sneaker_size: Number(formattedText) });
+                        handleForm.inputChange(formattedText, (t) => setSignUpProps({ ...signUpProps, sneaker_size: Number(t) }));
                     }
                 }}
                 onFocus={() => handleForm.inputFocus('size')}
