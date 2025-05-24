@@ -4,8 +4,11 @@ import ErrorMsg from "@/components/ui/text/ErrorMsg"
 import MainButton from "@/components/ui/buttons/MainButton"
 import { useState, useRef } from "react"
 import { useLocalSearchParams } from "expo-router";
-import { useForm } from "@/hooks/useForm";
 import { useAuth } from "@/hooks/useAuth";
+import PasswordInput from "@/components/ui/inputs/PasswordInput";
+import ConfirmPasswordInput from "@/components/ui/inputs/ConfirmPasswordInput";
+import { useForm } from "@/hooks/useForm";
+import { useSignUpProps } from "@/context/signUpPropsContext";
 
 export default function ResetPasswordForm() {
     const [isPasswordFocused, setIsPasswordFocused] = useState(false);
@@ -15,9 +18,20 @@ export default function ResetPasswordForm() {
     const [isConfirmPasswordFocused, setIsConfirmPasswordFocused] = useState(false)
     const [isPasswordError, setIsPasswordError] = useState(false)
     const [isConfirmPasswordError, setIsConfirmPasswordError] = useState(false)
-
-    const { resetPassword } = useAuth();
     const scrollViewRef = useRef<ScrollView>(null);
+    const passwordInputRef = useRef<TextInput>(null);
+    const confirmPasswordInputRef = useRef<TextInput>(null);
+    
+    const { signUpProps, setSignUpProps } = useSignUpProps();
+    
+    const { errorMsg } = useForm({
+        errorSetters: {
+            password: (isError: boolean) => setIsPasswordError(isError),
+            confirmPassword: (isError: boolean) => setIsConfirmPasswordError(isError),
+        },
+    });
+    
+    const { resetPassword } = useAuth();
 
     return (
         <KeyboardAvoidingView 
@@ -40,7 +54,10 @@ export default function ResetPasswordForm() {
                             setSignUpProps={setSignUpProps}
                             isPasswordError={isPasswordError}
                             isPasswordFocused={isPasswordFocused}
-                            title='New Password'
+                            scrollViewRef={scrollViewRef}
+                            setIsPasswordError={setIsPasswordError}
+                            setIsPasswordFocused={setIsPasswordFocused}
+                            title='*New Password'
                         />
 
                         <ConfirmPasswordInput
@@ -49,6 +66,9 @@ export default function ResetPasswordForm() {
                             setSignUpProps={setSignUpProps}
                             isConfirmPasswordError={isConfirmPasswordError}
                             isConfirmPasswordFocused={isConfirmPasswordFocused}
+                            scrollViewRef={scrollViewRef}
+                            setIsConfirmPasswordError={setIsConfirmPasswordError}
+                            setIsConfirmPasswordFocused={setIsConfirmPasswordFocused}
                         />
                     </View>
 
