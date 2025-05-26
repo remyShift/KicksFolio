@@ -7,17 +7,12 @@ export interface AuthContextType {
     sessionToken: string | null;
     isLoading: boolean;
     userCollection: Collection | null;
+    setUserCollection: Dispatch<SetStateAction<Collection | null>>;
     userSneakers: Sneaker[] | null;
-    user: User | null;
     setUserSneakers: Dispatch<SetStateAction<Sneaker[] | null>>;
-    getUser: () => Promise<User | null>;
-    getUserCollection: () => Promise<Collection | null>;
-    getUserSneakers: () => Promise<Sneaker[] | null>;
-    verifyToken: () => Promise<boolean>;
-    loadInitialData: () => Promise<void>;
-    updateUser: (user: User, profileData: UserData, sessionToken: string) => Promise<{ user: User }>;
-    deleteAccount: (userId: string, token: string) => Promise<any>;
-    logout: () => Promise<void>;
+    user: User | null;
+    setUser: Dispatch<SetStateAction<User | null>>;
+    setSessionToken: Dispatch<SetStateAction<string | null>>;
 }
 
 export interface UserData {

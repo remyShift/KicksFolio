@@ -15,9 +15,11 @@ import SizeInput from '@/components/ui/inputs/SizeInput'
 import { useForm } from '@/hooks/useForm'
 import { ScrollView as RNScrollView } from 'react-native'
 import { useImagePicker } from '@/hooks/useImagePicker'
+import { useAuth } from '@/hooks/useAuth'
 
 export default function EditProfileForm() {
-    const { user, sessionToken, updateUser } = useSession()
+    const { user, sessionToken } = useSession()
+    const { updateUser } = useAuth()
     const [errorMsg, setErrorMsg] = useState('')
     const [profileData, setProfileData] = useState<UserData>({
         username: user?.username || '',
@@ -68,7 +70,7 @@ export default function EditProfileForm() {
 
     const handleSubmit = async () => {
         if (!user || !sessionToken) return;
-        await updateUser(user, profileData, sessionToken);
+        await updateUser(user.id, profileData, sessionToken);
     }
 
     return (
