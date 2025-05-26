@@ -3,7 +3,7 @@ import Animated, { FadeOut } from 'react-native-reanimated';
 import { useEffect, useState } from 'react';
 import { useSession } from '@/context/authContext';
 import { Image } from 'expo-image';
-import { AnimatedIcon } from '@/components/screens/SplashScreen/AnimatedIcon';
+import { AnimatedIcon } from './AnimatedIcon';
 import { AnimatedLogo } from './AnimatedText';
 
 export default function SplashScreen({ sessionToken, loadInitialData, setIsSplashScreenVisible }: { sessionToken: string | null | undefined, loadInitialData: () => Promise<void>, setIsSplashScreenVisible: (value: boolean) => void }) {
