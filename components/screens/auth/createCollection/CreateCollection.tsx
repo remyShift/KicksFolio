@@ -9,17 +9,15 @@ import { useForm } from '@/hooks/useForm';
 import { useCreateCollection } from '@/hooks/useCreateCollection';
 
 export default function CreateCollection() {
-    const [isCollectionNameFocused, setIsCollectionNameFocused] = useState(false);
-    const [isCollectionNameError, setIsCollectionNameError] = useState(false);
+    const [collectionNameErrorMsg, setCollectionNameErrorMsg] = useState('');
     const [collectionName, setCollectionName] = useState('');
     const scrollViewRef = useRef<ScrollView>(null);
 
-    const { errorMsg, formValidation } = useForm({
+    const errorMsg = collectionNameErrorMsg;
+
+    const { formValidation } = useForm({
         errorSetters: {
-            collectionName: setIsCollectionNameError
-        },
-        focusSetters: {
-            collectionName: setIsCollectionNameFocused
+            collectionName: (isError: boolean) => setCollectionNameErrorMsg(isError ? 'Collection name is required' : '')
         },
         scrollViewRef
     });
@@ -35,7 +33,7 @@ export default function CreateCollection() {
                 ref={scrollViewRef}
                 className='flex-1'
                 keyboardShouldPersistTaps="handled"
-                scrollEnabled={isCollectionNameFocused}>
+            >
                 <View className="flex-1 items-center gap-12 p-4 bg-background">
                     <PageTitle content='Welcome to KicksFolio !' />
                     <View className='flex justify-center items-center gap-8 w-full mt-32'>
@@ -47,10 +45,8 @@ export default function CreateCollection() {
                         <CollectionNameInput
                             collectionName={collectionName}
                             setCollectionName={setCollectionName}
-                            isCollectionNameError={isCollectionNameError}
-                            isCollectionNameFocused={isCollectionNameFocused}
-                            setIsCollectionNameError={setIsCollectionNameError}
-                            setIsCollectionNameFocused={setIsCollectionNameFocused}
+                            onErrorChange={setCollectionNameErrorMsg}
+                            onValueChange={setCollectionName}
                         />
 
                         <MainButton

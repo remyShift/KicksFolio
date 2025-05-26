@@ -4,24 +4,18 @@ import { TextInput, View, Text, ScrollView, KeyboardAvoidingView, Platform } fro
 import { Link } from "expo-router";
 import MainButton from "@/components/ui/buttons/MainButton";
 import { useState, useRef } from "react";
-import { useForm } from "@/hooks/useForm";
 import { useAuth } from "@/hooks/useAuth";
 import EmailInput from "@/components/ui/inputs/EmailInput";
 
 export default function ForgotPasswordForm() {
     const [email, setEmail] = useState('');
-    const [isEmailFocused, setIsEmailFocused] = useState(false);
-    const [isEmailError, setIsEmailError] = useState(false);
+    const [emailErrorMsg, setEmailErrorMsg] = useState('');
     const scrollViewRef = useRef<ScrollView>(null);
     const emailInputRef = useRef<TextInput>(null);
 
     const { forgotPassword } = useAuth();
 
-    const { errorMsg } = useForm({
-        errorSetters: {
-            email: (isError: boolean) => setIsEmailError(isError),
-        },
-    });
+    const errorMsg = emailErrorMsg;
 
     return (
         <KeyboardAvoidingView 
@@ -32,7 +26,6 @@ export default function ForgotPasswordForm() {
                 ref={scrollViewRef}
                 contentContainerStyle={{ flexGrow: 1 }}
                 keyboardShouldPersistTaps="handled"
-                scrollEnabled={isEmailFocused}
             >
                 <View className="flex-1 items-center gap-12 p-4">
                     <PageTitle content='Forgot Password' />
@@ -42,11 +35,9 @@ export default function ForgotPasswordForm() {
                         </View>
                         <EmailInput
                             inputRef={emailInputRef}
-                            isEmailError={isEmailError}
-                            isEmailFocused={isEmailFocused}
                             scrollViewRef={scrollViewRef}
-                            setIsEmailError={setIsEmailError}
-                            setIsEmailFocused={setIsEmailFocused}
+                            onErrorChange={setEmailErrorMsg}
+                            onValueChange={setEmail}
                         />
                     </View>
                     <View className='flex gap-5 w-full justify-center items-center'>                      

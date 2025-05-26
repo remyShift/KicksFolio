@@ -7,29 +7,21 @@ import { useLocalSearchParams } from "expo-router";
 import { useAuth } from "@/hooks/useAuth";
 import PasswordInput from "@/components/ui/inputs/PasswordInput";
 import ConfirmPasswordInput from "@/components/ui/inputs/ConfirmPasswordInput";
-import { useForm } from "@/hooks/useForm";
 import { useSignUpProps } from "@/context/signUpPropsContext";
 
 export default function ResetPasswordForm() {
-    const [isPasswordFocused, setIsPasswordFocused] = useState(false);
     const { token } = useLocalSearchParams();
     const [newPassword, setNewPassword] = useState('')
     const [confirmNewPassword, setConfirmNewPassword] = useState('')
-    const [isConfirmPasswordFocused, setIsConfirmPasswordFocused] = useState(false)
-    const [isPasswordError, setIsPasswordError] = useState(false)
-    const [isConfirmPasswordError, setIsConfirmPasswordError] = useState(false)
+    const [passwordErrorMsg, setPasswordErrorMsg] = useState('')
+    const [confirmPasswordErrorMsg, setConfirmPasswordErrorMsg] = useState('')
     const scrollViewRef = useRef<ScrollView>(null);
     const passwordInputRef = useRef<TextInput>(null);
     const confirmPasswordInputRef = useRef<TextInput>(null);
     
     const { signUpProps, setSignUpProps } = useSignUpProps();
     
-    const { errorMsg } = useForm({
-        errorSetters: {
-            password: (isError: boolean) => setIsPasswordError(isError),
-            confirmPassword: (isError: boolean) => setIsConfirmPasswordError(isError),
-        },
-    });
+    const errorMsg = passwordErrorMsg || confirmPasswordErrorMsg;
     
     const { resetPassword } = useAuth();
 
@@ -42,7 +34,7 @@ export default function ResetPasswordForm() {
                 ref={scrollViewRef}
                 contentContainerStyle={{ flexGrow: 1 }}
                 keyboardShouldPersistTaps="handled"
-                scrollEnabled={isPasswordFocused}>
+            >
                 <View className="flex-1 items-center gap-12 p-4">
                     <PageTitle content='Reset Password' />
                     <ErrorMsg content={errorMsg} display={errorMsg !== ''} />
@@ -52,11 +44,9 @@ export default function ResetPasswordForm() {
                             inputRef={passwordInputRef}
                             signUpProps={signUpProps}
                             setSignUpProps={setSignUpProps}
-                            isPasswordError={isPasswordError}
-                            isPasswordFocused={isPasswordFocused}
                             scrollViewRef={scrollViewRef}
-                            setIsPasswordError={setIsPasswordError}
-                            setIsPasswordFocused={setIsPasswordFocused}
+                            onErrorChange={setPasswordErrorMsg}
+                            onValueChange={setNewPassword}
                             title='*New Password'
                         />
 
@@ -64,11 +54,9 @@ export default function ResetPasswordForm() {
                             inputRef={confirmPasswordInputRef}
                             signUpProps={signUpProps}
                             setSignUpProps={setSignUpProps}
-                            isConfirmPasswordError={isConfirmPasswordError}
-                            isConfirmPasswordFocused={isConfirmPasswordFocused}
                             scrollViewRef={scrollViewRef}
-                            setIsConfirmPasswordError={setIsConfirmPasswordError}
-                            setIsConfirmPasswordFocused={setIsConfirmPasswordFocused}
+                            onErrorChange={setConfirmPasswordErrorMsg}
+                            onValueChange={setConfirmNewPassword}
                         />
                     </View>
 

@@ -8,19 +8,18 @@ import { Link } from 'expo-router';
 import LastNameInput from '@/components/ui/inputs/LastNameInput';
 import SizeInput from '@/components/ui/inputs/SizeInput';
 import { useAuth } from '@/hooks/useAuth';
-import { useForm } from '@/hooks/useForm';
 import PageTitle from '@/components/ui/text/PageTitle';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import { useImagePicker } from '@/hooks/useImagePicker';
 
 export default function SignUpSecondForm() {
     const { signUpProps, setSignUpProps } = useSignUpProps();
-    const [isFirstNameFocused, setIsFirstNameFocused] = useState(false);
-    const [isFirstNameError, setIsFirstNameError] = useState(false);
-    const [isLastNameFocused, setIsLastNameFocused] = useState(false);
-    const [isLastNameError, setIsLastNameError] = useState(false);
-    const [isSizeFocused, setIsSizeFocused] = useState(false);
-    const [isSizeError, setIsSizeError] = useState(false);
+    const [firstNameErrorMsg, setFirstNameErrorMsg] = useState('');
+    const [lastNameErrorMsg, setLastNameErrorMsg] = useState('');
+    const [sizeErrorMsg, setSizeErrorMsg] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [size, setSize] = useState('');
 
     const scrollViewRef = useRef<ScrollView>(null);
     const lastNameInputRef = useRef<TextInput>(null);
@@ -30,13 +29,7 @@ export default function SignUpSecondForm() {
     const { signUp } = useAuth();
     const { handleImageSelection } = useImagePicker();
 
-    const { errorMsg } = useForm({
-        errorSetters: {
-            firstName: (isError: boolean) => setIsFirstNameError(isError),
-            lastName: (isError: boolean) => setIsLastNameError(isError),
-            size: (isError: boolean) => setIsSizeError(isError),
-        },
-    });
+    const errorMsg = firstNameErrorMsg || lastNameErrorMsg || sizeErrorMsg;
 
     return (
         <KeyboardAvoidingView 
@@ -47,7 +40,7 @@ export default function SignUpSecondForm() {
                 ref={scrollViewRef}
                 contentContainerStyle={{ flexGrow: 1 }}
                 keyboardShouldPersistTaps="handled"
-                scrollEnabled={isFirstNameFocused || isLastNameFocused || isSizeFocused}>
+            >
                 <View className="flex-1 items-center gap-12 p-4">
                     <PageTitle content='Sign Up' />
                     <View className='flex gap-6 justify-center items-center w-full mt-8'>
@@ -102,33 +95,27 @@ export default function SignUpSecondForm() {
                             inputRef={firstNameInputRef}
                             signUpProps={signUpProps}
                             setSignUpProps={setSignUpProps}
-                            isFirstNameError={isFirstNameError}
-                            isFirstNameFocused={isFirstNameFocused}
                             scrollViewRef={scrollViewRef}
-                            setIsFirstNameError={setIsFirstNameError}
-                            setIsFirstNameFocused={setIsFirstNameFocused}
+                            onErrorChange={setFirstNameErrorMsg}
+                            onValueChange={setFirstName}
                         />
 
                         <LastNameInput 
                             inputRef={lastNameInputRef}
                             signUpProps={signUpProps}
                             setSignUpProps={setSignUpProps}
-                            isLastNameError={isLastNameError}
-                            isLastNameFocused={isLastNameFocused}
                             scrollViewRef={scrollViewRef}
-                            setIsLastNameError={setIsLastNameError}
-                            setIsLastNameFocused={setIsLastNameFocused}
+                            onErrorChange={setLastNameErrorMsg}
+                            onValueChange={setLastName}
                         />
 
                         <SizeInput 
                             inputRef={sizeInputRef}
                             signUpProps={signUpProps}
                             setSignUpProps={setSignUpProps}
-                            isSizeError={isSizeError}
-                            isSizeFocused={isSizeFocused}
                             scrollViewRef={scrollViewRef}
-                            setIsSizeError={setIsSizeError}
-                            setIsSizeFocused={setIsSizeFocused}
+                            onErrorChange={setSizeErrorMsg}
+                            onValueChange={setSize}
                         />
                     </View>
 

@@ -2,7 +2,6 @@ import ErrorMsg from "@/components/ui/text/ErrorMsg";
 import PageTitle from "@/components/ui/text/PageTitle";
 import { ScrollView, View, TextInput, KeyboardAvoidingView, Platform } from "react-native";
 import { useState, useRef } from "react";
-import { useForm } from "@/hooks/useForm";
 import MainButton from "@/components/ui/buttons/MainButton";
 import LoginPageLink from "@/components/ui/links/LoginPageLink";
 import { router } from "expo-router";
@@ -11,16 +10,18 @@ import EmailInput from "@/components/ui/inputs/EmailInput";
 import PasswordInput from "@/components/ui/inputs/PasswordInput";
 import ConfirmPasswordInput from "@/components/ui/inputs/ConfirmPasswordInput";
 import { useSignUpProps } from "@/context/signUpPropsContext";
+import { useSignUpValidation } from "@/hooks/useSignUpValidation";
 
 export default function SignUpFirstForm() {
-    const [isUsernameError, setIsUsernameError] = useState(false);
-    const [isEmailError, setIsEmailError] = useState(false);
-    const [isPasswordError, setIsPasswordError] = useState(false);
-    const [isConfirmPasswordError, setIsConfirmPasswordError] = useState(false);
-    const [isUsernameFocused, setIsUsernameFocused] = useState(false);
-    const [isEmailFocused, setIsEmailFocused] = useState(false);
-    const [isPasswordFocused, setIsPasswordFocused] = useState(false);
-    const [isConfirmPasswordFocused, setIsConfirmPasswordFocused] = useState(false);
+    const [usernameErrorMsg, setUsernameErrorMsg] = useState('');
+    const [emailErrorMsg, setEmailErrorMsg] = useState('');
+    const [passwordErrorMsg, setPasswordErrorMsg] = useState('');
+    const [confirmPasswordErrorMsg, setConfirmPasswordErrorMsg] = useState('');
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+
     const scrollViewRef = useRef<ScrollView>(null);
     const usernameInputRef = useRef<TextInput>(null);
     const emailInputRef = useRef<TextInput>(null);
@@ -28,34 +29,15 @@ export default function SignUpFirstForm() {
     const confirmPasswordInputRef = useRef<TextInput>(null);
 
     const { signUpProps, setSignUpProps } = useSignUpProps();
+    const { validateSignUpStep1, errorMsg: globalErrorMsg } = useSignUpValidation();
 
-    const { formValidation, errorMsg } = useForm({
-        errorSetters: {
-            username: (isError: boolean) => setIsUsernameError(isError),
-            email: (isError: boolean) => setIsEmailError(isError),
-            password: (isError: boolean) => setIsPasswordError(isError),
-            confirmPassword: (isError: boolean) => setIsConfirmPasswordError(isError)
-        },
-        scrollViewRef
-    });
+    const mergedErrorMsg = usernameErrorMsg || emailErrorMsg || passwordErrorMsg || confirmPasswordErrorMsg || globalErrorMsg;
 
-    // TODO: extract this to useAuth hook
     const handleNextSignupPage = async () => {
-        const isUsernameValid = await formValidation.validateField(signUpProps.username, 'username');
-        const isEmailValid = await formValidation.validateField(signUpProps.email, 'email');
-        const isPasswordValid = await formValidation.validateField(signUpProps.password, 'password');
-        const isConfirmPasswordValid = await formValidation.validateField(signUpProps.confirmPassword, 'confirmPassword', false, null, signUpProps.password);
-
-        if (!isUsernameValid || !isEmailValid || !isPasswordValid || !isConfirmPasswordValid) {
-            formValidation.setErrorMessage('Please correct your inputs before continuing');
-            setIsUsernameError(true);
-            setIsEmailError(true);
-            setIsPasswordError(true);
-            setIsConfirmPasswordError(true);
+        const result = await validateSignUpStep1(signUpProps);
+        if (!result.isValid) {
             return;
         }
-
-        formValidation.setErrorMessage('');
         router.replace('/sign-up-second');
     };
 
@@ -74,29 +56,25 @@ export default function SignUpFirstForm() {
                     <PageTitle content='Sign Up' />
                     <View className='flex justify-center items-center gap-8 w-full mt-10'>
                         <View className="absolute w-full flex items-center" style={{ top: -50 }}>
-                            <ErrorMsg content={errorMsg} display={errorMsg !== ''} />
+                            <ErrorMsg content={mergedErrorMsg} display={mergedErrorMsg !== ''} />
                         </View>
                         
                         <UsernameInput
                             inputRef={usernameInputRef}
                             signUpProps={signUpProps}
                             setSignUpProps={setSignUpProps}
-                            isUsernameError={isUsernameError}
-                            isUsernameFocused={isUsernameFocused}
                             scrollViewRef={scrollViewRef}
-                            setIsUsernameError={setIsUsernameError}
-                            setIsUsernameFocused={setIsUsernameFocused}
+                            onErrorChange={setUsernameErrorMsg}
+                            onValueChange={setUsername}
                         />
 
                         <EmailInput
                             inputRef={emailInputRef}
                             signUpProps={signUpProps}
                             setSignUpProps={setSignUpProps}
-                            isEmailError={isEmailError}
-                            isEmailFocused={isEmailFocused}
                             scrollViewRef={scrollViewRef}
-                            setIsEmailError={setIsEmailError}
-                            setIsEmailFocused={setIsEmailFocused}
+                            onErrorChange={setEmailErrorMsg}
+                            onValueChange={setEmail}
                         />
 
                         <PasswordInput
@@ -104,22 +82,18 @@ export default function SignUpFirstForm() {
                             inputRef={passwordInputRef}
                             signUpProps={signUpProps}
                             setSignUpProps={setSignUpProps}
-                            isPasswordError={isPasswordError}
-                            isPasswordFocused={isPasswordFocused}
                             scrollViewRef={scrollViewRef}
-                            setIsPasswordError={setIsPasswordError}
-                            setIsPasswordFocused={setIsPasswordFocused}
+                            onErrorChange={setPasswordErrorMsg}
+                            onValueChange={setPassword}
                         />
 
                         <ConfirmPasswordInput
                             inputRef={confirmPasswordInputRef}
                             signUpProps={signUpProps}
                             setSignUpProps={setSignUpProps}
-                            isConfirmPasswordError={isConfirmPasswordError}
-                            isConfirmPasswordFocused={isConfirmPasswordFocused}
                             scrollViewRef={scrollViewRef}
-                            setIsConfirmPasswordError={setIsConfirmPasswordError}
-                            setIsConfirmPasswordFocused={setIsConfirmPasswordFocused}
+                            onErrorChange={setConfirmPasswordErrorMsg}
+                            onValueChange={setConfirmPassword}
                         />
                     </View>
 
