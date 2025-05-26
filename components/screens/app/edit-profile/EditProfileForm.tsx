@@ -12,7 +12,6 @@ import UsernameInput from '@/components/ui/inputs/UsernameInput'
 import FirstNameInput from '@/components/ui/inputs/FirstNameInput'
 import LastNameInput from '@/components/ui/inputs/LastNameInput'
 import SizeInput from '@/components/ui/inputs/SizeInput'
-import { useForm } from '@/hooks/useForm'
 import { ScrollView as RNScrollView } from 'react-native'
 import { useImagePicker } from '@/hooks/useImagePicker'
 import { useAuth } from '@/hooks/useAuth'
@@ -20,7 +19,6 @@ import { useAuth } from '@/hooks/useAuth'
 export default function EditProfileForm() {
     const { user, sessionToken } = useSession()
     const { updateUser } = useAuth()
-    const [errorMsg, setErrorMsg] = useState('')
     const [profileData, setProfileData] = useState<UserData>({
         username: user?.username || '',
         first_name: user?.first_name || '',
@@ -32,14 +30,14 @@ export default function EditProfileForm() {
         confirmPassword: '',
     })
 
-    const [isUsernameFocused, setIsUsernameFocused] = useState(false)
-    const [isUsernameError, setIsUsernameError] = useState(false)
-    const [isFirstNameFocused, setIsFirstNameFocused] = useState(false)
-    const [isFirstNameError, setIsFirstNameError] = useState(false)
-    const [isLastNameFocused, setIsLastNameFocused] = useState(false)
-    const [isLastNameError, setIsLastNameError] = useState(false)
-    const [isSneakerSizeFocused, setIsSneakerSizeFocused] = useState(false)
-    const [isSneakerSizeError, setIsSneakerSizeError] = useState(false)
+    const [usernameErrorMsg, setUsernameErrorMsg] = useState('')
+    const [firstNameErrorMsg, setFirstNameErrorMsg] = useState('')
+    const [lastNameErrorMsg, setLastNameErrorMsg] = useState('')
+    const [sizeErrorMsg, setSizeErrorMsg] = useState('')
+    const [username, setUsername] = useState('')
+    const [firstName, setFirstName] = useState('')
+    const [lastName, setLastName] = useState('')
+    const [size, setSize] = useState('')
 
     const usernameInputRef = useRef<TextInput>(null)
     const firstNameInputRef = useRef<TextInput>(null)
@@ -47,21 +45,7 @@ export default function EditProfileForm() {
     const sneakerSizeInputRef = useRef<TextInput>(null)
     const scrollViewRef = useRef<RNScrollView>(null)
 
-    const { errorMsg: formErrorMsg } = useForm({
-        errorSetters: {
-            username: setIsUsernameError,
-            firstName: setIsFirstNameError,
-            lastName: setIsLastNameError,
-            size: setIsSneakerSizeError,
-        },
-        focusSetters: {
-            username: setIsUsernameFocused,
-            firstName: setIsFirstNameFocused,
-            lastName: setIsLastNameFocused,
-            size: setIsSneakerSizeFocused,
-        },
-        scrollViewRef,
-    })
+    const mergedErrorMsg = usernameErrorMsg || firstNameErrorMsg || lastNameErrorMsg || sizeErrorMsg;
 
     const { handleImageSelection } = useImagePicker();
 
@@ -85,7 +69,7 @@ export default function EditProfileForm() {
                 </View>
 
                 <View className="absolute w-full flex items-center" style={{ top: -50 }}>
-                    <ErrorMsg content={errorMsg || formErrorMsg} display={!!(errorMsg || formErrorMsg)} />
+                    <ErrorMsg content={mergedErrorMsg} display={!!mergedErrorMsg} />
                 </View>
 
                 <View className="items-center gap-4">
@@ -111,7 +95,7 @@ export default function EditProfileForm() {
                                     text: 'Pick from gallery',
                                     onPress: () => handleImageSelection('gallery').then(uri => {
                                         if (!uri) {
-                                            setErrorMsg('Désolé, nous avons besoin des permissions pour accéder à vos photos !');
+                                            Alert.alert('Sorry, we need permission to access your photos!');
                                             return;
                                         }
                                         setProfileData({ ...profileData, profile_picture: uri });
@@ -121,7 +105,7 @@ export default function EditProfileForm() {
                                     text: 'Take a photo',
                                     onPress: () => handleImageSelection('camera').then(uri => {
                                         if (!uri) {
-                                            setErrorMsg('Désolé, nous avons besoin des permissions pour accéder à votre caméra !');
+                                            Alert.alert('Sorry, we need permission to access your camera!');
                                             return;
                                         }
                                         setProfileData({ ...profileData, profile_picture: uri });
@@ -145,41 +129,33 @@ export default function EditProfileForm() {
                         inputRef={usernameInputRef}
                         signUpProps={profileData}
                         setSignUpProps={setProfileData}
-                        isUsernameError={isUsernameError}
-                        isUsernameFocused={isUsernameFocused}
                         scrollViewRef={scrollViewRef}
-                        setIsUsernameError={setIsUsernameError}
-                        setIsUsernameFocused={setIsUsernameFocused}
+                        onErrorChange={setUsernameErrorMsg}
+                        onValueChange={setUsername}
                     />
                     <FirstNameInput
                         inputRef={firstNameInputRef}
                         signUpProps={profileData}
                         setSignUpProps={setProfileData}
-                        isFirstNameError={isFirstNameError}
-                        isFirstNameFocused={isFirstNameFocused}
                         scrollViewRef={scrollViewRef}
-                        setIsFirstNameError={setIsFirstNameError}
-                        setIsFirstNameFocused={setIsFirstNameFocused}
+                        onErrorChange={setFirstNameErrorMsg}
+                        onValueChange={setFirstName}
                     />
                     <LastNameInput
                         inputRef={lastNameInputRef}
                         signUpProps={profileData}
                         setSignUpProps={setProfileData}
-                        isLastNameError={isLastNameError}
-                        isLastNameFocused={isLastNameFocused}
                         scrollViewRef={scrollViewRef}
-                        setIsLastNameError={setIsLastNameError}
-                        setIsLastNameFocused={setIsLastNameFocused}
+                        onErrorChange={setLastNameErrorMsg}
+                        onValueChange={setLastName}
                     />
                     <SizeInput
                         inputRef={sneakerSizeInputRef}
                         signUpProps={profileData}
                         setSignUpProps={setProfileData}
-                        isSizeError={isSneakerSizeError}
-                        isSizeFocused={isSneakerSizeFocused}
                         scrollViewRef={scrollViewRef}
-                        setIsSizeError={setIsSneakerSizeError}
-                        setIsSizeFocused={setIsSneakerSizeFocused}
+                        onErrorChange={setSizeErrorMsg}
+                        onValueChange={setSize}
                     />
                 </View>
                 <View className='flex w-full justify-center items-center'>
