@@ -1,7 +1,7 @@
 import { BaseApiService } from "@/services/BaseApiService";
 import { User } from "@/types/User";
 import { FormValidationService } from "./FormValidationService";
-import { UserData } from "@/types/auth";
+import { UserData } from "@/types/Auth";
 
 interface LoginResponse {
     user: User;

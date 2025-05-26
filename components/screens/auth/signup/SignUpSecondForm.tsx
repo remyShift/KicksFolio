@@ -1,7 +1,6 @@
 import { View, Text, TextInput, KeyboardAvoidingView, Platform, ScrollView, Pressable, Alert, Image } from 'react-native';
 import { useSignUpProps } from '@/context/signUpPropsContext';
 import { useState, useRef } from 'react';
-import { imageService } from '@/services/ImageService';
 import FirstNameInput from '@/components/ui/inputs/FirstNameInput';
 import { FontAwesome5 } from '@expo/vector-icons';
 import MainButton from '@/components/ui/buttons/MainButton';
@@ -12,6 +11,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useForm } from '@/hooks/useForm';
 import PageTitle from '@/components/ui/text/PageTitle';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
+import { useImagePicker } from '@/hooks/useImagePicker';
 
 export default function SignUpSecondForm() {
     const { signUpProps, setSignUpProps } = useSignUpProps();
@@ -28,6 +28,7 @@ export default function SignUpSecondForm() {
     const firstNameInputRef = useRef<TextInput>(null);
 
     const { signUp } = useAuth();
+    const { handleImageSelection } = useImagePicker();
 
     const { errorMsg } = useForm({
         errorSetters: {
@@ -36,16 +37,6 @@ export default function SignUpSecondForm() {
             size: (isError: boolean) => setIsSizeError(isError),
         },
     });
-
-    const handleImageSelection = async (type: 'camera' | 'gallery') => {
-        const imageUri = type === 'camera' 
-            ? await imageService.takePhoto()
-            : await imageService.pickImage();
-
-        if (imageUri) {
-            setSignUpProps({ ...signUpProps, profile_picture: imageUri });
-        }
-    };
 
     return (
         <KeyboardAvoidingView 

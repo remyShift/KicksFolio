@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { AuthService } from '@/services/AuthService';
 import { FormValidationService } from '@/services/FormValidationService';
 import { router } from 'expo-router';
-import { UserData } from '@/types/auth';
+import { UserData } from '@/types/Auth';
 
 export const useAuth = () => {
     const [errorMsg, setErrorMsg] = useState('');
