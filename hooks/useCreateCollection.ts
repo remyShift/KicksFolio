@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { CollectionService } from '@/services/CollectionService';
 import { useSession } from '@/context/authContext';
+import { useAuth } from './useAuth';
 
 export function useCreateCollection() {
     const [error, setError] = useState('');
     const collectionService = new CollectionService();
-    const { user, sessionToken, getUserCollection } = useSession();
+    const { user, sessionToken } = useSession();
+    const { getUserCollection } = useAuth();
 
     const createCollection = async (collectionName: string) => {
         setError('');
@@ -16,7 +18,7 @@ export function useCreateCollection() {
 
         return collectionService.create(collectionName, user.id, sessionToken)
         .then(() => {
-            return getUserCollection()
+            return getUserCollection(user, sessionToken)
             .then(() => {
                 return true;
             })
