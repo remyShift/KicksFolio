@@ -1,7 +1,6 @@
 import { User } from './User';
 import { Collection } from './Collection';
 import { Sneaker } from './Sneaker';
-import { ProfileData } from './ProfileData';
 import { Dispatch, SetStateAction } from 'react';
 
 export interface AuthContextType {
@@ -16,7 +15,7 @@ export interface AuthContextType {
     getUserSneakers: () => Promise<Sneaker[] | null>;
     verifyToken: () => Promise<boolean>;
     loadInitialData: () => Promise<void>;
-    updateUser: (user: User, profileData: ProfileData, sessionToken: string) => Promise<{ user: User }>;
+    updateUser: (user: User, profileData: UserData, sessionToken: string) => Promise<{ user: User }>;
     deleteAccount: (userId: string, token: string) => Promise<any>;
     logout: () => Promise<void>;
 }

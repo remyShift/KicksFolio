@@ -1,5 +1,5 @@
 import { createContext, useContext, type PropsWithChildren, useState, useEffect } from 'react';
-import { AuthContextType } from '@/types/Auth';
+import { AuthContextType } from '@/types/auth';
 import { storageService } from '@/services/StorageService';
 import { useAppState } from '@react-native-community/hooks';
 import { useStorageState } from '@/hooks/useStorageState';
@@ -7,7 +7,7 @@ import { router } from 'expo-router';
 import { User } from '@/types/User';
 import { Collection } from '@/types/Collection';
 import { Sneaker } from '@/types/Sneaker';
-import { ProfileData } from '@/types/ProfileData';
+import { UserData } from '@/types/auth';
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
@@ -205,17 +205,19 @@ export function SessionProvider({ children }: PropsWithChildren) {
             });
     };
 
-    const updateUser = async (user: User, profileData: ProfileData, sessionToken: string): Promise<{ user: User }> => {
+    const updateUser = async (user: User, profileData: UserData, sessionToken: string): Promise<{ user: User }> => {
         if (!user?.id) {
             return { user: {} as User };
         }
 
-        const userData = {
-            username: profileData.newUsername,
-            first_name: profileData.newFirstName,
-            last_name: profileData.newLastName,
-            sneaker_size: profileData.newSneakerSize,
-            profile_picture: profileData.newProfilePicture
+        const updatedUser = {
+            ...user,
+            username: profileData.username,
+            first_name: profileData.first_name,
+            last_name: profileData.last_name,
+            sneaker_size: profileData.sneaker_size,
+            profile_picture: profileData.profile_picture,
+            email: profileData.email,
         };
 
         return fetch(`${process.env.EXPO_PUBLIC_BASE_API_URL}/users/${user.id}`, {
@@ -225,7 +227,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(userData)
+            body: JSON.stringify(updatedUser)
         })
         .then(response => {
             if (!response.ok) throw new Error('Error when updating user');

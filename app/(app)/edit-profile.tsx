@@ -9,18 +9,26 @@ import PageTitle from '@/components/ui/text/PageTitle'
 import MainButton from '@/components/ui/buttons/MainButton'
 import ErrorMsg from '@/components/ui/text/ErrorMsg'
 import { useSession } from '@/context/authContext'
-import { ProfileData } from '@/types/ProfileData'
+import { UserData } from '@/types/auth'
+import UsernameInput from '@/components/ui/inputs/UsernameInput'
+import FirstNameInput from '@/components/ui/inputs/FirstNameInput'
+import LastNameInput from '@/components/ui/inputs/LastNameInput'
+import SizeInput from '@/components/ui/inputs/SizeInput'
+import { useForm } from '@/hooks/useForm'
+import { ScrollView as RNScrollView } from 'react-native'
 
 export default function EditProfile() {
     const { user, sessionToken, updateUser } = useSession()
     const [errorMsg, setErrorMsg] = useState('')
-    const [profileData, setProfileData] = useState<ProfileData>({
-        newUsername: user?.username || '',
-        newFirstName: user?.first_name || '',
-        newLastName: user?.last_name || '',
-        newSneakerSize: user?.sneaker_size || 0,
-        newProfilePicture: user?.profile_picture?.url || '',
-        newEmail: user?.email || '',
+    const [profileData, setProfileData] = useState<UserData>({
+        username: user?.username || '',
+        first_name: user?.first_name || '',
+        last_name: user?.last_name || '',
+        sneaker_size: user?.sneaker_size || 0,
+        profile_picture: user?.profile_picture?.url || '',
+        email: user?.email || '',
+        password: '',
+        confirmPassword: '',
     })
 
     // États pour le focus et les erreurs
@@ -38,6 +46,24 @@ export default function EditProfile() {
     const firstNameInputRef = useRef<TextInput>(null)
     const lastNameInputRef = useRef<TextInput>(null)
     const sneakerSizeInputRef = useRef<TextInput>(null)
+    const scrollViewRef = useRef<RNScrollView>(null)
+
+    // Utilisation du hook useForm
+    const { errorMsg: formErrorMsg } = useForm({
+        errorSetters: {
+            username: setIsUsernameError,
+            firstName: setIsFirstNameError,
+            lastName: setIsLastNameError,
+            size: setIsSneakerSizeError,
+        },
+        focusSetters: {
+            username: setIsUsernameFocused,
+            firstName: setIsFirstNameFocused,
+            lastName: setIsLastNameFocused,
+            size: setIsSneakerSizeFocused,
+        },
+        scrollViewRef,
+    })
 
     const pickImage = async () => {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync()
@@ -54,7 +80,7 @@ export default function EditProfile() {
         })
 
         if (!result.canceled) {
-            setProfileData({ ...profileData, newProfilePicture: result.assets[0].uri })
+            setProfileData({ ...profileData, profile_picture: result.assets[0].uri })
         }
     }
 
@@ -72,7 +98,7 @@ export default function EditProfile() {
         })
 
         if (!result.canceled) {
-        setProfileData({ ...profileData, newProfilePicture: result.assets[0].uri })
+        setProfileData({ ...profileData, profile_picture: result.assets[0].uri })
         }
     }
 
@@ -81,67 +107,12 @@ export default function EditProfile() {
         await updateUser(user, profileData, sessionToken);
     }
 
-    const handleInputFocus = (inputType: 'username' | 'firstName' | 'lastName' | 'sneakerSize') => {
-        switch(inputType) {
-            case 'username':
-                setIsUsernameFocused(true);
-                break;
-            case 'firstName':
-                setIsFirstNameFocused(true);
-                break;
-            case 'lastName':
-                setIsLastNameFocused(true);
-                break;
-            case 'sneakerSize':
-                setIsSneakerSizeFocused(true);
-                break;
-        }
-        setErrorMsg('');
-        setIsUsernameError(false);
-        setIsFirstNameError(false);
-        setIsLastNameError(false);
-        setIsSneakerSizeError(false);
-    };
-
-    const handleInputBlur = (inputType: 'username' | 'firstName' | 'lastName' | 'sneakerSize', value: string) => {
-        switch(inputType) {
-            case 'username':
-                setIsUsernameFocused(false);
-                if (!value.trim()) {
-                    setErrorMsg('Veuillez entrer un nom d\'utilisateur');
-                    setIsUsernameError(true);
-                }
-                break;
-            case 'firstName':
-                setIsFirstNameFocused(false);
-                if (!value.trim()) {
-                    setErrorMsg('Veuillez entrer votre prénom');
-                    setIsFirstNameError(true);
-                }
-                break;
-            case 'lastName':
-                setIsLastNameFocused(false);
-                if (!value.trim()) {
-                    setErrorMsg('Veuillez entrer votre nom');
-                    setIsLastNameError(true);
-                }
-                break;
-            case 'sneakerSize':
-                setIsSneakerSizeFocused(false);
-                if (!value || isNaN(Number(value))) {
-                    setErrorMsg('Veuillez entrer une taille valide');
-                    setIsSneakerSizeError(true);
-                }
-                break;
-        }
-    };
-
     return (
         <KeyboardAvoidingView 
             className="flex-1 bg-background" 
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
-        <ScrollView className="flex-1">
+        <ScrollView className="flex-1" ref={scrollViewRef}>
             <View className="flex-1 p-4 gap-8">
                 <Pressable onPress={() => router.back()} className='absolute right-5 top-14'>
                     <Ionicons name="close-outline" size={32} color="#666" />
@@ -151,166 +122,100 @@ export default function EditProfile() {
                 </View>
 
                 <View className="absolute w-full flex items-center" style={{ top: -50 }}>
-                    <ErrorMsg content={errorMsg} display={errorMsg !== ''} />
+                    <ErrorMsg content={errorMsg || formErrorMsg} display={!!(errorMsg || formErrorMsg)} />
                 </View>
 
-                    <View className="items-center gap-4">
-                        {profileData.newProfilePicture ? (
-                            <View className="w-32 h-32 rounded-full">
-                                <Image 
-                                source={{ uri: profileData.newProfilePicture }}
-                                style={{
-                                    width: '100%',
-                                    height: '100%',
-                                    borderRadius: 100
-                                }}
-                                contentFit="cover"
-                                contentPosition="center"
-                                cachePolicy="memory-disk"
-                                />
-                            </View>
-                            ) : (
-                            <Pressable onPress={() => {
-                                Alert.alert('Choose an image',
-                                    'Select an image from your gallery or take a photo with your camera to update your profile picture.', [
-                                    { 
-                                        text: 'Pick from gallery',
-                                        onPress: pickImage,
-                                    },
-                                    {   
-                                        text: 'Take a photo',
-                                        onPress: takePhoto,
-                                    },
-                                    {
-                                        text: 'Cancel',
-                                        style: 'cancel'
-                                    }
-                                ])
-                            }} className="w-32 h-32 bg-primary rounded-full flex-row items-center justify-center">
-                                <Text className="text-white font-actonia text-6xl">
-                                    {profileData.newUsername.charAt(0)}
-                                </Text>
-                            </Pressable>
-                        )}
-                    </View>
-
-                    <View className="flex flex-col gap-4 w-full justify-center items-center">
-                        <View className="flex flex-col gap-2 w-full justify-center items-center">
-                            <Text className='font-spacemono-bold text-lg'>Username</Text>
-                            <TextInput
-                                placeholder="Username"
-                                ref={usernameInputRef}
-                                value={profileData.newUsername}
-                                inputMode='text'
-                                textContentType='username'
-                                autoComplete='username'
-                                clearButtonMode='while-editing'
-                                autoCorrect={false}
-                                onFocus={() => handleInputFocus('username')}
-                                onBlur={() => handleInputBlur('username', profileData.newUsername)}
-                                returnKeyType='next'
-                                enablesReturnKeyAutomatically={true}
-                                onSubmitEditing={() => firstNameInputRef.current?.focus()}
-                                placeholderTextColor='gray'
-                                onChangeText={(text) => {
-                                    setProfileData({...profileData, newUsername: text});
-                                    setErrorMsg('');
-                                }}
-                                className={`bg-white rounded-md p-3 w-2/3 font-spacemono-bold ${
-                                    isUsernameError ? 'border-2 border-red-500' : ''
-                                } ${isUsernameFocused ? 'border-2 border-primary' : ''}`}
+                <View className="items-center gap-4">
+                    {profileData.profile_picture ? (
+                        <View className="w-32 h-32 rounded-full">
+                            <Image 
+                            source={{ uri: profileData.profile_picture }}
+                            style={{
+                                width: '100%',
+                                height: '100%',
+                                borderRadius: 100
+                            }}
+                            contentFit="cover"
+                            contentPosition="center"
+                            cachePolicy="memory-disk"
                             />
                         </View>
-
-                        <View className="flex flex-col gap-2 w-full justify-center items-center">
-                            <Text className='font-spacemono-bold text-lg'>First name</Text>
-                            <TextInput
-                                placeholder="first name"
-                                ref={firstNameInputRef}
-                                value={profileData.newFirstName}
-                                inputMode='text'
-                                textContentType='givenName'
-                                autoComplete='given-name'
-                                clearButtonMode='while-editing'
-                                autoCorrect={false}
-                                onFocus={() => handleInputFocus('firstName')}
-                                onBlur={() => handleInputBlur('firstName', profileData.newFirstName)}
-                                returnKeyType='next'
-                                enablesReturnKeyAutomatically={true}
-                                onSubmitEditing={() => lastNameInputRef.current?.focus()}
-                                placeholderTextColor='gray'
-                                onChangeText={(text) => {
-                                    setProfileData({...profileData, newFirstName: text});
-                                    setErrorMsg('');
-                                }}
-                                className={`bg-white rounded-md p-3 w-2/3 font-spacemono-bold ${
-                                    isFirstNameError ? 'border-2 border-red-500' : ''
-                                } ${isFirstNameFocused ? 'border-2 border-primary' : ''}`}
-                            />
-                        </View>
-
-                        <View className="flex flex-col gap-2 w-full justify-center items-center">
-                            <Text className='font-spacemono-bold text-lg'>Last name</Text>
-                            <TextInput
-                                placeholder="last name"
-                                ref={lastNameInputRef}
-                                value={profileData.newLastName}
-                                inputMode='text'
-                                textContentType='familyName'
-                                autoComplete='family-name'
-                                clearButtonMode='while-editing'
-                                autoCorrect={false}
-                                onFocus={() => handleInputFocus('lastName')}
-                                onBlur={() => handleInputBlur('lastName', profileData.newLastName)}
-                                returnKeyType='next'
-                                enablesReturnKeyAutomatically={true}
-                                onSubmitEditing={() => sneakerSizeInputRef.current?.focus()}
-                                placeholderTextColor='gray'
-                                onChangeText={(text) => {
-                                    setProfileData({...profileData, newLastName: text});
-                                    setErrorMsg('');
-                                }}
-                                className={`bg-white rounded-md p-3 w-2/3 font-spacemono-bold ${
-                                    isLastNameError ? 'border-2 border-red-500' : ''
-                                } ${isLastNameFocused ? 'border-2 border-primary' : ''}`}
-                            />
-                        </View>
-
-                        <View className="flex flex-col gap-2 w-full justify-center items-center">
-                            <Text className='font-spacemono-bold text-lg'>Sneaker size</Text>
-                            <TextInput
-                                placeholder="sneaker size"
-                                ref={sneakerSizeInputRef}
-                                value={profileData.newSneakerSize.toString()}
-                                inputMode='numeric'
-                                keyboardType="numeric"
-                                clearButtonMode='while-editing'
-                                autoCorrect={false}
-                                onFocus={() => handleInputFocus('sneakerSize')}
-                                onBlur={() => handleInputBlur('sneakerSize', profileData.newSneakerSize.toString())}
-                                returnKeyType='done'
-                                enablesReturnKeyAutomatically={true}
-                                onSubmitEditing={() => handleSubmit()}
-                                placeholderTextColor='gray'
-                                onChangeText={(text) => {
-                                    setProfileData({...profileData, newSneakerSize: Number(text)});
-                                    setErrorMsg('');
-                                }}
-                                className={`bg-white rounded-md p-3 w-2/3 font-spacemono-bold ${
-                                    isSneakerSizeError ? 'border-2 border-red-500' : ''
-                                } ${isSneakerSizeFocused ? 'border-2 border-primary' : ''}`}
-                            />
-                        </View>
-                    </View>
-                    <View className='flex w-full justify-center items-center'>
-                        <MainButton 
-                            content="Save"
-                            onPressAction={handleSubmit}
-                            backgroundColor="bg-primary"
-                        />
-                    </View>
+                        ) : (
+                        <Pressable onPress={() => {
+                            Alert.alert('Choose an image',
+                                'Select an image from your gallery or take a photo with your camera to update your profile picture.', [
+                                { 
+                                    text: 'Pick from gallery',
+                                    onPress: pickImage,
+                                },
+                                {   
+                                    text: 'Take a photo',
+                                    onPress: takePhoto,
+                                },
+                                {
+                                    text: 'Cancel',
+                                    style: 'cancel'
+                                }
+                            ])
+                        }} className="w-32 h-32 bg-primary rounded-full flex-row items-center justify-center">
+                            <Text className="text-white font-actonia text-6xl">
+                                {profileData.username.charAt(0)}
+                            </Text>
+                        </Pressable>
+                    )}
                 </View>
-            </ScrollView>
-        </KeyboardAvoidingView>
+
+                <View className="flex flex-col gap-4 w-full justify-center items-center">
+                    <UsernameInput
+                        inputRef={usernameInputRef}
+                        signUpProps={profileData}
+                        setSignUpProps={setProfileData}
+                        isUsernameError={isUsernameError}
+                        isUsernameFocused={isUsernameFocused}
+                        scrollViewRef={scrollViewRef}
+                        setIsUsernameError={setIsUsernameError}
+                        setIsUsernameFocused={setIsUsernameFocused}
+                    />
+                    <FirstNameInput
+                        inputRef={firstNameInputRef}
+                        signUpProps={profileData}
+                        setSignUpProps={setProfileData}
+                        isFirstNameError={isFirstNameError}
+                        isFirstNameFocused={isFirstNameFocused}
+                        scrollViewRef={scrollViewRef}
+                        setIsFirstNameError={setIsFirstNameError}
+                        setIsFirstNameFocused={setIsFirstNameFocused}
+                    />
+                    <LastNameInput
+                        inputRef={lastNameInputRef}
+                        signUpProps={profileData}
+                        setSignUpProps={setProfileData}
+                        isLastNameError={isLastNameError}
+                        isLastNameFocused={isLastNameFocused}
+                        scrollViewRef={scrollViewRef}
+                        setIsLastNameError={setIsLastNameError}
+                        setIsLastNameFocused={setIsLastNameFocused}
+                    />
+                    <SizeInput
+                        inputRef={sneakerSizeInputRef}
+                        signUpProps={profileData}
+                        setSignUpProps={setProfileData}
+                        isSizeError={isSneakerSizeError}
+                        isSizeFocused={isSneakerSizeFocused}
+                        scrollViewRef={scrollViewRef}
+                        setIsSizeError={setIsSneakerSizeError}
+                        setIsSizeFocused={setIsSneakerSizeFocused}
+                    />
+                </View>
+                <View className='flex w-full justify-center items-center'>
+                    <MainButton 
+                        content="Save"
+                        onPressAction={handleSubmit}
+                        backgroundColor="bg-primary"
+                    />
+                </View>
+            </View>
+        </ScrollView>
+    </KeyboardAvoidingView>
     )
 }
