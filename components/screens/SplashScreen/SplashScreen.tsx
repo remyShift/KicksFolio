@@ -5,11 +5,13 @@ import { useSession } from '@/context/authContext';
 import { Image } from 'expo-image';
 import { AnimatedIcon } from './AnimatedIcon';
 import { AnimatedLogo } from './AnimatedText';
+import { useInitialData } from '@/hooks/useInitialData';
 
-export default function SplashScreen({ sessionToken, loadInitialData, setIsSplashScreenVisible }: { sessionToken: string | null | undefined, loadInitialData: () => Promise<void>, setIsSplashScreenVisible: (value: boolean) => void }) {
+export default function SplashScreen({ sessionToken, setIsSplashScreenVisible }: { sessionToken: string | null | undefined, setIsSplashScreenVisible: (value: boolean) => void }) {
     const [textAnimationFinished, setTextAnimationFinished] = useState(false);
     const { userSneakers } = useSession();
     const AnimatedView = Animated.createAnimatedComponent(View);
+    const { loadInitialData } = useInitialData();
 
     const preloadImages = async (imageUris: string[]) => {
         const prefetchTasks = imageUris.map(uri => Image.prefetch(uri));

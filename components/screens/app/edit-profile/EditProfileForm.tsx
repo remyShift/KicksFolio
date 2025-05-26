@@ -32,7 +32,6 @@ export default function EditProfileForm() {
         confirmPassword: '',
     })
 
-    // États pour le focus et les erreurs
     const [isUsernameFocused, setIsUsernameFocused] = useState(false)
     const [isUsernameError, setIsUsernameError] = useState(false)
     const [isFirstNameFocused, setIsFirstNameFocused] = useState(false)
@@ -42,14 +41,12 @@ export default function EditProfileForm() {
     const [isSneakerSizeFocused, setIsSneakerSizeFocused] = useState(false)
     const [isSneakerSizeError, setIsSneakerSizeError] = useState(false)
 
-    // Références pour les inputs
     const usernameInputRef = useRef<TextInput>(null)
     const firstNameInputRef = useRef<TextInput>(null)
     const lastNameInputRef = useRef<TextInput>(null)
     const sneakerSizeInputRef = useRef<TextInput>(null)
     const scrollViewRef = useRef<RNScrollView>(null)
 
-    // Utilisation du hook useForm
     const { errorMsg: formErrorMsg } = useForm({
         errorSetters: {
             username: setIsUsernameError,

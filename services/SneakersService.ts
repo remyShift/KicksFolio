@@ -2,12 +2,14 @@ import { Sneaker } from "@/types/Sneaker";
 import { addSneaker } from "@/scripts/handleSneakers/addSneaker";
 import { deleteSneaker } from "@/scripts/handleSneakers/deleteSneaker";
 import { skuLookUp } from "@/scripts/handleSneakers/skuLookUp";
+import { BaseApiService } from "@/services/BaseApiService";
 
-export class HandleSneakers {
+export class SneakersService extends BaseApiService {
     private userId: string;
     private sessionToken: string;
 
     constructor(userId: string, sessionToken: string) {
+        super();
         this.userId = userId;
         this.sessionToken = sessionToken;
     }
@@ -31,5 +33,13 @@ export class HandleSneakers {
             .then(response => {
                 return response;
             });
+    }
+
+    public async getUserSneakers() {
+        const response = await fetch(`${this.baseUrl}/users/${this.userId}/collection/sneakers`, {
+            headers: this.getAuthHeaders(this.sessionToken)
+        });
+
+        return this.handleResponse(response);
     }
 }

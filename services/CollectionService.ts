@@ -21,14 +21,6 @@ export class CollectionService extends BaseApiService {
 
         return this.handleResponse(response);
     }
-
-    async getUserSneakers(userId: string, token: string) {
-        const response = await fetch(`${this.baseUrl}/users/${userId}/collection/sneakers`, {
-            headers: this.getAuthHeaders(token)
-        });
-
-        return this.handleResponse(response);
-    }
 }
 
 export const collectionService = new CollectionService();

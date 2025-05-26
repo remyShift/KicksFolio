@@ -4,6 +4,7 @@ import { FormValidationService } from '@/services/FormValidationService';
 import { router } from 'expo-router';
 import { UserData } from '@/types/Auth';
 import { User } from '@/types/User';
+import { collectionService } from '@/services/CollectionService';
 
 export const useAuth = () => {
     const [errorMsg, setErrorMsg] = useState('');
@@ -99,6 +100,15 @@ export const useAuth = () => {
             });
     };
 
+    const getUserCollection = async (user: User, token: string) => {
+        return collectionService.getUserCollection(user.id, token)
+            .then((data) => data)
+            .catch(() => {
+                setErrorMsg('Erreur lors de la récupération de la collection utilisateur.');
+                return null;
+            });
+    };
+
     return {
         errorMsg,
         login,
@@ -110,6 +120,7 @@ export const useAuth = () => {
         updateUser,
         deleteAccount,
         getUser,
+        getUserCollection,
         formValidation
     };
 }; 

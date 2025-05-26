@@ -18,7 +18,7 @@ const FONTS = {
 function AppContent() {
     const [isSplashScreenVisible, setIsSplashScreenVisible] = useState(true);
     const [fontsLoaded] = useFonts(FONTS);
-    const { sessionToken, loadInitialData } = useSession();
+    const { sessionToken } = useSession();
 
     const handleSplashScreenComplete = useCallback(() => {
         setIsSplashScreenVisible(false);
@@ -32,7 +32,6 @@ function AppContent() {
         return (
             <SplashScreen 
                 sessionToken={sessionToken} 
-                loadInitialData={loadInitialData} 
                 setIsSplashScreenVisible={handleSplashScreenComplete} 
             />
         );
