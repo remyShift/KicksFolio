@@ -1,21 +1,24 @@
 import { useForm } from "@/hooks/useForm";
 import { UserData } from "@/types/Auth";
+import { useEffect, useState } from "react";
 import { Text, TextInput, View, ScrollView } from "react-native";
 
 interface PasswordInputProps {
     inputRef: React.RefObject<TextInput>;
     signUpProps?: UserData;
     setSignUpProps?: (props: UserData) => void;
-    isPasswordError: boolean;
-    isPasswordFocused: boolean;
     scrollViewRef: React.RefObject<ScrollView>;
     title: string;
-    setIsPasswordError: (isError: boolean) => void;
-    setIsPasswordFocused: (isFocused: boolean) => void;
+    onErrorChange: (errorMsg: string) => void;
+    onValueChange: (value: string) => void;
 }
 
-export default function PasswordInput({ inputRef, signUpProps, setSignUpProps, isPasswordError, isPasswordFocused, scrollViewRef, title, setIsPasswordError, setIsPasswordFocused }: PasswordInputProps) {
-    const { formValidation, handleForm } = useForm({
+export default function PasswordInput({ inputRef, signUpProps, setSignUpProps, scrollViewRef, title, onErrorChange, onValueChange }: PasswordInputProps) {
+    const [isPasswordError, setIsPasswordError] = useState(false);
+    const [isPasswordFocused, setIsPasswordFocused] = useState(false);
+    const [passwordValue, setPasswordValue] = useState(signUpProps?.password || "");
+
+    const { handleForm, errorMsg } = useForm({
         errorSetters: {
             password: (isError: boolean) => setIsPasswordError(isError),
         },
@@ -25,6 +28,14 @@ export default function PasswordInput({ inputRef, signUpProps, setSignUpProps, i
         scrollViewRef
     });
 
+    useEffect(() => {
+        onErrorChange(errorMsg);
+    }, [errorMsg]);
+
+    useEffect(() => {
+        onValueChange(passwordValue);
+    }, [passwordValue]);
+
     return (
     <View className='flex flex-col gap-2 w-full justify-center items-center'>
         <Text className='font-spacemono-bold text-lg'>*{title}</Text>
@@ -33,7 +44,7 @@ export default function PasswordInput({ inputRef, signUpProps, setSignUpProps, i
         </Text>
         <TextInput
             ref={inputRef}
-            value={signUpProps?.password}
+            value={passwordValue}
             placeholder="********"
             inputMode='text'
             textContentType='newPassword'
@@ -44,10 +55,10 @@ export default function PasswordInput({ inputRef, signUpProps, setSignUpProps, i
             placeholderTextColor='gray'
             returnKeyType='next'
             enablesReturnKeyAutomatically={true}
-            onSubmitEditing={() => formValidation.validateField(signUpProps?.password!, 'password')}
             onFocus={() => handleForm.inputFocus('password')}
-            onBlur={() => handleForm.inputBlur('password', signUpProps?.password!)}
+            onBlur={() => handleForm.inputBlur('password', passwordValue)}
             onChangeText={(text) => {
+                setPasswordValue(text);
                 setSignUpProps?.({ ...signUpProps!, password: text });
                 handleForm.inputChange(text, (t) => setSignUpProps?.({ ...signUpProps!, password: t }));
             }}
@@ -55,6 +66,9 @@ export default function PasswordInput({ inputRef, signUpProps, setSignUpProps, i
                 isPasswordError ? 'border-2 border-red-500' : ''
             } ${isPasswordFocused ? 'border-2 border-primary' : ''}`}
         />
+        {errorMsg !== '' && (
+            <Text className='text-red-500 text-xs'>{errorMsg}</Text>
+        )}
     </View>
     )
 }

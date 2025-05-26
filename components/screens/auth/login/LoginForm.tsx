@@ -8,27 +8,19 @@ import { Link } from "expo-router";
 import { useAuth } from "@/hooks/useAuth";
 import PasswordInput from "@/components/ui/inputs/PasswordInput";
 import EmailInput from "@/components/ui/inputs/EmailInput";
-import { useForm } from "@/hooks/useForm";
 
 export default function LoginForm() {
-    const [isEmailFocused, setIsEmailFocused] = useState(false);
-    const [isPasswordFocused, setIsPasswordFocused] = useState(false);
     const scrollViewRef = useRef<ScrollView>(null);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [isEmailError, setIsEmailError] = useState(false);
-    const [isPasswordError, setIsPasswordError] = useState(false);
+    const [emailErrorMsg, setEmailErrorMsg] = useState('');
+    const [passwordErrorMsg, setPasswordErrorMsg] = useState('');
     const emailInputRef = useRef<TextInput>(null);
     const passwordInputRef = useRef<TextInput>(null);
 
     const { login } = useAuth();
 
-    const { errorMsg } = useForm({
-        errorSetters: {
-            email: (isError: boolean) => setIsEmailError(isError),
-            password: (isError: boolean) => setIsPasswordError(isError),
-        },
-    });
+    const errorMsg = emailErrorMsg || passwordErrorMsg;
 
     return (
         <KeyboardAvoidingView 
@@ -39,7 +31,6 @@ export default function LoginForm() {
                 ref={scrollViewRef}
                 contentContainerStyle={{ flexGrow: 1 }}
                 keyboardShouldPersistTaps="handled"
-                scrollEnabled={isEmailFocused || isPasswordFocused}
             >
                 <View className="flex-1 items-center gap-12 p-4">
                     <PageTitle content='Login' />
@@ -49,20 +40,16 @@ export default function LoginForm() {
                         </View>
                         <EmailInput
                             inputRef={emailInputRef}
-                            isEmailError={isEmailError}
-                            isEmailFocused={isEmailFocused}
                             scrollViewRef={scrollViewRef}
-                            setIsEmailError={setIsEmailError}
-                            setIsEmailFocused={setIsEmailFocused}
+                            onErrorChange={setEmailErrorMsg}
+                            onValueChange={setEmail}
                         />
                         
                         <PasswordInput
                             inputRef={passwordInputRef}
-                            isPasswordError={isPasswordError}
-                            isPasswordFocused={isPasswordFocused}
                             scrollViewRef={scrollViewRef}
-                            setIsPasswordError={setIsPasswordError}
-                            setIsPasswordFocused={setIsPasswordFocused}
+                            onErrorChange={setPasswordErrorMsg}
+                            onValueChange={setPassword}
                             title='*Password'
                         />
                     </View>

@@ -1,20 +1,23 @@
 import { useForm } from "@/hooks/useForm";
 import { UserData } from "@/types/Auth";
 import { Text, TextInput, View, ScrollView } from "react-native";
+import { useState, useEffect } from "react";
 
 interface EmailInputProps {
     inputRef: React.RefObject<TextInput>;
     signUpProps?: UserData;
     setSignUpProps?: (props: UserData) => void;
-    isEmailError: boolean;
-    isEmailFocused: boolean;
     scrollViewRef: React.RefObject<ScrollView>;
-    setIsEmailError: (isError: boolean) => void;
-    setIsEmailFocused: (isFocused: boolean) => void;
+    onErrorChange: (errorMsg: string) => void;
+    onValueChange: (value: string) => void;
 }
 
-export default function EmailInput({ inputRef, signUpProps, setSignUpProps, isEmailError, isEmailFocused, scrollViewRef, setIsEmailError, setIsEmailFocused }: EmailInputProps) {
-    const { formValidation, handleForm } = useForm(
+export default function EmailInput({ inputRef, signUpProps, setSignUpProps, scrollViewRef, onErrorChange, onValueChange }: EmailInputProps) {
+    const [isEmailError, setIsEmailError] = useState(false);
+    const [isEmailFocused, setIsEmailFocused] = useState(false);
+    const [emailValue, setEmailValue] = useState(signUpProps?.email || "");
+
+    const { handleForm, errorMsg } = useForm(
         {
             errorSetters: {
                 email: (isError: boolean) => setIsEmailError(isError),
@@ -26,6 +29,14 @@ export default function EmailInput({ inputRef, signUpProps, setSignUpProps, isEm
         }
     );
 
+    useEffect(() => {
+        onErrorChange(errorMsg);
+    }, [errorMsg]);
+
+    useEffect(() => {
+        onValueChange(emailValue);
+    }, [emailValue]);
+
     return (
     <View className='flex flex-col gap-2 w-full justify-center items-center'>
         <Text className='font-spacemono-bold text-lg'>*Email</Text>
@@ -33,7 +44,7 @@ export default function EmailInput({ inputRef, signUpProps, setSignUpProps, isEm
             ref={inputRef}
             placeholder="johndoe@gmail.com"
             inputMode='email'
-            value={signUpProps?.email}
+            value={emailValue}
             autoComplete='email'
             textContentType='emailAddress'
             autoCorrect={false}
@@ -41,10 +52,10 @@ export default function EmailInput({ inputRef, signUpProps, setSignUpProps, isEm
             clearButtonMode='while-editing'
             returnKeyType='next'
             enablesReturnKeyAutomatically={true}
-            onSubmitEditing={() => formValidation.validateField(signUpProps?.email!, 'email')}
             onFocus={() => handleForm.inputFocus('email')}
-            onBlur={() => handleForm.inputBlur('email', signUpProps?.email!)}
+            onBlur={() => handleForm.inputBlur('email', emailValue)}
             onChangeText={(text) => {
+                setEmailValue(text);
                 setSignUpProps?.({ ...signUpProps!, email: text });
                 handleForm.inputChange(text, (t) => setSignUpProps?.({ ...signUpProps!, email: t }));
             }}
@@ -52,6 +63,9 @@ export default function EmailInput({ inputRef, signUpProps, setSignUpProps, isEm
                 isEmailError ? 'border-2 border-red-500' : ''
             } ${isEmailFocused ? 'border-2 border-primary' : ''}`}
         />
+        {errorMsg !== '' && (
+            <Text className='text-red-500 text-xs'>{errorMsg}</Text>
+        )}
     </View>
     )
 }
