@@ -1,11 +1,10 @@
 import CollectionCard from '@/components/ui/cards/CollectionCard';
-import FriendTitle from '@/components/ui/text/FriendTitle';
 import PageTitle from '@/components/ui/text/PageTitle';
 import Title from '@/components/ui/text/Title';
 import MainButton from '@/components/ui/buttons/MainButton';
 import { ScrollView, View, Modal, Pressable } from 'react-native';
 import { useSession } from '@/context/authContext';
-import { router, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { useState, useEffect } from 'react';
 import { SneakersModal } from '@/components/modals/SneakersModal';
 

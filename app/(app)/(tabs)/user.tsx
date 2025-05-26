@@ -14,6 +14,7 @@ import { Sneaker } from '@/types/Sneaker';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAuth } from '@/hooks/useAuth';
 
 const brandLogos: Record<string, any> = {
   nike: require('@/assets/images/brands/nike.png'),
@@ -28,7 +29,8 @@ const brandLogos: Record<string, any> = {
 };
 
 export default function User() {
-  const { logout, user, userSneakers, getUserSneakers } = useSession();
+  const { user, userSneakers, sessionToken, setUserSneakers } = useSession();
+  const { logout, getUserSneakers } = useAuth();
   const [modalVisible, setModalVisible] = useState(false);
   const [modalStep, setModalStep] = useState<'index' | 'sku' | 'addForm' | 'view'>('index');
   const [sneaker, setSneaker] = useState<Sneaker | null>(null);
@@ -41,7 +43,9 @@ export default function User() {
   }, [sneaker]);
 
   useEffect(() => {
-    getUserSneakers();
+    if (user && sessionToken) {
+      getUserSneakers(user, sessionToken);
+    }
   }, [userSneakers]);
 
   const sneakersByBrand = useMemo(() => {
@@ -86,7 +90,7 @@ export default function User() {
           style: 'destructive',
           onPress: () => {
             closeDrawer();
-            logout();
+            logout(sessionToken!);
           }
         }
       ]
@@ -120,7 +124,7 @@ export default function User() {
               }
 
               closeDrawer();
-              logout();
+              logout(sessionToken!);
               router.replace('/login');
             } catch (error) {
               Alert.alert('Error', 'An error occurred while deleting your account');
@@ -254,7 +258,7 @@ export default function User() {
                           isVisible={modalVisible}
                           onClose={() => setModalVisible(false)}
                           userSneakers={userSneakers}
-                          setUserSneakers={getUserSneakers}
+                          setUserSneakers={setUserSneakers}
                       />
                   </Pressable>
               </View>

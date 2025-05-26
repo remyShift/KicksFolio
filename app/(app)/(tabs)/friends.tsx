@@ -1,7 +1,4 @@
-import { Text, View } from 'react-native';
-import { useSession } from '@/context/authContext';
-import FriendTitle from '@/components/ui/text/FriendTitle';
-import CollectionCard from '@/components/ui/cards/CollectionCard';
+import { View } from 'react-native';
 import Title from '@/components/ui/text/Title';
 import MainButton from '@/components/ui/buttons/MainButton';
 import PageTitle from '@/components/ui/text/PageTitle';

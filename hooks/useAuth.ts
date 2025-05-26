@@ -5,6 +5,7 @@ import { router } from 'expo-router';
 import { UserData } from '@/types/Auth';
 import { User } from '@/types/User';
 import { collectionService } from '@/services/CollectionService';
+import { SneakersService } from '@/services/SneakersService';
 
 export const useAuth = () => {
     const [errorMsg, setErrorMsg] = useState('');
@@ -109,6 +110,16 @@ export const useAuth = () => {
             });
     };
 
+    const getUserSneakers = async (user: User, token: string) => {
+        const sneakerService = new SneakersService(user.id, token);
+        return sneakerService.getUserSneakers()
+            .then((data) => data)
+            .catch(() => {
+                setErrorMsg('Erreur lors de la récupération des sneakers utilisateur.');
+                return null;
+            });
+    };
+
     return {
         errorMsg,
         login,
@@ -121,6 +132,7 @@ export const useAuth = () => {
         deleteAccount,
         getUser,
         getUserCollection,
+        getUserSneakers,
         formValidation
     };
 }; 

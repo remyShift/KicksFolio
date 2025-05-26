@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, TextInput, View, Text } from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, View, Text } from 'react-native';
 import { router } from 'expo-router';
 import PageTitle from '@/components/ui/text/PageTitle';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
