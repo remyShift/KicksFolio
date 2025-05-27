@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Text, View, ScrollView } from "react-native";
-import DropdownInput from './DropDownInput';
+import DropdownInput from '../DropDownInput';
 import { STATUS } from '@/components/modals/SneakersModal/constants';
 import { useSneakerFieldValidation } from "@/components/modals/SneakersModal/hooks/useSneakerFieldValidation";
 

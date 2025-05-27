@@ -6,8 +6,8 @@ import { useState, useRef } from "react";
 import MainButton from "@/components/ui/buttons/MainButton";
 import { Link } from "expo-router";
 import { useAuth } from "@/hooks/useAuth";
-import PasswordInput from "@/components/ui/inputs/PasswordInput";
-import EmailInput from "@/components/ui/inputs/EmailInput";
+import PasswordInput from "@/components/ui/inputs/authForm/PasswordInput";
+import EmailInput from "@/components/ui/inputs/authForm/EmailInput";
 
 export default function LoginForm() {
     const scrollViewRef = useRef<ScrollView>(null);

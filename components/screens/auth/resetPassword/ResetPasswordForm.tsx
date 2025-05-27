@@ -5,8 +5,8 @@ import MainButton from "@/components/ui/buttons/MainButton"
 import { useState, useRef } from "react"
 import { useLocalSearchParams } from "expo-router";
 import { useAuth } from "@/hooks/useAuth";
-import PasswordInput from "@/components/ui/inputs/PasswordInput";
-import ConfirmPasswordInput from "@/components/ui/inputs/ConfirmPasswordInput";
+import PasswordInput from "@/components/ui/inputs/authForm/PasswordInput";
+import ConfirmPasswordInput from "@/components/ui/inputs/authForm/ConfirmPasswordInput";
 import { useSignUpProps } from "@/context/signUpPropsContext";
 
 export default function ResetPasswordForm() {

@@ -5,7 +5,7 @@ import { Link } from "expo-router";
 import MainButton from "@/components/ui/buttons/MainButton";
 import { useState, useRef } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import EmailInput from "@/components/ui/inputs/EmailInput";
+import EmailInput from "@/components/ui/inputs/authForm/EmailInput";
 
 export default function ForgotPasswordForm() {
     const [email, setEmail] = useState('');

@@ -2,7 +2,7 @@ import { View, TextInput, ScrollView } from 'react-native';
 import { useRef } from 'react';
 import SneakerNameInput from '@/components/ui/inputs/SneakerNameInput';
 import SneakerBrandInput from '@/components/ui/inputs/SneakerBrandInput';
-import SneakerStatusInput from '@/components/ui/inputs/SneakerStatusInput';
+import SneakerStatusInput from '@/components/ui/inputs/sneakerForm/SneakerStatusInput';
 import SneakerSizeInput from '@/components/ui/inputs/SneakerSizeInput';
 import SneakerPricePaidInput from '@/components/ui/inputs/SneakerPricePaidInput';
 import SneakerConditionInput from '@/components/ui/inputs/SneakerConditionInput';

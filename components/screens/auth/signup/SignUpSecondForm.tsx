@@ -1,17 +1,17 @@
 import { View, Text, TextInput, KeyboardAvoidingView, Platform, ScrollView, Pressable, Alert, Image } from 'react-native';
 import { useSignUpProps } from '@/context/signUpPropsContext';
 import { useState, useRef } from 'react';
-import FirstNameInput from '@/components/ui/inputs/FirstNameInput';
+import FirstNameInput from '@/components/ui/inputs/authForm/FirstNameInput';
 import { FontAwesome5 } from '@expo/vector-icons';
 import MainButton from '@/components/ui/buttons/MainButton';
 import { Link } from 'expo-router';
-import LastNameInput from '@/components/ui/inputs/LastNameInput';
-import SizeInput from '@/components/ui/inputs/SizeInput';
+import LastNameInput from '@/components/ui/inputs/authForm/LastNameInput';
+import SizeInput from '@/components/ui/inputs/authForm/SizeInput';
 import { useAuth } from '@/hooks/useAuth';
 import PageTitle from '@/components/ui/text/PageTitle';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import { useImagePicker } from '@/hooks/useImagePicker';
-import ProfilePictureInput from '@/components/ui/inputs/ProfilePictureInput';
+import ProfilePictureInput from '@/components/ui/inputs/authForm/ProfilePictureInput';
 
 export default function SignUpSecondForm() {
     const { signUpProps, setSignUpProps } = useSignUpProps();

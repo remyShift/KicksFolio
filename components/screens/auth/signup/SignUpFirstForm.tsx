@@ -5,10 +5,10 @@ import { useState, useRef } from "react";
 import MainButton from "@/components/ui/buttons/MainButton";
 import LoginPageLink from "@/components/ui/links/LoginPageLink";
 import { router } from "expo-router";
-import UsernameInput from "@/components/ui/inputs/UsernameInput";
-import EmailInput from "@/components/ui/inputs/EmailInput";
-import PasswordInput from "@/components/ui/inputs/PasswordInput";
-import ConfirmPasswordInput from "@/components/ui/inputs/ConfirmPasswordInput";
+import UsernameInput from "@/components/ui/inputs/authForm/UsernameInput";
+import EmailInput from "@/components/ui/inputs/authForm/EmailInput";
+import PasswordInput from "@/components/ui/inputs/authForm/PasswordInput";
+import ConfirmPasswordInput from "@/components/ui/inputs/authForm/ConfirmPasswordInput";
 import { useSignUpProps } from "@/context/signUpPropsContext";
 import { useSignUpValidation } from "@/hooks/useSignUpValidation";
 
