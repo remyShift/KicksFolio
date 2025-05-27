@@ -1,32 +1,15 @@
-import MainButton from '@/components/ui/buttons/MainButton';
-import { ScrollView, Text, View, Modal, Alert, Animated, Linking } from 'react-native';
-import { Image } from 'expo-image';
+import { ScrollView, View } from 'react-native';
 import { useSession } from '@/context/authContext';
-import PageTitle from '@/components/ui/text/PageTitle';
-import Title from '@/components/ui/text/Title';
-import SneakerCard from '@/components/ui/cards/SneakerCard';
-import AddButton from '@/components/ui/buttons/AddButton';
-import { Pressable } from 'react-native';
-import { useState, useMemo, useEffect, useRef } from 'react';
-import { SneakersModal } from '@/components/modals/SneakersModal';
-import BrandTitle from '@/components/ui/text/BrandTitle';
+import { useState, useMemo, useEffect } from 'react';
 import { Sneaker } from '@/types/Sneaker';
-import { Ionicons } from '@expo/vector-icons';
-import { router } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '@/hooks/useAuth';
-
-const brandLogos: Record<string, any> = {
-  nike: require('@/assets/images/brands/nike.png'),
-  adidas: require('@/assets/images/brands/adidas.png'),
-  jordan: require('@/assets/images/brands/jordan.png'),
-  newbalance: require('@/assets/images/brands/newbalance.png'),
-  asics: require('@/assets/images/brands/asics.png'),
-  puma: require('@/assets/images/brands/puma.png'),
-  reebok: require('@/assets/images/brands/reebok.png'),
-  converse: require('@/assets/images/brands/converse.png'),
-  vans: require('@/assets/images/brands/vans.png'),
-};
+import AddButton from '@/components/ui/buttons/AddButton';
+import ProfileHeader from '@/components/screens/app/profile/ProfileHeader';
+import ProfileInfo from '@/components/screens/app/profile/ProfileInfo';
+import EmptySneakersState from '@/components/screens/app/profile/EmptySneakersState';
+import SneakersByBrand from '@/components/screens/app/profile/SneakersByBrand';
+import ProfileDrawer from '@/components/screens/app/profile/ProfileDrawer';
+import SneakersModalWrapper from '@/components/screens/app/profile/SneakersModalWrapper';
 
 export default function User() {
   const { user, userSneakers, sessionToken, setUserSneakers } = useSession();
@@ -36,7 +19,6 @@ export default function User() {
   const [sneaker, setSneaker] = useState<Sneaker | null>(null);
   const [currentSneaker, setCurrentSneaker] = useState<Sneaker | null>(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const translateX = useRef(new Animated.Value(400)).current;
 
   useEffect(() => {
     setCurrentSneaker(sneaker);
@@ -59,278 +41,57 @@ export default function User() {
     }, {} as Record<string, typeof userSneakers>);
   }, [userSneakers]);
 
-  const openDrawer = () => {
-    setDrawerVisible(true);
-    Animated.timing(translateX, {
-      toValue: 0,
-      duration: 300,
-      useNativeDriver: true
-    }).start();
+  const handleAddSneaker = () => {
+    setModalStep('index');
+    setModalVisible(true);
   };
 
-  const closeDrawer = () => {
-    Animated.timing(translateX, {
-      toValue: 400,
-      duration: 300,
-      useNativeDriver: true
-    }).start(() => setDrawerVisible(false));
-  };
-
-  const handleLogout = () => {
-    Alert.alert(
-      'Logout',
-      'Are you sure you want to logout ?',
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel'
-        },
-        {
-          text: 'Logout',
-          style: 'destructive',
-          onPress: () => {
-            closeDrawer();
-            logout(sessionToken!);
-          }
-        }
-      ]
-    );
-  };
-
-  const handleDeleteAccount = () => {
-    Alert.alert(
-      'Delete account',
-      'Are you sure you want to delete your account ? This action is irreversible.',
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel'
-        },
-        {
-          text: 'Delete',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              const response = await fetch(`${process.env.EXPO_PUBLIC_BASE_API_URL}/users/${user?.id}`, {
-                method: 'DELETE',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${await AsyncStorage.getItem('sessionToken')}`
-                }
-              });
-
-              if (!response.ok) {
-                throw new Error('Error deleting account');
-              }
-
-              closeDrawer();
-              logout(sessionToken!);
-              router.replace('/login');
-            } catch (error) {
-              Alert.alert('Error', 'An error occurred while deleting your account');
-            }
-          }
-        }
-      ]
-    );
+  const handleSneakerPress = (sneaker: Sneaker) => {
+    setSneaker(sneaker);
+    setModalVisible(true);
   };
 
   return (
     <>
       <ScrollView className="flex-1">
         <View className="flex-1 gap-12">
-          <View className="flex-row justify-center items-center">
-            <PageTitle content="Profile" />
-            <Pressable 
-              className="p-4 absolute right-0 mt-2 top-10 z-50"
-              onPress={() => {
-                openDrawer();
-              }}
-            >
-              <Ionicons name="menu-outline" size={24} color="#666" />
-            </Pressable>
-          </View>
+          <ProfileHeader onMenuPress={() => setDrawerVisible(true)} />
+          
           <View className="flex-1 gap-12">
-            <View className="flex-col gap-4">
-              <Title content={user?.username || ''} />
+            <ProfileInfo user={user} userSneakers={userSneakers} />
 
-              <View className="flex-row justify-between w-full px-4 gap-4 items-center">
-                
-                {user?.profile_picture_url ? (
-                  <View className='w-24 h-24 rounded-full'>
-                    <Image source={{ uri: user?.profile_picture_url }} 
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        borderRadius: 100
-                      }}
-                      contentFit="cover"
-                      contentPosition="center" 
-                      cachePolicy="memory-disk"/>
-                  </View>
-                ) : (
-                  <View className='w-24 h-24 bg-primary rounded-full items-center justify-center'>
-                    <Text className='text-white font-actonia text-6xl text-center'>{user?.username.charAt(0)}</Text>
-                  </View>
-                )}
-
-                <View className="flex-row w-full gap-10">
-                  <View>
-                    <Text className="font-spacemono-bold text-lg text-center">{userSneakers?.length || '0'}</Text>
-                    <Text className="font-spacemono text-base text-center">sneakers</Text>
-                  </View>
-
-                  <View>
-                    <Text className="font-spacemono-bold text-lg text-center">0</Text>
-                    <Text className="font-spacemono text-base text-center">friends</Text>
-                  </View>
-
-                  <View>
-                    <Text className="font-spacemono-bold text-lg text-center">$0</Text>
-                    <Text className="font-spacemono text-base text-center">value</Text>
-                  </View>
-                </View>
-              </View>
-            </View>
-
-              {userSneakers && userSneakers.length === 0 || !userSneakers ? (
-                <View className="flex-1 gap-8 items-center">
-                  <Title content='Add Sneakers' isTextCenter={true} />
-                  <MainButton content='Add' backgroundColor='bg-primary' onPressAction={() => {
-                    setModalStep('index');
-                    setModalVisible(true);
-                  }} />
-                </View>
-              ) : (
-                <View className="flex-1 gap-4">
-                  {Object.entries(sneakersByBrand).map(([brand, sneakers]) => (
-                    <View key={brand} className="flex-1">
-                      <BrandTitle
-                        content={brand} 
-                        brandLogo={
-                          brand === 'New Balance' ? 
-                            require('@/assets/images/brands/newbalance.png') : 
-                            brandLogos[brand.toLowerCase()]
-                        } 
-                      />
-                      <ScrollView
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                      >
-                        {sneakers.map((sneaker) => (
-                          <View key={sneaker.id} className="w-96 p-4">
-                            <SneakerCard
-                              setModalVisible={(isVisible) => setModalVisible(isVisible)}
-                              sneaker={sneaker}
-                              setSneaker={(s) => setSneaker(s)}
-                              setModalStep={(step) => setModalStep(step)}
-                            />
-                          </View>
-                        ))}
-                      </ScrollView>
-                    </View>
-                  ))}
-                </View>
-              )}
+            {userSneakers && userSneakers.length === 0 || !userSneakers ? (
+              <EmptySneakersState onAddPress={handleAddSneaker} />
+            ) : (
+              <SneakersByBrand 
+                sneakersByBrand={sneakersByBrand}
+                onSneakerPress={handleSneakerPress}
+                setModalStep={setModalStep}
+              />
+            )}
           </View>
         </View>
 
-        <Modal
-          animationType="slide"
-          transparent={true}
+        <SneakersModalWrapper 
           visible={modalVisible}
-          onRequestClose={() => setModalVisible(false)}
-        >
-          <Pressable 
-              className="flex-1 bg-black/50" 
-              onPress={() => setModalVisible(false)}
-          >
-              <View className="flex-1 justify-end">
-                  <Pressable 
-                      className="h-[80%] bg-background rounded-t-3xl p-4"
-                      onPress={(e) => {
-                          e.stopPropagation();
-                      }}
-                  >
-                      <SneakersModal 
-                          modalStep={modalStep}
-                          sneaker={currentSneaker}
-                          isVisible={modalVisible}
-                          onClose={() => setModalVisible(false)}
-                          userSneakers={userSneakers}
-                          setUserSneakers={setUserSneakers}
-                      />
-                  </Pressable>
-              </View>
-            </Pressable>
-          </Modal>
+          onClose={() => setModalVisible(false)}
+          modalStep={modalStep}
+          sneaker={currentSneaker}
+          userSneakers={userSneakers}
+          setUserSneakers={setUserSneakers}
+        />
       </ScrollView>
 
-      {drawerVisible && (
-        <>
-          <Pressable 
-            className="absolute inset-0 bg-black/50 z-40" 
-            onPress={closeDrawer}
-          />
-          <Animated.View 
-            style={{
-              position: 'absolute',
-              right: 0,
-              top: 0,
-              bottom: 0,
-              width: 300,
-              backgroundColor: 'white',
-              padding: 20,
-              shadowColor: "#000",
-              shadowOffset: {
-                width: 0,
-                height: 2,
-              },
-              shadowOpacity: 0.35,
-              shadowRadius: 3.84,
-              elevation: 5,
-              zIndex: 50,
-              transform: [{ translateX: translateX }]
-            }}
-          >
-            <View className="flex-1 gap-8 justify-center">
-              <Pressable onPress={handleLogout}>
-                <View className="flex-row items-center gap-4">
-                  <Ionicons name="exit-outline" size={24} color="#666" />
-                  <Text className="font-spacemono-bold text-base">Logout</Text>
-                </View>
-              </Pressable>
-              
-              <Pressable onPress={() => Linking.openURL('https://remyshift.github.io/KicksFolio/docs/index.md')}>
-                <View className="flex-row items-center gap-4">
-                  <Ionicons name="document-text-outline" size={24} color="#666" />
-                  <Text className="font-spacemono-bold text-base">Privacy Policy</Text>
-                </View>
-              </Pressable>
-
-              <Pressable onPress={() => router.push('/edit-profile')}>
-                <View className="flex-row items-center gap-4">
-                  <Ionicons name="person-outline" size={24} color="#666" />
-                  <Text className="font-spacemono-bold text-base">Edit profile</Text>
-                </View>
-              </Pressable>
-
-              <Pressable onPress={handleDeleteAccount}>
-                <View className="flex-row items-center gap-4">
-                  <Ionicons name="trash-outline" size={24} color="#dc2626" />
-                  <Text className="font-spacemono-bold text-base text-red-600">Delete account</Text>
-                </View>
-              </Pressable>
-            </View>
-          </Animated.View>
-        </>
-      )}
+      <ProfileDrawer 
+        visible={drawerVisible}
+        onClose={() => setDrawerVisible(false)}
+        onLogout={() => logout(sessionToken!)}
+        user={user}
+        sessionToken={sessionToken}
+      />
 
       {userSneakers && userSneakers.length > 0 && (
-        <AddButton onPress={() => {
-          setModalStep('index');
-          setModalVisible(true);
-        }}/>
+        <AddButton onPress={handleAddSneaker} />
       )}
     </>
   );

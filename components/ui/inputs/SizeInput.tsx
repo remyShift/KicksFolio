@@ -32,7 +32,9 @@ export default function SizeInput({ inputRef, signUpProps, setSignUpProps, scrol
     }, [errorMsg]);
 
     useEffect(() => {
-        onValueChange(sizeValue);
+        if (sizeValue !== "") {
+            onValueChange(sizeValue);
+        }
     }, [sizeValue]);
 
     return (

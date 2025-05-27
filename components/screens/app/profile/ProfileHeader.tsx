@@ -1,0 +1,21 @@
+import { View, Pressable } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import PageTitle from '@/components/ui/text/PageTitle';
+
+interface ProfileHeaderProps {
+    onMenuPress: () => void;
+}
+
+export default function ProfileHeader({ onMenuPress }: ProfileHeaderProps) {
+    return (
+        <View className="flex-row justify-center items-center">
+        <PageTitle content="Profile" />
+        <Pressable 
+            className="p-4 absolute right-0 mt-2 top-10 z-50"
+            onPress={onMenuPress}
+        >
+            <Ionicons name="menu-outline" size={24} color="#666" />
+        </Pressable>
+        </View>
+    );
+} 
