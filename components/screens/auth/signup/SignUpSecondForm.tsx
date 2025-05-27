@@ -11,6 +11,7 @@ import { useAuth } from '@/hooks/useAuth';
 import PageTitle from '@/components/ui/text/PageTitle';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import { useImagePicker } from '@/hooks/useImagePicker';
+import ProfilePictureInput from '@/components/ui/inputs/ProfilePictureInput';
 
 export default function SignUpSecondForm() {
     const { signUpProps, setSignUpProps } = useSignUpProps();
@@ -48,48 +49,11 @@ export default function SignUpSecondForm() {
                             <ErrorMsg content={errorMsg} display={errorMsg !== ''} />
                         </View>
 
-                        <View className='flex flex-col gap-2 w-full justify-center items-center'>
-                            <Text className='font-spacemono-bold text-lg'>Profile Picture</Text>
-                            {signUpProps.profile_picture ?
-                                <View className='w-24 h-24 rounded-full bg-gray-400 flex items-center justify-center'>
-                                    <Image 
-                                        source={{ uri: signUpProps.profile_picture }} 
-                                        style={{
-                                            width: '100%',
-                                            height: '100%',
-                                            borderRadius: 100
-                                        }}
-                                        resizeMode='cover'
-                                    /> 
-                                </View>
-                                : 
-                                <Pressable 
-                                    className='w-24 h-24 rounded-full bg-gray-400 flex items-center justify-center'
-                                    onPress={() => {
-                                        Alert.alert(
-                                            'Add a profile picture',
-                                            'Choose a profile picture',
-                                            [
-                                                {
-                                                    text: 'Take a photo',
-                                                    onPress: () => handleImageSelection('camera')
-                                                },
-                                                {
-                                                    text: 'Choose from gallery',
-                                                    onPress: () => handleImageSelection('gallery')
-                                                },
-                                                {
-                                                    text: 'Cancel',
-                                                    style: 'cancel'
-                                                }
-                                            ]
-                                        );
-                                    }}
-                                >
-                                    <FontAwesome5 name="user-edit" size={24} color="white" />
-                                </Pressable>
-                            }
-                        </View>
+                        <ProfilePictureInput
+                            imageUri={signUpProps.profile_picture ?? null}
+                            onChange={uri => setSignUpProps({ ...signUpProps, profile_picture: uri })}
+                            handleImageSelection={handleImageSelection}
+                        />
 
                         <FirstNameInput 
                             inputRef={firstNameInputRef}

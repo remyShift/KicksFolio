@@ -15,6 +15,7 @@ import SizeInput from '@/components/ui/inputs/SizeInput'
 import { ScrollView as RNScrollView } from 'react-native'
 import { useImagePicker } from '@/hooks/useImagePicker'
 import { useAuth } from '@/hooks/useAuth'
+import ProfilePictureInput from '@/components/ui/inputs/ProfilePictureInput'
 
 export default function EditProfileForm() {
     const { user, sessionToken } = useSession()
@@ -73,55 +74,12 @@ export default function EditProfileForm() {
                 </View>
 
                 <View className="items-center gap-4">
-                    {profileData.profile_picture ? (
-                        <View className="w-32 h-32 rounded-full">
-                            <Image 
-                            source={{ uri: profileData.profile_picture }}
-                            style={{
-                                width: '100%',
-                                height: '100%',
-                                borderRadius: 100
-                            }}
-                            contentFit="cover"
-                            contentPosition="center"
-                            cachePolicy="memory-disk"
-                            />
-                        </View>
-                        ) : (
-                        <Pressable onPress={() => {
-                            Alert.alert('Choose an image',
-                                'Select an image from your gallery or take a photo with your camera to update your profile picture.', [
-                                { 
-                                    text: 'Pick from gallery',
-                                    onPress: () => handleImageSelection('gallery').then(uri => {
-                                        if (!uri) {
-                                            Alert.alert('Sorry, we need permission to access your photos!');
-                                            return;
-                                        }
-                                        setProfileData({ ...profileData, profile_picture: uri });
-                                    }),
-                                },
-                                {   
-                                    text: 'Take a photo',
-                                    onPress: () => handleImageSelection('camera').then(uri => {
-                                        if (!uri) {
-                                            Alert.alert('Sorry, we need permission to access your camera!');
-                                            return;
-                                        }
-                                        setProfileData({ ...profileData, profile_picture: uri });
-                                    }),
-                                },
-                                {
-                                    text: 'Cancel',
-                                    style: 'cancel'
-                                }
-                            ])
-                        }} className="w-32 h-32 bg-primary rounded-full flex-row items-center justify-center">
-                            <Text className="text-white font-actonia text-6xl">
-                                {profileData.username.charAt(0)}
-                            </Text>
-                        </Pressable>
-                    )}
+                    <ProfilePictureInput
+                        imageUri={profileData.profile_picture || null}
+                        onChange={uri => setProfileData({ ...profileData, profile_picture: uri })}
+                        handleImageSelection={handleImageSelection}
+                        label="Profile Picture"
+                    />
                 </View>
 
                 <View className="flex flex-col gap-4 w-full justify-center items-center">
