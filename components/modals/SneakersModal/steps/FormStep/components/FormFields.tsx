@@ -1,12 +1,12 @@
 import { View, TextInput, ScrollView } from 'react-native';
 import { useRef } from 'react';
-import SneakerNameInput from '@/components/ui/inputs/SneakerNameInput';
-import SneakerBrandInput from '@/components/ui/inputs/SneakerBrandInput';
+import SneakerNameInput from '@/components/ui/inputs/sneakerForm/SneakerNameInput';
+import SneakerBrandInput from '@/components/ui/inputs/sneakerForm/SneakerBrandInput';
 import SneakerStatusInput from '@/components/ui/inputs/sneakerForm/SneakerStatusInput';
-import SneakerSizeInput from '@/components/ui/inputs/SneakerSizeInput';
-import SneakerPricePaidInput from '@/components/ui/inputs/SneakerPricePaidInput';
-import SneakerConditionInput from '@/components/ui/inputs/SneakerConditionInput';
-import SneakerDescriptionInput from '@/components/ui/inputs/SneakerDescriptionInput';
+import SneakerSizeInput from '@/components/ui/inputs/sneakerForm/SneakerSizeInput';
+import SneakerPricePaidInput from '@/components/ui/inputs/sneakerForm/SneakerPricePaidInput';
+import SneakerConditionInput from '@/components/ui/inputs/sneakerForm/SneakerConditionInput';
+import SneakerDescriptionInput from '@/components/ui/inputs/sneakerForm/SneakerDescriptionInput';
 
 interface FormFieldsProps {
     scrollViewRef: React.RefObject<ScrollView>;

@@ -4,7 +4,7 @@ import { router } from 'expo-router';
 import PageTitle from '@/components/ui/text/PageTitle';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import MainButton from '@/components/ui/buttons/MainButton';
-import CollectionNameInput from '@/components/ui/inputs/CollectionNameInput';
+import CollectionNameInput from '@/components/ui/inputs/authForm/CollectionNameInput';
 import { useForm } from '@/hooks/useForm';
 import { useCreateCollection } from '@/hooks/useCreateCollection';
 

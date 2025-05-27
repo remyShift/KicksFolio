@@ -23,9 +23,7 @@ export const FormStep = ({
     setModalStep, 
     closeModal, 
     sneaker, 
-    setSneaker,
-    userSneakers,
-    setUserSneakers
+    userSneakers
 }: FormStepProps) => {
     const { user, sessionToken } = useSession();
     const scrollViewRef = useRef<ScrollView>(null);
