@@ -6,10 +6,10 @@ export const useSneakerValidation = () => {
     const [errorMsg, setErrorMsg] = useState('');
     const [isError, setIsError] = useState(false);
 
-    const validationService = new SneakerValidationService(setErrorMsg, setIsError);
+    const sneakerValidationService = new SneakerValidationService(setErrorMsg, setIsError);
 
     const validateSneakerForm = (formData: SneakerFormData) => {
-        return validationService.validateAllFields(
+        return sneakerValidationService.validateAllFields(
             {
                 name: formData.model,
                 brand: formData.brand,

@@ -1,15 +1,15 @@
 import { useState } from 'react';
 import { Sneaker } from '@/types/Sneaker';
-import { HandleSneakers } from '@/services/SneakersService';
+import { SneakersService } from '@/services/SneakersService';
 
 export const useSneakerAPI = (sessionToken: string | null) => {
     const [isLoading, setIsLoading] = useState(false);
 
-    const handleSneakerSubmit = (sneaker: Sneaker, sneakerId: string | null) => {
+    const handleSneakerSubmit = async (sneaker: Sneaker, sneakerId: string | null, collectionId: string) => {
         if (!sessionToken) return Promise.reject('No session token');
 
         setIsLoading(true);
-        const sneakerService = new HandleSneakers(sneaker.collection_id, sessionToken);
+        const sneakerService = new SneakersService(collectionId, sessionToken);
 
         return sneakerService.add(sneaker, sneakerId || undefined)
             .then(response => {
@@ -26,7 +26,7 @@ export const useSneakerAPI = (sessionToken: string | null) => {
         if (!sessionToken) return Promise.reject('No session token');
 
         setIsLoading(true);
-        const sneakerService = new HandleSneakers(collectionId, sessionToken);
+        const sneakerService = new SneakersService(collectionId, sessionToken);
 
         return sneakerService.delete(sneakerId)
             .then(response => {
@@ -39,11 +39,11 @@ export const useSneakerAPI = (sessionToken: string | null) => {
             });
     };
 
-    const handleSkuLookup = async (sku: string) => {
+    const handleSkuLookup = async (sku: string, collectionId: string) => {
         if (!sessionToken) return Promise.reject('No session token');
 
         setIsLoading(true);
-        const sneakerService = new HandleSneakers('', sessionToken);
+        const sneakerService = new SneakersService(collectionId, sessionToken);
 
         return sneakerService.searchBySku(sku)
             .then(response => {

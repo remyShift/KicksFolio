@@ -1,6 +1,5 @@
 import { View, KeyboardAvoidingView, ScrollView, Platform } from 'react-native';
 import { ModalStep } from '../../types';
-import { useSneakerForm } from '../../hooks/useSneakerForm';
 import { useSneakerAPI } from '../../hooks/useSneakerAPI';
 import { useSneakerValidation } from '../../hooks/useSneakerValidation';
 import { useSession } from '@/context/authContext';
@@ -9,6 +8,7 @@ import { ImageUploader } from './components/ImageUploader';
 import { FormFields } from './components/FormFields';
 import { ActionButtons } from './components/ActionButtons';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
+import { useState, useRef } from 'react';
 
 interface FormStepProps {
     setModalStep: (step: ModalStep) => void;
@@ -27,41 +27,45 @@ export const FormStep = ({
     userSneakers,
     setUserSneakers
 }: FormStepProps) => {
-    const { user, sessionToken, getUserSneakers } = useSession();
-    const { 
-        sneakerName, setSneakerName,
-        sneakerBrand, setSneakerBrand,
-        sneakerStatus, setSneakerStatus,
-        sneakerSize, setSneakerSize,
-        sneakerCondition, setSneakerCondition,
-        sneakerImage, setSneakerImage,
-        sneakerPricePaid, setSneakerPricePaid,
-        sneakerDescription, setSneakerDescription,
-        errorMsg, setErrorMsg,
-        isSneakerNameError, setIsSneakerNameError,
-        isSneakerBrandError, setIsSneakerBrandError,
-        isSneakerStatusError, setIsSneakerStatusError,
-        isSneakerSizeError, setIsSneakerSizeError,
-        isSneakerConditionError, setIsSneakerConditionError,
-        isPricePaidError, setIsPricePaidError,
-        isSneakerImageError, setIsSneakerImageError,
-        isSneakerNameFocused, setIsSneakerNameFocused,
-        isSneakerBrandFocused, setIsSneakerBrandFocused,
-        isSneakerStatusFocused, setIsSneakerStatusFocused,
-        isSneakerSizeFocused, setIsSneakerSizeFocused,
-        isSneakerConditionFocused, setIsSneakerConditionFocused,
-        isPricePaidFocused, setIsPricePaidFocused,
-        isSneakerImageFocused, setIsSneakerImageFocused,
-        handleInputFocus,
-        handleInputBlur,
-        resetForm,
-    } = useSneakerForm();
+    const { user, sessionToken } = useSession();
+    const scrollViewRef = useRef<ScrollView>(null);
+    
+    const [sneakerName, setSneakerName] = useState(sneaker?.model || '');
+    const [sneakerBrand, setSneakerBrand] = useState(sneaker?.brand || '');
+    const [sneakerStatus, setSneakerStatus] = useState(sneaker?.status || '');
+    const [sneakerSize, setSneakerSize] = useState(sneaker?.size?.toString() || '');
+    const [sneakerCondition, setSneakerCondition] = useState(sneaker?.condition?.toString() || '');
+    const [sneakerImage, setSneakerImage] = useState(sneaker?.images?.[0]?.url || '');
+    const [sneakerPricePaid, setSneakerPricePaid] = useState(sneaker?.price_paid?.toString() || '');
+    const [sneakerDescription, setSneakerDescription] = useState(sneaker?.description || '');
+    const [errorMsg, setErrorMsg] = useState('');
+    const [fieldErrors, setFieldErrors] = useState<{[key: string]: string}>({});
 
     const { validateSneakerForm } = useSneakerValidation();
     const { handleSneakerSubmit } = useSneakerAPI(sessionToken || null);
 
     const currentSneakerId = userSneakers ? userSneakers.find((s: Sneaker) => s.id === sneaker?.id)?.id : null;
     const isNewSneaker = !currentSneakerId;
+
+    const resetForm = () => {
+        setSneakerName('');
+        setSneakerBrand('');
+        setSneakerStatus('');
+        setSneakerSize('');
+        setSneakerCondition('');
+        setSneakerImage('');
+        setSneakerPricePaid('');
+        setSneakerDescription('');
+        setErrorMsg('');
+        setFieldErrors({});
+    };
+
+    const handleFieldError = (field: string, error: string) => {
+        setFieldErrors(prev => ({
+            ...prev,
+            [field]: error
+        }));
+    };
 
     const handleSubmit = () => {
         const isValid = validateSneakerForm({
@@ -102,8 +106,7 @@ export const FormStep = ({
             }]
         };
 
-        handleSneakerSubmit(formData, currentSneakerId || null)
-            .then(() => getUserSneakers())
+        handleSneakerSubmit(formData, currentSneakerId || null, user?.id || '')
             .then(() => {
                 resetForm();
                 closeModal();
@@ -120,6 +123,7 @@ export const FormStep = ({
             keyboardVerticalOffset={Platform.OS === 'ios' ? 120 : 20}
         >
             <ScrollView 
+                ref={scrollViewRef}
                 className='flex-1'
                 keyboardShouldPersistTaps="handled"
                 nestedScrollEnabled={true}
@@ -131,54 +135,30 @@ export const FormStep = ({
                     <ImageUploader
                         image={sneakerImage}
                         setImage={setSneakerImage}
-                        isError={isSneakerImageError}
-                        isFocused={isSneakerImageFocused}
-                        setIsError={setIsSneakerImageError}
+                        isError={false}
+                        isFocused={false}
+                        setIsError={() => {}}
                     />
 
                     <FormFields
-                        sneakerName={sneakerName}
-                        setSneakerName={setSneakerName}
-                        sneakerBrand={sneakerBrand}
-                        setSneakerBrand={setSneakerBrand}
-                        sneakerStatus={sneakerStatus}
-                        setSneakerStatus={setSneakerStatus}
-                        sneakerSize={sneakerSize}
-                        setSneakerSize={setSneakerSize}
-                        sneakerCondition={sneakerCondition}
-                        setSneakerCondition={setSneakerCondition}
-                        sneakerPricePaid={sneakerPricePaid}
-                        setSneakerPricePaid={setSneakerPricePaid}
-                        sneakerDescription={sneakerDescription}
-                        setSneakerDescription={setSneakerDescription}
-                        isSneakerNameError={isSneakerNameError}
-                        setIsSneakerNameError={setIsSneakerNameError}
-                        isSneakerBrandError={isSneakerBrandError}
-                        setIsSneakerBrandError={setIsSneakerBrandError}
-                        isSneakerStatusError={isSneakerStatusError}
-                        setIsSneakerStatusError={setIsSneakerStatusError}
-                        isSneakerSizeError={isSneakerSizeError}
-                        setIsSneakerSizeError={setIsSneakerSizeError}
-                        isSneakerConditionError={isSneakerConditionError}
-                        setIsSneakerConditionError={setIsSneakerConditionError}
-                        isPricePaidError={isPricePaidError}
-                        setIsPricePaidError={setIsPricePaidError}
-                        isSneakerNameFocused={isSneakerNameFocused}
-                        setIsSneakerNameFocused={setIsSneakerNameFocused}
-                        isSneakerBrandFocused={isSneakerBrandFocused}
-                        setIsSneakerBrandFocused={setIsSneakerBrandFocused}
-                        isSneakerStatusFocused={isSneakerStatusFocused}
-                        setIsSneakerStatusFocused={setIsSneakerStatusFocused}
-                        isSneakerSizeFocused={isSneakerSizeFocused}
-                        setIsSneakerSizeFocused={setIsSneakerSizeFocused}
-                        isSneakerConditionFocused={isSneakerConditionFocused}
-                        setIsSneakerConditionFocused={setIsSneakerConditionFocused}
-                        isPricePaidFocused={isPricePaidFocused}
-                        setIsPricePaidFocused={setIsPricePaidFocused}
-                        isSneakerImageFocused={isSneakerImageFocused}
-                        setIsSneakerImageFocused={setIsSneakerImageFocused}
-                        handleInputFocus={handleInputFocus}
-                        handleInputBlur={handleInputBlur}
+                        scrollViewRef={scrollViewRef}
+                        onSneakerNameChange={setSneakerName}
+                        onSneakerBrandChange={setSneakerBrand}
+                        onSneakerStatusChange={setSneakerStatus}
+                        onSneakerSizeChange={setSneakerSize}
+                        onSneakerPricePaidChange={setSneakerPricePaid}
+                        onSneakerConditionChange={setSneakerCondition}
+                        onSneakerDescriptionChange={setSneakerDescription}
+                        onErrorChange={handleFieldError}
+                        initialValues={{
+                            sneakerName,
+                            sneakerBrand,
+                            sneakerStatus,
+                            sneakerSize,
+                            sneakerPricePaid,
+                            sneakerCondition,
+                            sneakerDescription
+                        }}
                     />
 
                     <ActionButtons
