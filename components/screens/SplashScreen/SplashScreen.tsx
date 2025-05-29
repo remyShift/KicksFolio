@@ -8,7 +8,6 @@ import { AnimatedLogo } from './AnimatedText';
 import { useInitialData } from '@/hooks/useInitialData';
 
 export default function SplashScreen({ sessionToken, setIsSplashScreenVisible }: { sessionToken: string | null | undefined, setIsSplashScreenVisible: (value: boolean) => void }) {
-    console.log('[SplashScreen] Mount');
     const [textAnimationFinished, setTextAnimationFinished] = useState(false);
     const { userSneakers } = useSession();
     const AnimatedView = Animated.createAnimatedComponent(View);
@@ -20,12 +19,11 @@ export default function SplashScreen({ sessionToken, setIsSplashScreenVisible }:
     };
 
     const initializeApp = async () => {
-        console.log('[SplashScreen] initializeApp called', { sessionToken, textAnimationFinished });
         if (sessionToken) {
             console.log('[SplashScreen] sessionToken exists');
             await loadInitialData()
                 .then(() => {
-                    console.log('[SplashScreen] loadInitialData resolved');
+                    console.log(userSneakers,'[SplashScreen] loadInitialData resolved');
                 });
             if (userSneakers) {
                 const sneakerImages = userSneakers.map(sneaker => sneaker.images[0]);
@@ -38,7 +36,6 @@ export default function SplashScreen({ sessionToken, setIsSplashScreenVisible }:
         }
 
         if (textAnimationFinished) {
-            console.log('[SplashScreen] textAnimationFinished, calling setIsSplashScreenVisible(false)');
             setIsSplashScreenVisible(false);
         }
     };
@@ -46,10 +43,6 @@ export default function SplashScreen({ sessionToken, setIsSplashScreenVisible }:
     useEffect(() => {
         initializeApp();
     }, [sessionToken, textAnimationFinished]);
-
-    useEffect(() => {
-        console.log('[SplashScreen] useEffect mount');
-    }, []);
 
     return (
         <AnimatedView 
@@ -65,10 +58,8 @@ export default function SplashScreen({ sessionToken, setIsSplashScreenVisible }:
                 size={50}
                 color="white"
                 onAnimationComplete={() => {
-                    console.log('[SplashScreen] AnimatedIcon onAnimationComplete');
                     setTimeout(() => {
                         setTextAnimationFinished(true);
-                        console.log('[SplashScreen] setTextAnimationFinished(true)');
                     }, 1500);
                 }}
             />
