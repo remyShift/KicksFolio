@@ -1,17 +1,23 @@
-import { Text, TextInput, View, ScrollView } from "react-native";
 import { useForm } from "@/hooks/useForm";
+import { useEffect, useState } from "react";
+import { Text, TextInput, View, ScrollView } from "react-native";
+import { UserData } from "@/types/Auth";
 
 interface UsernameInputProps {
     inputRef: React.RefObject<TextInput>;
-    signUpProps: SignUpProps;
-    setSignUpProps: (props: SignUpProps) => void;
-    isUsernameError: boolean;
-    isUsernameFocused: boolean;
+    signUpProps: UserData;
+    setSignUpProps: (props: UserData) => void;
     scrollViewRef: React.RefObject<ScrollView>;
+    onErrorChange: (errorMsg: string) => void;
+    onValueChange: (value: string) => void;
 }
 
-export default function UsernameInput({ inputRef, signUpProps, setSignUpProps, isUsernameError, isUsernameFocused, scrollViewRef }: UsernameInputProps) {
-    const { formValidation, handleForm } = useForm({
+export default function UsernameInput({ inputRef, signUpProps, setSignUpProps, scrollViewRef, onErrorChange, onValueChange }: UsernameInputProps) {
+    const [usernameValue, setUsernameValue] = useState(signUpProps.username || "");
+    const [isUsernameError, setIsUsernameError] = useState(false);
+    const [isUsernameFocused, setIsUsernameFocused] = useState(false);
+
+    const { formValidation, handleForm, errorMsg } = useForm({
         errorSetters: {
             username: (isError: boolean) => setIsUsernameError(isError),
         },
@@ -21,13 +27,21 @@ export default function UsernameInput({ inputRef, signUpProps, setSignUpProps, i
         scrollViewRef
     });
 
+    useEffect(() => {
+        onValueChange(usernameValue);
+    }, [usernameValue]);
+
+    useEffect(() => {
+        onErrorChange(errorMsg);
+    }, [errorMsg]);
+
     return (
         <View className='flex flex-col gap-2 w-full justify-center items-center'>
             <TextInput
                 placeholder="johndoe42"
                 inputMode='text'
                 ref={inputRef}
-                value={signUpProps.username}
+                value={usernameValue}
                 autoComplete='username'
                 textContentType='username'
                 clearButtonMode='while-editing'
@@ -35,10 +49,11 @@ export default function UsernameInput({ inputRef, signUpProps, setSignUpProps, i
                 placeholderTextColor='gray'
                 returnKeyType='next'
                 enablesReturnKeyAutomatically={true}
-                onSubmitEditing={() => formValidation.validateField(signUpProps.username, 'username')}
+                onSubmitEditing={() => formValidation.validateField(usernameValue, 'username')}
                 onFocus={() => handleForm.inputFocus('username')}
-                onBlur={() => handleForm.inputBlur('username', signUpProps.username)}
+                onBlur={() => handleForm.inputBlur('username', usernameValue)}
                 onChangeText={(text) => {
+                    setUsernameValue(text);
                     setSignUpProps({ ...signUpProps, username: text });
                     handleForm.inputChange(text, (t) => setSignUpProps({ ...signUpProps, username: t }));
                 }}
@@ -46,6 +61,9 @@ export default function UsernameInput({ inputRef, signUpProps, setSignUpProps, i
                     isUsernameError ? 'border-2 border-red-500' : ''
                 } ${isUsernameFocused ? 'border-2 border-primary' : ''}`}
             />
+            {errorMsg !== '' && (
+                <Text className='text-red-500 text-xs'>{errorMsg}</Text>
+            )}
         </View>
     )
 }

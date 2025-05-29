@@ -1,27 +1,39 @@
-import { Text, TextInput, View, Platform } from "react-native";
 import { useForm } from "@/hooks/useForm";
+import { useEffect, useState } from "react";
+import { Text, TextInput, View, Platform, ScrollView } from "react-native";
+import { UserData } from "@/types/Auth";
 
 interface LastNameInputProps {
     inputRef: React.RefObject<TextInput>;
-    signUpProps: SignUpProps;
-    setSignUpProps: (props: SignUpProps) => void;
-    isLastNameError: boolean;
-    isLastNameFocused: boolean;
+    signUpProps: UserData;
+    setSignUpProps: (props: UserData) => void;
     scrollViewRef: React.RefObject<ScrollView>;
+    onErrorChange: (errorMsg: string) => void;
+    onValueChange: (value: string) => void;
 }
 
-export default function LastNameInput({ inputRef, signUpProps, setSignUpProps, isLastNameError, isLastNameFocused, scrollViewRef }: LastNameInputProps) {
-    const { formValidation, handleForm } = useForm(
-        {
-            errorSetters: {
-                lastName: (isError: boolean) => setIsLastNameError(isError),
-            },
-            focusSetters: {
-                lastName: (isFocused: boolean) => setIsLastNameFocused(isFocused),
-            },
-            scrollViewRef
-        }
-    );
+export default function LastNameInput({ inputRef, signUpProps, setSignUpProps, scrollViewRef, onErrorChange, onValueChange }: LastNameInputProps) {
+    const [lastNameValue, setLastNameValue] = useState(signUpProps.last_name || "");
+    const [isLastNameError, setIsLastNameError] = useState(false);
+    const [isLastNameFocused, setIsLastNameFocused] = useState(false);
+
+    const { formValidation, handleForm, errorMsg } = useForm({
+        errorSetters: {
+            lastName: (isError: boolean) => setIsLastNameError(isError),
+        },
+        focusSetters: {
+            lastName: (isFocused: boolean) => setIsLastNameFocused(isFocused),
+        },
+        scrollViewRef
+    });
+
+    useEffect(() => {
+        onValueChange(lastNameValue);
+    }, [lastNameValue]);
+
+    useEffect(() => {
+        onErrorChange(errorMsg);
+    }, [errorMsg]);
 
     return (
         <View className='flex flex-col gap-2 w-full justify-center items-center'>
@@ -32,16 +44,17 @@ export default function LastNameInput({ inputRef, signUpProps, setSignUpProps, i
                 textContentType='familyName'
                 clearButtonMode='while-editing'
                 ref={inputRef}
-                value={signUpProps.last_name}
+                value={lastNameValue}
                 autoComplete={Platform.OS === 'ios' ? 'cc-name' : 'name-family'}
                 autoCorrect={false}
                 placeholderTextColor='gray'
                 returnKeyType='next'
                 enablesReturnKeyAutomatically={true}
-                onSubmitEditing={() => formValidation.validateField(signUpProps.last_name, 'lastName')}
+                onSubmitEditing={() => formValidation.validateField(lastNameValue, 'lastName')}
                 onFocus={() => handleForm.inputFocus('lastName')}
-                onBlur={() => handleForm.inputBlur('lastName', signUpProps.last_name)}
+                onBlur={() => handleForm.inputBlur('lastName', lastNameValue)}
                 onChangeText={(text) => {
+                    setLastNameValue(text);
                     setSignUpProps({ ...signUpProps, last_name: text });
                     handleForm.inputChange(text, (t) => setSignUpProps({ ...signUpProps, last_name: t }));
                 }}
@@ -49,6 +62,9 @@ export default function LastNameInput({ inputRef, signUpProps, setSignUpProps, i
                     isLastNameError ? 'border-2 border-red-500' : ''
                 } ${isLastNameFocused ? 'border-2 border-primary' : ''}`}
             />
+            {errorMsg !== '' && (
+                <Text className='text-red-500 text-xs'>{errorMsg}</Text>
+            )}
         </View>
     )
 }

@@ -1,27 +1,39 @@
-import { Text, TextInput, View, ScrollView } from "react-native";
 import { useForm } from "@/hooks/useForm";
+import { useEffect, useState } from "react";
+import { Text, TextInput, View, ScrollView } from "react-native";
+import { UserData } from "@/types/Auth";
 
 interface SizeInputProps {
     inputRef: React.RefObject<TextInput>;
-    signUpProps: SignUpProps;
-    setSignUpProps: (props: SignUpProps) => void;
-    isSizeError: boolean;
-    isSizeFocused: boolean;
+    signUpProps: UserData;
+    setSignUpProps: (props: UserData) => void;
     scrollViewRef: React.RefObject<ScrollView>;
+    onErrorChange: (errorMsg: string) => void;
+    onValueChange: (value: string) => void;
 }
 
-export default function SizeInput({ inputRef, signUpProps, setSignUpProps, isSizeError, isSizeFocused, scrollViewRef }: SizeInputProps) {
-    const { formValidation, handleForm } = useForm(
-        {
-            errorSetters: {
-                size: (isError: boolean) => setIsSizeError(isError),
-            },
-            focusSetters: {
-                size: (isFocused: boolean) => setIsSizeFocused(isFocused),
-            },
-            scrollViewRef
-        }
-    );
+export default function SizeInput({ inputRef, signUpProps, setSignUpProps, scrollViewRef, onErrorChange, onValueChange }: SizeInputProps) {
+    const [sizeValue, setSizeValue] = useState(signUpProps.sneaker_size ? String(signUpProps.sneaker_size) : "");
+    const [isSizeError, setIsSizeError] = useState(false);
+    const [isSizeFocused, setIsSizeFocused] = useState(false);
+
+    const { formValidation, handleForm, errorMsg } = useForm({
+        errorSetters: {
+            size: (isError: boolean) => setIsSizeError(isError),
+        },
+        focusSetters: {
+            size: (isFocused: boolean) => setIsSizeFocused(isFocused),
+        },
+        scrollViewRef
+    });
+
+    useEffect(() => {
+        onValueChange(sizeValue);
+    }, [sizeValue]);
+
+    useEffect(() => {
+        onErrorChange(errorMsg);
+    }, [errorMsg]);
 
     return (
         <View className='flex flex-col gap-2 w-full justify-center items-center'>
@@ -40,17 +52,21 @@ export default function SizeInput({ inputRef, signUpProps, setSignUpProps, isSiz
                 enablesReturnKeyAutomatically={true}
                 autoComplete='off'
                 placeholderTextColor='gray'
-                value={signUpProps.sneaker_size ? String(signUpProps.sneaker_size) : ''}
+                value={sizeValue}
                 onChangeText={(text) => {
                     const formattedText = text.replace(',', '.');
                     if (formattedText === '' || !isNaN(Number(formattedText))) {
-                        setSignUpProps({ ...signUpProps, sneaker_size: formattedText });
-                        handleForm.inputChange(formattedText, (t) => setSignUpProps({ ...signUpProps, sneaker_size: t }));
+                        setSizeValue(formattedText);
+                        setSignUpProps({ ...signUpProps, sneaker_size: formattedText === '' ? 0 : Number(formattedText) });
+                        handleForm.inputChange(formattedText, (t) => setSignUpProps({ ...signUpProps, sneaker_size: t === '' ? 0 : Number(t) }));
                     }
                 }}
                 onFocus={() => handleForm.inputFocus('size')}
-                onBlur={() => handleForm.inputBlur('size', String(signUpProps.sneaker_size))}
+                onBlur={() => handleForm.inputBlur('size', sizeValue)}
             />
+            {errorMsg !== '' && (
+                <Text className='text-red-500 text-xs'>{errorMsg}</Text>
+            )}
         </View>
     )
 }
