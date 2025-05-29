@@ -1,45 +1,52 @@
-import { Sneaker } from "@/types/Sneaker";
-import { addSneaker } from "@/scripts/handleSneakers/addSneaker";
-import { deleteSneaker } from "@/scripts/handleSneakers/deleteSneaker";
-import { skuLookUp } from "@/scripts/handleSneakers/skuLookUp";
-import { BaseApiService } from "@/services/BaseApiService";
+import { Sneaker } from '@/types/Sneaker';
+import { addSneaker } from '@/scripts/handleSneakers/addSneaker';
+import { deleteSneaker } from '@/scripts/handleSneakers/deleteSneaker';
+import { skuLookUp } from '@/scripts/handleSneakers/skuLookUp';
+import { BaseApiService } from '@/services/BaseApiService';
 
 export class SneakersService extends BaseApiService {
-    private userId: string;
-    private sessionToken: string;
+	private userId: string;
+	private sessionToken: string;
 
-    constructor(userId: string, sessionToken: string) {
-        super();
-        this.userId = userId;
-        this.sessionToken = sessionToken;
-    }
+	constructor(userId: string, sessionToken: string) {
+		super();
+		this.userId = userId;
+		this.sessionToken = sessionToken;
+	}
 
-    public async add(sneaker: Sneaker, sneakerId?: string) {
-        return addSneaker(sneaker, sneakerId || "", this.sessionToken, this.userId)
-            .then(response => {
-                return response;
-            });
-    }
+	public async add(sneaker: Sneaker, sneakerId?: string) {
+		return addSneaker(
+			sneaker,
+			sneakerId || '',
+			this.sessionToken,
+			this.userId
+		).then((response) => {
+			return response;
+		});
+	}
 
-    public async delete(sneakerId: string) {
-        return deleteSneaker(sneakerId, this.userId, this.sessionToken)
-            .then(response => {
-                return response;
-            });
-    }
+	public async delete(sneakerId: string) {
+		return deleteSneaker(sneakerId, this.userId, this.sessionToken).then(
+			(response) => {
+				return response;
+			}
+		);
+	}
 
-    public async searchBySku(sku: string) {
-        return skuLookUp(sku, this.sessionToken)
-            .then(response => {
-                return response;
-            });
-    }
+	public async searchBySku(sku: string) {
+		return skuLookUp(sku, this.sessionToken).then((response) => {
+			return response;
+		});
+	}
 
-    public async getUserSneakers() {
-        const response = await fetch(`${this.baseUrl}/users/${this.userId}/collection/sneakers`, {
-            headers: this.getAuthHeaders(this.sessionToken)
-        });
+	public async getUserSneakers() {
+		const response = await fetch(
+			`${this.baseUrl}/users/${this.userId}/collection/sneakers`,
+			{
+				headers: this.getAuthHeaders(this.sessionToken),
+			}
+		);
 
-        return this.handleResponse(response);
-    }
+		return this.handleResponse(response);
+	}
 }
