@@ -12,7 +12,8 @@
     "test": "jest",
     "test:watch": "jest --watchAll",
     "test:coverage": "jest --coverage",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "prepare": "husky"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
@@ -27,6 +28,7 @@
     "expo-camera": "~16.0.10",
     "expo-constants": "~17.0.3",
     "expo-dev-client": "~5.0.6",
+    "expo-file-system": "~18.0.12",
     "expo-font": "~13.0.4",
     "expo-haptics": "~14.0.0",
     "expo-image": "~2.0.3",
@@ -53,8 +55,7 @@
     "react-native-web": "~0.19.13",
     "react-native-webview": "13.12.5",
     "tailwindcss": "^3.4.17",
-    "unique-filename": "^4.0.0",
-    "expo-file-system": "~18.0.12"
+    "unique-filename": "^4.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
@@ -66,6 +67,7 @@
     "@types/react": "~18.3.12",
     "@types/react-test-renderer": "^18.3.0",
     "babel-plugin-module-resolver": "^5.0.2",
+    "husky": "^9.1.7",
     "jest": "^29.7.0",
     "jest-expo": "~52.0.2",
     "react-test-renderer": "18.3.1",
