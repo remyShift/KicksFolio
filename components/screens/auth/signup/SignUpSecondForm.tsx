@@ -2,7 +2,6 @@ import { View, Text, TextInput, KeyboardAvoidingView, Platform, ScrollView, Pres
 import { useSignUpProps } from '@/context/signUpPropsContext';
 import { useState, useRef } from 'react';
 import FirstNameInput from '@/components/ui/inputs/authForm/FirstNameInput';
-import { FontAwesome5 } from '@expo/vector-icons';
 import MainButton from '@/components/ui/buttons/MainButton';
 import { Link } from 'expo-router';
 import LastNameInput from '@/components/ui/inputs/authForm/LastNameInput';
