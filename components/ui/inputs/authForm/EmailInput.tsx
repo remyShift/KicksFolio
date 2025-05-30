@@ -10,9 +10,10 @@ interface EmailInputProps {
     scrollViewRef: React.RefObject<ScrollView>;
     onErrorChange: (errorMsg: string) => void;
     onValueChange?: (value: string) => void;
+    isLoginPage?: boolean;
 }
 
-export default function EmailInput({ inputRef, signUpProps, setSignUpProps, scrollViewRef, onErrorChange, onValueChange }: EmailInputProps) {
+export default function EmailInput({ inputRef, signUpProps, setSignUpProps, scrollViewRef, onErrorChange, onValueChange, isLoginPage }: EmailInputProps) {
     const [isEmailError, setIsEmailError] = useState(false);
     const [isEmailFocused, setIsEmailFocused] = useState(false);
     const [emailValue, setEmailValue] = useState(signUpProps?.email || "");
@@ -53,7 +54,7 @@ export default function EmailInput({ inputRef, signUpProps, setSignUpProps, scro
             returnKeyType='next'
             enablesReturnKeyAutomatically={true}
             onFocus={() => handleForm.inputFocus('email')}
-            onBlur={() => handleForm.inputBlur('email', emailValue)}
+            onBlur={() => handleForm.inputBlur('email', emailValue, isLoginPage)}
             onChangeText={(text) => {
                 setEmailValue(text);
                 setSignUpProps?.({ ...signUpProps!, email: text });

@@ -136,6 +136,7 @@ export class FormValidationService {
 		isLoginPage: boolean
 	): Promise<boolean> {
 		console.log('validateEmail function called ', email);
+		console.log('isLoginPage', isLoginPage);
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 		if (!email) {
@@ -146,9 +147,11 @@ export class FormValidationService {
 			this.setErrorMsg('Please put a valid email.');
 			return false;
 		}
-		if ((await this.checkEmailExists(email)) && !isLoginPage) {
-			this.setErrorMsg('This email is already taken.');
-			return false;
+		if (!isLoginPage) {
+			if (await this.checkEmailExists(email)) {
+				this.setErrorMsg('This email is already taken.');
+				return false;
+			}
 		}
 
 		this.clearErrors();

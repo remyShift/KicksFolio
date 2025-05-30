@@ -20,7 +20,8 @@ export class AuthService extends BaseApiService {
 		console.log('handleLogin function called');
 		const isEmailValid = await formValidationService.validateField(
 			email,
-			'email'
+			'email',
+			true
 		);
 		console.log('isEmailValid', isEmailValid);
 

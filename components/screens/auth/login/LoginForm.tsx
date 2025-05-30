@@ -43,6 +43,7 @@ export default function LoginForm() {
                             scrollViewRef={scrollViewRef}
                             onErrorChange={setEmailErrorMsg}
                             onValueChange={setEmail}
+                            isLoginPage={true}
                         />
                         
                         <PasswordInput
