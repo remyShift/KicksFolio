@@ -9,7 +9,7 @@ const config: ExpoConfig = {
   scheme: 'kicksfolio',
   version: '0.0.2',
   extra: {
-    apiUrl: process.env.API_URL || 'https://www.kicksfolio.app/api/v1'
+    apiUrl: process.env.EXPO_PUBLIC_BASE_API_URL
   }
 };
 

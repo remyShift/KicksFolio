@@ -49,4 +49,4 @@ global.FormData = jest.fn(() => ({
 	values: jest.fn(),
 }));
 
-process.env.EXPO_PUBLIC_BASE_API_URL = 'https://api.test.com';
+process.env.EXPO_PUBLIC_BASE_API_URL = 'https://www.kicksfolio.app/api/v1';

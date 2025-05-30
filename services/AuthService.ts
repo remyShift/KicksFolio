@@ -1,260 +1,311 @@
-import { BaseApiService } from "@/services/BaseApiService";
-import { User } from "@/types/User";
-import { FormValidationService } from "./FormValidationService";
-import { UserData } from "@/types/Auth";
+import { BaseApiService } from '@/services/BaseApiService';
+import { User } from '@/types/User';
+import { FormValidationService } from './FormValidationService';
+import { UserData } from '@/types/auth';
 
 interface LoginResponse {
-    user: User;
-    tokens: {
-        access: string;
-        refresh: string;
-    };
+	user: User;
+	tokens: {
+		access: string;
+		refresh: string;
+	};
 }
 
 export class AuthService extends BaseApiService {
-    async handleLogin(
-        email: string, 
-        password: string, 
-        formValidationService: FormValidationService
-    ): Promise<boolean> {
-        const isEmailValid = await formValidationService.validateField(email, 'email', undefined);
-        const isPasswordValid = formValidationService.validateField(password, 'password');
+	async handleLogin(
+		email: string,
+		password: string,
+		formValidationService: FormValidationService
+	): Promise<boolean> {
+		console.log('handleLogin function called');
+		const isEmailValid = await formValidationService.validateField(
+			email,
+			'email'
+		);
+		console.log('isEmailValid', isEmailValid);
 
-        if (!isEmailValid || !isPasswordValid) {
-            return false;
-        }
+		const isPasswordValid = formValidationService.validateField(
+			password,
+			'password'
+		);
+		console.log('isPasswordValid', isPasswordValid);
 
-        return this.login(email, password)
-            .then(() => {
-                return true;
-            })
-            .catch(() => {
-                formValidationService.setErrorMessage('Invalid email or password');
-                return false;
-            });
-    }
+		if (!isEmailValid || !isPasswordValid) {
+			return false;
+		}
 
-    async login(email: string, password: string): Promise<LoginResponse> {
-        const response = await fetch(`${this.baseUrl}/login`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                ...this.getAuthHeaders()
-            },
-            body: JSON.stringify({ authentication: { email, password } })
-        });
-        
-        return this.handleResponse(response);
-    }
+		return this.login(email, password)
+			.then(() => {
+				return true;
+			})
+			.catch(() => {
+				formValidationService.setErrorMessage(
+					'Invalid email or password'
+				);
+				return false;
+			});
+	}
 
-    async getUser(token: string): Promise<{ user: User }> {
-        const response = await fetch(`${this.baseUrl}/users/me`, {
-            headers: this.getAuthHeaders(token)
-        });
-        
-        return this.handleResponse(response);
-    }
+	async login(email: string, password: string): Promise<LoginResponse> {
+		const response = await fetch(`${this.baseUrl}/login`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				...this.getAuthHeaders(),
+			},
+			body: JSON.stringify({ authentication: { email, password } }),
+		});
 
-    async signUp(
-        userData: UserData
-    ): Promise<{ user: User }> {
-        const formData = new FormData();
-        
-        formData.append('user[email]', userData.email);
-        formData.append('user[password]', userData.password);
-        formData.append('user[username]', userData.username);
-        formData.append('user[first_name]', userData.first_name);
-        formData.append('user[last_name]', userData.last_name);
-        formData.append('user[sneaker_size]', userData.sneaker_size.toString());
+		return this.handleResponse(response);
+	}
 
-        if (userData.profile_picture) {
-            const imageUriParts = userData.profile_picture.split('.');
-            const fileType = imageUriParts[imageUriParts.length - 1];
-            
-            formData.append('user[profile_picture]', {
-                uri: userData.profile_picture,
-                type: 'image/jpeg',
-                name: `profile_picture.${fileType}`
-            } as any);
-        }
+	async getUser(token: string): Promise<{ user: User }> {
+		const response = await fetch(`${this.baseUrl}/users/me`, {
+			headers: this.getAuthHeaders(token),
+		});
 
-        const response = await fetch(`${this.baseUrl}/users`, {
-            method: 'POST',
-            headers: this.getAuthHeaders(),
-            body: formData
-        });
+		return this.handleResponse(response);
+	}
 
-        return this.handleResponse(response);
-    }
+	async signUp(userData: UserData): Promise<{ user: User }> {
+		const formData = new FormData();
 
-    async logout(token: string) {
-        const response = await fetch(`${this.baseUrl}/logout`, {
-            method: 'DELETE',
-            headers: this.getAuthHeaders(token)
-        });
-        
-        return response.ok;
-    }
+		formData.append('user[email]', userData.email);
+		formData.append('user[password]', userData.password);
+		formData.append('user[username]', userData.username);
+		formData.append('user[first_name]', userData.first_name);
+		formData.append('user[last_name]', userData.last_name);
+		formData.append('user[sneaker_size]', userData.sneaker_size.toString());
 
-    async verifyToken(token: string) {
-        const response = await fetch(`${this.baseUrl}/verify_token`, {
-            method: 'POST',
-            headers: this.getAuthHeaders(token)
-        });
+		if (userData.profile_picture) {
+			const imageUriParts = userData.profile_picture.split('.');
+			const fileType = imageUriParts[imageUriParts.length - 1];
 
-        if (!response.ok) return false;
-        const data = await response.json();
-        return data.valid;
-    }
+			formData.append('user[profile_picture]', {
+				uri: userData.profile_picture,
+				type: 'image/jpeg',
+				name: `profile_picture.${fileType}`,
+			} as any);
+		}
 
-    async updateUser(userId: string, profileData: Partial<UserData>, token: string): Promise<{ user: User }> {
-        const formData = new FormData();
-        
-        Object.entries(profileData).forEach(([key, value]) => {
-            if (key !== 'profile_picture' && value) {
-                formData.append(`user[${key.replace('new', '').toLowerCase()}]`, value.toString());
-            }
-        });
+		const response = await fetch(`${this.baseUrl}/users`, {
+			method: 'POST',
+			headers: this.getAuthHeaders(),
+			body: formData,
+		});
 
-        if (profileData.profile_picture) {
-            const imageUriParts = profileData.profile_picture.split('.');
-            const fileType = imageUriParts[imageUriParts.length - 1];
-            
-            formData.append('user[profile_picture]', {
-                uri: profileData.profile_picture,
-                type: 'image/jpeg',
-                name: `profile_picture.${fileType}`
-            } as any);
-        }
+		return this.handleResponse(response);
+	}
 
-        const response = await fetch(`${this.baseUrl}/users/${userId}`, {
-            method: 'PATCH',
-            headers: this.getAuthHeaders(token),
-            body: formData
-        });
+	async logout(token: string) {
+		const response = await fetch(`${this.baseUrl}/logout`, {
+			method: 'DELETE',
+			headers: this.getAuthHeaders(token),
+		});
 
-        return this.handleResponse(response);
-    }
+		return response.ok;
+	}
 
-    async handleResetPassword(
-        token: string,
-        newPassword: string,
-        confirmPassword: string,
-        formValidationService: FormValidationService
-    ): Promise<boolean> {
-        const isPasswordValid = formValidationService.validateField(newPassword, 'password');
-        const isConfirmPasswordValid = formValidationService.validateField(confirmPassword, 'confirmPassword');
+	async verifyToken(token: string) {
+		const response = await fetch(`${this.baseUrl}/verify_token`, {
+			method: 'POST',
+			headers: this.getAuthHeaders(token),
+		});
 
-        if (!isPasswordValid || !isConfirmPasswordValid) {
-            return false;
-        }
+		if (!response.ok) return false;
+		const data = await response.json();
+		return data.valid;
+	}
 
-        return this.resetPassword(token, newPassword)
-            .then(() => true)
-            .catch(() => {
-                formValidationService.setErrorMessage('An error occurred while resetting your password, please try again.');
-                return false;
-            });
-    }
+	async updateUser(
+		userId: string,
+		profileData: Partial<UserData>,
+		token: string
+	): Promise<{ user: User }> {
+		const formData = new FormData();
 
-    private async resetPassword(token: string, newPassword: string): Promise<void> {
-        const response = await fetch(`${this.baseUrl}/password/reset`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                token: token,
-                password: newPassword
-            })
-        });
+		Object.entries(profileData).forEach(([key, value]) => {
+			if (key !== 'profile_picture' && value) {
+				formData.append(
+					`user[${key.replace('new', '').toLowerCase()}]`,
+					value.toString()
+				);
+			}
+		});
 
-        const data = await response.json();
-        if (data.error) {
-            throw new Error(data.error);
-        }
-    }
+		if (profileData.profile_picture) {
+			const imageUriParts = profileData.profile_picture.split('.');
+			const fileType = imageUriParts[imageUriParts.length - 1];
 
-    async deleteAccount(userId: string, token: string): Promise<{ message: string }> {
-        const response = await fetch(`${this.baseUrl}/users/${userId}`, {
-            method: 'DELETE',
-            headers: this.getAuthHeaders(token)
-        });
+			formData.append('user[profile_picture]', {
+				uri: profileData.profile_picture,
+				type: 'image/jpeg',
+				name: `profile_picture.${fileType}`,
+			} as any);
+		}
 
-        return this.handleResponse(response);
-    }
+		const response = await fetch(`${this.baseUrl}/users/${userId}`, {
+			method: 'PATCH',
+			headers: this.getAuthHeaders(token),
+			body: formData,
+		});
 
-    async handleForgotPassword(
-        email: string,
-        formValidationService: FormValidationService
-    ): Promise<boolean> {
-        const isEmailValid = await formValidationService.validateField(email, 'email');
+		return this.handleResponse(response);
+	}
 
-        if (!isEmailValid) {
-            return false;
-        }
+	async handleResetPassword(
+		token: string,
+		newPassword: string,
+		confirmPassword: string,
+		formValidationService: FormValidationService
+	): Promise<boolean> {
+		const isPasswordValid = formValidationService.validateField(
+			newPassword,
+			'password'
+		);
+		const isConfirmPasswordValid = formValidationService.validateField(
+			confirmPassword,
+			'confirmPassword'
+		);
 
-        return this.forgotPassword(email)
-            .then(() => true)
-            .catch(() => {
-                formValidationService.setErrorMessage('An error occurred while sending the reset email, please try again.');
-                return false;
-            });
-    }
+		if (!isPasswordValid || !isConfirmPasswordValid) {
+			return false;
+		}
 
-    private async forgotPassword(email: string): Promise<void> {
-        const response = await fetch(`${this.baseUrl}/passwords/forgot`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email }),
-        });
+		return this.resetPassword(token, newPassword)
+			.then(() => true)
+			.catch(() => {
+				formValidationService.setErrorMessage(
+					'An error occurred while resetting your password, please try again.'
+				);
+				return false;
+			});
+	}
 
-        const data = await response.json();
-        if (data.error) {
-            throw new Error(data.error);
-        }
-    }
+	private async resetPassword(
+		token: string,
+		newPassword: string
+	): Promise<void> {
+		const response = await fetch(`${this.baseUrl}/password/reset`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				token: token,
+				password: newPassword,
+			}),
+		});
 
-    async handleSignUp(
-        userData: UserData,
-        formValidationService: FormValidationService,
-        setSignUpProps: (props: any) => void,
-    ): Promise<boolean> {
-        if (!userData.username.trim()) {
-            formValidationService.setErrorMessage('Please put your username.');
-            return false;
-        }
+		const data = await response.json();
+		if (data.error) {
+			throw new Error(data.error);
+		}
+	}
 
-        if (!userData.first_name.trim()) {
-            formValidationService.setErrorMessage('Please put your first name.');
-            return false;
-        }
+	async deleteAccount(
+		userId: string,
+		token: string
+	): Promise<{ message: string }> {
+		const response = await fetch(`${this.baseUrl}/users/${userId}`, {
+			method: 'DELETE',
+			headers: this.getAuthHeaders(token),
+		});
 
-        if (!userData.last_name.trim()) {
-            formValidationService.setErrorMessage('Please put your last name.');
-            return false;
-        }
+		return this.handleResponse(response);
+	}
 
-        if (!userData.sneaker_size || userData.sneaker_size <= 0) {
-            formValidationService.setErrorMessage('Please put a valid sneaker size.');
-            return false;
-        }
+	async handleForgotPassword(
+		email: string,
+		formValidationService: FormValidationService
+	): Promise<boolean> {
+		const isEmailValid = await formValidationService.validateField(
+			email,
+			'email'
+		);
 
-        return this.signUp(userData)
-        .then(() => {
-            return this.login(userData.email, userData.password);
-        })
-        .then(() => {
-            setSignUpProps({ ...userData, email: '', password: '', username: '', first_name: '', last_name: '', sneaker_size: '', profile_picture: '' });
-            return true;
-        })
-        .catch((error) => {
-            formValidationService.setErrorMessage(`Something went wrong. Please try again. ${error}`);
-            return false;
-        });
-    }
+		if (!isEmailValid) {
+			return false;
+		}
+
+		return this.forgotPassword(email)
+			.then(() => true)
+			.catch(() => {
+				formValidationService.setErrorMessage(
+					'An error occurred while sending the reset email, please try again.'
+				);
+				return false;
+			});
+	}
+
+	private async forgotPassword(email: string): Promise<void> {
+		const response = await fetch(`${this.baseUrl}/passwords/forgot`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ email }),
+		});
+
+		const data = await response.json();
+		if (data.error) {
+			throw new Error(data.error);
+		}
+	}
+
+	async handleSignUp(
+		userData: UserData,
+		formValidationService: FormValidationService,
+		setSignUpProps: (props: any) => void
+	): Promise<boolean> {
+		if (!userData.username.trim()) {
+			formValidationService.setErrorMessage('Please put your username.');
+			return false;
+		}
+
+		if (!userData.first_name.trim()) {
+			formValidationService.setErrorMessage(
+				'Please put your first name.'
+			);
+			return false;
+		}
+
+		if (!userData.last_name.trim()) {
+			formValidationService.setErrorMessage('Please put your last name.');
+			return false;
+		}
+
+		if (!userData.sneaker_size || userData.sneaker_size <= 0) {
+			formValidationService.setErrorMessage(
+				'Please put a valid sneaker size.'
+			);
+			return false;
+		}
+
+		return this.signUp(userData)
+			.then(() => {
+				return this.login(userData.email, userData.password);
+			})
+			.then(() => {
+				setSignUpProps({
+					...userData,
+					email: '',
+					password: '',
+					username: '',
+					first_name: '',
+					last_name: '',
+					sneaker_size: '',
+					profile_picture: '',
+				});
+				return true;
+			})
+			.catch((error) => {
+				formValidationService.setErrorMessage(
+					`Something went wrong. Please try again. ${error}`
+				);
+				return false;
+			});
+	}
 }
 
-export const authService = new AuthService(); 
+export const authService = new AuthService();
