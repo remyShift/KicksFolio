@@ -1,2 +1,1 @@
-node scripts/format-commit-msg.ts "$1"
 npx --no -- commitlint --edit "$1"
