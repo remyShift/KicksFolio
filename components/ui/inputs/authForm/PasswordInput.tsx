@@ -10,7 +10,7 @@ interface PasswordInputProps {
     scrollViewRef: React.RefObject<ScrollView>;
     title: string;
     onErrorChange: (errorMsg: string) => void;
-    onValueChange: (value: string) => void;
+    onValueChange?: (value: string) => void;
 }
 
 export default function PasswordInput({ inputRef, signUpProps, setSignUpProps, scrollViewRef, title, onErrorChange, onValueChange }: PasswordInputProps) {
@@ -33,8 +33,8 @@ export default function PasswordInput({ inputRef, signUpProps, setSignUpProps, s
     }, [errorMsg]);
 
     useEffect(() => {
-        onValueChange(passwordValue);
-    }, [passwordValue]);
+        onValueChange?.(passwordValue);
+    }, [passwordValue, onValueChange]);
 
     return (
     <View className='flex flex-col gap-2 w-full justify-center items-center'>

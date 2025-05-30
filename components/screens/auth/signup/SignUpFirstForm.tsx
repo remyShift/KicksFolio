@@ -17,10 +17,6 @@ export default function SignUpFirstForm() {
     const [emailErrorMsg, setEmailErrorMsg] = useState('');
     const [passwordErrorMsg, setPasswordErrorMsg] = useState('');
     const [confirmPasswordErrorMsg, setConfirmPasswordErrorMsg] = useState('');
-    const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
 
     const scrollViewRef = useRef<ScrollView>(null);
     const usernameInputRef = useRef<TextInput>(null);
@@ -65,7 +61,6 @@ export default function SignUpFirstForm() {
                             setSignUpProps={setSignUpProps}
                             scrollViewRef={scrollViewRef}
                             onErrorChange={setUsernameErrorMsg}
-                            onValueChange={setUsername}
                         />
 
                         <EmailInput
@@ -74,7 +69,6 @@ export default function SignUpFirstForm() {
                             setSignUpProps={setSignUpProps}
                             scrollViewRef={scrollViewRef}
                             onErrorChange={setEmailErrorMsg}
-                            onValueChange={setEmail}
                         />
 
                         <PasswordInput
@@ -84,7 +78,6 @@ export default function SignUpFirstForm() {
                             setSignUpProps={setSignUpProps}
                             scrollViewRef={scrollViewRef}
                             onErrorChange={setPasswordErrorMsg}
-                            onValueChange={setPassword}
                         />
 
                         <ConfirmPasswordInput
@@ -93,7 +86,6 @@ export default function SignUpFirstForm() {
                             setSignUpProps={setSignUpProps}
                             scrollViewRef={scrollViewRef}
                             onErrorChange={setConfirmPasswordErrorMsg}
-                            onValueChange={setConfirmPassword}
                         />
                     </View>
 

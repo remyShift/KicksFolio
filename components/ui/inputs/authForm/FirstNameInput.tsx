@@ -9,7 +9,7 @@ interface FirstNameInputProps {
     setSignUpProps?: (props: UserData) => void;
     scrollViewRef: React.RefObject<ScrollView>;
     onErrorChange: (errorMsg: string) => void;
-    onValueChange: (value: string) => void;
+    onValueChange?: (value: string) => void;
 }
 
 export default function FirstNameInput({ inputRef, signUpProps, setSignUpProps, scrollViewRef, onErrorChange, onValueChange }: FirstNameInputProps) {
@@ -32,8 +32,8 @@ export default function FirstNameInput({ inputRef, signUpProps, setSignUpProps, 
     }, [errorMsg]);
 
     useEffect(() => {
-        onValueChange(firstNameValue);
-    }, [firstNameValue]);
+        onValueChange?.(firstNameValue);
+    }, [firstNameValue, onValueChange]);
 
     return (
     <View className='flex flex-col gap-2 w-full justify-center items-center'>

@@ -9,7 +9,7 @@ interface SizeInputProps {
     setSignUpProps?: (props: UserData) => void;
     scrollViewRef: React.RefObject<ScrollView>;
     onErrorChange: (errorMsg: string) => void;
-    onValueChange: (value: string) => void;
+    onValueChange?: (value: string) => void;
 }
 
 export default function SizeInput({ inputRef, signUpProps, setSignUpProps, scrollViewRef, onErrorChange, onValueChange }: SizeInputProps) {
@@ -32,10 +32,10 @@ export default function SizeInput({ inputRef, signUpProps, setSignUpProps, scrol
     }, [errorMsg]);
 
     useEffect(() => {
-        if (sizeValue !== "") {
+        if (sizeValue !== "" && onValueChange) {
             onValueChange(sizeValue);
         }
-    }, [sizeValue]);
+    }, [sizeValue, onValueChange]);
 
     return (
     <View className='flex flex-col gap-2 w-full justify-center items-center'>

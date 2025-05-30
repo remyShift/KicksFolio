@@ -17,9 +17,6 @@ export default function SignUpSecondForm() {
     const [firstNameErrorMsg, setFirstNameErrorMsg] = useState('');
     const [lastNameErrorMsg, setLastNameErrorMsg] = useState('');
     const [sizeErrorMsg, setSizeErrorMsg] = useState('');
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [size, setSize] = useState('');
 
     const scrollViewRef = useRef<ScrollView>(null);
     const lastNameInputRef = useRef<TextInput>(null);
@@ -60,7 +57,6 @@ export default function SignUpSecondForm() {
                             setSignUpProps={setSignUpProps}
                             scrollViewRef={scrollViewRef}
                             onErrorChange={setFirstNameErrorMsg}
-                            onValueChange={setFirstName}
                         />
 
                         <LastNameInput 
@@ -69,7 +65,6 @@ export default function SignUpSecondForm() {
                             setSignUpProps={setSignUpProps}
                             scrollViewRef={scrollViewRef}
                             onErrorChange={setLastNameErrorMsg}
-                            onValueChange={setLastName}
                         />
 
                         <SizeInput 
@@ -78,7 +73,6 @@ export default function SignUpSecondForm() {
                             setSignUpProps={setSignUpProps}
                             scrollViewRef={scrollViewRef}
                             onErrorChange={setSizeErrorMsg}
-                            onValueChange={setSize}
                         />
                     </View>
 
