@@ -10,8 +10,6 @@ export default function AppLayout() {
     const [isCheckingCollection, setIsCheckingCollection] = useState(true);
 
     useEffect(() => {
-        console.log('sessionToken', sessionToken);
-        console.log('user', user);
         if (user && sessionToken) {
             getUserCollection(user, sessionToken)
                 .then(() => setIsCheckingCollection(false))

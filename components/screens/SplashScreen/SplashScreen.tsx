@@ -23,7 +23,7 @@ export default function SplashScreen({ sessionToken, setIsSplashScreenVisible }:
             console.log('[SplashScreen] sessionToken exists');
             await loadInitialData()
                 .then(() => {
-                    console.log(userSneakers,'[SplashScreen] loadInitialData resolved');
+                    console.log('[SplashScreen] loadInitialData resolved');
                 });
             if (userSneakers) {
                 const sneakerImages = userSneakers.map(sneaker => sneaker.images[0]);

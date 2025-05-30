@@ -6,12 +6,10 @@ export class BaseApiService {
 	}
 
 	protected async handleResponse(response: Response) {
-		console.log('response', response);
 		const contentType = response.headers.get('content-type');
 
 		if (contentType && contentType.includes('application/json')) {
 			return response.json().then((data) => {
-				console.log('data', data);
 				if (!response.ok) {
 					throw new Error(
 						data.errors

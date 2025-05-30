@@ -12,7 +12,7 @@ export const useAuth = () => {
 	const [errorMsg, setErrorMsg] = useState('');
 	const authService = new AuthService();
 	const formValidation = new FormValidationService(setErrorMsg, {});
-	const { setSessionToken } = useSession();
+	const { setSessionToken, setUserCollection } = useSession();
 
 	const login = async (email: string, password: string) => {
 		const token = await authService.handleLogin(
@@ -137,7 +137,10 @@ export const useAuth = () => {
 	const getUserCollection = async (user: User, token: string) => {
 		return collectionService
 			.getUserCollection(user.id, token)
-			.then((data) => data)
+			.then((data) => {
+				setUserCollection(data.collection);
+				return data;
+			})
 			.catch(() => {
 				setErrorMsg(
 					'Erreur lors de la récupération de la collection utilisateur.'
