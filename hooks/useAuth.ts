@@ -6,21 +6,23 @@ import { UserData } from '@/types/auth';
 import { User } from '@/types/User';
 import { collectionService } from '@/services/CollectionService';
 import { SneakersService } from '@/services/SneakersService';
+import { useSession } from '@/context/authContext';
 
 export const useAuth = () => {
 	const [errorMsg, setErrorMsg] = useState('');
 	const authService = new AuthService();
 	const formValidation = new FormValidationService(setErrorMsg, {});
+	const { setSessionToken } = useSession();
 
 	const login = async (email: string, password: string) => {
-		console.log('Login function called');
-		const success = await authService.handleLogin(
+		const token = await authService.handleLogin(
 			email,
 			password,
 			formValidation
 		);
-		console.log('Login success:', success);
-		if (success) {
+
+		if (token) {
+			setSessionToken(token);
 			router.replace('/(app)/(tabs)');
 		}
 	};

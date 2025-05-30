@@ -1,11 +1,12 @@
 import { createContext, useContext, type PropsWithChildren, useState, useEffect } from 'react';
-import { AuthContextType } from '@/types/Auth';
+import { AuthContextType } from '@/types/auth';
 import { storageService } from '@/services/StorageService';
 import { useAppState } from '@react-native-community/hooks';
 import { useStorageState } from '@/hooks/useStorageState';
 import { User } from '@/types/User';
 import { Collection } from '@/types/Collection';
 import { Sneaker } from '@/types/Sneaker';
+import { authService } from '@/services/AuthService';
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
@@ -35,12 +36,24 @@ export function SessionProvider({ children }: PropsWithChildren) {
     }, [appState]);
 
     const initializeData = async () => {
-        const storedUser = await storageService.getItem('user');
-        if (storedUser) setUser(storedUser as User);
-        const storedCollection = await storageService.getItem('collection');
-        if (storedCollection) setUserCollection(storedCollection as Collection);
-        const storedSneakers = await storageService.getItem('sneakers');
-        if (storedSneakers) setUserSneakers(storedSneakers as Sneaker[]);
+        if (sessionToken) {
+            authService.getUser(sessionToken)
+                .then(({ user }) => {
+                    setUser(user);
+                    storageService.setItem('user', user);
+                })
+                .catch(() => {
+                    setUser(null);
+                    storageService.removeItem('user');
+                });
+        } else {
+            setUser(null);
+            setUserCollection(null);
+            setUserSneakers(null);
+            storageService.removeItem('user');
+            storageService.removeItem('collection');
+            storageService.removeItem('sneakers');
+        }
     };
 
     const handleAppStateChange = async () => {

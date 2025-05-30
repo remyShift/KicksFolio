@@ -25,7 +25,6 @@ export class FormValidationService {
 		nextRef: RefObject<TextInput> | null = null,
 		password?: string
 	): Promise<boolean> {
-		console.log('validateField function called');
 		let isValid = false;
 
 		switch (inputType) {
@@ -33,11 +32,9 @@ export class FormValidationService {
 				isValid = await this.validateUsername(value);
 				break;
 			case 'email':
-				console.log('email inputType');
 				isValid = await this.validateEmail(value, isLoginPage);
 				break;
 			case 'password':
-				console.log('password inputType');
 				isValid = this.validatePassword(value);
 				break;
 			case 'firstName':
@@ -135,8 +132,6 @@ export class FormValidationService {
 		email: string,
 		isLoginPage: boolean
 	): Promise<boolean> {
-		console.log('validateEmail function called ', email);
-		console.log('isLoginPage', isLoginPage);
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 		if (!email) {
@@ -216,7 +211,6 @@ export class FormValidationService {
 	}
 
 	private async checkEmailExists(email: string): Promise<boolean> {
-		console.log('checkEmailExists function called ', email);
 		const response = await fetch(
 			`${process.env.EXPO_PUBLIC_BASE_API_URL}/users`,
 			{
@@ -226,8 +220,6 @@ export class FormValidationService {
 				},
 			}
 		);
-
-		console.log('response', response);
 
 		if (!response.ok) return false;
 		const data = await response.json();

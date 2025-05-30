@@ -5,10 +5,7 @@ import { UserData } from '@/types/auth';
 
 interface LoginResponse {
 	user: User;
-	tokens: {
-		access: string;
-		refresh: string;
-	};
+	token: string;
 }
 
 export class AuthService extends BaseApiService {
@@ -16,34 +13,31 @@ export class AuthService extends BaseApiService {
 		email: string,
 		password: string,
 		formValidationService: FormValidationService
-	): Promise<boolean> {
-		console.log('handleLogin function called');
+	): Promise<string | null> {
 		const isEmailValid = await formValidationService.validateField(
 			email,
 			'email',
 			true
 		);
-		console.log('isEmailValid', isEmailValid);
 
 		const isPasswordValid = formValidationService.validateField(
 			password,
 			'password'
 		);
-		console.log('isPasswordValid', isPasswordValid);
 
 		if (!isEmailValid || !isPasswordValid) {
-			return false;
+			return null;
 		}
 
 		return this.login(email, password)
-			.then(() => {
-				return true;
+			.then((res) => {
+				return res.token;
 			})
 			.catch(() => {
 				formValidationService.setErrorMessage(
 					'Invalid email or password'
 				);
-				return false;
+				return null;
 			});
 	}
 

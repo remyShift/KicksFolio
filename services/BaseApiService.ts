@@ -6,10 +6,12 @@ export class BaseApiService {
 	}
 
 	protected async handleResponse(response: Response) {
-		try {
-			const contentType = response.headers?.get('content-type');
-			if (contentType?.includes('application/json')) {
-				const data = await response.json();
+		console.log('response', response);
+		const contentType = response.headers.get('content-type');
+
+		if (contentType && contentType.includes('application/json')) {
+			return response.json().then((data) => {
+				console.log('data', data);
 				if (!response.ok) {
 					throw new Error(
 						data.errors
@@ -18,24 +20,18 @@ export class BaseApiService {
 					);
 				}
 				return data;
-			}
+			});
+		}
 
-			const text = await response.text();
+		return response.text().then((text) => {
 			if (!response.ok) {
 				throw new Error(text || 'API Error');
 			}
 
-			try {
-				return JSON.parse(text);
-			} catch {
-				return text;
-			}
-		} catch (error) {
-			if (error instanceof Error) {
-				throw error;
-			}
-			throw new Error('API Error');
-		}
+			return Promise.resolve()
+				.then(() => JSON.parse(text))
+				.catch(() => text);
+		});
 	}
 
 	protected getAuthHeaders(token?: string) {

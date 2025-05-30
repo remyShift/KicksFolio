@@ -57,9 +57,6 @@ export default function LoginForm() {
                     <View className='flex gap-5 w-full justify-center items-center'>                      
                         <MainButton content='Login' backgroundColor='bg-primary' onPressAction={
                             async () => {
-                                console.log('Login button pressed');
-                                console.log('Email:', email);
-                                console.log('Password:', password);
                                 await login(email, password);
                                 console.log('Login success !');
                             }
