@@ -1,5 +1,5 @@
 import { useForm } from "@/hooks/useForm";
-import { UserData } from "@/types/Auth";
+import { UserData } from "@/types/auth";
 import { Text, TextInput, View, ScrollView } from "react-native";
 import { useState, useEffect } from "react";
 
@@ -63,9 +63,6 @@ export default function EmailInput({ inputRef, signUpProps, setSignUpProps, scro
                 isEmailError ? 'border-2 border-red-500' : ''
             } ${isEmailFocused ? 'border-2 border-primary' : ''}`}
         />
-        {errorMsg !== '' && (
-            <Text className='text-red-500 text-xs'>{errorMsg}</Text>
-        )}
     </View>
     )
 }

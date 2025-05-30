@@ -48,9 +48,6 @@ export default function CollectionNameInput({ collectionName, setCollectionName,
                     isCollectionNameError ? 'border-2 border-red-500' : ''
                 } ${isCollectionNameFocused ? 'border-2 border-primary' : ''}`}
             />
-            {errorMsg !== '' && (
-                <Text className='text-red-500 text-xs'>{errorMsg}</Text>
-            )}
         </View>
     )
 }

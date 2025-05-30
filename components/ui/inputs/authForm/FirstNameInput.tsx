@@ -1,5 +1,5 @@
 import { useForm } from "@/hooks/useForm";
-import { UserData } from "@/types/Auth";
+import { UserData } from "@/types/auth";
 import { useEffect, useState } from "react";
 import { Text, TextInput, View, ScrollView } from "react-native";
 
@@ -61,9 +61,6 @@ export default function FirstNameInput({ inputRef, signUpProps, setSignUpProps, 
                 isFirstNameError ? 'border-2 border-red-500' : ''
             } ${isFirstNameFocused ? 'border-2 border-primary' : ''}`}
         />
-        {errorMsg !== '' && (
-            <Text className='text-red-500 text-xs'>{errorMsg}</Text>
-        )}
     </View>
     )
 }
