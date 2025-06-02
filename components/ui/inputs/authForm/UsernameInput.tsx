@@ -52,7 +52,12 @@ export default function UsernameInput({ inputRef, signUpProps, setSignUpProps, s
             returnKeyType='next'
             onSubmitEditing={() => {
                 if (nextInputRef) {
-                    nextInputRef.current?.focus();
+                    handleForm.inputBlur('username', usernameValue)
+                        .then(() => {
+                            if (!errorMsg) {
+                                nextInputRef.current?.focus();
+                            }
+                        });
                 }
             }}
             enablesReturnKeyAutomatically={true}

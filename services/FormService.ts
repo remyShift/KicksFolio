@@ -48,17 +48,17 @@ export class FormService {
 		this.scrollToBottom();
 	}
 
-	public inputBlur(
+	public async inputBlur(
 		inputType: FieldName,
 		value: string,
 		isLoginPage?: boolean,
 		password?: string,
 		nextRef?: RefObject<TextInput>
-	): void {
+	): Promise<boolean> {
 		if (this.focusSetters[inputType]) {
 			this.focusSetters[inputType](false);
 		}
-		this.validationService.validateField(
+		return this.validationService.validateField(
 			value,
 			inputType,
 			isLoginPage || false,

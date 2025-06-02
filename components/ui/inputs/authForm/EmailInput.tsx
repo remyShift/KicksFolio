@@ -53,7 +53,12 @@ export default function EmailInput({ inputRef, signUpProps, setSignUpProps, scro
             returnKeyType='next'
             onSubmitEditing={() => {
                 if (nextInputRef) {
-                    nextInputRef.current?.focus();
+                    handleForm.inputBlur('email', emailValue, isLoginPage)
+                        .then((isValid) => {
+                            if (isValid) {
+                                nextInputRef.current?.focus();
+                            }
+                        });
                 }
             }}
             enablesReturnKeyAutomatically={true}

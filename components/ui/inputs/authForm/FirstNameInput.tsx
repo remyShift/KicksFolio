@@ -52,7 +52,12 @@ export default function FirstNameInput({ inputRef, signUpProps, setSignUpProps, 
             returnKeyType='next'
             onSubmitEditing={() => {
                 if (nextInputRef) {
-                    nextInputRef.current?.focus();
+                    handleForm.inputBlur('firstName', firstNameValue)
+                        .then(() => {
+                            if (!errorMsg) {
+                                nextInputRef.current?.focus();
+                            }
+                        });
                 }
             }}
             enablesReturnKeyAutomatically={true}
