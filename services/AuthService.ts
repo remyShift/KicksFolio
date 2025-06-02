@@ -27,10 +27,6 @@ export class AuthService extends BaseApiService {
 		);
 
 		if (!isEmailValid || !isPasswordValid) {
-			console.log('Validation failed:', {
-				isEmailValid,
-				isPasswordValid,
-			});
 			return null;
 		}
 
