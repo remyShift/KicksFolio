@@ -41,10 +41,12 @@ export default function PasswordInput({ inputRef, signUpProps, setSignUpProps, s
 
     return (
     <View className='flex flex-col gap-2 w-full justify-center items-center'>
-        <Text className='font-spacemono-bold text-lg'>*{title}</Text>
-        <Text className='font-spacemono-bold text-sm text-center px-6 text-gray-600'>
-            At least one uppercase letter and one number and be 8 characters long.
-        </Text>
+        <Text className='font-spacemono-bold text-lg'>{title}</Text>
+        {!isLoginPage && (
+            <Text className='font-spacemono-bold text-sm text-center px-6 text-gray-600'>
+                At least one uppercase letter and one number and be 8 characters long.
+            </Text>
+        )}
         <TextInput
             ref={inputRef}
             value={passwordValue}
