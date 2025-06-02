@@ -21,10 +21,10 @@ export const useAuth = () => {
 			formValidation
 		);
 
-		if (token) {
-			setSessionToken(token);
+		setSessionToken(token);
+		setTimeout(() => {
 			router.replace('/(app)/(tabs)');
-		}
+		}, 100);
 	};
 
 	const signUp = async (
@@ -72,6 +72,8 @@ export const useAuth = () => {
 			.logout(token)
 			.then((ok) => {
 				if (ok) {
+					setSessionToken(null);
+					setUserCollection(null);
 					router.replace('/login');
 				}
 				return ok;
