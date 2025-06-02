@@ -10,9 +10,10 @@ interface SizeInputProps {
     scrollViewRef: React.RefObject<ScrollView>;
     onErrorChange: (errorMsg: string) => void;
     onValueChange?: (value: string) => void;
+    onSubmitEditing?: () => void;
 }
 
-export default function SizeInput({ inputRef, signUpProps, setSignUpProps, scrollViewRef, onErrorChange, onValueChange }: SizeInputProps) {
+export default function SizeInput({ inputRef, signUpProps, setSignUpProps, scrollViewRef, onErrorChange, onValueChange, onSubmitEditing }: SizeInputProps) {
     const [isSizeError, setIsSizeError] = useState(false);
     const [isSizeFocused, setIsSizeFocused] = useState(false);
     const [sizeValue, setSizeValue] = useState(signUpProps?.sneaker_size?.toString() || "");
@@ -51,6 +52,9 @@ export default function SizeInput({ inputRef, signUpProps, setSignUpProps, scrol
             placeholderTextColor='gray'
             clearButtonMode='while-editing'
             returnKeyType='done'
+            onSubmitEditing={() => {
+                onSubmitEditing?.();
+            }}
             enablesReturnKeyAutomatically={true}
             onFocus={() => handleForm.inputFocus('size')}
             onBlur={() => handleForm.inputBlur('size', sizeValue)}

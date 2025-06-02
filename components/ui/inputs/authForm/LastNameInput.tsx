@@ -50,6 +50,11 @@ export default function LastNameInput({ inputRef, signUpProps, setSignUpProps, s
             placeholderTextColor='gray'
             clearButtonMode='while-editing'
             returnKeyType='next'
+            onSubmitEditing={() => {
+                if (nextInputRef) {
+                    nextInputRef.current?.focus();
+                }
+            }}
             enablesReturnKeyAutomatically={true}
             onFocus={() => handleForm.inputFocus('lastName')}
             onBlur={() => handleForm.inputBlur('lastName', lastNameValue)}

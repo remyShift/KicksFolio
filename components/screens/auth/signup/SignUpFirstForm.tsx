@@ -11,6 +11,7 @@ import PasswordInput from "@/components/ui/inputs/authForm/PasswordInput";
 import ConfirmPasswordInput from "@/components/ui/inputs/authForm/ConfirmPasswordInput";
 import { useSignUpProps } from "@/context/signUpPropsContext";
 import { useSignUpValidation } from "@/hooks/useSignUpValidation";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function SignUpFirstForm() {
     const [usernameErrorMsg, setUsernameErrorMsg] = useState('');
@@ -25,17 +26,10 @@ export default function SignUpFirstForm() {
     const confirmPasswordInputRef = useRef<TextInput>(null);
 
     const { signUpProps, setSignUpProps } = useSignUpProps();
-    const { validateSignUpStep1, errorMsg: globalErrorMsg } = useSignUpValidation();
+    const { handleNextSignupPage } = useAuth();
+    const { errorMsg: globalErrorMsg } = useSignUpValidation();
 
     const mergedErrorMsg = usernameErrorMsg || emailErrorMsg || passwordErrorMsg || confirmPasswordErrorMsg || globalErrorMsg;
-
-    const handleNextSignupPage = async () => {
-        const result = await validateSignUpStep1(signUpProps);
-        if (!result.isValid) {
-            return;
-        }
-        router.replace('/sign-up-second');
-    };
 
     return (
         <KeyboardAvoidingView 
@@ -61,6 +55,7 @@ export default function SignUpFirstForm() {
                             setSignUpProps={setSignUpProps}
                             scrollViewRef={scrollViewRef}
                             onErrorChange={setUsernameErrorMsg}
+                            nextInputRef={emailInputRef}
                         />
 
                         <EmailInput
@@ -69,6 +64,7 @@ export default function SignUpFirstForm() {
                             setSignUpProps={setSignUpProps}
                             scrollViewRef={scrollViewRef}
                             onErrorChange={setEmailErrorMsg}
+                            nextInputRef={passwordInputRef}
                         />
 
                         <PasswordInput
@@ -78,6 +74,7 @@ export default function SignUpFirstForm() {
                             setSignUpProps={setSignUpProps}
                             scrollViewRef={scrollViewRef}
                             onErrorChange={setPasswordErrorMsg}
+                            nextInputRef={confirmPasswordInputRef}
                         />
 
                         <ConfirmPasswordInput
@@ -86,6 +83,9 @@ export default function SignUpFirstForm() {
                             setSignUpProps={setSignUpProps}
                             scrollViewRef={scrollViewRef}
                             onErrorChange={setConfirmPasswordErrorMsg}
+                            onSubmitEditing={() => {
+                                handleNextSignupPage(signUpProps);
+                            }}
                         />
                     </View>
 
@@ -94,9 +94,7 @@ export default function SignUpFirstForm() {
                             content='Next' 
                             backgroundColor='bg-primary' 
                             onPressAction={() => {
-                                setTimeout(() => {
-                                    handleNextSignupPage();
-                                }, 500);
+                                handleNextSignupPage(signUpProps);
                             }} 
                         />
                         <LoginPageLink />

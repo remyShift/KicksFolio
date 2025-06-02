@@ -10,9 +10,10 @@ interface FirstNameInputProps {
     scrollViewRef: React.RefObject<ScrollView>;
     onErrorChange: (errorMsg: string) => void;
     onValueChange?: (value: string) => void;
+    nextInputRef?: React.RefObject<TextInput>;
 }
 
-export default function FirstNameInput({ inputRef, signUpProps, setSignUpProps, scrollViewRef, onErrorChange, onValueChange }: FirstNameInputProps) {
+export default function FirstNameInput({ inputRef, signUpProps, setSignUpProps, scrollViewRef, onErrorChange, onValueChange, nextInputRef }: FirstNameInputProps) {
     const [isFirstNameError, setIsFirstNameError] = useState(false);
     const [isFirstNameFocused, setIsFirstNameFocused] = useState(false);
     const [firstNameValue, setFirstNameValue] = useState(signUpProps?.first_name || "");
@@ -49,6 +50,11 @@ export default function FirstNameInput({ inputRef, signUpProps, setSignUpProps, 
             placeholderTextColor='gray'
             clearButtonMode='while-editing'
             returnKeyType='next'
+            onSubmitEditing={() => {
+                if (nextInputRef) {
+                    nextInputRef.current?.focus();
+                }
+            }}
             enablesReturnKeyAutomatically={true}
             onFocus={() => handleForm.inputFocus('firstName')}
             onBlur={() => handleForm.inputBlur('firstName', firstNameValue)}

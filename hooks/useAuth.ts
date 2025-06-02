@@ -7,12 +7,14 @@ import { User } from '@/types/User';
 import { collectionService } from '@/services/CollectionService';
 import { SneakersService } from '@/services/SneakersService';
 import { useSession } from '@/context/authContext';
+import { useSignUpValidation } from './useSignUpValidation';
 
 export const useAuth = () => {
 	const [errorMsg, setErrorMsg] = useState('');
 	const authService = new AuthService();
 	const formValidation = new FormValidationService(setErrorMsg, {});
 	const { setSessionToken, setUserCollection } = useSession();
+	const { validateSignUpStep1 } = useSignUpValidation();
 
 	const login = async (email: string, password: string) => {
 		const token = await authService.handleLogin(
@@ -39,7 +41,9 @@ export const useAuth = () => {
 			setSignUpProps
 		);
 		if (success) {
-			router.replace('/collection');
+			setTimeout(() => {
+				router.replace('/collection');
+			}, 250);
 		}
 	};
 
@@ -166,6 +170,18 @@ export const useAuth = () => {
 			});
 	};
 
+	const handleNextSignupPage = async (signUpProps: UserData) => {
+		const result = await validateSignUpStep1(signUpProps);
+
+		if (!result.isValid) {
+			return;
+		} else {
+			setTimeout(() => {
+				router.replace('/sign-up-second');
+			}, 250);
+		}
+	};
+
 	return {
 		errorMsg,
 		login,
@@ -179,6 +195,7 @@ export const useAuth = () => {
 		getUser,
 		getUserCollection,
 		getUserSneakers,
+		handleNextSignupPage,
 		formValidation,
 	};
 };

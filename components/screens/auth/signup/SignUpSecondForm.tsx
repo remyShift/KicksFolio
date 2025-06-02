@@ -57,6 +57,7 @@ export default function SignUpSecondForm() {
                             setSignUpProps={setSignUpProps}
                             scrollViewRef={scrollViewRef}
                             onErrorChange={setFirstNameErrorMsg}
+                            nextInputRef={lastNameInputRef}
                         />
 
                         <LastNameInput 
@@ -65,6 +66,7 @@ export default function SignUpSecondForm() {
                             setSignUpProps={setSignUpProps}
                             scrollViewRef={scrollViewRef}
                             onErrorChange={setLastNameErrorMsg}
+                            nextInputRef={sizeInputRef}
                         />
 
                         <SizeInput 
@@ -73,6 +75,9 @@ export default function SignUpSecondForm() {
                             setSignUpProps={setSignUpProps}
                             scrollViewRef={scrollViewRef}
                             onErrorChange={setSizeErrorMsg}
+                            onSubmitEditing={() => {
+                                signUp(signUpProps, setSignUpProps);
+                            }}
                         />
                     </View>
 

@@ -10,9 +10,10 @@ interface UsernameInputProps {
     scrollViewRef: React.RefObject<ScrollView>;
     onErrorChange: (errorMsg: string) => void;
     onValueChange?: (value: string) => void;
+    nextInputRef?: React.RefObject<TextInput>;
 }
 
-export default function UsernameInput({ inputRef, signUpProps, setSignUpProps, scrollViewRef, onErrorChange, onValueChange }: UsernameInputProps) {
+export default function UsernameInput({ inputRef, signUpProps, setSignUpProps, scrollViewRef, onErrorChange, onValueChange, nextInputRef }: UsernameInputProps) {
     const [isUsernameError, setIsUsernameError] = useState(false);
     const [isUsernameFocused, setIsUsernameFocused] = useState(false);
     const [usernameValue, setUsernameValue] = useState(signUpProps?.username || "");
@@ -49,6 +50,11 @@ export default function UsernameInput({ inputRef, signUpProps, setSignUpProps, s
             placeholderTextColor='gray'
             clearButtonMode='while-editing'
             returnKeyType='next'
+            onSubmitEditing={() => {
+                if (nextInputRef) {
+                    nextInputRef.current?.focus();
+                }
+            }}
             enablesReturnKeyAutomatically={true}
             onFocus={() => handleForm.inputFocus('username')}
             onBlur={() => handleForm.inputBlur('username', usernameValue)}

@@ -10,9 +10,10 @@ interface ConfirmPasswordInputProps {
     scrollViewRef: React.RefObject<ScrollView>;
     onErrorChange: (errorMsg: string) => void;
     onValueChange?: (value: string) => void;
+    onSubmitEditing?: () => void;
 }
 
-export default function ConfirmPasswordInput({ inputRef, signUpProps, setSignUpProps, scrollViewRef, onErrorChange, onValueChange }: ConfirmPasswordInputProps) {
+export default function ConfirmPasswordInput({ inputRef, signUpProps, setSignUpProps, scrollViewRef, onErrorChange, onValueChange, onSubmitEditing }: ConfirmPasswordInputProps) {
     const [isConfirmPasswordError, setIsConfirmPasswordError] = useState(false);
     const [isConfirmPasswordFocused, setIsConfirmPasswordFocused] = useState(false);
     const [confirmPasswordValue, setConfirmPasswordValue] = useState(signUpProps?.confirmPassword || "");
@@ -50,6 +51,7 @@ export default function ConfirmPasswordInput({ inputRef, signUpProps, setSignUpP
             placeholderTextColor='gray'
             clearButtonMode='while-editing'
             returnKeyType='done'
+            onSubmitEditing={onSubmitEditing}
             enablesReturnKeyAutomatically={true}
             onFocus={() => handleForm.inputFocus('confirmPassword')}
             onBlur={() => handleForm.inputBlur('confirmPassword', confirmPasswordValue)}
