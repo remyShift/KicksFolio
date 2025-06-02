@@ -18,9 +18,28 @@ export default function LoginForm() {
     const emailInputRef = useRef<TextInput>(null);
     const passwordInputRef = useRef<TextInput>(null);
 
-    const { login } = useAuth();
+    const { login, errorMsg: authErrorMsg } = useAuth();
 
-    const errorMsg = emailErrorMsg || passwordErrorMsg;
+    const errorMsg = emailErrorMsg || passwordErrorMsg || authErrorMsg;
+
+    const handleLogin = async () => {
+        if (!email || !password) {
+            if (!email) setEmailErrorMsg('Email requis');
+            if (!password) setPasswordErrorMsg('Mot de passe requis');
+            return;
+        }
+
+        setEmailErrorMsg('');
+        setPasswordErrorMsg('');
+        
+        login(email, password)
+            .then(() => {
+                console.log('Login successful');
+            })
+            .catch((error) => {
+                console.error('Login error:', error);
+            });
+    };
 
     return (
         <KeyboardAvoidingView 
@@ -54,17 +73,15 @@ export default function LoginForm() {
                             onValueChange={setPassword}
                             title='*Password'
                             isLoginPage={true}
-                            submitAction={() => {
-                                login(email, password);
-                            }}
+                            submitAction={handleLogin}
                         />
                     </View>
                     <View className='flex gap-5 w-full justify-center items-center'>                      
-                        <MainButton content='Login' backgroundColor='bg-primary' onPressAction={
-                            async () => {
-                                await login(email, password);
-                            }
-                        } />
+                        <MainButton 
+                            content='Login' 
+                            backgroundColor='bg-primary' 
+                            onPressAction={handleLogin}
+                        />
                         <View className='flex gap-1 justify-center items-center'>
                             <View className='flex flex-row gap-1 justify-center items-center'>
                                 <Text className='font-spacemono-bold text-sm'>Don't have an account?</Text>

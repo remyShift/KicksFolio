@@ -22,11 +22,12 @@ export class AuthService extends BaseApiService {
 
 		const isPasswordValid = formValidationService.validateField(
 			password,
-			'password'
+			'password',
+			true
 		);
 
 		if (!isEmailValid || !isPasswordValid) {
-			console.log('Validation échouée:', {
+			console.log('Validation failed:', {
 				isEmailValid,
 				isPasswordValid,
 			});
@@ -37,9 +38,9 @@ export class AuthService extends BaseApiService {
 			.then((res) => {
 				return res.token;
 			})
-			.catch((error) => {
+			.catch(() => {
 				formValidationService.setErrorMessage(
-					'Invalid email or password :' + error.message
+					'Email or password incorrect'
 				);
 				return null;
 			});

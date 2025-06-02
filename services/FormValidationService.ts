@@ -35,7 +35,7 @@ export class FormValidationService {
 				isValid = await this.validateEmail(value, isLoginPage);
 				break;
 			case 'password':
-				isValid = this.validatePassword(value);
+				isValid = this.validatePassword(value, isLoginPage);
 				break;
 			case 'firstName':
 			case 'lastName':
@@ -65,16 +65,16 @@ export class FormValidationService {
 		return isValid;
 	}
 
-	private validatePassword(password: string): boolean {
+	private validatePassword(password: string, isLoginPage: boolean): boolean {
 		if (!password) {
 			this.setErrorMsg('Please put your password.');
 			return false;
 		}
-		if (password.length < 8) {
+		if (password.length < 8 && !isLoginPage) {
 			this.setErrorMsg('Password must be at least 8 characters long.');
 			return false;
 		}
-		if (!password.match(/^(?=.*[A-Z])(?=.*\d).+$/)) {
+		if (!password.match(/^(?=.*[A-Z])(?=.*\d).+$/) && !isLoginPage) {
 			this.setErrorMsg(
 				'Password must contain at least one uppercase letter and one number.'
 			);

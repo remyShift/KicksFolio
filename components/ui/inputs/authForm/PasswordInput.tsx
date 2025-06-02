@@ -61,13 +61,13 @@ export default function PasswordInput({ inputRef, signUpProps, setSignUpProps, s
                 if (nextInputRef && !isLoginPage) {
                     nextInputRef.current?.focus();
                 } else if (isLoginPage) {
-                    handleForm.inputBlur('password', passwordValue);
+                    handleForm.inputBlur('password', passwordValue, isLoginPage);
                     submitAction?.();
                 }
             }}
             enablesReturnKeyAutomatically={true}
             onFocus={() => handleForm.inputFocus('password')}
-            onBlur={() => handleForm.inputBlur('password', passwordValue)}
+            onBlur={() => handleForm.inputBlur('password', passwordValue, isLoginPage)}
             onChangeText={(text) => {
                 setPasswordValue(text);
                 setSignUpProps?.({ ...signUpProps!, password: text });

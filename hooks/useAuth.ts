@@ -21,10 +21,12 @@ export const useAuth = () => {
 			formValidation
 		);
 
-		setSessionToken(token);
-		setTimeout(() => {
-			router.replace('/(app)/(tabs)');
-		}, 500);
+		if (token) {
+			setSessionToken(token);
+			setTimeout(() => {
+				router.replace('/(app)/(tabs)');
+			}, 500);
+		}
 	};
 
 	const signUp = async (
