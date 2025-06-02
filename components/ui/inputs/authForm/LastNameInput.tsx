@@ -10,9 +10,10 @@ interface LastNameInputProps {
     scrollViewRef: React.RefObject<ScrollView>;
     onErrorChange: (errorMsg: string) => void;
     onValueChange?: (value: string) => void;
+    nextInputRef?: React.RefObject<TextInput>;
 }
 
-export default function LastNameInput({ inputRef, signUpProps, setSignUpProps, scrollViewRef, onErrorChange, onValueChange }: LastNameInputProps) {
+export default function LastNameInput({ inputRef, signUpProps, setSignUpProps, scrollViewRef, onErrorChange, onValueChange, nextInputRef }: LastNameInputProps) {
     const [isLastNameError, setIsLastNameError] = useState(false);
     const [isLastNameFocused, setIsLastNameFocused] = useState(false);
     const [lastNameValue, setLastNameValue] = useState(signUpProps?.last_name || "");

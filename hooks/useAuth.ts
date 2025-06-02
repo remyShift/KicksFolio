@@ -24,7 +24,7 @@ export const useAuth = () => {
 		setSessionToken(token);
 		setTimeout(() => {
 			router.replace('/(app)/(tabs)');
-		}, 100);
+		}, 500);
 	};
 
 	const signUp = async (

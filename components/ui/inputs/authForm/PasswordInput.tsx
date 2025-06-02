@@ -11,9 +11,12 @@ interface PasswordInputProps {
     title: string;
     onErrorChange: (errorMsg: string) => void;
     onValueChange?: (value: string) => void;
+    nextInputRef?: React.RefObject<TextInput>;
+    isLoginPage?: boolean;
+    submitAction?: () => void;
 }
 
-export default function PasswordInput({ inputRef, signUpProps, setSignUpProps, scrollViewRef, title, onErrorChange, onValueChange }: PasswordInputProps) {
+export default function PasswordInput({ inputRef, signUpProps, setSignUpProps, scrollViewRef, title, onErrorChange, onValueChange, nextInputRef, isLoginPage, submitAction }: PasswordInputProps) {
     const [isPasswordError, setIsPasswordError] = useState(false);
     const [isPasswordFocused, setIsPasswordFocused] = useState(false);
     const [passwordValue, setPasswordValue] = useState(signUpProps?.password || "");
@@ -53,7 +56,15 @@ export default function PasswordInput({ inputRef, signUpProps, setSignUpProps, s
             autoCorrect={false}
             secureTextEntry={true}
             placeholderTextColor='gray'
-            returnKeyType='next'
+            returnKeyType={isLoginPage ? 'done' : 'next'}
+            onSubmitEditing={() => {
+                if (nextInputRef && !isLoginPage) {
+                    nextInputRef.current?.focus();
+                } else if (isLoginPage) {
+                    handleForm.inputBlur('password', passwordValue);
+                    submitAction?.();
+                }
+            }}
             enablesReturnKeyAutomatically={true}
             onFocus={() => handleForm.inputFocus('password')}
             onBlur={() => handleForm.inputBlur('password', passwordValue)}

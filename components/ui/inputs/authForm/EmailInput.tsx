@@ -11,15 +11,15 @@ interface EmailInputProps {
     onErrorChange: (errorMsg: string) => void;
     onValueChange?: (value: string) => void;
     isLoginPage?: boolean;
+    nextInputRef?: React.RefObject<TextInput>;
 }
 
-export default function EmailInput({ inputRef, signUpProps, setSignUpProps, scrollViewRef, onErrorChange, onValueChange, isLoginPage }: EmailInputProps) {
+export default function EmailInput({ inputRef, signUpProps, setSignUpProps, scrollViewRef, onErrorChange, onValueChange, isLoginPage, nextInputRef }: EmailInputProps) {
     const [isEmailError, setIsEmailError] = useState(false);
     const [isEmailFocused, setIsEmailFocused] = useState(false);
     const [emailValue, setEmailValue] = useState(signUpProps?.email || "");
 
-    const { handleForm, errorMsg } = useForm(
-        {
+    const { handleForm, errorMsg } = useForm({
             errorSetters: {
                 email: (isError: boolean) => setIsEmailError(isError),
             },
@@ -27,8 +27,7 @@ export default function EmailInput({ inputRef, signUpProps, setSignUpProps, scro
                 email: (isFocused: boolean) => setIsEmailFocused(isFocused),
             },
             scrollViewRef
-        }
-    );
+        });
 
     useEffect(() => {
         onErrorChange(errorMsg);
@@ -52,6 +51,11 @@ export default function EmailInput({ inputRef, signUpProps, setSignUpProps, scro
             placeholderTextColor='gray'
             clearButtonMode='while-editing'
             returnKeyType='next'
+            onSubmitEditing={() => {
+                if (nextInputRef) {
+                    nextInputRef.current?.focus();
+                }
+            }}
             enablesReturnKeyAutomatically={true}
             onFocus={() => handleForm.inputFocus('email')}
             onBlur={() => handleForm.inputBlur('email', emailValue, isLoginPage)}

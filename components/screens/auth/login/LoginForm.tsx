@@ -44,6 +44,7 @@ export default function LoginForm() {
                             onErrorChange={setEmailErrorMsg}
                             onValueChange={setEmail}
                             isLoginPage={true}
+                            nextInputRef={passwordInputRef}
                         />
                         
                         <PasswordInput
@@ -52,6 +53,10 @@ export default function LoginForm() {
                             onErrorChange={setPasswordErrorMsg}
                             onValueChange={setPassword}
                             title='*Password'
+                            isLoginPage={true}
+                            submitAction={() => {
+                                login(email, password);
+                            }}
                         />
                     </View>
                     <View className='flex gap-5 w-full justify-center items-center'>                      
