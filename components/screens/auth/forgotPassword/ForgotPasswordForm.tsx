@@ -44,7 +44,7 @@ export default function ForgotPasswordForm() {
                         <MainButton content='Send Reset Link' backgroundColor='bg-primary' onPressAction={() => forgotPassword(email)} />
                         <View className='flex gap-1 justify-center items-center'>
                             <View className='flex flex-row gap-1 justify-center items-center'>
-                                <Text className='font-spacemono-bold text-sm'>Remember your password?</Text>
+                                <Text className='font-spacemono-bold text-sm'>Remember your password ?</Text>
                                 <Link href='/login'>
                                     <Text className='text-primary font-spacemono-bold text-sm'>
                                         Login
