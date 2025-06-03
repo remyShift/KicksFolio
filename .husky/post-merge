@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+if [ "$(git branch --show-current)" = "main" ]; then
+    echo "🚀 Merge détecté sur la branche principale"
+    
+    npx expo prebuild --clean
+    eas build --platform all --profile development
+fi 
