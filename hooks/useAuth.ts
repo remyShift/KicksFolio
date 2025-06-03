@@ -170,15 +170,18 @@ export const useAuth = () => {
 			});
 	};
 
-	const handleNextSignupPage = async (signUpProps: UserData) => {
+	const handleNextSignupPage = async (
+		signUpProps: UserData
+	): Promise<string | null> => {
 		const result = await validateSignUpStep1(signUpProps);
 
 		if (!result.isValid) {
-			return;
+			return result.errorMsg;
 		} else {
 			setTimeout(() => {
 				router.replace('/sign-up-second');
 			}, 250);
+			return null;
 		}
 	};
 

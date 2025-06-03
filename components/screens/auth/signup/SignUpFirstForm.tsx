@@ -83,9 +83,7 @@ export default function SignUpFirstForm() {
                             setSignUpProps={setSignUpProps}
                             scrollViewRef={scrollViewRef}
                             onErrorChange={setConfirmPasswordErrorMsg}
-                            onSubmitEditing={() => {
-                                handleNextSignupPage(signUpProps);
-                            }}
+                            onSubmitEditing={() => handleNextSignupPage(signUpProps)}
                         />
                     </View>
 

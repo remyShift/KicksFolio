@@ -62,8 +62,8 @@ export default function PasswordInput({ inputRef, signUpProps, setSignUpProps, s
             onSubmitEditing={() => {
                 if (nextInputRef && !isLoginPage) {
                     handleForm.inputBlur('password', passwordValue)
-                        .then(() => {
-                            if (!errorMsg) {
+                        .then((isValid) => {
+                            if (isValid) {
                                 nextInputRef.current?.focus();
                             }
                         });

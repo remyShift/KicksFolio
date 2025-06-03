@@ -53,8 +53,8 @@ export default function UsernameInput({ inputRef, signUpProps, setSignUpProps, s
             onSubmitEditing={() => {
                 if (nextInputRef) {
                     handleForm.inputBlur('username', usernameValue)
-                        .then(() => {
-                            if (!errorMsg) {
+                        .then((isValid) => {
+                            if (isValid) {
                                 nextInputRef.current?.focus();
                             }
                         });
