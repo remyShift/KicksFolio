@@ -13,16 +13,17 @@ export default function CreateCollection() {
     const [collectionName, setCollectionName] = useState('');
     const scrollViewRef = useRef<ScrollView>(null);
 
-    const errorMsg = collectionNameErrorMsg;
-
+    
     const { formValidation } = useForm({
         errorSetters: {
             collectionName: (isError: boolean) => setCollectionNameErrorMsg(isError ? 'Collection name is required' : '')
         },
         scrollViewRef
     });
-
+    
     const { createCollection, error } = useCreateCollection();
+    
+    const errorMsg = collectionNameErrorMsg || error;
 
     return (
         <KeyboardAvoidingView 
@@ -38,7 +39,7 @@ export default function CreateCollection() {
                     <PageTitle content='Welcome to KicksFolio !' />
                     <View className='flex justify-center items-center gap-8 w-full mt-32'>
                         <View className="absolute w-full flex items-center" style={{ top: -50 }}>
-                            <ErrorMsg content={error || errorMsg} display={!!error || errorMsg !== ''} />
+                            <ErrorMsg content={errorMsg} display={errorMsg !== ''} />
                         </View>
                         <Text className="text-lg font-spacemono-bold">Please give a name to your collection :</Text>
 
@@ -47,24 +48,25 @@ export default function CreateCollection() {
                             setCollectionName={setCollectionName}
                             onErrorChange={setCollectionNameErrorMsg}
                             onValueChange={setCollectionName}
+                            onSubmitEditing={() => createCollection(collectionName)}
                         />
 
                         <MainButton
                             content='Create' 
                             backgroundColor='bg-primary' 
                             onPressAction={() => {
+                                console.log('onPressAction ', collectionName);
                                 formValidation.validateField(collectionName, 'collectionName')
                                     .then(isValid => {
-                                        if (!isValid) {
-                                            return;
+                                        if (isValid) {
+                                            createCollection(collectionName)
+                                                .then(success => {
+                                                    if (success) {
+                                                        router.replace('/(app)/(tabs)');
+                                                    }
+                                                });
                                         }
-                                        createCollection(collectionName)
-                                            .then(success => {
-                                                if (success) {
-                                                    router.replace('/(app)/(tabs)?newUser=true');
-                                                }
-                                            });
-                                });
+                                    });
                             }} 
                         />
                     </View>

@@ -10,7 +10,7 @@ interface SizeInputProps {
     scrollViewRef: React.RefObject<ScrollView>;
     onErrorChange: (errorMsg: string) => void;
     onValueChange?: (value: string) => void;
-    onSubmitEditing?: () => void;
+    onSubmitEditing?: () => Promise<string | null>;
 }
 
 export default function SizeInput({ inputRef, signUpProps, setSignUpProps, scrollViewRef, onErrorChange, onValueChange, onSubmitEditing }: SizeInputProps) {
@@ -40,10 +40,10 @@ export default function SizeInput({ inputRef, signUpProps, setSignUpProps, scrol
 
     return (
     <View className='flex flex-col gap-2 w-full justify-center items-center'>
-        <Text className='font-spacemono-bold text-lg'>*Sneaker Size</Text>
+        <Text className='font-spacemono-bold text-lg'>*Sneaker Size (US)</Text>
         <TextInput
             ref={inputRef}
-            placeholder="42.5"
+            placeholder="9"
             inputMode='decimal'
             value={sizeValue}
             autoComplete='off'
@@ -53,7 +53,11 @@ export default function SizeInput({ inputRef, signUpProps, setSignUpProps, scrol
             clearButtonMode='while-editing'
             returnKeyType='done'
             onSubmitEditing={() => {
-                onSubmitEditing?.();
+                onSubmitEditing?.().then((errorMsg) => {
+                    if (errorMsg) {
+                        handleForm.inputBlur('size', sizeValue, false, errorMsg);
+                    }
+                });
             }}
             enablesReturnKeyAutomatically={true}
             onFocus={() => handleForm.inputFocus('size')}

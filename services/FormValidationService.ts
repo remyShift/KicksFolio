@@ -50,6 +50,9 @@ export class FormValidationService {
 			case 'size':
 				isValid = this.validateSize(Number(value));
 				break;
+			case 'collectionName':
+				isValid = this.validateCollectionName(value);
+				break;
 		}
 
 		if (!isValid && this.errorSetters[inputType]) {
@@ -183,6 +186,28 @@ export class FormValidationService {
 		if (name.match(/[^a-zA-Z\s]/)) {
 			this.setErrorMsg(
 				'Name must not contain special characters or numbers.'
+			);
+			return false;
+		}
+
+		this.clearErrors();
+		return true;
+	}
+
+	private validateCollectionName(collectionName: string): boolean {
+		if (!collectionName) {
+			this.setErrorMsg('Please put your collection name.');
+			return false;
+		}
+		if (collectionName.length < 2) {
+			this.setErrorMsg(
+				'Collection name must be at least 2 characters long.'
+			);
+			return false;
+		}
+		if (collectionName.match(/[^a-zA-Z\s]/)) {
+			this.setErrorMsg(
+				'Collection name must not contain special characters or numbers.'
 			);
 			return false;
 		}

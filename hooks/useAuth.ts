@@ -41,9 +41,20 @@ export const useAuth = () => {
 			setSignUpProps
 		);
 		if (success) {
-			setTimeout(() => {
-				router.replace('/collection');
-			}, 250);
+			const token = await authService.handleLogin(
+				userData.email,
+				userData.password,
+				formValidation
+			);
+			if (token) {
+				setSessionToken(token);
+				const user = await getUser(token);
+				if (user) {
+					setTimeout(() => {
+						router.replace('/collection');
+					}, 250);
+				}
+			}
 		}
 	};
 

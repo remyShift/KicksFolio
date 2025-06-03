@@ -4,34 +4,42 @@ import { useSession } from '@/context/authContext';
 import { useAuth } from './useAuth';
 
 export function useCreateCollection() {
-    const [error, setError] = useState('');
-    const collectionService = new CollectionService();
-    const { user, sessionToken } = useSession();
-    const { getUserCollection } = useAuth();
+	const [error, setError] = useState('');
+	const collectionService = new CollectionService();
+	const { user, sessionToken } = useSession();
+	const { getUserCollection } = useAuth();
 
-    const createCollection = async (collectionName: string) => {
-        setError('');
-        if (!user || !sessionToken) {
-            setError('Something went wrong, please try again.');
-            return Promise.resolve(false);
-        }
+	const createCollection = async (collectionName: string) => {
+		console.log('createCollection : ', collectionName);
+		setError('');
 
-        return collectionService.create(collectionName, user.id, sessionToken)
-        .then(() => {
-            return getUserCollection(user, sessionToken)
-            .then(() => {
-                return true;
-            })
-            .catch(() => {
-                setError('Something went wrong when getting user collection, please try again.');
-                return false;
-            });
-        })
-        .catch(() => {
-            setError('Something went wrong when creating collection, please try again.');
-            return false;
-        });
-    };
+		if (!user || !sessionToken) {
+			console.log('user or sessionToken is not defined');
+			setError('Something went wrong, please try again.');
+			return false;
+		}
 
-    return { createCollection, error };
-} 
+		return collectionService
+			.create(collectionName, user.id, sessionToken)
+			.then(async () => {
+				return await getUserCollection(user, sessionToken)
+					.then(() => {
+						return true;
+					})
+					.catch(() => {
+						setError(
+							'Something went wrong when getting user collection, please try again.'
+						);
+						return false;
+					});
+			})
+			.catch(() => {
+				setError(
+					'Something went wrong when creating collection, please try again.'
+				);
+				return false;
+			});
+	};
+
+	return { createCollection, error };
+}

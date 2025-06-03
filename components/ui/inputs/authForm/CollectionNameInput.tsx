@@ -1,4 +1,5 @@
 import { useForm } from "@/hooks/useForm";
+import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { Text, TextInput, View } from "react-native";
 
@@ -7,9 +8,10 @@ interface CollectionNameInputProps {
     setCollectionName?: (name: string) => void;
     onErrorChange: (errorMsg: string) => void;
     onValueChange: (value: string) => void;
+    onSubmitEditing: () => Promise<boolean>;
 }
 
-export default function CollectionNameInput({ collectionName, setCollectionName, onErrorChange, onValueChange }: CollectionNameInputProps) {
+export default function CollectionNameInput({ collectionName, setCollectionName, onErrorChange, onValueChange, onSubmitEditing }: CollectionNameInputProps) {
     const [isCollectionNameError, setIsCollectionNameError] = useState(false);
     const [isCollectionNameFocused, setIsCollectionNameFocused] = useState(false);
     const [collectionNameValue, setCollectionNameValue] = useState(collectionName || "");
@@ -37,6 +39,21 @@ export default function CollectionNameInput({ collectionName, setCollectionName,
             <TextInput
                 placeholder="My Collection"
                 value={collectionNameValue}
+                autoComplete='off'
+                returnKeyType='done'
+                onSubmitEditing={() => {
+                    console.log('onSubmitEditing : ', collectionNameValue);
+                    handleForm.inputBlur('collectionName', collectionNameValue)
+                        .then((isValid) => {
+                            if (isValid) {
+                                onSubmitEditing().then((success) => {
+                                    if (success) {
+                                        router.replace('/(app)/(tabs)');
+                                    }
+                                });
+                            }
+                        });
+                }}
                 onFocus={() => handleForm.inputFocus('collectionName')}
                 onBlur={() => handleForm.inputBlur('collectionName', collectionNameValue)}
                 onChangeText={(text) => {

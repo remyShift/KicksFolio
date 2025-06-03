@@ -53,8 +53,8 @@ export default function LastNameInput({ inputRef, signUpProps, setSignUpProps, s
             onSubmitEditing={() => {
                 if (nextInputRef) {
                     handleForm.inputBlur('lastName', lastNameValue)
-                        .then(() => {
-                            if (!errorMsg) {
+                        .then((isValid) => {
+                            if (isValid) {
                                 nextInputRef.current?.focus();
                             }
                         });
