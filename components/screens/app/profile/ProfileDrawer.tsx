@@ -62,8 +62,8 @@ export default function ProfileDrawer({
 
     const handleDeleteAccount = () => {
         Alert.alert(
-        'Delete account',
-        'Are you sure you want to delete your account ? This action is irreversible.',
+            'Delete account',
+            'Are you sure you want to delete your account ? This action is irreversible.',
         [
             {
             text: 'Cancel',
@@ -73,11 +73,14 @@ export default function ProfileDrawer({
             text: 'Delete',
             style: 'destructive',
             onPress: () => {
+                console.log('handleDeleteAccount : ', user, sessionToken);
                 if (user && sessionToken) {
-                    deleteAccount(user.id, sessionToken).then((data) => {
-                        if (data) {
+                    deleteAccount(user.id, sessionToken).then((success) => {
+                        if (success) {
+                            console.log('handleDeleteAccount success : ', success);
                             onClose();
                             onLogout();
+                            Alert.alert('Success', 'Your account has been deleted successfully');
                         } else {
                             Alert.alert('Error', 'An error occurred while deleting your account');
                         }

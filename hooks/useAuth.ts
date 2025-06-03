@@ -131,13 +131,13 @@ export const useAuth = () => {
 	const deleteAccount = async (userId: string, token: string) => {
 		return authService
 			.deleteAccount(userId, token)
-			.then((data) => {
+			.then(() => {
 				router.replace('/login');
-				return data;
+				return true;
 			})
 			.catch(() => {
-				setErrorMsg('Erreur lors de la suppression du compte.');
-				return null;
+				setErrorMsg('Error when deleting account.');
+				return false;
 			});
 	};
 
@@ -146,9 +146,7 @@ export const useAuth = () => {
 			.getUser(token)
 			.then((data) => data)
 			.catch(() => {
-				setErrorMsg(
-					'Erreur lors de la récupération du profil utilisateur.'
-				);
+				setErrorMsg('Error when getting user profile.');
 				return null;
 			});
 	};
@@ -161,9 +159,7 @@ export const useAuth = () => {
 				return data;
 			})
 			.catch(() => {
-				setErrorMsg(
-					'Erreur lors de la récupération de la collection utilisateur.'
-				);
+				setErrorMsg('Error when getting user collection.');
 				return null;
 			});
 	};
@@ -174,9 +170,7 @@ export const useAuth = () => {
 			.getUserSneakers()
 			.then((data) => data)
 			.catch(() => {
-				setErrorMsg(
-					'Erreur lors de la récupération des sneakers utilisateur.'
-				);
+				setErrorMsg('Error when getting user sneakers.');
 				return null;
 			});
 	};
