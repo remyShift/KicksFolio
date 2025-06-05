@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { View, Pressable, Animated, Alert, Linking } from 'react-native';
 import DrawerMenuItem from './DrawerMenuItem';
 import { router } from 'expo-router';
@@ -21,21 +21,25 @@ export default function ProfileDrawer({
     sessionToken 
 }: ProfileDrawerProps) {
     const translateX = useRef(new Animated.Value(400)).current;
+    const [isVisible, setIsVisible] = useState(false);
     const { deleteAccount } = useAuth();
 
     useEffect(() => {
         if (visible) {
+            setIsVisible(true);
             Animated.timing(translateX, {
                 toValue: 0,
                 duration: 300,
                 useNativeDriver: true
-        }).start();
+            }).start();
         } else {
             Animated.timing(translateX, {
                 toValue: 400,
                 duration: 300,
                 useNativeDriver: true
-        }).start();
+            }).start(() => {
+                setIsVisible(false);
+            });
         }
     }, [visible]);
 
@@ -92,7 +96,7 @@ export default function ProfileDrawer({
         );
     };
 
-    if (!visible) return null;
+    if (!isVisible) return null;
 
     return (
         <>
