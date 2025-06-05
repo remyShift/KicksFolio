@@ -1,4 +1,4 @@
-import { ScrollView, View } from 'react-native';
+import { RefreshControl, ScrollView, View } from 'react-native';
 import { useSession } from '@/context/authContext';
 import { useState, useMemo, useEffect } from 'react';
 import { Sneaker } from '@/types/Sneaker';
@@ -19,6 +19,13 @@ export default function User() {
   const [sneaker, setSneaker] = useState<Sneaker | null>(null);
   const [currentSneaker, setCurrentSneaker] = useState<Sneaker | null>(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await getUserSneakers(user!, sessionToken!);
+    setRefreshing(false);
+  };
 
   useEffect(() => {
     setCurrentSneaker(sneaker);
@@ -28,7 +35,7 @@ export default function User() {
     if (user && sessionToken) {
       getUserSneakers(user, sessionToken);
     }
-  }, [userSneakers]);
+  }, [user, sessionToken]);
 
   const sneakersByBrand = useMemo(() => {
     if (!userSneakers) return {};
@@ -53,7 +60,16 @@ export default function User() {
 
   return (
     <>
-      <ScrollView className="flex-1">
+      <ScrollView className="flex-1"
+        refreshControl={
+          <RefreshControl 
+            refreshing={refreshing} 
+            onRefresh={onRefresh}
+            tintColor="#FF6B6B"
+            progressViewOffset={60}
+          />
+        }
+      >
         <View className="flex-1 gap-12">
           <ProfileHeader onMenuPress={() => setDrawerVisible(true)} />
           

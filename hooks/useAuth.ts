@@ -13,7 +13,8 @@ export const useAuth = () => {
 	const [errorMsg, setErrorMsg] = useState('');
 	const authService = new AuthService();
 	const formValidation = new FormValidationService(setErrorMsg, {});
-	const { setSessionToken, setUserCollection } = useSession();
+	const { setSessionToken, setUserCollection, setUserSneakers } =
+		useSession();
 	const { validateSignUpStep1 } = useSignUpValidation();
 
 	const login = async (email: string, password: string) => {
@@ -168,7 +169,12 @@ export const useAuth = () => {
 		const sneakerService = new SneakersService(user.id, token);
 		return sneakerService
 			.getUserSneakers()
-			.then((data) => data)
+			.then((data) => {
+				console.log('data', data);
+				setUserSneakers(data.sneakers);
+				console.log('toto');
+				return data;
+			})
 			.catch(() => {
 				setErrorMsg('Error when getting user sneakers.');
 				return null;
