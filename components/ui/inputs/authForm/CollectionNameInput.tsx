@@ -42,7 +42,6 @@ export default function CollectionNameInput({ collectionName, setCollectionName,
                 autoComplete='off'
                 returnKeyType='done'
                 onSubmitEditing={() => {
-                    console.log('onSubmitEditing : ', collectionNameValue);
                     handleForm.inputBlur('collectionName', collectionNameValue)
                         .then((isValid) => {
                             if (isValid) {

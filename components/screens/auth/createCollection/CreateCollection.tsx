@@ -55,7 +55,6 @@ export default function CreateCollection() {
                             content='Create' 
                             backgroundColor='bg-primary' 
                             onPressAction={() => {
-                                console.log('onPressAction ', collectionName);
                                 formValidation.validateField(collectionName, 'collectionName')
                                     .then(isValid => {
                                         if (isValid) {

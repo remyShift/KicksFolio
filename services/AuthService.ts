@@ -203,7 +203,6 @@ export class AuthService extends BaseApiService {
 		userId: string,
 		token: string
 	): Promise<{ message: string }> {
-		console.log('deleteAccount : ', userId, token);
 		const response = await fetch(`${this.baseUrl}/users/${userId}`, {
 			method: 'DELETE',
 			headers: this.getAuthHeaders(token),

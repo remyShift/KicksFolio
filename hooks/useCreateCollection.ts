@@ -10,11 +10,9 @@ export function useCreateCollection() {
 	const { getUserCollection } = useAuth();
 
 	const createCollection = async (collectionName: string) => {
-		console.log('createCollection : ', collectionName);
 		setError('');
 
 		if (!user || !sessionToken) {
-			console.log('user or sessionToken is not defined');
 			setError('Something went wrong, please try again.');
 			return false;
 		}

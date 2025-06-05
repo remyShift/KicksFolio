@@ -77,11 +77,9 @@ export default function ProfileDrawer({
             text: 'Delete',
             style: 'destructive',
             onPress: () => {
-                console.log('handleDeleteAccount : ', user, sessionToken);
                 if (user && sessionToken) {
                     deleteAccount(user.id, sessionToken).then((success) => {
                         if (success) {
-                            console.log('handleDeleteAccount success : ', success);
                             onClose();
                             onLogout();
                             Alert.alert('Success', 'Your account has been deleted successfully');
