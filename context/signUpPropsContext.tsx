@@ -1,5 +1,5 @@
 import { createContext, useContext, type PropsWithChildren, useState } from 'react';
-import { UserData } from '@/types/Auth';
+import { UserData } from '@/types/auth';
 
 const SignUpPropsContext = createContext<{
     signUpProps: UserData

@@ -2,12 +2,12 @@ import { View, Text, ScrollView, KeyboardAvoidingView, Platform, Pressable, Text
 import { useState, useRef } from 'react'
 import { router } from 'expo-router'
 import { Image } from 'expo-image'
-import { Ionicons } from '@expo/vector-icons'
+import { Ionicons, MaterialIcons } from '@expo/vector-icons'
 import PageTitle from '@/components/ui/text/PageTitle'
 import MainButton from '@/components/ui/buttons/MainButton'
 import ErrorMsg from '@/components/ui/text/ErrorMsg'
 import { useSession } from '@/context/authContext'
-import { UserData } from '@/types/Auth'
+import { UserData } from '@/types/auth'
 import UsernameInput from '@/components/ui/inputs/authForm/UsernameInput'
 import FirstNameInput from '@/components/ui/inputs/authForm/FirstNameInput'
 import LastNameInput from '@/components/ui/inputs/authForm/LastNameInput'
@@ -68,10 +68,6 @@ export default function EditProfileForm() {
                     <PageTitle content="Edit profile" />
                 </View>
 
-                <View className="absolute w-full flex items-center" style={{ top: -50 }}>
-                    <ErrorMsg content={mergedErrorMsg} display={!!mergedErrorMsg} />
-                </View>
-
                 <View className="items-center gap-4">
                     {profileData.profile_picture ? (
                         <View className="w-32 h-32 rounded-full">
@@ -117,14 +113,14 @@ export default function EditProfileForm() {
                                 }
                             ])
                         }} className="w-32 h-32 bg-primary rounded-full flex-row items-center justify-center">
-                            <Text className="text-white font-actonia text-6xl">
-                                {profileData.username.charAt(0)}
-                            </Text>
+                            <MaterialIcons name="add-a-photo" size={32} color="white" />
                         </Pressable>
                     )}
                 </View>
 
                 <View className="flex flex-col gap-4 w-full justify-center items-center">
+                    <ErrorMsg content={mergedErrorMsg} display={!!mergedErrorMsg} />
+
                     <UsernameInput
                         inputRef={usernameInputRef}
                         signUpProps={profileData}
@@ -132,6 +128,7 @@ export default function EditProfileForm() {
                         scrollViewRef={scrollViewRef}
                         onErrorChange={setUsernameErrorMsg}
                         onValueChange={setUsername}
+                        nextInputRef={firstNameInputRef}
                     />
                     <FirstNameInput
                         inputRef={firstNameInputRef}
@@ -140,6 +137,7 @@ export default function EditProfileForm() {
                         scrollViewRef={scrollViewRef}
                         onErrorChange={setFirstNameErrorMsg}
                         onValueChange={setFirstName}
+                        nextInputRef={lastNameInputRef}
                     />
                     <LastNameInput
                         inputRef={lastNameInputRef}
@@ -148,6 +146,7 @@ export default function EditProfileForm() {
                         scrollViewRef={scrollViewRef}
                         onErrorChange={setLastNameErrorMsg}
                         onValueChange={setLastName}
+                        nextInputRef={sneakerSizeInputRef}
                     />
                     <SizeInput
                         inputRef={sneakerSizeInputRef}

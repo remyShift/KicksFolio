@@ -13,7 +13,7 @@ import SneakersModalWrapper from '@/components/screens/app/profile/SneakersModal
 
 export default function User() {
   const { user, userSneakers, sessionToken, setUserSneakers } = useSession();
-  const { logout, getUserSneakers } = useAuth();
+  const { logout, getUserSneakers, getUser } = useAuth();
   const [modalVisible, setModalVisible] = useState(false);
   const [modalStep, setModalStep] = useState<'index' | 'sku' | 'addForm' | 'view'>('index');
   const [sneaker, setSneaker] = useState<Sneaker | null>(null);
@@ -23,7 +23,12 @@ export default function User() {
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await getUserSneakers(user!, sessionToken!);
+    if (user && sessionToken) {
+      console.log('onRefresh called', user);
+      await getUser(sessionToken);
+      console.log('getUser called', user);
+      await getUserSneakers(user, sessionToken);
+    }
     setRefreshing(false);
   };
 
@@ -33,6 +38,7 @@ export default function User() {
 
   useEffect(() => {
     if (user && sessionToken) {
+      getUser(sessionToken);
       getUserSneakers(user, sessionToken);
     }
   }, [user, sessionToken]);

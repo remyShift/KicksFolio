@@ -13,7 +13,7 @@ export const useAuth = () => {
 	const [errorMsg, setErrorMsg] = useState('');
 	const authService = new AuthService();
 	const formValidation = new FormValidationService(setErrorMsg, {});
-	const { setSessionToken, setUserCollection, setUserSneakers } =
+	const { setSessionToken, setUserCollection, setUserSneakers, setUser } =
 		useSession();
 	const { validateSignUpStep1 } = useSignUpValidation();
 
@@ -120,6 +120,7 @@ export const useAuth = () => {
 		return authService
 			.updateUser(userId, profileData, token)
 			.then((data) => {
+				setUser(data.user);
 				router.replace('/(app)/(tabs)/user');
 				return data;
 			})
@@ -170,9 +171,7 @@ export const useAuth = () => {
 		return sneakerService
 			.getUserSneakers()
 			.then((data) => {
-				console.log('data', data);
 				setUserSneakers(data.sneakers);
-				console.log('toto');
 				return data;
 			})
 			.catch(() => {
