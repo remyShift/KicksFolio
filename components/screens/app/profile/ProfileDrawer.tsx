@@ -131,7 +131,7 @@ export default function ProfileDrawer({
                     <DrawerMenuItem 
                         icon="document-text-outline"
                         label="Privacy Policy"
-                        onPress={() => Linking.openURL('https://remyshift.github.io/KicksFolio/docs/index.md')}
+                        onPress={() => Linking.openURL('https://remyshift.github.io/KicksFolio/')}
                     />
 
                     <DrawerMenuItem 

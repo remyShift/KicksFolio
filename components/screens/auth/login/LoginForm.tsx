@@ -33,11 +33,10 @@ export default function LoginForm() {
         setPasswordErrorMsg('');
         
         login(email, password)
-            .then(() => {
-                console.log('Login successful');
-            })
             .catch((error) => {
-                console.error('Login error:', error);
+                console.log(error);
+                setEmailErrorMsg(error.message);
+                setPasswordErrorMsg('');
             });
     };
 
