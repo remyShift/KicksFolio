@@ -1,5 +1,7 @@
 import { View, Text } from 'react-native';
 import { Image } from 'expo-image';
+import Feather from '@expo/vector-icons/Feather';
+
 
 interface ProfileAvatarProps {
     profilePictureUrl?: string;
@@ -27,9 +29,7 @@ export default function ProfileAvatar({ profilePictureUrl, username }: ProfileAv
 
     return (
         <View className='w-24 h-24 bg-primary rounded-full items-center justify-center'>
-        <Text className='text-white font-actonia text-6xl text-center'>
-            {username.charAt(0)}
-        </Text>
+            <Feather name="user" size={40} color="white" />
         </View>
     );
 } 
