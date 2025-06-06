@@ -1,31 +1,15 @@
-import { View, Text } from 'react-native';
-import { ModalStep } from '../types';
+import { View, Text, Pressable } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import { useModalStore } from '@/store/useModalStore';
 
-interface ModalHeaderProps {
-    currentStep: ModalStep;
-    onClose: () => void;
-}
-
-export const ModalHeader = ({ currentStep, onClose }: ModalHeaderProps) => {
-    const getTitle = () => {
-        switch (currentStep) {
-            case 'index':
-                return 'Add Sneakers';
-            case 'sku':
-                return 'Enter SKU';
-            case 'addForm':
-                return 'Add Details';
-            case 'view':
-                return 'Sneaker Details';
-            default:
-                return 'Add Sneakers';
-        }
-    };
+export const ModalHeader = () => {
+    const { setIsVisible } = useModalStore();
 
     return (
         <View className="flex-row justify-end py-2">
-            <AntDesign name="close" size={24} color="black" />
+            <Pressable onPress={() => setIsVisible(false)}>
+                <AntDesign name="close" size={24} color="black" />
+            </Pressable>
         </View>
     );
 };

@@ -5,23 +5,22 @@ import MainButton from '@/components/ui/buttons/MainButton';
 import { ScrollView, View, Modal, Pressable } from 'react-native';
 import { useSession } from '@/context/authContext';
 import { useLocalSearchParams } from "expo-router";
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { SneakersModal } from '@/components/modals/SneakersModal';
-import { useStepModalStore } from '@/store/useStepModalStore';
+import { useModalStore } from '@/store/useModalStore';
 
 export default function Index() {
     const params = useLocalSearchParams();
     const isNewUser = params.newUser === 'true';
     const { userCollection, userSneakers, setUserSneakers } = useSession();
-    const [modalVisible, setModalVisible] = useState(false);
-    const { setModalStep } = useStepModalStore();
+    const { setModalStep, setIsVisible, isVisible } = useModalStore();
 
     useEffect(() => {
         if (isNewUser || !userSneakers || userSneakers.length === 0) {
             setModalStep('index');
-            setModalVisible(true);
+            setIsVisible(true);
         } else {
-            setModalVisible(false);
+            setIsVisible(false);
         }
     }, [isNewUser, userSneakers]);
 
@@ -53,12 +52,12 @@ export default function Index() {
             <Modal
                 animationType="slide"
                 transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => setModalVisible(false)}
+                visible={isVisible}
+                onRequestClose={() => setIsVisible(false)}
             >
                 <Pressable 
                     className="flex-1 bg-black/50" 
-                    onPress={() => setModalVisible(false)}
+                    onPress={() => setIsVisible(false)}
                 >
                     <View className="flex-1 justify-end">
                         <Pressable 
@@ -68,8 +67,6 @@ export default function Index() {
                             }}
                         >
                             <SneakersModal 
-                                isVisible={modalVisible} 
-                                onClose={() => setModalVisible(false)} 
                                 userSneakers={userSneakers} 
                                 setUserSneakers={setUserSneakers} 
                                 sneaker={null} 

@@ -3,7 +3,7 @@ import { View, ScrollView } from 'react-native';
 import BrandTitle from '@/components/ui/text/BrandTitle';
 import SneakerCard from '@/components/ui/cards/SneakerCard';
 import { Sneaker } from '@/types/Sneaker';
-import { useStepModalStore } from '@/store/useStepModalStore';
+import { useModalStore } from '@/store/useModalStore';
 
 const brandLogos: Record<string, any> = {
     nike: require('@/assets/images/brands/nike.png'),
@@ -26,7 +26,7 @@ export default function SneakersByBrand({
     sneakersByBrand, 
     onSneakerPress
 }: SneakersByBrandProps) {
-    const { setModalStep } = useStepModalStore();
+    const { setModalStep } = useModalStore();
 
     return (
         <View className="flex-1 gap-4">

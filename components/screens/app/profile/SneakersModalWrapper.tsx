@@ -1,32 +1,31 @@
 import { Modal, Pressable, View } from 'react-native';
 import { SneakersModal } from '@/components/modals/SneakersModal';
 import { Sneaker } from '@/types/Sneaker';
+import { useModalStore } from '@/store/useModalStore';
 
 interface SneakersModalWrapperProps {
-    visible: boolean;
-    onClose: () => void;
     sneaker: Sneaker | null;
     userSneakers: Sneaker[] | null;
     setUserSneakers: (sneakers: Sneaker[] | null) => void;
 }
 
 export default function SneakersModalWrapper({
-    visible,
-    onClose,
     sneaker,
     userSneakers,
     setUserSneakers
 }: SneakersModalWrapperProps) {
+    const { isVisible, setIsVisible } = useModalStore();
+
     return (
         <Modal
             animationType="slide"
             transparent={true}
-            visible={visible}
-            onRequestClose={onClose}
+            visible={isVisible}
+            onRequestClose={() => setIsVisible(false)}
         >
             <Pressable 
                 className="flex-1 bg-black/50" 
-                onPress={onClose}
+                onPress={() => setIsVisible(false)}
             >
                 <View className="flex-1 justify-end">
                     <Pressable 
@@ -36,8 +35,6 @@ export default function SneakersModalWrapper({
                         }}
                     >
                         <SneakersModal 
-                            isVisible={visible} 
-                            onClose={onClose} 
                             userSneakers={userSneakers} 
                             setUserSneakers={setUserSneakers} 
                             sneaker={sneaker} 

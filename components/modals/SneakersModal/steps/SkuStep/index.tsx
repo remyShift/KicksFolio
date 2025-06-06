@@ -1,90 +1,80 @@
-import { View, KeyboardAvoidingView, ScrollView, Platform, TextInput } from 'react-native';
-import { ModalStep } from '../../types';
-import BackButton from '@/components/ui/buttons/BackButton';
-import NextButton from '@/components/ui/buttons/NextButton';
+import { ScrollView, Platform, TextInput, View, KeyboardAvoidingView, Text } from 'react-native';
 import { useSneakerAPI } from '../../hooks/useSneakerAPI';
 import { useSession } from '@/context/authContext';
-import { Sneaker } from '@/types/Sneaker';
-import { useState, useRef } from 'react';
+import { useModalStore } from '@/store/useModalStore';
 import SkuInput from './SkuInput';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
+import { useState, useRef } from 'react';
+import { Sneaker } from '@/types/Sneaker';
+import { Link } from 'expo-router';
+import { FontAwesome6 } from '@expo/vector-icons';
 
 interface SkuStepProps {
-    setModalStep: (step: ModalStep) => void;
-    closeModal: () => void;
     setSneaker: (sneaker: Sneaker | null) => void;
+    setSku: (sku: string) => void;
+    errorMsg: string;
 }
 
-export const SkuStep = ({ setModalStep, closeModal, setSneaker }: SkuStepProps) => {
-    const { sessionToken, user } = useSession();
-    const { handleSkuLookup } = useSneakerAPI(sessionToken || null);
+export const SkuStep = ({ 
+    setSneaker,
+    setSku,
+    errorMsg
+}: SkuStepProps) => {
+    const { sessionToken } = useSession();
+    const { setModalStep, setErrorMsg } = useModalStore();
     const [sneakerSKU, setSneakerSKU] = useState('');
-    const [errorMsg, setErrorMsg] = useState('');
     const skuInputRef = useRef<TextInput>(null);
-    const scrollViewRef = useRef<ScrollView>(null);
+    const { handleSkuLookup } = useSneakerAPI(sessionToken || null);
 
-    const handleNext = async () => {
-        if (!sneakerSKU.trim()) {
+    const handleSkuValueChange = (value: string) => {
+        setSneakerSKU(value);
+        setSku(value);
+    };
+
+    const handleSubmit = () => {
+        if (!sneakerSKU) {
             setErrorMsg('Please enter a SKU');
             return;
         }
 
-        handleSkuLookup(sneakerSKU, user?.id!)
-            .then(data => {
-                if (data.results && data.results.length > 0) {
-                    const sneakerData = data.results[0];
-                    setSneaker(sneakerData);
-                    setModalStep('addForm');
-                } else {
-                    setErrorMsg('No data found for this SKU, check the SKU and try again or add it manually.');
-                }
-            })
-            .catch(error => {
-                setErrorMsg('Impossible to find the informations for this SKU. Please check the SKU and try again or add it manually.');
-                console.error('Error when fetching SKU data:', error);
-            });
-    };
-
-    const handleSkuValueChange = (value: string) => {
-        setSneakerSKU(value);
-    };
-
-    const handleSkuErrorChange = (error: string) => {
-        setErrorMsg(error);
+        handleSkuLookup(
+            sneakerSKU,
+            setSneaker,
+            setModalStep,
+            setErrorMsg
+        );
     };
 
     return (
-        <View className="flex-1 justify-between items-center gap-8">
-            <KeyboardAvoidingView 
-                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                keyboardVerticalOffset={Platform.OS === 'ios' ? 120 : 20}
-                className="flex-1 w-full"
-            >
-                <ScrollView 
-                    ref={scrollViewRef}
-                    className="flex-1"
-                    keyboardShouldPersistTaps="handled"
-                >
-                    <ErrorMsg content={errorMsg} display={errorMsg !== ''} />
-                    <SkuInput
-                        inputRef={skuInputRef}
-                        scrollViewRef={scrollViewRef}
-                        onErrorChange={handleSkuErrorChange}
-                        onValueChange={handleSkuValueChange}
-                    />
-                </ScrollView>
-            </KeyboardAvoidingView>
-            <View className="justify-end items-start w-full pb-5">
-                <View className="flex-row justify-between w-full">
-                    <BackButton 
-                        onPressAction={() => setModalStep('index')} 
-                    />
-                    <NextButton
-                        content="Next"
-                        onPressAction={handleNext}
-                    />
+        <KeyboardAvoidingView 
+            className="flex-1" 
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 120 : 20}
+        >
+            <View className="w-full justify-center items-center gap-12 mt-10">
+                <View className="flex-row items-center">
+                    <Text className="font-spacemono-bold text-xl text-center px-6">
+                        Put you sneakers SKU below
+                    </Text>
+                    <Link href="https://www.wikihow.com/Find-Model-Numbers-on-Nike-Shoes" 
+                        className="flex-row justify-center items-center gap-2">
+                        <FontAwesome6 name="lightbulb" size={20} color="#F27329" />
+                    </Link>
                 </View>
+
+                <ErrorMsg content={errorMsg} display={!!errorMsg}/>                                                                                                                                 
+
+                <SkuInput
+                    inputRef={skuInputRef}
+                    onErrorChange={setErrorMsg}
+                    onValueChange={handleSkuValueChange}
+                    onSubmit={handleSubmit}
+                />
+
+                <Text className="font-spacemono-bold text-sm text-center px-6">
+                    NB : For Nike sneakers dont forget the "-" and the 3 numbers following it or it will not work.
+                </Text>
             </View>
-        </View>
+        </KeyboardAvoidingView>
     );
 };

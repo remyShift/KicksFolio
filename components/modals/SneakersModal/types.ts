@@ -2,62 +2,61 @@ import { Sneaker } from '@/types/Sneaker';
 
 export type ModalStep = 'index' | 'sku' | 'addForm' | 'view';
 
-export type InputType = 'name' | 'brand' | 'size' | 'condition' | 'status' | 'pricePaid' | 'sku';
+export type InputType =
+	| 'name'
+	| 'brand'
+	| 'size'
+	| 'condition'
+	| 'status'
+	| 'pricePaid'
+	| 'sku';
 
 export interface InitialStepProps {
-    setModalStep: (step: ModalStep) => void;
-    closeModal: () => void;
+	userSneakersLength?: number;
 }
 
 export interface SkuStepProps {
-    setModalStep: (step: ModalStep) => void;
-    closeModal: () => void;
-    setSneaker: (sneaker: Sneaker | null) => void;
+	setSneaker: (sneaker: Sneaker | null) => void;
+	setSku: (sku: string) => void;
+	errorMsg: string;
 }
 
 export interface FormStepProps {
-    setModalStep: (step: ModalStep) => void;
-    closeModal: () => void;
-    sneaker: Sneaker | null;
-    setSneaker: (sneaker: Sneaker | null) => void;
-    userSneakers: Sneaker[] | null;
-    setUserSneakers: (sneakers: Sneaker[] | null) => void;
+	sneaker: Sneaker | null;
+	setSneaker: (sneaker: Sneaker | null) => void;
+	userSneakers: Sneaker[] | null;
+	setUserSneakers: (sneakers: Sneaker[] | null) => void;
+	errorMsg: string;
 }
 
 export interface ViewStepProps {
-    setModalStep: (step: ModalStep) => void;
-    closeModal: () => void;
-    sneaker: Sneaker;
-    setSneaker: (sneaker: Sneaker | null) => void;
-    userSneakers: Sneaker[] | null;
+	sneaker: Sneaker;
+	setSneaker: (sneaker: Sneaker | null) => void;
+	userSneakers: Sneaker[] | null;
+	setUserSneakers: (sneakers: Sneaker[] | null) => void;
 }
 
 export interface ValidationErrors {
-    sneakerName?: string;
-    sneakerBrand?: string;
-    sneakerStatus?: string;
-    sneakerSize?: string;
-    sneakerCondition?: string;
-    sneakerImage?: string;
-    sneakerPricePaid?: string;
-    sneakerDescription?: string;
+	[key: string]: string;
 }
 
 export interface ValidationError {
-    field: string;
-    message: string;
+	field: string;
+	message: string;
 }
 
 export interface SneakerFormData {
-    image: string;
-    model: string;
-    brand: string;
-    size: number;
-    condition: number;
-    status: string;
-    userId: string;
-    price_paid: number;
-    purchase_date: string;
-    description: string;
-    estimated_value: number;
+	model: string;
+	brand: string;
+	status: string;
+	size: string;
+	condition: string;
+	images: { url: string }[];
+	price_paid: string;
+	description: string;
+}
+
+export interface ValidationResult {
+	isValid: boolean;
+	errors: ValidationErrors;
 }

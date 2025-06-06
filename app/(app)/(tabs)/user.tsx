@@ -10,13 +10,12 @@ import EmptySneakersState from '@/components/screens/app/profile/EmptySneakersSt
 import SneakersByBrand from '@/components/screens/app/profile/SneakersByBrand';
 import ProfileDrawer from '@/components/screens/app/profile/ProfileDrawer';
 import SneakersModalWrapper from '@/components/screens/app/profile/SneakersModalWrapper';
-import { useStepModalStore } from '@/store/useStepModalStore';
+import { useModalStore } from '@/store/useModalStore';
 
 export default function User() {
   const { user, userSneakers, sessionToken, setUserSneakers } = useSession();
   const { logout, getUserSneakers, getUser } = useAuth();
-  const [modalVisible, setModalVisible] = useState(false);
-  const { setModalStep } = useStepModalStore();
+  const { setModalStep, setIsVisible } = useModalStore();
   const [sneaker, setSneaker] = useState<Sneaker | null>(null);
   const [currentSneaker, setCurrentSneaker] = useState<Sneaker | null>(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -57,12 +56,12 @@ export default function User() {
 
   const handleAddSneaker = () => {
     setModalStep('index');
-    setModalVisible(true);
+    setIsVisible(true);
   };
 
   const handleSneakerPress = (sneaker: Sneaker) => {
     setSneaker(sneaker);
-    setModalVisible(true);
+    setIsVisible(true);
   };
 
   return (
@@ -95,8 +94,6 @@ export default function User() {
         </View>
 
         <SneakersModalWrapper 
-          visible={modalVisible}
-          onClose={() => setModalVisible(false)}
           sneaker={currentSneaker}
           userSneakers={userSneakers}
           setUserSneakers={setUserSneakers}

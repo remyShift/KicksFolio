@@ -1,13 +1,12 @@
 import { View, Text, Pressable } from 'react-native';
-import { ModalStep } from '../../types';
+import { useModalStore } from '@/store/useModalStore';
 
 interface InitialStepProps {
-    setModalStep: (step: ModalStep) => void;
-    closeModal: () => void;
     userSneakersLength?: number;
 }
 
-export const InitialStep = ({ setModalStep, closeModal, userSneakersLength = 0 }: InitialStepProps) => {
+export const InitialStep = ({ userSneakersLength = 0 }: InitialStepProps) => {
+    const { setModalStep } = useModalStore();
     const indexTitle = userSneakersLength === 0 ? 'Add your first sneaker' : 'Add a new sneaker';
 
     return (
@@ -24,7 +23,7 @@ export const InitialStep = ({ setModalStep, closeModal, userSneakersLength = 0 }
                         </Text>
                     </Pressable>
                     <Text className="font-spacemono-bold text-sm text-center">
-                        You can find the SKU on the sneaker box or on the sneaker itself.
+                        Prefetch the sneaker information from the SKU.
                     </Text>
                 </View>
                 <View className="flex-col justify-center items-center gap-1 px-6">

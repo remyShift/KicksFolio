@@ -1,5 +1,4 @@
 import { View, KeyboardAvoidingView, ScrollView, Platform } from 'react-native';
-import { ModalStep } from '../../types';
 import { useSneakerAPI } from '../../hooks/useSneakerAPI';
 import { useSneakerValidation } from '../../hooks/useSneakerValidation';
 import { useSession } from '@/context/authContext';
@@ -9,23 +8,26 @@ import { FormFields } from './components/FormFields';
 import { ActionButtons } from './components/ActionButtons';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import { useState, useRef } from 'react';
+import { useModalStore } from '@/store/useModalStore';
+import { SneakerFormData } from '../../types';
 
 interface FormStepProps {
-    setModalStep: (step: ModalStep) => void;
-    closeModal: () => void;
     sneaker: Sneaker | null;
     setSneaker: (sneaker: Sneaker | null) => void;
     userSneakers: Sneaker[] | null;
     setUserSneakers: (sneakers: Sneaker[] | null) => void;
+    errorMsg: string;
 }
 
 export const FormStep = ({ 
-    setModalStep, 
-    closeModal, 
     sneaker, 
-    userSneakers
+    setSneaker,
+    userSneakers,
+    setUserSneakers,
+    errorMsg
 }: FormStepProps) => {
     const { user, sessionToken } = useSession();
+    const { setModalStep, setIsVisible } = useModalStore();
     const scrollViewRef = useRef<ScrollView>(null);
     
     const [sneakerName, setSneakerName] = useState(sneaker?.model || '');
@@ -36,11 +38,10 @@ export const FormStep = ({
     const [sneakerImage, setSneakerImage] = useState(sneaker?.images?.[0]?.url || '');
     const [sneakerPricePaid, setSneakerPricePaid] = useState(sneaker?.price_paid?.toString() || '');
     const [sneakerDescription, setSneakerDescription] = useState(sneaker?.description || '');
-    const [errorMsg, setErrorMsg] = useState('');
     const [fieldErrors, setFieldErrors] = useState<{[key: string]: string}>({});
 
     const { validateSneakerForm } = useSneakerValidation();
-    const { handleSneakerSubmit } = useSneakerAPI(sessionToken || null);
+    const { handleSneakerSubmit } = useSneakerAPI(sessionToken || null, user?.collection?.id);
 
     const currentSneakerId = userSneakers ? userSneakers.find((s: Sneaker) => s.id === sneaker?.id)?.id : null;
     const isNewSneaker = !currentSneakerId;
@@ -54,7 +55,6 @@ export const FormStep = ({
         setSneakerImage('');
         setSneakerPricePaid('');
         setSneakerDescription('');
-        setErrorMsg('');
         setFieldErrors({});
     };
 
@@ -66,51 +66,50 @@ export const FormStep = ({
     };
 
     const handleSubmit = () => {
-        const isValid = validateSneakerForm({
+        const formData: SneakerFormData = {
             model: sneakerName,
             brand: sneakerBrand,
-            size: Number(sneakerSize),
-            condition: Number(sneakerCondition),
             status: sneakerStatus,
-            image: sneakerImage,
-            userId: user?.id || '',
-            price_paid: Number(sneakerPricePaid),
-            purchase_date: '',
-            description: sneakerDescription,
-            estimated_value: 0,
-        });
-
-        if (!isValid) return;
-
-        const formData = {
-            id: currentSneakerId || '',
-            model: sneakerName,
-            brand: sneakerBrand,
-            size: Number(sneakerSize),
-            condition: Number(sneakerCondition),
-            status: sneakerStatus,
-            image: sneakerImage,
-            collection_id: user?.collection?.id || '',
-            price_paid: Number(sneakerPricePaid),
-            purchase_date: '',
-            description: sneakerDescription,
-            estimated_value: 0,
-            release_date: null,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-            images: [{
-                id: '',
-                url: sneakerImage
-            }]
+            size: sneakerSize,
+            condition: sneakerCondition,
+            images: sneakerImage ? [{ url: sneakerImage }] : [],
+            price_paid: sneakerPricePaid,
+            description: sneakerDescription
         };
 
-        handleSneakerSubmit(formData, currentSneakerId || null, user?.id || '')
-            .then(() => {
-                resetForm();
-                closeModal();
+        const validation = validateSneakerForm(formData);
+        if (!validation.isValid) {
+            setFieldErrors(validation.errors);
+            return;
+        }
+
+        const sneakerData: Partial<Sneaker> = {
+            id: currentSneakerId || undefined,
+            model: formData.model,
+            brand: formData.brand,
+            status: formData.status,
+            size: Number(formData.size),
+            condition: Number(formData.condition),
+            images: formData.images.map(img => ({ id: '', url: img.url })),
+            price_paid: Number(formData.price_paid),
+            description: formData.description,
+            collection_id: user?.collection?.id || '',
+            purchase_date: new Date().toISOString(),
+            estimated_value: 0,
+            release_date: null
+        };
+
+        handleSneakerSubmit(sneakerData, user?.id!)
+            .then((response) => {
+                if (response) {
+                    const updatedSneakers = userSneakers ? [...userSneakers, response] : [response];
+                    setUserSneakers(updatedSneakers);
+                    setSneaker(response);
+                    setModalStep('view');
+                }
             })
-            .catch(() => {
-                setErrorMsg('An error occurred while submitting the sneaker, please try again.');
+            .catch((error) => {
+                setFieldErrors({ submit: error.message });
             });
     };
 
@@ -164,7 +163,7 @@ export const FormStep = ({
                         onBack={() => {
                             if (!isNewSneaker) {
                                 resetForm();
-                                closeModal();
+                                setIsVisible(false);
                             }
                             setModalStep('index');
                         }}
