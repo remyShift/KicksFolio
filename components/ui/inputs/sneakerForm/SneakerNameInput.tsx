@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Text, TextInput, View, ScrollView } from "react-native";
-import { useSneakerFieldValidation } from "@/components/modals/SneakersModal/hooks/useSneakerFieldValidation";
+import { useSneakerForm } from "@/hooks/useSneakerForm";
 
 interface SneakerNameInputProps {
     inputRef: React.RefObject<TextInput>;
@@ -8,70 +8,72 @@ interface SneakerNameInputProps {
     onErrorChange: (errorMsg: string) => void;
     onValueChange: (value: string) => void;
     initialValue?: string;
+    nextInputRef?: React.RefObject<TextInput>;
 }
 
 export default function SneakerNameInput({ 
     inputRef, 
-    scrollViewRef, 
+    scrollViewRef,
     onErrorChange, 
     onValueChange,
-    initialValue = ""
+    initialValue = "",
+    nextInputRef
 }: SneakerNameInputProps) {
-    const [isSneakerNameFocused, setIsSneakerNameFocused] = useState(false);
-    const [sneakerNameValue, setSneakerNameValue] = useState(initialValue);
+    const [isNameError, setIsNameError] = useState(false);
+    const [isNameFocused, setIsNameFocused] = useState(false);
+    const [nameValue, setNameValue] = useState(initialValue);
 
-    const { errorMsg, isError, validateName, clearErrors } = useSneakerFieldValidation();
+    const { handleForm, errorMsg } = useSneakerForm({
+        errorSetters: {
+            sneakerName: (isError: boolean) => setIsNameError(isError),
+        },
+        focusSetters: {
+            sneakerName: (isFocused: boolean) => setIsNameFocused(isFocused),
+        },
+        scrollViewRef
+    });
 
     useEffect(() => {
         onErrorChange(errorMsg);
     }, [errorMsg]);
 
     useEffect(() => {
-        onValueChange(sneakerNameValue);
-    }, [sneakerNameValue]);
+        onValueChange(nameValue);
+    }, [nameValue]);
 
     useEffect(() => {
-        setSneakerNameValue(initialValue);
+        setNameValue(initialValue);
     }, [initialValue]);
 
-    const handleFocus = () => {
-        setIsSneakerNameFocused(true);
-        clearErrors();
-    };
-
-    const handleBlur = () => {
-        setIsSneakerNameFocused(false);
-        validateName(sneakerNameValue);
-    };
-
-    const handleChange = (text: string) => {
-        setSneakerNameValue(text);
-        clearErrors();
-    };
-
     return (
-        <View className='flex flex-col gap-2 w-full justify-center items-center'>
-            <Text className='font-spacemono-bold text-lg'>*Sneaker Name</Text>
-            <TextInput
-                ref={inputRef}
-                placeholder="Air Max 1"
-                inputMode="text"
-                value={sneakerNameValue}
-                autoCorrect={false}
-                placeholderTextColor="gray"
-                clearButtonMode="while-editing"
-                returnKeyType="next"
-                enablesReturnKeyAutomatically={true}
-                onFocus={handleFocus}
-                onBlur={handleBlur}
-                onChangeText={handleChange}
-                className={`bg-white rounded-md p-3 w-2/3 font-spacemono-bold ${
-                    isError ? 'border-2 border-red-500' : ''
-                } ${isSneakerNameFocused ? 'border-2 border-primary' : ''}`}
-            />
-            {errorMsg !== '' && (
-                <Text className='text-red-500 text-xs'>{errorMsg}</Text>
-            )}
-        </View>
+        <TextInput
+            ref={inputRef}
+            placeholder="Air Max 1"
+            inputMode="text"
+            value={nameValue}
+            autoCorrect={false}
+            placeholderTextColor="gray"
+            clearButtonMode="while-editing"
+            returnKeyType="next"
+            onSubmitEditing={() => {
+                if (nextInputRef) {
+                    handleForm.inputBlur('sneakerName', nameValue, nextInputRef)
+                        .then((isValid) => {
+                            if (isValid) {
+                                nextInputRef.current?.focus();
+                            }
+                        });
+                }
+            }}
+            enablesReturnKeyAutomatically={true}
+            onFocus={() => handleForm.inputFocus('sneakerName')}
+            onBlur={() => handleForm.inputBlur('sneakerName', nameValue)}
+            onChangeText={(text) => {
+                handleForm.inputChange(text, setNameValue);
+            }}
+            className={`bg-white rounded-md p-3 w-full font-spacemono-bold ${
+                isNameError ? 'border-2 border-red-500' : ''
+            } ${isNameFocused ? 'border-2 border-primary' : ''}`}
+        />
     );
 } 

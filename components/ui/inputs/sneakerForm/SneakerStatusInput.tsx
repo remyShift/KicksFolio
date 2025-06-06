@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Text, View, ScrollView } from "react-native";
 import DropdownInput from './DropDownInput';
 import { STATUS } from '@/components/modals/SneakersModal/constants';
-import { useSneakerFieldValidation } from "@/components/modals/SneakersModal/hooks/useSneakerFieldValidation";
+import { useSneakerForm } from "@/hooks/useSneakerForm";
 
 interface SneakerStatusInputProps {
     scrollViewRef: React.RefObject<ScrollView>;
@@ -17,41 +17,50 @@ export default function SneakerStatusInput({
     onValueChange,
     initialValue = ""
 }: SneakerStatusInputProps) {
-    const [sneakerStatusValue, setSneakerStatusValue] = useState(initialValue);
+    const [isStatusError, setIsStatusError] = useState(false);
+    const [isStatusFocused, setIsStatusFocused] = useState(false);
+    const [statusValue, setStatusValue] = useState(initialValue);
 
-    const { errorMsg, isError, validateStatus, clearErrors } = useSneakerFieldValidation();
+    const { handleForm, errorMsg } = useSneakerForm({
+        errorSetters: {
+            sneakerStatus: (isError: boolean) => setIsStatusError(isError),
+        },
+        focusSetters: {
+            sneakerStatus: (isFocused: boolean) => setIsStatusFocused(isFocused),
+        },
+        scrollViewRef
+    });
 
     useEffect(() => {
         onErrorChange(errorMsg);
     }, [errorMsg]);
 
     useEffect(() => {
-        onValueChange(sneakerStatusValue);
-    }, [sneakerStatusValue]);
+        onValueChange(statusValue);
+    }, [statusValue]);
 
     useEffect(() => {
-        setSneakerStatusValue(initialValue);
+        setStatusValue(initialValue);
     }, [initialValue]);
 
     const handleStatusSelect = (value: string) => {
-        setSneakerStatusValue(value);
-        validateStatus(value);
+        handleForm.inputChange(value, setStatusValue);
+        handleForm.inputBlur('sneakerStatus', value);
     };
 
     const handleStatusOpen = () => {
-        clearErrors();
+        handleForm.inputFocus('sneakerStatus');
     };
 
     return (
-        <View className='flex flex-col gap-2 w-full justify-center items-center'>
-            <Text className='font-spacemono-bold text-lg'>*Status</Text>
-            <View className="w-2/3">
+        <View className='flex gap-2 w-1/2'>
+            <View className="w-full">
                 <DropdownInput
-                    value={sneakerStatusValue}
+                    value={statusValue}
                     onSelect={handleStatusSelect}
                     options={STATUS}
                     placeholder="Select a status"
-                    isError={isError}
+                    isError={isStatusError}
                     onOpen={handleStatusOpen}
                 />
                 {errorMsg !== '' && (

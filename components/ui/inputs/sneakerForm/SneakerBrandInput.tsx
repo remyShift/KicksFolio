@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Text, View, ScrollView } from "react-native";
 import DropdownInput from '@/components/ui/inputs/sneakerForm/DropDownInput';
 import { BRANDS } from '@/components/modals/SneakersModal/constants';
-import { useSneakerFieldValidation } from "@/components/modals/SneakersModal/hooks/useSneakerFieldValidation";
+import { useSneakerForm } from "@/hooks/useSneakerForm";
 
 interface SneakerBrandInputProps {
     scrollViewRef: React.RefObject<ScrollView>;
@@ -17,41 +17,50 @@ export default function SneakerBrandInput({
     onValueChange,
     initialValue = ""
 }: SneakerBrandInputProps) {
-    const [sneakerBrandValue, setSneakerBrandValue] = useState(initialValue);
+    const [isBrandError, setIsBrandError] = useState(false);
+    const [isBrandFocused, setIsBrandFocused] = useState(false);
+    const [brandValue, setBrandValue] = useState(initialValue);
 
-    const { errorMsg, isError, validateBrand, clearErrors } = useSneakerFieldValidation();
+    const { handleForm, errorMsg } = useSneakerForm({
+        errorSetters: {
+            sneakerBrand: (isError: boolean) => setIsBrandError(isError),
+        },
+        focusSetters: {
+            sneakerBrand: (isFocused: boolean) => setIsBrandFocused(isFocused),
+        },
+        scrollViewRef
+    });
 
     useEffect(() => {
         onErrorChange(errorMsg);
     }, [errorMsg]);
 
     useEffect(() => {
-        onValueChange(sneakerBrandValue);
-    }, [sneakerBrandValue]);
+        onValueChange(brandValue);
+    }, [brandValue]);
 
     useEffect(() => {
-        setSneakerBrandValue(initialValue);
+        setBrandValue(initialValue);
     }, [initialValue]);
 
     const handleBrandSelect = (value: string) => {
-        setSneakerBrandValue(value);
-        validateBrand(value);
+        handleForm.inputChange(value, setBrandValue);
+        handleForm.inputBlur('sneakerBrand', value);
     };
 
     const handleBrandOpen = () => {
-        clearErrors();
+        handleForm.inputFocus('sneakerBrand');
     };
 
     return (
-        <View className='flex flex-col gap-2 w-full justify-center items-center'>
-            <Text className='font-spacemono-bold text-lg'>*Brand</Text>
-            <View className="w-2/3">
+        <View className='flex gap-2 w-1/2'>
+            <View className="w-full">
                 <DropdownInput
-                    value={sneakerBrandValue}
+                    value={brandValue}
                     onSelect={handleBrandSelect}
                     options={BRANDS}
                     placeholder="Select a brand"
-                    isError={isError}
+                    isError={isBrandError}
                     onOpen={handleBrandOpen}
                 />
                 {errorMsg !== '' && (

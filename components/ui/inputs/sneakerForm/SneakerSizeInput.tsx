@@ -12,7 +12,6 @@ interface SneakerSizeInputProps {
 
 export default function SneakerSizeInput({ 
     inputRef, 
-    scrollViewRef, 
     onErrorChange, 
     onValueChange,
     initialValue = ""
@@ -74,9 +73,6 @@ export default function SneakerSizeInput({
                         isError ? 'border-2 border-red-500' : ''
                     } ${isSneakerSizeFocused ? 'border-2 border-primary' : ''}`}
                 />
-                {errorMsg !== '' && (
-                    <Text className='text-red-500 text-xs text-center mt-1'>{errorMsg}</Text>
-                )}
             </View>
         </View>
     );

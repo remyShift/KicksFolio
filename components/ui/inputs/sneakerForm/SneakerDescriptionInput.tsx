@@ -1,3 +1,4 @@
+import { useSneakerForm } from "@/hooks/useSneakerForm";
 import { useEffect, useState } from "react";
 import { Text, TextInput, View, ScrollView } from "react-native";
 
@@ -11,17 +12,28 @@ interface SneakerDescriptionInputProps {
 
 export default function SneakerDescriptionInput({ 
     inputRef, 
-    scrollViewRef, 
     onErrorChange, 
     onValueChange,
-    initialValue = ""
+    initialValue = "",
+    scrollViewRef
 }: SneakerDescriptionInputProps) {
+    const [isSneakerDescriptionError, setIsSneakerDescriptionError] = useState(false);
     const [isSneakerDescriptionFocused, setIsSneakerDescriptionFocused] = useState(false);
     const [sneakerDescriptionValue, setSneakerDescriptionValue] = useState(initialValue);
 
+    const { handleForm, errorMsg } = useSneakerForm({
+        errorSetters: {
+            sneakerDescription: (isError: boolean) => setIsSneakerDescriptionError(isError),
+        },
+        focusSetters: {
+            sneakerDescription: (isFocused: boolean) => setIsSneakerDescriptionFocused(isFocused),
+        },
+        scrollViewRef
+    });
+
     useEffect(() => {
-        onErrorChange(''); // Description is optional, no validation needed
-    }, []);
+        onErrorChange(errorMsg);
+    }, [errorMsg]);
 
     useEffect(() => {
         onValueChange(sneakerDescriptionValue);
@@ -31,44 +43,27 @@ export default function SneakerDescriptionInput({
         setSneakerDescriptionValue(initialValue);
     }, [initialValue]);
 
-    const handleFocus = () => {
-        setIsSneakerDescriptionFocused(true);
-    };
-
-    const handleBlur = () => {
-        setIsSneakerDescriptionFocused(false);
-    };
-
     const handleChange = (text: string) => {
         setSneakerDescriptionValue(text);
     };
 
     return (
-        <View className='flex flex-col gap-2 w-full justify-center items-center'>
-            <Text className='font-spacemono-bold text-lg'>Description</Text>
-            <View className="relative w-2/3">
-                <TextInput
-                    ref={inputRef}
-                    placeholder="Description of your sneakers..."
-                    inputMode="text"
-                    value={sneakerDescriptionValue}
-                    autoCorrect={true}
-                    placeholderTextColor="gray"
-                    returnKeyType="done"
-                    multiline={true}
-                    textAlignVertical="top"
-                    onFocus={handleFocus}
-                    onBlur={handleBlur}
-                    onChangeText={handleChange}
-                    className={`bg-white rounded-md p-3 w-full font-spacemono-bold ${
-                        isSneakerDescriptionFocused ? 'border-2 border-primary' : ''
-                    }`}
-                    style={{
-                        minHeight: 60,
-                        maxHeight: 80
-                    }}
-                />
-            </View>
-        </View>
+        <TextInput
+            ref={inputRef}
+            placeholder="Description of your sneakers..."
+            inputMode="text"
+            value={sneakerDescriptionValue}
+            autoCorrect={true}
+            placeholderTextColor="gray"
+            returnKeyType="done"
+            multiline={true}
+            textAlignVertical="top"
+            onFocus={() => handleForm.inputFocus('sneakerDescription')}
+            onBlur={() => handleForm.inputBlur('sneakerDescription', sneakerDescriptionValue)}
+            onChangeText={handleChange}
+            className={`bg-white rounded-md p-3 w-full h-full font-spacemono-bold ${
+                isSneakerDescriptionFocused ? 'border-2 border-primary' : ''
+            }`}
+        />
     );
 } 

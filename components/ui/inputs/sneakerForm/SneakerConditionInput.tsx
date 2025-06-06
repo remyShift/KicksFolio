@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Text, TextInput, View, ScrollView } from "react-native";
-import { useSneakerFieldValidation } from "@/components/modals/SneakersModal/hooks/useSneakerFieldValidation";
+import { useSneakerForm } from "@/hooks/useSneakerForm";
 
 interface SneakerConditionInputProps {
     inputRef: React.RefObject<TextInput>;
@@ -12,15 +12,24 @@ interface SneakerConditionInputProps {
 
 export default function SneakerConditionInput({ 
     inputRef, 
-    scrollViewRef, 
     onErrorChange, 
     onValueChange,
-    initialValue = ""
+    initialValue = "",
+    scrollViewRef
 }: SneakerConditionInputProps) {
+    const [isSneakerConditionError, setIsSneakerConditionError] = useState(false);
     const [isSneakerConditionFocused, setIsSneakerConditionFocused] = useState(false);
     const [sneakerConditionValue, setSneakerConditionValue] = useState(initialValue);
 
-    const { errorMsg, isError, validateCondition, clearErrors } = useSneakerFieldValidation();
+    const { handleForm, errorMsg } = useSneakerForm({
+        errorSetters: {
+            sneakerCondition: (isError: boolean) => setIsSneakerConditionError(isError),
+        },
+        focusSetters: {
+            sneakerCondition: (isFocused: boolean) => setIsSneakerConditionFocused(isFocused),
+        },
+        scrollViewRef
+    });
 
     useEffect(() => {
         onErrorChange(errorMsg);
@@ -34,21 +43,11 @@ export default function SneakerConditionInput({
         setSneakerConditionValue(initialValue);
     }, [initialValue]);
 
-    const handleFocus = () => {
-        setIsSneakerConditionFocused(true);
-        clearErrors();
-    };
-
-    const handleBlur = () => {
-        setIsSneakerConditionFocused(false);
-        validateCondition(sneakerConditionValue);
-    };
-
     const handleChange = (text: string) => {
         const formattedText = text.replace(',', '.');
         if (formattedText === '' || !isNaN(Number(formattedText))) {
             setSneakerConditionValue(formattedText);
-            clearErrors();
+            handleForm.inputChange(formattedText, setSneakerConditionValue);
         }
     };
 
@@ -67,16 +66,13 @@ export default function SneakerConditionInput({
                     placeholderTextColor="gray"
                     returnKeyType="done"
                     enablesReturnKeyAutomatically={true}
-                    onFocus={handleFocus}
-                    onBlur={handleBlur}
+                    onFocus={() => handleForm.inputFocus('sneakerCondition')}
+                    onBlur={() => handleForm.inputBlur('sneakerCondition', sneakerConditionValue)}
                     onChangeText={handleChange}
                     className={`bg-white rounded-md p-2 w-full font-spacemono-bold ${
-                        isError ? 'border-2 border-red-500' : ''
+                        isSneakerConditionError ? 'border-2 border-red-500' : ''
                     } ${isSneakerConditionFocused ? 'border-2 border-primary' : ''}`}
                 />
-                {errorMsg !== '' && (
-                    <Text className='text-red-500 text-xs text-center mt-1'>{errorMsg}</Text>
-                )}
             </View>
         </View>
     );

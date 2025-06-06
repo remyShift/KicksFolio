@@ -48,8 +48,8 @@ export const FormFields = ({
     const sneakerDescriptionRef = useRef<TextInput>(null);
 
     return (
-        <View className="flex flex-col gap-6 mt-2">
-            <View className="flex flex-col gap-4 w-full items-center">
+        <View className="flex-1 gap-6 mt-2">
+            <View className="flex gap-4 w-full">
                 <SneakerNameInput
                     inputRef={sneakerNameRef}
                     scrollViewRef={scrollViewRef}
@@ -58,19 +58,21 @@ export const FormFields = ({
                     initialValue={initialValues.sneakerName}
                 />
 
-                <SneakerBrandInput
-                    scrollViewRef={scrollViewRef}
-                    onErrorChange={(error) => onErrorChange('sneakerBrand', error)}
-                    onValueChange={onSneakerBrandChange}
-                    initialValue={initialValues.sneakerBrand}
-                />
+                <View className="flex-1 flex-row gap-2">
+                    <SneakerBrandInput
+                        scrollViewRef={scrollViewRef}
+                        onErrorChange={(error) => onErrorChange('sneakerBrand', error)}
+                        onValueChange={onSneakerBrandChange}
+                        initialValue={initialValues.sneakerBrand}
+                    />
 
-                <SneakerStatusInput
-                    scrollViewRef={scrollViewRef}
-                    onErrorChange={(error) => onErrorChange('sneakerStatus', error)}
-                    onValueChange={onSneakerStatusChange}
-                    initialValue={initialValues.sneakerStatus}
-                />
+                    <SneakerStatusInput
+                        scrollViewRef={scrollViewRef}
+                        onErrorChange={(error) => onErrorChange('sneakerStatus', error)}
+                        onValueChange={onSneakerStatusChange}
+                        initialValue={initialValues.sneakerStatus}
+                    />
+                </View>
             </View>
 
             <View className="flex-row items-center w-full border-t-2 border-gray-300">
@@ -99,7 +101,7 @@ export const FormFields = ({
                 />
             </View>
 
-            <View className="flex-1 items-center w-full">
+            <View className="flex-1 max-h-[180px]">
                 <SneakerDescriptionInput
                     inputRef={sneakerDescriptionRef}
                     scrollViewRef={scrollViewRef}

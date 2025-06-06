@@ -5,7 +5,6 @@ import { useSession } from '@/context/authContext';
 import { Sneaker } from '@/types/Sneaker';
 import { ImageUploader } from './components/ImageUploader';
 import { FormFields } from './components/FormFields';
-import { ActionButtons } from './components/ActionButtons';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import { useState, useRef, useEffect } from 'react';
 import { useModalStore } from '@/store/useModalStore';
@@ -56,20 +55,6 @@ export const FormStep = ({
     const { handleSneakerSubmit } = useSneakerAPI(sessionToken || null, user?.collection?.id);
 
     const currentSneakerId = userSneakers ? userSneakers.find((s: Sneaker) => s.id === sneaker?.id)?.id : null;
-    const isNewSneaker = !currentSneakerId;
-
-    const resetForm = () => {
-        setSneakerName('');
-        setSneakerBrand('');
-        setSneakerStatus('');
-        setSneakerSize('');
-        setSneakerCondition('');
-        setSneakerImage('');
-        setSneakerPricePaid('');
-        setSneakerDescription('');
-        setFieldErrors({});
-        setErrorMsg('');
-    };
 
     const handleFieldError = (field: string, error: string) => {
         setFieldErrors(prev => ({
@@ -140,7 +125,6 @@ export const FormStep = ({
                 contentContainerStyle={{ minHeight: '100%' }}
             >
                 <View className="flex-1 h-full p-2 gap-2">
-                    <ErrorMsg content={errorMsg} display={errorMsg !== ''}/>
                     
                     <ImageUploader
                         image={sneakerImage}
@@ -149,6 +133,8 @@ export const FormStep = ({
                         isFocused={false}
                         setIsError={() => {}}
                     />
+
+                    <ErrorMsg content={errorMsg} display={errorMsg !== ''}/>
 
                     <FormFields
                         scrollViewRef={scrollViewRef}
@@ -169,18 +155,6 @@ export const FormStep = ({
                             sneakerCondition,
                             sneakerDescription
                         }}
-                    />
-
-                    <ActionButtons
-                        isNewSneaker={isNewSneaker}
-                        onBack={() => {
-                            if (!isNewSneaker) {
-                                resetForm();
-                                setIsVisible(false);
-                            }
-                            setModalStep('index');
-                        }}
-                        onSubmit={handleSubmit}
                     />
                 </View>
             </ScrollView>

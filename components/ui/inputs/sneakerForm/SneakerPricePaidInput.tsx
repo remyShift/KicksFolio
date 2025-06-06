@@ -12,7 +12,6 @@ interface SneakerPricePaidInputProps {
 
 export default function SneakerPricePaidInput({ 
     inputRef, 
-    scrollViewRef, 
     onErrorChange, 
     onValueChange,
     initialValue = ""
@@ -58,7 +57,7 @@ export default function SneakerPricePaidInput({
             <View className="w-4/5">
                 <TextInput
                     ref={inputRef}
-                    placeholder="150"
+                    placeholder="150$"
                     inputMode="decimal"
                     keyboardType="decimal-pad"
                     autoComplete="off"
@@ -73,9 +72,6 @@ export default function SneakerPricePaidInput({
                         isError ? 'border-2 border-red-500' : ''
                     } ${isSneakerPricePaidFocused ? 'border-2 border-primary' : ''}`}
                 />
-                {errorMsg !== '' && (
-                    <Text className='text-red-500 text-xs text-center mt-1'>{errorMsg}</Text>
-                )}
             </View>
         </View>
     );
