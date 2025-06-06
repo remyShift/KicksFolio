@@ -5,7 +5,6 @@ import { Sneaker } from '@/types/Sneaker';
 interface SneakersModalWrapperProps {
     visible: boolean;
     onClose: () => void;
-    modalStep: 'index' | 'sku' | 'addForm' | 'view';
     sneaker: Sneaker | null;
     userSneakers: Sneaker[] | null;
     setUserSneakers: (sneakers: Sneaker[] | null) => void;
@@ -14,17 +13,16 @@ interface SneakersModalWrapperProps {
 export default function SneakersModalWrapper({
     visible,
     onClose,
-    modalStep,
     sneaker,
     userSneakers,
     setUserSneakers
 }: SneakersModalWrapperProps) {
     return (
         <Modal
-        animationType="slide"
-        transparent={true}
-        visible={visible}
-        onRequestClose={onClose}
+            animationType="slide"
+            transparent={true}
+            visible={visible}
+            onRequestClose={onClose}
         >
             <Pressable 
                 className="flex-1 bg-black/50" 
@@ -34,16 +32,15 @@ export default function SneakersModalWrapper({
                     <Pressable 
                         className="h-[80%] bg-background rounded-t-3xl p-4"
                         onPress={(e) => {
-                        e.stopPropagation();
+                            e.stopPropagation();
                         }}
                     >
                         <SneakersModal 
-                        modalStep={modalStep}
-                        sneaker={sneaker}
-                        isVisible={visible}
-                        onClose={onClose}
-                        userSneakers={userSneakers}
-                        setUserSneakers={setUserSneakers}
+                            isVisible={visible} 
+                            onClose={onClose} 
+                            userSneakers={userSneakers} 
+                            setUserSneakers={setUserSneakers} 
+                            sneaker={sneaker} 
                         />
                     </Pressable>
                 </View>

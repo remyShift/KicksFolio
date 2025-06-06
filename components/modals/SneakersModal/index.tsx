@@ -8,9 +8,9 @@ import { SkuStep } from './steps/SkuStep';
 import { FormStep } from './steps/FormStep';
 import { ViewStep } from './steps/ViewStep';
 import { Sneaker } from '@/types/Sneaker';
+import { useStepModalStore } from '@/store/useStepModalStore';
 
 interface SneakersModalProps {
-    modalStep: ModalStep;
     sneaker: Sneaker | null;
     isVisible: boolean;
     onClose: () => void;
@@ -19,24 +19,23 @@ interface SneakersModalProps {
 }
 
 export const SneakersModal = ({ 
-    modalStep,
     sneaker,
     isVisible,
     onClose, 
     userSneakers,
     setUserSneakers
 }: SneakersModalProps) => {
-    const [currentStep, setCurrentStep] = useState<ModalStep>(modalStep);
+    const { modalStep, setModalStep } = useStepModalStore();
     const [currentSneaker, setCurrentSneaker] = useState<Sneaker | null>(sneaker);
 
     const handleBack = () => {
-        switch (currentStep) {
+        switch (modalStep) {
             case 'sku':
             case 'addForm':
-                setCurrentStep('index');
+                setModalStep('index');
                 break;
             case 'view':
-                setCurrentStep('index');
+                setModalStep('index');
                 break;
             default:
                 onClose();
@@ -44,15 +43,15 @@ export const SneakersModal = ({
     };
 
     const handleNext = () => {
-        switch (currentStep) {
+        switch (modalStep) {
             case 'index':
-                setCurrentStep('sku');
+                setModalStep('sku');
                 break;
             case 'sku':
-                setCurrentStep('addForm');
+                setModalStep('addForm');
                 break;
             case 'addForm':
-                setCurrentStep('view');
+                setModalStep('view');
                 break;
             case 'view':
                 onClose();
@@ -63,31 +62,31 @@ export const SneakersModal = ({
     if (!isVisible) return null;
 
     return (
-        <View className="flex-1 bg-white">
+        <View className="flex-1">
             <ModalHeader 
-                currentStep={currentStep}
+                currentStep={modalStep}
                 onClose={onClose}
             />
 
             <View className="flex-1">
-                {currentStep === 'index' && (
+                {modalStep === 'index' && (
                     <InitialStep 
-                        setModalStep={setCurrentStep}
+                        setModalStep={setModalStep}
                         closeModal={onClose}
                     />
                 )}
 
-                {currentStep === 'sku' && (
+                {modalStep === 'sku' && (
                     <SkuStep 
-                        setModalStep={setCurrentStep}
+                        setModalStep={setModalStep}
                         closeModal={onClose}
                         setSneaker={setCurrentSneaker}
                     />
                 )}
 
-                {currentStep === 'addForm' && (
+                {modalStep === 'addForm' && (
                     <FormStep 
-                        setModalStep={setCurrentStep}
+                        setModalStep={setModalStep}
                         closeModal={onClose}
                         sneaker={currentSneaker}
                         setSneaker={setCurrentSneaker}
@@ -96,9 +95,9 @@ export const SneakersModal = ({
                     />
                 )}
 
-                {currentStep === 'view' && currentSneaker && (
+                {modalStep === 'view' && currentSneaker && (
                     <ViewStep
-                        setModalStep={setCurrentStep}
+                        setModalStep={setModalStep}
                         closeModal={onClose}
                         sneaker={currentSneaker}
                         setSneaker={setCurrentSneaker}
@@ -109,7 +108,7 @@ export const SneakersModal = ({
             </View>
 
             <ModalFooter 
-                currentStep={currentStep}
+                currentStep={modalStep}
                 onBack={handleBack}
                 onNext={handleNext}
             />

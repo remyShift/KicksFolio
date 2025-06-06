@@ -7,15 +7,18 @@ import { useSession } from '@/context/authContext';
 import { useLocalSearchParams } from "expo-router";
 import { useState, useEffect } from 'react';
 import { SneakersModal } from '@/components/modals/SneakersModal';
+import { useStepModalStore } from '@/store/useStepModalStore';
 
 export default function Index() {
     const params = useLocalSearchParams();
     const isNewUser = params.newUser === 'true';
     const { userCollection, userSneakers, setUserSneakers } = useSession();
     const [modalVisible, setModalVisible] = useState(false);
+    const { setModalStep } = useStepModalStore();
 
     useEffect(() => {
         if (isNewUser || !userSneakers || userSneakers.length === 0) {
+            setModalStep('index');
             setModalVisible(true);
         } else {
             setModalVisible(false);
@@ -69,7 +72,6 @@ export default function Index() {
                                 onClose={() => setModalVisible(false)} 
                                 userSneakers={userSneakers} 
                                 setUserSneakers={setUserSneakers} 
-                                modalStep="index" 
                                 sneaker={null} 
                             />
                         </Pressable>

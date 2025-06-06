@@ -3,6 +3,7 @@ import { View, ScrollView } from 'react-native';
 import BrandTitle from '@/components/ui/text/BrandTitle';
 import SneakerCard from '@/components/ui/cards/SneakerCard';
 import { Sneaker } from '@/types/Sneaker';
+import { useStepModalStore } from '@/store/useStepModalStore';
 
 const brandLogos: Record<string, any> = {
     nike: require('@/assets/images/brands/nike.png'),
@@ -19,14 +20,14 @@ const brandLogos: Record<string, any> = {
 interface SneakersByBrandProps {
     sneakersByBrand: Record<string, Sneaker[]>;
     onSneakerPress: (sneaker: Sneaker) => void;
-    setModalStep: (step: 'index' | 'sku' | 'addForm' | 'view') => void;
 }
 
 export default function SneakersByBrand({ 
     sneakersByBrand, 
-    onSneakerPress, 
-    setModalStep 
+    onSneakerPress
 }: SneakersByBrandProps) {
+    const { setModalStep } = useStepModalStore();
+
     return (
         <View className="flex-1 gap-4">
             {Object.entries(sneakersByBrand).map(([brand, sneakers]) => (
