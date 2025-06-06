@@ -1,5 +1,6 @@
 import { View, Text } from 'react-native';
 import { ModalStep } from '../types';
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 interface ModalHeaderProps {
     currentStep: ModalStep;
@@ -23,14 +24,8 @@ export const ModalHeader = ({ currentStep, onClose }: ModalHeaderProps) => {
     };
 
     return (
-        <View className="flex-row justify-between items-center px-4 py-2 border-b border-gray-200">
-            <Text className="font-spacemono-bold text-lg">{getTitle()}</Text>
-            <Text 
-                className="font-spacemono text-base text-blue-500"
-                onPress={onClose}
-            >
-                Close
-            </Text>
+        <View className="flex-row justify-end py-2">
+            <AntDesign name="close" size={24} color="black" />
         </View>
     );
 };
