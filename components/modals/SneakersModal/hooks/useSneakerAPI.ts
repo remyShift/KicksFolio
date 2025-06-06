@@ -7,7 +7,6 @@ export const useSneakerAPI = (
 	sessionToken: string | null,
 	collectionId?: string
 ) => {
-	const [isLoading, setIsLoading] = useState(false);
 	const sneakerService = new SneakersService(
 		collectionId || '',
 		sessionToken || ''
@@ -18,8 +17,6 @@ export const useSneakerAPI = (
 		userId: string
 	) => {
 		if (!sessionToken) return Promise.reject('No session token');
-
-		setIsLoading(true);
 
 		const sneakerData: Sneaker = {
 			id: sneaker.id || '',
@@ -46,11 +43,9 @@ export const useSneakerAPI = (
 		return sneakerService
 			.add(sneakerData, sneaker.id || undefined)
 			.then((response) => {
-				setIsLoading(false);
 				return response;
 			})
 			.catch((error) => {
-				setIsLoading(false);
 				throw error;
 			});
 	};
@@ -58,41 +53,32 @@ export const useSneakerAPI = (
 	const handleSneakerDelete = async (sneakerId: string) => {
 		if (!sessionToken) return Promise.reject('No session token');
 
-		setIsLoading(true);
-
 		return sneakerService
 			.delete(sneakerId)
 			.then((response) => {
-				setIsLoading(false);
 				return response;
 			})
 			.catch((error) => {
-				setIsLoading(false);
 				throw error;
 			});
 	};
 
 	const handleSkuLookup = async (
 		sku: string,
-		setSneaker: (sneaker: Sneaker | null) => void,
-		setModalStep: (step: ModalStep) => void,
+		setSneakerFetchedInformation: (sneaker: Sneaker | null) => void,
 		setErrorMsg: (error: string) => void
 	) => {
 		if (!sessionToken) return Promise.reject('No session token');
 
-		setIsLoading(true);
-
 		return sneakerService
 			.searchBySku(sku)
 			.then((response) => {
-				setIsLoading(false);
 				return response;
 			})
 			.then((data) => {
-				if (data.results && data.results.length > 0) {
+				if (data.results.length > 0) {
 					const sneakerData = data.results[0];
-					setSneaker(sneakerData);
-					setModalStep('addForm');
+					setSneakerFetchedInformation(sneakerData);
 				} else {
 					setErrorMsg(
 						'No data found for this SKU, check the SKU and try again or add it manually.'
@@ -100,7 +86,6 @@ export const useSneakerAPI = (
 				}
 			})
 			.catch((error) => {
-				setIsLoading(false);
 				setErrorMsg(
 					'Impossible to find the informations for this SKU. Please check the SKU and try again or add it manually.'
 				);
@@ -112,6 +97,5 @@ export const useSneakerAPI = (
 		handleSneakerSubmit,
 		handleSneakerDelete,
 		handleSkuLookup,
-		isLoading,
 	};
 };

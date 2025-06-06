@@ -7,7 +7,7 @@ import { ImageUploader } from './components/ImageUploader';
 import { FormFields } from './components/FormFields';
 import { ActionButtons } from './components/ActionButtons';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useModalStore } from '@/store/useModalStore';
 import { SneakerFormData } from '../../types';
 
@@ -16,19 +16,18 @@ interface FormStepProps {
     setSneaker: (sneaker: Sneaker | null) => void;
     userSneakers: Sneaker[] | null;
     setUserSneakers: (sneakers: Sneaker[] | null) => void;
-    errorMsg: string;
 }
 
 export const FormStep = ({ 
     sneaker, 
     setSneaker,
     userSneakers,
-    setUserSneakers,
-    errorMsg
+    setUserSneakers
 }: FormStepProps) => {
     const { user, sessionToken } = useSession();
     const { setModalStep, setIsVisible } = useModalStore();
     const scrollViewRef = useRef<ScrollView>(null);
+    const [errorMsg, setErrorMsg] = useState('');
     
     const [sneakerName, setSneakerName] = useState(sneaker?.model || '');
     const [sneakerBrand, setSneakerBrand] = useState(sneaker?.brand || '');
@@ -39,6 +38,19 @@ export const FormStep = ({
     const [sneakerPricePaid, setSneakerPricePaid] = useState(sneaker?.price_paid?.toString() || '');
     const [sneakerDescription, setSneakerDescription] = useState(sneaker?.description || '');
     const [fieldErrors, setFieldErrors] = useState<{[key: string]: string}>({});
+
+    useEffect(() => {
+        if (sneaker) {
+            setSneakerName(sneaker.model || '');
+            setSneakerBrand(sneaker.brand || '');
+            setSneakerStatus(sneaker.status || '');
+            setSneakerSize(sneaker.size?.toString() || '');
+            setSneakerCondition(sneaker.condition?.toString() || '');
+            setSneakerImage(sneaker.images?.[0]?.url || '');
+            setSneakerPricePaid(sneaker.price_paid?.toString() || '');
+            setSneakerDescription(sneaker.description || '');
+        }
+    }, [sneaker]);
 
     const { validateSneakerForm } = useSneakerValidation();
     const { handleSneakerSubmit } = useSneakerAPI(sessionToken || null, user?.collection?.id);
@@ -56,6 +68,7 @@ export const FormStep = ({
         setSneakerPricePaid('');
         setSneakerDescription('');
         setFieldErrors({});
+        setErrorMsg('');
     };
 
     const handleFieldError = (field: string, error: string) => {
@@ -109,7 +122,7 @@ export const FormStep = ({
                 }
             })
             .catch((error) => {
-                setFieldErrors({ submit: error.message });
+                setErrorMsg(`An error occurred while submitting the sneaker: ${error}`);
             });
     };
 

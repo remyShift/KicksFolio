@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { View } from 'react-native';
 import { ModalHeader } from './shared/ModalHeader';
 import { ModalFooter } from './shared/ModalFooter';
@@ -8,15 +7,15 @@ import { FormStep } from './steps/FormStep';
 import { ViewStep } from './steps/ViewStep';
 import { Sneaker } from '@/types/Sneaker';
 import { useModalStore } from '@/store/useModalStore';
+import { useSession } from '@/context/authContext';
+import { useEffect } from 'react';
 
 interface SneakersModalProps {
-    sneaker: Sneaker | null;
     userSneakers: Sneaker[] | null;
     setUserSneakers: (sneakers: Sneaker[] | null) => void;
 }
 
 export const SneakersModal = ({ 
-    sneaker,
     userSneakers,
     setUserSneakers
 }: SneakersModalProps) => {
@@ -24,11 +23,9 @@ export const SneakersModal = ({
         modalStep, 
         isVisible, 
         currentSneaker,
-        errorMsg,
-        setCurrentSneaker,
-        setSneakerSKU,
+        setSneakerFetchedInformation,
         handleNext,
-        handleBack
+        handleBack,
     } = useModalStore();
 
     if (!isVisible) return null;
@@ -43,27 +40,22 @@ export const SneakersModal = ({
                 )}
 
                 {modalStep === 'sku' && (
-                    <SkuStep 
-                        setSneaker={setCurrentSneaker}
-                        setSku={setSneakerSKU}
-                        errorMsg={errorMsg}
-                    />
+                    <SkuStep />
                 )}
 
                 {modalStep === 'addForm' && (
                     <FormStep 
                         sneaker={currentSneaker}
-                        setSneaker={setCurrentSneaker}
+                        setSneaker={setSneakerFetchedInformation}
                         userSneakers={userSneakers}
                         setUserSneakers={setUserSneakers}
-                        errorMsg={errorMsg}
                     />
                 )}
 
                 {modalStep === 'view' && currentSneaker && (
                     <ViewStep
                         sneaker={currentSneaker}
-                        setSneaker={setCurrentSneaker}
+                        setSneaker={setSneakerFetchedInformation}
                         userSneakers={userSneakers}
                         setUserSneakers={setUserSneakers}
                     />

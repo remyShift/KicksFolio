@@ -53,6 +53,9 @@ export class FormValidationService {
 			case 'collectionName':
 				isValid = this.validateCollectionName(value);
 				break;
+			case 'sku':
+				isValid = this.validateSku(value);
+				break;
 		}
 
 		if (!isValid && this.errorSetters[inputType]) {
@@ -66,6 +69,14 @@ export class FormValidationService {
 		}
 
 		return isValid;
+	}
+
+	private validateSku(sku: string): boolean {
+		if (!sku) {
+			this.setErrorMsg('Please put your SKU.');
+			return false;
+		}
+		return true;
 	}
 
 	private validatePassword(password: string, isLoginPage: boolean): boolean {

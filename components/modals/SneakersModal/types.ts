@@ -17,8 +17,6 @@ export interface InitialStepProps {
 
 export interface SkuStepProps {
 	setSneaker: (sneaker: Sneaker | null) => void;
-	setSku: (sku: string) => void;
-	errorMsg: string;
 }
 
 export interface FormStepProps {
@@ -26,7 +24,6 @@ export interface FormStepProps {
 	setSneaker: (sneaker: Sneaker | null) => void;
 	userSneakers: Sneaker[] | null;
 	setUserSneakers: (sneakers: Sneaker[] | null) => void;
-	errorMsg: string;
 }
 
 export interface ViewStepProps {
