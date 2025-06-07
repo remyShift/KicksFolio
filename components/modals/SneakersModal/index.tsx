@@ -20,9 +20,7 @@ export const SneakersModal = ({
         modalStep, 
         isVisible, 
         currentSneaker,
-        setSneakerFetchedInformation,
-        handleNext,
-        handleBack,
+        setSneakerFetchedInformation
     } = useModalStore();
 
     if (!isVisible) return null;
@@ -57,11 +55,7 @@ export const SneakersModal = ({
                 )}
             </View>
 
-            <ModalFooter 
-                currentStep={modalStep}
-                onBack={handleBack}
-                onNext={handleNext}
-            />
+            <ModalFooter />
         </View>
     );
 };

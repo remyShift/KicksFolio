@@ -88,8 +88,6 @@ interface ModalStore {
 	setModalSessionToken: (token: string | null) => void;
 	setSkuSearchCallback: (callback: (() => void) | null) => void;
 
-	handleNext: () => void;
-	handleBack: () => void;
 	handleSkuSearchSuccess: (data: any) => void;
 }
 
@@ -109,43 +107,6 @@ export const useModalStore = create<ModalStore>((set, get) => ({
 	setErrorMsg: (error) => set({ errorMsg: error }),
 	setModalSessionToken: (token) => set({ modalSessionToken: token }),
 	setSkuSearchCallback: (callback) => set({ skuSearchCallback: callback }),
-
-	handleNext: () => {
-		const { modalStep, setModalStep, skuSearchCallback } = get();
-
-		switch (modalStep) {
-			case 'index':
-				setModalStep('sku');
-				break;
-			case 'sku':
-				if (skuSearchCallback) {
-					skuSearchCallback();
-				}
-				break;
-			case 'addForm':
-				setModalStep('view');
-				break;
-			case 'view':
-				set({ isVisible: false, modalStep: 'index' });
-				break;
-		}
-	},
-
-	handleBack: () => {
-		const { modalStep, setModalStep } = get();
-
-		switch (modalStep) {
-			case 'sku':
-				setModalStep('index');
-				break;
-			case 'addForm':
-				setModalStep('index');
-				break;
-			case 'view':
-				setModalStep('addForm');
-				break;
-		}
-	},
 
 	handleSkuSearchSuccess: (data: any) => {
 		const transformedSneaker = transformToSneaker(data);

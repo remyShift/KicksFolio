@@ -1,42 +1,66 @@
 import { View } from 'react-native';
 import BackButton from '@/components/ui/buttons/BackButton';
 import NextButton from '@/components/ui/buttons/NextButton';
-import { ModalStep } from '../types';
+import { useModalStore } from '@/store/useModalStore';
 
-interface ModalFooterProps {
-    currentStep: ModalStep;
-    onBack: () => void;
-    onNext: () => void;
-    isNextDisabled?: boolean;
-    nextButtonText?: string;
-}
+export const ModalFooter = () => {
+    const { modalStep, setModalStep, skuSearchCallback, setIsVisible } = useModalStore();
 
-export const ModalFooter = ({ 
-    currentStep, 
-    onBack, 
-    onNext,
-}: ModalFooterProps) => {
+    const handleNext = () => {
+
+		switch (modalStep) {
+			case 'index':
+				setModalStep('sku');
+				break;
+			case 'sku':
+				if (skuSearchCallback) {
+					skuSearchCallback();
+				}
+				break;
+			case 'addForm':
+				setModalStep('view');
+				break;
+			case 'view':
+				setIsVisible(false);
+				setModalStep('index');
+				break;
+		}
+	}
+
+	const handleBack = () => {
+		switch (modalStep) {
+			case 'sku':
+				setModalStep('index');
+				break;
+			case 'addForm':
+				setModalStep('index');
+				break;
+			case 'view':
+				setModalStep('addForm');
+				break;
+		}
+	}
     return (
         <View className="justify-end items-start w-full pb-5">
-            {currentStep === 'sku' && (
+            {modalStep === 'sku' && (
                         <View className="flex-row justify-between w-full">
                             <BackButton 
-                                onPressAction={onBack} 
+                                onPressAction={handleBack} 
                             />
                             <NextButton
                                 content="Search"
-                                onPressAction={onNext}
+                                onPressAction={handleNext}
                             />
                         </View>
                 )}
-            {currentStep === 'addForm' && (
+            {modalStep === 'addForm' && (
                         <View className="flex-row justify-between w-full">
                             <BackButton 
-                                onPressAction={onBack} 
+                                onPressAction={handleBack} 
                             />
                             <NextButton
                                 content="Add"
-                                onPressAction={onNext}
+                                onPressAction={handleNext}
                             />
                         </View>
                 )}
