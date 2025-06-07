@@ -1,74 +1,35 @@
-import { ScrollView, Platform, TextInput, View, KeyboardAvoidingView, Text } from 'react-native';
+import { Platform, View, KeyboardAvoidingView, Text } from 'react-native';
 import { useSession } from '@/context/authContext';
 import { useModalStore } from '@/store/useModalStore';
 import SkuInput from './SkuInput';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
-import { useRef, useEffect } from 'react';
+import { useEffect } from 'react';
 import { Link } from 'expo-router';
 import { FontAwesome6 } from '@expo/vector-icons';
 import { useSneakerAPI } from '../../hooks/useSneakerAPI';
+import { ModalStep } from '../../types';
 
 export const SkuStep = () => {
-    const { sessionToken } = useSession();
+    const { sessionToken, userCollection } = useSession();
+
     const {
-        sneakerSKU,
         setSneakerSKU, 
         errorMsg, 
         setErrorMsg,
         setModalSessionToken,
-        handleSkuSearchSuccess,
-        setSkuSearchCallback
+        sneakerSKU,
+        setSneakerFetchedInformation,
+        setModalStep,
     } = useModalStore();
-    const skuInputRef = useRef<TextInput>(null);
-    const handleSubmitRef = useRef<() => void>();
-    
-    const { handleSkuLookup } = useSneakerAPI(sessionToken || null);
 
-    handleSubmitRef.current = async () => {
-        if (!sneakerSKU.trim()) {
-            setErrorMsg('Please enter a SKU.');
-            return;
-        }
-
-        if (!sessionToken) {
-            setErrorMsg('Session expired. Please login again.');
-            return;
-        }
-
-        setErrorMsg('');
-
-        handleSkuLookup(
-            sneakerSKU.trim(),
-            (apiResponseData) => {
-                if (apiResponseData) {
-                    handleSkuSearchSuccess(apiResponseData);
-                }
-            },
-            setErrorMsg
-        );
-    };
-
-    const handleSubmit = () => {
-        if (handleSubmitRef.current) {
-            handleSubmitRef.current();
-        }
-    };
+    const { handleSkuSearch } = useSneakerAPI(sessionToken!, userCollection!.id);
 
     useEffect(() => {
         setModalSessionToken(sessionToken);
     }, [sessionToken, setModalSessionToken]);
 
-    useEffect(() => {
-        setSkuSearchCallback(() => handleSubmit);
-        
-        return () => {
-            setSkuSearchCallback(null);
-        };
-    }, [setSkuSearchCallback]);
-
     const handleSkuValueChange = (value: string) => {
         setSneakerSKU(value);
-
         if (errorMsg) {
             setErrorMsg('');
         }
@@ -95,10 +56,13 @@ export const SkuStep = () => {
                     <ErrorMsg content={errorMsg} display={!!errorMsg}/>
 
                     <SkuInput
-                        inputRef={skuInputRef}
                         onErrorChange={setErrorMsg}
                         onValueChange={handleSkuValueChange}
-                        onSubmit={handleSubmit}
+                        onSubmit={() => handleSkuSearch(sneakerSKU, {
+                            setSneaker: setSneakerFetchedInformation,
+                            setModalStep: (step: ModalStep) => setModalStep(step),
+                            setErrorMsg
+                        })}
                     />
                 </View>
 

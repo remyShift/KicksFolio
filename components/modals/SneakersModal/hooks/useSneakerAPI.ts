@@ -1,32 +1,82 @@
 import { useState } from 'react';
 import { Sneaker } from '@/types/Sneaker';
 import { SneakersService } from '@/services/SneakersService';
-import { ModalStep } from '../types';
-import { SneakerFormData } from '../types';
 import { SneakerValidationService } from '@/services/SneakerValidationService';
+import { SneakerFormData } from '../types';
+import { ModalStep } from '../types';
 
-export const useSneakerAPI = (
-	sessionToken: string | null,
-	collectionId?: string
-) => {
-	const sneakerService = new SneakersService(
-		collectionId || '',
-		sessionToken || ''
-	);
+interface Callbacks {
+	setUserSneakers?: (sneakers: Sneaker[] | null) => void;
+	setSneaker?: (sneaker: Sneaker | null) => void;
+	setModalStep?: (step: ModalStep) => void;
+	setErrorMsg?: (error: string) => void;
+}
 
+export const useSneakerAPI = (sessionToken: string, collectionId: string) => {
+	const sneakerService = new SneakersService(collectionId, sessionToken);
 	const sneakerFormValidationService = new SneakerValidationService();
+
+	const handleSkuSearch = (sku: string, callbacks: Callbacks) => {
+		if (!sessionToken) {
+			callbacks.setErrorMsg?.('Session expired. Please login again.');
+			return;
+		}
+
+		if (!sku.trim()) {
+			callbacks.setErrorMsg?.('Please enter a SKU.');
+			return;
+		}
+
+		callbacks.setErrorMsg?.('');
+
+		return sneakerService
+			.searchBySku(sku.trim())
+			.then((response: any) => {
+				if (response) {
+					const transformedSneaker = {
+						id: '',
+						model: response.name || '',
+						brand: response.brand || '',
+						status: '',
+						size: 0,
+						condition: 0,
+						images: response.image
+							? [
+									{
+										id: '',
+										url:
+											response.image.small ||
+											response.image.original ||
+											'',
+									},
+							  ]
+							: [],
+						price_paid: 0,
+						description: response.story || '',
+						collection_id: collectionId,
+						purchase_date: response.releaseDate,
+						estimated_value: response.estimatedMarketValue || 0,
+						release_date: response.releaseDate || null,
+						created_at: new Date().toISOString(),
+						updated_at: new Date().toISOString(),
+					};
+					callbacks.setSneaker?.(transformedSneaker);
+					callbacks.setModalStep?.('addForm');
+				}
+				return response;
+			})
+			.catch((error: string) => {
+				callbacks.setErrorMsg?.(error);
+				throw error;
+			});
+	};
 
 	const handleFormSubmit = async (
 		formData: SneakerFormData,
 		userId: string,
 		currentSneakerId?: string,
 		userSneakers?: Sneaker[] | null,
-		callbacks?: {
-			setUserSneakers?: (sneakers: Sneaker[] | null) => void;
-			setSneaker?: (sneaker: Sneaker | null) => void;
-			setModalStep?: (step: ModalStep) => void;
-			setErrorMsg?: (error: string) => void;
-		}
+		callbacks?: Callbacks
 	) => {
 		if (!sessionToken) {
 			callbacks?.setErrorMsg?.('No session token');
@@ -72,7 +122,7 @@ export const useSneakerAPI = (
 
 		return sneakerService
 			.add(sneakerToAdd, sneakerToAdd.id)
-			.then((response) => {
+			.then((response: any) => {
 				if (response && callbacks) {
 					const updatedSneakers = userSneakers
 						? [...userSneakers, response]
@@ -83,7 +133,7 @@ export const useSneakerAPI = (
 				}
 				return response;
 			})
-			.catch((error) => {
+			.catch((error: string) => {
 				callbacks?.setErrorMsg?.(
 					`An error occurred while submitting the sneaker: ${error}`
 				);
@@ -98,50 +148,17 @@ export const useSneakerAPI = (
 
 		return sneakerService
 			.delete(sneakerId)
-			.then((response) => {
+			.then((response: any) => {
 				return response;
 			})
-			.catch((error) => {
-				throw error;
-			});
-	};
-
-	const handleSkuLookup = async (
-		sku: string,
-		setSneakerFetchedInformation: (sneaker: Sneaker | null) => void,
-		setErrorMsg: (error: string) => void
-	) => {
-		if (!sessionToken) {
-			setErrorMsg('No session token');
-			return Promise.reject('No session token');
-		}
-
-		return sneakerService
-			.searchBySku(sku)
-			.then((response) => {
-				return response;
-			})
-			.then((data) => {
-				if (data.results.length > 0) {
-					const sneakerData = data.results[0];
-					setSneakerFetchedInformation(sneakerData);
-				} else {
-					setErrorMsg(
-						'No data found for this SKU, check the SKU and try again or add it manually.'
-					);
-				}
-			})
-			.catch((error) => {
-				setErrorMsg(
-					'Impossible to find the informations for this SKU. Please check the SKU and try again or add it manually.'
-				);
+			.catch((error: string) => {
 				throw error;
 			});
 	};
 
 	return {
+		handleSkuSearch,
 		handleFormSubmit,
 		handleSneakerDelete,
-		handleSkuLookup,
 	};
 };
