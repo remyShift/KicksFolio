@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { Text, View, ScrollView } from "react-native";
+import { Text, View, ScrollView, TextInput } from "react-native";
 import DropdownInput from '@/components/ui/inputs/sneakerForm/DropDownInput';
 import { BRANDS } from '@/components/modals/SneakersModal/constants';
-import { useSneakerForm } from "@/hooks/useSneakerForm";
+import { useSneakerForm } from "@/components/modals/SneakersModal/hooks/useSneakerForm";
 
 interface SneakerBrandInputProps {
     scrollViewRef: React.RefObject<ScrollView>;
@@ -15,7 +15,7 @@ export default function SneakerBrandInput({
     scrollViewRef, 
     onErrorChange, 
     onValueChange,
-    initialValue = ""
+    initialValue = "",
 }: SneakerBrandInputProps) {
     const [isBrandError, setIsBrandError] = useState(false);
     const [isBrandFocused, setIsBrandFocused] = useState(false);
@@ -45,7 +45,6 @@ export default function SneakerBrandInput({
 
     const handleBrandSelect = (value: string) => {
         handleForm.inputChange(value, setBrandValue);
-        handleForm.inputBlur('sneakerBrand', value);
     };
 
     const handleBrandOpen = () => {
@@ -62,10 +61,8 @@ export default function SneakerBrandInput({
                     placeholder="Select a brand"
                     isError={isBrandError}
                     onOpen={handleBrandOpen}
+                    onBlur={() => handleForm.inputBlur('sneakerBrand', brandValue)}
                 />
-                {errorMsg !== '' && (
-                    <Text className='text-red-500 text-xs text-center mt-1'>{errorMsg}</Text>
-                )}
             </View>
         </View>
     );

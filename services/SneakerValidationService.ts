@@ -1,18 +1,10 @@
 type ValidStatus = 'rocking' | 'stocking' | 'selling';
 
 export class SneakerValidationService {
-	private setErrorMsg: (msg: string) => void;
-	private setIsError: (isError: boolean) => void;
-
-	constructor(
-		setErrorMsg: (msg: string) => void,
-		setIsError: (isError: boolean) => void
-	) {
-		this.setErrorMsg = setErrorMsg;
-		this.setIsError = setIsError;
-	}
-
-	public validateField(field: string, value: string): boolean {
+	public validateField(
+		field: string,
+		value: string
+	): { isValid: boolean; errorMsg: string } {
 		switch (field) {
 			case 'sneakerName':
 				return this.validateName(value);
@@ -29,214 +21,180 @@ export class SneakerValidationService {
 			case 'sneakerImage':
 				return this.validateImage(value);
 			default:
-				return true;
+				return { isValid: true, errorMsg: '' };
 		}
 	}
 
-	public validateName(name: string): boolean {
+	public validateName(name: string): { isValid: boolean; errorMsg: string } {
 		if (!name) {
-			this.setErrorMsg('Please enter a sneaker name.');
-			this.setIsError(true);
-			return false;
+			return { isValid: false, errorMsg: 'Please enter a sneaker name.' };
 		}
-
-		this.clearErrors();
-		return true;
+		return { isValid: true, errorMsg: '' };
 	}
 
-	public validateBrand(brand: string): boolean {
+	public validateBrand(brand: string): {
+		isValid: boolean;
+		errorMsg: string;
+	} {
 		if (!brand) {
-			this.setErrorMsg('Please select a brand.');
-			this.setIsError(true);
-			return false;
+			return { isValid: false, errorMsg: 'Please select a brand.' };
 		}
 
 		const brandRegex = /^[a-zA-Z\s]+$/;
 		if (!brandRegex.test(brand)) {
-			this.setErrorMsg(
-				'Brand invalid, brand must contain only letters and spaces.'
-			);
-			this.setIsError(true);
-			return false;
+			return {
+				isValid: false,
+				errorMsg:
+					'Brand invalid, brand must contain only letters and spaces.',
+			};
 		}
 
-		this.clearErrors();
-		return true;
+		return { isValid: true, errorMsg: '' };
 	}
 
-	public validateSize(size: string): boolean {
+	public validateSize(size: string): { isValid: boolean; errorMsg: string } {
 		if (!size || isNaN(parseFloat(size))) {
-			this.setErrorMsg('Please enter a size.');
-			this.setIsError(true);
-			return false;
+			return { isValid: false, errorMsg: 'Please enter a size.' };
 		}
 
 		const sizeNum = parseFloat(size);
 		if (isNaN(sizeNum) || sizeNum < 7 || sizeNum > 16) {
-			this.setErrorMsg('Size invalid, size must be between 7 and 16.');
-			this.setIsError(true);
-			return false;
+			return {
+				isValid: false,
+				errorMsg: 'Size invalid, size must be between 7 and 16.',
+			};
 		}
 
 		if (sizeNum % 0.5 !== 0) {
-			this.setErrorMsg('Size invalid, size must be a multiple of 0.5.');
-			this.setIsError(true);
-			return false;
+			return {
+				isValid: false,
+				errorMsg: 'Size invalid, size must be a multiple of 0.5.',
+			};
 		}
 
-		this.clearErrors();
-		return true;
+		return { isValid: true, errorMsg: '' };
 	}
 
-	public validateCondition(condition: string): boolean {
+	public validateCondition(condition: string): {
+		isValid: boolean;
+		errorMsg: string;
+	} {
 		if (!condition) {
-			this.setErrorMsg('Please enter a condition.');
-			this.setIsError(true);
-			return false;
+			return { isValid: false, errorMsg: 'Please enter a condition.' };
 		}
 
 		const conditionNum = Number(condition);
 		if (isNaN(conditionNum) || conditionNum < 0 || conditionNum > 10) {
-			this.setErrorMsg(
-				'Condition invalid, condition must be between 0 and 10.'
-			);
-			this.setIsError(true);
-			return false;
+			return {
+				isValid: false,
+				errorMsg:
+					'Condition invalid, condition must be between 0 and 10.',
+			};
 		}
 
 		if (conditionNum % 0.5 !== 0) {
-			this.setErrorMsg(
-				'Condition invalid, condition must be a multiple of 0.5.'
-			);
-			this.setIsError(true);
-			return false;
+			return {
+				isValid: false,
+				errorMsg:
+					'Condition invalid, condition must be a multiple of 0.5.',
+			};
 		}
 
-		this.clearErrors();
-		return true;
+		return { isValid: true, errorMsg: '' };
 	}
 
-	public validateStatus(status: string): boolean {
+	public validateStatus(status: string): {
+		isValid: boolean;
+		errorMsg: string;
+	} {
 		const validStatuses: ValidStatus[] = ['rocking', 'stocking', 'selling'];
 
 		if (!status) {
-			this.setErrorMsg(
-				'Status invalid, status must be one of the following: rocking, stocking, selling.'
-			);
-			this.setIsError(true);
-			return false;
+			return {
+				isValid: false,
+				errorMsg:
+					'Status invalid, status must be one of the following: rocking, stocking, selling.',
+			};
 		}
 
 		const statusRegex = /^[a-zA-Z\s]+$/;
 		if (!statusRegex.test(status)) {
-			this.setErrorMsg(
-				'Status invalid, status must contain only letters.'
-			);
-			this.setIsError(true);
-			return false;
+			return {
+				isValid: false,
+				errorMsg: 'Status invalid, status must contain only letters.',
+			};
 		}
 
 		if (!validStatuses.includes(status.toLowerCase() as ValidStatus)) {
-			this.setErrorMsg(
-				'Status invalid, status must be one of the following: rocking, stocking, selling.'
-			);
-			this.setIsError(true);
-			return false;
+			return {
+				isValid: false,
+				errorMsg:
+					'Status invalid, status must be one of the following: rocking, stocking, selling.',
+			};
 		}
 
-		this.clearErrors();
-		return true;
+		return { isValid: true, errorMsg: '' };
 	}
 
-	public validatePrice(price: string): boolean {
+	public validatePrice(price: string): {
+		isValid: boolean;
+		errorMsg: string;
+	} {
 		if (!price) {
-			this.setErrorMsg('Veuillez entrer un prix.');
-			this.setIsError(true);
-			return false;
+			return { isValid: false, errorMsg: 'Veuillez entrer un prix.' };
 		}
 
 		if (isNaN(Number(price)) || Number(price) < 0) {
-			this.setErrorMsg('Le prix doit être un nombre positif.');
-			this.setIsError(true);
-			return false;
+			return {
+				isValid: false,
+				errorMsg: 'Le prix doit être un nombre positif.',
+			};
 		}
 
-		this.clearErrors();
-		return true;
+		return { isValid: true, errorMsg: '' };
 	}
 
-	public validateImage(image: string): boolean {
+	public validateImage(image: string): {
+		isValid: boolean;
+		errorMsg: string;
+	} {
 		if (!image) {
-			this.setErrorMsg('Please select an image.');
-			this.setIsError(true);
-			return false;
+			return { isValid: false, errorMsg: 'Please select an image.' };
 		}
 
-		this.clearErrors();
-		return true;
+		return { isValid: true, errorMsg: '' };
 	}
 
-	public validateAllFields(
-		sneakerData: {
-			name: string;
-			brand: string;
-			size: string;
-			condition: string;
-			status: string;
-			price: string;
-			image: string;
-		},
-		errorSetters: {
-			setNameError: (isError: boolean) => void;
-			setBrandError: (isError: boolean) => void;
-			setSizeError: (isError: boolean) => void;
-			setConditionError: (isError: boolean) => void;
-			setStatusError: (isError: boolean) => void;
-			setImageError: (isError: boolean) => void;
-		}
-	): boolean {
+	public validateAllFields(sneakerData: {
+		name: string;
+		brand: string;
+		size: string;
+		condition: string;
+		status: string;
+		price: string;
+		image: string;
+	}): { isValid: boolean; errors: { [key: string]: string } } {
 		const validations = [
-			{
-				value: sneakerData.image,
-				validate: () => this.validateImage(sneakerData.image),
-				setError: errorSetters.setImageError,
-			},
-			{
-				value: sneakerData.name,
-				validate: () => this.validateName(sneakerData.name),
-				setError: errorSetters.setNameError,
-			},
-			{
-				value: sneakerData.brand,
-				validate: () => this.validateBrand(sneakerData.brand),
-				setError: errorSetters.setBrandError,
-			},
-			{
-				value: sneakerData.status,
-				validate: () => this.validateStatus(sneakerData.status),
-				setError: errorSetters.setStatusError,
-			},
-			{
-				value: sneakerData.size,
-				validate: () => this.validateSize(sneakerData.size),
-				setError: errorSetters.setSizeError,
-			},
-			{
-				value: sneakerData.condition,
-				validate: () => this.validateCondition(sneakerData.condition),
-				setError: errorSetters.setConditionError,
-			},
+			{ field: 'sneakerImage', value: sneakerData.image },
+			{ field: 'sneakerName', value: sneakerData.name },
+			{ field: 'sneakerBrand', value: sneakerData.brand },
+			{ field: 'sneakerStatus', value: sneakerData.status },
+			{ field: 'sneakerSize', value: sneakerData.size },
+			{ field: 'sneakerCondition', value: sneakerData.condition },
+			{ field: 'sneakerPrice', value: sneakerData.price },
 		];
 
-		return validations.every(({ validate, setError }) => {
-			const isValid = validate();
-			setError(!isValid);
-			return isValid;
-		});
-	}
+		const errors: { [key: string]: string } = {};
+		let isValid = true;
 
-	public clearErrors(): void {
-		this.setErrorMsg('');
-		this.setIsError(false);
+		validations.forEach(({ field, value }) => {
+			const result = this.validateField(field, value);
+			if (!result.isValid) {
+				errors[field] = result.errorMsg;
+				isValid = false;
+			}
+		});
+
+		return { isValid, errors };
 	}
 }

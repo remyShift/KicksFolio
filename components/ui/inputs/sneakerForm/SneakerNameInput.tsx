@@ -1,23 +1,19 @@
 import { useEffect, useState } from "react";
 import { Text, TextInput, View, ScrollView } from "react-native";
-import { useSneakerForm } from "@/hooks/useSneakerForm";
+import { useSneakerForm } from "@/components/modals/SneakersModal/hooks/useSneakerForm";
 
 interface SneakerNameInputProps {
-    inputRef: React.RefObject<TextInput>;
     scrollViewRef: React.RefObject<ScrollView>;
     onErrorChange: (errorMsg: string) => void;
     onValueChange: (value: string) => void;
     initialValue?: string;
-    nextInputRef?: React.RefObject<TextInput>;
 }
 
 export default function SneakerNameInput({ 
-    inputRef, 
     scrollViewRef,
     onErrorChange, 
     onValueChange,
     initialValue = "",
-    nextInputRef
 }: SneakerNameInputProps) {
     const [isNameError, setIsNameError] = useState(false);
     const [isNameFocused, setIsNameFocused] = useState(false);
@@ -47,7 +43,6 @@ export default function SneakerNameInput({
 
     return (
         <TextInput
-            ref={inputRef}
             placeholder="Air Max 1"
             inputMode="text"
             value={nameValue}
@@ -55,16 +50,6 @@ export default function SneakerNameInput({
             placeholderTextColor="gray"
             clearButtonMode="while-editing"
             returnKeyType="next"
-            onSubmitEditing={() => {
-                if (nextInputRef) {
-                    handleForm.inputBlur('sneakerName', nameValue, nextInputRef)
-                        .then((isValid) => {
-                            if (isValid) {
-                                nextInputRef.current?.focus();
-                            }
-                        });
-                }
-            }}
             enablesReturnKeyAutomatically={true}
             onFocus={() => handleForm.inputFocus('sneakerName')}
             onBlur={() => handleForm.inputBlur('sneakerName', nameValue)}

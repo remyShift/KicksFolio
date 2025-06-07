@@ -139,7 +139,7 @@ export const useModalStore = create<ModalStore>((set, get) => ({
 				setModalStep('index');
 				break;
 			case 'addForm':
-				setModalStep('sku');
+				setModalStep('index');
 				break;
 			case 'view':
 				setModalStep('addForm');

@@ -1,4 +1,4 @@
-import { useSneakerForm } from "@/hooks/useSneakerForm";
+import { useSneakerForm } from "@/components/modals/SneakersModal/hooks/useSneakerForm";
 import { useEffect, useState } from "react";
 import { Text, TextInput, View, ScrollView } from "react-native";
 

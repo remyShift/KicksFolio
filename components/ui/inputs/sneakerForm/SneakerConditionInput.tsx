@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Text, TextInput, View, ScrollView } from "react-native";
-import { useSneakerForm } from "@/hooks/useSneakerForm";
+import { useSneakerForm } from "@/components/modals/SneakersModal/hooks/useSneakerForm";
 
 interface SneakerConditionInputProps {
     inputRef: React.RefObject<TextInput>;
@@ -8,6 +8,7 @@ interface SneakerConditionInputProps {
     onErrorChange: (errorMsg: string) => void;
     onValueChange: (value: string) => void;
     initialValue?: string;
+    nextInputRef: React.RefObject<TextInput>;
 }
 
 export default function SneakerConditionInput({ 
@@ -15,7 +16,8 @@ export default function SneakerConditionInput({
     onErrorChange, 
     onValueChange,
     initialValue = "",
-    scrollViewRef
+    scrollViewRef,
+    nextInputRef
 }: SneakerConditionInputProps) {
     const [isSneakerConditionError, setIsSneakerConditionError] = useState(false);
     const [isSneakerConditionFocused, setIsSneakerConditionFocused] = useState(false);
@@ -65,6 +67,16 @@ export default function SneakerConditionInput({
                     value={sneakerConditionValue}
                     placeholderTextColor="gray"
                     returnKeyType="done"
+                    onSubmitEditing={() => {
+                        if (nextInputRef) {
+                            handleForm.inputBlur('sneakerCondition', sneakerConditionValue)
+                                .then((isValid) => {
+                                    if (isValid) {
+                                        nextInputRef.current?.focus();
+                                    }
+                                });
+                        }
+                    }}
                     enablesReturnKeyAutomatically={true}
                     onFocus={() => handleForm.inputFocus('sneakerCondition')}
                     onBlur={() => handleForm.inputBlur('sneakerCondition', sneakerConditionValue)}

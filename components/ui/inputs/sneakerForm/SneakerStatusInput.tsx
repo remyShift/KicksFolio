@@ -1,21 +1,23 @@
 import { useEffect, useState } from "react";
-import { Text, View, ScrollView } from "react-native";
+import { Text, View, ScrollView, TextInput } from "react-native";
 import DropdownInput from './DropDownInput';
 import { STATUS } from '@/components/modals/SneakersModal/constants';
-import { useSneakerForm } from "@/hooks/useSneakerForm";
+import { useSneakerForm } from "@/components/modals/SneakersModal/hooks/useSneakerForm";
 
 interface SneakerStatusInputProps {
     scrollViewRef: React.RefObject<ScrollView>;
     onErrorChange: (errorMsg: string) => void;
     onValueChange: (value: string) => void;
     initialValue?: string;
+    nextInputRef?: React.RefObject<TextInput>;
 }
 
 export default function SneakerStatusInput({ 
     scrollViewRef, 
     onErrorChange, 
     onValueChange,
-    initialValue = ""
+    initialValue = "",
+    nextInputRef
 }: SneakerStatusInputProps) {
     const [isStatusError, setIsStatusError] = useState(false);
     const [isStatusFocused, setIsStatusFocused] = useState(false);
@@ -45,7 +47,6 @@ export default function SneakerStatusInput({
 
     const handleStatusSelect = (value: string) => {
         handleForm.inputChange(value, setStatusValue);
-        handleForm.inputBlur('sneakerStatus', value);
     };
 
     const handleStatusOpen = () => {
@@ -62,10 +63,8 @@ export default function SneakerStatusInput({
                     placeholder="Select a status"
                     isError={isStatusError}
                     onOpen={handleStatusOpen}
+                    onBlur={() => handleForm.inputBlur('sneakerStatus', statusValue)}
                 />
-                {errorMsg !== '' && (
-                    <Text className='text-red-500 text-xs text-center mt-1'>{errorMsg}</Text>
-                )}
             </View>
         </View>
     );

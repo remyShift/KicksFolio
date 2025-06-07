@@ -35,7 +35,6 @@ export default function DropdownInput({
         onSelect(option);
         dropdownHeight.value = withTiming(0, { duration: 300 });
         setIsOpen(false);
-        onBlur?.();
     };
 
     const toggleDropdown = () => {

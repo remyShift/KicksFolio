@@ -41,8 +41,6 @@ export const FormFields = ({
     onErrorChange,
     initialValues = {}
 }: FormFieldsProps) => {
-    const sneakerNameRef = useRef<TextInput>(null);
-    const sneakerSizeRef = useRef<TextInput>(null);
     const sneakerPricePaidRef = useRef<TextInput>(null);
     const sneakerConditionRef = useRef<TextInput>(null);
     const sneakerDescriptionRef = useRef<TextInput>(null);
@@ -51,7 +49,6 @@ export const FormFields = ({
         <View className="flex-1 gap-6 mt-2">
             <View className="flex gap-4 w-full">
                 <SneakerNameInput
-                    inputRef={sneakerNameRef}
                     scrollViewRef={scrollViewRef}
                     onErrorChange={(error) => onErrorChange('sneakerName', error)}
                     onValueChange={onSneakerNameChange}
@@ -77,11 +74,11 @@ export const FormFields = ({
 
             <View className="flex-row items-center w-full border-t-2 border-gray-300">
                 <SneakerSizeInput
-                    inputRef={sneakerSizeRef}
                     scrollViewRef={scrollViewRef}
                     onErrorChange={(error) => onErrorChange('sneakerSize', error)}
                     onValueChange={onSneakerSizeChange}
                     initialValue={initialValues.sneakerSize}
+                    nextInputRef={sneakerPricePaidRef}
                 />
 
                 <SneakerPricePaidInput
@@ -90,6 +87,7 @@ export const FormFields = ({
                     onErrorChange={(error) => onErrorChange('sneakerPricePaid', error)}
                     onValueChange={onSneakerPricePaidChange}
                     initialValue={initialValues.sneakerPricePaid}
+                    nextInputRef={sneakerConditionRef}
                 />
 
                 <SneakerConditionInput
@@ -98,10 +96,11 @@ export const FormFields = ({
                     onErrorChange={(error) => onErrorChange('sneakerCondition', error)}
                     onValueChange={onSneakerConditionChange}
                     initialValue={initialValues.sneakerCondition}
+                    nextInputRef={sneakerDescriptionRef}
                 />
             </View>
 
-            <View className="flex-1 max-h-[180px]">
+            <View className="flex-1 max-h-[130px]">
                 <SneakerDescriptionInput
                     inputRef={sneakerDescriptionRef}
                     scrollViewRef={scrollViewRef}

@@ -1,6 +1,5 @@
 import { View, KeyboardAvoidingView, ScrollView, Platform } from 'react-native';
 import { useSneakerAPI } from '../../hooks/useSneakerAPI';
-import { useSneakerValidation } from '../../hooks/useSneakerValidation';
 import { useSession } from '@/context/authContext';
 import { Sneaker } from '@/types/Sneaker';
 import { ImageUploader } from './components/ImageUploader';
@@ -24,7 +23,7 @@ export const FormStep = ({
     setUserSneakers
 }: FormStepProps) => {
     const { user, sessionToken } = useSession();
-    const { setModalStep, setIsVisible } = useModalStore();
+    const { setModalStep } = useModalStore();
     const scrollViewRef = useRef<ScrollView>(null);
     const [errorMsg, setErrorMsg] = useState('');
     
@@ -36,7 +35,6 @@ export const FormStep = ({
     const [sneakerImage, setSneakerImage] = useState(sneaker?.images?.[0]?.url || '');
     const [sneakerPricePaid, setSneakerPricePaid] = useState(sneaker?.price_paid?.toString() || '');
     const [sneakerDescription, setSneakerDescription] = useState(sneaker?.description || '');
-    const [fieldErrors, setFieldErrors] = useState<{[key: string]: string}>({});
 
     useEffect(() => {
         if (sneaker) {
@@ -51,17 +49,9 @@ export const FormStep = ({
         }
     }, [sneaker]);
 
-    const { validateSneakerForm } = useSneakerValidation();
-    const { handleSneakerSubmit } = useSneakerAPI(sessionToken || null, user?.collection?.id);
+    const { handleFormSubmit } = useSneakerAPI(sessionToken || null, user?.collection?.id);
 
     const currentSneakerId = userSneakers ? userSneakers.find((s: Sneaker) => s.id === sneaker?.id)?.id : null;
-
-    const handleFieldError = (field: string, error: string) => {
-        setFieldErrors(prev => ({
-            ...prev,
-            [field]: error
-        }));
-    };
 
     const handleSubmit = () => {
         const formData: SneakerFormData = {
@@ -75,40 +65,18 @@ export const FormStep = ({
             description: sneakerDescription
         };
 
-        const validation = validateSneakerForm(formData);
-        if (!validation.isValid) {
-            setFieldErrors(validation.errors);
-            return;
-        }
-
-        const sneakerData: Partial<Sneaker> = {
-            id: currentSneakerId || undefined,
-            model: formData.model,
-            brand: formData.brand,
-            status: formData.status,
-            size: Number(formData.size),
-            condition: Number(formData.condition),
-            images: formData.images.map(img => ({ id: '', url: img.url })),
-            price_paid: Number(formData.price_paid),
-            description: formData.description,
-            collection_id: user?.collection?.id || '',
-            purchase_date: new Date().toISOString(),
-            estimated_value: 0,
-            release_date: null
-        };
-
-        handleSneakerSubmit(sneakerData, user?.id!)
-            .then((response) => {
-                if (response) {
-                    const updatedSneakers = userSneakers ? [...userSneakers, response] : [response];
-                    setUserSneakers(updatedSneakers);
-                    setSneaker(response);
-                    setModalStep('view');
-                }
-            })
-            .catch((error) => {
-                setErrorMsg(`An error occurred while submitting the sneaker: ${error}`);
-            });
+        handleFormSubmit(
+            formData,
+            user?.id!,
+            currentSneakerId || undefined,
+            userSneakers,
+            {
+                setUserSneakers,
+                setSneaker,
+                setModalStep,
+                setErrorMsg
+            }
+        );
     };
 
     return (
@@ -125,7 +93,6 @@ export const FormStep = ({
                 contentContainerStyle={{ minHeight: '100%' }}
             >
                 <View className="flex-1 h-full p-2 gap-2">
-                    
                     <ImageUploader
                         image={sneakerImage}
                         setImage={setSneakerImage}
@@ -134,7 +101,7 @@ export const FormStep = ({
                         setIsError={() => {}}
                     />
 
-                    <ErrorMsg content={errorMsg} display={errorMsg !== ''}/>
+                    {errorMsg && <ErrorMsg content={errorMsg} display={true} />}
 
                     <FormFields
                         scrollViewRef={scrollViewRef}
@@ -145,7 +112,7 @@ export const FormStep = ({
                         onSneakerPricePaidChange={setSneakerPricePaid}
                         onSneakerConditionChange={setSneakerCondition}
                         onSneakerDescriptionChange={setSneakerDescription}
-                        onErrorChange={handleFieldError}
+                        onErrorChange={(field, error) => setErrorMsg(error)}
                         initialValues={{
                             sneakerName,
                             sneakerBrand,
