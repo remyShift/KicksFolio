@@ -9,9 +9,8 @@ import { useModalStore } from '@/store/useModalStore';
 export const SneakersModal = () => {
     const { 
         modalStep, 
-        isVisible, 
-        currentSneaker,
-        setCurrentSneaker
+        isVisible,
+        currentSneaker
     } = useModalStore();
 
     if (!isVisible) return null;
@@ -32,10 +31,7 @@ export const SneakersModal = () => {
                 )}
 
                 {modalStep === 'view' && currentSneaker && (
-                    <ViewStep
-                        sneaker={currentSneaker}
-                        setSneaker={setCurrentSneaker}
-                    />
+                    <ViewStep/>
                 )}
             </View>
 

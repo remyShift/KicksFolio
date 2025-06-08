@@ -99,7 +99,7 @@ export const useSneakerAPI = (sessionToken: string, userId: string) => {
 			.add(sneakerToAdd)
 			.then((response) => {
 				if (response && callbacks) {
-					callbacks.setCurrentSneaker?.(response);
+					callbacks.setCurrentSneaker?.(response.sneaker);
 					callbacks.setModalStep('view');
 				}
 				return response;
