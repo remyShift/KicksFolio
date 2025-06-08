@@ -4,6 +4,7 @@ import { SneakerValidationService } from '@/services/SneakerValidationService';
 import { SneakerFormData } from '../types';
 import { ModalStep } from '../types';
 import { FetchedSneaker } from '@/store/useModalStore';
+import { useSession } from '@/context/authContext';
 
 interface Callbacks {
 	setCurrentSneaker?: (sneaker: Sneaker | null) => void;
@@ -15,6 +16,7 @@ interface Callbacks {
 export const useSneakerAPI = (sessionToken: string, userId: string) => {
 	const sneakerService = new SneakersService(userId, sessionToken);
 	const sneakerFormValidationService = new SneakerValidationService();
+	const { refreshUserSneakers } = useSession();
 
 	const handleSkuSearch = (sku: string, callbacks: Callbacks) => {
 		if (!sessionToken) {
@@ -97,10 +99,13 @@ export const useSneakerAPI = (sessionToken: string, userId: string) => {
 
 		return sneakerService
 			.add(sneakerToAdd)
-			.then((response) => {
+			.then(async (response) => {
 				if (response && callbacks) {
 					callbacks.setCurrentSneaker?.(response.sneaker);
 					callbacks.setModalStep('view');
+
+					// Rafraîchir automatiquement les données après ajout
+					await refreshUserSneakers();
 				}
 				return response;
 			})
@@ -119,7 +124,9 @@ export const useSneakerAPI = (sessionToken: string, userId: string) => {
 
 		return sneakerService
 			.delete(sneakerId)
-			.then((response: any) => {
+			.then(async (response: any) => {
+				// Rafraîchir automatiquement les données après suppression
+				await refreshUserSneakers();
 				return response;
 			})
 			.catch((error: string) => {

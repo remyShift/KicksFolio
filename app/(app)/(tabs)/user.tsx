@@ -1,6 +1,6 @@
 import { RefreshControl, ScrollView, View } from 'react-native';
 import { useSession } from '@/context/authContext';
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { Sneaker } from '@/types/Sneaker';
 import { useAuth } from '@/hooks/useAuth';
 import AddButton from '@/components/ui/buttons/AddButton';
@@ -13,8 +13,8 @@ import SneakersModalWrapper from '@/components/screens/app/profile/SneakersModal
 import { useModalStore } from '@/store/useModalStore';
 
 export default function User() {
-  const { user, userSneakers, sessionToken } = useSession();
-  const { logout, getUserSneakers, getUser } = useAuth();
+  const { user, userSneakers, sessionToken, refreshUserData } = useSession();
+  const { logout } = useAuth();
   const { setModalStep, setIsVisible } = useModalStore();
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -22,30 +22,24 @@ export default function User() {
   const onRefresh = async () => {
     setRefreshing(true);
     if (user && sessionToken) {
-      console.log('onRefresh called', user);
-      await getUser(sessionToken);
-      console.log('getUser called', user);
-      await getUserSneakers(user, sessionToken);
+      await refreshUserData();
     }
     setRefreshing(false);
   };
 
-  useEffect(() => {
-    if (user && sessionToken) {
-      getUser(sessionToken);
-      getUserSneakers(user, sessionToken);
-    }
-  }, [user, sessionToken]);
-
   const sneakersByBrand = useMemo(() => {
-    if (!userSneakers) return {};
+    if (!userSneakers || userSneakers.length === 0) return {};
+    
     return userSneakers.reduce((acc, sneaker) => {
-      if (!acc[sneaker.brand]) {
-        acc[sneaker.brand] = [];
+      // Normaliser le nom de la marque pour éviter les doublons (minuscules, sans espaces)
+      const normalizedBrand = sneaker.brand.toLowerCase().trim();
+      
+      if (!acc[normalizedBrand]) {
+        acc[normalizedBrand] = [];
       }
-      acc[sneaker.brand].push(sneaker);
+      acc[normalizedBrand].push(sneaker);
       return acc;
-    }, {} as Record<string, typeof userSneakers>);
+    }, {} as Record<string, Sneaker[]>);
   }, [userSneakers]);
 
   const handleAddSneaker = () => {

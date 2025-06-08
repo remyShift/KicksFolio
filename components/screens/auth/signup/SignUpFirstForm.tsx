@@ -4,7 +4,6 @@ import { ScrollView, View, TextInput, KeyboardAvoidingView, Platform } from "rea
 import { useState, useRef } from "react";
 import MainButton from "@/components/ui/buttons/MainButton";
 import LoginPageLink from "@/components/ui/links/LoginPageLink";
-import { router } from "expo-router";
 import UsernameInput from "@/components/ui/inputs/authForm/UsernameInput";
 import EmailInput from "@/components/ui/inputs/authForm/EmailInput";
 import PasswordInput from "@/components/ui/inputs/authForm/PasswordInput";

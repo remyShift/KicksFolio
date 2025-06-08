@@ -4,8 +4,6 @@ import { FormValidationService } from '@/services/FormValidationService';
 import { router } from 'expo-router';
 import { UserData } from '@/types/auth';
 import { User } from '@/types/User';
-import { collectionService } from '@/services/CollectionService';
-import { SneakersService } from '@/services/SneakersService';
 import { useSession } from '@/context/authContext';
 import { useSignUpValidation } from './useSignUpValidation';
 
@@ -13,8 +11,16 @@ export const useAuth = () => {
 	const [errorMsg, setErrorMsg] = useState('');
 	const authService = new AuthService();
 	const formValidation = new FormValidationService(setErrorMsg, {});
-	const { setSessionToken, setUserCollection, setUserSneakers, setUser } =
-		useSession();
+	const {
+		setSessionToken,
+		setUserCollection,
+		setUserSneakers,
+		setUser,
+		refreshUserData,
+		refreshUserSneakers,
+		user,
+		sessionToken,
+	} = useSession();
 	const { validateSignUpStep1 } = useSignUpValidation();
 
 	const login = async (email: string, password: string) => {
@@ -91,7 +97,6 @@ export const useAuth = () => {
 			.then((ok) => {
 				if (ok) {
 					setSessionToken(null);
-					setUserCollection(null);
 					router.replace('/login');
 				}
 				return ok;
@@ -134,6 +139,7 @@ export const useAuth = () => {
 		return authService
 			.deleteAccount(userId, token)
 			.then(() => {
+				setSessionToken(null);
 				router.replace('/login');
 				return true;
 			})
@@ -153,31 +159,12 @@ export const useAuth = () => {
 			});
 	};
 
-	const getUserCollection = async (user: User, token: string) => {
-		return collectionService
-			.getUserCollection(user.id, token)
-			.then((data) => {
-				setUserCollection(data.collection);
-				return data;
-			})
-			.catch(() => {
-				setErrorMsg('Error when getting user collection.');
-				return null;
-			});
+	const getUserCollection = async (userData: User, token: string) => {
+		await refreshUserData(userData, token);
 	};
 
-	const getUserSneakers = async (user: User, token: string) => {
-		const sneakerService = new SneakersService(user.id, token);
-		return sneakerService
-			.getUserSneakers()
-			.then((data) => {
-				setUserSneakers(data.sneakers);
-				return data;
-			})
-			.catch(() => {
-				setErrorMsg('Error when getting user sneakers.');
-				return null;
-			});
+	const getUserSneakers = async (userData: User, token: string) => {
+		await refreshUserSneakers();
 	};
 
 	const handleNextSignupPage = async (

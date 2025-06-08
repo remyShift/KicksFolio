@@ -7,6 +7,8 @@ import { User } from '@/types/User';
 import { Collection } from '@/types/Collection';
 import { Sneaker } from '@/types/Sneaker';
 import { authService } from '@/services/AuthService';
+import { collectionService } from '@/services/CollectionService';
+import { SneakersService } from '@/services/SneakersService';
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
@@ -37,23 +39,67 @@ export function SessionProvider({ children }: PropsWithChildren) {
 
     const initializeData = async () => {
         if (sessionToken) {
-            authService.getUser(sessionToken)
-                .then(({ user }) => {
-                    setUser(user);
-                    storageService.setItem('user', user);
-                })
-                .catch(() => {
-                    setUser(null);
-                    storageService.removeItem('user');
-                });
+            try {
+                const { user: userData } = await authService.getUser(sessionToken);
+                setUser(userData);
+                storageService.setItem('user', userData);
+                
+                // Récupérer la collection et les sneakers en parallèle
+                await refreshUserData(userData, sessionToken);
+            } catch (error) {
+                console.error('Error initializing user data:', error);
+                clearUserData();
+            }
         } else {
-            setUser(null);
-            setUserCollection(null);
-            setUserSneakers(null);
-            storageService.removeItem('user');
-            storageService.removeItem('collection');
-            storageService.removeItem('sneakers');
+            clearUserData();
         }
+    };
+
+    const refreshUserData = async (currentUser?: User, token?: string) => {
+        const userData = currentUser || user;
+        const sessionTokenToUse = token || sessionToken;
+        
+        if (!userData || !sessionTokenToUse) return;
+
+        try {
+            // Récupérer collection et sneakers en parallèle
+            const [collectionResponse, sneakersData] = await Promise.all([
+                collectionService.getUserCollection(userData.id, sessionTokenToUse),
+                new SneakersService(userData.id, sessionTokenToUse).getUserSneakers()
+            ]);
+
+            setUserCollection(collectionResponse.collection);
+            setUserSneakers(sneakersData.sneakers || []);
+            
+            // Sauvegarder en cache
+            storageService.setItem('collection', collectionResponse.collection);
+            storageService.setItem('sneakers', sneakersData.sneakers || []);
+        } catch (error) {
+            console.error('Error refreshing user data:', error);
+        }
+    };
+
+    const refreshUserSneakers = async () => {
+        if (!user || !sessionToken) return;
+        
+        try {
+            const sneakersService = new SneakersService(user.id, sessionToken);
+            const data = await sneakersService.getUserSneakers();
+            setUserSneakers(data.sneakers || []);
+            storageService.setItem('sneakers', data.sneakers || []);
+        } catch (error) {
+            console.error('Error refreshing sneakers:', error);
+        }
+    };
+
+    const clearUserData = () => {
+        setUser(null);
+        setUserCollection(null);
+        setUserSneakers(null);
+        // Nettoyer le cache
+        storageService.removeItem('user');
+        storageService.removeItem('collection');
+        storageService.removeItem('sneakers');
     };
 
     const handleAppStateChange = async () => {
@@ -77,6 +123,8 @@ export function SessionProvider({ children }: PropsWithChildren) {
                 setUserCollection,
                 userSneakers,
                 setUserSneakers,
+                refreshUserData,
+                refreshUserSneakers,
                 setSessionToken: (value) => {
                     if (typeof value === 'function') {
                         setSessionToken((value as (prev: string | null) => string | null)(null));

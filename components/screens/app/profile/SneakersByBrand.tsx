@@ -30,33 +30,38 @@ export default function SneakersByBrand({
 
     return (
         <View className="flex-1 gap-4">
-            {Object.entries(sneakersByBrand).map(([brand, sneakers]) => (
-                <View key={brand} className="flex-1">
-                <BrandTitle
-                    content={brand} 
-                    brandLogo={
-                    brand === 'New Balance' ? 
-                        require('@/assets/images/brands/newbalance.png') : 
-                        brandLogos[brand.toLowerCase()]
-                    } 
-                />
-                <ScrollView
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                >
-                    {sneakers.map((sneaker) => (
-                        <View key={sneaker.id} className="w-96 p-4">
-                            <SneakerCard
-                            setModalVisible={() => onSneakerPress(sneaker)}
-                            sneaker={sneaker}
-                            setSneaker={(s) => onSneakerPress(s)}
-                            setModalStep={setModalStep}
-                            />
-                        </View>
-                    ))}
-                </ScrollView>
-                </View>
-            ))}
+            {Object.entries(sneakersByBrand).map(([normalizedBrand, sneakers]) => {
+                // Récupérer le nom original de la marque depuis le premier sneaker
+                const originalBrandName = sneakers[0]?.brand || normalizedBrand;
+                
+                return (
+                    <View key={normalizedBrand} className="flex-1">
+                        <BrandTitle
+                            content={originalBrandName} 
+                            brandLogo={
+                                normalizedBrand === 'new balance' ? 
+                                    require('@/assets/images/brands/newbalance.png') : 
+                                    brandLogos[normalizedBrand]
+                            } 
+                        />
+                        <ScrollView
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                        >
+                            {sneakers.map((sneaker) => (
+                                <View key={sneaker.id} className="w-96 p-4">
+                                    <SneakerCard
+                                        setModalVisible={() => onSneakerPress(sneaker)}
+                                        sneaker={sneaker}
+                                        setSneaker={(s) => onSneakerPress(s)}
+                                        setModalStep={setModalStep}
+                                    />
+                                </View>
+                            ))}
+                        </ScrollView>
+                    </View>
+                );
+            })}
         </View>
     );
 } 
