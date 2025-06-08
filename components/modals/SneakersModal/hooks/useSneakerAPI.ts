@@ -104,8 +104,9 @@ export const useSneakerAPI = (sessionToken: string, userId: string) => {
 					callbacks.setCurrentSneaker?.(response.sneaker);
 					callbacks.setModalStep('view');
 
-					// Rafraîchir automatiquement les données après ajout
-					await refreshUserSneakers();
+					setTimeout(async () => {
+						await refreshUserSneakers();
+					}, 100);
 				}
 				return response;
 			})
@@ -125,7 +126,6 @@ export const useSneakerAPI = (sessionToken: string, userId: string) => {
 		return sneakerService
 			.delete(sneakerId)
 			.then(async (response: any) => {
-				// Rafraîchir automatiquement les données après suppression
 				await refreshUserSneakers();
 				return response;
 			})
