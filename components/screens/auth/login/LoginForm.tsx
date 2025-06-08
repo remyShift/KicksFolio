@@ -35,8 +35,8 @@ export default function LoginForm() {
 
     const handleLogin = async () => {
         const result = await validateForm([
-            { value: email, fieldType: 'email', isRequired: true },
-            { value: password, fieldType: 'password', isRequired: true },
+            { value: email, fieldType: 'email', isRequired: true, isLoginPage: true },
+            { value: password, fieldType: 'password', isRequired: true, isLoginPage: true },
         ]);
 
         if (!result.isValid) {

@@ -7,6 +7,7 @@ interface FieldValidation {
 	fieldType: FieldName;
 	isRequired?: boolean;
 	customValidation?: string;
+	isLoginPage?: boolean;
 }
 
 interface ErrorSetters {
@@ -55,7 +56,7 @@ export const useFormValidation = ({ errorSetters }: UseFormValidationProps) => {
 				const isValid = await formValidation.validateField(
 					field.value.toString(),
 					field.fieldType,
-					false,
+					field.isLoginPage || false,
 					null,
 					field.customValidation
 				);
