@@ -1,13 +1,13 @@
-import { useState } from 'react';
 import { Sneaker } from '@/types/Sneaker';
 import { SneakersService } from '@/services/SneakersService';
 import { SneakerValidationService } from '@/services/SneakerValidationService';
 import { SneakerFormData } from '../types';
 import { ModalStep } from '../types';
+import { FetchedSneaker } from '@/store/useModalStore';
 
 interface Callbacks {
-	setUserSneakers?: (sneakers: Sneaker[] | null) => void;
-	setSneaker?: (sneaker: Sneaker | null) => void;
+	setCurrentSneaker?: (sneaker: Sneaker | null) => void;
+	setFetchedSneaker?: (sneaker: FetchedSneaker | null) => void;
 	setModalStep?: (step: ModalStep) => void;
 	setErrorMsg?: (error: string) => void;
 }
@@ -33,34 +33,17 @@ export const useSneakerAPI = (sessionToken: string, collectionId: string) => {
 			.searchBySku(sku.trim())
 			.then((response: any) => {
 				if (response) {
+					const responseResult = response.results[0];
+
 					const transformedSneaker = {
-						id: '',
-						model: response.name || '',
-						brand: response.brand || '',
-						status: '',
-						size: 0,
-						condition: 0,
-						images: response.image
-							? [
-									{
-										id: '',
-										url:
-											response.image.small ||
-											response.image.original ||
-											'',
-									},
-							  ]
-							: [],
-						price_paid: 0,
-						description: response.story || '',
-						collection_id: collectionId,
-						purchase_date: response.releaseDate,
-						estimated_value: response.estimatedMarketValue || 0,
-						release_date: response.releaseDate || null,
-						created_at: new Date().toISOString(),
-						updated_at: new Date().toISOString(),
+						model: responseResult.name || '',
+						brand: responseResult.brand || '',
+						description: responseResult.story || '',
+						image: {
+							url: responseResult.image['360'][0] || '',
+						},
 					};
-					callbacks.setSneaker?.(transformedSneaker);
+					callbacks.setFetchedSneaker?.(transformedSneaker);
 					callbacks.setModalStep?.('addForm');
 				}
 				return response;
@@ -73,9 +56,6 @@ export const useSneakerAPI = (sessionToken: string, collectionId: string) => {
 
 	const handleFormSubmit = async (
 		formData: SneakerFormData,
-		userId: string,
-		currentSneakerId?: string,
-		userSneakers?: Sneaker[] | null,
 		callbacks?: Callbacks
 	) => {
 		if (!sessionToken) {
@@ -103,7 +83,7 @@ export const useSneakerAPI = (sessionToken: string, collectionId: string) => {
 		}
 
 		const sneakerToAdd: Sneaker = {
-			id: currentSneakerId || '',
+			id: '',
 			model: formData.model,
 			brand: formData.brand,
 			status: formData.status,
@@ -121,14 +101,10 @@ export const useSneakerAPI = (sessionToken: string, collectionId: string) => {
 		};
 
 		return sneakerService
-			.add(sneakerToAdd, sneakerToAdd.id)
+			.add(sneakerToAdd)
 			.then((response: any) => {
 				if (response && callbacks) {
-					const updatedSneakers = userSneakers
-						? [...userSneakers, response]
-						: [response];
-					callbacks.setUserSneakers?.(updatedSneakers);
-					callbacks.setSneaker?.(response);
+					callbacks.setCurrentSneaker?.(response);
 					callbacks.setModalStep?.('view');
 				}
 				return response;

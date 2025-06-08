@@ -7,7 +7,6 @@ import { useEffect } from 'react';
 import { Link } from 'expo-router';
 import { FontAwesome6 } from '@expo/vector-icons';
 import { useSneakerAPI } from '../../hooks/useSneakerAPI';
-import { ModalStep } from '../../types';
 
 export const SkuStep = () => {
     const { sessionToken, userCollection } = useSession();
@@ -18,7 +17,7 @@ export const SkuStep = () => {
         setErrorMsg,
         setModalSessionToken,
         sneakerSKU,
-        setSneakerFetchedInformation,
+        setFetchedSneaker,
         setModalStep,
     } = useModalStore();
 
@@ -59,8 +58,8 @@ export const SkuStep = () => {
                         onErrorChange={setErrorMsg}
                         onValueChange={handleSkuValueChange}
                         onSubmit={() => handleSkuSearch(sneakerSKU, {
-                            setSneaker: setSneakerFetchedInformation,
-                            setModalStep: (step: ModalStep) => setModalStep(step),
+                            setFetchedSneaker,
+                            setModalStep,
                             setErrorMsg
                         })}
                     />

@@ -4,23 +4,14 @@ import { InitialStep } from './steps/InitialStep';
 import { SkuStep } from './steps/SkuStep';
 import { FormStep } from './steps/FormStep';
 import { ViewStep } from './steps/ViewStep';
-import { Sneaker } from '@/types/Sneaker';
 import { useModalStore } from '@/store/useModalStore';
 
-interface SneakersModalProps {
-    userSneakers: Sneaker[] | null;
-    setUserSneakers: (sneakers: Sneaker[] | null) => void;
-}
-
-export const SneakersModal = ({ 
-    userSneakers,
-    setUserSneakers
-}: SneakersModalProps) => {
+export const SneakersModal = () => {
     const { 
         modalStep, 
         isVisible, 
         currentSneaker,
-        setSneakerFetchedInformation
+        setCurrentSneaker
     } = useModalStore();
 
     if (!isVisible) return null;
@@ -37,20 +28,13 @@ export const SneakersModal = ({
                 )}
 
                 {modalStep === 'addForm' && (
-                    <FormStep 
-                        sneaker={currentSneaker}
-                        setSneaker={setSneakerFetchedInformation}
-                        userSneakers={userSneakers}
-                        setUserSneakers={setUserSneakers}
-                    />
+                    <FormStep />
                 )}
 
                 {modalStep === 'view' && currentSneaker && (
                     <ViewStep
                         sneaker={currentSneaker}
-                        setSneaker={setSneakerFetchedInformation}
-                        userSneakers={userSneakers}
-                        setUserSneakers={setUserSneakers}
+                        setSneaker={setCurrentSneaker}
                     />
                 )}
             </View>

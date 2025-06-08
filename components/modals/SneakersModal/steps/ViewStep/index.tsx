@@ -15,18 +15,14 @@ import { useModalStore } from '@/store/useModalStore';
 interface ViewStepProps {
     sneaker: Sneaker;
     setSneaker: (sneaker: Sneaker | null) => void;
-    userSneakers: Sneaker[] | null;
-    setUserSneakers: (sneakers: Sneaker[] | null) => void;
 }
 
 export const ViewStep = ({ 
     sneaker, 
-    setSneaker,
-    userSneakers,
-    setUserSneakers 
+    setSneaker
 }: ViewStepProps) => {
-    const { user, sessionToken } = useSession();
-    const { handleSneakerDelete } = useSneakerAPI(sessionToken || null);
+    const { sessionToken, userCollection, userSneakers, setUserSneakers } = useSession();
+    const { handleSneakerDelete } = useSneakerAPI(sessionToken!, userCollection!.id);
     const [errorMsg, setErrorMsg] = useState('');
     const { setModalStep, setIsVisible } = useModalStore();
 
@@ -57,10 +53,9 @@ export const ViewStep = ({
                 onPress: () => {
                     handleSneakerDelete(sneaker.id)
                         .then(() => {
-                            const updatedSneakers = userSneakers ? userSneakers.filter(s => s.id !== sneaker.id) : [];
-                            setUserSneakers(updatedSneakers);
                             setSneaker(null);
                             setIsVisible(false);
+                            setUserSneakers(userSneakers?.filter(s => s.id !== sneaker.id) || []);
                         })
                         .catch((error) => {
                             setErrorMsg(`An error occurred while deleting the sneaker: ${error}`);

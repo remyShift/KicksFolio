@@ -13,11 +13,9 @@ import SneakersModalWrapper from '@/components/screens/app/profile/SneakersModal
 import { useModalStore } from '@/store/useModalStore';
 
 export default function User() {
-  const { user, userSneakers, sessionToken, setUserSneakers } = useSession();
+  const { user, userSneakers, sessionToken } = useSession();
   const { logout, getUserSneakers, getUser } = useAuth();
   const { setModalStep, setIsVisible } = useModalStore();
-  const [sneaker, setSneaker] = useState<Sneaker | null>(null);
-  const [currentSneaker, setCurrentSneaker] = useState<Sneaker | null>(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -31,10 +29,6 @@ export default function User() {
     }
     setRefreshing(false);
   };
-
-  useEffect(() => {
-    setCurrentSneaker(sneaker);
-  }, [sneaker]);
 
   useEffect(() => {
     if (user && sessionToken) {
@@ -60,7 +54,6 @@ export default function User() {
   };
 
   const handleSneakerPress = (sneaker: Sneaker) => {
-    setSneaker(sneaker);
     setIsVisible(true);
   };
 
@@ -93,11 +86,7 @@ export default function User() {
           </View>
         </View>
 
-        <SneakersModalWrapper 
-          sneaker={currentSneaker}
-          userSneakers={userSneakers}
-          setUserSneakers={setUserSneakers}
-        />
+        <SneakersModalWrapper />
       </ScrollView>
 
       <ProfileDrawer 

@@ -1,19 +1,8 @@
 import { Modal, Pressable, View } from 'react-native';
 import { SneakersModal } from '@/components/modals/SneakersModal';
-import { Sneaker } from '@/types/Sneaker';
 import { useModalStore } from '@/store/useModalStore';
 
-interface SneakersModalWrapperProps {
-    sneaker: Sneaker | null;
-    userSneakers: Sneaker[] | null;
-    setUserSneakers: (sneakers: Sneaker[] | null) => void;
-}
-
-export default function SneakersModalWrapper({
-    sneaker,
-    userSneakers,
-    setUserSneakers
-}: SneakersModalWrapperProps) {
+export default function SneakersModalWrapper() {
     const { isVisible, setIsVisible } = useModalStore();
 
     return (
@@ -34,11 +23,7 @@ export default function SneakersModalWrapper({
                             e.stopPropagation();
                         }}
                     >
-                        <SneakersModal 
-                            userSneakers={userSneakers} 
-                            setUserSneakers={setUserSneakers} 
-                            sneaker={sneaker} 
-                        />
+                        <SneakersModal />
                     </Pressable>
                 </View>
             </Pressable>

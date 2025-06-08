@@ -2,18 +2,18 @@ import CollectionCard from '@/components/ui/cards/CollectionCard';
 import PageTitle from '@/components/ui/text/PageTitle';
 import Title from '@/components/ui/text/Title';
 import MainButton from '@/components/ui/buttons/MainButton';
-import { ScrollView, View, Modal, Pressable } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { useSession } from '@/context/authContext';
 import { useLocalSearchParams } from "expo-router";
 import { useEffect } from 'react';
-import { SneakersModal } from '@/components/modals/SneakersModal';
 import { useModalStore } from '@/store/useModalStore';
+import SneakersModalWrapper from '@/components/screens/app/profile/SneakersModalWrapper';
 
 export default function Index() {
     const params = useLocalSearchParams();
     const isNewUser = params.newUser === 'true';
-    const { userCollection, userSneakers, setUserSneakers } = useSession();
-    const { setModalStep, setIsVisible, isVisible } = useModalStore();
+    const { userCollection, userSneakers } = useSession();
+    const { setModalStep, setIsVisible } = useModalStore();
 
     useEffect(() => {
         if (isNewUser || !userSneakers || userSneakers.length === 0) {
@@ -49,32 +49,7 @@ export default function Index() {
                 </View>
             </ScrollView>
 
-            <Modal
-                animationType="slide"
-                transparent={true}
-                visible={isVisible}
-                onRequestClose={() => setIsVisible(false)}
-            >
-                <Pressable 
-                    className="flex-1 bg-black/50" 
-                    onPress={() => setIsVisible(false)}
-                >
-                    <View className="flex-1 justify-end">
-                        <Pressable 
-                            className="h-[80%] bg-background rounded-t-3xl p-4"
-                            onPress={(e) => {
-                                e.stopPropagation();
-                            }}
-                        >
-                            <SneakersModal 
-                                userSneakers={userSneakers} 
-                                setUserSneakers={setUserSneakers} 
-                                sneaker={null} 
-                            />
-                        </Pressable>
-                    </View>
-                </Pressable>
-            </Modal>
+            <SneakersModalWrapper />
         </View>
     );
 }

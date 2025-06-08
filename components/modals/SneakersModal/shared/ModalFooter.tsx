@@ -4,7 +4,6 @@ import NextButton from '@/components/ui/buttons/NextButton';
 import { useModalStore } from '@/store/useModalStore';
 import { useSneakerAPI } from '../hooks/useSneakerAPI';
 import { useSession } from '@/context/authContext';
-import { ModalStep } from '../types';
 
 export const ModalFooter = () => {
     const { 
@@ -12,12 +11,14 @@ export const ModalFooter = () => {
         setModalStep, 
         setIsVisible, 
         sneakerSKU,
-        setSneakerFetchedInformation,
+        setFetchedSneaker,
         setErrorMsg,
+        fetchedSneaker,
+        setCurrentSneaker
     } = useModalStore();
 
     const { sessionToken, userCollection } = useSession();
-    const { handleSkuSearch } = useSneakerAPI(sessionToken!, userCollection!.id);
+    const { handleSkuSearch, handleFormSubmit } = useSneakerAPI(sessionToken!, userCollection!.id);
 
     const handleNext = () => {
         switch (modalStep) {
@@ -26,13 +27,35 @@ export const ModalFooter = () => {
                 break;
             case 'sku':
                 handleSkuSearch(sneakerSKU, {
-                    setSneaker: setSneakerFetchedInformation,
-                    setModalStep: (step: ModalStep) => setModalStep(step),
+                    setFetchedSneaker,
+                    setModalStep,
                     setErrorMsg
                 });
                 break;
             case 'addForm':
-                setModalStep('view');
+                if (fetchedSneaker) {
+                    handleFormSubmit(
+                        {
+                            model: fetchedSneaker.model,
+                            brand: fetchedSneaker.brand,
+                            status: '',
+                            size: '',
+                            condition: '',
+                            images: [
+                                {
+                                    url: fetchedSneaker.image.url,
+                                }
+                            ],
+                            price_paid: '',
+                            description: fetchedSneaker.description
+                        },
+                        {
+                            setCurrentSneaker,
+                            setModalStep,
+                            setErrorMsg
+                        }
+                    );
+                }
                 break;
             case 'view':
                 setIsVisible(false);

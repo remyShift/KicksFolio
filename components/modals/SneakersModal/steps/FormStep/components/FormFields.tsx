@@ -8,6 +8,8 @@ import SneakerPricePaidInput from '@/components/ui/inputs/sneakerForm/SneakerPri
 import SneakerConditionInput from '@/components/ui/inputs/sneakerForm/SneakerConditionInput';
 import SneakerDescriptionInput from '@/components/ui/inputs/sneakerForm/SneakerDescriptionInput';
 
+import { SneakerToAdd } from '@/store/useModalStore';
+
 interface FormFieldsProps {
     scrollViewRef: React.RefObject<ScrollView>;
     onSneakerNameChange: (value: string) => void;
@@ -18,15 +20,7 @@ interface FormFieldsProps {
     onSneakerConditionChange: (value: string) => void;
     onSneakerDescriptionChange: (value: string) => void;
     onErrorChange: (field: string, error: string) => void;
-    initialValues?: {
-        sneakerName?: string;
-        sneakerBrand?: string;
-        sneakerStatus?: string;
-        sneakerSize?: string;
-        sneakerPricePaid?: string;
-        sneakerCondition?: string;
-        sneakerDescription?: string;
-    };
+    initialValues?: SneakerToAdd | null;
 }
 
 export const FormFields = ({
@@ -39,7 +33,7 @@ export const FormFields = ({
     onSneakerConditionChange,
     onSneakerDescriptionChange,
     onErrorChange,
-    initialValues = {}
+    initialValues,
 }: FormFieldsProps) => {
     const sneakerPricePaidRef = useRef<TextInput>(null);
     const sneakerConditionRef = useRef<TextInput>(null);
@@ -52,7 +46,7 @@ export const FormFields = ({
                     scrollViewRef={scrollViewRef}
                     onErrorChange={(error) => onErrorChange('sneakerName', error)}
                     onValueChange={onSneakerNameChange}
-                    initialValue={initialValues.sneakerName}
+                    initialValue={initialValues?.model}
                 />
 
                 <View className="flex-1 flex-row gap-2">
@@ -60,14 +54,14 @@ export const FormFields = ({
                         scrollViewRef={scrollViewRef}
                         onErrorChange={(error) => onErrorChange('sneakerBrand', error)}
                         onValueChange={onSneakerBrandChange}
-                        initialValue={initialValues.sneakerBrand}
+                        initialValue={initialValues?.brand}
                     />
 
                     <SneakerStatusInput
                         scrollViewRef={scrollViewRef}
                         onErrorChange={(error) => onErrorChange('sneakerStatus', error)}
                         onValueChange={onSneakerStatusChange}
-                        initialValue={initialValues.sneakerStatus}
+                        initialValue={initialValues?.status}
                     />
                 </View>
             </View>
@@ -77,7 +71,7 @@ export const FormFields = ({
                     scrollViewRef={scrollViewRef}
                     onErrorChange={(error) => onErrorChange('sneakerSize', error)}
                     onValueChange={onSneakerSizeChange}
-                    initialValue={initialValues.sneakerSize}
+                    initialValue={initialValues?.size}
                     nextInputRef={sneakerPricePaidRef}
                 />
 
@@ -86,7 +80,7 @@ export const FormFields = ({
                     scrollViewRef={scrollViewRef}
                     onErrorChange={(error) => onErrorChange('sneakerPricePaid', error)}
                     onValueChange={onSneakerPricePaidChange}
-                    initialValue={initialValues.sneakerPricePaid}
+                    initialValue={initialValues?.price_paid}
                     nextInputRef={sneakerConditionRef}
                 />
 
@@ -95,7 +89,7 @@ export const FormFields = ({
                     scrollViewRef={scrollViewRef}
                     onErrorChange={(error) => onErrorChange('sneakerCondition', error)}
                     onValueChange={onSneakerConditionChange}
-                    initialValue={initialValues.sneakerCondition}
+                    initialValue={initialValues?.condition}
                     nextInputRef={sneakerDescriptionRef}
                 />
             </View>
@@ -106,7 +100,7 @@ export const FormFields = ({
                     scrollViewRef={scrollViewRef}
                     onErrorChange={(error) => onErrorChange('sneakerDescription', error)}
                     onValueChange={onSneakerDescriptionChange}
-                    initialValue={initialValues.sneakerDescription}
+                    initialValue={initialValues?.description}
                 />
             </View>
         </View>
