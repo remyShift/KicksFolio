@@ -2,6 +2,7 @@ import { useForm } from "@/hooks/useForm";
 import { UserData } from "@/types/auth";
 import { useEffect, useState } from "react";
 import { Text, TextInput, View, ScrollView } from "react-native";
+import { useFormErrors } from "@/context/formErrorsContext";
 
 interface SizeInputProps {
     inputRef: React.RefObject<TextInput>;
@@ -11,12 +12,14 @@ interface SizeInputProps {
     onErrorChange: (errorMsg: string) => void;
     onValueChange?: (value: string) => void;
     onSubmitEditing?: () => Promise<string | null>;
+    isError?: boolean;
 }
 
-export default function SizeInput({ inputRef, signUpProps, setSignUpProps, scrollViewRef, onErrorChange, onValueChange, onSubmitEditing }: SizeInputProps) {
+export default function SizeInput({ inputRef, signUpProps, setSignUpProps, scrollViewRef, onErrorChange, onValueChange, onSubmitEditing, isError = false }: SizeInputProps) {
     const [isSizeError, setIsSizeError] = useState(false);
     const [isSizeFocused, setIsSizeFocused] = useState(false);
     const [sizeValue, setSizeValue] = useState(signUpProps?.sneaker_size?.toString() || "");
+    const { clearErrors } = useFormErrors();
 
     const { handleForm, errorMsg } = useForm({
         errorSetters: {
@@ -60,7 +63,10 @@ export default function SizeInput({ inputRef, signUpProps, setSignUpProps, scrol
                 });
             }}
             enablesReturnKeyAutomatically={true}
-            onFocus={() => handleForm.inputFocus('size')}
+            onFocus={() => {
+                handleForm.inputFocus('size');
+                clearErrors();
+            }}
             onBlur={() => handleForm.inputBlur('size', sizeValue)}
             onChangeText={(text) => {
                 setSizeValue(text);
@@ -68,7 +74,7 @@ export default function SizeInput({ inputRef, signUpProps, setSignUpProps, scrol
                 handleForm.inputChange(text, (t) => setSignUpProps?.({ ...signUpProps!, sneaker_size: parseFloat(t) }));
             }}
             className={`bg-white rounded-md p-3 w-2/3 font-spacemono-bold ${
-                isSizeError ? 'border-2 border-red-500' : ''
+                (isSizeError || isError) ? 'border-2 border-red-500' : ''
             } ${isSizeFocused ? 'border-2 border-primary' : ''}`}
         />
     </View>

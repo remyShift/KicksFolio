@@ -2,6 +2,7 @@ import { useForm } from "@/hooks/useForm";
 import { UserData } from "@/types/auth";
 import { Text, TextInput, View, ScrollView } from "react-native";
 import { useState, useEffect } from "react";
+import { useFormErrors } from "@/context/formErrorsContext";
 
 interface EmailInputProps {
     inputRef: React.RefObject<TextInput>;
@@ -12,12 +13,14 @@ interface EmailInputProps {
     onValueChange?: (value: string) => void;
     isLoginPage?: boolean;
     nextInputRef?: React.RefObject<TextInput>;
+    isError?: boolean;
 }
 
-export default function EmailInput({ inputRef, signUpProps, setSignUpProps, scrollViewRef, onErrorChange, onValueChange, isLoginPage, nextInputRef }: EmailInputProps) {
+export default function EmailInput({ inputRef, signUpProps, setSignUpProps, scrollViewRef, onErrorChange, onValueChange, isLoginPage, nextInputRef, isError = false }: EmailInputProps) {
     const [isEmailError, setIsEmailError] = useState(false);
     const [isEmailFocused, setIsEmailFocused] = useState(false);
     const [emailValue, setEmailValue] = useState(signUpProps?.email || "");
+    const { clearErrors } = useFormErrors();
 
     const { handleForm, errorMsg } = useForm({
             errorSetters: {
@@ -62,7 +65,10 @@ export default function EmailInput({ inputRef, signUpProps, setSignUpProps, scro
                 }
             }}
             enablesReturnKeyAutomatically={true}
-            onFocus={() => handleForm.inputFocus('email')}
+            onFocus={() => {
+                handleForm.inputFocus('email');
+                clearErrors();
+            }}
             onBlur={() => handleForm.inputBlur('email', emailValue, isLoginPage)}
             onChangeText={(text) => {
                 setEmailValue(text);
@@ -70,7 +76,7 @@ export default function EmailInput({ inputRef, signUpProps, setSignUpProps, scro
                 handleForm.inputChange(text, (t) => setSignUpProps?.({ ...signUpProps!, email: t }));
             }}
             className={`bg-white rounded-md p-3 w-2/3 font-spacemono-bold ${
-                isEmailError ? 'border-2 border-red-500' : ''
+                (isEmailError || isError) ? 'border-2 border-red-500' : ''
             } ${isEmailFocused ? 'border-2 border-primary' : ''}`}
         />
     </View>

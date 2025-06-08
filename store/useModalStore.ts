@@ -23,6 +23,10 @@ interface ModalStore {
 	sneakerSKU: string;
 	errorMsg: string;
 	modalSessionToken: string | null;
+	validateForm:
+		| (() => Promise<{ isValid: boolean; errorMsg: string }>)
+		| null;
+	clearFormErrors: (() => void) | null;
 
 	setModalStep: (step: ModalStep) => void;
 	setIsVisible: (isVisible: boolean) => void;
@@ -32,6 +36,10 @@ interface ModalStore {
 	setSneakerSKU: (sku: string) => void;
 	setErrorMsg: (error: string) => void;
 	setModalSessionToken: (token: string | null) => void;
+	setValidateForm: (
+		fn: (() => Promise<{ isValid: boolean; errorMsg: string }>) | null
+	) => void;
+	setClearFormErrors: (fn: (() => void) | null) => void;
 }
 
 export const useModalStore = create<ModalStore>((set) => ({
@@ -43,6 +51,8 @@ export const useModalStore = create<ModalStore>((set) => ({
 	sneakerSKU: '',
 	errorMsg: '',
 	modalSessionToken: null,
+	validateForm: null,
+	clearFormErrors: null,
 
 	setModalStep: (step) => set({ modalStep: step }),
 	setIsVisible: (isVisible) => set({ isVisible }),
@@ -52,4 +62,6 @@ export const useModalStore = create<ModalStore>((set) => ({
 	setSneakerSKU: (sku) => set({ sneakerSKU: sku }),
 	setErrorMsg: (error) => set({ errorMsg: error }),
 	setModalSessionToken: (token) => set({ modalSessionToken: token }),
+	setValidateForm: (fn) => set({ validateForm: fn }),
+	setClearFormErrors: (fn) => set({ clearFormErrors: fn }),
 }));

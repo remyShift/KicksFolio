@@ -8,7 +8,7 @@ import SneakerPricePaidInput from '@/components/ui/inputs/sneakerForm/SneakerPri
 import SneakerConditionInput from '@/components/ui/inputs/sneakerForm/SneakerConditionInput';
 import SneakerDescriptionInput from '@/components/ui/inputs/sneakerForm/SneakerDescriptionInput';
 
-import { SneakerToAdd } from '@/store/useModalStore';
+import { SneakerFormData } from '@/components/modals/SneakersModal/types';
 
 interface FormFieldsProps {
     scrollViewRef: React.RefObject<ScrollView>;
@@ -20,7 +20,12 @@ interface FormFieldsProps {
     onSneakerConditionChange: (value: string) => void;
     onSneakerDescriptionChange: (value: string) => void;
     onErrorChange: (field: string, error: string) => void;
-    initialValues?: SneakerToAdd | null;
+    initialValues?: SneakerFormData | null;
+    isSneakerNameError?: boolean;
+    isSneakerBrandError?: boolean;
+    isSneakerStatusError?: boolean;
+    isSneakerSizeError?: boolean;
+    isSneakerConditionError?: boolean;
 }
 
 export const FormFields = ({
@@ -34,6 +39,11 @@ export const FormFields = ({
     onSneakerDescriptionChange,
     onErrorChange,
     initialValues,
+    isSneakerNameError = false,
+    isSneakerBrandError = false,
+    isSneakerStatusError = false,
+    isSneakerSizeError = false,
+    isSneakerConditionError = false,
 }: FormFieldsProps) => {
     return (
         <View className="flex-1 gap-6 mt-2">
@@ -43,6 +53,7 @@ export const FormFields = ({
                     onErrorChange={(error) => onErrorChange('sneakerName', error)}
                     onValueChange={onSneakerNameChange}
                     initialValue={initialValues?.model}
+                    isError={isSneakerNameError}
                 />
 
                 <View className="flex-1 flex-row gap-2">
@@ -51,6 +62,7 @@ export const FormFields = ({
                         onErrorChange={(error) => onErrorChange('sneakerBrand', error)}
                         onValueChange={onSneakerBrandChange}
                         initialValue={initialValues?.brand}
+                        isError={isSneakerBrandError}
                     />
 
                     <SneakerStatusInput
@@ -58,6 +70,7 @@ export const FormFields = ({
                         onErrorChange={(error) => onErrorChange('sneakerStatus', error)}
                         onValueChange={onSneakerStatusChange}
                         initialValue={initialValues?.status}
+                        isError={isSneakerStatusError}
                     />
                 </View>
             </View>
@@ -68,6 +81,7 @@ export const FormFields = ({
                     onErrorChange={(error) => onErrorChange('sneakerSize', error)}
                     onValueChange={onSneakerSizeChange}
                     initialValue={initialValues?.size}
+                    isError={isSneakerSizeError}
                 />
 
                 <SneakerPricePaidInput
@@ -82,6 +96,7 @@ export const FormFields = ({
                     onErrorChange={(error) => onErrorChange('sneakerCondition', error)}
                     onValueChange={onSneakerConditionChange}
                     initialValue={initialValues?.condition}
+                    isError={isSneakerConditionError}
                 />
             </View>
 

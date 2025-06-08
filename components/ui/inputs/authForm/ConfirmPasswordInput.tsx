@@ -2,6 +2,7 @@ import { useForm } from "@/hooks/useForm";
 import { UserData } from "@/types/auth";
 import { useEffect, useState } from "react";
 import { Text, TextInput, View, ScrollView } from "react-native";
+import { useFormErrors } from "@/context/formErrorsContext";
 
 interface ConfirmPasswordInputProps {
     inputRef: React.RefObject<TextInput>;
@@ -11,12 +12,14 @@ interface ConfirmPasswordInputProps {
     onErrorChange: (errorMsg: string) => void;
     onValueChange?: (value: string) => void;
     onSubmitEditing: () => Promise<string | null>;
+    isError?: boolean;
 }
 
-export default function ConfirmPasswordInput({ inputRef, signUpProps, setSignUpProps, scrollViewRef, onErrorChange, onValueChange, onSubmitEditing }: ConfirmPasswordInputProps) {
+export default function ConfirmPasswordInput({ inputRef, signUpProps, setSignUpProps, scrollViewRef, onErrorChange, onValueChange, onSubmitEditing, isError = false }: ConfirmPasswordInputProps) {
     const [isConfirmPasswordError, setIsConfirmPasswordError] = useState(false);
     const [isConfirmPasswordFocused, setIsConfirmPasswordFocused] = useState(false);
     const [confirmPasswordValue, setConfirmPasswordValue] = useState(signUpProps?.confirmPassword || "");
+    const { clearErrors } = useFormErrors();
 
     const { handleForm, errorMsg } = useForm({
         errorSetters: {
@@ -59,7 +62,10 @@ export default function ConfirmPasswordInput({ inputRef, signUpProps, setSignUpP
                 });
             }}
             enablesReturnKeyAutomatically={true}
-            onFocus={() => handleForm.inputFocus('confirmPassword')}
+            onFocus={() => {
+                handleForm.inputFocus('confirmPassword');
+                clearErrors();
+            }}
             onBlur={() => handleForm.inputBlur('confirmPassword', confirmPasswordValue)}
             onChangeText={(text) => {
                 setConfirmPasswordValue(text);
@@ -67,7 +73,7 @@ export default function ConfirmPasswordInput({ inputRef, signUpProps, setSignUpP
                 handleForm.inputChange(text, (t) => setSignUpProps?.({ ...signUpProps!, confirmPassword: t }));
             }}
             className={`bg-white rounded-md p-3 w-2/3 font-spacemono-bold ${
-                isConfirmPasswordError ? 'border-2 border-red-500' : ''
+                (isConfirmPasswordError || isError) ? 'border-2 border-red-500' : ''
             } ${isConfirmPasswordFocused ? 'border-2 border-primary' : ''}`}
         />
     </View>

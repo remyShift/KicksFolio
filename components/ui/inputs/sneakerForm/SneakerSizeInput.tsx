@@ -1,12 +1,14 @@
 import { useSneakerForm } from "@/components/modals/SneakersModal/hooks/useSneakerForm";
 import { useEffect, useState } from "react";
 import { Text, TextInput, View, ScrollView } from "react-native";
+import { useFormErrors } from "@/context/formErrorsContext";
 
 interface SneakerSizeInputProps {
     scrollViewRef: React.RefObject<ScrollView>;
     onErrorChange: (errorMsg: string) => void;
     onValueChange: (value: string) => void;
     initialValue?: string;
+    isError?: boolean;
 }
 
 export default function SneakerSizeInput({ 
@@ -14,11 +16,12 @@ export default function SneakerSizeInput({
     onErrorChange, 
     onValueChange,
     initialValue = "",
+    isError = false,
 }: SneakerSizeInputProps) {
     const [isSneakerSizeError, setIsSneakerSizeError] = useState(false);
     const [isSneakerSizeFocused, setIsSneakerSizeFocused] = useState(false);
     const [sneakerSizeValue, setSneakerSizeValue] = useState(initialValue);
-
+    const { clearErrors } = useFormErrors();
     const { handleForm, errorMsg } = useSneakerForm({
 
         errorSetters: {
@@ -56,11 +59,14 @@ export default function SneakerSizeInput({
                     placeholderTextColor="gray"
                     returnKeyType="next"
                     enablesReturnKeyAutomatically={true}
-                    onFocus={() => handleForm.inputFocus('sneakerSize')}
+                    onFocus={() => {
+                        handleForm.inputFocus('sneakerSize');
+                        clearErrors();
+                    }}
                     onBlur={() => handleForm.inputBlur('sneakerSize', sneakerSizeValue)}
                     onChangeText={(text) => handleForm.inputChange(text, setSneakerSizeValue)}
                     className={`bg-white rounded-md p-2 w-full font-spacemono-bold ${
-                        isSneakerSizeError ? 'border-2 border-red-500' : ''
+                        (isSneakerSizeError || isError) ? 'border-2 border-red-500' : ''
                     } ${isSneakerSizeFocused ? 'border-2 border-primary' : ''}`}
                 />
             </View>

@@ -2,6 +2,7 @@ import { useForm } from "@/hooks/useForm";
 import { UserData } from "@/types/auth";
 import { useEffect, useState } from "react";
 import { Text, TextInput, View, ScrollView } from "react-native";
+import { useFormErrors } from "@/context/formErrorsContext";
 
 interface UsernameInputProps {
     inputRef: React.RefObject<TextInput>;
@@ -11,12 +12,14 @@ interface UsernameInputProps {
     onErrorChange: (errorMsg: string) => void;
     onValueChange?: (value: string) => void;
     nextInputRef?: React.RefObject<TextInput>;
+    isError?: boolean;
 }
 
-export default function UsernameInput({ inputRef, signUpProps, setSignUpProps, scrollViewRef, onErrorChange, onValueChange, nextInputRef }: UsernameInputProps) {
+export default function UsernameInput({ inputRef, signUpProps, setSignUpProps, scrollViewRef, onErrorChange, onValueChange, nextInputRef, isError = false }: UsernameInputProps) {
     const [isUsernameError, setIsUsernameError] = useState(false);
     const [isUsernameFocused, setIsUsernameFocused] = useState(false);
     const [usernameValue, setUsernameValue] = useState(signUpProps?.username || "");
+    const { clearErrors } = useFormErrors();
 
     const { handleForm, errorMsg } = useForm({
         errorSetters: {
@@ -61,7 +64,10 @@ export default function UsernameInput({ inputRef, signUpProps, setSignUpProps, s
                 }
             }}
             enablesReturnKeyAutomatically={true}
-            onFocus={() => handleForm.inputFocus('username')}
+            onFocus={() => {
+                handleForm.inputFocus('username');
+                clearErrors();
+            }}
             onBlur={() => handleForm.inputBlur('username', usernameValue)}
             onChangeText={(text) => {
                 setUsernameValue(text);
@@ -69,7 +75,7 @@ export default function UsernameInput({ inputRef, signUpProps, setSignUpProps, s
                 handleForm.inputChange(text, (t) => setSignUpProps?.({ ...signUpProps!, username: t }));
             }}
             className={`bg-white rounded-md p-3 w-2/3 font-spacemono-bold ${
-                isUsernameError ? 'border-2 border-red-500' : ''
+                (isUsernameError || isError) ? 'border-2 border-red-500' : ''
             } ${isUsernameFocused ? 'border-2 border-primary' : ''}`}
         />
     </View>

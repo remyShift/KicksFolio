@@ -8,6 +8,8 @@ import { Link } from "expo-router";
 import { useAuth } from "@/hooks/useAuth";
 import PasswordInput from "@/components/ui/inputs/authForm/PasswordInput";
 import EmailInput from "@/components/ui/inputs/authForm/EmailInput";
+import { useFormValidation } from "@/hooks/useFormValidation";
+import { FormErrorsProvider } from "@/context/formErrorsContext";
 
 export default function LoginForm() {
     const scrollViewRef = useRef<ScrollView>(null);
@@ -15,17 +17,29 @@ export default function LoginForm() {
     const [password, setPassword] = useState('');
     const [emailErrorMsg, setEmailErrorMsg] = useState('');
     const [passwordErrorMsg, setPasswordErrorMsg] = useState('');
+    const [isEmailError, setIsEmailError] = useState(false);
+    const [isPasswordError, setIsPasswordError] = useState(false);
     const emailInputRef = useRef<TextInput>(null);
     const passwordInputRef = useRef<TextInput>(null);
 
     const { login, errorMsg: authErrorMsg } = useAuth();
+    
+    const { validateForm, globalErrorMsg, clearErrors } = useFormValidation({
+        errorSetters: {
+            email: setIsEmailError,
+            password: setIsPasswordError,
+        }
+    });
 
-    const errorMsg = emailErrorMsg || passwordErrorMsg || authErrorMsg;
+    const errorMsg = emailErrorMsg || passwordErrorMsg || authErrorMsg || globalErrorMsg;
 
     const handleLogin = async () => {
-        if (!email || !password) {
-            if (!email) setEmailErrorMsg('Email requis');
-            if (!password) setPasswordErrorMsg('Mot de passe requis');
+        const result = await validateForm([
+            { value: email, fieldType: 'email', isRequired: true },
+            { value: password, fieldType: 'password', isRequired: true },
+        ]);
+
+        if (!result.isValid) {
             return;
         }
 
@@ -56,24 +70,28 @@ export default function LoginForm() {
                         <View className="absolute w-full flex items-center" style={{ top: -50 }}>
                             <ErrorMsg content={errorMsg} display={errorMsg !== ''} />
                         </View>
-                        <EmailInput
-                            inputRef={emailInputRef}
-                            scrollViewRef={scrollViewRef}
-                            onErrorChange={setEmailErrorMsg}
-                            onValueChange={setEmail}
-                            isLoginPage={true}
-                            nextInputRef={passwordInputRef}
-                        />
-                        
-                        <PasswordInput
-                            inputRef={passwordInputRef}
-                            scrollViewRef={scrollViewRef}
-                            onErrorChange={setPasswordErrorMsg}
-                            onValueChange={setPassword}
-                            title='*Password'
-                            isLoginPage={true}
-                            submitAction={handleLogin}
-                        />
+                        <FormErrorsProvider clearErrors={clearErrors}>
+                            <EmailInput
+                                inputRef={emailInputRef}
+                                scrollViewRef={scrollViewRef}
+                                onErrorChange={setEmailErrorMsg}
+                                onValueChange={setEmail}
+                                isLoginPage={true}
+                                nextInputRef={passwordInputRef}
+                                isError={isEmailError}
+                            />
+                            
+                            <PasswordInput
+                                inputRef={passwordInputRef}
+                                scrollViewRef={scrollViewRef}
+                                onErrorChange={setPasswordErrorMsg}
+                                onValueChange={setPassword}
+                                title='*Password'
+                                isLoginPage={true}
+                                submitAction={handleLogin}
+                                isError={isPasswordError}
+                            />
+                        </FormErrorsProvider>
                     </View>
                     <View className='flex gap-5 w-full justify-center items-center'>                      
                         <MainButton 

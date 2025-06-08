@@ -1,6 +1,7 @@
 import { useState, RefObject } from 'react';
 import { ScrollView, TextInput } from 'react-native';
 import { SneakerValidationService } from '@/services/SneakerValidationService';
+import { useModalStore } from '@/store/useModalStore';
 
 type ErrorSetters = {
 	[key: string]: (isError: boolean) => void;
@@ -24,6 +25,7 @@ export function useSneakerForm({
 		{}
 	);
 	const sneakerFormValidationService = new SneakerValidationService();
+	const { clearFormErrors } = useModalStore();
 
 	const handleForm = {
 		inputFocus: (inputType: string) => {
@@ -32,6 +34,10 @@ export function useSneakerForm({
 			}
 			setErrorMsg('');
 			setFieldErrors((prev) => ({ ...prev, [inputType]: '' }));
+			// Clear all form errors when focusing on any input
+			if (clearFormErrors) {
+				clearFormErrors();
+			}
 			if (scrollViewRef?.current) {
 				scrollViewRef.current.scrollToEnd({ animated: true });
 			}

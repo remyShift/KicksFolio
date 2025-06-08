@@ -2,6 +2,7 @@ import { useForm } from "@/hooks/useForm";
 import { UserData } from "@/types/auth";
 import { useEffect, useState } from "react";
 import { Text, TextInput, View, ScrollView } from "react-native";
+import { useFormErrors } from "@/context/formErrorsContext";
 
 interface FirstNameInputProps {
     inputRef: React.RefObject<TextInput>;
@@ -11,12 +12,14 @@ interface FirstNameInputProps {
     onErrorChange: (errorMsg: string) => void;
     onValueChange?: (value: string) => void;
     nextInputRef?: React.RefObject<TextInput>;
+    isError?: boolean;
 }
 
-export default function FirstNameInput({ inputRef, signUpProps, setSignUpProps, scrollViewRef, onErrorChange, onValueChange, nextInputRef }: FirstNameInputProps) {
+export default function FirstNameInput({ inputRef, signUpProps, setSignUpProps, scrollViewRef, onErrorChange, onValueChange, nextInputRef, isError = false }: FirstNameInputProps) {
     const [isFirstNameError, setIsFirstNameError] = useState(false);
     const [isFirstNameFocused, setIsFirstNameFocused] = useState(false);
     const [firstNameValue, setFirstNameValue] = useState(signUpProps?.first_name || "");
+    const { clearErrors } = useFormErrors();
 
     const { handleForm, errorMsg } = useForm({
         errorSetters: {
@@ -61,7 +64,10 @@ export default function FirstNameInput({ inputRef, signUpProps, setSignUpProps, 
                 }
             }}
             enablesReturnKeyAutomatically={true}
-            onFocus={() => handleForm.inputFocus('firstName')}
+            onFocus={() => {
+                handleForm.inputFocus('firstName');
+                clearErrors();
+            }}
             onBlur={() => handleForm.inputBlur('firstName', firstNameValue)}
             onChangeText={(text) => {
                 setFirstNameValue(text);
@@ -69,7 +75,7 @@ export default function FirstNameInput({ inputRef, signUpProps, setSignUpProps, 
                 handleForm.inputChange(text, (t) => setSignUpProps?.({ ...signUpProps!, first_name: t }));
             }}
             className={`bg-white rounded-md p-3 w-2/3 font-spacemono-bold ${
-                isFirstNameError ? 'border-2 border-red-500' : ''
+                (isFirstNameError || isError) ? 'border-2 border-red-500' : ''
             } ${isFirstNameFocused ? 'border-2 border-primary' : ''}`}
         />
     </View>

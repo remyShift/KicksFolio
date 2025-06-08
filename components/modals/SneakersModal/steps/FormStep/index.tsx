@@ -5,11 +5,28 @@ import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import { useState, useRef, useEffect } from 'react';
 import { useModalStore } from '@/store/useModalStore';
 import { SneakerFormData } from '@/components/modals/SneakersModal/types';
+import { useSneakerFormValidation } from '@/hooks/useSneakerFormValidation';
 
 export const FormStep = () => {
     const scrollViewRef = useRef<ScrollView>(null);
     const [displayErrorMsg, setDisplayErrorMsg] = useState('');
-    const { fetchedSneaker, setFetchedSneaker, sneakerToAdd, setSneakerToAdd, errorMsg } = useModalStore();
+    const [isSneakerNameError, setIsSneakerNameError] = useState(false);
+    const [isSneakerBrandError, setIsSneakerBrandError] = useState(false);
+    const [isSneakerStatusError, setIsSneakerStatusError] = useState(false);
+    const [isSneakerSizeError, setIsSneakerSizeError] = useState(false);
+    const [isSneakerConditionError, setIsSneakerConditionError] = useState(false);
+    
+    const { fetchedSneaker, setFetchedSneaker, sneakerToAdd, setSneakerToAdd, errorMsg, setValidateForm, setClearFormErrors } = useModalStore();
+    
+    const { validateSneakerForm, globalErrorMsg, clearErrors } = useSneakerFormValidation({
+        errorSetters: {
+            sneakerName: setIsSneakerNameError,
+            sneakerBrand: setIsSneakerBrandError,
+            sneakerStatus: setIsSneakerStatusError,
+            sneakerSize: setIsSneakerSizeError,
+            sneakerCondition: setIsSneakerConditionError,
+        }
+    });
 
     const defaultSneakerToAdd: SneakerFormData = {
         model: '',
@@ -29,19 +46,41 @@ export const FormStep = () => {
                 model: fetchedSneaker.model,
                 brand: fetchedSneaker.brand,
                 description: fetchedSneaker.description,
-                images: [
+                images: fetchedSneaker.image?.url ? [
                     {
                         url: fetchedSneaker.image.url,
                     }
-                ],
+                ] : [],
             });
             setFetchedSneaker(null);
         }
     }, [fetchedSneaker]);
 
     useEffect(() => {
-        setDisplayErrorMsg(errorMsg);
-    }, [errorMsg]);
+        setDisplayErrorMsg(errorMsg || globalErrorMsg);
+    }, [errorMsg, globalErrorMsg]);
+
+    const handleValidateAndSubmit = async () => {
+        const result = await validateSneakerForm([
+            { value: sneakerToAdd?.model || '', fieldType: 'sneakerName', isRequired: true },
+            { value: sneakerToAdd?.brand || '', fieldType: 'sneakerBrand', isRequired: true },
+            { value: sneakerToAdd?.status || '', fieldType: 'sneakerStatus', isRequired: true },
+            { value: sneakerToAdd?.size || '', fieldType: 'sneakerSize', isRequired: true },
+            { value: sneakerToAdd?.condition || '', fieldType: 'sneakerCondition', isRequired: true },
+        ]);
+
+        return result;
+    };
+
+    useEffect(() => {
+        setValidateForm(handleValidateAndSubmit);
+        setClearFormErrors(clearErrors);
+        
+        return () => {
+            setValidateForm(null);
+            setClearFormErrors(null);
+        };
+    }, [sneakerToAdd, setValidateForm, setClearFormErrors, clearErrors]);
 
     return (
         <KeyboardAvoidingView 
@@ -126,6 +165,11 @@ export const FormStep = () => {
                         }}
                         onErrorChange={(field, error) => setDisplayErrorMsg(error)}
                         initialValues={sneakerToAdd}
+                        isSneakerNameError={isSneakerNameError}
+                        isSneakerBrandError={isSneakerBrandError}
+                        isSneakerStatusError={isSneakerStatusError}
+                        isSneakerSizeError={isSneakerSizeError}
+                        isSneakerConditionError={isSneakerConditionError}
                     />
                 </View>
             </ScrollView>

@@ -2,6 +2,7 @@ import { useForm } from "@/hooks/useForm";
 import { UserData } from "@/types/auth";
 import { useEffect, useState } from "react";
 import { Text, TextInput, View, ScrollView } from "react-native";
+import { useFormErrors } from "@/context/formErrorsContext";
 
 interface LastNameInputProps {
     inputRef: React.RefObject<TextInput>;
@@ -11,12 +12,14 @@ interface LastNameInputProps {
     onErrorChange: (errorMsg: string) => void;
     onValueChange?: (value: string) => void;
     nextInputRef?: React.RefObject<TextInput>;
+    isError?: boolean;
 }
 
-export default function LastNameInput({ inputRef, signUpProps, setSignUpProps, scrollViewRef, onErrorChange, onValueChange, nextInputRef }: LastNameInputProps) {
+export default function LastNameInput({ inputRef, signUpProps, setSignUpProps, scrollViewRef, onErrorChange, onValueChange, nextInputRef, isError = false }: LastNameInputProps) {
     const [isLastNameError, setIsLastNameError] = useState(false);
     const [isLastNameFocused, setIsLastNameFocused] = useState(false);
     const [lastNameValue, setLastNameValue] = useState(signUpProps?.last_name || "");
+    const { clearErrors } = useFormErrors();
 
     const { handleForm, errorMsg } = useForm({
         errorSetters: {
@@ -61,7 +64,10 @@ export default function LastNameInput({ inputRef, signUpProps, setSignUpProps, s
                 }
             }}
             enablesReturnKeyAutomatically={true}
-            onFocus={() => handleForm.inputFocus('lastName')}
+            onFocus={() => {
+                handleForm.inputFocus('lastName');
+                clearErrors();
+            }}
             onBlur={() => handleForm.inputBlur('lastName', lastNameValue)}
             onChangeText={(text) => {
                 setLastNameValue(text);
@@ -69,7 +75,7 @@ export default function LastNameInput({ inputRef, signUpProps, setSignUpProps, s
                 handleForm.inputChange(text, (t) => setSignUpProps?.({ ...signUpProps!, last_name: t }));
             }}
             className={`bg-white rounded-md p-3 w-2/3 font-spacemono-bold ${
-                isLastNameError ? 'border-2 border-red-500' : ''
+                (isLastNameError || isError) ? 'border-2 border-red-500' : ''
             } ${isLastNameFocused ? 'border-2 border-primary' : ''}`}
         />
     </View>

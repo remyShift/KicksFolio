@@ -11,12 +11,17 @@ import PageTitle from '@/components/ui/text/PageTitle';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import { useImagePicker } from '@/hooks/useImagePicker';
 import ProfilePictureInput from '@/components/ui/inputs/authForm/ProfilePictureInput';
+import { useFormValidation } from '@/hooks/useFormValidation';
+import { FormErrorsProvider } from '@/context/formErrorsContext';
 
 export default function SignUpSecondForm() {
     const { signUpProps, setSignUpProps } = useSignUpProps();
     const [firstNameErrorMsg, setFirstNameErrorMsg] = useState('');
     const [lastNameErrorMsg, setLastNameErrorMsg] = useState('');
     const [sizeErrorMsg, setSizeErrorMsg] = useState('');
+    const [isFirstNameError, setIsFirstNameError] = useState(false);
+    const [isLastNameError, setIsLastNameError] = useState(false);
+    const [isSizeError, setIsSizeError] = useState(false);
 
     const scrollViewRef = useRef<ScrollView>(null);
     const lastNameInputRef = useRef<TextInput>(null);
@@ -25,8 +30,28 @@ export default function SignUpSecondForm() {
 
     const { signUp } = useAuth();
     const { handleImageSelection } = useImagePicker();
+    
+    const { validateForm, globalErrorMsg, clearErrors } = useFormValidation({
+        errorSetters: {
+            firstName: setIsFirstNameError,
+            lastName: setIsLastNameError,
+            size: setIsSizeError,
+        }
+    });
 
-    const errorMsg = firstNameErrorMsg || lastNameErrorMsg || sizeErrorMsg;
+    const errorMsg = firstNameErrorMsg || lastNameErrorMsg || sizeErrorMsg || globalErrorMsg;
+
+    const handleSignUp = async () => {
+        const result = await validateForm([
+            { value: signUpProps.first_name, fieldType: 'firstName', isRequired: true },
+            { value: signUpProps.last_name, fieldType: 'lastName', isRequired: true },
+            { value: signUpProps.sneaker_size, fieldType: 'size', isRequired: true },
+        ]);
+
+        if (result.isValid) {
+            signUp(signUpProps, setSignUpProps);
+        }
+    };
 
     return (
         <KeyboardAvoidingView 
@@ -51,34 +76,40 @@ export default function SignUpSecondForm() {
                             handleImageSelection={handleImageSelection}
                         />
 
-                        <FirstNameInput 
-                            inputRef={firstNameInputRef}
-                            signUpProps={signUpProps}
-                            setSignUpProps={setSignUpProps}
-                            scrollViewRef={scrollViewRef}
-                            onErrorChange={setFirstNameErrorMsg}
-                            nextInputRef={lastNameInputRef}
-                        />
+                        <FormErrorsProvider clearErrors={clearErrors}>
+                            <FirstNameInput 
+                                inputRef={firstNameInputRef}
+                                signUpProps={signUpProps}
+                                setSignUpProps={setSignUpProps}
+                                scrollViewRef={scrollViewRef}
+                                onErrorChange={setFirstNameErrorMsg}
+                                nextInputRef={lastNameInputRef}
+                                isError={isFirstNameError}
+                            />
 
-                        <LastNameInput 
-                            inputRef={lastNameInputRef}
-                            signUpProps={signUpProps}
-                            setSignUpProps={setSignUpProps}
-                            scrollViewRef={scrollViewRef}
-                            onErrorChange={setLastNameErrorMsg}
-                            nextInputRef={sizeInputRef}
-                        />
+                            <LastNameInput 
+                                inputRef={lastNameInputRef}
+                                signUpProps={signUpProps}
+                                setSignUpProps={setSignUpProps}
+                                scrollViewRef={scrollViewRef}
+                                onErrorChange={setLastNameErrorMsg}
+                                nextInputRef={sizeInputRef}
+                                isError={isLastNameError}
+                            />
 
-                        <SizeInput 
-                            inputRef={sizeInputRef}
-                            signUpProps={signUpProps}
-                            setSignUpProps={setSignUpProps}
-                            scrollViewRef={scrollViewRef}
-                            onErrorChange={setSizeErrorMsg}
-                            onSubmitEditing={() => {
-                                signUp(signUpProps, setSignUpProps);
-                            }}
-                        />
+                            <SizeInput 
+                                inputRef={sizeInputRef}
+                                signUpProps={signUpProps}
+                                setSignUpProps={setSignUpProps}
+                                scrollViewRef={scrollViewRef}
+                                onErrorChange={setSizeErrorMsg}
+                                onSubmitEditing={async () => {
+                                    await handleSignUp();
+                                    return null;
+                                }}
+                                isError={isSizeError}
+                            />
+                        </FormErrorsProvider>
                     </View>
 
                     <View className='flex gap-5 w-full justify-center items-center'>
@@ -87,7 +118,7 @@ export default function SignUpSecondForm() {
                             backgroundColor='bg-primary' 
                             onPressAction={() => {
                                 setTimeout(() => {
-                                    signUp(signUpProps, setSignUpProps);
+                                    handleSignUp();
                                 }, 300);
                             }}
                         />

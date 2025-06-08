@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
-import { Text, TextInput, View, ScrollView } from "react-native";
+import { TextInput, ScrollView } from "react-native";
 import { useSneakerForm } from "@/components/modals/SneakersModal/hooks/useSneakerForm";
+import { useFormErrors } from "@/context/formErrorsContext";
 
 interface SneakerNameInputProps {
     scrollViewRef: React.RefObject<ScrollView>;
     onErrorChange: (errorMsg: string) => void;
     onValueChange: (value: string) => void;
     initialValue?: string;
+    isError?: boolean;
 }
 
 export default function SneakerNameInput({ 
@@ -14,11 +16,12 @@ export default function SneakerNameInput({
     onErrorChange, 
     onValueChange,
     initialValue = "",
+    isError = false,
 }: SneakerNameInputProps) {
     const [isNameError, setIsNameError] = useState(false);
     const [isNameFocused, setIsNameFocused] = useState(false);
     const [nameValue, setNameValue] = useState(initialValue);
-
+    const { clearErrors } = useFormErrors();
     const { handleForm, errorMsg } = useSneakerForm({
         errorSetters: {
             sneakerName: (isError: boolean) => setIsNameError(isError),
@@ -51,13 +54,16 @@ export default function SneakerNameInput({
             clearButtonMode="while-editing"
             returnKeyType="next"
             enablesReturnKeyAutomatically={true}
-            onFocus={() => handleForm.inputFocus('sneakerName')}
+            onFocus={() => {
+                handleForm.inputFocus('sneakerName');
+                clearErrors();
+            }}
             onBlur={() => handleForm.inputBlur('sneakerName', nameValue)}
             onChangeText={(text) => {
                 handleForm.inputChange(text, setNameValue);
             }}
             className={`bg-white rounded-md p-3 w-full font-spacemono-bold ${
-                isNameError ? 'border-2 border-red-500' : ''
+                (isNameError || isError) ? 'border-2 border-red-500' : ''
             } ${isNameFocused ? 'border-2 border-primary' : ''}`}
         />
     );

@@ -14,7 +14,8 @@ export const ModalFooter = () => {
         setFetchedSneaker,
         setErrorMsg,
         setCurrentSneaker,
-        sneakerToAdd
+        sneakerToAdd,
+        validateForm
     } = useModalStore();
 
     const { sessionToken, user } = useSession();
@@ -33,24 +34,32 @@ export const ModalFooter = () => {
                 });
                 break;
             case 'addForm':
-                if (sneakerToAdd) {
-                    handleFormSubmit({
-                            model: sneakerToAdd.model,
-                            brand: sneakerToAdd.brand,
-                            status: sneakerToAdd.status,
-                            size: sneakerToAdd.size,
-                            condition: sneakerToAdd.condition,
-                            images: [
-                                {
-                                    url: sneakerToAdd.images[0].url,
-                                }
-                            ],
-                            price_paid: sneakerToAdd?.price_paid || '',
-                            description: sneakerToAdd?.description || ''
-                        }, {
-                            setCurrentSneaker,
-                            setModalStep,
-                            setErrorMsg
+                if (validateForm && sneakerToAdd) {
+                    validateForm()
+                        .then((result) => {
+                            if (result.isValid) {
+                                handleFormSubmit({
+                                        model: sneakerToAdd.model,
+                                        brand: sneakerToAdd.brand,
+                                        status: sneakerToAdd.status,
+                                        size: sneakerToAdd.size,
+                                        condition: sneakerToAdd.condition,
+                                        images: sneakerToAdd.images && sneakerToAdd.images.length > 0 ? [
+                                            {
+                                                url: sneakerToAdd.images[0]?.url || '',
+                                            }
+                                        ] : [],
+                                        price_paid: sneakerToAdd?.price_paid || '',
+                                        description: sneakerToAdd?.description || ''
+                                    }, {
+                                        setCurrentSneaker,
+                                        setModalStep,
+                                        setErrorMsg
+                                    });
+                            }
+                        })
+                        .catch((error) => {
+                            setErrorMsg('Une erreur est survenue lors de la validation');
                         });
                 }
                 break;
