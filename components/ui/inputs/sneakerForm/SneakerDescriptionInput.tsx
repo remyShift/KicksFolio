@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { Text, TextInput, View, ScrollView } from "react-native";
 
 interface SneakerDescriptionInputProps {
-    inputRef: React.RefObject<TextInput>;
     scrollViewRef: React.RefObject<ScrollView>;
     onErrorChange: (errorMsg: string) => void;
     onValueChange: (value: string) => void;
@@ -11,7 +10,6 @@ interface SneakerDescriptionInputProps {
 }
 
 export default function SneakerDescriptionInput({ 
-    inputRef, 
     onErrorChange, 
     onValueChange,
     initialValue = "",
@@ -49,7 +47,6 @@ export default function SneakerDescriptionInput({
 
     return (
         <TextInput
-            ref={inputRef}
             placeholder="Description of your sneakers..."
             inputMode="text"
             value={sneakerDescriptionValue}

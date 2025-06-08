@@ -1,5 +1,8 @@
 import { create } from 'zustand';
-import { ModalStep } from '@/components/modals/SneakersModal/types';
+import {
+	ModalStep,
+	SneakerFormData,
+} from '@/components/modals/SneakersModal/types';
 import { Sneaker } from '@/types/Sneaker';
 
 export interface FetchedSneaker {
@@ -11,24 +14,11 @@ export interface FetchedSneaker {
 	};
 }
 
-export interface SneakerToAdd {
-	model: string;
-	brand: string;
-	status: string;
-	size: string;
-	condition: string;
-	price_paid?: string;
-	description?: string;
-	images: {
-		url: string;
-	}[];
-}
-
 interface ModalStore {
 	modalStep: ModalStep;
 	isVisible: boolean;
 	currentSneaker: Sneaker | null;
-	sneakerToAdd: SneakerToAdd | null;
+	sneakerToAdd: SneakerFormData | null;
 	fetchedSneaker: FetchedSneaker | null;
 	sneakerSKU: string;
 	errorMsg: string;
@@ -37,7 +27,7 @@ interface ModalStore {
 	setModalStep: (step: ModalStep) => void;
 	setIsVisible: (isVisible: boolean) => void;
 	setCurrentSneaker: (sneaker: Sneaker | null) => void;
-	setSneakerToAdd: (sneaker: SneakerToAdd | null) => void;
+	setSneakerToAdd: (sneaker: SneakerFormData | null) => void;
 	setFetchedSneaker: (sneaker: FetchedSneaker | null) => void;
 	setSneakerSKU: (sku: string) => void;
 	setErrorMsg: (error: string) => void;

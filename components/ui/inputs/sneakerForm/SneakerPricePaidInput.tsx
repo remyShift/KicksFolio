@@ -3,21 +3,17 @@ import { useEffect, useState } from "react";
 import { Text, TextInput, View, ScrollView } from "react-native";
 
 interface SneakerPricePaidInputProps {
-    inputRef: React.RefObject<TextInput>;
     scrollViewRef: React.RefObject<ScrollView>;
     onErrorChange: (errorMsg: string) => void;
     onValueChange: (value: string) => void;
-    nextInputRef: React.RefObject<TextInput>;
     initialValue?: string;
 }
 
 export default function SneakerPricePaidInput({ 
-    inputRef, 
     scrollViewRef,
     onErrorChange, 
     onValueChange,
     initialValue = "",
-    nextInputRef
 }: SneakerPricePaidInputProps) {
     const [isSneakerPricePaidError, setIsSneakerPricePaidError] = useState(false);
     const [isSneakerPricePaidFocused, setIsSneakerPricePaidFocused] = useState(false);
@@ -50,7 +46,6 @@ export default function SneakerPricePaidInput({
             <Text className='font-spacemono text-center'>Price Paid</Text>
             <View className="w-4/5">
                 <TextInput
-                    ref={inputRef}
                     placeholder="150$"
                     inputMode="decimal"
                     keyboardType="decimal-pad"
@@ -58,16 +53,6 @@ export default function SneakerPricePaidInput({
                     value={sneakerPricePaidValue}
                     placeholderTextColor="gray"
                     returnKeyType="next"
-                    onSubmitEditing={() => {
-                        if (nextInputRef) {
-                            handleForm.inputBlur('sneakerPricePaid', sneakerPricePaidValue)
-                                .then((isValid) => {
-                                    if (isValid) {
-                                        nextInputRef.current?.focus();
-                                    }
-                                });
-                        }
-                    }}
                     enablesReturnKeyAutomatically={true}
                     onFocus={() => handleForm.inputFocus('sneakerPricePaid')}
                     onBlur={() => handleForm.inputBlur('sneakerPricePaid', sneakerPricePaidValue)}

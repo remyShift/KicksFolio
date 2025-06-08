@@ -3,21 +3,17 @@ import { Text, TextInput, View, ScrollView } from "react-native";
 import { useSneakerForm } from "@/components/modals/SneakersModal/hooks/useSneakerForm";
 
 interface SneakerConditionInputProps {
-    inputRef: React.RefObject<TextInput>;
     scrollViewRef: React.RefObject<ScrollView>;
     onErrorChange: (errorMsg: string) => void;
     onValueChange: (value: string) => void;
     initialValue?: string;
-    nextInputRef: React.RefObject<TextInput>;
 }
 
 export default function SneakerConditionInput({ 
-    inputRef, 
     onErrorChange, 
     onValueChange,
     initialValue = "",
-    scrollViewRef,
-    nextInputRef
+    scrollViewRef
 }: SneakerConditionInputProps) {
     const [isSneakerConditionError, setIsSneakerConditionError] = useState(false);
     const [isSneakerConditionFocused, setIsSneakerConditionFocused] = useState(false);
@@ -58,7 +54,6 @@ export default function SneakerConditionInput({
             <Text className='font-spacemono text-center'>*Condition</Text>
             <View className="w-4/5">
                 <TextInput
-                    ref={inputRef}
                     placeholder="0 - 10"
                     inputMode="decimal"
                     keyboardType="decimal-pad"
@@ -67,16 +62,6 @@ export default function SneakerConditionInput({
                     value={sneakerConditionValue}
                     placeholderTextColor="gray"
                     returnKeyType="done"
-                    onSubmitEditing={() => {
-                        if (nextInputRef) {
-                            handleForm.inputBlur('sneakerCondition', sneakerConditionValue)
-                                .then((isValid) => {
-                                    if (isValid) {
-                                        nextInputRef.current?.focus();
-                                    }
-                                });
-                        }
-                    }}
                     enablesReturnKeyAutomatically={true}
                     onFocus={() => handleForm.inputFocus('sneakerCondition')}
                     onBlur={() => handleForm.inputBlur('sneakerCondition', sneakerConditionValue)}

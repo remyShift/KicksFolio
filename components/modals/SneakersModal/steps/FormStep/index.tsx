@@ -4,14 +4,14 @@ import { FormFields } from './components/FormFields';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import { useState, useRef, useEffect } from 'react';
 import { useModalStore } from '@/store/useModalStore';
-import { SneakerToAdd } from '@/store/useModalStore';
+import { SneakerFormData } from '@/components/modals/SneakersModal/types';
 
 export const FormStep = () => {
     const scrollViewRef = useRef<ScrollView>(null);
-    const [errorMsg, setErrorMsg] = useState('');
-    const { fetchedSneaker, setFetchedSneaker, sneakerToAdd, setSneakerToAdd } = useModalStore();
+    const [displayErrorMsg, setDisplayErrorMsg] = useState('');
+    const { fetchedSneaker, setFetchedSneaker, sneakerToAdd, setSneakerToAdd, errorMsg } = useModalStore();
 
-    const defaultSneakerToAdd: SneakerToAdd = {
+    const defaultSneakerToAdd: SneakerFormData = {
         model: '',
         brand: '',
         status: '',
@@ -38,6 +38,10 @@ export const FormStep = () => {
             setFetchedSneaker(null);
         }
     }, [fetchedSneaker]);
+
+    useEffect(() => {
+        setDisplayErrorMsg(errorMsg);
+    }, [errorMsg]);
 
     return (
         <KeyboardAvoidingView 
@@ -67,7 +71,7 @@ export const FormStep = () => {
                         setIsError={() => {}}
                     />
 
-                    {errorMsg && <ErrorMsg content={errorMsg} display={true} />}
+                    {displayErrorMsg && <ErrorMsg content={displayErrorMsg} display={true} />}
 
                     <FormFields
                         scrollViewRef={scrollViewRef}
@@ -120,7 +124,7 @@ export const FormStep = () => {
                                 description: value,
                             });
                         }}
-                        onErrorChange={(field, error) => setErrorMsg(error)}
+                        onErrorChange={(field, error) => setDisplayErrorMsg(error)}
                         initialValues={sneakerToAdd}
                     />
                 </View>

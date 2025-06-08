@@ -13,8 +13,8 @@ export const ModalFooter = () => {
         sneakerSKU,
         setFetchedSneaker,
         setErrorMsg,
-        fetchedSneaker,
-        setCurrentSneaker
+        setCurrentSneaker,
+        sneakerToAdd
     } = useModalStore();
 
     const { sessionToken, userCollection } = useSession();
@@ -33,28 +33,25 @@ export const ModalFooter = () => {
                 });
                 break;
             case 'addForm':
-                if (fetchedSneaker) {
-                    handleFormSubmit(
-                        {
-                            model: fetchedSneaker.model,
-                            brand: fetchedSneaker.brand,
-                            status: '',
-                            size: '',
-                            condition: '',
+                if (sneakerToAdd) {
+                    handleFormSubmit({
+                            model: sneakerToAdd.model,
+                            brand: sneakerToAdd.brand,
+                            status: sneakerToAdd.status,
+                            size: sneakerToAdd.size,
+                            condition: sneakerToAdd.condition,
                             images: [
                                 {
-                                    url: fetchedSneaker.image.url,
+                                    url: sneakerToAdd.images[0].url,
                                 }
                             ],
-                            price_paid: '',
-                            description: fetchedSneaker.description
-                        },
-                        {
+                            price_paid: sneakerToAdd?.price_paid || '',
+                            description: sneakerToAdd?.description || ''
+                        }, {
                             setCurrentSneaker,
                             setModalStep,
                             setErrorMsg
-                        }
-                    );
+                        });
                 }
                 break;
             case 'view':

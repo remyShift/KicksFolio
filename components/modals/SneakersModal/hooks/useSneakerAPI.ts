@@ -8,8 +8,8 @@ import { FetchedSneaker } from '@/store/useModalStore';
 interface Callbacks {
 	setCurrentSneaker?: (sneaker: Sneaker | null) => void;
 	setFetchedSneaker?: (sneaker: FetchedSneaker | null) => void;
-	setModalStep?: (step: ModalStep) => void;
-	setErrorMsg?: (error: string) => void;
+	setModalStep: (step: ModalStep) => void;
+	setErrorMsg: (error: string) => void;
 }
 
 export const useSneakerAPI = (sessionToken: string, collectionId: string) => {
@@ -18,16 +18,16 @@ export const useSneakerAPI = (sessionToken: string, collectionId: string) => {
 
 	const handleSkuSearch = (sku: string, callbacks: Callbacks) => {
 		if (!sessionToken) {
-			callbacks.setErrorMsg?.('Session expired. Please login again.');
+			callbacks.setErrorMsg('Session expired. Please login again.');
 			return;
 		}
 
 		if (!sku.trim()) {
-			callbacks.setErrorMsg?.('Please enter a SKU.');
+			callbacks.setErrorMsg('Please enter a SKU.');
 			return;
 		}
 
-		callbacks.setErrorMsg?.('');
+		callbacks.setErrorMsg('');
 
 		return sneakerService
 			.searchBySku(sku.trim())
@@ -44,12 +44,12 @@ export const useSneakerAPI = (sessionToken: string, collectionId: string) => {
 						},
 					};
 					callbacks.setFetchedSneaker?.(transformedSneaker);
-					callbacks.setModalStep?.('addForm');
+					callbacks.setModalStep('addForm');
 				}
 				return response;
 			})
 			.catch((error: string) => {
-				callbacks.setErrorMsg?.(error);
+				callbacks.setErrorMsg(error);
 				throw error;
 			});
 	};
@@ -59,7 +59,7 @@ export const useSneakerAPI = (sessionToken: string, collectionId: string) => {
 		callbacks?: Callbacks
 	) => {
 		if (!sessionToken) {
-			callbacks?.setErrorMsg?.('No session token');
+			callbacks?.setErrorMsg('No session token');
 			return Promise.reject('No session token');
 		}
 
@@ -76,9 +76,11 @@ export const useSneakerAPI = (sessionToken: string, collectionId: string) => {
 		const validationResult =
 			sneakerFormValidationService.validateAllFields(validationData);
 
+		console.log('validationResult', validationResult);
+
 		if (!validationResult.isValid) {
 			const firstError = Object.values(validationResult.errors)[0];
-			callbacks?.setErrorMsg?.(firstError || 'Validation failed');
+			callbacks?.setErrorMsg(firstError || 'Validation failed');
 			return;
 		}
 
@@ -105,12 +107,12 @@ export const useSneakerAPI = (sessionToken: string, collectionId: string) => {
 			.then((response: any) => {
 				if (response && callbacks) {
 					callbacks.setCurrentSneaker?.(response);
-					callbacks.setModalStep?.('view');
+					callbacks.setModalStep('view');
 				}
 				return response;
 			})
 			.catch((error: string) => {
-				callbacks?.setErrorMsg?.(
+				callbacks?.setErrorMsg(
 					`An error occurred while submitting the sneaker: ${error}`
 				);
 				throw error;

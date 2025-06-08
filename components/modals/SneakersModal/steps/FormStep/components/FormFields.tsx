@@ -35,10 +35,6 @@ export const FormFields = ({
     onErrorChange,
     initialValues,
 }: FormFieldsProps) => {
-    const sneakerPricePaidRef = useRef<TextInput>(null);
-    const sneakerConditionRef = useRef<TextInput>(null);
-    const sneakerDescriptionRef = useRef<TextInput>(null);
-
     return (
         <View className="flex-1 gap-6 mt-2">
             <View className="flex gap-4 w-full">
@@ -72,31 +68,25 @@ export const FormFields = ({
                     onErrorChange={(error) => onErrorChange('sneakerSize', error)}
                     onValueChange={onSneakerSizeChange}
                     initialValue={initialValues?.size}
-                    nextInputRef={sneakerPricePaidRef}
                 />
 
                 <SneakerPricePaidInput
-                    inputRef={sneakerPricePaidRef}
                     scrollViewRef={scrollViewRef}
                     onErrorChange={(error) => onErrorChange('sneakerPricePaid', error)}
                     onValueChange={onSneakerPricePaidChange}
                     initialValue={initialValues?.price_paid}
-                    nextInputRef={sneakerConditionRef}
                 />
 
                 <SneakerConditionInput
-                    inputRef={sneakerConditionRef}
                     scrollViewRef={scrollViewRef}
                     onErrorChange={(error) => onErrorChange('sneakerCondition', error)}
                     onValueChange={onSneakerConditionChange}
                     initialValue={initialValues?.condition}
-                    nextInputRef={sneakerDescriptionRef}
                 />
             </View>
 
             <View className="flex-1 max-h-[130px]">
                 <SneakerDescriptionInput
-                    inputRef={sneakerDescriptionRef}
                     scrollViewRef={scrollViewRef}
                     onErrorChange={(error) => onErrorChange('sneakerDescription', error)}
                     onValueChange={onSneakerDescriptionChange}

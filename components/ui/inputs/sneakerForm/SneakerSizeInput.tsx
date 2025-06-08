@@ -6,7 +6,6 @@ interface SneakerSizeInputProps {
     scrollViewRef: React.RefObject<ScrollView>;
     onErrorChange: (errorMsg: string) => void;
     onValueChange: (value: string) => void;
-    nextInputRef: React.RefObject<TextInput>;
     initialValue?: string;
 }
 
@@ -15,7 +14,6 @@ export default function SneakerSizeInput({
     onErrorChange, 
     onValueChange,
     initialValue = "",
-    nextInputRef
 }: SneakerSizeInputProps) {
     const [isSneakerSizeError, setIsSneakerSizeError] = useState(false);
     const [isSneakerSizeFocused, setIsSneakerSizeFocused] = useState(false);
@@ -57,16 +55,6 @@ export default function SneakerSizeInput({
                     value={sneakerSizeValue}
                     placeholderTextColor="gray"
                     returnKeyType="next"
-                    onSubmitEditing={() => {
-                        if (nextInputRef) {
-                            handleForm.inputBlur('sneakerSize', sneakerSizeValue)
-                                .then((isValid) => {
-                                    if (isValid) {
-                                        nextInputRef.current?.focus();
-                                    }
-                                });
-                        }
-                    }}
                     enablesReturnKeyAutomatically={true}
                     onFocus={() => handleForm.inputFocus('sneakerSize')}
                     onBlur={() => handleForm.inputBlur('sneakerSize', sneakerSizeValue)}
