@@ -80,7 +80,7 @@ export const FormStep = () => {
             setValidateForm(null);
             setClearFormErrors(null);
         };
-    }, [sneakerToAdd, setValidateForm, setClearFormErrors, clearErrors]);
+    }, [sneakerToAdd]);
 
     return (
         <KeyboardAvoidingView 

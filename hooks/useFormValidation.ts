@@ -22,7 +22,6 @@ export const useFormValidation = ({ errorSetters }: UseFormValidationProps) => {
 	const [globalErrorMsg, setGlobalErrorMsg] = useState('');
 	const [capturedErrorMsg, setCapturedErrorMsg] = useState('');
 
-	// Service de validation avec capture du message d'erreur
 	const formValidation = new FormValidationService(
 		setCapturedErrorMsg,
 		errorSetters
@@ -46,12 +45,10 @@ export const useFormValidation = ({ errorSetters }: UseFormValidationProps) => {
 				if (errorSetters[field.fieldType]) {
 					errorSetters[field.fieldType](true);
 				}
-				// Pour un champ vide requis, on utilise un message générique
 				if (errorFields.length === 1) {
 					singleFieldErrorMsg = `Please enter your ${field.fieldType.toLowerCase()}`;
 				}
 			} else if (field.value && field.value !== '') {
-				// Reset le message capturé avant la validation
 				setCapturedErrorMsg('');
 				const isValid = await formValidation.validateField(
 					field.value.toString(),
@@ -63,7 +60,6 @@ export const useFormValidation = ({ errorSetters }: UseFormValidationProps) => {
 				if (!isValid) {
 					hasErrors = true;
 					errorFields.push(field.fieldType);
-					// Pour un champ avec valeur invalide, on utilise le message du service
 					if (errorFields.length === 1) {
 						singleFieldErrorMsg =
 							capturedErrorMsg ||
