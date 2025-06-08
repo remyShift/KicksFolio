@@ -15,7 +15,7 @@ import { useModalStore } from '@/store/useModalStore';
 export default function User() {
   const { user, userSneakers, sessionToken, refreshUserData } = useSession();
   const { logout } = useAuth();
-  const { setModalStep, setIsVisible } = useModalStore();
+  const { setModalStep, setIsVisible, setCurrentSneaker } = useModalStore();
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -31,7 +31,6 @@ export default function User() {
     if (!userSneakers || userSneakers.length === 0) return {};
     
     return userSneakers.reduce((acc, sneaker) => {
-      // Normaliser le nom de la marque pour éviter les doublons (minuscules, sans espaces)
       const normalizedBrand = sneaker.brand.toLowerCase().trim();
       
       if (!acc[normalizedBrand]) {
@@ -48,6 +47,8 @@ export default function User() {
   };
 
   const handleSneakerPress = (sneaker: Sneaker) => {
+    setCurrentSneaker(sneaker);
+    setModalStep('view');
     setIsVisible(true);
   };
 
