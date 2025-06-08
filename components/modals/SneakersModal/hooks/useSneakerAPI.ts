@@ -12,8 +12,8 @@ interface Callbacks {
 	setErrorMsg: (error: string) => void;
 }
 
-export const useSneakerAPI = (sessionToken: string, collectionId: string) => {
-	const sneakerService = new SneakersService(collectionId, sessionToken);
+export const useSneakerAPI = (sessionToken: string, userId: string) => {
+	const sneakerService = new SneakersService(userId, sessionToken);
 	const sneakerFormValidationService = new SneakerValidationService();
 
 	const handleSkuSearch = (sku: string, callbacks: Callbacks) => {
@@ -84,27 +84,20 @@ export const useSneakerAPI = (sessionToken: string, collectionId: string) => {
 			return;
 		}
 
-		const sneakerToAdd: Sneaker = {
-			id: '',
+		const sneakerToAdd: SneakerFormData = {
 			model: formData.model,
 			brand: formData.brand,
 			status: formData.status,
-			size: Number(formData.size),
-			condition: Number(formData.condition),
+			size: formData.size.toString(),
+			condition: formData.condition.toString(),
 			images: formData.images.map((img) => ({ id: '', url: img.url })),
-			price_paid: Number(formData.price_paid),
+			price_paid: formData.price_paid.toString(),
 			description: formData.description,
-			collection_id: collectionId || '',
-			purchase_date: new Date().toISOString(),
-			estimated_value: 0,
-			release_date: null,
-			created_at: new Date().toISOString(),
-			updated_at: new Date().toISOString(),
 		};
 
 		return sneakerService
 			.add(sneakerToAdd)
-			.then((response: any) => {
+			.then((response) => {
 				if (response && callbacks) {
 					callbacks.setCurrentSneaker?.(response);
 					callbacks.setModalStep('view');

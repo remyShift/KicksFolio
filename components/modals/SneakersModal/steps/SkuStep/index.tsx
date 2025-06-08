@@ -9,7 +9,7 @@ import { FontAwesome6 } from '@expo/vector-icons';
 import { useSneakerAPI } from '../../hooks/useSneakerAPI';
 
 export const SkuStep = () => {
-    const { sessionToken, userCollection } = useSession();
+    const { sessionToken, user } = useSession();
 
     const {
         setSneakerSKU, 
@@ -21,7 +21,7 @@ export const SkuStep = () => {
         setModalStep,
     } = useModalStore();
 
-    const { handleSkuSearch } = useSneakerAPI(sessionToken!, userCollection!.id);
+    const { handleSkuSearch } = useSneakerAPI(sessionToken!, user!.id);
 
     useEffect(() => {
         setModalSessionToken(sessionToken);

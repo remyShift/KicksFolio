@@ -17,8 +17,8 @@ export const ModalFooter = () => {
         sneakerToAdd
     } = useModalStore();
 
-    const { sessionToken, userCollection } = useSession();
-    const { handleSkuSearch, handleFormSubmit } = useSneakerAPI(sessionToken!, userCollection!.id);
+    const { sessionToken, user } = useSession();
+    const { handleSkuSearch, handleFormSubmit } = useSneakerAPI(sessionToken!, user!.id);
 
     const handleNext = () => {
         switch (modalStep) {

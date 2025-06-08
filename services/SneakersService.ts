@@ -1,4 +1,4 @@
-import { Sneaker } from '@/types/Sneaker';
+import { SneakerFormData } from '@/components/modals/SneakersModal/types';
 import { addSneaker } from '@/scripts/handleSneakers/addSneaker';
 import { deleteSneaker } from '@/scripts/handleSneakers/deleteSneaker';
 import { skuLookUp } from '@/scripts/handleSneakers/skuLookUp';
@@ -14,7 +14,7 @@ export class SneakersService extends BaseApiService {
 		this.sessionToken = sessionToken;
 	}
 
-	public async add(sneaker: Sneaker, sneakerId?: string) {
+	public async add(sneaker: SneakerFormData, sneakerId?: string) {
 		return addSneaker(
 			sneaker,
 			sneakerId || '',

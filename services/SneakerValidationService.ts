@@ -140,14 +140,10 @@ export class SneakerValidationService {
 		isValid: boolean;
 		errorMsg: string;
 	} {
-		if (!price) {
-			return { isValid: false, errorMsg: 'Veuillez entrer un prix.' };
-		}
-
 		if (isNaN(Number(price)) || Number(price) < 0) {
 			return {
 				isValid: false,
-				errorMsg: 'Le prix doit être un nombre positif.',
+				errorMsg: 'Price invalid, price must be a positive number.',
 			};
 		}
 
