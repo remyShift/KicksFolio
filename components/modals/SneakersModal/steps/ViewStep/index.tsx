@@ -3,7 +3,6 @@ import { Image } from 'expo-image';
 import BackButton from '@/components/ui/buttons/BackButton';
 import NextButton from '@/components/ui/buttons/NextButton';
 import EditButton from '@/components/ui/buttons/EditButton';
-import ShareButton from '@/components/ui/buttons/ShareButton';
 import { ConditionBar } from '@/components/ui/indicators/ConditionBar';
 import { Sneaker } from '@/types/Sneaker';
 import { useSession } from '@/context/authContext';
@@ -80,7 +79,6 @@ export const ViewStep = () => {
                     <Text className="font-spacemono-bold text-lg">{currentSneaker?.model}</Text>
                     <Text className="font-spacemono-bold-italic text-base">{currentSneaker?.brand}</Text>
                 </View>
-                <ShareButton />
             </View>
 
             <View className='flex gap-8'>
