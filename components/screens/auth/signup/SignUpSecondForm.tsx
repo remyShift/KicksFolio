@@ -12,7 +12,6 @@ import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import { useImagePicker } from '@/hooks/useImagePicker';
 import ProfilePictureInput from '@/components/ui/inputs/authForm/ProfilePictureInput';
 import { useFormValidation } from '@/hooks/useFormValidation';
-import { FormErrorsProvider } from '@/context/formErrorsContext';
 
 export default function SignUpSecondForm() {
     const { signUpProps, setSignUpProps } = useSignUpProps();
@@ -31,7 +30,7 @@ export default function SignUpSecondForm() {
     const { signUp } = useAuth();
     const { handleImageSelection } = useImagePicker();
     
-    const { validateForm, globalErrorMsg, clearErrors } = useFormValidation({
+    const { validateForm, globalErrorMsg } = useFormValidation({
         errorSetters: {
             firstName: setIsFirstNameError,
             lastName: setIsLastNameError,
@@ -76,7 +75,6 @@ export default function SignUpSecondForm() {
                             handleImageSelection={handleImageSelection}
                         />
 
-                        <FormErrorsProvider clearErrors={clearErrors}>
                             <FirstNameInput 
                                 inputRef={firstNameInputRef}
                                 signUpProps={signUpProps}
@@ -109,7 +107,6 @@ export default function SignUpSecondForm() {
                                 }}
                                 isError={isSizeError}
                             />
-                        </FormErrorsProvider>
                     </View>
 
                     <View className='flex gap-5 w-full justify-center items-center'>

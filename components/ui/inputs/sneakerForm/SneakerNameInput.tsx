@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { TextInput, ScrollView } from "react-native";
 import { useSneakerForm } from "@/components/modals/SneakersModal/hooks/useSneakerForm";
-import { useFormErrors } from "@/context/formErrorsContext";
 
 interface SneakerNameInputProps {
     scrollViewRef: React.RefObject<ScrollView>;
@@ -21,7 +20,7 @@ export default function SneakerNameInput({
     const [isNameError, setIsNameError] = useState(false);
     const [isNameFocused, setIsNameFocused] = useState(false);
     const [nameValue, setNameValue] = useState(initialValue);
-    const { clearErrors } = useFormErrors();
+    
     const { handleForm, errorMsg } = useSneakerForm({
         errorSetters: {
             sneakerName: (isError: boolean) => setIsNameError(isError),
@@ -56,7 +55,6 @@ export default function SneakerNameInput({
             enablesReturnKeyAutomatically={true}
             onFocus={() => {
                 handleForm.inputFocus('sneakerName');
-                clearErrors();
             }}
             onBlur={() => handleForm.inputBlur('sneakerName', nameValue)}
             onChangeText={(text) => {

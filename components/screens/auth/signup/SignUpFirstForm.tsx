@@ -11,7 +11,6 @@ import ConfirmPasswordInput from "@/components/ui/inputs/authForm/ConfirmPasswor
 import { useSignUpProps } from "@/context/signUpPropsContext";
 import { useFormValidation } from "@/hooks/useFormValidation";
 import { useAuth } from "@/hooks/useAuth";
-import { FormErrorsProvider } from "@/context/formErrorsContext";
 
 export default function SignUpFirstForm() {
     const [usernameErrorMsg, setUsernameErrorMsg] = useState('');
@@ -32,7 +31,7 @@ export default function SignUpFirstForm() {
     const { signUpProps, setSignUpProps } = useSignUpProps();
     const { handleNextSignupPage } = useAuth();
     
-    const { validateForm, globalErrorMsg, clearErrors } = useFormValidation({
+    const { validateForm, globalErrorMsg } = useFormValidation({
         errorSetters: {
             username: setIsUsernameError,
             email: setIsEmailError,
@@ -75,7 +74,6 @@ export default function SignUpFirstForm() {
                             <ErrorMsg content={mergedErrorMsg} display={mergedErrorMsg !== ''} />
                         </View>
                         
-                        <FormErrorsProvider clearErrors={clearErrors}>
                             <UsernameInput
                                 inputRef={usernameInputRef}
                                 signUpProps={signUpProps}
@@ -116,7 +114,6 @@ export default function SignUpFirstForm() {
                                 onSubmitEditing={handleNext}
                                 isError={isConfirmPasswordError}
                             />
-                        </FormErrorsProvider>
                     </View>
 
                     <View className='flex gap-5 w-full justify-center items-center'>

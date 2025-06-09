@@ -2,7 +2,6 @@ import { useForm } from "@/hooks/useForm";
 import { UserData } from "@/types/auth";
 import { Text, TextInput, View, ScrollView } from "react-native";
 import { useState, useEffect } from "react";
-import { useFormErrors } from "@/context/formErrorsContext";
 
 interface EmailInputProps {
     inputRef: React.RefObject<TextInput>;
@@ -20,7 +19,6 @@ export default function EmailInput({ inputRef, signUpProps, setSignUpProps, scro
     const [isEmailError, setIsEmailError] = useState(false);
     const [isEmailFocused, setIsEmailFocused] = useState(false);
     const [emailValue, setEmailValue] = useState(signUpProps?.email || "");
-    const { clearErrors } = useFormErrors();
 
     const { handleForm, errorMsg } = useForm({
             errorSetters: {
@@ -67,7 +65,6 @@ export default function EmailInput({ inputRef, signUpProps, setSignUpProps, scro
             enablesReturnKeyAutomatically={true}
             onFocus={() => {
                 handleForm.inputFocus('email');
-                clearErrors();
             }}
             onBlur={() => handleForm.inputBlur('email', emailValue, isLoginPage)}
             onChangeText={(text) => {

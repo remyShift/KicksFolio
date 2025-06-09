@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Text, TextInput, View, ScrollView } from "react-native";
 import { useSneakerForm } from "@/components/modals/SneakersModal/hooks/useSneakerForm";
-import { useFormErrors } from "@/context/formErrorsContext";
 
 interface SneakerConditionInputProps {
     scrollViewRef: React.RefObject<ScrollView>;
@@ -16,12 +15,11 @@ export default function SneakerConditionInput({
     onValueChange,
     initialValue = "",
     scrollViewRef,
-    isError = false
+    isError = false,
 }: SneakerConditionInputProps) {
     const [isSneakerConditionError, setIsSneakerConditionError] = useState(false);
     const [isSneakerConditionFocused, setIsSneakerConditionFocused] = useState(false);
     const [sneakerConditionValue, setSneakerConditionValue] = useState(initialValue);
-    const { clearErrors } = useFormErrors();
 
     const { handleForm, errorMsg } = useSneakerForm({
         errorSetters: {
@@ -69,7 +67,6 @@ export default function SneakerConditionInput({
                     enablesReturnKeyAutomatically={true}
                     onFocus={() => {
                         handleForm.inputFocus('sneakerCondition');
-                        clearErrors();
                     }}
                     onBlur={() => handleForm.inputBlur('sneakerCondition', sneakerConditionValue)}
                     onChangeText={handleChange}

@@ -1,7 +1,6 @@
 import { useSneakerForm } from "@/components/modals/SneakersModal/hooks/useSneakerForm";
 import { useEffect, useState } from "react";
 import { Text, TextInput, View, ScrollView } from "react-native";
-import { useFormErrors } from "@/context/formErrorsContext";
 
 interface SneakerSizeInputProps {
     scrollViewRef: React.RefObject<ScrollView>;
@@ -21,7 +20,7 @@ export default function SneakerSizeInput({
     const [isSneakerSizeError, setIsSneakerSizeError] = useState(false);
     const [isSneakerSizeFocused, setIsSneakerSizeFocused] = useState(false);
     const [sneakerSizeValue, setSneakerSizeValue] = useState(initialValue);
-    const { clearErrors } = useFormErrors();
+    
     const { handleForm, errorMsg } = useSneakerForm({
 
         errorSetters: {
@@ -61,7 +60,6 @@ export default function SneakerSizeInput({
                     enablesReturnKeyAutomatically={true}
                     onFocus={() => {
                         handleForm.inputFocus('sneakerSize');
-                        clearErrors();
                     }}
                     onBlur={() => handleForm.inputBlur('sneakerSize', sneakerSizeValue)}
                     onChangeText={(text) => handleForm.inputChange(text, setSneakerSizeValue)}

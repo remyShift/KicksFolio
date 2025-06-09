@@ -2,7 +2,6 @@ import { useForm } from "@/hooks/useForm";
 import { UserData } from "@/types/auth";
 import { useEffect, useState } from "react";
 import { Text, TextInput, View, ScrollView } from "react-native";
-import { useFormErrors } from "@/context/formErrorsContext";
 
 interface PasswordInputProps {
     inputRef: React.RefObject<TextInput>;
@@ -22,7 +21,6 @@ export default function PasswordInput({ inputRef, signUpProps, setSignUpProps, s
     const [isPasswordError, setIsPasswordError] = useState(false);
     const [isPasswordFocused, setIsPasswordFocused] = useState(false);
     const [passwordValue, setPasswordValue] = useState(signUpProps?.password || "");
-    const { clearErrors } = useFormErrors();
 
     const { handleForm, errorMsg } = useForm({
         errorSetters: {
@@ -78,7 +76,6 @@ export default function PasswordInput({ inputRef, signUpProps, setSignUpProps, s
             enablesReturnKeyAutomatically={true}
             onFocus={() => {
                 handleForm.inputFocus('password');
-                clearErrors();
             }}
             onBlur={() => handleForm.inputBlur('password', passwordValue, isLoginPage)}
             onChangeText={(text) => {

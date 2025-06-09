@@ -3,7 +3,6 @@ import { View, ScrollView } from "react-native";
 import DropdownInput from '@/components/ui/inputs/sneakerForm/DropDownInput';
 import { BRANDS } from '@/components/modals/SneakersModal/constants';
 import { useSneakerForm } from "@/components/modals/SneakersModal/hooks/useSneakerForm";
-import { useFormErrors } from "@/context/formErrorsContext";
 
 interface SneakerBrandInputProps {
     scrollViewRef: React.RefObject<ScrollView>;
@@ -23,7 +22,6 @@ export default function SneakerBrandInput({
     const [isBrandError, setIsBrandError] = useState(false);
     const [isBrandFocused, setIsBrandFocused] = useState(false);
     const [brandValue, setBrandValue] = useState(initialValue);
-    const { clearErrors } = useFormErrors();
 
     const { handleForm, errorMsg } = useSneakerForm({
         errorSetters: {

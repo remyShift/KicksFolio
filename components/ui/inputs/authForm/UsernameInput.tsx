@@ -2,7 +2,6 @@ import { useForm } from "@/hooks/useForm";
 import { UserData } from "@/types/auth";
 import { useEffect, useState } from "react";
 import { Text, TextInput, View, ScrollView } from "react-native";
-import { useFormErrors } from "@/context/formErrorsContext";
 
 interface UsernameInputProps {
     inputRef: React.RefObject<TextInput>;
@@ -19,7 +18,6 @@ export default function UsernameInput({ inputRef, signUpProps, setSignUpProps, s
     const [isUsernameError, setIsUsernameError] = useState(false);
     const [isUsernameFocused, setIsUsernameFocused] = useState(false);
     const [usernameValue, setUsernameValue] = useState(signUpProps?.username || "");
-    const { clearErrors } = useFormErrors();
 
     const { handleForm, errorMsg } = useForm({
         errorSetters: {
@@ -66,7 +64,6 @@ export default function UsernameInput({ inputRef, signUpProps, setSignUpProps, s
             enablesReturnKeyAutomatically={true}
             onFocus={() => {
                 handleForm.inputFocus('username');
-                clearErrors();
             }}
             onBlur={() => handleForm.inputBlur('username', usernameValue)}
             onChangeText={(text) => {

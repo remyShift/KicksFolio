@@ -9,7 +9,6 @@ import { useAuth } from "@/hooks/useAuth";
 import PasswordInput from "@/components/ui/inputs/authForm/PasswordInput";
 import EmailInput from "@/components/ui/inputs/authForm/EmailInput";
 import { useFormValidation } from "@/hooks/useFormValidation";
-import { FormErrorsProvider } from "@/context/formErrorsContext";
 
 export default function LoginForm() {
     const scrollViewRef = useRef<ScrollView>(null);
@@ -24,7 +23,7 @@ export default function LoginForm() {
 
     const { login, errorMsg: authErrorMsg } = useAuth();
     
-    const { validateForm, globalErrorMsg, clearErrors } = useFormValidation({
+    const { validateForm, globalErrorMsg } = useFormValidation({
         errorSetters: {
             email: setIsEmailError,
             password: setIsPasswordError,
@@ -70,7 +69,6 @@ export default function LoginForm() {
                         <View className="absolute w-full flex items-center" style={{ top: -50 }}>
                             <ErrorMsg content={errorMsg} display={errorMsg !== ''} />
                         </View>
-                        <FormErrorsProvider clearErrors={clearErrors}>
                             <EmailInput
                                 inputRef={emailInputRef}
                                 scrollViewRef={scrollViewRef}
@@ -91,7 +89,6 @@ export default function LoginForm() {
                                 submitAction={handleLogin}
                                 isError={isPasswordError}
                             />
-                        </FormErrorsProvider>
                     </View>
                     <View className='flex gap-5 w-full justify-center items-center'>                      
                         <MainButton 

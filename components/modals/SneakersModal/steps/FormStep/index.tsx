@@ -82,7 +82,6 @@ export const FormStep = () => {
         };
     }, [sneakerToAdd]);
 
-    // Cleanup au démontage du composant
     useEffect(() => {
         return () => {
             setSneakerToAdd(null);

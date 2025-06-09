@@ -2,7 +2,6 @@ import { useForm } from "@/hooks/useForm";
 import { UserData } from "@/types/auth";
 import { useEffect, useState } from "react";
 import { Text, TextInput, View, ScrollView } from "react-native";
-import { useFormErrors } from "@/context/formErrorsContext";
 
 interface SizeInputProps {
     inputRef: React.RefObject<TextInput>;
@@ -19,7 +18,6 @@ export default function SizeInput({ inputRef, signUpProps, setSignUpProps, scrol
     const [isSizeError, setIsSizeError] = useState(false);
     const [isSizeFocused, setIsSizeFocused] = useState(false);
     const [sizeValue, setSizeValue] = useState(signUpProps?.sneaker_size?.toString() || "");
-    const { clearErrors } = useFormErrors();
 
     const { handleForm, errorMsg } = useForm({
         errorSetters: {
@@ -36,9 +34,7 @@ export default function SizeInput({ inputRef, signUpProps, setSignUpProps, scrol
     }, [errorMsg]);
 
     useEffect(() => {
-        if (sizeValue !== "" && onValueChange) {
-            onValueChange(sizeValue);
-        }
+        onValueChange?.(sizeValue);
     }, [sizeValue, onValueChange]);
 
     return (
@@ -65,7 +61,6 @@ export default function SizeInput({ inputRef, signUpProps, setSignUpProps, scrol
             enablesReturnKeyAutomatically={true}
             onFocus={() => {
                 handleForm.inputFocus('size');
-                clearErrors();
             }}
             onBlur={() => handleForm.inputBlur('size', sizeValue)}
             onChangeText={(text) => {

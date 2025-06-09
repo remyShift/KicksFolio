@@ -3,7 +3,6 @@ import { View, ScrollView } from "react-native";
 import DropdownInput from './DropDownInput';
 import { STATUS } from '@/components/modals/SneakersModal/constants';
 import { useSneakerForm } from "@/components/modals/SneakersModal/hooks/useSneakerForm";
-import { useFormErrors } from "@/context/formErrorsContext";
 
 interface SneakerStatusInputProps {
     scrollViewRef: React.RefObject<ScrollView>;
@@ -18,12 +17,11 @@ export default function SneakerStatusInput({
     onErrorChange, 
     onValueChange,
     initialValue = "",
-    isError = false
+    isError = false,
 }: SneakerStatusInputProps) {
     const [isStatusError, setIsStatusError] = useState(false);
     const [isStatusFocused, setIsStatusFocused] = useState(false);
     const [statusValue, setStatusValue] = useState(initialValue);
-    const { clearErrors } = useFormErrors();
 
     const { handleForm, errorMsg } = useSneakerForm({
         errorSetters: {
@@ -53,7 +51,6 @@ export default function SneakerStatusInput({
 
     const handleStatusOpen = () => {
         handleForm.inputFocus('sneakerStatus');
-        clearErrors();
     };
 
     return (
