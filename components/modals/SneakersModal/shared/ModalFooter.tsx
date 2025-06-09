@@ -1,10 +1,11 @@
-import { View } from 'react-native';
+import { Alert, View } from 'react-native';
 import BackButton from '@/components/ui/buttons/BackButton';
 import NextButton from '@/components/ui/buttons/NextButton';
 import EditButton from '@/components/ui/buttons/EditButton';
 import { useModalStore } from '@/store/useModalStore';
 import { useSneakerAPI } from '../hooks/useSneakerAPI';
 import { useSession } from '@/context/authContext';
+import DeleteButton from '@/components/ui/buttons/DeleteButton';
 
 export const ModalFooter = () => {
     const { 
@@ -21,7 +22,7 @@ export const ModalFooter = () => {
     } = useModalStore();
 
     const { sessionToken, user } = useSession();
-    const { handleSkuSearch, handleFormSubmit, handleFormUpdate, handleNext, handlePrevious } = useSneakerAPI(sessionToken!, user!.id);
+    const { handleSkuSearch, handleFormSubmit, handleFormUpdate, handleNext, handlePrevious, handleSneakerDelete } = useSneakerAPI(sessionToken!, user!.id);
 
     const handleNextAction = () => {
         switch (modalStep) {
@@ -122,6 +123,32 @@ export const ModalFooter = () => {
         setModalStep('editForm');
     }
 
+    const handleDeleteAction = () => {
+        if (currentSneaker?.id) {
+            Alert.alert('Are you sure you want to delete this sneaker?', 'This action cannot be undone.', [
+                {
+                    text: 'Cancel',
+                    style: 'cancel',
+                },
+                {
+                    text: 'Delete',
+                    style: 'destructive',
+                    onPress: () => {
+                        handleSneakerDelete(currentSneaker.id)
+                            .then(() => {
+                                setModalStep('index');
+                                setIsVisible(false);
+                                setCurrentSneaker(null);
+                            })
+                            .catch((error) => {
+                                setErrorMsg('An error occurred while deleting the sneaker.');
+                            });
+                    },
+                },
+            ]);
+        }
+    }
+
     return (
         <View className="justify-end items-start w-full pb-5">
             {modalStep === 'sku' && (
@@ -148,11 +175,17 @@ export const ModalFooter = () => {
             )}
             {modalStep === 'editForm' && (
                 <View className="flex-row justify-between w-full">
-                    <BackButton 
-                        onPressAction={handleBackAction} 
-                    />
-                    <NextButton
-                        content="Update"
+                    <View className="flex flex-row gap-3">
+                        <BackButton 
+                            onPressAction={handleBackAction}
+                        />
+                        <DeleteButton 
+                            onPressAction={handleDeleteAction}
+                        />
+                    </View>
+
+                    <NextButton 
+                        content="Next" 
                         onPressAction={handleNextAction}
                     />
                 </View>
