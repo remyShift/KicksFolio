@@ -3,6 +3,7 @@ import { ModalFooter } from './shared/ModalFooter';
 import { InitialStep } from './steps/InitialStep';
 import { SkuStep } from './steps/SkuStep';
 import { FormStep } from './steps/FormStep';
+import { EditFormStep } from './steps/EditFormStep';
 import { ViewStep } from './steps/ViewStep';
 import { useModalStore } from '@/store/useModalStore';
 
@@ -28,6 +29,10 @@ export const SneakersModal = () => {
 
                 {modalStep === 'addForm' && (
                     <FormStep />
+                )}
+
+                {modalStep === 'editForm' && (
+                    <EditFormStep />
                 )}
 
                 {modalStep === 'view' && currentSneaker && (

@@ -16,7 +16,7 @@ interface Callbacks {
 export const useSneakerAPI = (sessionToken: string, userId: string) => {
 	const sneakerService = new SneakersService(userId, sessionToken);
 	const sneakerFormValidationService = new SneakerValidationService();
-	const { refreshUserSneakers } = useSession();
+	const { refreshUserSneakers, userSneakers } = useSession();
 
 	const handleSkuSearch = (sku: string, callbacks: Callbacks) => {
 		if (!sessionToken) {
@@ -118,6 +118,103 @@ export const useSneakerAPI = (sessionToken: string, userId: string) => {
 			});
 	};
 
+	const handleFormUpdate = async (
+		sneakerId: string,
+		formData: SneakerFormData,
+		callbacks?: Callbacks
+	) => {
+		if (!sessionToken) {
+			callbacks?.setErrorMsg('No session token');
+			return Promise.reject('No session token');
+		}
+
+		const validationData = {
+			name: formData.model,
+			brand: formData.brand,
+			size: formData.size,
+			condition: formData.condition,
+			status: formData.status,
+			price: formData.price_paid,
+			image: formData.images[0]?.url || '',
+		};
+
+		const validationResult =
+			sneakerFormValidationService.validateAllFields(validationData);
+
+		if (!validationResult.isValid) {
+			const firstError = Object.values(validationResult.errors)[0];
+			callbacks?.setErrorMsg(firstError || 'Validation failed');
+			return;
+		}
+
+		const sneakerToUpdate: SneakerFormData = {
+			model: formData.model,
+			brand: formData.brand,
+			status: formData.status,
+			size: formData.size.toString(),
+			condition: formData.condition.toString(),
+			images: formData.images.map((img) => ({ id: '', url: img.url })),
+			price_paid: formData.price_paid.toString(),
+			description: formData.description,
+		};
+
+		return sneakerService
+			.update(sneakerId, sneakerToUpdate)
+			.then(async (response) => {
+				if (response && callbacks) {
+					callbacks.setCurrentSneaker?.(response.sneaker);
+					callbacks.setModalStep('view');
+
+					setTimeout(async () => {
+						await refreshUserSneakers();
+					}, 100);
+				}
+				return response;
+			})
+			.catch((error: string) => {
+				callbacks?.setErrorMsg(
+					`An error occurred while updating the sneaker: ${error}`
+				);
+				throw error;
+			});
+	};
+
+	const handleNext = (
+		currentSneaker: Sneaker | null,
+		setCurrentSneaker: (sneaker: Sneaker | null) => void
+	) => {
+		if (!userSneakers || !currentSneaker?.id) return;
+
+		const currentIndex = userSneakers.findIndex(
+			(s: Sneaker) => s.id === currentSneaker.id
+		);
+		const nextId =
+			currentIndex < userSneakers.length - 1
+				? userSneakers[currentIndex + 1].id
+				: userSneakers[0].id;
+		const nextSneaker = userSneakers.find((s: Sneaker) => s.id === nextId);
+		if (!nextSneaker) return;
+		setCurrentSneaker(nextSneaker);
+	};
+
+	const handlePrevious = (
+		currentSneaker: Sneaker | null,
+		setCurrentSneaker: (sneaker: Sneaker | null) => void
+	) => {
+		if (!userSneakers || !currentSneaker?.id) return;
+
+		const currentIndex = userSneakers.findIndex(
+			(s: Sneaker) => s.id === currentSneaker.id
+		);
+		const prevId =
+			currentIndex > 0
+				? userSneakers[currentIndex - 1].id
+				: userSneakers[userSneakers.length - 1].id;
+		const prevSneaker = userSneakers.find((s: Sneaker) => s.id === prevId);
+		if (!prevSneaker) return;
+		setCurrentSneaker(prevSneaker);
+	};
+
 	const handleSneakerDelete = async (sneakerId: string) => {
 		if (!sessionToken) {
 			return Promise.reject('No session token');
@@ -137,6 +234,9 @@ export const useSneakerAPI = (sessionToken: string, userId: string) => {
 	return {
 		handleSkuSearch,
 		handleFormSubmit,
+		handleFormUpdate,
+		handleNext,
+		handlePrevious,
 		handleSneakerDelete,
 	};
 };

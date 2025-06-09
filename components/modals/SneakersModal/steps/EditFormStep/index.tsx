@@ -1,13 +1,13 @@
 import { View, KeyboardAvoidingView, ScrollView, Platform } from 'react-native';
-import { ImageUploader } from './components/ImageUploader';
-import { FormFields } from './components/FormFields';
+import { ImageUploader } from '../FormStep/components/ImageUploader';
+import { FormFields } from '../FormStep/components/FormFields';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import { useState, useRef, useEffect } from 'react';
 import { useModalStore } from '@/store/useModalStore';
 import { SneakerFormData } from '@/components/modals/SneakersModal/types';
 import { useSneakerFormValidation } from '@/hooks/useSneakerFormValidation';
 
-export const FormStep = () => {
+export const EditFormStep = () => {
     const scrollViewRef = useRef<ScrollView>(null);
     const [displayErrorMsg, setDisplayErrorMsg] = useState('');
     const [isSneakerNameError, setIsSneakerNameError] = useState(false);
@@ -16,7 +16,7 @@ export const FormStep = () => {
     const [isSneakerSizeError, setIsSneakerSizeError] = useState(false);
     const [isSneakerConditionError, setIsSneakerConditionError] = useState(false);
     
-    const { fetchedSneaker, setFetchedSneaker, sneakerToAdd, setSneakerToAdd, errorMsg, setValidateForm, setClearFormErrors } = useModalStore();
+    const { currentSneaker, sneakerToAdd, setSneakerToAdd, errorMsg, setValidateForm, setClearFormErrors } = useModalStore();
     
     const { validateSneakerForm, globalErrorMsg, clearErrors } = useSneakerFormValidation({
         errorSetters: {
@@ -39,22 +39,21 @@ export const FormStep = () => {
         description: ''
     };
 
+    // Pré-remplir le formulaire avec les données de la sneaker à éditer
     useEffect(() => {
-        if (fetchedSneaker) {
+        if (currentSneaker) {
             setSneakerToAdd({
-                ...defaultSneakerToAdd,
-                model: fetchedSneaker.model,
-                brand: fetchedSneaker.brand,
-                description: fetchedSneaker.description,
-                images: fetchedSneaker.image?.url ? [
-                    {
-                        url: fetchedSneaker.image.url,
-                    }
-                ] : [],
+                model: currentSneaker.model,
+                brand: currentSneaker.brand,
+                status: currentSneaker.status,
+                size: currentSneaker.size.toString(),
+                condition: currentSneaker.condition.toString(),
+                images: currentSneaker.images || [],
+                price_paid: currentSneaker.price_paid?.toString() || '',
+                description: currentSneaker.description || ''
             });
-            setFetchedSneaker(null);
         }
-    }, [fetchedSneaker]);
+    }, [currentSneaker]);
 
     useEffect(() => {
         setDisplayErrorMsg(errorMsg || globalErrorMsg);
@@ -182,4 +181,4 @@ export const FormStep = () => {
             </ScrollView>
         </KeyboardAvoidingView>
     );
-};
+}; 
