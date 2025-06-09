@@ -1,6 +1,6 @@
 import { View, KeyboardAvoidingView, ScrollView, Platform } from 'react-native';
 import { ImageUploader } from '../FormStep/components/ImageUploader';
-import { FormFields } from '../FormStep/components/FormFields';
+import { FormFields } from '../../shared/FormFields';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import { useState, useRef, useEffect } from 'react';
 import { useModalStore } from '@/store/useModalStore';
@@ -39,7 +39,6 @@ export const EditFormStep = () => {
         description: ''
     };
 
-    // Pré-remplir le formulaire avec les données de la sneaker à éditer
     useEffect(() => {
         if (currentSneaker) {
             setSneakerToAdd({
@@ -81,7 +80,6 @@ export const EditFormStep = () => {
         };
     }, [sneakerToAdd]);
 
-    // Cleanup au démontage du composant
     useEffect(() => {
         return () => {
             setSneakerToAdd(null);

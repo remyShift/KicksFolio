@@ -60,7 +60,7 @@ export default function SneakerStatusInput({
         <View className='flex gap-2 w-1/2'>
             <View className="w-full">
                 <DropdownInput
-                    value={statusValue}
+                    value={statusValue.toUpperCase()}
                     onSelect={handleStatusSelect}
                     options={STATUS}
                     placeholder="Select a status"

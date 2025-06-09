@@ -1,6 +1,6 @@
 import { View, KeyboardAvoidingView, ScrollView, Platform } from 'react-native';
 import { ImageUploader } from './components/ImageUploader';
-import { FormFields } from './components/FormFields';
+import { FormFields } from '../../shared/FormFields';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import { useState, useRef, useEffect } from 'react';
 import { useModalStore } from '@/store/useModalStore';

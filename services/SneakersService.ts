@@ -59,6 +59,9 @@ export class SneakersService extends BaseApiService {
 	}
 
 	public async update(sneakerId: string, sneaker: SneakerFormData) {
+		console.log('Updating sneaker with data:', sneaker);
+		console.log('Images to update:', sneaker.images);
+
 		const formData = new FormData();
 		formData.append('sneaker[model]', sneaker.model);
 		formData.append('sneaker[brand]', sneaker.brand);
@@ -69,7 +72,10 @@ export class SneakersService extends BaseApiService {
 		formData.append('sneaker[description]', sneaker.description);
 
 		if (sneaker.images && sneaker.images.length > 0) {
+			console.log('Appending images:', sneaker.images.length);
 			this.appendImages(formData, sneaker.images);
+		} else {
+			console.log('No images to append');
 		}
 
 		const response = await fetch(
@@ -84,11 +90,10 @@ export class SneakersService extends BaseApiService {
 			}
 		);
 
-		const text = await response.text();
 		if (!response.ok) {
-			throw new Error(text);
+			throw new Error('Error updating sneaker');
 		}
-		return JSON.parse(text);
+		return this.handleResponse(response);
 	}
 
 	public async delete(sneakerId: string) {
@@ -105,7 +110,8 @@ export class SneakersService extends BaseApiService {
 		if (!response.ok) {
 			throw new Error(`HTTP error! status: ${response.status}`);
 		}
-		return true;
+
+		return this.handleResponse(response);
 	}
 
 	public async searchBySku(sku: string) {

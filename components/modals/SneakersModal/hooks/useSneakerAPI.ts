@@ -162,12 +162,22 @@ export const useSneakerAPI = (sessionToken: string, userId: string) => {
 			.update(sneakerId, sneakerToUpdate)
 			.then(async (response) => {
 				if (response && callbacks) {
-					callbacks.setCurrentSneaker?.(response.sneaker);
+					const updatedSneaker = {
+						...response.sneaker,
+						images:
+							response.sneaker.images ||
+							sneakerToUpdate.images ||
+							[],
+					};
+
+					callbacks.setCurrentSneaker?.(updatedSneaker);
 					callbacks.setModalStep('view');
 
 					setTimeout(async () => {
 						await refreshUserSneakers();
 					}, 100);
+				} else {
+					console.log('No response or callbacks');
 				}
 				return response;
 			})

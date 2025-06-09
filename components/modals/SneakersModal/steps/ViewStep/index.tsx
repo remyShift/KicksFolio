@@ -9,14 +9,16 @@ export const ViewStep = () => {
     const { currentSneaker } = useModalStore();
     const [errorMsg, setErrorMsg] = useState('');
 
-
+    if (!currentSneaker) {
+        return null;
+    }
 
     return (
         <View className="flex-1 gap-4">
             <ErrorMsg content={errorMsg} display={errorMsg !== ''}/>
             
             <Image 
-                source={{ uri: currentSneaker?.images?.[0]?.url }} 
+                source={{ uri: currentSneaker.images?.[0]?.url }} 
                 style={{
                     width: '100%',
                     height: 170,
@@ -29,8 +31,8 @@ export const ViewStep = () => {
 
             <View className="flex-row justify-between items-center px-2">
                 <View className="flex gap-0">
-                    <Text className="font-spacemono-bold text-lg w-full t">{currentSneaker?.model}</Text>
-                    <Text className="font-spacemono-bold-italic text-base">{currentSneaker?.brand}</Text>
+                    <Text className="font-spacemono-bold text-lg w-full t">{currentSneaker.model}</Text>
+                    <Text className="font-spacemono-bold-italic text-base">{currentSneaker.brand}</Text>
                 </View>
             </View>
 
@@ -39,14 +41,14 @@ export const ViewStep = () => {
                     <View className='flex-col items-center p-2 gap-1 w-1/3 border-r-2 border-gray-300'>
                         <Text className='font-spacemono text-center text-sm'>Size</Text>
                         <View className="w-4/5">
-                            <Text className="font-spacemono-bold text-lg text-center">{currentSneaker?.size}US</Text>
+                            <Text className="font-spacemono-bold text-lg text-center">{currentSneaker.size}US</Text>
                         </View>
                     </View>
 
                     <View className='flex-col items-center p-2 gap-1 w-1/3 border-r-2 border-gray-300'>
                         <Text className='font-spacemono text-center text-sm'>Status</Text>
                         <View className="w-4/5">
-                            <Text className="font-spacemono-bold text-lg text-center">{currentSneaker?.status.toUpperCase()}</Text>
+                            <Text className="font-spacemono-bold text-lg text-center">{currentSneaker.status.toUpperCase()}</Text>
                         </View>
                     </View>
 
@@ -54,13 +56,13 @@ export const ViewStep = () => {
                         <Text className='font-spacemono text-center text-sm'>Price Paid</Text>
                         <View className="w-4/5">
                             <Text className="font-spacemono-bold text-lg text-center">
-                                {currentSneaker?.price_paid ? currentSneaker?.price_paid + '$' : 'N/A'}
+                                {currentSneaker.price_paid ? currentSneaker.price_paid + '$' : 'N/A'}
                             </Text>
                         </View>
                     </View>
                 </View>
 
-                <ConditionBar condition={currentSneaker?.condition || 0} />
+                <ConditionBar condition={currentSneaker.condition} />
 
                 <View className="flex-1 items-center w-full">
                     <ScrollView 
@@ -75,7 +77,7 @@ export const ViewStep = () => {
                     >
                         <Text className='font-spacemono-bold'>Description :</Text>
                         <Text className='font-spacemono text-sm'>
-                            {currentSneaker?.description || 'No description available'}
+                            {currentSneaker.description || 'No description available'}
                         </Text>
                     </ScrollView>
                 </View>

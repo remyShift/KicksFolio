@@ -13,14 +13,16 @@ export default function Index() {
     const params = useLocalSearchParams();
     const isNewUser = params.newUser === 'true';
     const { userCollection, userSneakers } = useSession();
-    const { setModalStep, setIsVisible } = useModalStore();
+    const { setModalStep, setIsVisible, modalStep, isVisible } = useModalStore();
 
     useEffect(() => {
         if (isNewUser || !userSneakers || userSneakers.length === 0) {
             setModalStep('index');
             setIsVisible(true);
         } else {
-            setIsVisible(false);
+            if (!isVisible || (modalStep !== 'view' && modalStep !== 'editForm')) {
+                setIsVisible(false);
+            }
         }
     }, [isNewUser, userSneakers]);
 
