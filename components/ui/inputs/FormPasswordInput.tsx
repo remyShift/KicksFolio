@@ -74,7 +74,7 @@ const FormPasswordInput = forwardRef<TextInput, FormPasswordInputProps<any>>(
                                 secureTextEntry={!isPasswordVisible}
                                 autoCapitalize="none"
                                 autoComplete="password"
-                                returnKeyType={nextInputRef || onSubmitEditing ? 'next' : 'done'}
+                                returnKeyType={onSubmitEditing ? 'done' : 'next'}
                                 className={`bg-white rounded-md p-3 w-full font-spacemono-bold ${
                                     error 
                                         ? 'border-2 border-red-500' 

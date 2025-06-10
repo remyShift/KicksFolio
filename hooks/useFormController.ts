@@ -1,6 +1,5 @@
 import { useForm, FieldValues, Path, UseFormProps } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { useState } from 'react';
 
 interface FormControllerOptions<T extends FieldValues> extends UseFormProps<T> {
@@ -55,7 +54,10 @@ export function useFormController<T extends FieldValues>({
 		return true;
 	};
 
-	const validateFieldOnBlur = async (fieldName: keyof T, value: any) => {
+	const validateFieldOnBlur = async (
+		fieldName: keyof T,
+		value: string | number
+	) => {
 		await trigger(fieldName as Path<T>);
 
 		if (
@@ -78,10 +80,11 @@ export function useFormController<T extends FieldValues>({
 		setIsSubmitting(true);
 
 		try {
+			console.log('asyncValidation', asyncValidation);
 			if (asyncValidation) {
 				const asyncValidationPromises = Object.entries(
 					asyncValidation
-				).map(async ([fieldName, validator]) => {
+				).map(async ([fieldName]) => {
 					const isValid = await validateFieldAsync(
 						fieldName as keyof T,
 						data[fieldName as keyof T]

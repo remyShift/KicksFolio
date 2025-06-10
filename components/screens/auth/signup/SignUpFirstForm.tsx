@@ -80,7 +80,6 @@ export default function SignUpFirstForm() {
         getFieldError('confirmPassword') || 
         '';
 
-    // Fonction wrapper pour le typage
     const getFieldErrorWrapper = (fieldName: string) => {
         return getFieldError(fieldName as keyof SignUpStep1FormData);
     };

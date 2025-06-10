@@ -33,7 +33,7 @@ export default function SignUpSecondForm() {
         defaultValues: {
             firstName: signUpProps.first_name || '',
             lastName: signUpProps.last_name || '',
-            size: signUpProps.sneaker_size?.toString() || '',
+            size: signUpProps.sneaker_size ? String(signUpProps.sneaker_size) : '',
             profile_picture: signUpProps.profile_picture || '',
         },
         onSubmit: async (data) => {
@@ -41,7 +41,7 @@ export default function SignUpSecondForm() {
                 ...signUpProps,
                 first_name: data.firstName,
                 last_name: data.lastName,
-                sneaker_size: parseFloat(data.size),
+                sneaker_size: data.size ? Number(data.size) : 0,
                 profile_picture: data.profile_picture,
             };
             
@@ -49,6 +49,10 @@ export default function SignUpSecondForm() {
             signUp(updatedSignUpProps);
         },
     });
+
+    const getFieldErrorWrapper = (fieldName: string) => {
+        return getFieldError(fieldName as keyof typeof signUpStep2Schema._type);
+    };
 
     const hasMultipleErrors = [
         hasFieldError('firstName'),
@@ -101,7 +105,8 @@ export default function SignUpSecondForm() {
                             autoCapitalize="words"
                             onFocus={() => handleFieldFocus('firstName')}
                             onBlur={async (value) => { await validateFieldOnBlur('firstName', value); }}
-                            error={getFieldError('firstName')}
+                            error={getFieldErrorWrapper('firstName')}
+                            getFieldError={getFieldErrorWrapper}
                         />
 
                         <FormTextInput
@@ -115,7 +120,8 @@ export default function SignUpSecondForm() {
                             autoCapitalize="words"
                             onFocus={() => handleFieldFocus('lastName')}
                             onBlur={async (value) => { await validateFieldOnBlur('lastName', value); }}
-                            error={getFieldError('lastName')}
+                            error={getFieldErrorWrapper('lastName')}
+                            getFieldError={getFieldErrorWrapper}
                         />
 
                         <FormTextInput
@@ -128,7 +134,8 @@ export default function SignUpSecondForm() {
                             onFocus={() => handleFieldFocus('size')}
                             onBlur={async (value) => { await validateFieldOnBlur('size', value); }}
                             onSubmitEditing={handleFormSubmit}
-                            error={getFieldError('size')}
+                            error={getFieldErrorWrapper('size')}
+                            getFieldError={getFieldErrorWrapper}
                         />
 
                         <MainButton 

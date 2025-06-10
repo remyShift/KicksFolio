@@ -41,6 +41,7 @@ export const useAuth = () => {
 				);
 				if (token) {
 					setSessionToken(token);
+					setUser(user);
 					setTimeout(() => {
 						router.replace('/collection');
 					}, 250);

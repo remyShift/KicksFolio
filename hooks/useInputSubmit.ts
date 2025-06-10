@@ -28,7 +28,6 @@ export const useInputSubmit = ({
 		}
 
 		const currentError = getFieldError(fieldName);
-		console.log('error après validation:', currentError);
 
 		if (currentError) {
 			setIsFocused(false);

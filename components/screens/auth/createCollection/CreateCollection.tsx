@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, View, Text } from 'react-native';
 import { router } from 'expo-router';
 import PageTitle from '@/components/ui/text/PageTitle';
@@ -7,10 +7,11 @@ import MainButton from '@/components/ui/buttons/MainButton';
 import FormTextInput from '@/components/ui/inputs/FormTextInput';
 import { useCreateCollection } from '@/hooks/useCreateCollection';
 import { useFormController } from '@/hooks/useFormController';
+import { useSession } from '@/context/authContext';
 import { z } from 'zod';
 
 const collectionSchema = z.object({
-    collectionName: z.string().min(1, 'Collection name is required'),
+    collectionName: z.string().min(4, 'Collection name is required and must be at least 4 characters long.'),
 });
 
 type CollectionFormData = z.infer<typeof collectionSchema>;
@@ -18,6 +19,7 @@ type CollectionFormData = z.infer<typeof collectionSchema>;
 export default function CreateCollection() {
     const scrollViewRef = useRef<ScrollView>(null);
     const { createCollection, error: createCollectionError } = useCreateCollection();
+    const { userCollection } = useSession();
 
     const {
         control,
@@ -33,10 +35,11 @@ export default function CreateCollection() {
             collectionName: '',
         },
         onSubmit: async (data) => {
-            const success = await createCollection(data.collectionName);
-            if (success) {
-                router.replace('/(app)/(tabs)');
-            }
+            console.log('onSubmit', data.collectionName);
+            console.log('--------------------------------');
+            console.log('data', data);
+            console.log('--------------------------------');
+            createCollection(data.collectionName)
         },
     });
 
@@ -56,6 +59,12 @@ export default function CreateCollection() {
     const getFieldErrorWrapper = (fieldName: string) => {
         return getFieldError(fieldName as keyof CollectionFormData);
     };
+
+    useEffect(() => {
+        if (userCollection) {
+            router.replace('/(app)/(tabs)');
+        }
+    }, [userCollection]);
 
     return (
         <KeyboardAvoidingView 
@@ -92,7 +101,7 @@ export default function CreateCollection() {
                             backgroundColor={isSubmitDisabled ? 'bg-gray-600' : 'bg-primary'}
                             onPressAction={() => {
                                 if (!isSubmitDisabled) {
-                                    handleFormSubmit();
+                                    handleFormSubmit()
                                 }
                             }} 
                         />

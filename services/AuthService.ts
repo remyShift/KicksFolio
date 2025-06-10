@@ -69,6 +69,10 @@ export class AuthService extends BaseApiService {
 			body: formData,
 		});
 
+		console.log('--------------------------------');
+		console.log('response after signup', response);
+		console.log('--------------------------------');
+
 		return this.handleResponse(response);
 	}
 

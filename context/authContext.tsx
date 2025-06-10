@@ -39,17 +39,16 @@ export function SessionProvider({ children }: PropsWithChildren) {
 
     const initializeData = async () => {
         if (sessionToken) {
-            try {
-                const { user: userData } = await authService.getUser(sessionToken);
-                setUser(userData);
-                storageService.setItem('user', userData);
-                
-                // Récupérer la collection et les sneakers en parallèle
-                await refreshUserData(userData, sessionToken);
-            } catch (error) {
-                console.error('Error initializing user data:', error);
-                clearUserData();
-            }
+            authService.getUser(sessionToken)
+                .then(({ user: userData }) => {
+                    setUser(userData);
+                    storageService.setItem('user', userData);
+                    return refreshUserData(userData, sessionToken);
+                })
+                .catch((error) => {
+                    console.error('Error initializing user data:', error);
+                    clearUserData();
+                });
         } else {
             clearUserData();
         }
@@ -61,42 +60,70 @@ export function SessionProvider({ children }: PropsWithChildren) {
         
         if (!userData || !sessionTokenToUse) return;
 
-        try {
-            // Récupérer collection et sneakers en parallèle
-            const [collectionResponse, sneakersData] = await Promise.all([
-                collectionService.getUserCollection(userData.id, sessionTokenToUse),
-                new SneakersService(userData.id, sessionTokenToUse).getUserSneakers()
-            ]);
-
-            setUserCollection(collectionResponse.collection);
-            setUserSneakers(sneakersData.sneakers || []);
-            
-            // Sauvegarder en cache
-            storageService.setItem('collection', collectionResponse.collection);
-            storageService.setItem('sneakers', sneakersData.sneakers || []);
-        } catch (error) {
-            console.error('Error refreshing user data:', error);
-        }
+        collectionService.getUserCollection(userData.id, sessionTokenToUse)
+            .then(async (collectionResponse) => {
+                const collection = collectionResponse.collection;
+                
+                setUserCollection(collection);
+                storageService.setItem('collection', collection);
+                
+                if (collection && collection.id) {
+                    new SneakersService(userData.id, sessionTokenToUse)
+                        .getUserSneakers()
+                        .then((sneakersData) => {
+                            const sneakers = sneakersData.sneakers || [];
+                            setUserSneakers(sneakers);
+                            storageService.setItem('sneakers', sneakers);
+                        })
+                        .catch((sneakersError) => {
+                            console.error('Error fetching sneakers:', sneakersError);
+                            setUserSneakers([]);
+                            storageService.setItem('sneakers', []);
+                        });
+                } else {
+                    setUserSneakers([]);
+                    storageService.setItem('sneakers', []);
+                }
+            })
+            .catch((error) => {
+                console.error('Error refreshing user data:', error);
+                if (error.message?.includes('Collection not found') || error.message?.includes('404')) {
+                    setUserCollection(null);
+                    setUserSneakers([]);
+                    storageService.removeItem('collection');
+                    storageService.setItem('sneakers', []);
+                }
+            });
     };
 
     const refreshUserSneakers = async () => {
         if (!user || !sessionToken) return;
-        
-        try {
-            const sneakersService = new SneakersService(user.id, sessionToken);
-            const data = await sneakersService.getUserSneakers();
-            setUserSneakers(data.sneakers || []);
-            storageService.setItem('sneakers', data.sneakers || []);
-        } catch (error) {
-            console.error('Error refreshing sneakers:', error);
+
+        if (!userCollection || !userCollection.id) {
+            console.log('No collection found, setting empty sneakers array');
+            setUserSneakers([]);
+            storageService.setItem('sneakers', []);
+            return;
         }
+        
+        const sneakersService = new SneakersService(user.id, sessionToken);
+        sneakersService.getUserSneakers()
+            .then((data) => {
+                setUserSneakers(data.sneakers || []);
+                storageService.setItem('sneakers', data.sneakers || []);
+            })
+            .catch((error) => {
+                console.error('Error refreshing sneakers:', error);
+                setUserSneakers([]);
+                storageService.setItem('sneakers', []);
+            });
     };
 
     const clearUserData = () => {
         setUser(null);
         setUserCollection(null);
         setUserSneakers(null);
-        // Nettoyer le cache
+
         storageService.removeItem('user');
         storageService.removeItem('collection');
         storageService.removeItem('sneakers');

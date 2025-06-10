@@ -41,8 +41,9 @@ export const signUpStep2Schema = z.object({
 		.string()
 		.min(1, 'Please enter your sneaker size.')
 		.refine(
-			(val) => !isNaN(Number(val)) && Number(val) > 0,
-			'Please enter a valid size.'
+			(val) =>
+				!isNaN(Number(val)) && Number(val) >= 7 && Number(val) <= 15,
+			'Please enter a valid size, size must be a number between 7 and 15.'
 		),
 	profile_picture: z.string().optional(),
 });

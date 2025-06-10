@@ -1,39 +1,34 @@
 import { useState } from 'react';
 import { CollectionService } from '@/services/CollectionService';
 import { useSession } from '@/context/authContext';
-import { useAuth } from './useAuth';
 
 export function useCreateCollection() {
 	const [error, setError] = useState('');
 	const collectionService = new CollectionService();
-	const { user, sessionToken } = useSession();
-	const { getUserCollection } = useAuth();
+	const { user, sessionToken, refreshUserData } = useSession();
 
 	const createCollection = async (collectionName: string) => {
 		setError('');
 
 		if (!user || !sessionToken) {
-			setError('Something went wrong, please try again.');
+			setError('Session expired, please try logging in again.');
 			return false;
 		}
 
 		return collectionService
 			.create(collectionName, user.id, sessionToken)
-			.then(async () => {
-				return await getUserCollection(user, sessionToken)
-					.then(() => {
-						return true;
-					})
-					.catch(() => {
-						setError(
-							'Something went wrong when getting user collection, please try again.'
-						);
-						return false;
-					});
+			.then(() => {
+				return refreshUserData(user, sessionToken);
 			})
-			.catch(() => {
+			.then(() => {
+				return true;
+			})
+			.catch((error) => {
+				console.error('Error in createCollection:', error);
 				setError(
-					'Something went wrong when creating collection, please try again.'
+					error instanceof Error
+						? error.message
+						: 'Something went wrong when creating collection, please try again.'
 				);
 				return false;
 			});

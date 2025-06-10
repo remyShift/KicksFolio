@@ -87,7 +87,7 @@ const FormTextInput = forwardRef<TextInput, FormTextInputProps<any>>(
                             autoCapitalize={autoCapitalize}
                             autoComplete={autoComplete}
                             maxLength={maxLength}
-                            returnKeyType={nextInputRef ? 'next' : 'done'}
+                            returnKeyType={onSubmitEditing ? 'done' : 'next'}
                             className={`bg-white rounded-md p-3 w-full font-spacemono-bold ${
                                 error 
                                 ? 'border-2 border-red-500' 
