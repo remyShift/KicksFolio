@@ -77,11 +77,7 @@ export default function SignUpSecondForm() {
             >
                 <View className="flex-1 items-center gap-12 p-4">
                     <PageTitle content='Sign Up' />
-                    <View className='flex gap-6 justify-center items-center w-full mt-8'>
-                        <View className="absolute w-full flex items-center" style={{ top: -50 }}>
-                            <ErrorMsg content={displayedError} display={displayedError !== ''} />
-                        </View>
-
+                    <View className='flex gap-6 justify-center items-center w-full mt-8 px-12'>
                         <FormImageInput
                             name="profile_picture"
                             control={control}
@@ -129,7 +125,7 @@ export default function SignUpSecondForm() {
 
                         <MainButton 
                             content='Sign Up' 
-                            backgroundColor={isSubmitDisabled ? 'bg-gray-600' : 'bg-primary'}
+                            backgroundColor={isSubmitDisabled ? 'bg-gray-300' : 'bg-primary'}
                             onPressAction={() => {
                                 if (!isSubmitDisabled) {
                                     handleFormSubmit();

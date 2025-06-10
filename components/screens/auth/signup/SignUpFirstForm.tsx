@@ -99,11 +99,7 @@ export default function SignUpFirstForm() {
             >
                 <View className="flex-1 items-center p-4 gap-12">
                     <PageTitle content='Sign Up' />
-                    <View className='flex justify-center items-center gap-8 w-full mt-10'>
-                        <View className='w-full absolute' style={{ top: -50 }}>   
-                            <ErrorMsg content={displayedError} display={displayedError !== ''} />
-                        </View>
-
+                    <View className='flex justify-center items-center gap-4 w-full mt-10 px-12'>
                         <FormTextInput
                             name="username"
                             control={control}
@@ -157,7 +153,7 @@ export default function SignUpFirstForm() {
                         <View className='flex gap-5 w-full justify-center items-center'>
                             <MainButton 
                                 content='Next' 
-                                backgroundColor={isSubmitDisabled ? 'bg-gray-600' : 'bg-primary'}
+                                backgroundColor={isSubmitDisabled ? 'bg-gray-300' : 'bg-primary'}
                                 onPressAction={() => {
                                     if (!isSubmitDisabled) {
                                         handleFormSubmit();

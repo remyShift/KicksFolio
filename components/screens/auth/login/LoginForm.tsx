@@ -61,19 +61,17 @@ export default function LoginForm() {
                 ref={scrollViewRef}
                 contentContainerStyle={{ flexGrow: 1 }}
                 keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}
+                scrollEnabled={false}
             >
                 <View className="flex-1 items-center gap-12 p-4">
                     <PageTitle content='Login' />
-                    <View className='flex justify-center items-center gap-8 w-full mt-36'>
-                        <View className="absolute w-full flex items-center" style={{ top: -50 }}>
-                            <ErrorMsg content={displayedError} display={displayedError !== ''} />
-                        </View>
-
+                    <View className='flex justify-center items-center gap-8 w-full mt-36 px-12'>
                         <FormTextInput
                             name="email"
                             control={control}
                             label="*Email"
-                            placeholder="Email"
+                            placeholder="john@doe.com"
                             ref={emailInputRef}
                             nextInputRef={passwordInputRef}
                             keyboardType="email-address"
@@ -86,7 +84,7 @@ export default function LoginForm() {
                             name="password"
                             control={control}
                             label="*Password"
-                            placeholder="Password"
+                            placeholder="********"
                             ref={passwordInputRef}
                             onFocus={() => handleFieldFocus('password')}
                             onSubmitEditing={handleFormSubmit}
@@ -97,7 +95,7 @@ export default function LoginForm() {
                     <View className='flex gap-5 w-full justify-center items-center'>                      
                         <MainButton 
                             content='Login' 
-                            backgroundColor={isSubmitDisabled ? 'bg-gray-600' : 'bg-primary'}
+                            backgroundColor={isSubmitDisabled ? 'bg-gray-300' : 'bg-primary'}
                             onPressAction={() => {
                                 if (!isSubmitDisabled) {
                                     handleFormSubmit();
