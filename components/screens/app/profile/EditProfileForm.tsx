@@ -66,6 +66,10 @@ export default function EditProfileForm() {
         getFieldError('sneaker_size') || 
         ''
 
+    const getFieldErrorWrapper = (fieldName: string) => {
+        return getFieldError(fieldName as keyof typeof editProfileSchema._type);
+    };
+
     return (
         <KeyboardAvoidingView 
             className="flex-1 bg-background" 
@@ -101,7 +105,8 @@ export default function EditProfileForm() {
                             maxLength={16}
                             onFocus={() => handleFieldFocus('username')}
                             onBlur={async (value) => { await validateFieldOnBlur('username', value); }}
-                            error={getFieldError('username')}
+                            error={getFieldErrorWrapper('username')}
+                            getFieldError={getFieldErrorWrapper}
                         />
 
                         <FormTextInput
@@ -114,7 +119,8 @@ export default function EditProfileForm() {
                             autoComplete="name"
                             onFocus={() => handleFieldFocus('first_name')}
                             onBlur={async (value) => { await validateFieldOnBlur('first_name', value); }}
-                            error={getFieldError('first_name')}
+                            error={getFieldErrorWrapper('first_name')}
+                            getFieldError={getFieldErrorWrapper}
                         />
 
                         <FormTextInput
@@ -127,7 +133,8 @@ export default function EditProfileForm() {
                             autoComplete="name"
                             onFocus={() => handleFieldFocus('last_name')}
                             onBlur={async (value) => { await validateFieldOnBlur('last_name', value); }}
-                            error={getFieldError('last_name')}
+                            error={getFieldErrorWrapper('last_name')}
+                            getFieldError={getFieldErrorWrapper}
                         />
 
                         <FormTextInput
@@ -139,7 +146,8 @@ export default function EditProfileForm() {
                             keyboardType="numeric"
                             onFocus={() => handleFieldFocus('sneaker_size')}
                             onBlur={async (value) => { await validateFieldOnBlur('sneaker_size', value); }}
-                            error={getFieldError('sneaker_size')}
+                            error={getFieldErrorWrapper('sneaker_size')}
+                            getFieldError={getFieldErrorWrapper}
                         />
                     </View>
 

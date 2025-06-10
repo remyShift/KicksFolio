@@ -31,7 +31,6 @@ export default function SignUpFirstForm() {
         getFieldError,
         hasFieldError,
         isSubmitDisabled,
-        watch,
     } = useFormController<SignUpStep1FormData>({
         schema: signUpStep1Schema,
         defaultValues: {
@@ -45,7 +44,6 @@ export default function SignUpFirstForm() {
             email: checkEmailExists,
         },
         onSubmit: async (data) => {
-            // Mettre à jour le contexte avec les nouvelles données
             setSignUpProps({
                 ...signUpProps,
                 username: data.username,
@@ -53,8 +51,7 @@ export default function SignUpFirstForm() {
                 password: data.password,
                 confirmPassword: data.confirmPassword,
             });
-            
-            // Passer à la page suivante
+
             await handleNextSignupPage({
                 ...signUpProps,
                 username: data.username,
@@ -65,7 +62,6 @@ export default function SignUpFirstForm() {
         },
     });
 
-    // Obtenir l'erreur générale (si plusieurs champs en erreur)
     const hasMultipleErrors = [
         hasFieldError('username'),
         hasFieldError('email'),
@@ -84,6 +80,11 @@ export default function SignUpFirstForm() {
         getFieldError('confirmPassword') || 
         '';
 
+    // Fonction wrapper pour le typage
+    const getFieldErrorWrapper = (fieldName: string) => {
+        return getFieldError(fieldName as keyof SignUpStep1FormData);
+    };
+
     return (
         <KeyboardAvoidingView 
             className="flex-1 bg-background" 
@@ -99,7 +100,11 @@ export default function SignUpFirstForm() {
             >
                 <View className="flex-1 items-center p-4 gap-12">
                     <PageTitle content='Sign Up' />
-                    <View className='flex justify-center items-center gap-4 w-full mt-10 px-12'>
+                    <View className='flex justify-center items-center gap-8 w-full mt-10 px-12'>
+                        <View className='w-full absolute' style={{ top: -50 }}>   
+                            <ErrorMsg content={displayedError} display={displayedError !== ''} />
+                        </View>
+
                         <FormTextInput
                             name="username"
                             control={control}
@@ -111,7 +116,8 @@ export default function SignUpFirstForm() {
                             maxLength={16}
                             onFocus={() => handleFieldFocus('username')}
                             onBlur={async (value) => { await validateFieldOnBlur('username', value); }}
-                            error={getFieldError('username')}
+                            error={getFieldErrorWrapper('username')}
+                            getFieldError={getFieldErrorWrapper}
                         />
 
                         <FormTextInput
@@ -125,7 +131,8 @@ export default function SignUpFirstForm() {
                             autoComplete="email"
                             onFocus={() => handleFieldFocus('email')}
                             onBlur={async (value) => { await validateFieldOnBlur('email', value); }}
-                            error={getFieldError('email')}
+                            error={getFieldErrorWrapper('email')}
+                            getFieldError={getFieldErrorWrapper}
                         />
 
                         <FormPasswordInput
@@ -137,7 +144,8 @@ export default function SignUpFirstForm() {
                             nextInputRef={confirmPasswordInputRef}
                             onFocus={() => handleFieldFocus('password')}
                             onBlur={async (value) => { await validateFieldOnBlur('password', value); }}
-                            error={getFieldError('password')}
+                            error={getFieldErrorWrapper('password')}
+                            getFieldError={getFieldErrorWrapper}
                         />
 
                         <FormPasswordInput
@@ -149,7 +157,8 @@ export default function SignUpFirstForm() {
                             onFocus={() => handleFieldFocus('confirmPassword')}
                             onBlur={async (value) => { await validateFieldOnBlur('confirmPassword', value); }}
                             onSubmitEditing={handleFormSubmit}
-                            error={getFieldError('confirmPassword')}
+                            error={getFieldErrorWrapper('confirmPassword')}
+                            getFieldError={getFieldErrorWrapper}
                         />
 
                         <View className='flex gap-5 w-full justify-center items-center'>

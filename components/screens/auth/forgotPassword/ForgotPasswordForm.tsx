@@ -52,6 +52,10 @@ export default function ForgotPasswordForm() {
         authErrorMsg || 
         '';
 
+    const getFieldErrorWrapper = (fieldName: string) => {
+        return getFieldError(fieldName as keyof ForgotPasswordFormData);
+    };
+
     return (
         <KeyboardAvoidingView 
             className="flex-1 bg-background" 
@@ -82,7 +86,8 @@ export default function ForgotPasswordForm() {
                             onFocus={() => handleFieldFocusWithClearError('email')}
                             onBlur={async (value) => { await validateFieldOnBlur('email', value); }}
                             onSubmitEditing={handleFormSubmit}
-                            error={getFieldError('email')}
+                            error={getFieldErrorWrapper('email')}
+                            getFieldError={getFieldErrorWrapper}
                         />
 
                         <View className='flex gap-5 w-full justify-center items-center'>

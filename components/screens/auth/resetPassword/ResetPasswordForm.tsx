@@ -56,6 +56,10 @@ export default function ResetPasswordForm() {
         authErrorMsg || 
         '';
 
+    const getFieldErrorWrapper = (fieldName: string) => {
+        return getFieldError(fieldName as keyof ResetPasswordFormData);
+    };
+
     return (
         <KeyboardAvoidingView 
             className="flex-1 bg-background" 
@@ -84,7 +88,8 @@ export default function ResetPasswordForm() {
                             nextInputRef={confirmPasswordInputRef}
                             onFocus={() => handleFieldFocusWithClearError('password')}
                             onBlur={async (value) => { await validateFieldOnBlur('password', value); }}
-                            error={getFieldError('password')}
+                            error={getFieldErrorWrapper('password')}
+                            getFieldError={getFieldErrorWrapper}
                         />
 
                         <FormPasswordInput
@@ -96,7 +101,8 @@ export default function ResetPasswordForm() {
                             onFocus={() => handleFieldFocusWithClearError('confirmPassword')}
                             onBlur={async (value) => { await validateFieldOnBlur('confirmPassword', value); }}
                             onSubmitEditing={handleFormSubmit}
-                            error={getFieldError('confirmPassword')}
+                            error={getFieldErrorWrapper('confirmPassword')}
+                            getFieldError={getFieldErrorWrapper}
                         />
 
                         <View className='flex gap-5 w-full justify-center items-center'>

@@ -127,6 +127,10 @@ export const FormStep = () => {
         getFieldError('pricePaid') || 
         '';
 
+    const getFieldErrorWrapper = (fieldName: string) => {
+        return getFieldError(fieldName as keyof typeof sneakerSchema._type);
+    };
+
     return (
         <KeyboardAvoidingView 
             className="flex-1" 
@@ -166,7 +170,8 @@ export const FormStep = () => {
                         autoCapitalize="words"
                         onFocus={() => handleFieldFocus('model')}
                         onBlur={async (value) => { await validateFieldOnBlur('model', value); }}
-                        error={getFieldError('model')}
+                        error={getFieldErrorWrapper('model')}
+                        getFieldError={getFieldErrorWrapper}
                     />
 
                     <FormSelectInput
@@ -176,7 +181,7 @@ export const FormStep = () => {
                         placeholder="Select brand"
                         options={sneakerBrandOptions}
                         onFocus={() => handleFieldFocus('brand')}
-                        error={getFieldError('brand')}
+                        error={getFieldErrorWrapper('brand')}
                     />
 
                     <FormSelectInput
@@ -186,7 +191,7 @@ export const FormStep = () => {
                         placeholder="Select status"
                         options={sneakerStatusOptions}
                         onFocus={() => handleFieldFocus('status')}
-                        error={getFieldError('status')}
+                        error={getFieldErrorWrapper('status')}
                     />
 
                     <FormTextInput
@@ -199,7 +204,8 @@ export const FormStep = () => {
                         keyboardType="numeric"
                         onFocus={() => handleFieldFocus('size')}
                         onBlur={async (value) => { await validateFieldOnBlur('size', value); }}
-                        error={getFieldError('size')}
+                        error={getFieldErrorWrapper('size')}
+                        getFieldError={getFieldErrorWrapper}
                     />
 
                     <FormTextInput
@@ -210,7 +216,8 @@ export const FormStep = () => {
                         keyboardType="numeric"
                         onFocus={() => handleFieldFocus('condition')}
                         onBlur={async (value) => { await validateFieldOnBlur('condition', value); }}
-                        error={getFieldError('condition')}
+                        error={getFieldErrorWrapper('condition')}
+                        getFieldError={getFieldErrorWrapper}
                     />
 
                     <FormTextInput
@@ -223,7 +230,8 @@ export const FormStep = () => {
                         keyboardType="numeric"
                         onFocus={() => handleFieldFocus('pricePaid')}
                         onBlur={async (value) => { await validateFieldOnBlur('pricePaid', value); }}
-                        error={getFieldError('pricePaid')}
+                        error={getFieldErrorWrapper('pricePaid')}
+                        getFieldError={getFieldErrorWrapper}
                     />
 
                     <FormTextInput
@@ -234,7 +242,8 @@ export const FormStep = () => {
                         ref={descriptionInputRef}
                         onFocus={() => handleFieldFocus('description')}
                         onBlur={async (value) => { await validateFieldOnBlur('description', value); }}
-                        error={getFieldError('description')}
+                        error={getFieldErrorWrapper('description')}
+                        getFieldError={getFieldErrorWrapper}
                     />
                 </View>
             </ScrollView>

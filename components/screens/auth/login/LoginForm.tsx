@@ -57,6 +57,10 @@ export default function LoginForm() {
         authErrorMsg || 
         '';
 
+    const getFieldErrorWrapper = (fieldName: string) => {
+        return getFieldError(fieldName as keyof LoginFormData);
+    };
+
     return (
         <KeyboardAvoidingView 
             className="flex-1 bg-background" 
@@ -88,7 +92,8 @@ export default function LoginForm() {
                             autoComplete="email"
                             onFocus={() => handleFieldFocusWithClearError('email')}
                             onBlur={async (value) => { await validateFieldOnBlur('email', value); }}
-                            error={getFieldError('email')}
+                            error={getFieldErrorWrapper('email')}
+                            getFieldError={getFieldErrorWrapper}
                         />
                         
                         <FormPasswordInput
@@ -100,7 +105,8 @@ export default function LoginForm() {
                             onFocus={() => handleFieldFocusWithClearError('password')}
                             onBlur={async (value) => { await validateFieldOnBlur('password', value); }}
                             onSubmitEditing={handleFormSubmit}
-                            error={getFieldError('password')}
+                            error={getFieldErrorWrapper('password')}
+                            getFieldError={getFieldErrorWrapper}
                         />
                     </View>
 

@@ -9,6 +9,7 @@ import PageTitle from '@/components/ui/text/PageTitle';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import { useFormController } from '@/hooks/useFormController';
 import { signUpStep2Schema, SignUpStep2FormData } from '@/validation/schemas';
+import { Link } from 'expo-router';
 
 export default function SignUpSecondForm() {
     const { signUpProps, setSignUpProps } = useSignUpProps();
@@ -79,6 +80,9 @@ export default function SignUpSecondForm() {
                 <View className="flex-1 items-center gap-12 p-4">
                     <PageTitle content='Sign Up' />
                     <View className='flex gap-6 justify-center items-center w-full mt-8 px-12'>
+                    <View className='w-full absolute' style={{ top: -50 }}>   
+                            <ErrorMsg content={displayedError} display={displayedError !== ''} />
+                        </View>
                         <FormImageInput
                             name="profile_picture"
                             control={control}
@@ -136,6 +140,14 @@ export default function SignUpSecondForm() {
                                 }
                             }} 
                         />
+
+                        <View className='flex flex-row gap-1 w-full justify-center items-center'>
+                            <Link href='/sign-up'>
+                                <Text className='text-primary font-spacemono-bold text-sm'>
+                                    Back
+                                </Text>
+                            </Link>
+                        </View>
                     </View>
                 </View>
             </ScrollView>

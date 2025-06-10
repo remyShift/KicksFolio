@@ -53,6 +53,10 @@ export default function CreateCollection() {
         createCollectionError || 
         '';
 
+    const getFieldErrorWrapper = (fieldName: string) => {
+        return getFieldError(fieldName as keyof CollectionFormData);
+    };
+
     return (
         <KeyboardAvoidingView 
             className="flex-1 bg-background" 
@@ -79,7 +83,8 @@ export default function CreateCollection() {
                             onFocus={() => handleFieldFocus('collectionName')}
                             onBlur={async (value) => { await validateFieldOnBlur('collectionName', value); }}
                             onSubmitEditing={handleFormSubmit}
-                            error={getFieldError('collectionName')}
+                            error={getFieldErrorWrapper('collectionName')}
+                            getFieldError={getFieldErrorWrapper}
                         />
 
                         <MainButton

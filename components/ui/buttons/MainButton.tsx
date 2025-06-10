@@ -10,7 +10,7 @@ export default function MainButton({content, onPressAction, backgroundColor}: {c
     
     const animatedStyle = useAnimatedStyle(() => ({
         transform: [
-            { scale: withSpring(isDisabled ? 0.85 : 1) }
+            { scale: withSpring(isDisabled ? 0.90 : 1) }
         ]
     }));
 
