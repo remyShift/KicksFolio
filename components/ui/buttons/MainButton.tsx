@@ -2,15 +2,24 @@ import { Pressable, Text } from 'react-native';
 import Animated, { useAnimatedStyle, withSpring } from 'react-native-reanimated';
 import { useState } from 'react';
 
+
+type MainButtonProps = {
+    content: string;
+    onPressAction: () => void;
+    backgroundColor: string;
+    isDisabled?: boolean;
+}
+
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-export default function MainButton({content, onPressAction, backgroundColor}: {content: string, onPressAction: () => void, backgroundColor: string}) {
+export default function MainButton({content, onPressAction, backgroundColor, isDisabled = false}: MainButtonProps) {
     const [isLoading, setIsLoading] = useState(false);
-    const isDisabled = backgroundColor === 'bg-gray-300' || backgroundColor === 'bg-gray-600' || isLoading;
     
     const animatedStyle = useAnimatedStyle(() => ({
         transform: [
-            { scale: withSpring(isDisabled ? 0.90 : 1) }
+            {
+                scale: withSpring(isDisabled ? 0.90 : 1)
+            }
         ]
     }));
 
