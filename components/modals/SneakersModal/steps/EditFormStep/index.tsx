@@ -1,90 +1,127 @@
-import { View, KeyboardAvoidingView, ScrollView, Platform } from 'react-native';
+import { View, KeyboardAvoidingView, ScrollView, Platform, TextInput } from 'react-native';
 import { ImageUploader } from '../FormStep/components/ImageUploader';
-import { FormFields } from '../../shared/FormFields';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
-import { useState, useRef, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 import { useModalStore } from '@/store/useModalStore';
-import { SneakerFormData } from '@/components/modals/SneakersModal/types';
-import { useSneakerFormValidation } from '@/hooks/useSneakerFormValidation';
+import { useFormController } from '@/hooks/useFormController';
+import { sneakerSchema, SneakerFormData, sneakerStatusOptions, sneakerBrandOptions } from '@/validation/schemas';
+import FormTextInput from '@/components/ui/inputs/FormTextInput';
+import FormSelectInput from '@/components/ui/inputs/FormSelectInput';
 
 export const EditFormStep = () => {
     const scrollViewRef = useRef<ScrollView>(null);
-    const [displayErrorMsg, setDisplayErrorMsg] = useState('');
-    const [isSneakerNameError, setIsSneakerNameError] = useState(false);
-    const [isSneakerBrandError, setIsSneakerBrandError] = useState(false);
-    const [isSneakerStatusError, setIsSneakerStatusError] = useState(false);
-    const [isSneakerSizeError, setIsSneakerSizeError] = useState(false);
-    const [isSneakerConditionError, setIsSneakerConditionError] = useState(false);
+    const modelInputRef = useRef<TextInput>(null);
+    const brandInputRef = useRef<TextInput>(null);
+    const sizeInputRef = useRef<TextInput>(null);
+    const pricePaidInputRef = useRef<TextInput>(null);
+    const descriptionInputRef = useRef<TextInput>(null);
     
-    const { currentSneaker, sneakerToAdd, setSneakerToAdd, errorMsg, setValidateForm, setClearFormErrors } = useModalStore();
-    
-    const { validateSneakerForm, globalErrorMsg, clearErrors } = useSneakerFormValidation({
-        errorSetters: {
-            sneakerName: setIsSneakerNameError,
-            sneakerBrand: setIsSneakerBrandError,
-            sneakerStatus: setIsSneakerStatusError,
-            sneakerSize: setIsSneakerSizeError,
-            sneakerCondition: setIsSneakerConditionError,
-        }
-    });
+    const { currentSneaker, sneakerToAdd, setSneakerToAdd, setValidateForm, setClearFormErrors } = useModalStore();
 
-    const defaultSneakerToAdd: SneakerFormData = {
-        model: '',
-        brand: '',
-        status: '',
-        size: '',
-        condition: '',
-        images: [],
-        price_paid: '',
-        description: ''
-    };
+    const {
+        control,
+        handleFormSubmit,
+        handleFieldFocus,
+        getFieldError,
+        hasFieldError,
+        reset,
+        formState: { isValid }
+    } = useFormController<SneakerFormData>({
+        schema: sneakerSchema,
+        defaultValues: {
+            model: currentSneaker?.model || '',
+            brand: currentSneaker?.brand || '',
+            status: currentSneaker?.status || '',
+            size: currentSneaker?.size ? String(currentSneaker.size) : '',
+            condition: currentSneaker?.condition ? String(currentSneaker.condition) : '',
+            pricePaid: currentSneaker?.price_paid ? String(currentSneaker.price_paid) : '',
+            description: currentSneaker?.description || '',
+        },
+        onSubmit: async (data) => {
+            setSneakerToAdd({
+                model: data.model,
+                brand: data.brand,
+                status: data.status,
+                size: data.size,
+                condition: data.condition,
+                price_paid: data.pricePaid || '',
+                description: data.description || '',
+                images: currentSneaker?.images || [],
+            } as any);
+        },
+    });
 
     useEffect(() => {
         if (currentSneaker) {
+            reset({
+                model: currentSneaker.model || '',
+                brand: currentSneaker.brand || '',
+                status: currentSneaker.status || '',
+                size: currentSneaker.size?.toString() || '',
+                condition: currentSneaker.condition.toString() || '',
+                pricePaid: currentSneaker.price_paid?.toString() || '',
+                description: currentSneaker.description || '',
+            });
+            
             setSneakerToAdd({
-                model: currentSneaker.model,
-                brand: currentSneaker.brand,
-                status: currentSneaker.status,
-                size: currentSneaker.size.toString(),
-                condition: currentSneaker.condition.toString(),
+                model: currentSneaker.model || '',
+                brand: currentSneaker.brand || '',
+                status: currentSneaker.status || '',
+                size: currentSneaker.size?.toString() || '',
+                condition: currentSneaker.condition.toString() || '',
                 images: currentSneaker.images || [],
                 price_paid: currentSneaker.price_paid?.toString() || '',
-                description: currentSneaker.description || ''
-            });
+                description: currentSneaker.description || '',
+            } as any);
         }
-    }, [currentSneaker]);
-
-    useEffect(() => {
-        setDisplayErrorMsg(errorMsg || globalErrorMsg);
-    }, [errorMsg, globalErrorMsg]);
+    }, [currentSneaker, reset]);
 
     const handleValidateAndSubmit = async () => {
-        const result = await validateSneakerForm([
-            { value: sneakerToAdd?.model || '', fieldType: 'sneakerName', isRequired: true },
-            { value: sneakerToAdd?.brand || '', fieldType: 'sneakerBrand', isRequired: true },
-            { value: sneakerToAdd?.status || '', fieldType: 'sneakerStatus', isRequired: true },
-            { value: sneakerToAdd?.size || '', fieldType: 'sneakerSize', isRequired: true },
-            { value: sneakerToAdd?.condition || '', fieldType: 'sneakerCondition', isRequired: true },
-        ]);
-
+        const result = await new Promise<{ isValid: boolean; errorMsg: string }>((resolve) => {
+            handleFormSubmit();
+            resolve({ isValid, errorMsg: '' });
+        });
         return result;
     };
 
     useEffect(() => {
         setValidateForm(handleValidateAndSubmit);
-        setClearFormErrors(clearErrors);
+        setClearFormErrors(() => {
+            reset();
+        });
         
         return () => {
             setValidateForm(null);
             setClearFormErrors(null);
         };
-    }, [sneakerToAdd]);
+    }, [isValid, handleFormSubmit, reset]);
 
     useEffect(() => {
         return () => {
             setSneakerToAdd(null);
         };
     }, []);
+
+    const hasMultipleErrors = [
+        hasFieldError('model'),
+        hasFieldError('brand'),
+        hasFieldError('status'),
+        hasFieldError('size'),
+        hasFieldError('condition'),
+    ].filter(Boolean).length > 1;
+
+    const globalErrorMsg = hasMultipleErrors 
+        ? 'Please correct the fields in red before continuing'
+        : '';
+
+    const displayedError = globalErrorMsg || 
+        getFieldError('model') || 
+        getFieldError('brand') || 
+        getFieldError('status') || 
+        getFieldError('size') || 
+        getFieldError('condition') || 
+        getFieldError('pricePaid') || 
+        '';
 
     return (
         <KeyboardAvoidingView 
@@ -99,81 +136,96 @@ export const EditFormStep = () => {
                 nestedScrollEnabled={true}
                 contentContainerStyle={{ minHeight: '100%' }}
             >
-                <View className="flex-1 h-full p-2 gap-2">
+                <View className="flex-1 h-full p-2 gap-4">
                     <ImageUploader
-                        image={sneakerToAdd?.images[0]?.url || ''}
+                        image={currentSneaker?.images?.[0]?.url || ''}
                         setImage={(uri) => {
                             setSneakerToAdd({
-                                ...defaultSneakerToAdd,
                                 ...sneakerToAdd,
-                                images: [...(sneakerToAdd?.images || []), { url: uri }],
-                            });
+                                images: [{ url: uri }, ...(currentSneaker?.images?.slice(1) || [])],
+                            } as any);
                         }}
                         isError={false}
                         isFocused={false}
                         setIsError={() => {}}
                     />
 
-                    {displayErrorMsg && <ErrorMsg content={displayErrorMsg} display={true} />}
+                    {displayedError && <ErrorMsg content={displayedError} display={true} />}
 
-                    <FormFields
-                        scrollViewRef={scrollViewRef}
-                        onSneakerNameChange={(value) => {
-                            setSneakerToAdd({
-                                ...defaultSneakerToAdd,
-                                ...sneakerToAdd,
-                                model: value,
-                            });
-                        }}
-                        onSneakerBrandChange={(value) => {
-                            setSneakerToAdd({
-                                ...defaultSneakerToAdd,
-                                ...sneakerToAdd,
-                                brand: value,
-                            });
-                        }}
-                        onSneakerStatusChange={(value) => {
-                            setSneakerToAdd({
-                                ...defaultSneakerToAdd,
-                                ...sneakerToAdd,
-                                status: value,
-                            });
-                        }}
-                        onSneakerSizeChange={(value) => {
-                            setSneakerToAdd({
-                                ...defaultSneakerToAdd,
-                                ...sneakerToAdd,
-                                size: value,
-                            });
-                        }}
-                        onSneakerPricePaidChange={(value) => {
-                            setSneakerToAdd({
-                                ...defaultSneakerToAdd,
-                                ...sneakerToAdd,
-                                price_paid: value,
-                            });
-                        }}
-                        onSneakerConditionChange={(value) => {
-                            setSneakerToAdd({
-                                ...defaultSneakerToAdd,
-                                ...sneakerToAdd,
-                                condition: value,
-                            });
-                        }}
-                        onSneakerDescriptionChange={(value) => {
-                            setSneakerToAdd({
-                                ...defaultSneakerToAdd,
-                                ...sneakerToAdd,
-                                description: value,
-                            });
-                        }}
-                        onErrorChange={(field, error) => setDisplayErrorMsg(error)}
-                        initialValues={sneakerToAdd}
-                        isSneakerNameError={isSneakerNameError}
-                        isSneakerBrandError={isSneakerBrandError}
-                        isSneakerStatusError={isSneakerStatusError}
-                        isSneakerSizeError={isSneakerSizeError}
-                        isSneakerConditionError={isSneakerConditionError}
+                    <FormTextInput
+                        name="model"
+                        control={control}
+                        label="*Sneaker Model"
+                        placeholder="e.g., Air Jordan 1"
+                        ref={modelInputRef}
+                        nextInputRef={brandInputRef}
+                        autoCapitalize="words"
+                        onFocus={() => handleFieldFocus('model')}
+                        error={getFieldError('model')}
+                    />
+
+                    <FormSelectInput
+                        name="brand"
+                        control={control}
+                        label="*Brand"
+                        placeholder="Select brand"
+                        options={sneakerBrandOptions}
+                        onFocus={() => handleFieldFocus('brand')}
+                        error={getFieldError('brand')}
+                    />
+
+                    <FormSelectInput
+                        name="status"
+                        control={control}
+                        label="*Status"
+                        placeholder="Select status"
+                        options={sneakerStatusOptions}
+                        onFocus={() => handleFieldFocus('status')}
+                        error={getFieldError('status')}
+                    />
+
+                    <FormTextInput
+                        name="size"
+                        control={control}
+                        label="*Size"
+                        placeholder="9"
+                        ref={sizeInputRef}
+                        nextInputRef={pricePaidInputRef}
+                        keyboardType="numeric"
+                        onFocus={() => handleFieldFocus('size')}
+                        error={getFieldError('size')}
+                    />
+
+                    <FormTextInput
+                        name="condition"
+                        control={control}
+                        label="*Condition"
+                        placeholder="9/10"
+                        keyboardType="numeric"
+                        onFocus={() => handleFieldFocus('condition')}
+                        error={getFieldError('condition')}
+                    />
+
+                    <FormTextInput
+                        name="pricePaid"
+                        control={control}
+                        label="Price Paid"
+                        placeholder="150"
+                        ref={pricePaidInputRef}
+                        nextInputRef={descriptionInputRef}
+                        keyboardType="numeric"
+                        onFocus={() => handleFieldFocus('pricePaid')}
+                        error={getFieldError('pricePaid')}
+                    />
+
+                    <FormTextInput
+                        name="description"
+                        control={control}
+                        label="Description"
+                        placeholder="Additional notes..."
+                        ref={descriptionInputRef}
+                        onFocus={() => handleFieldFocus('description')}
+                        error={getFieldError('description')}
                     />
                 </View>
             </ScrollView>

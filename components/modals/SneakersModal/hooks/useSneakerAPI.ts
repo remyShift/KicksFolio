@@ -1,252 +1,129 @@
+import { useState } from 'react';
+import { useAsyncValidation } from '@/hooks/useAsyncValidation';
 import { Sneaker } from '@/types/Sneaker';
 import { SneakersService } from '@/services/SneakersService';
-import { SneakerValidationService } from '@/services/SneakerValidationService';
 import { SneakerFormData } from '../types';
 import { ModalStep } from '../types';
-import { FetchedSneaker } from '@/store/useModalStore';
 import { useSession } from '@/context/authContext';
 
 interface Callbacks {
-	setCurrentSneaker?: (sneaker: Sneaker | null) => void;
-	setFetchedSneaker?: (sneaker: FetchedSneaker | null) => void;
-	setModalStep: (step: ModalStep) => void;
-	setErrorMsg: (error: string) => void;
+	onSuccess: (data: Sneaker) => void;
+	onError: (error: string) => void;
 }
 
-export const useSneakerAPI = (sessionToken: string, userId: string) => {
+export function useSneakerAPI(sessionToken: string, userId: string) {
+	const [isLoading, setIsLoading] = useState(false);
+	const [error, setError] = useState<string | null>(null);
+	const { checkSkuExists } = useAsyncValidation();
 	const sneakerService = new SneakersService(userId, sessionToken);
-	const sneakerFormValidationService = new SneakerValidationService();
 	const { refreshUserSneakers, userSneakers } = useSession();
 
-	const handleSkuSearch = (sku: string, callbacks: Callbacks) => {
-		if (!sessionToken) {
-			callbacks.setErrorMsg('Session expired. Please login again.');
-			return;
+	const fetchSneakerData = async (sku: string): Promise<Sneaker | null> => {
+		setIsLoading(true);
+		setError(null);
+
+		try {
+			// Vérifier si le SKU existe déjà
+			const skuError = await checkSkuExists(sku);
+			if (skuError) {
+				setError(skuError);
+				return null;
+			}
+
+			// TODO: Implémenter l'appel API pour récupérer les données de la sneaker
+			// Pour l'instant, retourner des données mockées
+			const mockData: Sneaker = {
+				id: 'mock-id',
+				model: sku,
+				price_paid: 0,
+				brand: 'Nike',
+				size: 42,
+				condition: 10,
+				status: 'new',
+				purchase_date: new Date().toISOString(),
+				description: '',
+				estimated_value: 0,
+				release_date: null,
+				collection_id: 'mock-collection',
+				created_at: new Date().toISOString(),
+				updated_at: new Date().toISOString(),
+				images: [],
+			};
+
+			return mockData;
+		} catch (err) {
+			const errorMessage =
+				err instanceof Error
+					? err.message
+					: 'Une erreur est survenue lors de la récupération des données';
+			setError(errorMessage);
+			return null;
+		} finally {
+			setIsLoading(false);
 		}
+	};
 
-		if (!sku.trim()) {
-			callbacks.setErrorMsg('Please enter a SKU.');
-			return;
+	const handleSkuSearch = async (sku: string, callbacks: Callbacks) => {
+		setIsLoading(true);
+		setError(null);
+
+		try {
+			const skuError = await checkSkuExists(sku);
+			if (skuError) {
+				setError(skuError);
+				callbacks.onError(skuError);
+				return;
+			}
+
+			const sneakerData = await fetchSneakerData(sku);
+			if (sneakerData) {
+				callbacks.onSuccess(sneakerData);
+			}
+		} catch (err) {
+			const errorMessage =
+				err instanceof Error
+					? err.message
+					: 'Une erreur est survenue lors de la recherche';
+			setError(errorMessage);
+			callbacks.onError(errorMessage);
+		} finally {
+			setIsLoading(false);
 		}
-
-		callbacks.setErrorMsg('');
-
-		return sneakerService
-			.searchBySku(sku.trim())
-			.then((response: any) => {
-				if (response) {
-					const responseResult = response.results[0];
-
-					const transformedSneaker = {
-						model: responseResult.name || '',
-						brand: responseResult.brand || '',
-						description: responseResult.story || '',
-						image: {
-							url: responseResult.image['360'][0] || '',
-						},
-					};
-					callbacks.setFetchedSneaker?.(transformedSneaker);
-					callbacks.setModalStep('addForm');
-				}
-				return response;
-			})
-			.catch((error: string) => {
-				callbacks.setErrorMsg(error);
-				throw error;
-			});
 	};
 
 	const handleFormSubmit = async (
 		formData: SneakerFormData,
-		callbacks?: Callbacks
+		currentStep: ModalStep
 	) => {
-		if (!sessionToken) {
-			callbacks?.setErrorMsg('No session token');
-			return Promise.reject('No session token');
+		setIsLoading(true);
+		setError(null);
+
+		try {
+			const skuError = await checkSkuExists(formData.model);
+			if (skuError) {
+				setError(skuError);
+				return false;
+			}
+
+			// TODO: Implémenter la soumission du formulaire
+			return true;
+		} catch (err) {
+			const errorMessage =
+				err instanceof Error
+					? err.message
+					: 'Une erreur est survenue lors de la soumission';
+			setError(errorMessage);
+			return false;
+		} finally {
+			setIsLoading(false);
 		}
-
-		const validationData = {
-			name: formData.model,
-			brand: formData.brand,
-			size: formData.size,
-			condition: formData.condition,
-			status: formData.status,
-			price: formData.price_paid,
-			image: formData.images[0]?.url || '',
-		};
-
-		const validationResult =
-			sneakerFormValidationService.validateAllFields(validationData);
-
-		console.log('validationResult', validationResult);
-
-		if (!validationResult.isValid) {
-			const firstError = Object.values(validationResult.errors)[0];
-			callbacks?.setErrorMsg(firstError || 'Validation failed');
-			return;
-		}
-
-		const sneakerToAdd: SneakerFormData = {
-			model: formData.model,
-			brand: formData.brand,
-			status: formData.status,
-			size: formData.size.toString(),
-			condition: formData.condition.toString(),
-			images: formData.images.map((img) => ({ id: '', url: img.url })),
-			price_paid: formData.price_paid.toString(),
-			description: formData.description,
-		};
-
-		return sneakerService
-			.add(sneakerToAdd)
-			.then(async (response) => {
-				if (response && callbacks) {
-					callbacks.setCurrentSneaker?.(response.sneaker);
-					callbacks.setModalStep('view');
-
-					setTimeout(async () => {
-						await refreshUserSneakers();
-					}, 100);
-				}
-				return response;
-			})
-			.catch((error: string) => {
-				callbacks?.setErrorMsg(
-					`An error occurred while submitting the sneaker: ${error}`
-				);
-				throw error;
-			});
-	};
-
-	const handleFormUpdate = async (
-		sneakerId: string,
-		formData: SneakerFormData,
-		callbacks?: Callbacks
-	) => {
-		if (!sessionToken) {
-			callbacks?.setErrorMsg('No session token');
-			return Promise.reject('No session token');
-		}
-
-		const validationData = {
-			name: formData.model,
-			brand: formData.brand,
-			size: formData.size,
-			condition: formData.condition,
-			status: formData.status,
-			price: formData.price_paid,
-			image: formData.images[0]?.url || '',
-		};
-
-		const validationResult =
-			sneakerFormValidationService.validateAllFields(validationData);
-
-		if (!validationResult.isValid) {
-			const firstError = Object.values(validationResult.errors)[0];
-			callbacks?.setErrorMsg(firstError || 'Validation failed');
-			return;
-		}
-
-		const sneakerToUpdate: SneakerFormData = {
-			model: formData.model,
-			brand: formData.brand,
-			status: formData.status,
-			size: formData.size.toString(),
-			condition: formData.condition.toString(),
-			images: formData.images.map((img) => ({ id: '', url: img.url })),
-			price_paid: formData.price_paid.toString(),
-			description: formData.description,
-		};
-
-		return sneakerService
-			.update(sneakerId, sneakerToUpdate)
-			.then(async (response) => {
-				if (response && callbacks) {
-					const updatedSneaker = {
-						...response.sneaker,
-						images:
-							response.sneaker.images ||
-							sneakerToUpdate.images ||
-							[],
-					};
-
-					callbacks.setCurrentSneaker?.(updatedSneaker);
-					callbacks.setModalStep('view');
-
-					setTimeout(async () => {
-						await refreshUserSneakers();
-					}, 100);
-				} else {
-					console.log('No response or callbacks');
-				}
-				return response;
-			})
-			.catch((error: string) => {
-				callbacks?.setErrorMsg(
-					`An error occurred while updating the sneaker: ${error}`
-				);
-				throw error;
-			});
-	};
-
-	const handleNext = (
-		currentSneaker: Sneaker | null,
-		setCurrentSneaker: (sneaker: Sneaker | null) => void
-	) => {
-		if (!userSneakers || !currentSneaker?.id) return;
-
-		const currentIndex = userSneakers.findIndex(
-			(s: Sneaker) => s.id === currentSneaker.id
-		);
-		const nextId =
-			currentIndex < userSneakers.length - 1
-				? userSneakers[currentIndex + 1].id
-				: userSneakers[0].id;
-		const nextSneaker = userSneakers.find((s: Sneaker) => s.id === nextId);
-		if (!nextSneaker) return;
-		setCurrentSneaker(nextSneaker);
-	};
-
-	const handlePrevious = (
-		currentSneaker: Sneaker | null,
-		setCurrentSneaker: (sneaker: Sneaker | null) => void
-	) => {
-		if (!userSneakers || !currentSneaker?.id) return;
-
-		const currentIndex = userSneakers.findIndex(
-			(s: Sneaker) => s.id === currentSneaker.id
-		);
-		const prevId =
-			currentIndex > 0
-				? userSneakers[currentIndex - 1].id
-				: userSneakers[userSneakers.length - 1].id;
-		const prevSneaker = userSneakers.find((s: Sneaker) => s.id === prevId);
-		if (!prevSneaker) return;
-		setCurrentSneaker(prevSneaker);
-	};
-
-	const handleSneakerDelete = async (sneakerId: string) => {
-		if (!sessionToken) {
-			return Promise.reject('No session token');
-		}
-
-		return sneakerService
-			.delete(sneakerId)
-			.then(async (response: any) => {
-				await refreshUserSneakers();
-				return response;
-			})
-			.catch((error: string) => {
-				throw error;
-			});
 	};
 
 	return {
+		fetchSneakerData,
 		handleSkuSearch,
 		handleFormSubmit,
-		handleFormUpdate,
-		handleNext,
-		handlePrevious,
-		handleSneakerDelete,
+		isLoading,
+		error,
 	};
-};
+}

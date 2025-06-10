@@ -1,62 +1,75 @@
-import { View, Text, TextInput, KeyboardAvoidingView, Platform, ScrollView, Pressable, Alert, Image } from 'react-native';
+import { View, Text, TextInput, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { useSignUpProps } from '@/context/signUpPropsContext';
-import { useState, useRef } from 'react';
-import FirstNameInput from '@/components/ui/inputs/authForm/FirstNameInput';
+import { useRef } from 'react';
+import FormTextInput from '@/components/ui/inputs/FormTextInput';
+import FormImageInput from '@/components/ui/inputs/FormImageInput';
 import MainButton from '@/components/ui/buttons/MainButton';
-import { Link } from 'expo-router';
-import LastNameInput from '@/components/ui/inputs/authForm/LastNameInput';
-import SizeInput from '@/components/ui/inputs/authForm/SizeInput';
 import { useAuth } from '@/hooks/useAuth';
 import PageTitle from '@/components/ui/text/PageTitle';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
-import { useImagePicker } from '@/hooks/useImagePicker';
-import ProfilePictureInput from '@/components/ui/inputs/authForm/ProfilePictureInput';
-import { useFormValidation } from '@/hooks/useFormValidation';
+import { useFormController } from '@/hooks/useFormController';
+import { signUpStep2Schema, SignUpStep2FormData } from '@/validation/schemas';
 
 export default function SignUpSecondForm() {
     const { signUpProps, setSignUpProps } = useSignUpProps();
-    const [firstNameErrorMsg, setFirstNameErrorMsg] = useState('');
-    const [lastNameErrorMsg, setLastNameErrorMsg] = useState('');
-    const [sizeErrorMsg, setSizeErrorMsg] = useState('');
-    const [isFirstNameError, setIsFirstNameError] = useState(false);
-    const [isLastNameError, setIsLastNameError] = useState(false);
-    const [isSizeError, setIsSizeError] = useState(false);
-
     const scrollViewRef = useRef<ScrollView>(null);
     const lastNameInputRef = useRef<TextInput>(null);
     const sizeInputRef = useRef<TextInput>(null);
     const firstNameInputRef = useRef<TextInput>(null);
 
     const { signUp } = useAuth();
-    const { handleImageSelection } = useImagePicker();
-    
-    const { validateForm, globalErrorMsg } = useFormValidation({
-        errorSetters: {
-            firstName: setIsFirstNameError,
-            lastName: setIsLastNameError,
-            size: setIsSizeError,
-        }
+
+    const {
+        control,
+        handleFormSubmit,
+        handleFieldFocus,
+        getFieldError,
+        hasFieldError,
+        isSubmitDisabled,
+    } = useFormController<SignUpStep2FormData>({
+        schema: signUpStep2Schema,
+        defaultValues: {
+            firstName: signUpProps.first_name || '',
+            lastName: signUpProps.last_name || '',
+            size: signUpProps.sneaker_size?.toString() || '',
+            profile_picture: signUpProps.profile_picture || '',
+        },
+        onSubmit: async (data) => {
+            const updatedSignUpProps = {
+                ...signUpProps,
+                first_name: data.firstName,
+                last_name: data.lastName,
+                sneaker_size: parseFloat(data.size),
+                profile_picture: data.profile_picture,
+            };
+            
+            setSignUpProps(updatedSignUpProps);
+            signUp(updatedSignUpProps);
+        },
     });
 
-    const errorMsg = firstNameErrorMsg || lastNameErrorMsg || sizeErrorMsg || globalErrorMsg;
+    const hasMultipleErrors = [
+        hasFieldError('firstName'),
+        hasFieldError('lastName'),
+        hasFieldError('size'),
+    ].filter(Boolean).length > 1;
 
-    const handleSignUp = async () => {
-        const result = await validateForm([
-            { value: signUpProps.first_name, fieldType: 'firstName', isRequired: true },
-            { value: signUpProps.last_name, fieldType: 'lastName', isRequired: true },
-            { value: signUpProps.sneaker_size, fieldType: 'size', isRequired: true },
-        ]);
+    const globalErrorMsg = hasMultipleErrors 
+        ? 'Please correct the fields in red before continuing'
+        : '';
 
-        if (result.isValid) {
-            signUp(signUpProps, setSignUpProps);
-        }
-    };
+    const displayedError = globalErrorMsg || 
+        getFieldError('firstName') || 
+        getFieldError('lastName') || 
+        getFieldError('size') || 
+        '';
 
     return (
         <KeyboardAvoidingView 
-        className="flex-1 bg-background" 
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
+            className="flex-1 bg-background" 
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+        >
             <ScrollView 
                 ref={scrollViewRef}
                 contentContainerStyle={{ flexGrow: 1 }}
@@ -66,70 +79,66 @@ export default function SignUpSecondForm() {
                     <PageTitle content='Sign Up' />
                     <View className='flex gap-6 justify-center items-center w-full mt-8'>
                         <View className="absolute w-full flex items-center" style={{ top: -50 }}>
-                            <ErrorMsg content={errorMsg} display={errorMsg !== ''} />
+                            <ErrorMsg content={displayedError} display={displayedError !== ''} />
                         </View>
 
-                        <ProfilePictureInput
-                            imageUri={signUpProps.profile_picture ?? null}
-                            onChange={uri => setSignUpProps({ ...signUpProps, profile_picture: uri })}
-                            handleImageSelection={handleImageSelection}
+                        <FormImageInput
+                            name="profile_picture"
+                            control={control}
+                            isRounded={true}
+                            size={128}
                         />
 
-                            <FirstNameInput 
-                                inputRef={firstNameInputRef}
-                                signUpProps={signUpProps}
-                                setSignUpProps={setSignUpProps}
-                                scrollViewRef={scrollViewRef}
-                                onErrorChange={setFirstNameErrorMsg}
-                                nextInputRef={lastNameInputRef}
-                                isError={isFirstNameError}
-                            />
+                        <FormTextInput
+                            name="firstName"
+                            control={control}
+                            label="*First Name"
+                            placeholder="First Name"
+                            ref={firstNameInputRef}
+                            nextInputRef={lastNameInputRef}
+                            autoComplete="name"
+                            autoCapitalize="words"
+                            onFocus={() => handleFieldFocus('firstName')}
+                            error={getFieldError('firstName')}
+                        />
 
-                            <LastNameInput 
-                                inputRef={lastNameInputRef}
-                                signUpProps={signUpProps}
-                                setSignUpProps={setSignUpProps}
-                                scrollViewRef={scrollViewRef}
-                                onErrorChange={setLastNameErrorMsg}
-                                nextInputRef={sizeInputRef}
-                                isError={isLastNameError}
-                            />
+                        <FormTextInput
+                            name="lastName"
+                            control={control}
+                            label="*Last Name"
+                            placeholder="Last Name"
+                            ref={lastNameInputRef}
+                            nextInputRef={sizeInputRef}
+                            autoComplete="name"
+                            autoCapitalize="words"
+                            onFocus={() => handleFieldFocus('lastName')}
+                            error={getFieldError('lastName')}
+                        />
 
-                            <SizeInput 
-                                inputRef={sizeInputRef}
-                                signUpProps={signUpProps}
-                                setSignUpProps={setSignUpProps}
-                                scrollViewRef={scrollViewRef}
-                                onErrorChange={setSizeErrorMsg}
-                                onSubmitEditing={async () => {
-                                    await handleSignUp();
-                                    return null;
-                                }}
-                                isError={isSizeError}
-                            />
-                    </View>
+                        <FormTextInput
+                            name="size"
+                            control={control}
+                            label="*Sneaker Size"
+                            placeholder="42"
+                            ref={sizeInputRef}
+                            keyboardType="numeric"
+                            onFocus={() => handleFieldFocus('size')}
+                            onSubmitEditing={handleFormSubmit}
+                            error={getFieldError('size')}
+                        />
 
-                    <View className='flex gap-5 w-full justify-center items-center'>
                         <MainButton 
                             content='Sign Up' 
-                            backgroundColor='bg-primary' 
+                            backgroundColor={isSubmitDisabled ? 'bg-gray-600' : 'bg-primary'}
                             onPressAction={() => {
-                                setTimeout(() => {
-                                    handleSignUp();
-                                }, 300);
-                            }}
+                                if (!isSubmitDisabled) {
+                                    handleFormSubmit();
+                                }
+                            }} 
                         />
-                        <View className='flex gap-0 w-full justify-center items-center'>
-                            <Text className='font-spacemono-bold text-sm'>Go to previous step ?</Text>
-                            <Link href='/sign-up'>
-                                <Text className='text-primary font-spacemono-bold text-sm'>
-                                    Back
-                                </Text>
-                            </Link>
-                        </View>
                     </View>
                 </View>
             </ScrollView>
         </KeyboardAvoidingView>
-    )
+    );
 }

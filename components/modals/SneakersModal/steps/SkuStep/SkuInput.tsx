@@ -1,58 +1,82 @@
-import { useForm } from "@/hooks/useForm";
-import { useEffect, useState } from "react";
-import { Text, TextInput, View } from "react-native";
+import { TextInput, View, Text } from 'react-native';
+import { Controller, Control, FieldValues, Path } from 'react-hook-form';
+import { useState, forwardRef } from 'react';
 
-interface SkuInputProps {
-    onErrorChange: (errorMsg: string) => void;
-    onValueChange: (value: string) => void;
-    onSubmit: () => void;
+interface SkuInputProps<T extends FieldValues> {
+    name: Path<T>;
+    control: Control<T>;
+    label: string;
+    placeholder?: string;
+    onFocus?: () => void;
+    onBlur?: () => void;
+    error?: string;
+    nextInputRef?: React.RefObject<TextInput>;
+    onSubmitEditing?: () => void;
 }
 
-export default function SkuInput({ onErrorChange, onValueChange, onSubmit }: SkuInputProps) {
-    const [isSkuError, setIsSkuError] = useState(false);
-    const [isSkuFocused, setIsSkuFocused] = useState(false);
-    const [skuValue, setSkuValue] = useState("");
-
-    const { handleForm, errorMsg } = useForm({
-        errorSetters: {
-            sku: (isError: boolean) => setIsSkuError(isError),
-        },
-        focusSetters: {
-            sku: (isFocused: boolean) => setIsSkuFocused(isFocused),
-        },
-    });
-
-    useEffect(() => {
-        onErrorChange(errorMsg);
-    }, [errorMsg]);
-
-    useEffect(() => {
-        onValueChange(skuValue);
-    }, [skuValue]);
+const SkuInput = forwardRef<TextInput, SkuInputProps<any>>(
+    ({
+        name,
+        control,
+        label,
+        placeholder,
+        onFocus,
+        onBlur,
+        error,
+        nextInputRef,
+        onSubmitEditing,
+    }, ref) => {
+    const [isFocused, setIsFocused] = useState(false);
 
     return (
-        <View className="flex flex-col gap-2 w-full justify-center items-center">
-            <Text className="font-spacemono-bold text-lg">*SKU :</Text>
-            <TextInput
-                placeholder="DQ4478-101"
-                inputMode="text"
-                value={skuValue}
-                autoCorrect={false}
-                placeholderTextColor="gray"
-                clearButtonMode="while-editing"
-                returnKeyType="search"
-                onSubmitEditing={onSubmit}
-                enablesReturnKeyAutomatically={true}
-                onFocus={() => handleForm.inputFocus('sku')}
-                onBlur={() => handleForm.inputBlur('sku', skuValue)}
-                onChangeText={(text) => {
-                    setSkuValue(text);
-                    handleForm.inputChange(text, setSkuValue);
-                }}
-                className={`bg-white rounded-md p-3 w-2/3 font-spacemono-bold ${
-                    isSkuError ? 'border-2 border-red-500' : ''
-                } ${isSkuFocused ? 'border-2 border-primary' : ''}`}
+        <View className="w-full">
+            <Text className="text-white text-base font-medium mb-2">{label}</Text>
+            <Controller
+                name={name}
+                control={control}
+                render={({ field: { onChange, onBlur: fieldOnBlur, value } }) => (
+                    <TextInput
+                        ref={ref}
+                        value={value || ''}
+                        onChangeText={onChange}
+                        onFocus={() => {
+                            setIsFocused(true);
+                            onFocus?.();
+                        }}
+                        onBlur={() => {
+                            setIsFocused(false);
+                            fieldOnBlur();
+                            onBlur?.();
+                        }}
+                        onSubmitEditing={() => {
+                            if (onSubmitEditing) {
+                                onSubmitEditing();
+                            } else {
+                                nextInputRef?.current?.focus();
+                            }
+                        }}
+                        placeholder={placeholder || label}
+                        placeholderTextColor="#9CA3AF"
+                        autoCapitalize="none"
+                        autoComplete="off"
+                        returnKeyType={nextInputRef || onSubmitEditing ? 'next' : 'done'}
+                        className={`w-full px-4 py-3 rounded-lg border-2 text-white bg-gray-800 ${
+                            error 
+                                ? 'border-red-500' 
+                                : isFocused 
+                                    ? 'border-orange-500' 
+                                    : 'border-gray-600'
+                        }`}
+                    />
+                )}
             />
+            {error && (
+                <Text className="text-red-500 text-sm mt-1 ml-1">{error}</Text>
+            )}
         </View>
     );
-}; 
+});
+
+SkuInput.displayName = 'SkuInput';
+
+export default SkuInput; 

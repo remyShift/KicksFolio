@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { AuthService } from '@/services/AuthService';
-import { FormValidationService } from '@/services/FormValidationService';
 import { router } from 'expo-router';
 import { UserData } from '@/types/auth';
 import { User } from '@/types/User';
@@ -10,68 +9,67 @@ import { useSignUpValidation } from './useSignUpValidation';
 export const useAuth = () => {
 	const [errorMsg, setErrorMsg] = useState('');
 	const authService = new AuthService();
-	const formValidation = new FormValidationService(setErrorMsg, {});
-	const {
-		setSessionToken,
-		setUserCollection,
-		setUserSneakers,
-		setUser,
-		refreshUserData,
-		refreshUserSneakers,
-		user,
-		sessionToken,
-	} = useSession();
+	const { setSessionToken, refreshUserData, refreshUserSneakers, setUser } =
+		useSession();
 	const { validateSignUpStep1 } = useSignUpValidation();
 
 	const login = async (email: string, password: string) => {
-		const token = await authService.handleLogin(
-			email,
-			password,
-			formValidation
-		);
-
-		if (token) {
-			setSessionToken(token);
-			setTimeout(() => {
-				router.replace('/(app)/(tabs)');
-			}, 500);
+		try {
+			const token = await authService.handleLogin(email, password);
+			if (token) {
+				setSessionToken(token);
+				setTimeout(() => {
+					router.replace('/(app)/(tabs)');
+				}, 500);
+			}
+		} catch (error) {
+			setErrorMsg(
+				error instanceof Error
+					? error.message
+					: 'An error occurred during login'
+			);
 		}
 	};
 
-	const signUp = async (
-		userData: UserData,
-		setSignUpProps: (props: any) => void
-	) => {
-		const success = await authService.handleSignUp(
-			userData,
-			formValidation,
-			setSignUpProps
-		);
-		if (success) {
-			const token = await authService.handleLogin(
-				userData.email,
-				userData.password,
-				formValidation
-			);
-			if (token) {
-				setSessionToken(token);
-				const user = await getUser(token);
-				if (user) {
+	const signUp = async (userData: UserData) => {
+		try {
+			const { user } = await authService.signUp(userData);
+			if (user) {
+				const token = await authService.handleLogin(
+					userData.email,
+					userData.password
+				);
+				if (token) {
+					setSessionToken(token);
 					setTimeout(() => {
 						router.replace('/collection');
 					}, 250);
+					return true;
 				}
 			}
+			return false;
+		} catch (error) {
+			setErrorMsg(
+				error instanceof Error
+					? error.message
+					: 'An error occurred during sign up'
+			);
+			return false;
 		}
 	};
 
 	const forgotPassword = async (email: string) => {
-		const success = await authService.handleForgotPassword(
-			email,
-			formValidation
-		);
-		if (success) {
-			router.replace('/login');
+		try {
+			const success = await authService.handleForgotPassword(email);
+			if (success) {
+				router.replace('/login');
+			}
+		} catch (error) {
+			setErrorMsg(
+				error instanceof Error
+					? error.message
+					: 'An error occurred during password reset request'
+			);
 		}
 	};
 
@@ -80,41 +78,45 @@ export const useAuth = () => {
 		newPassword: string,
 		confirmNewPassword: string
 	) => {
-		const success = await authService.handleResetPassword(
-			token,
-			newPassword,
-			confirmNewPassword,
-			formValidation
-		);
-		if (success) {
-			router.replace('/login');
+		try {
+			const success = await authService.handleResetPassword(
+				token,
+				newPassword,
+				confirmNewPassword
+			);
+			if (success) {
+				router.replace('/login');
+			}
+		} catch (error) {
+			setErrorMsg(
+				error instanceof Error
+					? error.message
+					: 'An error occurred during password reset'
+			);
 		}
 	};
 
 	const logout = async (token: string) => {
-		return authService
-			.logout(token)
-			.then((ok) => {
-				if (ok) {
-					setSessionToken(null);
-					router.replace('/login');
-				}
-				return ok;
-			})
-			.catch(() => {
-				setErrorMsg('Erreur lors de la déconnexion.');
-				return false;
-			});
+		try {
+			const ok = await authService.logout(token);
+			if (ok) {
+				setSessionToken(null);
+				router.replace('/login');
+			}
+			return ok;
+		} catch (error) {
+			setErrorMsg('Error during logout.');
+			return false;
+		}
 	};
 
 	const verifyToken = async (token: string) => {
-		return authService
-			.verifyToken(token)
-			.then((isValid) => isValid)
-			.catch(() => {
-				setErrorMsg('Erreur lors de la vérification du token.');
-				return false;
-			});
+		try {
+			return await authService.verifyToken(token);
+		} catch (error) {
+			setErrorMsg('Error during token verification.');
+			return false;
+		}
 	};
 
 	const updateUser = async (
@@ -122,41 +124,40 @@ export const useAuth = () => {
 		profileData: Partial<UserData>,
 		token: string
 	) => {
-		return authService
-			.updateUser(userId, profileData, token)
-			.then((data) => {
-				setUser(data.user);
-				router.replace('/(app)/(tabs)/user');
-				return data;
-			})
-			.catch(() => {
-				setErrorMsg('Erreur lors de la mise à jour du profil.');
-				return null;
-			});
+		try {
+			const data = await authService.updateUser(
+				userId,
+				profileData,
+				token
+			);
+			setUser(data.user);
+			router.replace('/(app)/(tabs)/user');
+			return data;
+		} catch (error) {
+			setErrorMsg('Error updating profile.');
+			return null;
+		}
 	};
 
 	const deleteAccount = async (userId: string, token: string) => {
-		return authService
-			.deleteAccount(userId, token)
-			.then(() => {
-				setSessionToken(null);
-				router.replace('/login');
-				return true;
-			})
-			.catch(() => {
-				setErrorMsg('Error when deleting account.');
-				return false;
-			});
+		try {
+			await authService.deleteAccount(userId, token);
+			setSessionToken(null);
+			router.replace('/login');
+			return true;
+		} catch (error) {
+			setErrorMsg('Error deleting account.');
+			return false;
+		}
 	};
 
 	const getUser = async (token: string) => {
-		return authService
-			.getUser(token)
-			.then((data) => data)
-			.catch(() => {
-				setErrorMsg('Error when getting user profile.');
-				return null;
-			});
+		try {
+			return await authService.getUser(token);
+		} catch (error) {
+			setErrorMsg('Error getting user profile.');
+			return null;
+		}
 	};
 
 	const getUserCollection = async (userData: User, token: string) => {
@@ -196,6 +197,5 @@ export const useAuth = () => {
 		getUserCollection,
 		getUserSneakers,
 		handleNextSignupPage,
-		formValidation,
 	};
 };

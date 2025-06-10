@@ -1,27 +1,18 @@
 import ErrorMsg from "@/components/ui/text/ErrorMsg";
 import PageTitle from "@/components/ui/text/PageTitle";
 import { ScrollView, View, TextInput, KeyboardAvoidingView, Platform } from "react-native";
-import { useState, useRef } from "react";
+import { useRef } from "react";
 import MainButton from "@/components/ui/buttons/MainButton";
 import LoginPageLink from "@/components/ui/links/LoginPageLink";
-import UsernameInput from "@/components/ui/inputs/authForm/UsernameInput";
-import EmailInput from "@/components/ui/inputs/authForm/EmailInput";
-import PasswordInput from "@/components/ui/inputs/authForm/PasswordInput";
-import ConfirmPasswordInput from "@/components/ui/inputs/authForm/ConfirmPasswordInput";
+import FormTextInput from "@/components/ui/inputs/FormTextInput";
+import FormPasswordInput from "@/components/ui/inputs/FormPasswordInput";
 import { useSignUpProps } from "@/context/signUpPropsContext";
-import { useFormValidation } from "@/hooks/useFormValidation";
+import { useFormController } from "@/hooks/useFormController";
+import { useAsyncValidation } from "@/hooks/useAsyncValidation";
 import { useAuth } from "@/hooks/useAuth";
+import { signUpStep1Schema, SignUpStep1FormData } from "@/validation/schemas";
 
 export default function SignUpFirstForm() {
-    const [usernameErrorMsg, setUsernameErrorMsg] = useState('');
-    const [emailErrorMsg, setEmailErrorMsg] = useState('');
-    const [passwordErrorMsg, setPasswordErrorMsg] = useState('');
-    const [confirmPasswordErrorMsg, setConfirmPasswordErrorMsg] = useState('');
-    const [isUsernameError, setIsUsernameError] = useState(false);
-    const [isEmailError, setIsEmailError] = useState(false);
-    const [isPasswordError, setIsPasswordError] = useState(false);
-    const [isConfirmPasswordError, setIsConfirmPasswordError] = useState(false);
-
     const scrollViewRef = useRef<ScrollView>(null);
     const usernameInputRef = useRef<TextInput>(null);
     const emailInputRef = useRef<TextInput>(null);
@@ -30,99 +21,151 @@ export default function SignUpFirstForm() {
 
     const { signUpProps, setSignUpProps } = useSignUpProps();
     const { handleNextSignupPage } = useAuth();
-    
-    const { validateForm, globalErrorMsg } = useFormValidation({
-        errorSetters: {
-            username: setIsUsernameError,
-            email: setIsEmailError,
-            password: setIsPasswordError,
-            confirmPassword: setIsConfirmPasswordError,
-        }
+    const { checkUsernameExists, checkEmailExists } = useAsyncValidation();
+
+    const {
+        control,
+        handleFormSubmit,
+        handleFieldFocus,
+        validateFieldAsync,
+        getFieldError,
+        hasFieldError,
+        isSubmitDisabled,
+        watch,
+    } = useFormController<SignUpStep1FormData>({
+        schema: signUpStep1Schema,
+        defaultValues: {
+            username: signUpProps.username || '',
+            email: signUpProps.email || '',
+            password: signUpProps.password || '',
+            confirmPassword: signUpProps.confirmPassword || '',
+        },
+        asyncValidation: {
+            username: checkUsernameExists,
+            email: checkEmailExists,
+        },
+        onSubmit: async (data) => {
+            // Mettre à jour le contexte avec les nouvelles données
+            setSignUpProps({
+                ...signUpProps,
+                username: data.username,
+                email: data.email,
+                password: data.password,
+                confirmPassword: data.confirmPassword,
+            });
+            
+            // Passer à la page suivante
+            await handleNextSignupPage({
+                ...signUpProps,
+                username: data.username,
+                email: data.email,
+                password: data.password,
+                confirmPassword: data.confirmPassword,
+            });
+        },
     });
 
-    const mergedErrorMsg = usernameErrorMsg || emailErrorMsg || passwordErrorMsg || confirmPasswordErrorMsg || globalErrorMsg;
+    // Obtenir l'erreur générale (si plusieurs champs en erreur)
+    const hasMultipleErrors = [
+        hasFieldError('username'),
+        hasFieldError('email'),
+        hasFieldError('password'),
+        hasFieldError('confirmPassword'),
+    ].filter(Boolean).length > 1;
 
-    const handleNext = async (): Promise<string | null> => {
-        const result = await validateForm([
-            { value: signUpProps.username, fieldType: 'username', isRequired: true },
-            { value: signUpProps.email, fieldType: 'email', isRequired: true },
-            { value: signUpProps.password, fieldType: 'password', isRequired: true },
-            { value: signUpProps.confirmPassword, fieldType: 'confirmPassword', isRequired: true, customValidation: signUpProps.password },
-        ]);
+    const globalErrorMsg = hasMultipleErrors 
+        ? 'Please correct the fields in red before continuing'
+        : '';
 
-        if (result.isValid) {
-            return handleNextSignupPage(signUpProps);
-        }
-        return result.errorMsg;
-    };
+    const displayedError = globalErrorMsg || 
+        getFieldError('username') || 
+        getFieldError('email') || 
+        getFieldError('password') || 
+        getFieldError('confirmPassword') || 
+        '';
 
     return (
         <KeyboardAvoidingView 
-        className="flex-1 bg-background" 
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
+            className="flex-1 bg-background" 
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+        >
             <ScrollView 
-            ref={scrollViewRef}
-            contentContainerStyle={{ flexGrow: 1 }}
-            keyboardShouldPersistTaps="handled"
-            scrollEnabled={true}
-            showsVerticalScrollIndicator={false}>
-                <View className="flex-1 items-center gap-12 p-4">
+                ref={scrollViewRef}
+                contentContainerStyle={{ flexGrow: 1 }}
+                keyboardShouldPersistTaps="handled"
+                scrollEnabled={true}
+                showsVerticalScrollIndicator={false}
+            >
+                <View className="flex-1 items-center p-4 gap-12">
                     <PageTitle content='Sign Up' />
                     <View className='flex justify-center items-center gap-8 w-full mt-10'>
-                        <View className="absolute w-full flex items-center" style={{ top: -50 }}>
-                            <ErrorMsg content={mergedErrorMsg} display={mergedErrorMsg !== ''} />
+                        <View className='w-full absolute' style={{ top: -50 }}>   
+                            <ErrorMsg content={displayedError} display={displayedError !== ''} />
                         </View>
-                        
-                            <UsernameInput
-                                inputRef={usernameInputRef}
-                                signUpProps={signUpProps}
-                                setSignUpProps={setSignUpProps}
-                                scrollViewRef={scrollViewRef}
-                                onErrorChange={setUsernameErrorMsg}
-                                nextInputRef={emailInputRef}
-                                isError={isUsernameError}
-                            />
 
-                            <EmailInput
-                                inputRef={emailInputRef}
-                                signUpProps={signUpProps}
-                                setSignUpProps={setSignUpProps}
-                                scrollViewRef={scrollViewRef}
-                                onErrorChange={setEmailErrorMsg}
-                                nextInputRef={passwordInputRef}
-                                isError={isEmailError}
-                            />
-
-                            <PasswordInput
-                                title='*Password'
-                                inputRef={passwordInputRef}
-                                signUpProps={signUpProps}
-                                setSignUpProps={setSignUpProps}
-                                scrollViewRef={scrollViewRef}
-                                onErrorChange={setPasswordErrorMsg}
-                                nextInputRef={confirmPasswordInputRef}
-                                isError={isPasswordError}
-                            />
-
-                            <ConfirmPasswordInput
-                                inputRef={confirmPasswordInputRef}
-                                signUpProps={signUpProps}
-                                setSignUpProps={setSignUpProps}
-                                scrollViewRef={scrollViewRef}
-                                onErrorChange={setConfirmPasswordErrorMsg}
-                                onSubmitEditing={handleNext}
-                                isError={isConfirmPasswordError}
-                            />
-                    </View>
-
-                    <View className='flex gap-5 w-full justify-center items-center'>
-                        <MainButton 
-                            content='Next' 
-                            backgroundColor='bg-primary' 
-                            onPressAction={handleNext} 
+                        <FormTextInput
+                            name="username"
+                            control={control}
+                            label="*Username"
+                            placeholder="Username"
+                            ref={usernameInputRef}
+                            nextInputRef={emailInputRef}
+                            autoComplete="username"
+                            maxLength={16}
+                            onFocus={() => handleFieldFocus('username')}
+                            onAsyncValidation={async (value) => { await validateFieldAsync('username', value); }}
+                            error={getFieldError('username')}
                         />
-                        <LoginPageLink />
+
+                        <FormTextInput
+                            name="email"
+                            control={control}
+                            label="*Email"
+                            placeholder="Email"
+                            ref={emailInputRef}
+                            nextInputRef={passwordInputRef}
+                            keyboardType="email-address"
+                            autoComplete="email"
+                            onFocus={() => handleFieldFocus('email')}
+                            onAsyncValidation={async (value) => { await validateFieldAsync('email', value); }}
+                            error={getFieldError('email')}
+                        />
+
+                        <FormPasswordInput
+                            name="password"
+                            control={control}
+                            label="*Password"
+                            placeholder="Password"
+                            ref={passwordInputRef}
+                            nextInputRef={confirmPasswordInputRef}
+                            onFocus={() => handleFieldFocus('password')}
+                            error={getFieldError('password')}
+                        />
+
+                        <FormPasswordInput
+                            name="confirmPassword"
+                            control={control}
+                            label="*Confirm Password"
+                            placeholder="Confirm Password"
+                            ref={confirmPasswordInputRef}
+                            onFocus={() => handleFieldFocus('confirmPassword')}
+                            onSubmitEditing={handleFormSubmit}
+                            error={getFieldError('confirmPassword')}
+                        />
+
+                        <View className='flex gap-5 w-full justify-center items-center'>
+                            <MainButton 
+                                content='Next' 
+                                backgroundColor={isSubmitDisabled ? 'bg-gray-600' : 'bg-primary'}
+                                onPressAction={() => {
+                                    if (!isSubmitDisabled) {
+                                        handleFormSubmit();
+                                    }
+                                }}
+                            />
+                            <LoginPageLink />
+                        </View>
                     </View>
                 </View>
             </ScrollView>

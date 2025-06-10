@@ -1,171 +1,152 @@
-import { View, Text, ScrollView, KeyboardAvoidingView, Platform, Pressable, TextInput, Alert } from 'react-native'
-import { useState, useRef } from 'react'
+import { View, ScrollView, KeyboardAvoidingView, Platform, Pressable, TextInput } from 'react-native'
+import { useRef } from 'react'
 import { router } from 'expo-router'
-import { Image } from 'expo-image'
-import { Ionicons, MaterialIcons } from '@expo/vector-icons'
+import { Ionicons } from '@expo/vector-icons'
 import PageTitle from '@/components/ui/text/PageTitle'
 import MainButton from '@/components/ui/buttons/MainButton'
 import ErrorMsg from '@/components/ui/text/ErrorMsg'
 import { useSession } from '@/context/authContext'
 import { UserData } from '@/types/auth'
-import UsernameInput from '@/components/ui/inputs/authForm/UsernameInput'
-import FirstNameInput from '@/components/ui/inputs/authForm/FirstNameInput'
-import LastNameInput from '@/components/ui/inputs/authForm/LastNameInput'
-import SizeInput from '@/components/ui/inputs/authForm/SizeInput'
-import { ScrollView as RNScrollView } from 'react-native'
-import { useImagePicker } from '@/hooks/useImagePicker'
+import FormTextInput from '@/components/ui/inputs/FormTextInput'
+import FormImageInput from '@/components/ui/inputs/FormImageInput'
 import { useAuth } from '@/hooks/useAuth'
+import { useFormController } from '@/hooks/useFormController'
+import { editProfileSchema } from '@/validation/schemas'
 
 export default function EditProfileForm() {
     const { user, sessionToken } = useSession()
     const { updateUser } = useAuth()
-    const [profileData, setProfileData] = useState<UserData>({
-        username: user?.username || '',
-        first_name: user?.first_name || '',
-        last_name: user?.last_name || '',
-        sneaker_size: user?.sneaker_size || 0,
-        profile_picture: user?.profile_picture?.url || '',
-        email: user?.email || '',
-        password: '',
-        confirmPassword: '',
-    })
-
-    const [usernameErrorMsg, setUsernameErrorMsg] = useState('')
-    const [firstNameErrorMsg, setFirstNameErrorMsg] = useState('')
-    const [lastNameErrorMsg, setLastNameErrorMsg] = useState('')
-    const [sizeErrorMsg, setSizeErrorMsg] = useState('')
-    const [username, setUsername] = useState('')
-    const [firstName, setFirstName] = useState('')
-    const [lastName, setLastName] = useState('')
-    const [size, setSize] = useState('')
-
+    const scrollViewRef = useRef<ScrollView>(null)
     const usernameInputRef = useRef<TextInput>(null)
     const firstNameInputRef = useRef<TextInput>(null)
     const lastNameInputRef = useRef<TextInput>(null)
-    const sneakerSizeInputRef = useRef<TextInput>(null)
-    const scrollViewRef = useRef<RNScrollView>(null)
+    const sizeInputRef = useRef<TextInput>(null)
 
-    const mergedErrorMsg = usernameErrorMsg || firstNameErrorMsg || lastNameErrorMsg || sizeErrorMsg;
+    const {
+        control,
+        handleFormSubmit,
+        handleFieldFocus,
+        getFieldError,
+        hasFieldError,
+        watch,
+    } = useFormController({
+        schema: editProfileSchema,
+        defaultValues: {
+            username: user?.username || '',
+            first_name: user?.first_name || '',
+            last_name: user?.last_name || '',
+            sneaker_size: user?.sneaker_size?.toString() || '',
+            profile_picture: user?.profile_picture?.url || '',
+        },
+        onSubmit: async (data) => {
+            if (!user || !sessionToken) return
+            await updateUser(user.id, {
+                ...data,
+                sneaker_size: parseInt(data.sneaker_size),
+            }, sessionToken)
+        },
+    })
 
-    const { handleImageSelection } = useImagePicker();
+    const hasMultipleErrors = [
+        hasFieldError('username'),
+        hasFieldError('first_name'),
+        hasFieldError('last_name'),
+        hasFieldError('sneaker_size'),
+    ].filter(Boolean).length > 1
 
-    const handleSubmit = async () => {
-        if (!user || !sessionToken) return;
-        await updateUser(user.id, profileData, sessionToken);
-    }
+    const globalErrorMsg = hasMultipleErrors 
+        ? 'Please correct the fields in red before continuing'
+        : ''
+
+    const displayedError = globalErrorMsg || 
+        getFieldError('username') || 
+        getFieldError('first_name') || 
+        getFieldError('last_name') || 
+        getFieldError('sneaker_size') || 
+        ''
 
     return (
         <KeyboardAvoidingView 
             className="flex-1 bg-background" 
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
-        <ScrollView className="flex-1" ref={scrollViewRef}>
-            <View className="flex-1 p-4 gap-8">
-                <Pressable onPress={() => router.back()} className='absolute right-5 top-14'>
-                    <Ionicons name="close-outline" size={32} color="#666" />
-                </Pressable>
-                <View className="flex-row justify-center items-center">
-                    <PageTitle content="Edit profile" />
-                </View>
+            <ScrollView className="flex-1" ref={scrollViewRef}>
+                <View className="flex-1 p-4 gap-8">
+                    <Pressable onPress={() => router.back()} className='absolute right-5 top-14'>
+                        <Ionicons name="close-outline" size={32} color="#666" />
+                    </Pressable>
+                    <View className="flex-row justify-center items-center">
+                        <PageTitle content="Edit profile" />
+                    </View>
 
-                <View className="items-center gap-4">
-                    {profileData.profile_picture ? (
-                        <View className="w-32 h-32 rounded-full">
-                            <Image 
-                            source={{ uri: profileData.profile_picture }}
-                            style={{
-                                width: '100%',
-                                height: '100%',
-                                borderRadius: 100
-                            }}
-                            contentFit="cover"
-                            contentPosition="center"
-                            cachePolicy="memory-disk"
-                            />
-                        </View>
-                        ) : (
-                        <Pressable onPress={() => {
-                            Alert.alert('Choose an image',
-                                'Select an image from your gallery or take a photo with your camera to update your profile picture.', [
-                                { 
-                                    text: 'Pick from gallery',
-                                    onPress: () => handleImageSelection('gallery').then(uri => {
-                                        if (!uri) {
-                                            Alert.alert('Sorry, we need permission to access your photos!');
-                                            return;
-                                        }
-                                        setProfileData({ ...profileData, profile_picture: uri });
-                                    }),
-                                },
-                                {   
-                                    text: 'Take a photo',
-                                    onPress: () => handleImageSelection('camera').then(uri => {
-                                        if (!uri) {
-                                            Alert.alert('Sorry, we need permission to access your camera!');
-                                            return;
-                                        }
-                                        setProfileData({ ...profileData, profile_picture: uri });
-                                    }),
-                                },
-                                {
-                                    text: 'Cancel',
-                                    style: 'cancel'
-                                }
-                            ])
-                        }} className="w-32 h-32 bg-primary rounded-full flex-row items-center justify-center">
-                            <MaterialIcons name="add-a-photo" size={32} color="white" />
-                        </Pressable>
-                    )}
-                </View>
+                    <FormImageInput
+                        name="profile_picture"
+                        control={control}
+                        size={128}
+                        isRounded={true}
+                    />
 
-                <View className="flex flex-col gap-4 w-full justify-center items-center">
-                    <ErrorMsg content={mergedErrorMsg} display={!!mergedErrorMsg} />
+                    <View className="flex flex-col gap-4 w-full justify-center items-center">
+                        <ErrorMsg content={displayedError} display={displayedError !== ''} />
 
-                    <UsernameInput
-                        inputRef={usernameInputRef}
-                        signUpProps={profileData}
-                        setSignUpProps={setProfileData}
-                        scrollViewRef={scrollViewRef}
-                        onErrorChange={setUsernameErrorMsg}
-                        onValueChange={setUsername}
-                        nextInputRef={firstNameInputRef}
-                    />
-                    <FirstNameInput
-                        inputRef={firstNameInputRef}
-                        signUpProps={profileData}
-                        setSignUpProps={setProfileData}
-                        scrollViewRef={scrollViewRef}
-                        onErrorChange={setFirstNameErrorMsg}
-                        onValueChange={setFirstName}
-                        nextInputRef={lastNameInputRef}
-                    />
-                    <LastNameInput
-                        inputRef={lastNameInputRef}
-                        signUpProps={profileData}
-                        setSignUpProps={setProfileData}
-                        scrollViewRef={scrollViewRef}
-                        onErrorChange={setLastNameErrorMsg}
-                        onValueChange={setLastName}
-                        nextInputRef={sneakerSizeInputRef}
-                    />
-                    <SizeInput
-                        inputRef={sneakerSizeInputRef}
-                        signUpProps={profileData}
-                        setSignUpProps={setProfileData}
-                        scrollViewRef={scrollViewRef}
-                        onErrorChange={setSizeErrorMsg}
-                        onValueChange={setSize}
-                    />
+                        <FormTextInput
+                            name="username"
+                            control={control}
+                            label="*Username"
+                            placeholder="Username"
+                            ref={usernameInputRef}
+                            nextInputRef={firstNameInputRef}
+                            autoComplete="username"
+                            maxLength={16}
+                            onFocus={() => handleFieldFocus('username')}
+                            error={getFieldError('username')}
+                        />
+
+                        <FormTextInput
+                            name="first_name"
+                            control={control}
+                            label="*First Name"
+                            placeholder="First Name"
+                            ref={firstNameInputRef}
+                            nextInputRef={lastNameInputRef}
+                            autoComplete="name"
+                            onFocus={() => handleFieldFocus('first_name')}
+                            error={getFieldError('first_name')}
+                        />
+
+                        <FormTextInput
+                            name="last_name"
+                            control={control}
+                            label="*Last Name"
+                            placeholder="Last Name"
+                            ref={lastNameInputRef}
+                            nextInputRef={sizeInputRef}
+                            autoComplete="name"
+                            onFocus={() => handleFieldFocus('last_name')}
+                            error={getFieldError('last_name')}
+                        />
+
+                        <FormTextInput
+                            name="sneaker_size"
+                            control={control}
+                            label="*Sneaker Size"
+                            placeholder="Sneaker Size"
+                            ref={sizeInputRef}
+                            keyboardType="numeric"
+                            onFocus={() => handleFieldFocus('sneaker_size')}
+                            error={getFieldError('sneaker_size')}
+                        />
+                    </View>
+
+                    <View className='flex w-full justify-center items-center'>
+                        <MainButton 
+                            content="Save"
+                            onPressAction={handleFormSubmit}
+                            backgroundColor="bg-primary"
+                        />
+                    </View>
                 </View>
-                <View className='flex w-full justify-center items-center'>
-                    <MainButton 
-                        content="Save"
-                        onPressAction={handleSubmit}
-                        backgroundColor="bg-primary"
-                    />
-                </View>
-            </View>
-        </ScrollView>
-    </KeyboardAvoidingView>
+            </ScrollView>
+        </KeyboardAvoidingView>
     )
 } 

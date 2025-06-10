@@ -2,62 +2,61 @@ import { ScrollView, KeyboardAvoidingView, Platform, TextInput } from "react-nat
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import PageTitle from '@/components/ui/text/PageTitle';
 import { View, Text } from 'react-native'
-import { useState, useRef } from "react";
+import { useRef } from "react";
 import MainButton from "@/components/ui/buttons/MainButton";
 import { Link } from "expo-router";
 import { useAuth } from "@/hooks/useAuth";
-import PasswordInput from "@/components/ui/inputs/authForm/PasswordInput";
-import EmailInput from "@/components/ui/inputs/authForm/EmailInput";
-import { useFormValidation } from "@/hooks/useFormValidation";
+import FormTextInput from "@/components/ui/inputs/FormTextInput";
+import FormPasswordInput from "@/components/ui/inputs/FormPasswordInput";
+import { useFormController } from "@/hooks/useFormController";
+import { loginSchema, LoginFormData } from "@/validation/schemas";
 
 export default function LoginForm() {
     const scrollViewRef = useRef<ScrollView>(null);
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [emailErrorMsg, setEmailErrorMsg] = useState('');
-    const [passwordErrorMsg, setPasswordErrorMsg] = useState('');
-    const [isEmailError, setIsEmailError] = useState(false);
-    const [isPasswordError, setIsPasswordError] = useState(false);
     const emailInputRef = useRef<TextInput>(null);
     const passwordInputRef = useRef<TextInput>(null);
 
     const { login, errorMsg: authErrorMsg } = useAuth();
-    
-    const { validateForm, globalErrorMsg } = useFormValidation({
-        errorSetters: {
-            email: setIsEmailError,
-            password: setIsPasswordError,
-        }
+
+    const {
+        control,
+        handleFormSubmit,
+        handleFieldFocus,
+        getFieldError,
+        hasFieldError,
+        isSubmitDisabled,
+    } = useFormController<LoginFormData>({
+        schema: loginSchema,
+        defaultValues: {
+            email: '',
+            password: '',
+        },
+        onSubmit: async (data) => {
+            await login(data.email, data.password);
+        },
     });
 
-    const errorMsg = emailErrorMsg || passwordErrorMsg || authErrorMsg || globalErrorMsg;
+    const hasMultipleErrors = [
+        hasFieldError('email'),
+        hasFieldError('password'),
+    ].filter(Boolean).length > 1;
 
-    const handleLogin = async () => {
-        const result = await validateForm([
-            { value: email, fieldType: 'email', isRequired: true, isLoginPage: true },
-            { value: password, fieldType: 'password', isRequired: true, isLoginPage: true },
-        ]);
+    const globalErrorMsg = hasMultipleErrors 
+        ? 'Please correct the fields in red before continuing'
+        : '';
 
-        if (!result.isValid) {
-            return;
-        }
-
-        setEmailErrorMsg('');
-        setPasswordErrorMsg('');
-        
-        login(email, password)
-            .catch((error) => {
-                console.log(error);
-                setEmailErrorMsg(error.message);
-                setPasswordErrorMsg('');
-            });
-    };
+    const displayedError = globalErrorMsg || 
+        getFieldError('email') || 
+        getFieldError('password') || 
+        authErrorMsg || 
+        '';
 
     return (
         <KeyboardAvoidingView 
-        className="flex-1 bg-background" 
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
+            className="flex-1 bg-background" 
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+        >
             <ScrollView 
                 ref={scrollViewRef}
                 contentContainerStyle={{ flexGrow: 1 }}
@@ -67,34 +66,43 @@ export default function LoginForm() {
                     <PageTitle content='Login' />
                     <View className='flex justify-center items-center gap-8 w-full mt-36'>
                         <View className="absolute w-full flex items-center" style={{ top: -50 }}>
-                            <ErrorMsg content={errorMsg} display={errorMsg !== ''} />
+                            <ErrorMsg content={displayedError} display={displayedError !== ''} />
                         </View>
-                            <EmailInput
-                                inputRef={emailInputRef}
-                                scrollViewRef={scrollViewRef}
-                                onErrorChange={setEmailErrorMsg}
-                                onValueChange={setEmail}
-                                isLoginPage={true}
-                                nextInputRef={passwordInputRef}
-                                isError={isEmailError}
-                            />
-                            
-                            <PasswordInput
-                                inputRef={passwordInputRef}
-                                scrollViewRef={scrollViewRef}
-                                onErrorChange={setPasswordErrorMsg}
-                                onValueChange={setPassword}
-                                title='*Password'
-                                isLoginPage={true}
-                                submitAction={handleLogin}
-                                isError={isPasswordError}
-                            />
+
+                        <FormTextInput
+                            name="email"
+                            control={control}
+                            label="*Email"
+                            placeholder="Email"
+                            ref={emailInputRef}
+                            nextInputRef={passwordInputRef}
+                            keyboardType="email-address"
+                            autoComplete="email"
+                            onFocus={() => handleFieldFocus('email')}
+                            error={getFieldError('email')}
+                        />
+                        
+                        <FormPasswordInput
+                            name="password"
+                            control={control}
+                            label="*Password"
+                            placeholder="Password"
+                            ref={passwordInputRef}
+                            onFocus={() => handleFieldFocus('password')}
+                            onSubmitEditing={handleFormSubmit}
+                            error={getFieldError('password')}
+                        />
                     </View>
+
                     <View className='flex gap-5 w-full justify-center items-center'>                      
                         <MainButton 
                             content='Login' 
-                            backgroundColor='bg-primary' 
-                            onPressAction={handleLogin}
+                            backgroundColor={isSubmitDisabled ? 'bg-gray-600' : 'bg-primary'}
+                            onPressAction={() => {
+                                if (!isSubmitDisabled) {
+                                    handleFormSubmit();
+                                }
+                            }}
                         />
                         <View className='flex gap-1 justify-center items-center'>
                             <View className='flex flex-row gap-1 justify-center items-center'>

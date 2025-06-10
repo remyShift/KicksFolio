@@ -1,6 +1,5 @@
 import { BaseApiService } from '@/services/BaseApiService';
 import { User } from '@/types/User';
-import { FormValidationService } from './FormValidationService';
 import { UserData } from '@/types/auth';
 
 interface LoginResponse {
@@ -9,37 +8,17 @@ interface LoginResponse {
 }
 
 export class AuthService extends BaseApiService {
-	async handleLogin(
-		email: string,
-		password: string,
-		formValidationService: FormValidationService
-	): Promise<string | null> {
-		const isEmailValid = await formValidationService.validateField(
-			email,
-			'email',
-			true
-		);
-
-		const isPasswordValid = formValidationService.validateField(
-			password,
-			'password',
-			true
-		);
-
-		if (!isEmailValid || !isPasswordValid) {
-			return null;
+	async handleLogin(email: string, password: string): Promise<string> {
+		if (!email || !password) {
+			throw new Error('Email and password are required');
 		}
 
-		return this.login(email, password)
-			.then((res) => {
-				return res.token;
-			})
-			.catch(() => {
-				formValidationService.setErrorMessage(
-					'Email or password incorrect'
-				);
-				return null;
-			});
+		try {
+			const res = await this.login(email, password);
+			return res.token;
+		} catch (error) {
+			throw new Error('Email or password incorrect');
+		}
 	}
 
 	async login(email: string, password: string): Promise<LoginResponse> {
@@ -93,7 +72,7 @@ export class AuthService extends BaseApiService {
 		return this.handleResponse(response);
 	}
 
-	async logout(token: string) {
+	async logout(token: string): Promise<boolean> {
 		const response = await fetch(`${this.baseUrl}/logout`, {
 			method: 'DELETE',
 			headers: this.getAuthHeaders(token),
@@ -102,7 +81,7 @@ export class AuthService extends BaseApiService {
 		return response.ok;
 	}
 
-	async verifyToken(token: string) {
+	async verifyToken(token: string): Promise<boolean> {
 		const response = await fetch(`${this.baseUrl}/verify_token`, {
 			method: 'POST',
 			headers: this.getAuthHeaders(token),
@@ -152,30 +131,22 @@ export class AuthService extends BaseApiService {
 	async handleResetPassword(
 		token: string,
 		newPassword: string,
-		confirmPassword: string,
-		formValidationService: FormValidationService
+		confirmPassword: string
 	): Promise<boolean> {
-		const isPasswordValid = formValidationService.validateField(
-			newPassword,
-			'password'
-		);
-		const isConfirmPasswordValid = formValidationService.validateField(
-			confirmPassword,
-			'confirmPassword'
-		);
-
-		if (!isPasswordValid || !isConfirmPasswordValid) {
-			return false;
+		if (!newPassword || !confirmPassword) {
+			throw new Error('New password and confirmation are required');
 		}
 
-		return this.resetPassword(token, newPassword)
-			.then(() => true)
-			.catch(() => {
-				formValidationService.setErrorMessage(
-					'An error occurred while resetting your password, please try again.'
-				);
-				return false;
-			});
+		if (newPassword !== confirmPassword) {
+			throw new Error('Passwords do not match');
+		}
+
+		try {
+			await this.resetPassword(token, newPassword);
+			return true;
+		} catch (error) {
+			throw new Error('An error occurred while resetting your password');
+		}
 	}
 
 	private async resetPassword(
@@ -211,31 +182,21 @@ export class AuthService extends BaseApiService {
 		return this.handleResponse(response);
 	}
 
-	async handleForgotPassword(
-		email: string,
-		formValidationService: FormValidationService
-	): Promise<boolean> {
-		const isEmailValid = await formValidationService.validateField(
-			email,
-			'email'
-		);
-
-		if (!isEmailValid) {
-			return false;
+	async handleForgotPassword(email: string): Promise<boolean> {
+		if (!email) {
+			throw new Error('Email is required');
 		}
 
-		return this.forgotPassword(email)
-			.then(() => true)
-			.catch(() => {
-				formValidationService.setErrorMessage(
-					'An error occurred while sending the reset email, please try again.'
-				);
-				return false;
-			});
+		try {
+			await this.forgotPassword(email);
+			return true;
+		} catch (error) {
+			throw new Error('An error occurred while processing your request');
+		}
 	}
 
 	private async forgotPassword(email: string): Promise<void> {
-		const response = await fetch(`${this.baseUrl}/passwords/forgot`, {
+		const response = await fetch(`${this.baseUrl}/password/forgot`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -247,60 +208,6 @@ export class AuthService extends BaseApiService {
 		if (data.error) {
 			throw new Error(data.error);
 		}
-	}
-
-	async handleSignUp(
-		userData: UserData,
-		formValidationService: FormValidationService,
-		setSignUpProps: (props: any) => void
-	): Promise<boolean> {
-		if (!userData.username.trim()) {
-			formValidationService.setErrorMessage('Please put your username.');
-			return false;
-		}
-
-		if (!userData.first_name.trim()) {
-			formValidationService.setErrorMessage(
-				'Please put your first name.'
-			);
-			return false;
-		}
-
-		if (!userData.last_name.trim()) {
-			formValidationService.setErrorMessage('Please put your last name.');
-			return false;
-		}
-
-		if (!userData.sneaker_size || userData.sneaker_size <= 0) {
-			formValidationService.setErrorMessage(
-				'Please put a valid sneaker size.'
-			);
-			return false;
-		}
-
-		return this.signUp(userData)
-			.then(() => {
-				return this.login(userData.email, userData.password);
-			})
-			.then(() => {
-				setSignUpProps({
-					...userData,
-					email: '',
-					password: '',
-					username: '',
-					first_name: '',
-					last_name: '',
-					sneaker_size: '',
-					profile_picture: '',
-				});
-				return true;
-			})
-			.catch((error) => {
-				formValidationService.setErrorMessage(
-					`Something went wrong. Please try again. ${error}`
-				);
-				return false;
-			});
 	}
 }
 

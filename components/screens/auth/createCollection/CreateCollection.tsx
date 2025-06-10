@@ -1,29 +1,56 @@
-import { useState, useRef } from 'react';
+import { useRef } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, View, Text } from 'react-native';
 import { router } from 'expo-router';
 import PageTitle from '@/components/ui/text/PageTitle';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import MainButton from '@/components/ui/buttons/MainButton';
-import CollectionNameInput from '@/components/ui/inputs/authForm/CollectionNameInput';
-import { useForm } from '@/hooks/useForm';
+import FormTextInput from '@/components/ui/inputs/FormTextInput';
 import { useCreateCollection } from '@/hooks/useCreateCollection';
+import { useFormController } from '@/hooks/useFormController';
+import { z } from 'zod';
+
+const collectionSchema = z.object({
+    collectionName: z.string().min(1, 'Collection name is required'),
+});
+
+type CollectionFormData = z.infer<typeof collectionSchema>;
 
 export default function CreateCollection() {
-    const [collectionNameErrorMsg, setCollectionNameErrorMsg] = useState('');
-    const [collectionName, setCollectionName] = useState('');
     const scrollViewRef = useRef<ScrollView>(null);
+    const { createCollection, error: createCollectionError } = useCreateCollection();
 
-    
-    const { formValidation } = useForm({
-        errorSetters: {
-            collectionName: (isError: boolean) => setCollectionNameErrorMsg(isError ? 'Collection name is required' : '')
+    const {
+        control,
+        handleFormSubmit,
+        handleFieldFocus,
+        getFieldError,
+        hasFieldError,
+        isSubmitDisabled,
+    } = useFormController<CollectionFormData>({
+        schema: collectionSchema,
+        defaultValues: {
+            collectionName: '',
         },
-        scrollViewRef
+        onSubmit: async (data) => {
+            const success = await createCollection(data.collectionName);
+            if (success) {
+                router.replace('/(app)/(tabs)');
+            }
+        },
     });
-    
-    const { createCollection, error } = useCreateCollection();
-    
-    const errorMsg = collectionNameErrorMsg || error;
+
+    const hasMultipleErrors = [
+        hasFieldError('collectionName'),
+    ].filter(Boolean).length > 1;
+
+    const globalErrorMsg = hasMultipleErrors 
+        ? 'Please correct the fields in red before continuing'
+        : '';
+
+    const displayedError = globalErrorMsg || 
+        getFieldError('collectionName') || 
+        createCollectionError || 
+        '';
 
     return (
         <KeyboardAvoidingView 
@@ -39,38 +66,32 @@ export default function CreateCollection() {
                     <PageTitle content='Welcome to KicksFolio !' />
                     <View className='flex justify-center items-center gap-8 w-full mt-32'>
                         <View className="absolute w-full flex items-center" style={{ top: -50 }}>
-                            <ErrorMsg content={errorMsg} display={errorMsg !== ''} />
+                            <ErrorMsg content={displayedError} display={displayedError !== ''} />
                         </View>
                         <Text className="text-lg font-spacemono-bold">Please give a name to your collection :</Text>
 
-                        <CollectionNameInput
-                            collectionName={collectionName}
-                            setCollectionName={setCollectionName}
-                            onErrorChange={setCollectionNameErrorMsg}
-                            onValueChange={setCollectionName}
-                            onSubmitEditing={() => createCollection(collectionName)}
+                        <FormTextInput
+                            name="collectionName"
+                            control={control}
+                            label="Collection Name"
+                            placeholder="My Sneakers Collection"
+                            onFocus={() => handleFieldFocus('collectionName')}
+                            onSubmitEditing={handleFormSubmit}
+                            error={getFieldError('collectionName')}
                         />
 
                         <MainButton
                             content='Create' 
-                            backgroundColor='bg-primary' 
+                            backgroundColor={isSubmitDisabled ? 'bg-gray-600' : 'bg-primary'}
                             onPressAction={() => {
-                                formValidation.validateField(collectionName, 'collectionName')
-                                    .then(isValid => {
-                                        if (isValid) {
-                                            createCollection(collectionName)
-                                                .then(success => {
-                                                    if (success) {
-                                                        router.replace('/(app)/(tabs)');
-                                                    }
-                                                });
-                                        }
-                                    });
+                                if (!isSubmitDisabled) {
+                                    handleFormSubmit();
+                                }
                             }} 
                         />
                     </View>
                 </View>
             </ScrollView>
         </KeyboardAvoidingView>
-    )
+    );
 }
