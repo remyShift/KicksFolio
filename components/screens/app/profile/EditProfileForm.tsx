@@ -26,6 +26,7 @@ export default function EditProfileForm() {
         control,
         handleFormSubmit,
         handleFieldFocus,
+        validateFieldOnBlur,
         getFieldError,
         hasFieldError,
         watch,
@@ -99,6 +100,7 @@ export default function EditProfileForm() {
                             autoComplete="username"
                             maxLength={16}
                             onFocus={() => handleFieldFocus('username')}
+                            onBlur={async (value) => { await validateFieldOnBlur('username', value); }}
                             error={getFieldError('username')}
                         />
 
@@ -111,6 +113,7 @@ export default function EditProfileForm() {
                             nextInputRef={lastNameInputRef}
                             autoComplete="name"
                             onFocus={() => handleFieldFocus('first_name')}
+                            onBlur={async (value) => { await validateFieldOnBlur('first_name', value); }}
                             error={getFieldError('first_name')}
                         />
 
@@ -123,6 +126,7 @@ export default function EditProfileForm() {
                             nextInputRef={sizeInputRef}
                             autoComplete="name"
                             onFocus={() => handleFieldFocus('last_name')}
+                            onBlur={async (value) => { await validateFieldOnBlur('last_name', value); }}
                             error={getFieldError('last_name')}
                         />
 
@@ -134,6 +138,7 @@ export default function EditProfileForm() {
                             ref={sizeInputRef}
                             keyboardType="numeric"
                             onFocus={() => handleFieldFocus('sneaker_size')}
+                            onBlur={async (value) => { await validateFieldOnBlur('sneaker_size', value); }}
                             error={getFieldError('sneaker_size')}
                         />
                     </View>

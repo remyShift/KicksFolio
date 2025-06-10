@@ -23,6 +23,7 @@ export default function CreateCollection() {
         control,
         handleFormSubmit,
         handleFieldFocus,
+        validateFieldOnBlur,
         getFieldError,
         hasFieldError,
         isSubmitDisabled,
@@ -76,6 +77,7 @@ export default function CreateCollection() {
                             label="Collection Name"
                             placeholder="My Sneakers Collection"
                             onFocus={() => handleFieldFocus('collectionName')}
+                            onBlur={async (value) => { await validateFieldOnBlur('collectionName', value); }}
                             onSubmitEditing={handleFormSubmit}
                             error={getFieldError('collectionName')}
                         />

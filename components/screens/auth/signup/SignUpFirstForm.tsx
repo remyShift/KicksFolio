@@ -27,7 +27,7 @@ export default function SignUpFirstForm() {
         control,
         handleFormSubmit,
         handleFieldFocus,
-        validateFieldAsync,
+        validateFieldOnBlur,
         getFieldError,
         hasFieldError,
         isSubmitDisabled,
@@ -110,7 +110,7 @@ export default function SignUpFirstForm() {
                             autoComplete="username"
                             maxLength={16}
                             onFocus={() => handleFieldFocus('username')}
-                            onAsyncValidation={async (value) => { await validateFieldAsync('username', value); }}
+                            onBlur={async (value) => { await validateFieldOnBlur('username', value); }}
                             error={getFieldError('username')}
                         />
 
@@ -124,7 +124,7 @@ export default function SignUpFirstForm() {
                             keyboardType="email-address"
                             autoComplete="email"
                             onFocus={() => handleFieldFocus('email')}
-                            onAsyncValidation={async (value) => { await validateFieldAsync('email', value); }}
+                            onBlur={async (value) => { await validateFieldOnBlur('email', value); }}
                             error={getFieldError('email')}
                         />
 
@@ -136,6 +136,7 @@ export default function SignUpFirstForm() {
                             ref={passwordInputRef}
                             nextInputRef={confirmPasswordInputRef}
                             onFocus={() => handleFieldFocus('password')}
+                            onBlur={async (value) => { await validateFieldOnBlur('password', value); }}
                             error={getFieldError('password')}
                         />
 
@@ -146,6 +147,7 @@ export default function SignUpFirstForm() {
                             placeholder="Confirm Password"
                             ref={confirmPasswordInputRef}
                             onFocus={() => handleFieldFocus('confirmPassword')}
+                            onBlur={async (value) => { await validateFieldOnBlur('confirmPassword', value); }}
                             onSubmitEditing={handleFormSubmit}
                             error={getFieldError('confirmPassword')}
                         />

@@ -16,12 +16,13 @@ export default function LoginForm() {
     const emailInputRef = useRef<TextInput>(null);
     const passwordInputRef = useRef<TextInput>(null);
 
-    const { login, errorMsg: authErrorMsg } = useAuth();
+    const { login, errorMsg: authErrorMsg, clearError } = useAuth();
 
     const {
         control,
         handleFormSubmit,
         handleFieldFocus,
+        validateFieldOnBlur,
         getFieldError,
         hasFieldError,
         isSubmitDisabled,
@@ -35,6 +36,11 @@ export default function LoginForm() {
             await login(data.email, data.password);
         },
     });
+
+    const handleFieldFocusWithClearError = (fieldName: keyof LoginFormData) => {
+        handleFieldFocus(fieldName);
+        clearError();
+    };
 
     const hasMultipleErrors = [
         hasFieldError('email'),
@@ -67,6 +73,10 @@ export default function LoginForm() {
                 <View className="flex-1 items-center gap-12 p-4">
                     <PageTitle content='Login' />
                     <View className='flex justify-center items-center gap-8 w-full mt-36 px-12'>
+                        <View className='w-full absolute' style={{ top: -50 }}>   
+                            <ErrorMsg content={displayedError} display={displayedError !== ''} />
+                        </View>
+
                         <FormTextInput
                             name="email"
                             control={control}
@@ -76,7 +86,8 @@ export default function LoginForm() {
                             nextInputRef={passwordInputRef}
                             keyboardType="email-address"
                             autoComplete="email"
-                            onFocus={() => handleFieldFocus('email')}
+                            onFocus={() => handleFieldFocusWithClearError('email')}
+                            onBlur={async (value) => { await validateFieldOnBlur('email', value); }}
                             error={getFieldError('email')}
                         />
                         
@@ -86,7 +97,8 @@ export default function LoginForm() {
                             label="*Password"
                             placeholder="********"
                             ref={passwordInputRef}
-                            onFocus={() => handleFieldFocus('password')}
+                            onFocus={() => handleFieldFocusWithClearError('password')}
+                            onBlur={async (value) => { await validateFieldOnBlur('password', value); }}
                             onSubmitEditing={handleFormSubmit}
                             error={getFieldError('password')}
                         />

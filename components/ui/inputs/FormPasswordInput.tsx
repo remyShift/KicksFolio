@@ -2,7 +2,6 @@ import { TextInput, View, Text, TouchableOpacity } from 'react-native';
 import { Controller, Control, FieldValues, Path } from 'react-hook-form';
 import { useState, forwardRef } from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import ErrorMsg from '../text/ErrorMsg';
 
 interface FormPasswordInputProps<T extends FieldValues> {
     name: Path<T>;
@@ -10,7 +9,7 @@ interface FormPasswordInputProps<T extends FieldValues> {
     label: string;
     placeholder?: string;
     onFocus?: () => void;
-    onBlur?: () => void;
+    onBlur?: (value: string) => Promise<void>;
     error?: string;
     nextInputRef?: React.RefObject<TextInput>;
     onSubmitEditing?: () => void;
@@ -37,7 +36,7 @@ const FormPasswordInput = forwardRef<TextInput, FormPasswordInputProps<any>>(
             <Controller
                 name={name}
                 control={control}
-                render={({ field: { onChange, onBlur: fieldOnBlur, value } }) => (
+                render={({ field: { onChange, value } }) => (
                     <View className="relative">
                         <TextInput
                             ref={ref}
@@ -47,10 +46,12 @@ const FormPasswordInput = forwardRef<TextInput, FormPasswordInputProps<any>>(
                             setIsFocused(true);
                             onFocus?.();
                             }}
-                            onBlur={() => {
-                            setIsFocused(false);
-                            fieldOnBlur();
-                            onBlur?.();
+                            onBlur={async () => {
+                                setIsFocused(false);
+                                
+                                if (onBlur && value) {
+                                    await onBlur(value);
+                                }
                             }}
                             onSubmitEditing={() => {
                             if (onSubmitEditing) {
@@ -67,10 +68,10 @@ const FormPasswordInput = forwardRef<TextInput, FormPasswordInputProps<any>>(
                             returnKeyType={nextInputRef || onSubmitEditing ? 'next' : 'done'}
                             className={`bg-white rounded-md p-3 w-full font-spacemono-bold ${
                             error 
-                                ? 'border-red-500' 
+                                ? 'border-2 border-red-500' 
                                 : isFocused 
-                                ? 'border-orange-500' 
-                                : 'border-gray-600'
+                                ? 'border-2 border-orange-500' 
+                                : ''
                             }`}
                         />
                     <TouchableOpacity
@@ -86,7 +87,6 @@ const FormPasswordInput = forwardRef<TextInput, FormPasswordInputProps<any>>(
                     </View>
                 )}
             />
-            <ErrorMsg content={error || ''} display={error !== ''} />
         </View>
         );
     }

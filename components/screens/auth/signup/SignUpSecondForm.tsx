@@ -23,6 +23,7 @@ export default function SignUpSecondForm() {
         control,
         handleFormSubmit,
         handleFieldFocus,
+        validateFieldOnBlur,
         getFieldError,
         hasFieldError,
         isSubmitDisabled,
@@ -95,6 +96,7 @@ export default function SignUpSecondForm() {
                             autoComplete="name"
                             autoCapitalize="words"
                             onFocus={() => handleFieldFocus('firstName')}
+                            onBlur={async (value) => { await validateFieldOnBlur('firstName', value); }}
                             error={getFieldError('firstName')}
                         />
 
@@ -108,6 +110,7 @@ export default function SignUpSecondForm() {
                             autoComplete="name"
                             autoCapitalize="words"
                             onFocus={() => handleFieldFocus('lastName')}
+                            onBlur={async (value) => { await validateFieldOnBlur('lastName', value); }}
                             error={getFieldError('lastName')}
                         />
 
@@ -119,6 +122,7 @@ export default function SignUpSecondForm() {
                             ref={sizeInputRef}
                             keyboardType="numeric"
                             onFocus={() => handleFieldFocus('size')}
+                            onBlur={async (value) => { await validateFieldOnBlur('size', value); }}
                             onSubmitEditing={handleFormSubmit}
                             error={getFieldError('size')}
                         />

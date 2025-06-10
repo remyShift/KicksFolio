@@ -110,6 +110,10 @@ export const useAuth = () => {
 		}
 	};
 
+	const clearError = () => {
+		setErrorMsg('');
+	};
+
 	const verifyToken = async (token: string) => {
 		try {
 			return await authService.verifyToken(token);
@@ -185,6 +189,7 @@ export const useAuth = () => {
 
 	return {
 		errorMsg,
+		clearError,
 		login,
 		signUp,
 		forgotPassword,

@@ -22,6 +22,7 @@ export const FormStep = () => {
         control,
         handleFormSubmit,
         handleFieldFocus,
+        validateFieldOnBlur,
         getFieldError,
         hasFieldError,
         isSubmitDisabled,
@@ -164,6 +165,7 @@ export const FormStep = () => {
                         nextInputRef={brandInputRef}
                         autoCapitalize="words"
                         onFocus={() => handleFieldFocus('model')}
+                        onBlur={async (value) => { await validateFieldOnBlur('model', value); }}
                         error={getFieldError('model')}
                     />
 
@@ -196,6 +198,7 @@ export const FormStep = () => {
                         nextInputRef={pricePaidInputRef}
                         keyboardType="numeric"
                         onFocus={() => handleFieldFocus('size')}
+                        onBlur={async (value) => { await validateFieldOnBlur('size', value); }}
                         error={getFieldError('size')}
                     />
 
@@ -206,6 +209,7 @@ export const FormStep = () => {
                         placeholder="9/10"
                         keyboardType="numeric"
                         onFocus={() => handleFieldFocus('condition')}
+                        onBlur={async (value) => { await validateFieldOnBlur('condition', value); }}
                         error={getFieldError('condition')}
                     />
 
@@ -218,6 +222,7 @@ export const FormStep = () => {
                         nextInputRef={descriptionInputRef}
                         keyboardType="numeric"
                         onFocus={() => handleFieldFocus('pricePaid')}
+                        onBlur={async (value) => { await validateFieldOnBlur('pricePaid', value); }}
                         error={getFieldError('pricePaid')}
                     />
 
@@ -228,6 +233,7 @@ export const FormStep = () => {
                         placeholder="Additional notes..."
                         ref={descriptionInputRef}
                         onFocus={() => handleFieldFocus('description')}
+                        onBlur={async (value) => { await validateFieldOnBlur('description', value); }}
                         error={getFieldError('description')}
                     />
                 </View>

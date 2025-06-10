@@ -14,12 +14,13 @@ export default function ForgotPasswordForm() {
     const scrollViewRef = useRef<ScrollView>(null);
     const emailInputRef = useRef<TextInput>(null);
 
-    const { forgotPassword, errorMsg: authErrorMsg } = useAuth();
+    const { forgotPassword, errorMsg: authErrorMsg, clearError } = useAuth();
 
     const {
         control,
         handleFormSubmit,
         handleFieldFocus,
+        validateFieldOnBlur,
         getFieldError,
         hasFieldError,
         isSubmitDisabled,
@@ -32,6 +33,11 @@ export default function ForgotPasswordForm() {
             await forgotPassword(data.email);
         },
     });
+
+    const handleFieldFocusWithClearError = (fieldName: keyof ForgotPasswordFormData) => {
+        handleFieldFocus(fieldName);
+        clearError();
+    };
 
     const hasMultipleErrors = [
         hasFieldError('email'),
@@ -73,7 +79,8 @@ export default function ForgotPasswordForm() {
                             ref={emailInputRef}
                             keyboardType="email-address"
                             autoComplete="email"
-                            onFocus={() => handleFieldFocus('email')}
+                            onFocus={() => handleFieldFocusWithClearError('email')}
+                            onBlur={async (value) => { await validateFieldOnBlur('email', value); }}
                             onSubmitEditing={handleFormSubmit}
                             error={getFieldError('email')}
                         />

@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useAsyncValidation } from '@/hooks/useAsyncValidation';
 import { Sneaker } from '@/types/Sneaker';
 import { SneakersService } from '@/services/SneakersService';
 import { SneakerFormData } from '../types';
@@ -14,7 +13,6 @@ interface Callbacks {
 export function useSneakerAPI(sessionToken: string, userId: string) {
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
-	const { checkSkuExists } = useAsyncValidation();
 	const sneakerService = new SneakersService(userId, sessionToken);
 	const { refreshUserSneakers, userSneakers } = useSession();
 
@@ -23,13 +21,6 @@ export function useSneakerAPI(sessionToken: string, userId: string) {
 		setError(null);
 
 		try {
-			// Vérifier si le SKU existe déjà
-			const skuError = await checkSkuExists(sku);
-			if (skuError) {
-				setError(skuError);
-				return null;
-			}
-
 			// TODO: Implémenter l'appel API pour récupérer les données de la sneaker
 			// Pour l'instant, retourner des données mockées
 			const mockData: Sneaker = {
@@ -68,13 +59,6 @@ export function useSneakerAPI(sessionToken: string, userId: string) {
 		setError(null);
 
 		try {
-			const skuError = await checkSkuExists(sku);
-			if (skuError) {
-				setError(skuError);
-				callbacks.onError(skuError);
-				return;
-			}
-
 			const sneakerData = await fetchSneakerData(sku);
 			if (sneakerData) {
 				callbacks.onSuccess(sneakerData);
@@ -99,12 +83,6 @@ export function useSneakerAPI(sessionToken: string, userId: string) {
 		setError(null);
 
 		try {
-			const skuError = await checkSkuExists(formData.model);
-			if (skuError) {
-				setError(skuError);
-				return false;
-			}
-
 			// TODO: Implémenter la soumission du formulaire
 			return true;
 		} catch (err) {

@@ -36,25 +36,8 @@ export function useAsyncValidation() {
 		}
 	};
 
-	const checkSkuExists = async (sku: string): Promise<string | null> => {
-		if (!sku) {
-			return 'Le SKU est requis';
-		}
-
-		// Vérifier si le SKU existe déjà dans la collection de l'utilisateur
-		const existingSneaker = userSneakers?.find(
-			(sneaker) => sneaker.model === sku
-		);
-		if (existingSneaker) {
-			return 'Cette paire est déjà dans votre collection';
-		}
-
-		return null;
-	};
-
 	return {
 		checkUsernameExists,
 		checkEmailExists,
-		checkSkuExists,
 	};
 }

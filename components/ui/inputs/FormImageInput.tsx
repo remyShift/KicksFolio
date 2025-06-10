@@ -7,19 +7,15 @@ import { useImagePicker } from '@/hooks/useImagePicker';
 interface FormImageInputProps<T extends FieldValues> {
     name: Path<T>;
     control: Control<T>;
-    label?: string;
-    error?: string;
-    isRounded?: boolean;
     size?: number;
+    isRounded?: boolean;
 }
 
 const FormImageInput = <T extends FieldValues>({
     name,
     control,
-    label,
-    error,
-    isRounded = true,
     size = 128,
+    isRounded = true,
 }: FormImageInputProps<T>) => {
     const { handleImageSelection } = useImagePicker();
 

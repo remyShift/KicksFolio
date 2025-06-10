@@ -1,7 +1,6 @@
 import { TextInput, View, Text } from 'react-native';
 import { Controller, Control, FieldValues, Path } from 'react-hook-form';
 import { useState, forwardRef } from 'react';
-import ErrorMsg from '../text/ErrorMsg';
 
 interface FormTextInputProps<T extends FieldValues> {
     name: Path<T>;
@@ -9,7 +8,7 @@ interface FormTextInputProps<T extends FieldValues> {
     label: string;
     placeholder?: string;
     onFocus?: () => void;
-    onBlur?: () => void;
+    onBlur?: (value: string) => Promise<void>;
     onAsyncValidation?: (value: string) => Promise<void>;
     onSubmitEditing?: () => void;
     error?: string;
@@ -45,9 +44,10 @@ const FormTextInput = forwardRef<TextInput, FormTextInputProps<any>>(
             <Controller
                 name={name}
                 control={control}
-                render={({ field: { onChange, onBlur: fieldOnBlur, value } }) => (
+                render={({ field: { onChange, value } }) => (
                     <TextInput
                         ref={ref}
+                        clearButtonMode='while-editing'
                         value={value || ''}
                         onChangeText={onChange}
                         onFocus={() => {
@@ -56,11 +56,13 @@ const FormTextInput = forwardRef<TextInput, FormTextInputProps<any>>(
                         }}
                         onBlur={async () => {
                             setIsFocused(false);
-                            fieldOnBlur();
-                            onBlur?.();
                             
-                            if (onAsyncValidation && value) {
-                            await onAsyncValidation(value);
+                            if (onBlur && value && value.toString().trim() !== '') {
+                                await onBlur(value);
+                            }
+                            
+                            if (onAsyncValidation && value && value.toString().trim() !== '') {
+                                await onAsyncValidation(value);
                             }
                         }}
                         onSubmitEditing={() => {
@@ -79,15 +81,14 @@ const FormTextInput = forwardRef<TextInput, FormTextInputProps<any>>(
                         returnKeyType={nextInputRef ? 'next' : 'done'}
                         className={`bg-white rounded-md p-3 w-full font-spacemono-bold ${
                             error 
-                            ? 'border-red-500' 
+                            ? 'border-2 border-red-500' 
                             : isFocused 
-                                ? 'border-orange-500' 
-                                : 'border-gray-600'
+                                ? 'border-2 border-orange-500' 
+                                : ''
                         }`}
                     />
                 )}
             />
-            <ErrorMsg content={error || ''} display={error !== ''} />
         </View>
         );
     }

@@ -15,12 +15,13 @@ export default function ResetPasswordForm() {
     const passwordInputRef = useRef<TextInput>(null);
     const confirmPasswordInputRef = useRef<TextInput>(null);
     
-    const { resetPassword, errorMsg: authErrorMsg } = useAuth();
+    const { resetPassword, errorMsg: authErrorMsg, clearError } = useAuth();
 
     const {
         control,
         handleFormSubmit,
         handleFieldFocus,
+        validateFieldOnBlur,
         getFieldError,
         hasFieldError,
         isSubmitDisabled,
@@ -34,6 +35,11 @@ export default function ResetPasswordForm() {
             await resetPassword(token as string, data.password, data.confirmPassword);
         },
     });
+
+    const handleFieldFocusWithClearError = (fieldName: keyof ResetPasswordFormData) => {
+        handleFieldFocus(fieldName);
+        clearError();
+    };
 
     const hasMultipleErrors = [
         hasFieldError('password'),
@@ -76,7 +82,8 @@ export default function ResetPasswordForm() {
                             placeholder="New Password"
                             ref={passwordInputRef}
                             nextInputRef={confirmPasswordInputRef}
-                            onFocus={() => handleFieldFocus('password')}
+                            onFocus={() => handleFieldFocusWithClearError('password')}
+                            onBlur={async (value) => { await validateFieldOnBlur('password', value); }}
                             error={getFieldError('password')}
                         />
 
@@ -86,7 +93,8 @@ export default function ResetPasswordForm() {
                             label="*Confirm New Password"
                             placeholder="Confirm New Password"
                             ref={confirmPasswordInputRef}
-                            onFocus={() => handleFieldFocus('confirmPassword')}
+                            onFocus={() => handleFieldFocusWithClearError('confirmPassword')}
+                            onBlur={async (value) => { await validateFieldOnBlur('confirmPassword', value); }}
                             onSubmitEditing={handleFormSubmit}
                             error={getFieldError('confirmPassword')}
                         />

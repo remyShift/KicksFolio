@@ -24,8 +24,8 @@ export function useFormController<T extends FieldValues>({
 
 	const form = useForm<T>({
 		resolver: zodResolver(schema),
-		mode: 'onBlur',
-		reValidateMode: 'onChange',
+		mode: 'onSubmit',
+		reValidateMode: 'onBlur',
 		...formOptions,
 	});
 
@@ -33,6 +33,7 @@ export function useFormController<T extends FieldValues>({
 		handleSubmit,
 		setError,
 		clearErrors,
+		trigger,
 		formState: { errors, isValid },
 	} = form;
 
@@ -52,6 +53,18 @@ export function useFormController<T extends FieldValues>({
 			}
 		}
 		return true;
+	};
+
+	const validateFieldOnBlur = async (fieldName: keyof T, value: any) => {
+		await trigger(fieldName as Path<T>);
+
+		if (
+			asyncValidation?.[fieldName] &&
+			value &&
+			value.toString().trim() !== ''
+		) {
+			await validateFieldAsync(fieldName, value);
+		}
 	};
 
 	const handleFieldFocus = (fieldName: keyof T) => {
@@ -122,6 +135,7 @@ export function useFormController<T extends FieldValues>({
 		handleFormSubmit,
 		handleFieldFocus,
 		validateFieldAsync,
+		validateFieldOnBlur,
 		getFieldError,
 		hasFieldError,
 		isSubmitDisabled,
