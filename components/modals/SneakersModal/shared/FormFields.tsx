@@ -132,9 +132,9 @@ export const FormFields = ({
                         ref={pricePaidInputRef}
                         nextInputRef={descriptionInputRef}
                         keyboardType="numeric"
-                        onFocus={() => handleFieldFocus('pricePaid')}
-                        onBlur={async (value) => { await validateFieldOnBlur('pricePaid', value); }}
-                        error={getFieldErrorWrapper('pricePaid')}
+                        onFocus={() => handleFieldFocus('price_paid')}
+                        onBlur={async (value) => { await validateFieldOnBlur('price_paid', value); }}
+                        error={getFieldErrorWrapper('price_paid')}
                         getFieldError={getFieldErrorWrapper}
                     />
                 </View>

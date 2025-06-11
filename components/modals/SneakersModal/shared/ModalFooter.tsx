@@ -61,23 +61,23 @@ export const ModalFooter = () => {
                 });
                 break;
             case 'addForm':
-                if (validateForm && sneakerToAdd) {
+                if (validateForm) {
                     validateForm()
                         .then((result) => {
-                            if (result.isValid) {
+                            if (result.isValid && result.data) {
                                 handleFormSubmit({
-                                    model: sneakerToAdd.model,
-                                    brand: sneakerToAdd.brand,
-                                    status: sneakerToAdd.status,
-                                    size: sneakerToAdd.size,
-                                    condition: sneakerToAdd.condition,
-                                    images: sneakerToAdd.images && sneakerToAdd.images.length > 0 ? [
+                                    model: result.data.model,
+                                    brand: result.data.brand,
+                                    status: result.data.status,
+                                    size: result.data.size,
+                                    condition: result.data.condition,
+                                    images: result.data.images && result.data.images.length > 0 ? [
                                         {
-                                            url: sneakerToAdd.images[0]?.url || '',
+                                            url: result.data.images[0]?.url || '',
                                         }
                                     ] : [],
-                                    price_paid: sneakerToAdd?.price_paid || '',
-                                    description: sneakerToAdd?.description || ''
+                                    price_paid: result.data?.price_paid || '',
+                                    description: result.data?.description || ''
                                 }, {
                                     setCurrentSneaker,
                                     setModalStep,

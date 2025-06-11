@@ -24,7 +24,11 @@ interface ModalStore {
 	errorMsg: string;
 	modalSessionToken: string | null;
 	validateForm:
-		| (() => Promise<{ isValid: boolean; errorMsg: string }>)
+		| (() => Promise<{
+				isValid: boolean;
+				errorMsg: string;
+				data?: SneakerFormData;
+		  }>)
 		| null;
 	clearFormErrors: (() => void) | null;
 
@@ -37,7 +41,13 @@ interface ModalStore {
 	setErrorMsg: (error: string) => void;
 	setModalSessionToken: (token: string | null) => void;
 	setValidateForm: (
-		fn: (() => Promise<{ isValid: boolean; errorMsg: string }>) | null
+		fn:
+			| (() => Promise<{
+					isValid: boolean;
+					errorMsg: string;
+					data?: SneakerFormData;
+			  }>)
+			| null
 	) => void;
 	setClearFormErrors: (fn: (() => void) | null) => void;
 	resetModalData: () => void;

@@ -1,6 +1,6 @@
 import { View, KeyboardAvoidingView, ScrollView, Platform, TextInput } from 'react-native';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useMemo } from 'react';
 import { useModalStore } from '@/store/useModalStore';
 import { useFormController } from '@/hooks/useFormController';
 import { sneakerSchema, SneakerFormData } from '@/validation/schemas';
@@ -49,7 +49,7 @@ export const EditFormStep = () => {
                 price_paid: data.price_paid || '',
                 description: data.description || '',
                 images: currentSneaker?.images || [],
-            } as any);
+            } as SneakerFormData);
         },
     });
 
@@ -79,22 +79,53 @@ export const EditFormStep = () => {
         }
     }, [currentSneaker]);
 
+    const formValues = watch();
+
+    useEffect(() => {
+        if (currentSneaker?.images && currentSneaker.images.length > 0 && 
+            (!sneakerToAdd?.images || sneakerToAdd.images.length === 0)) {
+            setSneakerToAdd({
+                model: sneakerToAdd?.model || currentSneaker.model || '',
+                brand: sneakerToAdd?.brand || currentSneaker.brand || '',
+                status: sneakerToAdd?.status || currentSneaker.status || '',
+                size: sneakerToAdd?.size || currentSneaker.size?.toString() || '',
+                condition: sneakerToAdd?.condition || currentSneaker.condition.toString() || '',
+                price_paid: sneakerToAdd?.price_paid || currentSneaker.price_paid?.toString() || '',
+                description: sneakerToAdd?.description || currentSneaker.description || '',
+                images: currentSneaker.images,
+            } as SneakerFormData);
+        }
+    }, [currentSneaker?.images, sneakerToAdd]);
+
     useEffect(() => {
                 const handleValidateAndSubmit = async () => {
             setErrorMsg('');
             const isFormValid = await trigger();
             
             if (isFormValid) {
+                // Mettre à jour le store avec les données actuelles du formulaire
+                const currentFormValues = formValues;
+                setSneakerToAdd({
+                    model: currentFormValues.model || '',
+                    brand: currentFormValues.brand || '',
+                    status: currentFormValues.status || '',
+                    size: currentFormValues.size || '',
+                    condition: currentFormValues.condition || '',
+                    price_paid: currentFormValues.price_paid || '',
+                    description: currentFormValues.description || '',
+                    images: currentSneaker?.images || [],
+                } as SneakerFormData);
+                
                 return { isValid: true, errorMsg: '' };
             } else {                
                 const firstError = getFieldError('model') || 
-                                 getFieldError('brand') || 
-                                 getFieldError('status') || 
-                                 getFieldError('size') || 
-                                 getFieldError('condition') || 
-                                 getFieldError('price_paid') || 
-                                 getFieldError('images') ||
-                                 'Please correct the errors in the form';
+                                    getFieldError('brand') || 
+                                    getFieldError('status') || 
+                                    getFieldError('size') || 
+                                    getFieldError('condition') || 
+                                    getFieldError('price_paid') || 
+                                    getFieldError('images') ||
+                                    'Please correct the errors in the form';
                 
                 return { isValid: false, errorMsg: firstError };
             }
@@ -113,22 +144,6 @@ export const EditFormStep = () => {
             setClearFormErrors(null);
         };
     }, []);
-
-    const formValues = watch();
-    useEffect(() => {
-        if (formValues && Object.keys(formValues).length > 0) {
-            setSneakerToAdd({
-                model: formValues.model || '',
-                brand: formValues.brand || '',
-                status: formValues.status || '',
-                size: formValues.size || '',
-                condition: formValues.condition || '',
-                price_paid: formValues.price_paid || '',
-                description: formValues.description || '',
-                images: currentSneaker?.images || [],
-            } as any);
-        }
-    }, [formValues.model, formValues.brand, formValues.status, formValues.size, formValues.condition, formValues.price_paid, formValues.description]);
 
     useEffect(() => {
         return () => {

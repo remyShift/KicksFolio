@@ -54,6 +54,8 @@ export const FormStep = () => {
 
     useEffect(() => {
         if (fetchedSneaker) {
+            const imageData = fetchedSneaker.image?.url ? [{ url: fetchedSneaker.image.url }] : [];
+            
             reset({
                 model: fetchedSneaker.model || '',
                 brand: fetchedSneaker.brand || '',
@@ -62,7 +64,7 @@ export const FormStep = () => {
                 condition: '',
                 price_paid: '',
                 description: fetchedSneaker.description || '',
-                images: fetchedSneaker.image?.url ? [{ url: fetchedSneaker.image.url }] : [],
+                images: imageData,
             });
             
             setSneakerToAdd({
@@ -71,7 +73,7 @@ export const FormStep = () => {
                 status: '',
                 size: '',
                 condition: '',
-                images: fetchedSneaker.image?.url ? [{ url: fetchedSneaker.image.url }] : [],
+                images: imageData,
                 price_paid: '',
                 description: fetchedSneaker.description || '',
             } as SneakerFormData);
@@ -80,6 +82,8 @@ export const FormStep = () => {
         }
     }, [fetchedSneaker]);
 
+    const formValues = watch();
+
     useEffect(() => {
         const handleValidateAndSubmit = async () => {
             setErrorMsg('');
@@ -87,7 +91,29 @@ export const FormStep = () => {
             const isFormValid = await trigger();
             
             if (isFormValid) {
-                return { isValid: true, errorMsg: '' };
+                // Récupérer les données actuelles du formulaire
+                const currentFormValues = watch();
+                const currentSneakerToAdd = useModalStore.getState().sneakerToAdd;
+                
+                // Vérifier qu'il y a au moins une image
+                if (!currentSneakerToAdd?.images || currentSneakerToAdd.images.length === 0) {
+                    return { isValid: false, errorMsg: 'Please upload at least one image.' };
+                }
+                
+                // Créer les données finales pour la soumission
+                const finalData = {
+                    model: currentFormValues.model || '',
+                    brand: currentFormValues.brand || '',
+                    status: currentFormValues.status || '',
+                    size: currentFormValues.size || '',
+                    condition: currentFormValues.condition || '',
+                    price_paid: currentFormValues.price_paid || '',
+                    description: currentFormValues.description || '',
+                    images: currentSneakerToAdd.images,
+                } as SneakerFormData;
+                
+                setSneakerToAdd(finalData);
+                return { isValid: true, errorMsg: '', data: finalData };
             } else {
                 const firstError = getFieldError('model') || 
                                     getFieldError('brand') || 
@@ -95,6 +121,7 @@ export const FormStep = () => {
                                     getFieldError('size') || 
                                     getFieldError('condition') || 
                                     getFieldError('price_paid') || 
+                                    getFieldError('images') ||
                                     'Please correct the errors in the form';
                 
                 return { isValid: false, errorMsg: firstError };
@@ -114,28 +141,14 @@ export const FormStep = () => {
             setClearFormErrors(null);
         };
     }, []);
+    // Plus de synchronisation temps réel - seulement lors de la validation comme EditFormStep
 
-    const formValues = watch();
-    useEffect(() => {
-        if (formValues && Object.keys(formValues).length > 0) {
-            setSneakerToAdd({
-                model: formValues.model || '',
-                brand: formValues.brand || '',
-                status: formValues.status || '',
-                size: formValues.size || '',
-                condition: formValues.condition || '',
-                price_paid: formValues.price_paid || '',
-                description: formValues.description || '',
-                images: formValues.images || [],
-            } as SneakerFormData);
-        }
-    }, [formValues.model, formValues.brand, formValues.status, formValues.size, formValues.condition, formValues.price_paid, formValues.description]);
-
-    useEffect(() => {
-        return () => {
-            setSneakerToAdd(null);
-        };
-    }, []);
+    // Supprimé le nettoyage automatique qui causait le problème
+    // useEffect(() => {
+    //     return () => {
+    //         setSneakerToAdd(null);
+    //     };
+    // }, []);
     const hasMultipleErrors = [
         hasFieldError('model'),
         hasFieldError('brand'),
