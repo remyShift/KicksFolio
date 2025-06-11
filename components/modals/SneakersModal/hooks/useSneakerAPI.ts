@@ -70,7 +70,7 @@ export const useSneakerAPI = (sessionToken: string, userId: string) => {
 
 					const transformedSneaker = {
 						model: responseResult.name || '',
-						brand: responseResult.brand || '',
+						brand: responseResult.brand.toLowerCase() || '',
 						description: responseResult.story || '',
 						image: {
 							url: responseResult.image['360'][0] || '',

@@ -22,7 +22,6 @@ export const FormStep = () => {
         validateFieldOnBlur,
         getFieldError,
         hasFieldError,
-        isSubmitDisabled,
         reset,
         formState: { isValid }
     } = useFormController<SneakerFormData>({

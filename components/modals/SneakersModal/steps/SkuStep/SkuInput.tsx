@@ -9,7 +9,6 @@ interface SkuInputProps<T extends FieldValues> {
     onFocus?: () => void;
     onBlur?: () => void;
     error?: string;
-    nextInputRef?: React.RefObject<TextInput>;
     onSubmitEditing?: () => void;
 }
 
@@ -21,7 +20,6 @@ const SkuInput = forwardRef<TextInput, SkuInputProps<any>>(
         onFocus,
         onBlur,
         error,
-        nextInputRef,
         onSubmitEditing,
     }, ref) => {
     const [isFocused, setIsFocused] = useState(false);
@@ -49,17 +47,15 @@ const SkuInput = forwardRef<TextInput, SkuInputProps<any>>(
                         onSubmitEditing={() => {
                             if (onSubmitEditing) {
                                 onSubmitEditing();
-                            } else {
-                                nextInputRef?.current?.focus();
                             }
                         }}
                         placeholder={placeholder}
                         placeholderTextColor="#9CA3AF"
                         autoCapitalize="none"
                         autoComplete="off"
-                        returnKeyType={nextInputRef || onSubmitEditing ? 'next' : 'done'}
+                        returnKeyType={onSubmitEditing ? 'next' : 'done'}
                         style={{ height: 40 }}
-                        className={`bg-white rounded-md py-3 w-full font-spacemono-bold ${
+                        className={`bg-white rounded-md py-3 px-2 w-full font-spacemono-bold ${
                             error 
                                 ? 'border-2 border-red-500' 
                                 : isFocused 
@@ -69,9 +65,6 @@ const SkuInput = forwardRef<TextInput, SkuInputProps<any>>(
                     />
                 )}
             />
-            {error && (
-                <Text className="text-red-500 text-sm mt-1 ml-1">{error}</Text>
-            )}
         </View>
     );
 });

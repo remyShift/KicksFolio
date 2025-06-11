@@ -26,7 +26,6 @@ export const SkuStep = () => {
         errorMsg, 
         setErrorMsg,
         setModalSessionToken,
-        sneakerSKU,
         setFetchedSneaker,
         setModalStep,
     } = useModalStore();
