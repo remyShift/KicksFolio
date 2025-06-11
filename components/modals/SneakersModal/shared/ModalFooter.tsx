@@ -44,9 +44,16 @@ export const ModalFooter = () => {
     const handleNextAction = () => {
         switch (modalStep) {
             case 'index':
+                setErrorMsg('');
                 setModalStep('sku');
                 break;
             case 'sku':
+                console.log('sneakerSKU', sneakerSKU);
+                if (!sneakerSKU.trim()) {
+                    setErrorMsg('Please enter a SKU.');
+                    return;
+                }
+                setErrorMsg('');
                 handleSkuSearch(sneakerSKU, {
                     setFetchedSneaker,
                     setModalStep,
@@ -130,12 +137,15 @@ export const ModalFooter = () => {
     const handleBackAction = () => {
         switch (modalStep) {
             case 'sku':
+                setErrorMsg('');
                 setModalStep('index');
                 break;
             case 'addForm':
+                setErrorMsg('');
                 setModalStep('index');
                 break;
             case 'editForm':
+                setErrorMsg('');
                 setModalStep('view');
                 break;
             case 'view':

@@ -53,7 +53,7 @@ const SkuInput = forwardRef<TextInput, SkuInputProps<any>>(
                         placeholderTextColor="#9CA3AF"
                         autoCapitalize="none"
                         autoComplete="off"
-                        returnKeyType={onSubmitEditing ? 'next' : 'done'}
+                        returnKeyType="done"
                         style={{ height: 40 }}
                         className={`bg-white rounded-md py-3 px-2 w-full font-spacemono-bold ${
                             error 

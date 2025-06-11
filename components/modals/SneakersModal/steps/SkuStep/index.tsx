@@ -34,7 +34,8 @@ export const SkuStep = () => {
 
     useEffect(() => {
         setModalSessionToken(sessionToken);
-    }, [sessionToken, setModalSessionToken]);
+        setErrorMsg('');
+    }, [sessionToken, setModalSessionToken, setErrorMsg]);
 
     const onSubmit = (data: SkuFormValues) => {
         setSneakerSKU(data.sku);

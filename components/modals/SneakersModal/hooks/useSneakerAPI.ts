@@ -24,7 +24,7 @@ export const useSneakerAPI = (sessionToken: string, userId: string) => {
 			errors: { [key: string]: string };
 		}>((resolve) => {
 			const validationData = {
-				images: formData.images.map((img) => img.url),
+				images: formData.images,
 				model: formData.model,
 				brand: formData.brand,
 				status: formData.status,
