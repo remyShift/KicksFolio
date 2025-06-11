@@ -54,13 +54,15 @@ export const loginSchema = z.object({
 });
 
 export const sneakerSchema = z.object({
-	images: z.array(z.string()).min(1, 'Please upload at least one image.'),
+	images: z
+		.array(z.object({ url: z.string() }))
+		.min(1, 'Please upload at least one image.'),
 	model: z
 		.string()
 		.min(2, 'Sneaker model must be at least 2 characters long.'),
 	brand: z
 		.string()
-		.min(1)
+		.min(1, 'Please select a brand.')
 		.refine(
 			(val) => sneakerBrandOptions.some((option) => option.value === val),
 			'Please select a valid brand.'
@@ -77,17 +79,19 @@ export const sneakerSchema = z.object({
 		.string()
 		.min(1, 'Please enter the size.')
 		.refine(
-			(val) => !isNaN(Number(val)) && Number(val) > 7 && Number(val) < 16,
+			(val) =>
+				!isNaN(Number(val)) && Number(val) >= 7 && Number(val) <= 15,
 			'Please enter a valid size, size must be a number between 7 and 15.'
 		),
 	condition: z
 		.string()
 		.min(1, 'Please select a condition.')
 		.refine(
-			(val) => !isNaN(Number(val)) && Number(val) > 0 && Number(val) < 11,
+			(val) =>
+				!isNaN(Number(val)) && Number(val) >= 0 && Number(val) <= 10,
 			'Please enter a valid condition, condition must be a number between 1 and 10.'
 		),
-	pricePaid: z
+	price_paid: z
 		.string()
 		.optional()
 		.refine(

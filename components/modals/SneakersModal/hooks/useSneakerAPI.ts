@@ -120,7 +120,7 @@ export const useSneakerAPI = (sessionToken: string, userId: string) => {
 						id: '',
 						url: img.url,
 					})),
-					price_paid: formData.price_paid.toString(),
+					price_paid: formData.price_paid?.toString() || '',
 					description: formData.description,
 				};
 
@@ -179,7 +179,7 @@ export const useSneakerAPI = (sessionToken: string, userId: string) => {
 						id: '',
 						url: img.url,
 					})),
-					price_paid: formData.price_paid.toString(),
+					price_paid: formData.price_paid?.toString() || '',
 					description: formData.description,
 				};
 

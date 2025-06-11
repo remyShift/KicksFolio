@@ -13,7 +13,7 @@ export const FormStep = () => {
     const pricePaidInputRef = useRef<TextInput>(null);
     const descriptionInputRef = useRef<TextInput>(null);
     
-    const { fetchedSneaker, setFetchedSneaker, sneakerToAdd, setSneakerToAdd, setValidateForm, setClearFormErrors } = useModalStore();
+    const { fetchedSneaker, setFetchedSneaker, sneakerToAdd, setSneakerToAdd, setValidateForm, setClearFormErrors, errorMsg, setErrorMsg } = useModalStore();
 
     const {
         control,
@@ -23,6 +23,8 @@ export const FormStep = () => {
         getFieldError,
         hasFieldError,
         reset,
+        trigger,
+        watch,
         formState: { isValid }
     } = useFormController<SneakerFormData>({
         schema: sneakerSchema,
@@ -32,8 +34,9 @@ export const FormStep = () => {
             status: '',
             size: '',
             condition: '',
-            pricePaid: '',
+            price_paid: '',
             description: '',
+            images: [],
         },
         onSubmit: async (data) => {
             setSneakerToAdd({
@@ -42,10 +45,10 @@ export const FormStep = () => {
                 status: data.status,
                 size: data.size,
                 condition: data.condition,
-                price_paid: data.pricePaid || '',
-                description: data.description || '',
+                price_paid: data.price_paid,
+                description: data.description,
                 images: sneakerToAdd?.images || [],
-            } as any);
+            } as SneakerFormData);
         },
     });
 
@@ -57,8 +60,9 @@ export const FormStep = () => {
                 status: '',
                 size: '',
                 condition: '',
-                pricePaid: '',
+                price_paid: '',
                 description: fetchedSneaker.description || '',
+                images: fetchedSneaker.image?.url ? [{ url: fetchedSneaker.image.url }] : [],
             });
             
             setSneakerToAdd({
@@ -70,7 +74,7 @@ export const FormStep = () => {
                 images: fetchedSneaker.image?.url ? [{ url: fetchedSneaker.image.url }] : [],
                 price_paid: '',
                 description: fetchedSneaker.description || '',
-            });
+            } as SneakerFormData);
             
             setFetchedSneaker(null);
         }
@@ -78,15 +82,28 @@ export const FormStep = () => {
 
     useEffect(() => {
         const handleValidateAndSubmit = async () => {
-            const result = await new Promise<{ isValid: boolean; errorMsg: string }>((resolve) => {
-                handleFormSubmit();
-                resolve({ isValid, errorMsg: '' });
-            });
-            return result;
+            setErrorMsg('');
+            
+            const isFormValid = await trigger();
+            
+            if (isFormValid) {
+                return { isValid: true, errorMsg: '' };
+            } else {
+                const firstError = getFieldError('model') || 
+                                 getFieldError('brand') || 
+                                 getFieldError('status') || 
+                                 getFieldError('size') || 
+                                 getFieldError('condition') || 
+                                 getFieldError('price_paid') || 
+                                 'Please correct the errors in the form';
+                
+                return { isValid: false, errorMsg: firstError };
+            }
         };
 
         const clearFormErrors = () => {
             reset();
+            setErrorMsg('');
         };
 
         setValidateForm(handleValidateAndSubmit);
@@ -97,6 +114,22 @@ export const FormStep = () => {
             setClearFormErrors(null);
         };
     }, []);
+
+    const formValues = watch();
+    useEffect(() => {
+        if (formValues && Object.keys(formValues).length > 0) {
+            setSneakerToAdd({
+                model: formValues.model || '',
+                brand: formValues.brand || '',
+                status: formValues.status || '',
+                size: formValues.size || '',
+                condition: formValues.condition || '',
+                price_paid: formValues.price_paid || '',
+                description: formValues.description || '',
+                images: formValues.images || [],
+            } as SneakerFormData);
+        }
+    }, [formValues.model, formValues.brand, formValues.status, formValues.size, formValues.condition, formValues.price_paid, formValues.description]);
 
     useEffect(() => {
         return () => {
@@ -122,7 +155,8 @@ export const FormStep = () => {
         getFieldError('status') || 
         getFieldError('size') || 
         getFieldError('condition') || 
-        getFieldError('pricePaid') || 
+        getFieldError('price_paid') || 
+        errorMsg || 
         '';
 
     const getFieldErrorWrapper = (fieldName: string) => {

@@ -37,9 +37,11 @@ export const ModalFooter = () => {
                 });
                 break;
             case 'addForm':
+                console.log('sneakerToAdd', sneakerToAdd);
                 if (validateForm && sneakerToAdd) {
                     validateForm()
                         .then((result) => {
+                            console.log('result', result);
                             if (result.isValid) {
                                 handleFormSubmit({
                                     model: sneakerToAdd.model,
@@ -59,6 +61,8 @@ export const ModalFooter = () => {
                                     setModalStep,
                                     setErrorMsg
                                 });
+                            } else {
+                                setErrorMsg(result.errorMsg);
                             }
                         })
                         .catch((error) => {

@@ -43,19 +43,19 @@ export const FormFields = ({
     const imageDisplayed = sneakerToAdd?.images?.[0]?.url || currentSneaker?.images?.[0]?.url;
 
     return (
-        <View className="flex-1 gap-6">
+        <View className="flex-1 gap-4">
             <ImageUploader
-                        image={imageDisplayed || ''}
-                        setImage={(uri: string) => {
-                            setSneakerToAdd({
-                                ...sneakerToAdd,
-                                images: [{ url: uri }, ...(sneakerToAdd?.images?.slice(1) || [])],
-                            } as any);
-                        }}
-                        isError={false}
-                        isFocused={false}
-                        setIsError={() => {}}
-                    />
+                image={imageDisplayed || ''}
+                setImage={(uri: string) => {
+                    setSneakerToAdd({
+                        ...sneakerToAdd,
+                        images: [{ url: uri }, ...(sneakerToAdd?.images?.slice(1) || [])],
+                    } as any);
+                }}
+                isError={false}
+                isFocused={false}
+                setIsError={() => {}}
+            />
 
             {displayedError && <ErrorMsg content={displayedError} display={true} />}
 

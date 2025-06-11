@@ -49,8 +49,8 @@ export interface SneakerFormData {
 	size: string;
 	condition: string;
 	images: { url: string }[];
-	price_paid: string;
-	description: string;
+	price_paid?: string;
+	description?: string;
 }
 
 export interface ValidationResult {
