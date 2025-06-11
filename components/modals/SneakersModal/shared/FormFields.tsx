@@ -48,7 +48,7 @@ export const FormFields = ({
                 getFieldError={getFieldErrorWrapper}
             />
 
-            <View className="flex flex-row">
+            <View className="flex flex-row gap-1">
                 <FormSelectInput
                     name="brand"
                     control={control}

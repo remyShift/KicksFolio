@@ -69,7 +69,7 @@ export default function FormSelectInput<T extends FieldValues>({
     });
 
     return (
-        <View className="w-1/2">
+        <View className="w-[49.5%]">
             {label && <Text className="font-spacemono-bold text-lg">{label}</Text>}
             <Controller
                 name={name}
