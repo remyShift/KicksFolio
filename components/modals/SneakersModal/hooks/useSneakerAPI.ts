@@ -215,38 +215,26 @@ export const useSneakerAPI = (sessionToken: string, userId: string) => {
 	};
 
 	const handleNext = (
-		currentSneaker: Sneaker | null,
+		nextSneaker: Sneaker | null,
 		setCurrentSneaker: (sneaker: Sneaker | null) => void
 	) => {
-		if (!userSneakers || !currentSneaker?.id) return;
+		if (!userSneakers || !nextSneaker?.id) return;
 
-		const currentIndex = userSneakers.findIndex(
-			(s: Sneaker) => s.id === currentSneaker.id
-		);
-		const nextId =
-			currentIndex < userSneakers.length - 1
-				? userSneakers[currentIndex + 1].id
-				: userSneakers[0].id;
-		const nextSneaker = userSneakers.find((s: Sneaker) => s.id === nextId);
-		if (!nextSneaker) return;
+		if (!nextSneaker) {
+			return;
+		}
 		setCurrentSneaker(nextSneaker);
 	};
 
 	const handlePrevious = (
-		currentSneaker: Sneaker | null,
+		prevSneaker: Sneaker | null,
 		setCurrentSneaker: (sneaker: Sneaker | null) => void
 	) => {
-		if (!userSneakers || !currentSneaker?.id) return;
+		if (!userSneakers || !prevSneaker?.id) return;
 
-		const currentIndex = userSneakers.findIndex(
-			(s: Sneaker) => s.id === currentSneaker.id
-		);
-		const prevId =
-			currentIndex > 0
-				? userSneakers[currentIndex - 1].id
-				: userSneakers[userSneakers.length - 1].id;
-		const prevSneaker = userSneakers.find((s: Sneaker) => s.id === prevId);
-		if (!prevSneaker) return;
+		if (!prevSneaker) {
+			return;
+		}
 		setCurrentSneaker(prevSneaker);
 	};
 

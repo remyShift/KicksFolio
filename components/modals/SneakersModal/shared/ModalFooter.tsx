@@ -6,6 +6,8 @@ import { useModalStore } from '@/store/useModalStore';
 import { useSneakerAPI } from '../hooks/useSneakerAPI';
 import { useSession } from '@/context/authContext';
 import DeleteButton from '@/components/ui/buttons/DeleteButton';
+import { Sneaker } from '@/types/Sneaker';
+import { useEffect, useState } from 'react';
 
 export const ModalFooter = () => {
     const { 
@@ -21,8 +23,23 @@ export const ModalFooter = () => {
         currentSneaker
     } = useModalStore();
 
-    const { sessionToken, user } = useSession();
+    const { sessionToken, user, userSneakers } = useSession();
     const { handleSkuSearch, handleFormSubmit, handleFormUpdate, handleNext, handlePrevious, handleSneakerDelete } = useSneakerAPI(sessionToken!, user!.id);
+
+    const [nextSneaker, setNextSneaker] = useState<Sneaker | null>(null);
+    const [prevSneaker, setPrevSneaker] = useState<Sneaker | null>(null);
+
+    useEffect(() => {
+        if (modalStep === 'view') {
+            setNextSneaker(userSneakers?.find((s: Sneaker) => s.id === (currentSneaker?.id ? parseInt(currentSneaker.id) + 1 : 0).toString()) || null);
+            setPrevSneaker(userSneakers?.find((s: Sneaker) => s.id === (currentSneaker?.id ? parseInt(currentSneaker.id) - 1 : 0).toString()) || null);
+        }
+
+        return () => {
+            setNextSneaker(null);
+            setPrevSneaker(null);
+        }
+    }, [currentSneaker, modalStep]);
 
     const handleNextAction = () => {
         switch (modalStep) {
@@ -101,7 +118,11 @@ export const ModalFooter = () => {
                 }
                 break;
             case 'view':
-                handleNext(currentSneaker, setCurrentSneaker);
+                if (nextSneaker) {
+                handleNext(nextSneaker, setCurrentSneaker);
+                } else {
+                    setIsVisible(false);
+                }
                 break;
         }
     }
@@ -118,7 +139,11 @@ export const ModalFooter = () => {
                 setModalStep('view');
                 break;
             case 'view':
-                handlePrevious(currentSneaker, setCurrentSneaker);
+                if (prevSneaker) {
+                    handlePrevious(prevSneaker, setCurrentSneaker);
+                } else {
+                    setIsVisible(false);
+                }
                 break;
         }
     }

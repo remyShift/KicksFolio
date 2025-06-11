@@ -32,7 +32,7 @@ export const ViewStep = () => {
             <View className="flex-row justify-between items-center px-2">
                 <View className="flex gap-0">
                     <Text className="font-spacemono-bold text-lg w-full t">{currentSneaker.model}</Text>
-                    <Text className="font-spacemono-bold-italic text-base">{currentSneaker.brand}</Text>
+                    <Text className="font-spacemono-bold-italic text-base">{currentSneaker.brand.toUpperCase()}</Text>
                 </View>
             </View>
 
@@ -64,18 +64,13 @@ export const ViewStep = () => {
 
                 <ConditionBar condition={currentSneaker.condition} />
 
-                <View className="flex-1 items-center w-full">
-                    <ScrollView 
-                        className="bg-white/60 rounded-md p-2 w-full"
+                <View style={{ height: 180 }} className="bg-white/60 rounded-md p-2 mt-2">
+                    <Text className='font-spacemono-bold'>Description :</Text>
+                    <ScrollView
+                        style={{ flex: 1 }}
                         showsVerticalScrollIndicator={true}
                         indicatorStyle="black"
-                        persistentScrollbar={true}
-                        style={{
-                            minHeight: 180,
-                            maxHeight: 180
-                        }}
                     >
-                        <Text className='font-spacemono-bold'>Description :</Text>
                         <Text className='font-spacemono text-sm'>
                             {currentSneaker.description || 'No description available'}
                         </Text>

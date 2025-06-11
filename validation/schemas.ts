@@ -59,7 +59,12 @@ export const sneakerSchema = z.object({
 		.min(1, 'Please upload at least one image.'),
 	model: z
 		.string()
-		.min(2, 'Sneaker model must be at least 2 characters long.'),
+		.min(2, 'Sneaker model must be at least 2 characters long.')
+		.refine(
+			(val) =>
+				!sneakerBrandOptions.some((option) => option.value === val),
+			'A brand name cannot be in the model.'
+		),
 	brand: z
 		.string()
 		.min(1, 'Please select a brand.')
