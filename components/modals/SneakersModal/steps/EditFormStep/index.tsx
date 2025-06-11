@@ -103,9 +103,9 @@ export const EditFormStep = () => {
             const isFormValid = await trigger();
             
             if (isFormValid) {
-                // Mettre à jour le store avec les données actuelles du formulaire
-                const currentFormValues = formValues;
-                setSneakerToAdd({
+                // Récupérer les données actuelles du formulaire
+                const currentFormValues = watch();
+                const finalData = {
                     model: currentFormValues.model || '',
                     brand: currentFormValues.brand || '',
                     status: currentFormValues.status || '',
@@ -114,9 +114,10 @@ export const EditFormStep = () => {
                     price_paid: currentFormValues.price_paid || '',
                     description: currentFormValues.description || '',
                     images: currentSneaker?.images || [],
-                } as SneakerFormData);
+                } as SneakerFormData;
                 
-                return { isValid: true, errorMsg: '' };
+                setSneakerToAdd(finalData);
+                return { isValid: true, errorMsg: '', data: finalData };
             } else {                
                 const firstError = getFieldError('model') || 
                                     getFieldError('brand') || 

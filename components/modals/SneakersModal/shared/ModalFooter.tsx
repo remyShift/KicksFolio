@@ -93,23 +93,23 @@ export const ModalFooter = () => {
                 }
                 break;
             case 'editForm':                
-                if (validateForm && sneakerToAdd && currentSneaker) {
+                if (validateForm && currentSneaker) {
                     validateForm()
                         .then((result) => {
-                            if (result.isValid) {
+                            if (result.isValid && result.data) {
                                 handleFormUpdate(currentSneaker.id, {
-                                    model: sneakerToAdd.model,
-                                    brand: sneakerToAdd.brand,
-                                    status: sneakerToAdd.status,
-                                    size: sneakerToAdd.size,
-                                    condition: sneakerToAdd.condition,
-                                    images: sneakerToAdd.images && sneakerToAdd.images.length > 0 ? [
+                                    model: result.data.model,
+                                    brand: result.data.brand,
+                                    status: result.data.status,
+                                    size: result.data.size,
+                                    condition: result.data.condition,
+                                    images: result.data.images && result.data.images.length > 0 ? [
                                         {
-                                            url: sneakerToAdd.images[0]?.url || '',
+                                            url: result.data.images[0]?.url || '',
                                         }
                                     ] : [],
-                                    price_paid: sneakerToAdd?.price_paid || '',
-                                    description: sneakerToAdd?.description || ''
+                                    price_paid: result.data?.price_paid || '',
+                                    description: result.data?.description || ''
                                 }, {
                                     setCurrentSneaker,
                                     setModalStep,
@@ -124,7 +124,6 @@ export const ModalFooter = () => {
                         });
                 } else {
                     if (!validateForm) setErrorMsg('validateForm is missing');
-                    if (!sneakerToAdd) setErrorMsg('sneakerToAdd is missing');
                     if (!currentSneaker) setErrorMsg('currentSneaker is missing');
                 }
                 break;
