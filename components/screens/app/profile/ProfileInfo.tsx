@@ -19,8 +19,7 @@ export default function ProfileInfo({ user, userSneakers }: ProfileInfoProps) {
 
             <View className="flex-row justify-between w-full px-4 gap-4 items-center">
                 <ProfileAvatar 
-                profilePictureUrl={user.profile_picture_url} 
-                username={user.username} 
+                    profilePictureUrl={user.profile_picture_url} 
                 />
                 
                 <ProfileStats 

@@ -19,14 +19,55 @@ const FormImageInput = <T extends FieldValues>({
 }: FormImageInputProps<T>) => {
     const { handleImageSelection } = useImagePicker();
 
+    const handleImagePress = (onChange: (value: string) => void) => {
+        Alert.alert(
+            'Choose an image',
+            'Select an image from your gallery or take a photo with your camera.',
+            [
+                {
+                    text: 'Pick from gallery',
+                    onPress: () => handleImageSelection('gallery').then(uri => {
+                        if (!uri) {
+                            Alert.alert('Sorry, we need permission to access your photos!');
+                            return;
+                        }
+                        onChange(uri);
+                    }),
+                },
+                {
+                    text: 'Take a photo',
+                    onPress: () => handleImageSelection('camera').then(uri => {
+                        if (!uri) {
+                            Alert.alert('Sorry, we need permission to access your camera!');
+                            return;
+                        }
+                        onChange(uri);
+                    }),
+                },
+                {
+                    text: 'Cancel',
+                    style: 'cancel'
+                }
+            ]
+        );
+    };
+
     return (
         <Controller
             name={name}
             control={control}
             render={({ field: { onChange, value } }) => (
                 <View className="items-center gap-4">
-                    {value ? (
-                        <View style={{ width: size, height: size, borderRadius: isRounded ? size / 2 : 8 }}>
+                    <Pressable 
+                        onPress={() => handleImagePress(onChange)}
+                        style={{ 
+                            width: size, 
+                            height: size, 
+                            borderRadius: isRounded ? size / 2 : 8 
+                        }}
+                        className="bg-primary flex-row items-center justify-center overflow-hidden"
+                    >
+                        {value ? (
                             <Image 
                                 source={{ uri: value }}
                                 style={{
@@ -38,51 +79,10 @@ const FormImageInput = <T extends FieldValues>({
                                 contentPosition="center"
                                 cachePolicy="memory-disk"
                             />
-                        </View>
-                    ) : (
-                        <Pressable 
-                            onPress={() => {
-                                Alert.alert(
-                                    'Choose an image',
-                                    'Select an image from your gallery or take a photo with your camera.',
-                                    [
-                                        {
-                                            text: 'Pick from gallery',
-                                            onPress: () => handleImageSelection('gallery').then(uri => {
-                                                if (!uri) {
-                                                    Alert.alert('Sorry, we need permission to access your photos!');
-                                                    return;
-                                                }
-                                                onChange(uri);
-                                            }),
-                                        },
-                                        {
-                                            text: 'Take a photo',
-                                            onPress: () => handleImageSelection('camera').then(uri => {
-                                                if (!uri) {
-                                                    Alert.alert('Sorry, we need permission to access your camera!');
-                                                    return;
-                                                }
-                                                onChange(uri);
-                                            }),
-                                        },
-                                        {
-                                            text: 'Cancel',
-                                            style: 'cancel'
-                                        }
-                                    ]
-                                );
-                            }} 
-                            style={{ 
-                                width: size, 
-                                height: size, 
-                                borderRadius: isRounded ? size / 2 : 8 
-                            }}
-                            className="bg-primary flex-row items-center justify-center"
-                        >
+                        ) : (
                             <MaterialIcons name="add-a-photo" size={32} color="white" />
-                        </Pressable>
-                    )}
+                        )}
+                    </Pressable>
                 </View>
             )}
         />

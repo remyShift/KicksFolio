@@ -3,12 +3,7 @@ import { Image } from 'expo-image';
 import Feather from '@expo/vector-icons/Feather';
 
 
-interface ProfileAvatarProps {
-    profilePictureUrl?: string;
-    username: string;
-}
-
-export default function ProfileAvatar({ profilePictureUrl, username }: ProfileAvatarProps) {
+export default function ProfileAvatar({ profilePictureUrl }: { profilePictureUrl: string | null }) {
     if (profilePictureUrl) {
         return (
         <View className='w-24 h-24 rounded-full'>

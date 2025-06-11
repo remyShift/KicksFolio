@@ -37,7 +37,7 @@ export default function EditProfileForm() {
             first_name: user?.first_name || '',
             last_name: user?.last_name || '',
             sneaker_size: user?.sneaker_size?.toString() || '',
-            profile_picture: user?.profile_picture?.url || '',
+            profile_picture: user?.profile_picture_url || '',
         },
         onSubmit: async (data) => {
             if (!user || !sessionToken) return
@@ -91,7 +91,7 @@ export default function EditProfileForm() {
                         isRounded={true}
                     />
 
-                    <View className="flex flex-col gap-4 w-full justify-center items-center">
+                    <View className="flex flex-col gap-4 w-full justify-center items-center px-12">
                         <ErrorMsg content={displayedError} display={displayedError !== ''} />
 
                         <FormTextInput
