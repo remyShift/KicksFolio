@@ -7,9 +7,19 @@ import { useEffect } from 'react';
 import { Link } from 'expo-router';
 import { FontAwesome6 } from '@expo/vector-icons';
 import { useSneakerAPI } from '../../hooks/useSneakerAPI';
+import { useForm } from 'react-hook-form';
+
+interface SkuFormValues {
+    sku: string;
+}
 
 export const SkuStep = () => {
     const { sessionToken, user } = useSession();
+    const { control, handleSubmit } = useForm<SkuFormValues>({
+        defaultValues: {
+            sku: ''
+        }
+    });
 
     const {
         setSneakerSKU, 
@@ -27,11 +37,13 @@ export const SkuStep = () => {
         setModalSessionToken(sessionToken);
     }, [sessionToken, setModalSessionToken]);
 
-    const handleSkuValueChange = (value: string) => {
-        setSneakerSKU(value);
-        if (errorMsg) {
-            setErrorMsg('');
-        }
+    const onSubmit = (data: SkuFormValues) => {
+        setSneakerSKU(data.sku);
+        handleSkuSearch(data.sku, {
+            setFetchedSneaker,
+            setModalStep,
+            setErrorMsg
+        });
     };
 
     return (
@@ -55,13 +67,10 @@ export const SkuStep = () => {
                     <ErrorMsg content={errorMsg} display={!!errorMsg}/>
 
                     <SkuInput
-                        onErrorChange={setErrorMsg}
-                        onValueChange={handleSkuValueChange}
-                        onSubmit={() => handleSkuSearch(sneakerSKU, {
-                            setFetchedSneaker,
-                            setModalStep,
-                            setErrorMsg
-                        })}
+                        name="sku"
+                        control={control}
+                        placeholder="CJ5482-100"
+                        onSubmitEditing={handleSubmit(onSubmit)}
                     />
                 </View>
 
