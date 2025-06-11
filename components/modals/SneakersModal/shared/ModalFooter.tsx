@@ -62,7 +62,7 @@ export const ModalFooter = () => {
                             }
                         })
                         .catch((error) => {
-                            setErrorMsg('Une erreur est survenue lors de la validation');
+                            setErrorMsg('An error occurred while validating the sneaker : ' + error);
                         });
                 }
                 break;
@@ -91,7 +91,7 @@ export const ModalFooter = () => {
                                 });
                             }
                         })
-                        .catch((error) => {
+                        .catch(() => {
                             setErrorMsg('Une erreur est survenue lors de la validation');
                         });
                 }
@@ -140,7 +140,7 @@ export const ModalFooter = () => {
                                 setIsVisible(false);
                                 setCurrentSneaker(null);
                             })
-                            .catch((error) => {
+                            .catch(() => {
                                 setErrorMsg('An error occurred while deleting the sneaker.');
                             });
                     },

@@ -6,7 +6,7 @@ import { useInputSubmit } from '@/hooks/useInputSubmit';
 interface FormTextInputProps<T extends FieldValues> {
     name: Path<T>;
     control: Control<T>;
-    label: string;
+    label?: string;
     placeholder?: string;
     onFocus?: () => void;
     onBlur?: (value: string) => Promise<void>;
@@ -43,7 +43,7 @@ const FormTextInput = forwardRef<TextInput, FormTextInputProps<any>>(
 
     return (
         <View className="flex flex-col gap-2 w-full">
-            <Text className="font-spacemono-bold text-lg">{label}</Text>
+            {label && <Text className="font-spacemono-bold text-lg">{label}</Text>}
             <Controller
                 name={name}
                 control={control}

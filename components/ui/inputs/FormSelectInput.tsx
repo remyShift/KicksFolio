@@ -1,7 +1,13 @@
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, Pressable, ScrollView } from 'react-native';
 import { Controller, Control, FieldValues, Path } from 'react-hook-form';
 import { useState } from 'react';
-import { Ionicons } from '@expo/vector-icons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import Animated, { 
+    useAnimatedStyle, 
+    withTiming, 
+    useSharedValue,
+    withSpring 
+} from 'react-native-reanimated';
 
 interface Option {
     label: string;
@@ -11,7 +17,7 @@ interface Option {
 interface FormSelectInputProps<T extends FieldValues> {
     name: Path<T>;
     control: Control<T>;
-    label: string;
+    label?: string;
     placeholder?: string;
     options: Option[];
     onFocus?: () => void;
@@ -29,61 +35,88 @@ export default function FormSelectInput<T extends FieldValues>({
 }: FormSelectInputProps<T>) {
     const [isOpen, setIsOpen] = useState(false);
     const [isFocused, setIsFocused] = useState(false);
+    const dropdownHeight = useSharedValue(0);
+
+    const handleOptionSelect = (onChange: (value: string) => void, value: string) => {
+        onChange(value);
+        dropdownHeight.value = withTiming(0, { duration: 300 });
+        setIsOpen(false);
+        setIsFocused(false);
+    };
+
+    const toggleDropdown = () => {
+        if (!isOpen) {
+            onFocus?.();
+            setIsOpen(true);
+            setIsFocused(true);
+            dropdownHeight.value = withSpring(200, {
+                damping: 15,
+                stiffness: 100
+            });
+        } else {
+            dropdownHeight.value = withTiming(0, { duration: 300 });
+            setIsOpen(false);
+            setIsFocused(false);
+        }
+    };
+
+    const animatedStyle = useAnimatedStyle(() => {
+        return {
+            maxHeight: dropdownHeight.value,
+            opacity: dropdownHeight.value === 0 ? 0 : 1,
+            overflow: 'hidden'
+        };
+    });
 
     return (
-        <View className="w-full">
-            <Text className="font-spacemono-bold text-lg">{label}</Text>
+        <View className="w-1/2">
+            {label && <Text className="font-spacemono-bold text-lg">{label}</Text>}
             <Controller
                 name={name}
                 control={control}
                 render={({ field: { onChange, value } }) => {
-                const selectedOption = options.find(option => option.value === value);
-                
-                return (
-                    <View className="relative">
-                        <TouchableOpacity
-                            onPress={() => {
-                            setIsOpen(!isOpen);
-                            setIsFocused(true);
-                            onFocus?.();
-                            }}
-                            className={`w-full px-4 py-3 rounded-lg border-2 bg-gray-800 flex-row justify-between items-center ${
-                            error 
-                                ? 'border-red-500' 
-                                : isFocused 
-                                ? 'border-orange-500' 
-                                : 'border-gray-600'
-                            }`}
-                        >
-                            <Text className={`${selectedOption ? 'text-white' : 'text-gray-400'}`}>
-                                {selectedOption ? selectedOption.label : (placeholder || label)}
-                            </Text>
-                            <Ionicons
-                                name={isOpen ? 'chevron-up' : 'chevron-down'}
-                                size={20}
-                                color="#9CA3AF"
-                            />
-                        </TouchableOpacity>
+                    const selectedOption = options.find(option => option.value === value);
+                    
+                    return (
+                        <View className="w-full">
+                            <Pressable
+                                onPress={toggleDropdown}
+                                className={`bg-white p-2 font-spacemono-bold flex-row justify-between items-center
+                                    ${isOpen ? 'border-2 border-primary rounded-t-md' : 'rounded-md border-2 border-gray-300'}
+                                    ${error ? 'border-2 border-red-500' : ''}
+                                    ${isFocused && !isOpen ? 'border-2 border-orange-500' : ''}`}
+                            >
+                                <Text className={`font-spacemono-bold-italic text-base ${selectedOption ? 'text-black' : 'text-gray-400'}`}>
+                                    {selectedOption ? selectedOption.label.toUpperCase() : (placeholder || label)}
+                                </Text>
+                                <MaterialIcons 
+                                    name={isOpen ? "keyboard-arrow-up" : "keyboard-arrow-down"} 
+                                    size={24} 
+                                    color="black" 
+                                />
+                            </Pressable>
 
-                        {isOpen && (
-                            <View className="absolute top-full left-0 right-0 z-10 mt-1 bg-gray-800 border border-gray-600 rounded-lg overflow-hidden">
-                                {options.map((option) => (
-                                    <TouchableOpacity
-                                    key={option.value}
-                                    onPress={() => {
-                                        onChange(option.value);
-                                        setIsOpen(false);
-                                        setIsFocused(false);
-                                    }}
-                                    className="px-4 py-3 border-b border-gray-700 last:border-b-0"
+                            <Animated.View 
+                                className={`bg-white rounded-b-md ${isOpen ? 'border-x-2 border-b-2 border-primary' : ''}`}
+                                style={animatedStyle}
+                            >
+                                <ScrollView 
+                                    nestedScrollEnabled={true}
+                                    className="max-h-64"
                                 >
-                                    <Text className="text-white">{option.label}</Text>
-                                </TouchableOpacity>
-                            ))}
-                            </View>
-                        )}
-                    </View>
-                );
+                                    {options.map((option) => (
+                                        <Pressable
+                                            key={option.value}
+                                            className="p-3 border-b border-gray-200"
+                                            onPress={() => handleOptionSelect(onChange, option.value)}
+                                        >
+                                            <Text className="font-spacemono-bold-italic">{option.label.toUpperCase()}</Text>
+                                        </Pressable>
+                                    ))}
+                                </ScrollView>
+                            </Animated.View>
+                        </View>
+                    );
                 }}
             />
         </View>

@@ -1,113 +1,121 @@
-import { View, TextInput, ScrollView } from 'react-native';
-import { useRef } from 'react';
-import SneakerNameInput from '@/components/ui/inputs/sneakerForm/SneakerNameInput';
-import SneakerBrandInput from '@/components/ui/inputs/sneakerForm/SneakerBrandInput';
-import SneakerStatusInput from '@/components/ui/inputs/sneakerForm/SneakerStatusInput';
-import SneakerSizeInput from '@/components/ui/inputs/sneakerForm/SneakerSizeInput';
-import SneakerPricePaidInput from '@/components/ui/inputs/sneakerForm/SneakerPricePaidInput';
-import SneakerConditionInput from '@/components/ui/inputs/sneakerForm/SneakerConditionInput';
-import SneakerDescriptionInput from '@/components/ui/inputs/sneakerForm/SneakerDescriptionInput';
-
-import { SneakerFormData } from '@/components/modals/SneakersModal/types';
+import { View } from 'react-native';
+import { Control } from 'react-hook-form';
+import FormTextInput from '@/components/ui/inputs/FormTextInput';
+import FormSelectInput from '@/components/ui/inputs/FormSelectInput';
+import { SneakerFormData } from '@/validation/schemas';
+import { sneakerStatusOptions, sneakerBrandOptions } from '@/validation/schemas';
+import { TextInput } from 'react-native';
 
 interface FormFieldsProps {
-    scrollViewRef: React.RefObject<ScrollView>;
-    onSneakerNameChange: (value: string) => void;
-    onSneakerBrandChange: (value: string) => void;
-    onSneakerStatusChange: (value: string) => void;
-    onSneakerSizeChange: (value: string) => void;
-    onSneakerPricePaidChange: (value: string) => void;
-    onSneakerConditionChange: (value: string) => void;
-    onSneakerDescriptionChange: (value: string) => void;
-    onErrorChange: (field: string, error: string) => void;
-    initialValues?: SneakerFormData | null;
-    isSneakerNameError?: boolean;
-    isSneakerBrandError?: boolean;
-    isSneakerStatusError?: boolean;
-    isSneakerSizeError?: boolean;
-    isSneakerConditionError?: boolean;
+    control: Control<SneakerFormData>;
+    handleFieldFocus: (fieldName: keyof SneakerFormData) => void;
+    validateFieldOnBlur: (fieldName: keyof SneakerFormData, value: string) => Promise<void>;
+    getFieldError: (fieldName: string) => string | undefined;
+    modelInputRef: React.RefObject<TextInput>;
+    brandInputRef: React.RefObject<TextInput>;
+    sizeInputRef: React.RefObject<TextInput>;
+    pricePaidInputRef: React.RefObject<TextInput>;
+    descriptionInputRef: React.RefObject<TextInput>;
 }
 
 export const FormFields = ({
-    scrollViewRef,
-    onSneakerNameChange,
-    onSneakerBrandChange,
-    onSneakerStatusChange,
-    onSneakerSizeChange,
-    onSneakerPricePaidChange,
-    onSneakerConditionChange,
-    onSneakerDescriptionChange,
-    onErrorChange,
-    initialValues,
-    isSneakerNameError = false,
-    isSneakerBrandError = false,
-    isSneakerStatusError = false,
-    isSneakerSizeError = false,
-    isSneakerConditionError = false,
+    control,
+    handleFieldFocus,
+    validateFieldOnBlur,
+    getFieldError,
+    modelInputRef,
+    brandInputRef,
+    sizeInputRef,
+    pricePaidInputRef,
+    descriptionInputRef,
 }: FormFieldsProps) => {
+    const getFieldErrorWrapper = (fieldName: string) => {
+        return getFieldError(fieldName);
+    };
+
     return (
-        <View className="flex-1 gap-6 mt-2">
-            <View className="flex gap-4 w-full">
-                <SneakerNameInput
-                    scrollViewRef={scrollViewRef}
-                    onErrorChange={(error) => onErrorChange('sneakerName', error)}
-                    onValueChange={onSneakerNameChange}
-                    initialValue={initialValues?.model}
-                    isError={isSneakerNameError}
+        <View className="flex-1 gap-4">
+            <FormTextInput
+                name="model"
+                control={control}
+                placeholder="Air Max 1 x Patta"
+                ref={modelInputRef}
+                nextInputRef={brandInputRef}
+                autoCapitalize="words"
+                onFocus={() => handleFieldFocus('model')}
+                onBlur={async (value) => { await validateFieldOnBlur('model', value); }}
+                error={getFieldErrorWrapper('model')}
+                getFieldError={getFieldErrorWrapper}
+            />
+
+            <View className="flex flex-row">
+                <FormSelectInput
+                    name="brand"
+                    control={control}
+                    placeholder="Select brand"
+                    options={sneakerBrandOptions}
+                    onFocus={() => handleFieldFocus('brand')}
+                    error={getFieldErrorWrapper('brand')}
                 />
 
-                <View className="flex-1 flex-row gap-2">
-                    <SneakerBrandInput
-                        scrollViewRef={scrollViewRef}
-                        onErrorChange={(error) => onErrorChange('sneakerBrand', error)}
-                        onValueChange={onSneakerBrandChange}
-                        initialValue={initialValues?.brand}
-                        isError={isSneakerBrandError}
-                    />
-
-                    <SneakerStatusInput
-                        scrollViewRef={scrollViewRef}
-                        onErrorChange={(error) => onErrorChange('sneakerStatus', error)}
-                        onValueChange={onSneakerStatusChange}
-                        initialValue={initialValues?.status}
-                        isError={isSneakerStatusError}
-                    />
-                </View>
-            </View>
-
-            <View className="flex-row items-center w-full border-t-2 border-gray-300">
-                <SneakerSizeInput
-                    scrollViewRef={scrollViewRef}
-                    onErrorChange={(error) => onErrorChange('sneakerSize', error)}
-                    onValueChange={onSneakerSizeChange}
-                    initialValue={initialValues?.size}
-                    isError={isSneakerSizeError}
-                />
-
-                <SneakerPricePaidInput
-                    scrollViewRef={scrollViewRef}
-                    onErrorChange={(error) => onErrorChange('sneakerPricePaid', error)}
-                    onValueChange={onSneakerPricePaidChange}
-                    initialValue={initialValues?.price_paid}
-                />
-
-                <SneakerConditionInput
-                    scrollViewRef={scrollViewRef}
-                    onErrorChange={(error) => onErrorChange('sneakerCondition', error)}
-                    onValueChange={onSneakerConditionChange}
-                    initialValue={initialValues?.condition}
-                    isError={isSneakerConditionError}
+                <FormSelectInput
+                    name="status"
+                    control={control}
+                    placeholder="Select status"
+                    options={sneakerStatusOptions}
+                    onFocus={() => handleFieldFocus('status')}
+                    error={getFieldErrorWrapper('status')}
                 />
             </View>
 
-            <View className="flex-1 max-h-[130px]">
-                <SneakerDescriptionInput
-                    scrollViewRef={scrollViewRef}
-                    onErrorChange={(error) => onErrorChange('sneakerDescription', error)}
-                    onValueChange={onSneakerDescriptionChange}
-                    initialValue={initialValues?.description}
-                />
-            </View>
+
+            <FormTextInput
+                name="size"
+                control={control}
+                placeholder="9.5"
+                ref={sizeInputRef}
+                nextInputRef={pricePaidInputRef}
+                keyboardType="numeric"
+                onFocus={() => handleFieldFocus('size')}
+                onBlur={async (value) => { await validateFieldOnBlur('size', value); }}
+                error={getFieldErrorWrapper('size')}
+                getFieldError={getFieldErrorWrapper}
+            />
+
+            <FormTextInput
+                name="condition"
+                control={control}
+                placeholder="9"
+                keyboardType="numeric"
+                onFocus={() => handleFieldFocus('condition')}
+                onBlur={async (value) => { await validateFieldOnBlur('condition', value); }}
+                error={getFieldErrorWrapper('condition')}
+                getFieldError={getFieldErrorWrapper}
+            />
+
+            <FormTextInput
+                name="pricePaid"
+                control={control}
+                placeholder="150"
+                ref={pricePaidInputRef}
+                nextInputRef={descriptionInputRef}
+                keyboardType="numeric"
+                onFocus={() => handleFieldFocus('pricePaid')}
+                onBlur={async (value) => { await validateFieldOnBlur('pricePaid', value); }}
+                error={getFieldErrorWrapper('pricePaid')}
+                getFieldError={getFieldErrorWrapper}
+            />
+
+            <FormTextInput
+                name="description"
+                control={control}
+                placeholder="Additional notes..."
+                ref={descriptionInputRef}
+                onFocus={() => handleFieldFocus('description')}
+                onBlur={async (value) => { await validateFieldOnBlur('description', value); }}
+                error={getFieldErrorWrapper('description')}
+                getFieldError={getFieldErrorWrapper}
+            />
         </View>
     );
 }; 

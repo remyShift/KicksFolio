@@ -4,9 +4,8 @@ import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import { useRef, useEffect } from 'react';
 import { useModalStore } from '@/store/useModalStore';
 import { useFormController } from '@/hooks/useFormController';
-import { sneakerSchema, SneakerFormData, sneakerStatusOptions, sneakerBrandOptions } from '@/validation/schemas';
-import FormTextInput from '@/components/ui/inputs/FormTextInput';
-import FormSelectInput from '@/components/ui/inputs/FormSelectInput';
+import { sneakerSchema, SneakerFormData } from '@/validation/schemas';
+import { FormFields } from '../../shared/FormFields';
 
 export const EditFormStep = () => {
     const scrollViewRef = useRef<ScrollView>(null);
@@ -75,27 +74,29 @@ export const EditFormStep = () => {
                 description: currentSneaker.description || '',
             } as any);
         }
-    }, [currentSneaker, reset]);
-
-    const handleValidateAndSubmit = async () => {
-        const result = await new Promise<{ isValid: boolean; errorMsg: string }>((resolve) => {
-            handleFormSubmit();
-            resolve({ isValid, errorMsg: '' });
-        });
-        return result;
-    };
+    }, [currentSneaker]);
 
     useEffect(() => {
-        setValidateForm(handleValidateAndSubmit);
-        setClearFormErrors(() => {
+        const handleValidateAndSubmit = async () => {
+            const result = await new Promise<{ isValid: boolean; errorMsg: string }>((resolve) => {
+                handleFormSubmit();
+                resolve({ isValid, errorMsg: '' });
+            });
+            return result;
+        };
+
+        const clearFormErrors = () => {
             reset();
-        });
+        };
+
+        setValidateForm(handleValidateAndSubmit);
+        setClearFormErrors(clearFormErrors);
         
         return () => {
             setValidateForm(null);
             setClearFormErrors(null);
         };
-    }, [isValid, handleFormSubmit, reset]);
+    }, []);
 
     useEffect(() => {
         return () => {
@@ -157,90 +158,16 @@ export const EditFormStep = () => {
 
                     {displayedError && <ErrorMsg content={displayedError} display={true} />}
 
-                    <FormTextInput
-                        name="model"
+                    <FormFields
                         control={control}
-                        label="*Sneaker Model"
-                        placeholder="e.g., Air Jordan 1"
-                        ref={modelInputRef}
-                        nextInputRef={brandInputRef}
-                        autoCapitalize="words"
-                        onFocus={() => handleFieldFocus('model')}
-                        onBlur={async (value) => { await validateFieldOnBlur('model', value); }}
-                        error={getFieldErrorWrapper('model')}
+                        handleFieldFocus={handleFieldFocus}
+                        validateFieldOnBlur={validateFieldOnBlur}
                         getFieldError={getFieldErrorWrapper}
-                    />
-
-                    <FormSelectInput
-                        name="brand"
-                        control={control}
-                        label="*Brand"
-                        placeholder="Select brand"
-                        options={sneakerBrandOptions}
-                        onFocus={() => handleFieldFocus('brand')}
-                        error={getFieldErrorWrapper('brand')}
-                    />
-
-                    <FormSelectInput
-                        name="status"
-                        control={control}
-                        label="*Status"
-                        placeholder="Select status"
-                        options={sneakerStatusOptions}
-                        onFocus={() => handleFieldFocus('status')}
-                        error={getFieldErrorWrapper('status')}
-                    />
-
-                    <FormTextInput
-                        name="size"
-                        control={control}
-                        label="*Size"
-                        placeholder="9"
-                        ref={sizeInputRef}
-                        nextInputRef={pricePaidInputRef}
-                        keyboardType="numeric"
-                        onFocus={() => handleFieldFocus('size')}
-                        onBlur={async (value) => { await validateFieldOnBlur('size', value); }}
-                        error={getFieldErrorWrapper('size')}
-                        getFieldError={getFieldErrorWrapper}
-                    />
-
-                    <FormTextInput
-                        name="condition"
-                        control={control}
-                        label="*Condition"
-                        placeholder="9/10"
-                        keyboardType="numeric"
-                        onFocus={() => handleFieldFocus('condition')}
-                        onBlur={async (value) => { await validateFieldOnBlur('condition', value); }}
-                        error={getFieldErrorWrapper('condition')}
-                        getFieldError={getFieldErrorWrapper}
-                    />
-
-                    <FormTextInput
-                        name="pricePaid"
-                        control={control}
-                        label="Price Paid"
-                        placeholder="150"
-                        ref={pricePaidInputRef}
-                        nextInputRef={descriptionInputRef}
-                        keyboardType="numeric"
-                        onFocus={() => handleFieldFocus('pricePaid')}
-                        onBlur={async (value) => { await validateFieldOnBlur('pricePaid', value); }}
-                        error={getFieldErrorWrapper('pricePaid')}
-                        getFieldError={getFieldErrorWrapper}
-                    />
-
-                    <FormTextInput
-                        name="description"
-                        control={control}
-                        label="Description"
-                        placeholder="Additional notes..."
-                        ref={descriptionInputRef}
-                        onFocus={() => handleFieldFocus('description')}
-                        onBlur={async (value) => { await validateFieldOnBlur('description', value); }}
-                        error={getFieldErrorWrapper('description')}
-                        getFieldError={getFieldErrorWrapper}
+                        modelInputRef={modelInputRef}
+                        brandInputRef={brandInputRef}
+                        sizeInputRef={sizeInputRef}
+                        pricePaidInputRef={pricePaidInputRef}
+                        descriptionInputRef={descriptionInputRef}
                     />
                 </View>
             </ScrollView>
