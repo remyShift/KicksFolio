@@ -20,7 +20,6 @@ export default function SplashScreen({ sessionToken, setIsSplashScreenVisible }:
 
     const initializeApp = async () => {
         if (sessionToken) {
-            console.log('[SplashScreen] sessionToken exists');
             await loadInitialData()
                 .then(() => {
                     console.log('[SplashScreen] loadInitialData resolved');

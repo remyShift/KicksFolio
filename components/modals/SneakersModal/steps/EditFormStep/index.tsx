@@ -14,7 +14,7 @@ export const EditFormStep = () => {
     const pricePaidInputRef = useRef<TextInput>(null);
     const descriptionInputRef = useRef<TextInput>(null);
     
-    const { currentSneaker, sneakerToAdd, setSneakerToAdd, setValidateForm, setClearFormErrors } = useModalStore();
+    const { currentSneaker, sneakerToAdd, setSneakerToAdd, setValidateForm, setClearFormErrors, errorMsg, setErrorMsg } = useModalStore();
 
     const {
         control,
@@ -24,6 +24,8 @@ export const EditFormStep = () => {
         getFieldError,
         hasFieldError,
         reset,
+        trigger,
+        watch,
         formState: { isValid }
     } = useFormController<SneakerFormData>({
         schema: sneakerSchema,
@@ -35,6 +37,7 @@ export const EditFormStep = () => {
             condition: currentSneaker?.condition ? String(currentSneaker.condition) : '',
             price_paid: currentSneaker?.price_paid ? String(currentSneaker.price_paid) : '',
             description: currentSneaker?.description || '',
+            images: [],
         },
         onSubmit: async (data) => {
             setSneakerToAdd({
@@ -60,6 +63,7 @@ export const EditFormStep = () => {
                 condition: currentSneaker.condition.toString() || '',
                 price_paid: currentSneaker.price_paid?.toString() || '',
                 description: currentSneaker.description || '',
+                images: currentSneaker.images || [],
             });
             
             setSneakerToAdd({
@@ -76,16 +80,29 @@ export const EditFormStep = () => {
     }, [currentSneaker]);
 
     useEffect(() => {
-        const handleValidateAndSubmit = async () => {
-            const result = await new Promise<{ isValid: boolean; errorMsg: string }>((resolve) => {
-                handleFormSubmit();
-                resolve({ isValid, errorMsg: '' });
-            });
-            return result;
+                const handleValidateAndSubmit = async () => {
+            setErrorMsg('');
+            const isFormValid = await trigger();
+            
+            if (isFormValid) {
+                return { isValid: true, errorMsg: '' };
+            } else {                
+                const firstError = getFieldError('model') || 
+                                 getFieldError('brand') || 
+                                 getFieldError('status') || 
+                                 getFieldError('size') || 
+                                 getFieldError('condition') || 
+                                 getFieldError('price_paid') || 
+                                 getFieldError('images') ||
+                                 'Please correct the errors in the form';
+                
+                return { isValid: false, errorMsg: firstError };
+            }
         };
 
         const clearFormErrors = () => {
             reset();
+            setErrorMsg('');
         };
 
         setValidateForm(handleValidateAndSubmit);
@@ -96,6 +113,22 @@ export const EditFormStep = () => {
             setClearFormErrors(null);
         };
     }, []);
+
+    const formValues = watch();
+    useEffect(() => {
+        if (formValues && Object.keys(formValues).length > 0) {
+            setSneakerToAdd({
+                model: formValues.model || '',
+                brand: formValues.brand || '',
+                status: formValues.status || '',
+                size: formValues.size || '',
+                condition: formValues.condition || '',
+                price_paid: formValues.price_paid || '',
+                description: formValues.description || '',
+                images: currentSneaker?.images || [],
+            } as any);
+        }
+    }, [formValues.model, formValues.brand, formValues.status, formValues.size, formValues.condition, formValues.price_paid, formValues.description]);
 
     useEffect(() => {
         return () => {
@@ -122,6 +155,8 @@ export const EditFormStep = () => {
         getFieldError('size') || 
         getFieldError('condition') || 
         getFieldError('price_paid') || 
+        getFieldError('images') ||
+        errorMsg || 
         '';
 
     const getFieldErrorWrapper = (fieldName: string) => {

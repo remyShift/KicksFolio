@@ -49,7 +49,6 @@ export const ModalFooter = () => {
                 setModalStep('sku');
                 break;
             case 'sku':
-                console.log('sneakerSKU', sneakerSKU);
                 if (!sneakerSKU.trim()) {
                     setErrorMsg('Please enter a SKU.');
                     return;
@@ -62,11 +61,9 @@ export const ModalFooter = () => {
                 });
                 break;
             case 'addForm':
-                console.log('sneakerToAdd', sneakerToAdd);
                 if (validateForm && sneakerToAdd) {
                     validateForm()
                         .then((result) => {
-                            console.log('result', result);
                             if (result.isValid) {
                                 handleFormSubmit({
                                     model: sneakerToAdd.model,
@@ -95,7 +92,7 @@ export const ModalFooter = () => {
                         });
                 }
                 break;
-            case 'editForm':
+            case 'editForm':                
                 if (validateForm && sneakerToAdd && currentSneaker) {
                     validateForm()
                         .then((result) => {
@@ -118,11 +115,17 @@ export const ModalFooter = () => {
                                     setModalStep,
                                     setErrorMsg
                                 });
+                            } else {
+                                setErrorMsg(result.errorMsg);
                             }
                         })
-                        .catch(() => {
-                            setErrorMsg('Une erreur est survenue lors de la validation');
+                        .catch((error) => {
+                            setErrorMsg('An error occurred while validating the sneaker : ' + error);
                         });
+                } else {
+                    if (!validateForm) setErrorMsg('validateForm is missing');
+                    if (!sneakerToAdd) setErrorMsg('sneakerToAdd is missing');
+                    if (!currentSneaker) setErrorMsg('currentSneaker is missing');
                 }
                 break;
             case 'view':

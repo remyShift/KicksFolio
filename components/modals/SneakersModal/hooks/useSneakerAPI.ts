@@ -98,8 +98,6 @@ export const useSneakerAPI = (sessionToken: string, userId: string) => {
 
 		return validateSneakerData(formData)
 			.then((validationResult) => {
-				console.log('validationResult', validationResult);
-
 				if (!validationResult.isValid) {
 					const firstError = Object.values(
 						validationResult.errors

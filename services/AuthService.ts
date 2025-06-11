@@ -13,12 +13,13 @@ export class AuthService extends BaseApiService {
 			throw new Error('Email and password are required');
 		}
 
-		try {
-			const res = await this.login(email, password);
-			return res.token;
-		} catch (error) {
-			throw new Error('Email or password incorrect');
-		}
+		return this.login(email, password)
+			.then((res) => {
+				return res.token;
+			})
+			.catch(() => {
+				throw new Error('Email or password incorrect');
+			});
 	}
 
 	async login(email: string, password: string): Promise<LoginResponse> {
@@ -68,10 +69,6 @@ export class AuthService extends BaseApiService {
 			headers: this.getAuthHeaders(),
 			body: formData,
 		});
-
-		console.log('--------------------------------');
-		console.log('response after signup', response);
-		console.log('--------------------------------');
 
 		return this.handleResponse(response);
 	}
@@ -145,12 +142,15 @@ export class AuthService extends BaseApiService {
 			throw new Error('Passwords do not match');
 		}
 
-		try {
-			await this.resetPassword(token, newPassword);
-			return true;
-		} catch (error) {
-			throw new Error('An error occurred while resetting your password');
-		}
+		return this.resetPassword(token, newPassword)
+			.then(() => {
+				return true;
+			})
+			.catch(() => {
+				throw new Error(
+					'An error occurred while resetting your password'
+				);
+			});
 	}
 
 	private async resetPassword(
@@ -191,12 +191,15 @@ export class AuthService extends BaseApiService {
 			throw new Error('Email is required');
 		}
 
-		try {
-			await this.forgotPassword(email);
-			return true;
-		} catch (error) {
-			throw new Error('An error occurred while processing your request');
-		}
+		return this.forgotPassword(email)
+			.then(() => {
+				return true;
+			})
+			.catch(() => {
+				throw new Error(
+					'An error occurred while processing your request'
+				);
+			});
 	}
 
 	private async forgotPassword(email: string): Promise<void> {

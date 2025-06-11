@@ -79,8 +79,7 @@ export function useFormController<T extends FieldValues>({
 
 		setIsSubmitting(true);
 
-		try {
-			console.log('asyncValidation', asyncValidation);
+		const processAsyncValidation = async () => {
 			if (asyncValidation) {
 				const asyncValidationPromises = Object.entries(
 					asyncValidation
@@ -92,23 +91,32 @@ export function useFormController<T extends FieldValues>({
 					return { fieldName, isValid };
 				});
 
-				const results = await Promise.all(asyncValidationPromises);
-				const hasAsyncErrors = results.some(
-					(result) => !result.isValid
-				);
+				return Promise.all(asyncValidationPromises).then((results) => {
+					const hasAsyncErrors = results.some(
+						(result) => !result.isValid
+					);
 
-				if (hasAsyncErrors) {
-					setIsSubmitting(false);
-					return;
-				}
+					if (hasAsyncErrors) {
+						setIsSubmitting(false);
+						return Promise.reject('Async validation failed');
+					}
+					return Promise.resolve();
+				});
 			}
+			return Promise.resolve();
+		};
 
-			await onSubmit(data);
-		} catch (error) {
-			console.error('Form submission error:', error);
-		} finally {
-			setIsSubmitting(false);
-		}
+		processAsyncValidation()
+			.then(() => {
+				return onSubmit(data);
+			})
+			.then(() => {
+				setIsSubmitting(false);
+			})
+			.catch((error) => {
+				console.error('Form submission error:', error);
+				setIsSubmitting(false);
+			});
 	});
 
 	const getFieldError = (fieldName: keyof T): string | undefined => {

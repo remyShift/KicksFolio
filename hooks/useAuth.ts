@@ -14,64 +14,71 @@ export const useAuth = () => {
 	const { validateSignUpStep1 } = useSignUpValidation();
 
 	const login = async (email: string, password: string) => {
-		try {
-			const token = await authService.handleLogin(email, password);
-			if (token) {
-				setSessionToken(token);
-				setTimeout(() => {
-					router.replace('/(app)/(tabs)');
-				}, 500);
-			}
-		} catch (error) {
-			setErrorMsg(
-				error instanceof Error
-					? error.message
-					: 'An error occurred during login'
-			);
-		}
+		return authService
+			.handleLogin(email, password)
+			.then((token) => {
+				if (token) {
+					setSessionToken(token);
+					setTimeout(() => {
+						router.replace('/(app)/(tabs)');
+					}, 500);
+				}
+			})
+			.catch((error) => {
+				setErrorMsg(
+					error instanceof Error
+						? error.message
+						: 'An error occurred during login'
+				);
+			});
 	};
 
 	const signUp = async (userData: UserData) => {
-		try {
-			const { user } = await authService.signUp(userData);
-			if (user) {
-				const token = await authService.handleLogin(
-					userData.email,
-					userData.password
-				);
-				if (token) {
-					setSessionToken(token);
-					setUser(user);
-					setTimeout(() => {
-						router.replace('/collection');
-					}, 250);
-					return true;
+		return authService
+			.signUp(userData)
+			.then(({ user }) => {
+				if (user) {
+					return authService
+						.handleLogin(userData.email, userData.password)
+						.then((token) => {
+							if (token) {
+								setSessionToken(token);
+								setUser(user);
+								setTimeout(() => {
+									router.replace('/collection');
+								}, 250);
+								return true;
+							}
+							return false;
+						});
 				}
-			}
-			return false;
-		} catch (error) {
-			setErrorMsg(
-				error instanceof Error
-					? error.message
-					: 'An error occurred during sign up'
-			);
-			return false;
-		}
+				return false;
+			})
+			.catch((error) => {
+				setErrorMsg(
+					error instanceof Error
+						? error.message
+						: 'An error occurred during sign up'
+				);
+				return false;
+			});
 	};
 
 	const forgotPassword = async (email: string) => {
-		try {
-			const success = await authService.handleForgotPassword(email);
-			if (success) {
-				router.replace('/login');
-			}
-		} catch (error) {
-			setErrorMsg(
-				error instanceof Error
-					? error.message
-					: 'An error occurred during password reset request'
-			);
-		}
+		return authService
+			.handleForgotPassword(email)
+			.then((success) => {
+				if (success) {
+					router.replace('/login');
+				}
+			})
+			.catch((error) => {
+				setErrorMsg(
+					error instanceof Error
+						? error.message
+						: 'An error occurred during password reset request'
+				);
+			});
 	};
 
 	const resetPassword = async (
@@ -79,36 +86,36 @@ export const useAuth = () => {
 		newPassword: string,
 		confirmNewPassword: string
 	) => {
-		try {
-			const success = await authService.handleResetPassword(
-				token,
-				newPassword,
-				confirmNewPassword
-			);
-			if (success) {
-				router.replace('/login');
-			}
-		} catch (error) {
-			setErrorMsg(
-				error instanceof Error
-					? error.message
-					: 'An error occurred during password reset'
-			);
-		}
+		return authService
+			.handleResetPassword(token, newPassword, confirmNewPassword)
+			.then((success) => {
+				if (success) {
+					router.replace('/login');
+				}
+			})
+			.catch((error) => {
+				setErrorMsg(
+					error instanceof Error
+						? error.message
+						: 'An error occurred during password reset'
+				);
+			});
 	};
 
 	const logout = async (token: string) => {
-		try {
-			const ok = await authService.logout(token);
-			if (ok) {
-				setSessionToken(null);
-				router.replace('/login');
-			}
-			return ok;
-		} catch (error) {
-			setErrorMsg('Error during logout.');
-			return false;
-		}
+		return authService
+			.logout(token)
+			.then((ok) => {
+				if (ok) {
+					setSessionToken(null);
+					router.replace('/login');
+				}
+				return ok;
+			})
+			.catch((error) => {
+				setErrorMsg('Error during logout.');
+				return false;
+			});
 	};
 
 	const clearError = () => {
@@ -116,12 +123,15 @@ export const useAuth = () => {
 	};
 
 	const verifyToken = async (token: string) => {
-		try {
-			return await authService.verifyToken(token);
-		} catch (error) {
-			setErrorMsg('Error during token verification.');
-			return false;
-		}
+		return authService
+			.verifyToken(token)
+			.then((result) => {
+				return result;
+			})
+			.catch((error) => {
+				setErrorMsg('Error during token verification.');
+				return false;
+			});
 	};
 
 	const updateUser = async (
@@ -129,40 +139,43 @@ export const useAuth = () => {
 		profileData: Partial<UserData>,
 		token: string
 	) => {
-		try {
-			const data = await authService.updateUser(
-				userId,
-				profileData,
-				token
-			);
-			setUser(data.user);
-			router.replace('/(app)/(tabs)/user');
-			return data;
-		} catch (error) {
-			setErrorMsg('Error updating profile.');
-			return null;
-		}
+		return authService
+			.updateUser(userId, profileData, token)
+			.then((data) => {
+				setUser(data.user);
+				router.replace('/(app)/(tabs)/user');
+				return data;
+			})
+			.catch((error) => {
+				setErrorMsg('Error updating profile.');
+				return null;
+			});
 	};
 
 	const deleteAccount = async (userId: string, token: string) => {
-		try {
-			await authService.deleteAccount(userId, token);
-			setSessionToken(null);
-			router.replace('/login');
-			return true;
-		} catch (error) {
-			setErrorMsg('Error deleting account.');
-			return false;
-		}
+		return authService
+			.deleteAccount(userId, token)
+			.then(() => {
+				setSessionToken(null);
+				router.replace('/login');
+				return true;
+			})
+			.catch((error) => {
+				setErrorMsg('Error deleting account.');
+				return false;
+			});
 	};
 
 	const getUser = async (token: string) => {
-		try {
-			return await authService.getUser(token);
-		} catch (error) {
-			setErrorMsg('Error getting user profile.');
-			return null;
-		}
+		return authService
+			.getUser(token)
+			.then((user) => {
+				return user;
+			})
+			.catch((error) => {
+				setErrorMsg('Error getting user profile.');
+				return null;
+			});
 	};
 
 	const getUserCollection = async (userData: User, token: string) => {

@@ -35,10 +35,6 @@ export default function CreateCollection() {
             collectionName: '',
         },
         onSubmit: async (data) => {
-            console.log('onSubmit', data.collectionName);
-            console.log('--------------------------------');
-            console.log('data', data);
-            console.log('--------------------------------');
             createCollection(data.collectionName)
         },
     });
