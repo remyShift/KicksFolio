@@ -9,7 +9,7 @@ export default function BrandTitle({ content, brandLogo }: { content: string, br
             </Text>
             <View className="flex flex-row justify-between items-center">
                 <Text className="font-syne-extrabold text-lg">
-                    {content}
+                    {content.toUpperCase()}
                 </Text>
                 <Image source={brandLogo}
                     style={{

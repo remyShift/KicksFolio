@@ -33,7 +33,7 @@ export const EditFormStep = () => {
             status: currentSneaker?.status || '',
             size: currentSneaker?.size ? String(currentSneaker.size) : '',
             condition: currentSneaker?.condition ? String(currentSneaker.condition) : '',
-            pricePaid: currentSneaker?.price_paid ? String(currentSneaker.price_paid) : '',
+            price_paid: currentSneaker?.price_paid ? String(currentSneaker.price_paid) : '',
             description: currentSneaker?.description || '',
         },
         onSubmit: async (data) => {
@@ -43,7 +43,7 @@ export const EditFormStep = () => {
                 status: data.status,
                 size: data.size,
                 condition: data.condition,
-                price_paid: data.pricePaid || '',
+                price_paid: data.price_paid || '',
                 description: data.description || '',
                 images: currentSneaker?.images || [],
             } as any);
@@ -58,7 +58,7 @@ export const EditFormStep = () => {
                 status: currentSneaker.status || '',
                 size: currentSneaker.size?.toString() || '',
                 condition: currentSneaker.condition.toString() || '',
-                pricePaid: currentSneaker.price_paid?.toString() || '',
+                price_paid: currentSneaker.price_paid?.toString() || '',
                 description: currentSneaker.description || '',
             });
             
@@ -121,7 +121,7 @@ export const EditFormStep = () => {
         getFieldError('status') || 
         getFieldError('size') || 
         getFieldError('condition') || 
-        getFieldError('pricePaid') || 
+        getFieldError('price_paid') || 
         '';
 
     const getFieldErrorWrapper = (fieldName: string) => {

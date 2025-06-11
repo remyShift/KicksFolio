@@ -20,7 +20,8 @@ export const ModalFooter = () => {
         setCurrentSneaker,
         sneakerToAdd,
         validateForm,
-        currentSneaker
+        currentSneaker,
+        resetModalData
     } = useModalStore();
 
     const { sessionToken, user, userSneakers } = useSession();
@@ -141,7 +142,7 @@ export const ModalFooter = () => {
                 setModalStep('index');
                 break;
             case 'addForm':
-                setErrorMsg('');
+                resetModalData();
                 setModalStep('index');
                 break;
             case 'editForm':

@@ -90,12 +90,12 @@ export const FormStep = () => {
                 return { isValid: true, errorMsg: '' };
             } else {
                 const firstError = getFieldError('model') || 
-                                 getFieldError('brand') || 
-                                 getFieldError('status') || 
-                                 getFieldError('size') || 
-                                 getFieldError('condition') || 
-                                 getFieldError('price_paid') || 
-                                 'Please correct the errors in the form';
+                                    getFieldError('brand') || 
+                                    getFieldError('status') || 
+                                    getFieldError('size') || 
+                                    getFieldError('condition') || 
+                                    getFieldError('price_paid') || 
+                                    'Please correct the errors in the form';
                 
                 return { isValid: false, errorMsg: firstError };
             }
@@ -136,7 +136,6 @@ export const FormStep = () => {
             setSneakerToAdd(null);
         };
     }, []);
-
     const hasMultipleErrors = [
         hasFieldError('model'),
         hasFieldError('brand'),

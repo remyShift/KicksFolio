@@ -40,6 +40,7 @@ interface ModalStore {
 		fn: (() => Promise<{ isValid: boolean; errorMsg: string }>) | null
 	) => void;
 	setClearFormErrors: (fn: (() => void) | null) => void;
+	resetModalData: () => void;
 }
 
 export const useModalStore = create<ModalStore>((set) => ({
@@ -64,4 +65,12 @@ export const useModalStore = create<ModalStore>((set) => ({
 	setModalSessionToken: (token) => set({ modalSessionToken: token }),
 	setValidateForm: (fn) => set({ validateForm: fn }),
 	setClearFormErrors: (fn) => set({ clearFormErrors: fn }),
+	resetModalData: () =>
+		set({
+			sneakerToAdd: null,
+			fetchedSneaker: null,
+			currentSneaker: null,
+			errorMsg: '',
+			sneakerSKU: '',
+		}),
 }));
