@@ -1,10 +1,13 @@
-import { View } from 'react-native';
+import { View, Text } from 'react-native';
 import { Control } from 'react-hook-form';
 import FormTextInput from '@/components/ui/inputs/FormTextInput';
 import FormSelectInput from '@/components/ui/inputs/FormSelectInput';
 import { SneakerFormData } from '@/validation/schemas';
 import { sneakerStatusOptions, sneakerBrandOptions } from '@/validation/schemas';
 import { TextInput } from 'react-native';
+import ErrorMsg from '@/components/ui/text/ErrorMsg';
+import { ImageUploader } from './ImageUploader';
+import { useModalStore } from '@/store/useModalStore';
 
 interface FormFieldsProps {
     control: Control<SneakerFormData>;
@@ -16,6 +19,7 @@ interface FormFieldsProps {
     sizeInputRef: React.RefObject<TextInput>;
     pricePaidInputRef: React.RefObject<TextInput>;
     descriptionInputRef: React.RefObject<TextInput>;
+    displayedError: string;
 }
 
 export const FormFields = ({
@@ -26,15 +30,35 @@ export const FormFields = ({
     modelInputRef,
     brandInputRef,
     sizeInputRef,
+    displayedError,
     pricePaidInputRef,
     descriptionInputRef,
 }: FormFieldsProps) => {
     const getFieldErrorWrapper = (fieldName: string) => {
         return getFieldError(fieldName);
     };
+    
+    const { sneakerToAdd, setSneakerToAdd, currentSneaker } = useModalStore();
+
+    const imageDisplayed = sneakerToAdd?.images?.[0]?.url || currentSneaker?.images?.[0]?.url;
 
     return (
-        <View className="flex-1 gap-4">
+        <View className="flex-1 gap-6">
+            <ImageUploader
+                        image={imageDisplayed || ''}
+                        setImage={(uri: string) => {
+                            setSneakerToAdd({
+                                ...sneakerToAdd,
+                                images: [{ url: uri }, ...(sneakerToAdd?.images?.slice(1) || [])],
+                            } as any);
+                        }}
+                        isError={false}
+                        isFocused={false}
+                        setIsError={() => {}}
+                    />
+
+            {displayedError && <ErrorMsg content={displayedError} display={true} />}
+
             <FormTextInput
                 name="model"
                 control={control}
@@ -68,43 +92,53 @@ export const FormFields = ({
                 />
             </View>
 
+            <View className="flex-row items-center w-full border-t-2 border-gray-300">
+                <View className="flex-1 flex-col items-center px-4 gap-1 border-r-2 border-gray-300">
+                    <Text className="text-base font-spacemono mt-2">Size (US)</Text>
+                    <FormTextInput
+                        name="size"
+                        control={control}
+                        placeholder="9.5"
+                        ref={sizeInputRef}
+                        nextInputRef={pricePaidInputRef}
+                        keyboardType="numeric"
+                        onFocus={() => handleFieldFocus('size')}
+                        onBlur={async (value) => { await validateFieldOnBlur('size', value); }}
+                        error={getFieldErrorWrapper('size')}
+                        getFieldError={getFieldErrorWrapper}
+                    />
+                </View>
 
-            <FormTextInput
-                name="size"
-                control={control}
-                placeholder="9.5"
-                ref={sizeInputRef}
-                nextInputRef={pricePaidInputRef}
-                keyboardType="numeric"
-                onFocus={() => handleFieldFocus('size')}
-                onBlur={async (value) => { await validateFieldOnBlur('size', value); }}
-                error={getFieldErrorWrapper('size')}
-                getFieldError={getFieldErrorWrapper}
-            />
+                <View className="flex-1 flex-col items-center px-4 gap-1 border-r-2 border-gray-300">
+                    <Text className="text-base font-spacemono mt-2">Condition</Text>
+                    <FormTextInput
+                        name="condition"
+                        control={control}
+                        placeholder="9"
+                        keyboardType="numeric"
+                        onFocus={() => handleFieldFocus('condition')}
+                        onBlur={async (value) => { await validateFieldOnBlur('condition', value); }}
+                        error={getFieldErrorWrapper('condition')}
+                        getFieldError={getFieldErrorWrapper}
+                    />
+                </View>
 
-            <FormTextInput
-                name="condition"
-                control={control}
-                placeholder="9"
-                keyboardType="numeric"
-                onFocus={() => handleFieldFocus('condition')}
-                onBlur={async (value) => { await validateFieldOnBlur('condition', value); }}
-                error={getFieldErrorWrapper('condition')}
-                getFieldError={getFieldErrorWrapper}
-            />
-
-            <FormTextInput
-                name="pricePaid"
-                control={control}
-                placeholder="150"
-                ref={pricePaidInputRef}
-                nextInputRef={descriptionInputRef}
-                keyboardType="numeric"
-                onFocus={() => handleFieldFocus('pricePaid')}
-                onBlur={async (value) => { await validateFieldOnBlur('pricePaid', value); }}
-                error={getFieldErrorWrapper('pricePaid')}
-                getFieldError={getFieldErrorWrapper}
-            />
+                <View className="flex-1 flex-col items-center px-4 gap-1">
+                    <Text className="text-base font-spacemono mt-2">Price Paid</Text>
+                    <FormTextInput
+                        name="pricePaid"
+                        control={control}
+                        placeholder="150€"
+                        ref={pricePaidInputRef}
+                        nextInputRef={descriptionInputRef}
+                        keyboardType="numeric"
+                        onFocus={() => handleFieldFocus('pricePaid')}
+                        onBlur={async (value) => { await validateFieldOnBlur('pricePaid', value); }}
+                        error={getFieldErrorWrapper('pricePaid')}
+                        getFieldError={getFieldErrorWrapper}
+                    />
+                </View>
+            </View>
 
             <FormTextInput
                 name="description"
@@ -115,6 +149,9 @@ export const FormFields = ({
                 onBlur={async (value) => { await validateFieldOnBlur('description', value); }}
                 error={getFieldErrorWrapper('description')}
                 getFieldError={getFieldErrorWrapper}
+                multiline={true}
+                scrollEnabled={true}
+                textAlignVertical="top"
             />
         </View>
     );

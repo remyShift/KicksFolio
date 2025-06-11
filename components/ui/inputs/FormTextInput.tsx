@@ -19,6 +19,9 @@ interface FormTextInputProps<T extends FieldValues> {
     autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
     autoComplete?: 'email' | 'username' | 'name' | 'off';
     maxLength?: number;
+    multiline?: boolean;
+    scrollEnabled?: boolean;
+    textAlignVertical?: 'top' | 'center' | 'bottom';
 }
 
 const FormTextInput = forwardRef<TextInput, FormTextInputProps<any>>(
@@ -38,8 +41,14 @@ const FormTextInput = forwardRef<TextInput, FormTextInputProps<any>>(
         autoCapitalize = 'none',
         autoComplete = 'off',
         maxLength,
+        multiline = false,
+        scrollEnabled = false,
+        textAlignVertical = 'center',
     }, ref) => {
+
     const [isFocused, setIsFocused] = useState(false);
+
+    const textInputHeight = multiline ? 150 : 40;
 
     return (
         <View className="flex flex-col gap-2 w-full">
@@ -88,6 +97,10 @@ const FormTextInput = forwardRef<TextInput, FormTextInputProps<any>>(
                             autoComplete={autoComplete}
                             maxLength={maxLength}
                             returnKeyType={onSubmitEditing ? 'done' : 'next'}
+                            multiline={multiline}
+                            scrollEnabled={scrollEnabled}
+                            textAlignVertical={textAlignVertical}
+                            style={{ height: textInputHeight }}
                             className={`bg-white rounded-md p-3 w-full font-spacemono-bold ${
                                 error 
                                 ? 'border-2 border-red-500' 

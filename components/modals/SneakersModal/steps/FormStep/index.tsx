@@ -1,6 +1,4 @@
 import { View, KeyboardAvoidingView, ScrollView, Platform, TextInput } from 'react-native';
-import { ImageUploader } from './components/ImageUploader';
-import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import { useRef, useEffect } from 'react';
 import { useModalStore } from '@/store/useModalStore';
 import { useFormController } from '@/hooks/useFormController';
@@ -146,23 +144,9 @@ export const FormStep = () => {
                 contentContainerStyle={{ minHeight: '100%' }}
             >
                 <View className="flex-1 h-full p-2 gap-4">
-                    <ImageUploader
-                        image={sneakerToAdd?.images?.[0]?.url || ''}
-                        setImage={(uri) => {
-                            setSneakerToAdd({
-                                ...sneakerToAdd,
-                                images: [{ url: uri }, ...(sneakerToAdd?.images?.slice(1) || [])],
-                            } as any);
-                        }}
-                        isError={false}
-                        isFocused={false}
-                        setIsError={() => {}}
-                    />
-
-                    {displayedError && <ErrorMsg content={displayedError} display={true} />}
-
                     <FormFields
                         control={control}
+                        displayedError={displayedError}
                         handleFieldFocus={handleFieldFocus}
                         validateFieldOnBlur={validateFieldOnBlur}
                         getFieldError={getFieldErrorWrapper}
