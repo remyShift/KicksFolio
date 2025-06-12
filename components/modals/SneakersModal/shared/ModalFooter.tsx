@@ -31,16 +31,23 @@ export const ModalFooter = () => {
     const [prevSneaker, setPrevSneaker] = useState<Sneaker | null>(null);
 
     useEffect(() => {
-        if (modalStep === 'view') {
-            setNextSneaker(userSneakers?.find((s: Sneaker) => s.id === (currentSneaker?.id ? parseInt(currentSneaker.id) + 1 : 0).toString()) || null);
-            setPrevSneaker(userSneakers?.find((s: Sneaker) => s.id === (currentSneaker?.id ? parseInt(currentSneaker.id) - 1 : 0).toString()) || null);
+        if (modalStep === 'view' && userSneakers && currentSneaker) {
+            const currentIndex = userSneakers.findIndex((s: Sneaker) => s.id === currentSneaker.id);
+            
+            if (currentIndex !== -1) {
+                const nextIndex = (currentIndex + 1) % userSneakers.length;
+                setNextSneaker(userSneakers[nextIndex]);
+
+                const prevIndex = (currentIndex - 1 + userSneakers.length) % userSneakers.length;
+                setPrevSneaker(userSneakers[prevIndex]);
+            }
         }
 
         return () => {
             setNextSneaker(null);
             setPrevSneaker(null);
         }
-    }, [currentSneaker, modalStep]);
+    }, [currentSneaker, modalStep, userSneakers]);
 
     const handleNextAction = () => {
         switch (modalStep) {

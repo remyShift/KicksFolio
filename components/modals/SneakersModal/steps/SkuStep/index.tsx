@@ -15,7 +15,7 @@ interface SkuFormValues {
 
 export const SkuStep = () => {
     const { sessionToken, user } = useSession();
-    const { control, handleSubmit } = useForm<SkuFormValues>({
+    const { control, handleSubmit, watch } = useForm<SkuFormValues>({
         defaultValues: {
             sku: ''
         }
@@ -36,6 +36,15 @@ export const SkuStep = () => {
         setModalSessionToken(sessionToken);
         setErrorMsg('');
     }, [sessionToken, setModalSessionToken, setErrorMsg]);
+
+    useEffect(() => {
+        const subscription = watch((value) => {
+            if (value.sku) {
+                setSneakerSKU(value.sku);
+            }
+        });
+        return () => subscription.unsubscribe();
+    }, [watch, setSneakerSKU]);
 
     const onSubmit = (data: SkuFormValues) => {
         setSneakerSKU(data.sku);
