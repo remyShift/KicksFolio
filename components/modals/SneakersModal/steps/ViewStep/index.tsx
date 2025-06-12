@@ -31,7 +31,7 @@ export const ViewStep = () => {
 
             <View className="flex-row justify-between items-center px-2">
                 <View className="flex gap-0">
-                    <Text className="font-spacemono-bold text-lg w-full t">{currentSneaker.model}</Text>
+                    <Text className="font-spacemono-bold text-lg">{currentSneaker.model}</Text>
                     <Text className="font-spacemono-bold-italic text-base">{currentSneaker.brand.toUpperCase()}</Text>
                 </View>
             </View>
@@ -64,7 +64,7 @@ export const ViewStep = () => {
 
                 <ConditionBar condition={currentSneaker.condition} />
 
-                <View style={{ height: 180 }} className="bg-white/60 rounded-md p-2 mt-2">
+                <View style={{ height: 150 }} className="bg-white/60 rounded-md p-2 mt-2">
                     <Text className='font-spacemono-bold'>Description :</Text>
                     <ScrollView
                         style={{ flex: 1 }}

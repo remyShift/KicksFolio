@@ -31,7 +31,6 @@ export default function SneakersByBrand({
     return (
         <View className="flex-1 gap-4">
             {Object.entries(sneakersByBrand).map(([normalizedBrand, sneakers]) => {
-                // Récupérer le nom original de la marque depuis le premier sneaker
                 const originalBrandName = sneakers[0]?.brand || normalizedBrand;
                 
                 return (
