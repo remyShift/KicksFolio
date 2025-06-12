@@ -156,7 +156,7 @@ export class AuthService extends BaseApiService {
 	private async resetPassword(
 		token: string,
 		newPassword: string
-	): Promise<void> {
+	): Promise<string> {
 		const response = await fetch(`${this.baseUrl}/password/reset`, {
 			method: 'POST',
 			headers: {
@@ -172,6 +172,8 @@ export class AuthService extends BaseApiService {
 		if (data.error) {
 			throw new Error(data.error);
 		}
+
+		return data.message;
 	}
 
 	async deleteAccount(
@@ -202,7 +204,7 @@ export class AuthService extends BaseApiService {
 			});
 	}
 
-	private async forgotPassword(email: string): Promise<void> {
+	private async forgotPassword(email: string): Promise<string> {
 		const response = await fetch(`${this.baseUrl}/passwords/forgot`, {
 			method: 'POST',
 			headers: {
@@ -212,10 +214,11 @@ export class AuthService extends BaseApiService {
 		});
 
 		const data = await response.json();
-		console.log('data', data);
 		if (data.error) {
 			throw new Error(data.error);
 		}
+
+		return data.message;
 	}
 }
 

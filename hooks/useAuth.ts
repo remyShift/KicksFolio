@@ -69,7 +69,13 @@ export const useAuth = () => {
 			.handleForgotPassword(email)
 			.then((success) => {
 				if (success) {
-					router.replace('/login');
+					router.replace({
+						pathname: '/login',
+						params: {
+							message:
+								'Password reset instructions sent to your email.',
+						},
+					});
 				}
 			})
 			.catch((error) => {

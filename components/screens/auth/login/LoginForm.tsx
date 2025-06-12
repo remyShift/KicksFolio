@@ -1,10 +1,10 @@
-import { ScrollView, KeyboardAvoidingView, Platform, TextInput } from "react-native";
+import { ScrollView, KeyboardAvoidingView, Platform, TextInput, Alert } from "react-native";
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import PageTitle from '@/components/ui/text/PageTitle';
 import { View, Text } from 'react-native'
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import MainButton from "@/components/ui/buttons/MainButton";
-import { Link } from "expo-router";
+import { Link, useLocalSearchParams } from "expo-router";
 import { useAuth } from "@/hooks/useAuth";
 import FormTextInput from "@/components/ui/inputs/FormTextInput";
 import FormPasswordInput from "@/components/ui/inputs/FormPasswordInput";
@@ -18,6 +18,9 @@ export default function LoginForm() {
     const passwordInputRef = useRef<TextInput>(null);
 
     const { login, errorMsg: authErrorMsg, clearError } = useAuth();
+
+    const params = useLocalSearchParams();
+    const resetPasswordSuccess = params.message as string;
 
     const {
         control,
@@ -61,6 +64,13 @@ export default function LoginForm() {
     const getFieldErrorWrapper = (fieldName: string) => {
         return getFieldError(fieldName as keyof LoginFormData);
     };
+
+    useEffect(() => {
+        console.log('resetPasswordSuccess', resetPasswordSuccess);
+        if (resetPasswordSuccess) {
+            Alert.alert(resetPasswordSuccess);
+        }
+    }, [resetPasswordSuccess]);
 
     return (
         <KeyboardAvoidingView 
