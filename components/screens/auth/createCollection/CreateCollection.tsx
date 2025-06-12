@@ -74,16 +74,15 @@ export default function CreateCollection() {
             >
                 <View className="flex-1 items-center gap-12 p-4 bg-background">
                     <PageTitle content='Welcome to KicksFolio !' />
-                    <View className='flex justify-center items-center gap-8 w-full mt-32'>
+                    <View className='flex justify-center items-center gap-8 w-full mt-32 px-12'>
                         <View className="absolute w-full flex items-center" style={{ top: -50 }}>
                             <ErrorMsg content={displayedError} display={displayedError !== ''} />
                         </View>
-                        <Text className="text-lg font-spacemono-bold">Please give a name to your collection :</Text>
+                        <Text className="text-lg font-spacemono-bold text-center">Please give a name to your collection :</Text>
 
                         <FormTextInput
                             name="collectionName"
                             control={control}
-                            label="Collection Name"
                             placeholder="My Sneakers Collection"
                             onFocus={() => handleFieldFocus('collectionName')}
                             onBlur={async (value) => { await validateFieldOnBlur('collectionName', value); }}
@@ -94,7 +93,7 @@ export default function CreateCollection() {
 
                         <MainButton
                             content='Create' 
-                            backgroundColor={isSubmitDisabled ? 'bg-gray-600' : 'bg-primary'}
+                            backgroundColor={isSubmitDisabled ? 'bg-gray-300' : 'bg-primary'}
                             onPressAction={() => {
                                 if (!isSubmitDisabled) {
                                     handleFormSubmit()
