@@ -74,39 +74,39 @@ export function useFormController<T extends FieldValues>({
 		setAsyncErrors((prev) => ({ ...prev, [fieldName]: undefined }));
 	};
 
-	const handleFormSubmit = handleSubmit(async (data) => {
-		if (!onSubmit) return;
-
-		setIsSubmitting(true);
-
-		const processAsyncValidation = async () => {
-			if (asyncValidation) {
-				const asyncValidationPromises = Object.entries(
-					asyncValidation
-				).map(async ([fieldName]) => {
+	const processAsyncValidation = async (data: T) => {
+		if (asyncValidation) {
+			const asyncValidationPromises = Object.entries(asyncValidation).map(
+				async ([fieldName]) => {
 					const isValid = await validateFieldAsync(
 						fieldName as keyof T,
 						data[fieldName as keyof T]
 					);
 					return { fieldName, isValid };
-				});
+				}
+			);
 
-				return Promise.all(asyncValidationPromises).then((results) => {
-					const hasAsyncErrors = results.some(
-						(result) => !result.isValid
-					);
+			return Promise.all(asyncValidationPromises).then((results) => {
+				const hasAsyncErrors = results.some(
+					(result) => !result.isValid
+				);
 
-					if (hasAsyncErrors) {
-						setIsSubmitting(false);
-						return Promise.reject('Async validation failed');
-					}
-					return Promise.resolve();
-				});
-			}
-			return Promise.resolve();
-		};
+				if (hasAsyncErrors) {
+					setIsSubmitting(false);
+					return Promise.reject('Async validation failed');
+				}
+				return Promise.resolve();
+			});
+		}
+		return Promise.resolve();
+	};
 
-		processAsyncValidation()
+	const handleFormSubmit = handleSubmit(async (data) => {
+		if (!onSubmit) return;
+
+		setIsSubmitting(true);
+
+		await processAsyncValidation(data)
 			.then(() => {
 				return onSubmit(data);
 			})

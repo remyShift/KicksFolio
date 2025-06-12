@@ -127,8 +127,8 @@ export default function SignUpSecondForm() {
                         <FormTextInput
                             name="size"
                             control={control}
-                            label="*Sneaker Size"
-                            placeholder="42"
+                            label="*Sneaker Size (US)"
+                            placeholder="9.5"
                             ref={sizeInputRef}
                             keyboardType="numeric"
                             onFocus={() => handleFieldFocus('size')}
