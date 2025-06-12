@@ -158,15 +158,10 @@ export const editProfileSchema = z.object({
 	sneaker_size: z
 		.string()
 		.min(1, 'Sneaker size is required.')
-		.transform((val) => val.replace(',', '.'))
-		.refine((val) => {
-			const num = Number(val);
-			return !isNaN(num) && num >= 7 && num <= 15;
-		}, 'Please enter a valid size, size must be a number between 7 and 15.')
-		.refine((val) => {
-			const num = Number(val);
-			return (num * 2) % 1 === 0;
-		}, 'Size must be a multiple of 0.5 (e.g., 7, 7.5, 8, 8.5).'),
+		.refine(
+			(val) => !isNaN(Number(val)) && Number(val) > 7 && Number(val) < 16,
+			'Please enter a valid size, size must be a number between 7 and 15.'
+		),
 	profile_picture: z.string().optional(),
 });
 
@@ -180,13 +175,13 @@ export const resetPasswordSchema = z
 			.string()
 			.min(8, 'Password must be at least 8 characters long.')
 			.regex(
-				/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-				'Password must contain at least one uppercase letter, one lowercase letter, one number and one special character.'
+				/^(?=.*[A-Z])(?=.*\d).+$/,
+				'Password must contain at least one uppercase letter and one number.'
 			),
 		confirmPassword: z.string().min(1, 'Please confirm your password.'),
 	})
 	.refine((data) => data.password === data.confirmPassword, {
-		message: "Passwords don't match",
+		message: "Passwords don't match.",
 		path: ['confirmPassword'],
 	});
 

@@ -96,7 +96,12 @@ export const useAuth = () => {
 			.handleResetPassword(token, newPassword, confirmNewPassword)
 			.then((success) => {
 				if (success) {
-					router.replace('/login');
+					router.replace({
+						pathname: '/login',
+						params: {
+							message: 'Password reset successful.',
+						},
+					});
 				}
 			})
 			.catch((error) => {

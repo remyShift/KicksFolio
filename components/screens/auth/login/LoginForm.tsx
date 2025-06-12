@@ -2,7 +2,7 @@ import { ScrollView, KeyboardAvoidingView, Platform, TextInput, Alert } from "re
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import PageTitle from '@/components/ui/text/PageTitle';
 import { View, Text } from 'react-native'
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import MainButton from "@/components/ui/buttons/MainButton";
 import { Link, useLocalSearchParams } from "expo-router";
 import { useAuth } from "@/hooks/useAuth";
@@ -20,7 +20,7 @@ export default function LoginForm() {
     const { login, errorMsg: authErrorMsg, clearError } = useAuth();
 
     const params = useLocalSearchParams();
-    const resetPasswordSuccess = params.message as string;
+    const [resetPasswordSuccess, setResetPasswordSuccess] = useState(params.message as string);
 
     const {
         control,
@@ -66,10 +66,14 @@ export default function LoginForm() {
     };
 
     useEffect(() => {
-        console.log('resetPasswordSuccess', resetPasswordSuccess);
         if (resetPasswordSuccess) {
             Alert.alert(resetPasswordSuccess);
+            setResetPasswordSuccess('');
         }
+
+        return () => {
+            setResetPasswordSuccess('');
+        };
     }, [resetPasswordSuccess]);
 
     return (

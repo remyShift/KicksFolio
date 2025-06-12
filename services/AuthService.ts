@@ -157,7 +157,7 @@ export class AuthService extends BaseApiService {
 		token: string,
 		newPassword: string
 	): Promise<string> {
-		const response = await fetch(`${this.baseUrl}/password/reset`, {
+		const response = await fetch(`${this.baseUrl}/passwords/reset`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
