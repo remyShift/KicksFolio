@@ -92,8 +92,9 @@ export default function CreateCollection() {
                         />
 
                         <MainButton
-                            content='Create' 
-                            backgroundColor={isSubmitDisabled ? 'bg-gray-300' : 'bg-primary'}
+                            content='Create'
+                            isDisabled={isSubmitDisabled}
+                            backgroundColor={isSubmitDisabled ? 'bg-primary/50' : 'bg-primary'}
                             onPressAction={() => {
                                 if (!isSubmitDisabled) {
                                     handleFormSubmit()

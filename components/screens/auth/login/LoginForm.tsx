@@ -113,7 +113,7 @@ export default function LoginForm() {
                     <View className='flex gap-5 w-full justify-center items-center'>                      
                         <MainButton 
                             content='Login' 
-                            backgroundColor={isSubmitDisabled ? 'bg-gray-300' : 'bg-primary'}
+                            backgroundColor={isSubmitDisabled ? 'bg-primary/50' : 'bg-primary'}
                             onPressAction={() => {
                                 if (!isSubmitDisabled) {
                                     handleFormSubmit();

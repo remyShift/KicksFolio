@@ -140,7 +140,7 @@ export default function SignUpSecondForm() {
 
                         <MainButton 
                             content='Sign Up' 
-                            backgroundColor={isSubmitDisabled ? 'bg-gray-300' : 'bg-primary'}
+                            backgroundColor={isSubmitDisabled ? 'bg-primary/50' : 'bg-primary'}
                             onPressAction={() => {
                                 if (!isSubmitDisabled) {
                                     handleFormSubmit();

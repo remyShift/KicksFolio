@@ -108,7 +108,7 @@ export default function ResetPasswordForm() {
                         <View className='flex gap-5 w-full justify-center items-center'>
                             <MainButton 
                                 content='Reset Password' 
-                                backgroundColor={isSubmitDisabled ? 'bg-gray-600' : 'bg-primary'}
+                                backgroundColor={isSubmitDisabled ? 'bg-primary/50' : 'bg-primary'}
                                 onPressAction={() => {
                                     if (!isSubmitDisabled) {
                                         handleFormSubmit();

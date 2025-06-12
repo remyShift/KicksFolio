@@ -1,6 +1,9 @@
 import { Pressable, Text } from 'react-native';
-import Animated, { useAnimatedStyle, withSpring } from 'react-native-reanimated';
-import { useState } from 'react';
+import Animated, { 
+    useAnimatedStyle, 
+    withSpring,
+    useSharedValue 
+} from 'react-native-reanimated';
 
 
 type MainButtonProps = {
@@ -13,29 +16,34 @@ type MainButtonProps = {
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export default function MainButton({content, onPressAction, backgroundColor, isDisabled = false}: MainButtonProps) {
-    const [isLoading, setIsLoading] = useState(false);
-    
+    const scale = useSharedValue(1);
+
     const animatedStyle = useAnimatedStyle(() => ({
-        transform: [
-            {
-                scale: withSpring(isDisabled ? 0.90 : 1)
-            }
-        ]
+        transform: [{ scale: scale.value }]
     }));
 
-    const handlePress = async () => {
-        if (isDisabled) return;
-        
-        setIsLoading(true);
-        onPressAction();
-        setIsLoading(false);
+    const handlePressIn = () => {
+        scale.value = withSpring(0.95, {
+            damping: 10,
+            stiffness: 100
+        });
+    };
+
+    const handlePressOut = () => {
+        scale.value = withSpring(1, {
+            damping: 10,
+            stiffness: 100
+        });
     };
 
     return (
         <AnimatedPressable 
             className={`${backgroundColor} py-3 px-4 rounded-md w-1/2`}
-            onPress={handlePress}
+            onPress={onPressAction}
+            onPressIn={handlePressIn}
+            onPressOut={handlePressOut}
             style={animatedStyle}
+            disabled={isDisabled}
         >
             <Text className="font-spacemono-bold text-lg text-center text-white">
                 {content}
