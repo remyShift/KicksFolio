@@ -10,6 +10,7 @@ import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import { useFormController } from '@/hooks/useFormController';
 import { signUpStep2Schema, SignUpStep2FormData } from '@/validation/schemas';
 import { Link } from 'expo-router';
+import PageLink from '@/components/ui/links/LoginPageLink';
 
 export default function SignUpSecondForm() {
     const { signUpProps, setSignUpProps } = useSignUpProps();
@@ -148,13 +149,7 @@ export default function SignUpSecondForm() {
                             }} 
                         />
 
-                        <View className='flex flex-row gap-1 w-full justify-center items-center'>
-                            <Link href='/sign-up'>
-                                <Text className='text-primary font-spacemono-bold text-sm'>
-                                    Back
-                                </Text>
-                            </Link>
-                        </View>
+                        <PageLink href='/sign-up' linkText='Back' />
                     </View>
                 </View>
             </ScrollView>

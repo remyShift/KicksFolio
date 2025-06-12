@@ -1,14 +1,19 @@
 import { Link } from "expo-router";
 import { View, Text } from "react-native";
 
+interface PageLinkProps {
+    href: '/login' | '/sign-up' | '/forgot-password' | '/reset-password';
+    textBeforeLink?: string;
+    linkText: string;
+}
 
-export default function LoginPageLink() {
+export default function PageLink({ href, textBeforeLink, linkText }: PageLinkProps) {
     return (
-        <View className='flex gap-0 w-full justify-center items-center'>
-            <Text className='font-spacemono-bold text-sm'>Already have an account ?</Text>
-            <Link href='/login'>
+        <View className='flex flex-row gap-1 w-full justify-center items-center'>
+            {textBeforeLink && <Text className='font-spacemono-bold text-sm'>{textBeforeLink}</Text>}
+            <Link href={href}>
                 <Text className='text-primary font-spacemono-bold text-sm'>
-                    Login
+                    {linkText}
                 </Text>
             </Link>
         </View>

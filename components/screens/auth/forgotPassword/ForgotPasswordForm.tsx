@@ -9,6 +9,7 @@ import { useAuth } from "@/hooks/useAuth";
 import FormTextInput from "@/components/ui/inputs/FormTextInput";
 import { useFormController } from "@/hooks/useFormController";
 import { forgotPasswordSchema, ForgotPasswordFormData } from "@/validation/schemas";
+import PageLink from "@/components/ui/links/LoginPageLink";
 
 export default function ForgotPasswordForm() {
     const scrollViewRef = useRef<ScrollView>(null);
@@ -90,7 +91,7 @@ export default function ForgotPasswordForm() {
                             getFieldError={getFieldErrorWrapper}
                         />
 
-                        <View className='flex gap-2 w-full justify-center items-center'>
+                        <View className='flex gap-3 w-full justify-center items-center'>
                             <MainButton 
                                 content='Reset' 
                                 backgroundColor={isSubmitDisabled ? 'bg-primary/50' : 'bg-primary'}
@@ -100,9 +101,7 @@ export default function ForgotPasswordForm() {
                                     }
                                 }}
                             />
-                            <Link href="/login" className="text-primary text-sm font-spacemono-bold">
-                                Back to Login
-                            </Link>
+                            <PageLink href='/login' linkText='Back to Login' />
                         </View>
                     </View>
                 </View>

@@ -11,6 +11,7 @@ import { useFormController } from "@/hooks/useFormController";
 import { useAsyncValidation } from "@/hooks/useAsyncValidation";
 import { useAuth } from "@/hooks/useAuth";
 import { signUpStep1Schema, SignUpStep1FormData } from "@/validation/schemas";
+import PageLink from "@/components/ui/links/LoginPageLink";
 
 export default function SignUpFirstForm() {
     const scrollViewRef = useRef<ScrollView>(null);
@@ -160,7 +161,7 @@ export default function SignUpFirstForm() {
                             getFieldError={getFieldErrorWrapper}
                         />
 
-                        <View className='flex gap-5 w-full justify-center items-center'>
+                        <View className='flex gap-3 w-full justify-center items-center'>
                             <MainButton 
                                 content='Next' 
                                 backgroundColor={isSubmitDisabled ? 'bg-primary/50' : 'bg-primary'}
@@ -170,7 +171,7 @@ export default function SignUpFirstForm() {
                                     }
                                 }}
                             />
-                            <LoginPageLink />
+                            <PageLink href='/login' textBeforeLink='Already have an account ?' linkText='Login' />
                         </View>
                     </View>
                 </View>

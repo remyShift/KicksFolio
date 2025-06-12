@@ -10,6 +10,7 @@ import FormTextInput from "@/components/ui/inputs/FormTextInput";
 import FormPasswordInput from "@/components/ui/inputs/FormPasswordInput";
 import { useFormController } from "@/hooks/useFormController";
 import { loginSchema, LoginFormData } from "@/validation/schemas";
+import PageLink from "@/components/ui/links/LoginPageLink";
 
 export default function LoginForm() {
     const scrollViewRef = useRef<ScrollView>(null);
@@ -120,20 +121,9 @@ export default function LoginForm() {
                                 }
                             }}
                         />
-                        <View className='flex gap-1 justify-center items-center'>
-                            <View className='flex flex-row gap-1 justify-center items-center'>
-                                <Text className='font-spacemono-bold text-sm'>Don't have an account?</Text>
-                                <Link href='/sign-up'>
-                                    <Text className='text-primary font-spacemono-bold text-sm'>
-                                        Sign Up
-                                    </Text>
-                                </Link>
-                            </View>
-                            <Link href='/forgot-password'>
-                                <Text className='text-primary font-spacemono-bold text-sm'>
-                                    Forgot Password?
-                                </Text>
-                            </Link>
+                        <View className='flex gap-3 justify-center items-center w-full'>
+                            <PageLink href='/sign-up' textBeforeLink="Don't have an account ?" linkText='Sign Up' />
+                            <PageLink href='/forgot-password' linkText='Forgot Password?' />
                         </View>
                     </View>
                 </View>
