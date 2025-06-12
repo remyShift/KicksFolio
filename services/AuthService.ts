@@ -203,7 +203,7 @@ export class AuthService extends BaseApiService {
 	}
 
 	private async forgotPassword(email: string): Promise<void> {
-		const response = await fetch(`${this.baseUrl}/password/forgot`, {
+		const response = await fetch(`${this.baseUrl}/passwords/forgot`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -212,6 +212,7 @@ export class AuthService extends BaseApiService {
 		});
 
 		const data = await response.json();
+		console.log('data', data);
 		if (data.error) {
 			throw new Error(data.error);
 		}

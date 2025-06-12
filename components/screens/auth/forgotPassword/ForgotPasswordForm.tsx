@@ -70,8 +70,8 @@ export default function ForgotPasswordForm() {
             >
                 <View className="flex-1 items-center p-4 gap-12">
                     <PageTitle content='Forgot Password' />
-                    <View className='flex justify-center items-center gap-8 w-full mt-10'>
-                        <View className='w-full absolute' style={{ top: -50 }}>   
+                    <View className='flex-1 justify-center items-center gap-8 w-full px-12'>
+                        <View className='w-full'>   
                             <ErrorMsg content={displayedError} display={displayedError !== ''} />
                         </View>
 
@@ -90,17 +90,17 @@ export default function ForgotPasswordForm() {
                             getFieldError={getFieldErrorWrapper}
                         />
 
-                        <View className='flex gap-5 w-full justify-center items-center'>
+                        <View className='flex gap-2 w-full justify-center items-center'>
                             <MainButton 
-                                content='Reset Password' 
-                                backgroundColor={isSubmitDisabled ? 'bg-gray-600' : 'bg-primary'}
+                                content='Reset' 
+                                backgroundColor={isSubmitDisabled ? 'bg-gray-300' : 'bg-primary'}
                                 onPressAction={() => {
                                     if (!isSubmitDisabled) {
                                         handleFormSubmit();
                                     }
                                 }}
                             />
-                            <Link href="/login" className="text-primary">
+                            <Link href="/login" className="text-primary text-sm font-spacemono-bold">
                                 Back to Login
                             </Link>
                         </View>
