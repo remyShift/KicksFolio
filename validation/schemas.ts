@@ -158,10 +158,15 @@ export const editProfileSchema = z.object({
 	sneaker_size: z
 		.string()
 		.min(1, 'Sneaker size is required.')
+		.transform((val) => val.replace(',', '.'))
 		.refine(
 			(val) => !isNaN(Number(val)) && Number(val) > 7 && Number(val) < 16,
 			'Please enter a valid size, size must be a number between 7 and 15.'
-		),
+		)
+		.refine((val) => {
+			const num = Number(val);
+			return (num * 2) % 1 === 0;
+		}, 'Size must be a multiple of 0.5 (e.g., 7, 7.5, 8, 8.5).'),
 	profile_picture: z.string().optional(),
 });
 

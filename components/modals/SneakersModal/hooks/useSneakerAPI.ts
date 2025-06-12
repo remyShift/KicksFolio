@@ -30,19 +30,15 @@ export const useSneakerAPI = (sessionToken: string, userId: string) => {
 				status: formData.status,
 				size: formData.size.toString(),
 				condition: formData.condition.toString(),
-				price_paid: formData.price_paid || undefined, // Corrigé : price_paid au lieu de pricePaid
+				price_paid: formData.price_paid || undefined,
 				description: formData.description || undefined,
 			};
-
-			console.log('🔍 Validation data:', validationData);
 
 			const parseResult = sneakerSchema.safeParse(validationData);
 
 			if (parseResult.success) {
-				console.log('✅ Validation successful');
 				resolve({ isValid: true, errors: {} });
 			} else {
-				console.log('❌ Validation failed:', parseResult.error.errors);
 				const errors: { [key: string]: string } = {};
 				parseResult.error.errors.forEach((err: ZodIssue) => {
 					const field = err.path[0];
@@ -70,13 +66,7 @@ export const useSneakerAPI = (sessionToken: string, userId: string) => {
 			.searchBySku(sku.trim())
 			.then((response) => {
 				if (response) {
-					console.log('response', response);
 					const responseResult = response.results[0];
-					console.log('-----------------------------');
-					console.log(
-						'responseResult',
-						responseResult.image.original
-					);
 
 					const transformedSneaker = {
 						model: responseResult.name || '',

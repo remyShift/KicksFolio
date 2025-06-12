@@ -29,11 +29,15 @@ export class SneakersService extends BaseApiService {
 		const formData = new FormData();
 		formData.append('sneaker[model]', sneaker.model);
 		formData.append('sneaker[brand]', sneaker.brand);
-		formData.append('sneaker[size]', sneaker.size.toString());
+		const formattedSize = sneaker.size.replace(',', '.');
+		formData.append('sneaker[size]', formattedSize);
 		formData.append('sneaker[condition]', sneaker.condition.toString());
 		formData.append('sneaker[status]', sneaker.status.toLowerCase());
-		formData.append('sneaker[price_paid]', sneaker.price_paid.toString());
-		formData.append('sneaker[description]', sneaker.description);
+		formData.append(
+			'sneaker[price_paid]',
+			sneaker.price_paid?.toString() || ''
+		);
+		formData.append('sneaker[description]', sneaker.description || '');
 
 		if (sneaker.images && sneaker.images.length > 0) {
 			this.appendImages(formData, sneaker.images);
@@ -62,11 +66,15 @@ export class SneakersService extends BaseApiService {
 		const formData = new FormData();
 		formData.append('sneaker[model]', sneaker.model);
 		formData.append('sneaker[brand]', sneaker.brand);
-		formData.append('sneaker[size]', sneaker.size.toString());
+		const formattedSize = sneaker.size.replace(',', '.');
+		formData.append('sneaker[size]', formattedSize);
 		formData.append('sneaker[condition]', sneaker.condition.toString());
 		formData.append('sneaker[status]', sneaker.status.toLowerCase());
-		formData.append('sneaker[price_paid]', sneaker.price_paid.toString());
-		formData.append('sneaker[description]', sneaker.description);
+		formData.append(
+			'sneaker[price_paid]',
+			sneaker.price_paid?.toString() || ''
+		);
+		formData.append('sneaker[description]', sneaker.description || '');
 
 		if (sneaker.images && sneaker.images.length > 0) {
 			this.appendImages(formData, sneaker.images);

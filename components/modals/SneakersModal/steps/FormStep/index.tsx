@@ -88,27 +88,36 @@ export const FormStep = () => {
         const handleValidateAndSubmit = async () => {
             setErrorMsg('');
             
+            // Synchroniser les images du store avec le formulaire avant validation
+            const currentSneakerToAdd = useModalStore.getState().sneakerToAdd;
+            const currentFormValues = watch();
+            
+            if (currentSneakerToAdd?.images && currentSneakerToAdd.images.length > 0) {
+                reset({
+                    ...currentFormValues,
+                    images: currentSneakerToAdd.images,
+                });
+            }
+            
+            await new Promise(resolve => setTimeout(resolve, 100));
+            
             const isFormValid = await trigger();
             
             if (isFormValid) {
-                // Récupérer les données actuelles du formulaire
-                const currentFormValues = watch();
-                const currentSneakerToAdd = useModalStore.getState().sneakerToAdd;
+                const updatedFormValues = watch();
                 
-                // Vérifier qu'il y a au moins une image
                 if (!currentSneakerToAdd?.images || currentSneakerToAdd.images.length === 0) {
                     return { isValid: false, errorMsg: 'Please upload at least one image.' };
                 }
                 
-                // Créer les données finales pour la soumission
                 const finalData = {
-                    model: currentFormValues.model || '',
-                    brand: currentFormValues.brand || '',
-                    status: currentFormValues.status || '',
-                    size: currentFormValues.size || '',
-                    condition: currentFormValues.condition || '',
-                    price_paid: currentFormValues.price_paid || '',
-                    description: currentFormValues.description || '',
+                    model: updatedFormValues.model || '',
+                    brand: updatedFormValues.brand || '',
+                    status: updatedFormValues.status || '',
+                    size: updatedFormValues.size || '',
+                    condition: updatedFormValues.condition || '',
+                    price_paid: updatedFormValues.price_paid || '',
+                    description: updatedFormValues.description || '',
                     images: currentSneakerToAdd.images,
                 } as SneakerFormData;
                 
@@ -141,14 +150,17 @@ export const FormStep = () => {
             setClearFormErrors(null);
         };
     }, []);
-    // Plus de synchronisation temps réel - seulement lors de la validation comme EditFormStep
 
-    // Supprimé le nettoyage automatique qui causait le problème
-    // useEffect(() => {
-    //     return () => {
-    //         setSneakerToAdd(null);
-    //     };
-    // }, []);
+    useEffect(() => {
+        return () => {
+            setErrorMsg('');
+            setSneakerToAdd({
+                ...sneakerToAdd,
+                images: [],
+            } as SneakerFormData);
+        };
+    }, []);
+
     const hasMultipleErrors = [
         hasFieldError('model'),
         hasFieldError('brand'),
@@ -161,19 +173,28 @@ export const FormStep = () => {
         ? 'Please correct the fields in red before continuing'
         : '';
 
+    const otherFieldErrors = getFieldError('model') || 
+                            getFieldError('brand') || 
+                            getFieldError('status') || 
+                            getFieldError('size') || 
+                            getFieldError('condition') || 
+                            getFieldError('price_paid');
+
     const displayedError = globalErrorMsg || 
-        getFieldError('model') || 
-        getFieldError('brand') || 
-        getFieldError('status') || 
-        getFieldError('size') || 
-        getFieldError('condition') || 
-        getFieldError('price_paid') || 
+        otherFieldErrors ||
         errorMsg || 
         '';
 
     const getFieldErrorWrapper = (fieldName: string) => {
         return getFieldError(fieldName as keyof typeof sneakerSchema._type);
     };
+
+    useEffect(() => {
+        return () => {
+            setErrorMsg('');
+        };
+    }, []);
+
 
     return (
         <KeyboardAvoidingView 

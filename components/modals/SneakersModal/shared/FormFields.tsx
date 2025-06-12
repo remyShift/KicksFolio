@@ -41,6 +41,10 @@ export const FormFields = ({
     const { sneakerToAdd, setSneakerToAdd, currentSneaker } = useModalStore();
 
     const imageDisplayed = sneakerToAdd?.images?.[0]?.url || currentSneaker?.images?.[0]?.url;
+    
+    // Vérifier s'il y a une erreur spécifique aux images
+    const imageError = getFieldErrorWrapper('images');
+    const hasImageError = !!imageError;
 
     return (
         <View className="flex-1 gap-4">
@@ -52,12 +56,18 @@ export const FormFields = ({
                         images: [{ url: uri }, ...(sneakerToAdd?.images?.slice(1) || [])],
                     } as any);
                 }}
-                isError={false}
+                isError={hasImageError}
                 isFocused={false}
                 setIsError={() => {}}
             />
 
-            {displayedError && <ErrorMsg content={displayedError} display={true} />}
+            {/* Afficher l'erreur spécifique aux images si elle existe, sinon l'erreur générale */}
+            {(imageError || displayedError) && (
+                <ErrorMsg 
+                    content={imageError || displayedError} 
+                    display={true} 
+                />
+            )}
 
             <FormTextInput
                 name="model"
@@ -126,7 +136,7 @@ export const FormFields = ({
                 <View className="flex-1 flex-col items-center px-4 gap-1">
                     <Text className="text-base font-spacemono mt-2">Price Paid</Text>
                     <FormTextInput
-                        name="pricePaid"
+                        name="price_paid"
                         control={control}
                         placeholder="150€"
                         ref={pricePaidInputRef}

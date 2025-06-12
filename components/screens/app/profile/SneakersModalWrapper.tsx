@@ -3,18 +3,23 @@ import { SneakersModal } from '@/components/modals/SneakersModal';
 import { useModalStore } from '@/store/useModalStore';
 
 export default function SneakersModalWrapper() {
-    const { isVisible, setIsVisible } = useModalStore();
+    const { isVisible, setIsVisible, resetModalData } = useModalStore();
+
+    const handleCloseModal = () => {
+        resetModalData();
+        setIsVisible(false);
+    };
 
     return (
         <Modal
             animationType="slide"
             transparent={true}
             visible={isVisible}
-            onRequestClose={() => setIsVisible(false)}
+            onRequestClose={handleCloseModal}
         >
             <Pressable 
                 className="flex-1 bg-black/50" 
-                onPress={() => setIsVisible(false)}
+                onPress={handleCloseModal}
             >
                 <View className="flex-1 justify-end">
                     <Pressable 

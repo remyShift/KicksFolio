@@ -155,6 +155,7 @@ export const ModalFooter = () => {
                 if (prevSneaker) {
                     handlePrevious(prevSneaker, setCurrentSneaker);
                 } else {
+                    resetModalData();
                     setIsVisible(false);
                 }
                 break;
@@ -178,6 +179,7 @@ export const ModalFooter = () => {
                     onPress: () => {
                         handleSneakerDelete(currentSneaker.id)
                             .then(() => {
+                                resetModalData();
                                 setModalStep('index');
                                 setIsVisible(false);
                                 setCurrentSneaker(null);
