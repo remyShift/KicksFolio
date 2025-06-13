@@ -109,7 +109,7 @@ export default function SignUpFirstForm() {
                             name="username"
                             control={control}
                             label="*Username"
-                            placeholder="Username"
+                            placeholder="johnSneakers"
                             ref={usernameInputRef}
                             nextInputRef={emailInputRef}
                             autoComplete="username"
@@ -124,7 +124,7 @@ export default function SignUpFirstForm() {
                             name="email"
                             control={control}
                             label="*Email"
-                            placeholder="Email"
+                            placeholder="john@doe.com"
                             ref={emailInputRef}
                             nextInputRef={passwordInputRef}
                             keyboardType="email-address"
@@ -139,7 +139,7 @@ export default function SignUpFirstForm() {
                             name="password"
                             control={control}
                             label="*Password"
-                            placeholder="Password"
+                            placeholder="********"
                             ref={passwordInputRef}
                             nextInputRef={confirmPasswordInputRef}
                             onFocus={() => handleFieldFocus('password')}
@@ -152,7 +152,7 @@ export default function SignUpFirstForm() {
                             name="confirmPassword"
                             control={control}
                             label="*Confirm Password"
-                            placeholder="Confirm Password"
+                            placeholder="********"
                             ref={confirmPasswordInputRef}
                             onFocus={() => handleFieldFocus('confirmPassword')}
                             onBlur={async (value) => { await validateFieldOnBlur('confirmPassword', value); }}
@@ -170,6 +170,7 @@ export default function SignUpFirstForm() {
                                         handleFormSubmit();
                                     }
                                 }}
+                                isDisabled={isSubmitDisabled}
                             />
                             <PageLink href='/login' textBeforeLink='Already have an account ?' linkText='Login' />
                         </View>

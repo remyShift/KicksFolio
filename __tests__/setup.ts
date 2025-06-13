@@ -1,4 +1,5 @@
-import { cleanup } from '@testing-library/react-native';
+import { act, cleanup, fireEvent } from '@testing-library/react-native';
+import { ReactTestInstance } from 'react-test-renderer';
 
 jest.mock('@react-native-async-storage/async-storage', () => ({
 	__esModule: true,
@@ -35,6 +36,48 @@ jest.mock('@expo/vector-icons', () => {
 	};
 });
 
+export const mockUseAuth = {
+	login: jest.fn(),
+	signUp: jest.fn(),
+	errorMsg: '',
+	clearError: jest.fn(),
+	handleNextSignupPage: jest.fn(),
+};
+
+export const mockAuthService = {
+	handleLogin: jest.fn(),
+	handleSignUp: jest.fn(),
+	signUp: jest.fn(),
+	login: jest.fn(),
+};
+
+jest.mock('@/services/AuthService', () => ({
+	AuthService: jest.fn().mockImplementation(() => mockAuthService),
+}));
+
+jest.mock('@/hooks/useAuth', () => ({
+	useAuth: () => mockUseAuth,
+}));
+
+const originalConsoleError = console.error;
+
+beforeEach(() => {
+	console.error = jest.fn();
+});
+
 afterEach(() => {
 	cleanup();
+	console.error = originalConsoleError;
 });
+
+export const fillAndBlurInput = async (
+	input: ReactTestInstance,
+	value: string
+) => {
+	await act(async () => {
+		fireEvent.changeText(input, value);
+	});
+	await act(async () => {
+		fireEvent(input, 'blur');
+	});
+};

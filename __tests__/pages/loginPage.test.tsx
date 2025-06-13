@@ -1,27 +1,10 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react-native';
 import LoginPage from '@/app/(auth)/login';
+import { fillAndBlurInput } from '@/__tests__/setup';
 import { act } from 'react';
 import { ReactTestInstance } from 'react-test-renderer';
-import { useRouter } from 'expo-router';
+import { mockAuthService, mockUseAuth } from '@/__tests__/setup';
 
-const mockAuthService = {
-    handleLogin: jest.fn(),
-    login: jest.fn()
-};
-
-jest.mock('@/services/AuthService', () => ({
-    AuthService: jest.fn().mockImplementation(() => mockAuthService)
-}));
-
-const mockUseAuth = {
-    login: jest.fn(),
-    errorMsg: '',
-    clearError: jest.fn()
-};
-
-jest.mock('@/hooks/useAuth', () => ({
-    useAuth: () => mockUseAuth
-}));
 
 describe('LoginPage', () => {
     let emailInput: ReactTestInstance;
@@ -48,27 +31,12 @@ describe('LoginPage', () => {
         cleanup();
     });
 
-    const fillInputs = async (emailValue: string = '', passwordValue: string = '') => {
-        await act(async () => {
-            fireEvent.changeText(emailInput, emailValue);
-        });
-        await act(async () => {
-            fireEvent(emailInput, 'blur');
-        });
-        await act(async () => {
-            fireEvent.changeText(passwordInput, passwordValue);
-        });
-        await act(async () => {
-            fireEvent(passwordInput, 'blur');
-        });
-    }
-
     it('should render the login page', () => {
 		const pageTitle = screen.getByTestId('page-title');
 		expect(pageTitle.props.children).toBe('Login');
 	});
 
-	it('should render login form elements', () => {
+	it('should render login form elements with empty values', () => {
 		expect(emailInput).toBeTruthy();
         expect(emailInput.props.value).toBe('');
         expect(passwordInput).toBeTruthy();
@@ -76,13 +44,13 @@ describe('LoginPage', () => {
 	});
 
     it('should not display an error on blur if a regular email is provided', async () => {
-        await fillInputs('test@test.com');
+        await fillAndBlurInput(emailInput, 'test@test.com');
         expect(emailInput.props.value).toBe('test@test.com');
         expect(errorMessage.props.children).toBe('');
     });
 
     it('should display an error on blur if an invalid email is provided', async () => {
-        await fillInputs('test@test');
+        await fillAndBlurInput(emailInput, 'test@test');
         expect(errorMessage.props.children).toBe('Please put a valid email.');
     });
 
@@ -91,26 +59,18 @@ describe('LoginPage', () => {
     });
 
     it('should have the main button enabled if the email and password are provided', async () => {
-        await fillInputs('test@test.com', 'password');
+        await fillAndBlurInput(emailInput, 'test@test.com');
+        await fillAndBlurInput(passwordInput, 'password');
         expect(mainButton.props.accessibilityState.disabled).toBe(false);
     });
 
     describe('Login attempts', () => {
-        const originalConsoleError = console.error;
-
-        beforeEach(() => {
-            console.error = jest.fn();
-        });
-
-        afterEach(() => {
-            console.error = originalConsoleError;
-        });
-
         it('should display an error if the password or email are not correct', async () => {
             mockUseAuth.login.mockRejectedValue('Email or password incorrect');
             mockUseAuth.errorMsg = 'Email or password incorrect';
 
-            await fillInputs('test@test.com', 'password');
+            await fillAndBlurInput(emailInput, 'test@test.com');
+            await fillAndBlurInput(passwordInput, 'password');
             await act(async () => {
                 fireEvent.press(mainButton);
             });
@@ -121,7 +81,8 @@ describe('LoginPage', () => {
             mockUseAuth.login.mockResolvedValue(undefined);
             mockUseAuth.errorMsg = '';
 
-            await fillInputs('test@test.com', 'TestToto14*');
+            await fillAndBlurInput(emailInput, 'test@test.com');
+            await fillAndBlurInput(passwordInput, 'TestToto14*');
             await act(async () => {
                 fireEvent.press(mainButton);
             });
