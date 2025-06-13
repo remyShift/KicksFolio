@@ -99,7 +99,7 @@ export default function SignUpSecondForm() {
                             name="firstName"
                             control={control}
                             label="*First Name"
-                            placeholder="First Name"
+                            placeholder="John"
                             ref={firstNameInputRef}
                             nextInputRef={lastNameInputRef}
                             autoComplete="name"
@@ -114,7 +114,7 @@ export default function SignUpSecondForm() {
                             name="lastName"
                             control={control}
                             label="*Last Name"
-                            placeholder="Last Name"
+                            placeholder="Doe"
                             ref={lastNameInputRef}
                             nextInputRef={sizeInputRef}
                             autoComplete="name"
@@ -146,7 +146,8 @@ export default function SignUpSecondForm() {
                                 if (!isSubmitDisabled) {
                                     handleFormSubmit();
                                 }
-                            }} 
+                            }}
+                            isDisabled={isSubmitDisabled}
                         />
 
                         <PageLink href='/sign-up' linkText='Back' />

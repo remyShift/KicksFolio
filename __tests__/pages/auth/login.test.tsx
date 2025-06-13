@@ -1,9 +1,9 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react-native';
 import LoginPage from '@/app/(auth)/login';
-import { fillAndBlurInput } from '@/__tests__/setup';
+import { fillAndBlurInput } from '../../setup';
 import { act } from 'react';
 import { ReactTestInstance } from 'react-test-renderer';
-import { mockAuthService, mockUseAuth } from '@/__tests__/setup';
+import { mockAuthService, mockUseAuth } from './authSetup';
 
 
 describe('LoginPage', () => {

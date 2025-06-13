@@ -25,17 +25,17 @@ export const signUpStep1Schema = z
 export const signUpStep2Schema = z.object({
 	firstName: z
 		.string()
-		.min(2, 'Name must be at least 2 characters long.')
+		.min(2, 'First name must be at least 2 characters long.')
 		.regex(
 			/^[a-zA-Z\s]+$/,
-			'Name must not contain special characters or numbers.'
+			'First name must not contain special characters or numbers.'
 		),
 	lastName: z
 		.string()
-		.min(2, 'Name must be at least 2 characters long.')
+		.min(2, 'Last name must be at least 2 characters long.')
 		.regex(
 			/^[a-zA-Z\s]+$/,
-			'Name must not contain special characters or numbers.'
+			'Last name must not contain special characters or numbers.'
 		),
 	size: z
 		.string()

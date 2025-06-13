@@ -1,5 +1,10 @@
 import { act, cleanup, fireEvent } from '@testing-library/react-native';
 import { ReactTestInstance } from 'react-test-renderer';
+import {
+	mockAuthService,
+	mockUseAuth,
+	mockUseSignUpProps,
+} from './pages/auth/authSetup';
 
 jest.mock('@react-native-async-storage/async-storage', () => ({
 	__esModule: true,
@@ -36,27 +41,16 @@ jest.mock('@expo/vector-icons', () => {
 	};
 });
 
-export const mockUseAuth = {
-	login: jest.fn(),
-	signUp: jest.fn(),
-	errorMsg: '',
-	clearError: jest.fn(),
-	handleNextSignupPage: jest.fn(),
-};
-
-export const mockAuthService = {
-	handleLogin: jest.fn(),
-	handleSignUp: jest.fn(),
-	signUp: jest.fn(),
-	login: jest.fn(),
-};
-
 jest.mock('@/services/AuthService', () => ({
 	AuthService: jest.fn().mockImplementation(() => mockAuthService),
 }));
 
 jest.mock('@/hooks/useAuth', () => ({
 	useAuth: () => mockUseAuth,
+}));
+
+jest.mock('@/context/signUpPropsContext', () => ({
+	useSignUpProps: () => mockUseSignUpProps,
 }));
 
 const originalConsoleError = console.error;

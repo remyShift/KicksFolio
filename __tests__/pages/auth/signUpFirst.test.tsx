@@ -1,6 +1,7 @@
 import SignUpFirstPage from '@/app/(auth)/(signup)/sign-up';
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react-native';
-import { fillAndBlurInput, mockAuthService, mockUseAuth } from '../setup';
+import { mockAuthService, mockUseAuth } from './authSetup';
+import { fillAndBlurInput } from '../../setup';
 import { ReactTestInstance } from 'react-test-renderer';
 
 describe('SignUpFirstPage', () => {
@@ -117,6 +118,14 @@ describe('SignUpFirstPage', () => {
         await fillAndBlurInput(passwordInput, 'ValidPassword14*');
         await fillAndBlurInput(confirmPasswordInput, 'ValidPassword14*');
         expect(mainButton.props.accessibilityState.disabled).toBe(false);
+    });
+
+    it('should display main button disabled if at least one field is filled with invalid values', async () => {
+        await fillAndBlurInput(userNameInput, 'r');
+        await fillAndBlurInput(emailInput, 'test@test');
+        await fillAndBlurInput(passwordInput, 'totototo14');
+        await fillAndBlurInput(confirmPasswordInput, 'Totototo14*');
+        expect(mainButton.props.accessibilityState.disabled).toBe(true);
     });
 
     describe('Sign up step 1 attempts', () => {
