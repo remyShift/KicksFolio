@@ -23,6 +23,8 @@ export default function MainButton({content, onPressAction, backgroundColor, isD
     }));
 
     const handlePressIn = () => {
+        if (isDisabled) return;
+
         scale.value = withSpring(0.95, {
             damping: 10,
             stiffness: 100
@@ -30,6 +32,8 @@ export default function MainButton({content, onPressAction, backgroundColor, isD
     };
 
     const handlePressOut = () => {
+        if (isDisabled) return;
+
         scale.value = withSpring(1, {
             damping: 10,
             stiffness: 100
@@ -44,6 +48,7 @@ export default function MainButton({content, onPressAction, backgroundColor, isD
             onPressOut={handlePressOut}
             style={animatedStyle}
             disabled={isDisabled}
+            testID="main-button"
         >
             <Text className="font-spacemono-bold text-lg text-center text-white">
                 {content}

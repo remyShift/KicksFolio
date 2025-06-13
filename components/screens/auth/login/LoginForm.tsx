@@ -134,6 +134,7 @@ export default function LoginForm() {
                                     handleFormSubmit();
                                 }
                             }}
+                            isDisabled={isSubmitDisabled}
                         />
                         <View className='flex gap-3 justify-center items-center w-full'>
                             <PageLink href='/sign-up' textBeforeLink="Don't have an account ?" linkText='Sign Up' />
