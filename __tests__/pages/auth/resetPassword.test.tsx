@@ -32,68 +32,72 @@ describe('Reset Password Page', () => {
         expect(confirmPasswordInput.props.value).toBe('');
     });
 
-    it('should display an error if the password is not provided with appropriate value on blur', async () => {
-        await fillAndBlurInput(passwordInput, 'toto');
-
-        expect(screen.getByTestId('error-message').props.children).toBe('Password must be at least 8 characters long.');
-        expect(mainButton.props.accessibilityState.disabled).toBe(true);
-    });
-
-    it('should put the password input with a red border on blur if the password is not provided with appropriate value', async () => {
-        await fillAndBlurInput(passwordInput, 'toto');
-
-        expect(passwordInput.props.className).toContain('border-2 border-red-500');
-    });
-
-    it('should put the password input with a orange border on focus', async () => {
-        await act(async () => {
-            fireEvent(passwordInput, 'focus');
+    describe('form focus', () => {
+        it('should put the password input with a orange border on focus', async () => {
+            await act(async () => {
+                fireEvent(passwordInput, 'focus');
+            });
+    
+            expect(passwordInput.props.className).toContain('border-2 border-orange-500');
         });
 
-        expect(passwordInput.props.className).toContain('border-2 border-orange-500');
+        it('should put the confirm password input with a orange border on focus', async () => {
+            await act(async () => {
+                fireEvent(confirmPasswordInput, 'focus');
+            });
+    
+            expect(confirmPasswordInput.props.className).toContain('border-2 border-orange-500');
+        });
     });
 
-    it('should display an error if the confirm password does not match the password', async () => {
-        await fillAndBlurInput(passwordInput, 'Tititoto14');
-        await fillAndBlurInput(confirmPasswordInput, 'Tititoto15');
+    describe('form validation', () => {
+        it('should display an error if the password is not provided with appropriate value on blur', async () => {
+            await fillAndBlurInput(passwordInput, 'toto');
 
-        expect(screen.getByTestId('error-message').props.children).toBe('Passwords don\'t match.');
-        expect(mainButton.props.accessibilityState.disabled).toBe(true);
-    });
-
-    it('should put the confirm password input with a red border on blur if the confirm password does not match the password', async () => {
-        await fillAndBlurInput(passwordInput, 'Tititoto14');
-        await fillAndBlurInput(confirmPasswordInput, 'Tititoto15');
-
-        expect(confirmPasswordInput.props.className).toContain('border-2 border-red-500');
-    });
-
-    it('should put the confirm password input with a orange border on focus', async () => {
-        await act(async () => {
-            fireEvent(confirmPasswordInput, 'focus');
+            expect(screen.getByTestId('error-message').props.children).toBe('Password must be at least 8 characters long.');
+            expect(mainButton.props.accessibilityState.disabled).toBe(true);
         });
 
-        expect(confirmPasswordInput.props.className).toContain('border-2 border-orange-500');
-    });
+        it('should put the password input with a red border on blur if the password is not provided with appropriate value', async () => {
+            await fillAndBlurInput(passwordInput, 'toto');
 
-    it('should display a global error message if the password is not provided with appropriate value and the confirm password does not match the password', async () => {
-        await fillAndBlurInput(passwordInput, 'toto');
-        await fillAndBlurInput(confirmPasswordInput, 'tata');
+            expect(passwordInput.props.className).toContain('border-2 border-red-500');
+        });
 
-        expect(screen.getByTestId('error-message').props.children).toBe('Please correct the fields in red before continuing');
-        expect(mainButton.props.accessibilityState.disabled).toBe(true);
-    });
+        it('should display an error if the confirm password does not match the password', async () => {
+            await fillAndBlurInput(passwordInput, 'Tititoto14');
+            await fillAndBlurInput(confirmPasswordInput, 'Tititoto15');
 
-    it('should render the main button with disabled state', () => {
-        expect(mainButton).toBeTruthy();
-        expect(mainButton.props.accessibilityState.disabled).toBe(true);
-    });
+            expect(screen.getByTestId('error-message').props.children).toBe('Passwords don\'t match.');
+            expect(mainButton.props.accessibilityState.disabled).toBe(true);
+        });
 
-    it('should have the main button enabled if the password and confirm password are provided with appropriate value and match', async () => {
-        await fillAndBlurInput(passwordInput, 'Tititoto14');
-        await fillAndBlurInput(confirmPasswordInput, 'Tititoto14');
+        it('should put the confirm password input with a red border on blur if the confirm password does not match the password', async () => {
+            await fillAndBlurInput(passwordInput, 'Tititoto14');
+            await fillAndBlurInput(confirmPasswordInput, 'Tititoto15');
 
-        expect(mainButton.props.accessibilityState.disabled).toBe(false);
+            expect(confirmPasswordInput.props.className).toContain('border-2 border-red-500');
+        });
+
+        it('should display a global error message if the password is not provided with appropriate value and the confirm password does not match the password', async () => {
+            await fillAndBlurInput(passwordInput, 'toto');
+            await fillAndBlurInput(confirmPasswordInput, 'tata');
+
+            expect(screen.getByTestId('error-message').props.children).toBe('Please correct the fields in red before continuing');
+            expect(mainButton.props.accessibilityState.disabled).toBe(true);
+        });
+
+        it('should render the main button with disabled state', () => {
+            expect(mainButton).toBeTruthy();
+            expect(mainButton.props.accessibilityState.disabled).toBe(true);
+        });
+
+        it('should have the main button enabled if the password and confirm password are provided with appropriate value and match', async () => {
+            await fillAndBlurInput(passwordInput, 'Tititoto14');
+            await fillAndBlurInput(confirmPasswordInput, 'Tititoto14');
+
+            expect(mainButton.props.accessibilityState.disabled).toBe(false);
+        });
     });
 
     describe('Reset password attempts', () => {

@@ -44,43 +44,47 @@ describe('LoginPage', () => {
         expect(passwordInput.props.value).toBe('');
 	});
 
-    it('should display fields with a orange border on focus', async () => {
-        await act(async () => {
-            fireEvent(emailInput, 'focus');
+    describe('form focus', () => {
+        it('should display fields with a orange border on focus', async () => {
+            await act(async () => {
+                fireEvent(emailInput, 'focus');
+            });
+            await act(async () => {
+                fireEvent(passwordInput, 'focus');
+            });
+
+            expect(emailInput.props.className).toContain('border-2 border-orange-500');
+            expect(passwordInput.props.className).toContain('border-2 border-orange-500');
         });
-        await act(async () => {
-            fireEvent(passwordInput, 'focus');
+    });
+
+    describe('form validation', () => {
+        it('should not display an error on blur if a regular email is provided', async () => {
+            await fillAndBlurInput(emailInput, 'test@test.com');
+            expect(emailInput.props.value).toBe('test@test.com');
+            expect(errorMessage.props.children).toBe('');
         });
 
-        expect(emailInput.props.className).toContain('border-2 border-orange-500');
-        expect(passwordInput.props.className).toContain('border-2 border-orange-500');
-    });
+        it('should display an error on blur if an invalid email is provided', async () => {
+            await fillAndBlurInput(emailInput, 'test@test');
+            expect(errorMessage.props.children).toBe('Please put a valid email.');
+        });
 
-    it('should not display an error on blur if a regular email is provided', async () => {
-        await fillAndBlurInput(emailInput, 'test@test.com');
-        expect(emailInput.props.value).toBe('test@test.com');
-        expect(errorMessage.props.children).toBe('');
-    });
+        it('should have the main button disabled if the email or password are empty', async () => {
+            expect(mainButton.props.accessibilityState.disabled).toBe(true);
+        });
 
-    it('should display an error on blur if an invalid email is provided', async () => {
-        await fillAndBlurInput(emailInput, 'test@test');
-        expect(errorMessage.props.children).toBe('Please put a valid email.');
-    });
+        it('should have the main button enabled if the email and password are provided', async () => {
+            await fillAndBlurInput(emailInput, 'test@test.com');
+            await fillAndBlurInput(passwordInput, 'password');
+            expect(mainButton.props.accessibilityState.disabled).toBe(false);
+        });
 
-    it('should have the main button disabled if the email or password are empty', async () => {
-        expect(mainButton.props.accessibilityState.disabled).toBe(true);
-    });
+        it('should display email input with a red border if invalid email is provided', async () => {
+            await fillAndBlurInput(emailInput, 'test@test');
 
-    it('should have the main button enabled if the email and password are provided', async () => {
-        await fillAndBlurInput(emailInput, 'test@test.com');
-        await fillAndBlurInput(passwordInput, 'password');
-        expect(mainButton.props.accessibilityState.disabled).toBe(false);
-    });
-
-    it('should display email input with a red border if invalid email is provided', async () => {
-        await fillAndBlurInput(emailInput, 'test@test');
-
-        expect(emailInput.props.className).toContain('border-2 border-red-500');
+            expect(emailInput.props.className).toContain('border-2 border-red-500');
+        });
     });
 
     describe('Login attempts', () => {

@@ -25,26 +25,31 @@ describe('CreateCollectionPage', () => {
         expect(mainButton).toBeTruthy();
     });
 
-    it('should display fields with a orange border on focus', async () => {
-        await act(async () => {
-            fireEvent(collectionNameInput, 'focus');
+    describe('form focus', () => {
+
+        it('should display fields with a orange border on focus', async () => {
+            await act(async () => {
+                fireEvent(collectionNameInput, 'focus');
+            });
+
+            expect(collectionNameInput.props.className).toContain('border-2 border-orange-500');
+        });
+    });
+
+    describe('form validation', () => {
+        it('should have the main button disabled if the collection name is not provided', async () => {
+            expect(mainButton.props.accessibilityState.disabled).toBe(true);
         });
 
-        expect(collectionNameInput.props.className).toContain('border-2 border-orange-500');
-    });
+        it('should display an error message if the collection name is not 4 characters long', async () => {
+            await fillAndBlurInput(collectionNameInput, 'My');
+            expect(errorMessage.props.children).toBe('Collection name is required and must be at least 4 characters long.');
+        });
 
-    it('should have the main button disabled if the collection name is not provided', async () => {
-        expect(mainButton.props.accessibilityState.disabled).toBe(true);
-    });
-
-    it('should display an error message if the collection name is not 4 characters long', async () => {
-        await fillAndBlurInput(collectionNameInput, 'My');
-        expect(errorMessage.props.children).toBe('Collection name is required and must be at least 4 characters long.');
-    });
-
-    it('should have the main button enabled if the collection name is provided with appropriate value', async () => {
-        await fillAndBlurInput(collectionNameInput, 'My Sneakers Collection');
-        expect(mainButton.props.accessibilityState.disabled).toBe(false);
+        it('should have the main button enabled if the collection name is provided with appropriate value', async () => {
+            await fillAndBlurInput(collectionNameInput, 'My Sneakers Collection');
+            expect(mainButton.props.accessibilityState.disabled).toBe(false);
+        });
     });
 
     describe('Create collection attempts', () => {

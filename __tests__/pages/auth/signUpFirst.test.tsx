@@ -53,66 +53,70 @@ describe('SignUpFirstPage', () => {
         expect(confirmPasswordInput.props.value).toBe('');
     });
 
-    it('should display fields with a orange border on focus', async () => {
-        await act(async () => {
-            fireEvent(userNameInput, 'focus');
+    describe('form focus', () => {
+        it('should display fields with a orange border on focus', async () => {
+            await act(async () => {
+                fireEvent(userNameInput, 'focus');
+            });
+            await act(async () => {
+                fireEvent(emailInput, 'focus');
+            });
+            await act(async () => {
+                fireEvent(passwordInput, 'focus');
+            });
+            await act(async () => {
+                fireEvent(confirmPasswordInput, 'focus');
+            });
+
+            expect(userNameInput.props.className).toContain('border-2 border-orange-500');
+            expect(emailInput.props.className).toContain('border-2 border-orange-500');
+            expect(passwordInput.props.className).toContain('border-2 border-orange-500');
+            expect(confirmPasswordInput.props.className).toContain('border-2 border-orange-500');
         });
-        await act(async () => {
-            fireEvent(emailInput, 'focus');
-        });
-        await act(async () => {
-            fireEvent(passwordInput, 'focus');
-        });
-        await act(async () => {
-            fireEvent(confirmPasswordInput, 'focus');
+    });
+
+    describe('form validation', () => {
+        it('should display an appropriate error if the username is not 4 characters long on blur', async () => {
+            await fillAndBlurInput(userNameInput, 're');
+            expect(errorMessage.props.children).toBe('Username must be at least 4 characters long.');
         });
 
-        expect(userNameInput.props.className).toContain('border-2 border-orange-500');
-        expect(emailInput.props.className).toContain('border-2 border-orange-500');
-        expect(passwordInput.props.className).toContain('border-2 border-orange-500');
-        expect(confirmPasswordInput.props.className).toContain('border-2 border-orange-500');
-    });
+        it('should display an appropriate error if the username contains special characters on blur', async () => {
+            await fillAndBlurInput(userNameInput, 'rea@');
+            expect(errorMessage.props.children).toBe('Username must not contain special characters.');
+        });
 
-    it('should display an appropriate error if the username is not 4 characters long on blur', async () => {
-        await fillAndBlurInput(userNameInput, 're');
-        expect(errorMessage.props.children).toBe('Username must be at least 4 characters long.');
-    });
+        it('should display an appropriate error if the email is not a valid email on blur', async () => {
+            await fillAndBlurInput(emailInput, 'test@test');
+            expect(errorMessage.props.children).toBe('Please put a valid email.');
+        });
 
-    it('should display an appropriate error if the username contains special characters on blur', async () => {
-        await fillAndBlurInput(userNameInput, 'rea@');
-        expect(errorMessage.props.children).toBe('Username must not contain special characters.');
-    });
+        it('should display an appropriate error if the password is not 8 characters long on blur', async () => {
+            await fillAndBlurInput(passwordInput, '1234567');
+            expect(errorMessage.props.children).toBe('Password must be at least 8 characters long.');
+        });
 
-    it('should display an appropriate error if the email is not a valid email on blur', async () => {
-        await fillAndBlurInput(emailInput, 'test@test');
-        expect(errorMessage.props.children).toBe('Please put a valid email.');
-    });
+        it('should display an appropriate error if the password does not contain at least one uppercase letter on blur', async () => {
+            await fillAndBlurInput(passwordInput, 'totototo14');
+            expect(errorMessage.props.children).toBe('Password must contain at least one uppercase letter and one number.');
+        });
 
-    it('should display an appropriate error if the password is not 8 characters long on blur', async () => {
-        await fillAndBlurInput(passwordInput, '1234567');
-        expect(errorMessage.props.children).toBe('Password must be at least 8 characters long.');
-    });
+        it('should display an appropriate error if the password does not contain at least one number on blur', async () => {
+            await fillAndBlurInput(passwordInput, 'Totototo');
+            expect(errorMessage.props.children).toBe('Password must contain at least one uppercase letter and one number.');
+        });
 
-    it('should display an appropriate error if the password does not contain at least one uppercase letter on blur', async () => {
-        await fillAndBlurInput(passwordInput, 'totototo14');
-        expect(errorMessage.props.children).toBe('Password must contain at least one uppercase letter and one number.');
-    });
+        it('should display an appropriate error if the password does not match the confirm password on blur', async () => {
+            await fillAndBlurInput(passwordInput, 'Totototo14');
+            await fillAndBlurInput(confirmPasswordInput, 'Totototo14*');
+            expect(errorMessage.props.children).toBe('Passwords do not match.');
+        });
 
-    it('should display an appropriate error if the password does not contain at least one number on blur', async () => {
-        await fillAndBlurInput(passwordInput, 'Totototo');
-        expect(errorMessage.props.children).toBe('Password must contain at least one uppercase letter and one number.');
-    });
-
-    it('should display an appropriate error if the password does not match the confirm password on blur', async () => {
-        await fillAndBlurInput(passwordInput, 'Totototo14');
-        await fillAndBlurInput(confirmPasswordInput, 'Totototo14*');
-        expect(errorMessage.props.children).toBe('Passwords do not match.');
-    });
-
-    it('should display a global error message if multiple errors are present', async () => {
-        await fillAndBlurInput(userNameInput, 're');
-        await fillAndBlurInput(emailInput, 'test@test');
-        expect(errorMessage.props.children).toBe('Please correct the fields in red before continuing');
+        it('should display a global error message if multiple errors are present', async () => {
+            await fillAndBlurInput(userNameInput, 're');
+            await fillAndBlurInput(emailInput, 'test@test');
+            expect(errorMessage.props.children).toBe('Please correct the fields in red before continuing');
+        });
     });
 
     it('should display fields with a red border if an error is present', async () => {
