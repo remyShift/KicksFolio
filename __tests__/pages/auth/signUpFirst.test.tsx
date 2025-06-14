@@ -54,6 +54,26 @@ describe('SignUpFirstPage', () => {
         expect(confirmPasswordInput.props.value).toBe('');
     });
 
+    it('should display fields with a orange border on focus', async () => {
+        await act(async () => {
+            fireEvent(userNameInput, 'focus');
+        });
+        await act(async () => {
+            fireEvent(emailInput, 'focus');
+        });
+        await act(async () => {
+            fireEvent(passwordInput, 'focus');
+        });
+        await act(async () => {
+            fireEvent(confirmPasswordInput, 'focus');
+        });
+
+        expect(userNameInput.props.className).toContain('border-2 border-orange-500');
+        expect(emailInput.props.className).toContain('border-2 border-orange-500');
+        expect(passwordInput.props.className).toContain('border-2 border-orange-500');
+        expect(confirmPasswordInput.props.className).toContain('border-2 border-orange-500');
+    });
+
     it('should display an appropriate error if the username is not 4 characters long on blur', async () => {
         await fillAndBlurInput(userNameInput, 're');
         expect(errorMessage.props.children).toBe('Username must be at least 4 characters long.');

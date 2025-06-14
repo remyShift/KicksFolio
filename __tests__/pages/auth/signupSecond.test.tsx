@@ -60,6 +60,22 @@ describe('SignUpFirstPage', () => {
         expect(sneakerSizeInput.props.value).toBe('');
     });
 
+    it('should display fields with a orange border on focus', async () => {
+        await act(async () => {
+            fireEvent(firstNameInput, 'focus');
+        });
+        await act(async () => {
+            fireEvent(lastNameInput, 'focus');
+        });
+        await act(async () => {
+            fireEvent(sneakerSizeInput, 'focus');
+        });
+
+        expect(firstNameInput.props.className).toContain('border-2 border-orange-500');
+        expect(lastNameInput.props.className).toContain('border-2 border-orange-500');
+        expect(sneakerSizeInput.props.className).toContain('border-2 border-orange-500');
+    });
+
     it('should display an appropriate error if the first name is not 2 characters long on blur', async () => {
         await fillAndBlurInput(firstNameInput, 'r');
         expect(errorMessage.props.children).toBe('First name must be at least 2 characters long.');

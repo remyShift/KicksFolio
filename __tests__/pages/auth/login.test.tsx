@@ -43,6 +43,18 @@ describe('LoginPage', () => {
         expect(passwordInput.props.value).toBe('');
 	});
 
+    it('should display fields with a orange border on focus', async () => {
+        await act(async () => {
+            fireEvent(emailInput, 'focus');
+        });
+        await act(async () => {
+            fireEvent(passwordInput, 'focus');
+        });
+
+        expect(emailInput.props.className).toContain('border-2 border-orange-500');
+        expect(passwordInput.props.className).toContain('border-2 border-orange-500');
+    });
+
     it('should not display an error on blur if a regular email is provided', async () => {
         await fillAndBlurInput(emailInput, 'test@test.com');
         expect(emailInput.props.value).toBe('test@test.com');
@@ -62,6 +74,12 @@ describe('LoginPage', () => {
         await fillAndBlurInput(emailInput, 'test@test.com');
         await fillAndBlurInput(passwordInput, 'password');
         expect(mainButton.props.accessibilityState.disabled).toBe(false);
+    });
+
+    it('should display email input with a red border if invalid email is provided', async () => {
+        await fillAndBlurInput(emailInput, 'test@test');
+
+        expect(emailInput.props.className).toContain('border-2 border-red-500');
     });
 
     describe('Login attempts', () => {
