@@ -5,6 +5,9 @@ export const mockUseAuth = {
 	clearError: jest.fn(),
 	handleNextSignupPage: jest.fn(),
 	forgotPassword: jest.fn(),
+	resetPassword: jest.fn((token, newPassword, confirmNewPassword) => {
+		return Promise.resolve(true);
+	}),
 };
 
 export const mockAuthService = {

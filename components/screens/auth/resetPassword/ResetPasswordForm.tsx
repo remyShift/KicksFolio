@@ -83,7 +83,7 @@ export default function ResetPasswordForm() {
                             name="password"
                             control={control}
                             label="*New Password"
-                            placeholder="New Password"
+                            placeholder="********"
                             ref={passwordInputRef}
                             nextInputRef={confirmPasswordInputRef}
                             onFocus={() => handleFieldFocusWithClearError('password')}
@@ -96,7 +96,7 @@ export default function ResetPasswordForm() {
                             name="confirmPassword"
                             control={control}
                             label="*Confirm New Password"
-                            placeholder="Confirm New Password"
+                            placeholder="********"
                             ref={confirmPasswordInputRef}
                             onFocus={() => handleFieldFocusWithClearError('confirmPassword')}
                             onBlur={async (value) => { await validateFieldOnBlur('confirmPassword', value); }}
@@ -114,6 +114,7 @@ export default function ResetPasswordForm() {
                                         handleFormSubmit();
                                     }
                                 }}
+                                isDisabled={isSubmitDisabled}
                             />
                         </View>
                     </View>

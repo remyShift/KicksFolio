@@ -34,6 +34,12 @@ describe('Forgot Password Page', () => {
         expect(mainButton.props.accessibilityState.disabled).toBe(true);
     });
 
+    it('should put the mail input with a red border on blur if the email is not provided with appropriate value', async () => {
+        await fillAndBlurInput(emailInput, 'toto');
+
+        expect(emailInput.props.className).toContain('border-2 border-red-500');
+    });
+
     it('should put the mail input with a orange border on focus', async () => {
         await act(async () => {
             fireEvent(emailInput, 'focus');
