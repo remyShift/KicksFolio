@@ -4,6 +4,7 @@ export const mockUseAuth = {
 	errorMsg: '',
 	clearError: jest.fn(),
 	handleNextSignupPage: jest.fn(),
+	forgotPassword: jest.fn(),
 };
 
 export const mockAuthService = {

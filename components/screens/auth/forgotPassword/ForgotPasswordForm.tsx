@@ -80,7 +80,7 @@ export default function ForgotPasswordForm() {
                             name="email"
                             control={control}
                             label="*Email"
-                            placeholder="Email"
+                            placeholder="john@doe.com"
                             ref={emailInputRef}
                             keyboardType="email-address"
                             autoComplete="email"
@@ -100,6 +100,7 @@ export default function ForgotPasswordForm() {
                                         handleFormSubmit();
                                     }
                                 }}
+                                isDisabled={isSubmitDisabled}
                             />
                             <PageLink href='/login' linkText='Back to Login' />
                         </View>
