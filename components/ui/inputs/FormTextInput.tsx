@@ -22,6 +22,7 @@ interface FormTextInputProps<T extends FieldValues> {
     multiline?: boolean;
     scrollEnabled?: boolean;
     textAlignVertical?: 'top' | 'center' | 'bottom';
+    accessibilityLabel?: string;
 }
 
 const FormTextInput = forwardRef<TextInput, FormTextInputProps<any>>(
@@ -44,6 +45,7 @@ const FormTextInput = forwardRef<TextInput, FormTextInputProps<any>>(
         multiline = false,
         scrollEnabled = false,
         textAlignVertical = 'center',
+        accessibilityLabel,
     }, ref) => {
 
     const [isFocused, setIsFocused] = useState(false);
@@ -101,6 +103,7 @@ const FormTextInput = forwardRef<TextInput, FormTextInputProps<any>>(
                             scrollEnabled={scrollEnabled}
                             textAlignVertical={textAlignVertical}
                             style={{ height: textInputHeight }}
+                            accessibilityLabel={accessibilityLabel || label}
                             className={`bg-white rounded-md py-3 px-2 w-full font-spacemono-bold ${
                                 error 
                                 ? 'border-2 border-red-500' 

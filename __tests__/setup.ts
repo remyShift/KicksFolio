@@ -5,6 +5,7 @@ import {
 	mockUseAuth,
 	mockUseSignUpProps,
 	mockUseCreateCollection,
+	mockUser,
 } from './pages/auth/authSetup';
 
 jest.mock('@react-native-async-storage/async-storage', () => ({
@@ -58,6 +59,23 @@ jest.mock('@/hooks/useCreateCollection', () => ({
 	useCreateCollection: () => mockUseCreateCollection,
 }));
 
+jest.mock('@/context/authContext', () => ({
+	...jest.requireActual('@/context/authContext'),
+	useSession: () => ({
+		user: mockUser,
+		sessionToken: 'mock-token',
+		isLoading: false,
+		userCollection: null,
+		setUserCollection: jest.fn(),
+		userSneakers: null,
+		setUserSneakers: jest.fn(),
+		setUser: jest.fn(),
+		setSessionToken: jest.fn(),
+		refreshUserData: jest.fn(),
+		refreshUserSneakers: jest.fn(),
+	}),
+}));
+
 const originalConsoleError = console.error;
 
 beforeEach(() => {
@@ -66,6 +84,7 @@ beforeEach(() => {
 
 afterEach(() => {
 	cleanup();
+	jest.clearAllMocks();
 	console.error = originalConsoleError;
 });
 

@@ -1,30 +1,43 @@
-import { useForm, FieldValues, Path, UseFormProps } from 'react-hook-form';
+import {
+	useForm,
+	FieldValues,
+	Path,
+	UseFormProps,
+	DefaultValues,
+} from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-interface FormControllerOptions<T extends FieldValues> extends UseFormProps<T> {
+interface FormControllerOptions<T extends FieldValues>
+	extends Omit<UseFormProps<T>, 'defaultValues'> {
 	schema: any;
 	onSubmit?: (data: T) => Promise<void> | void;
 	asyncValidation?: {
 		[K in keyof T]?: (value: T[K]) => Promise<string | null>;
 	};
+	defaultValues?: DefaultValues<T>;
+	isEditForm?: boolean;
 }
 
 export function useFormController<T extends FieldValues>({
 	schema,
 	onSubmit,
 	asyncValidation,
+	defaultValues,
+	isEditForm = false,
 	...formOptions
 }: FormControllerOptions<T>) {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [asyncErrors, setAsyncErrors] = useState<
 		Partial<Record<keyof T, string>>
 	>({});
+	const [hasChanges, setHasChanges] = useState(false);
 
 	const form = useForm<T>({
 		resolver: zodResolver(schema),
 		mode: 'onSubmit',
 		reValidateMode: 'onBlur',
+		defaultValues,
 		...formOptions,
 	});
 
@@ -33,8 +46,25 @@ export function useFormController<T extends FieldValues>({
 		setError,
 		clearErrors,
 		trigger,
+		watch,
 		formState: { errors, isValid },
 	} = form;
+
+	const formValues = watch();
+
+	useEffect(() => {
+		if (!defaultValues || !isEditForm) return;
+
+		const hasFormChanges = Object.keys(formValues).some((key) => {
+			const currentValue = formValues[key as keyof T];
+			const defaultValue = (defaultValues as Record<string, any>)[key];
+			const currentValueStr = String(currentValue);
+			const defaultValueStr = String(defaultValue);
+
+			return currentValueStr !== defaultValueStr;
+		});
+		setHasChanges(hasFormChanges);
+	}, [formValues, defaultValues, isEditForm]);
 
 	const validateFieldAsync = async (fieldName: keyof T, value: any) => {
 		if (asyncValidation?.[fieldName]) {
@@ -136,10 +166,13 @@ export function useFormController<T extends FieldValues>({
 		return false;
 	};
 
-	const isSubmitDisabled =
-		!isValid ||
-		isSubmitting ||
-		Object.keys(asyncErrors).some((key) => asyncErrors[key as keyof T]);
+	const isSubmitDisabled = isEditForm
+		? isSubmitting ||
+		  Object.keys(asyncErrors).some((key) => asyncErrors[key as keyof T]) ||
+		  !hasChanges
+		: !isValid ||
+		  isSubmitting ||
+		  Object.keys(asyncErrors).some((key) => asyncErrors[key as keyof T]);
 
 	return {
 		...form,
@@ -151,5 +184,7 @@ export function useFormController<T extends FieldValues>({
 		hasFieldError,
 		isSubmitDisabled,
 		isSubmitting,
+		isValid,
+		hasChanges,
 	};
 }

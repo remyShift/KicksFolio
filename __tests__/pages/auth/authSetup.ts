@@ -5,6 +5,7 @@ export const mockUseAuth = {
 	clearError: jest.fn(),
 	handleNextSignupPage: jest.fn(),
 	forgotPassword: jest.fn(),
+	updateUser: jest.fn(),
 	resetPassword: jest.fn((token, newPassword, confirmNewPassword) => {
 		return Promise.resolve(true);
 	}),
@@ -34,4 +35,19 @@ export const mockUseSignUpProps = {
 export const mockUseCreateCollection = {
 	createCollection: jest.fn(),
 	error: '',
+};
+
+export const mockUser = {
+	id: '1',
+	username: 'testuser',
+	first_name: 'John',
+	last_name: 'Doe',
+	sneaker_size: '10',
+	email: 'test@example.com',
+	profile_picture_url: '',
+};
+
+export const newMockUser = {
+	...mockUser,
+	username: 'remysnkr',
 };

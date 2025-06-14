@@ -29,16 +29,17 @@ export default function EditProfileForm() {
         validateFieldOnBlur,
         getFieldError,
         hasFieldError,
-        watch,
+        isSubmitDisabled,
     } = useFormController({
         schema: editProfileSchema,
         defaultValues: {
-            username: user?.username || '',
-            first_name: user?.first_name || '',
-            last_name: user?.last_name || '',
-            sneaker_size: user?.sneaker_size?.toString() || '',
-            profile_picture: user?.profile_picture_url || '',
+            username: user!.username,
+            first_name: user!.first_name,
+            last_name: user!.last_name,
+            sneaker_size: user!.sneaker_size.toString(),
+            profile_picture: user!.profile_picture_url,
         },
+        isEditForm: true,
         onSubmit: async (data) => {
             if (!user || !sessionToken) return
             await updateUser(user.id, {
@@ -107,6 +108,7 @@ export default function EditProfileForm() {
                             onBlur={async (value) => { await validateFieldOnBlur('username', value); }}
                             error={getFieldErrorWrapper('username')}
                             getFieldError={getFieldErrorWrapper}
+                            accessibilityLabel="*Username"
                         />
 
                         <FormTextInput
@@ -121,6 +123,7 @@ export default function EditProfileForm() {
                             onBlur={async (value) => { await validateFieldOnBlur('first_name', value); }}
                             error={getFieldErrorWrapper('first_name')}
                             getFieldError={getFieldErrorWrapper}
+                            accessibilityLabel="*First Name"
                         />
 
                         <FormTextInput
@@ -135,6 +138,7 @@ export default function EditProfileForm() {
                             onBlur={async (value) => { await validateFieldOnBlur('last_name', value); }}
                             error={getFieldErrorWrapper('last_name')}
                             getFieldError={getFieldErrorWrapper}
+                            accessibilityLabel="*Last Name"
                         />
 
                         <FormTextInput
@@ -148,6 +152,7 @@ export default function EditProfileForm() {
                             onBlur={async (value) => { await validateFieldOnBlur('sneaker_size', value); }}
                             error={getFieldErrorWrapper('sneaker_size')}
                             getFieldError={getFieldErrorWrapper}
+                            accessibilityLabel="*Sneaker Size"
                         />
                     </View>
 
@@ -155,7 +160,8 @@ export default function EditProfileForm() {
                         <MainButton 
                             content="Save"
                             onPressAction={handleFormSubmit}
-                            backgroundColor="bg-primary"
+                            backgroundColor={isSubmitDisabled ? 'bg-primary/50' : 'bg-primary'}
+                            isDisabled={isSubmitDisabled}
                         />
                     </View>
                 </View>
