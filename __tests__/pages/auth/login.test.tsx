@@ -29,7 +29,12 @@ describe('LoginPage', () => {
 
     it('should render the login page', () => {
 		const pageTitle = screen.getByTestId('page-title');
+        const forgotPasswordLink = screen.getByText('Forgot Password?');
+        const signUpLink = screen.getByText('Sign Up');
+
 		expect(pageTitle.props.children).toBe('Login');
+        expect(forgotPasswordLink).toBeTruthy();
+        expect(signUpLink).toBeTruthy();
 	});
 
 	it('should render login form elements with empty values', () => {
