@@ -99,7 +99,7 @@ export default function CreateCollection() {
                                 if (!isSubmitDisabled) {
                                     handleFormSubmit()
                                 }
-                            }} 
+                            }}
                         />
                     </View>
                 </View>

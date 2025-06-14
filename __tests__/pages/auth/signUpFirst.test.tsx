@@ -33,10 +33,6 @@ describe('SignUpFirstPage', () => {
         mainButton = screen.getByTestId('main-button');
     });
 
-    afterEach(() => {
-        cleanup();
-    });
-
     it('should render the sign up first page', () => {
 		const pageTitle = screen.getByTestId('page-title');
         expect(pageTitle.props.children).toBe('Sign Up');

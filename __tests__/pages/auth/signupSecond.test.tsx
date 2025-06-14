@@ -41,10 +41,6 @@ describe('SignUpFirstPage', () => {
         errorMessage = screen.getByTestId('error-message');
     });
 
-    afterEach(() => {
-        cleanup();
-    });
-
     it('should render the sign up second page', () => {
 		const pageTitle = screen.getByTestId('page-title');
         expect(pageTitle.props.children).toBe('Sign Up');

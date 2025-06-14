@@ -26,3 +26,8 @@ export const mockUseSignUpProps = {
 	},
 	setSignUpProps: jest.fn(),
 };
+
+export const mockUseCreateCollection = {
+	createCollection: jest.fn(),
+	error: '',
+};

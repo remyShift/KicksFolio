@@ -4,6 +4,7 @@ import {
 	mockAuthService,
 	mockUseAuth,
 	mockUseSignUpProps,
+	mockUseCreateCollection,
 } from './pages/auth/authSetup';
 
 jest.mock('@react-native-async-storage/async-storage', () => ({
@@ -51,6 +52,10 @@ jest.mock('@/hooks/useAuth', () => ({
 
 jest.mock('@/context/signUpPropsContext', () => ({
 	useSignUpProps: () => mockUseSignUpProps,
+}));
+
+jest.mock('@/hooks/useCreateCollection', () => ({
+	useCreateCollection: () => mockUseCreateCollection,
 }));
 
 const originalConsoleError = console.error;
