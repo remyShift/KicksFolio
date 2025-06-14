@@ -26,7 +26,6 @@ describe('CreateCollectionPage', () => {
     });
 
     describe('form focus', () => {
-
         it('should display fields with a orange border on focus', async () => {
             await act(async () => {
                 fireEvent(collectionNameInput, 'focus');

@@ -97,6 +97,12 @@ describe('Edit Profile Form', () => {
             expect(errorMessage.props.children).toBe('Please enter a valid size, size must be a number between 7 and 15.');
         });
 
+        it('should display a global error message if multiple fields are not valid on blur', async () => {
+            await fillAndBlurInput(userNameInput, 'r');
+            await fillAndBlurInput(sizeInput, '0');
+            expect(errorMessage.props.children).toBe('Please correct the fields in red before continuing');
+        });
+
         it('should set a red border to the username input if the username is not valid on blur', async () => {
             await fillAndBlurInput(userNameInput, 'r');
             expect(userNameInput.props.className).toContain('border-2 border-red-500');
