@@ -1,9 +1,7 @@
 import { AuthValidationService } from '@/services/AuthValidationService';
-import { useSession } from '@/context/authContext';
 
 export function useAsyncValidation() {
 	const validationService = new AuthValidationService();
-	const { userSneakers } = useSession();
 
 	const checkUsernameExists = async (
 		username: string

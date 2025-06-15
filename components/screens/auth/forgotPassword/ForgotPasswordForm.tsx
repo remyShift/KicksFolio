@@ -10,12 +10,13 @@ import FormTextInput from "@/components/ui/inputs/FormTextInput";
 import { useFormController } from "@/hooks/useFormController";
 import { forgotPasswordSchema, ForgotPasswordFormData } from "@/validation/schemas";
 import PageLink from "@/components/ui/links/LoginPageLink";
+import { useFormErrorHandling } from "@/hooks/useFormErrorHandling";
 
 export default function ForgotPasswordForm() {
     const scrollViewRef = useRef<ScrollView>(null);
     const emailInputRef = useRef<TextInput>(null);
 
-    const { forgotPassword, errorMsg: authErrorMsg, clearError } = useAuth();
+    const { forgotPassword, errorMsg: authErrorMsg } = useAuth();
 
     const {
         control,
@@ -35,27 +36,17 @@ export default function ForgotPasswordForm() {
         },
     });
 
-    const handleFieldFocusWithClearError = (fieldName: keyof ForgotPasswordFormData) => {
-        handleFieldFocus(fieldName);
-        clearError();
-    };
-
-    const hasMultipleErrors = [
-        hasFieldError('email'),
-    ].filter(Boolean).length > 1;
-
-    const globalErrorMsg = hasMultipleErrors 
-        ? 'Please correct the fields in red before continuing'
-        : '';
-
-    const displayedError = globalErrorMsg || 
-        getFieldError('email') || 
-        authErrorMsg || 
-        '';
-
-    const getFieldErrorWrapper = (fieldName: string) => {
-        return getFieldError(fieldName as keyof ForgotPasswordFormData);
-    };
+    const {
+        handleFieldFocusWithClearError,
+        displayedError,
+        getFieldErrorWrapper,
+    } = useFormErrorHandling<ForgotPasswordFormData>({
+        getFieldError,
+        hasFieldError,
+        handleFieldFocus,
+        fieldNames: ['email'],
+        authErrorMsg,
+    });
 
     return (
         <KeyboardAvoidingView 

@@ -11,6 +11,7 @@ import { useFormController } from '@/hooks/useFormController';
 import { signUpStep2Schema, SignUpStep2FormData } from '@/validation/schemas';
 import { Link } from 'expo-router';
 import PageLink from '@/components/ui/links/LoginPageLink';
+import { useFormErrorHandling } from '@/hooks/useFormErrorHandling';
 
 export default function SignUpSecondForm() {
     const { signUpProps, setSignUpProps } = useSignUpProps();
@@ -51,25 +52,16 @@ export default function SignUpSecondForm() {
         },
     });
 
-    const getFieldErrorWrapper = (fieldName: string) => {
-        return getFieldError(fieldName as keyof typeof signUpStep2Schema._type);
-    };
-
-    const hasMultipleErrors = [
-        hasFieldError('firstName'),
-        hasFieldError('lastName'),
-        hasFieldError('size'),
-    ].filter(Boolean).length > 1;
-
-    const globalErrorMsg = hasMultipleErrors 
-        ? 'Please correct the fields in red before continuing'
-        : '';
-
-    const displayedError = globalErrorMsg || 
-        getFieldError('firstName') || 
-        getFieldError('lastName') || 
-        getFieldError('size') || 
-        '';
+    const {
+        displayedError,
+        getFieldErrorWrapper,
+    } = useFormErrorHandling<SignUpStep2FormData>({
+        getFieldError,
+        hasFieldError,
+        handleFieldFocus,
+        fieldNames: ['firstName', 'lastName', 'size'],
+        enableClearError: false,
+    });
 
     return (
         <KeyboardAvoidingView 

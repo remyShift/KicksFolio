@@ -11,7 +11,7 @@ export default function SplashScreen({ sessionToken, setIsSplashScreenVisible }:
     const [textAnimationFinished, setTextAnimationFinished] = useState(false);
     const { userSneakers } = useSession();
     const AnimatedView = Animated.createAnimatedComponent(View);
-    const { loadInitialData } = useInitialData();
+    const { loadAndSetInitialData } = useInitialData();
 
     const preloadImages = async (imageUris: string[]) => {
         const prefetchTasks = imageUris.map(uri => Image.prefetch(uri));
@@ -20,9 +20,9 @@ export default function SplashScreen({ sessionToken, setIsSplashScreenVisible }:
 
     const initializeApp = async () => {
         if (sessionToken) {
-            await loadInitialData()
+            await loadAndSetInitialData()
                 .then(() => {
-                    console.log('[SplashScreen] loadInitialData resolved');
+                    console.log('[SplashScreen] loadAndSetInitialData resolved');
                 });
             if (userSneakers) {
                 const sneakerImages = userSneakers.map(sneaker => sneaker.images[0]);

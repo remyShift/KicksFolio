@@ -12,6 +12,7 @@ import { useAsyncValidation } from "@/hooks/useAsyncValidation";
 import { useAuth } from "@/hooks/useAuth";
 import { signUpStep1Schema, SignUpStep1FormData } from "@/validation/schemas";
 import PageLink from "@/components/ui/links/LoginPageLink";
+import { useFormErrorHandling } from "@/hooks/useFormErrorHandling";
 
 export default function SignUpFirstForm() {
     const scrollViewRef = useRef<ScrollView>(null);
@@ -63,27 +64,16 @@ export default function SignUpFirstForm() {
         },
     });
 
-    const hasMultipleErrors = [
-        hasFieldError('username'),
-        hasFieldError('email'),
-        hasFieldError('password'),
-        hasFieldError('confirmPassword'),
-    ].filter(Boolean).length > 1;
-
-    const globalErrorMsg = hasMultipleErrors 
-        ? 'Please correct the fields in red before continuing'
-        : '';
-
-    const displayedError = globalErrorMsg || 
-        getFieldError('username') || 
-        getFieldError('email') || 
-        getFieldError('password') || 
-        getFieldError('confirmPassword') || 
-        '';
-
-    const getFieldErrorWrapper = (fieldName: string) => {
-        return getFieldError(fieldName as keyof SignUpStep1FormData);
-    };
+    const {
+        displayedError,
+        getFieldErrorWrapper,
+    } = useFormErrorHandling<SignUpStep1FormData>({
+        getFieldError,
+        hasFieldError,
+        handleFieldFocus,
+        fieldNames: ['username', 'email', 'password', 'confirmPassword'],
+        enableClearError: false,
+    });
 
     return (
         <KeyboardAvoidingView 

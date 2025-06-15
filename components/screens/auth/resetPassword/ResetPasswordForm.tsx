@@ -8,6 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 import FormPasswordInput from "@/components/ui/inputs/FormPasswordInput";
 import { useFormController } from "@/hooks/useFormController";
 import { resetPasswordSchema, ResetPasswordFormData } from "@/validation/schemas";
+import { useFormErrorHandling } from "@/hooks/useFormErrorHandling";
 
 export default function ResetPasswordForm() {
     const { token } = useLocalSearchParams();
@@ -15,7 +16,7 @@ export default function ResetPasswordForm() {
     const passwordInputRef = useRef<TextInput>(null);
     const confirmPasswordInputRef = useRef<TextInput>(null);
     
-    const { resetPassword, errorMsg: authErrorMsg, clearError } = useAuth();
+    const { resetPassword, errorMsg: authErrorMsg } = useAuth();
 
     const {
         control,
@@ -36,29 +37,17 @@ export default function ResetPasswordForm() {
         },
     });
 
-    const handleFieldFocusWithClearError = (fieldName: keyof ResetPasswordFormData) => {
-        handleFieldFocus(fieldName);
-        clearError();
-    };
-
-    const hasMultipleErrors = [
-        hasFieldError('password'),
-        hasFieldError('confirmPassword'),
-    ].filter(Boolean).length > 1;
-
-    const globalErrorMsg = hasMultipleErrors 
-        ? 'Please correct the fields in red before continuing'
-        : '';
-
-    const displayedError = globalErrorMsg || 
-        getFieldError('password') || 
-        getFieldError('confirmPassword') || 
-        authErrorMsg || 
-        '';
-
-    const getFieldErrorWrapper = (fieldName: string) => {
-        return getFieldError(fieldName as keyof ResetPasswordFormData);
-    };
+    const {
+        handleFieldFocusWithClearError,
+        displayedError,
+        getFieldErrorWrapper,
+    } = useFormErrorHandling<ResetPasswordFormData>({
+        getFieldError,
+        hasFieldError,
+        handleFieldFocus,
+        fieldNames: ['password', 'confirmPassword'],
+        authErrorMsg,
+    });
 
     return (
         <KeyboardAvoidingView 

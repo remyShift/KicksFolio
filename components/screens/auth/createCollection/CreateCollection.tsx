@@ -9,6 +9,7 @@ import { useCreateCollection } from '@/hooks/useCreateCollection';
 import { useFormController } from '@/hooks/useFormController';
 import { useSession } from '@/context/authContext';
 import { z } from 'zod';
+import { useFormErrorHandling } from '@/hooks/useFormErrorHandling';
 
 const collectionSchema = z.object({
     collectionName: z.string().min(4, 'Collection name is required and must be at least 4 characters long.'),
@@ -39,22 +40,17 @@ export default function CreateCollection() {
         },
     });
 
-    const hasMultipleErrors = [
-        hasFieldError('collectionName'),
-    ].filter(Boolean).length > 1;
-
-    const globalErrorMsg = hasMultipleErrors 
-        ? 'Please correct the fields in red before continuing'
-        : '';
-
-    const displayedError = globalErrorMsg || 
-        getFieldError('collectionName') || 
-        createCollectionError || 
-        '';
-
-    const getFieldErrorWrapper = (fieldName: string) => {
-        return getFieldError(fieldName as keyof CollectionFormData);
-    };
+    const {
+        displayedError,
+        getFieldErrorWrapper,
+    } = useFormErrorHandling<CollectionFormData>({
+        getFieldError,
+        hasFieldError,
+        handleFieldFocus,
+        fieldNames: ['collectionName'],
+        authErrorMsg: createCollectionError,
+        enableClearError: false,
+    });
 
     useEffect(() => {
         if (userCollection) {

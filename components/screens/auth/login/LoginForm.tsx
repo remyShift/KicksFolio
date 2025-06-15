@@ -11,13 +11,14 @@ import FormPasswordInput from "@/components/ui/inputs/FormPasswordInput";
 import { useFormController } from "@/hooks/useFormController";
 import { loginSchema, LoginFormData } from "@/validation/schemas";
 import PageLink from "@/components/ui/links/LoginPageLink";
+import { useFormErrorHandling } from "@/hooks/useFormErrorHandling";
 
 export default function LoginForm() {
     const scrollViewRef = useRef<ScrollView>(null);
     const emailInputRef = useRef<TextInput>(null);
     const passwordInputRef = useRef<TextInput>(null);
 
-    const { login, errorMsg: authErrorMsg, clearError } = useAuth();
+    const { login, errorMsg: authErrorMsg } = useAuth();
 
     const params = useLocalSearchParams();
     const [resetPasswordSuccess, setResetPasswordSuccess] = useState(params.message as string);
@@ -41,29 +42,17 @@ export default function LoginForm() {
         },
     });
 
-    const handleFieldFocusWithClearError = (fieldName: keyof LoginFormData) => {
-        handleFieldFocus(fieldName);
-        clearError();
-    };
-
-    const hasMultipleErrors = [
-        hasFieldError('email'),
-        hasFieldError('password'),
-    ].filter(Boolean).length > 1;
-
-    const globalErrorMsg = hasMultipleErrors 
-        ? 'Please correct the fields in red before continuing'
-        : '';
-
-    const displayedError = globalErrorMsg || 
-        getFieldError('email') || 
-        getFieldError('password') || 
-        authErrorMsg || 
-        '';
-
-    const getFieldErrorWrapper = (fieldName: string) => {
-        return getFieldError(fieldName as keyof LoginFormData);
-    };
+    const {
+        handleFieldFocusWithClearError,
+        displayedError,
+        getFieldErrorWrapper,
+    } = useFormErrorHandling<LoginFormData>({
+        getFieldError,
+        hasFieldError,
+        handleFieldFocus,
+        fieldNames: ['email', 'password'],
+        authErrorMsg,
+    });
 
     useEffect(() => {
         if (resetPasswordSuccess) {
