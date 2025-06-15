@@ -1,5 +1,5 @@
 import SignUpFirstPage from '@/app/(auth)/(signup)/sign-up';
-import { act, cleanup, fireEvent, render, screen } from '@testing-library/react-native';
+import { act, fireEvent, render, screen } from '@testing-library/react-native';
 import { mockAuthService, mockUseAuth } from './authSetup';
 import { fillAndBlurInput } from '../../setup';
 import { ReactTestInstance } from 'react-test-renderer';
@@ -77,7 +77,7 @@ describe('SignUpFirstPage', () => {
 
     describe('form validation', () => {
         it('should display an appropriate error if the username is not 4 characters long on blur', async () => {
-            await fillAndBlurInput(userNameInput, 're');
+            await fillAndBlurInput(userNameInput, 'r');
             expect(errorMessage.props.children).toBe('Username must be at least 4 characters long.');
         });
 

@@ -35,6 +35,10 @@ export function useFormController<T extends FieldValues>({
 	...formOptions
 }: FormControllerOptions<T>) {
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [errorsAsync, setErrorsAsync] = useState<
+		Partial<Record<keyof T, string>>
+	>({});
+
 	const [asyncErrors, setAsyncErrors] = useState<
 		Partial<Record<keyof T, string>>
 	>({});
@@ -44,7 +48,7 @@ export function useFormController<T extends FieldValues>({
 
 	const form = useForm<T>({
 		resolver: zodResolver(schema),
-		mode: 'onSubmit',
+		mode: 'onBlur',
 		reValidateMode: 'onBlur',
 		defaultValues,
 		...formOptions,
@@ -74,24 +78,20 @@ export function useFormController<T extends FieldValues>({
 		});
 		setHasChanges(hasFormChanges);
 	}, [formValues, defaultValues, isEditForm]);
-
 	const validateFieldAsync = async (fieldName: keyof T, value: any) => {
-		if (asyncValidation?.[fieldName]) {
-			const errorMsg = await asyncValidation[fieldName]!(value);
-			if (errorMsg) {
-				setAsyncErrors((prev) => ({ ...prev, [fieldName]: errorMsg }));
-				setError(fieldName as Path<T>, {
-					type: 'manual',
-					message: errorMsg,
-				});
-				return false;
-			} else {
-				setAsyncErrors((prev) => ({ ...prev, [fieldName]: undefined }));
-				clearErrors(fieldName as Path<T>);
-				return true;
-			}
+		const errorMsg = await asyncValidation![fieldName]!(value);
+		if (errorMsg) {
+			setAsyncErrors((prev) => ({ ...prev, [fieldName]: errorMsg }));
+			setError(fieldName as Path<T>, {
+				type: 'manual',
+				message: errorMsg,
+			});
+			return false;
+		} else {
+			setAsyncErrors((prev) => ({ ...prev, [fieldName]: undefined }));
+			clearErrors(fieldName as Path<T>);
+			return true;
 		}
-		return true;
 	};
 
 	const validateFieldOnBlur = async (
@@ -99,6 +99,12 @@ export function useFormController<T extends FieldValues>({
 		value: string | number
 	) => {
 		await trigger(fieldName as Path<T>);
+
+		setErrorsAsync({
+			...errorsAsync,
+			[fieldName]: form.formState.errors[fieldName as Path<T>]
+				?.message as string,
+		});
 
 		if (
 			asyncValidation?.[fieldName] &&
@@ -112,6 +118,7 @@ export function useFormController<T extends FieldValues>({
 	const handleFieldFocus = (fieldName: keyof T) => {
 		clearErrors(fieldName as Path<T>);
 		setAsyncErrors((prev) => ({ ...prev, [fieldName]: undefined }));
+		setErrorsAsync((prev) => ({ ...prev, [fieldName]: undefined }));
 		if (enableClearError && clearError) {
 			clearError();
 		}
@@ -165,21 +172,24 @@ export function useFormController<T extends FieldValues>({
 	const getFieldError = (fieldName: keyof T): string | undefined => {
 		return (
 			(errors[fieldName as Path<T>]?.message as string) ||
-			asyncErrors[fieldName]
+			asyncErrors[fieldName] ||
+			(form.formState.errors[fieldName as Path<T>]?.message as string) ||
+			errorsAsync[fieldName]
 		);
 	};
 
 	const hasFieldError = (fieldName: keyof T): boolean => {
-		if (errors[fieldName as Path<T>]?.message) {
-			return true;
-		}
-		if (asyncErrors[fieldName]) {
+		if (
+			errors[fieldName as Path<T>]?.message ||
+			asyncErrors[fieldName] ||
+			form.formState.errors[fieldName as Path<T>]?.message ||
+			errorsAsync[fieldName]
+		) {
 			return true;
 		}
 		return false;
 	};
 
-	// Logique d'affichage des erreurs
 	const hasMultipleErrors =
 		fieldNames.length > 0
 			? fieldNames.filter((fieldName) => hasFieldError(fieldName))
@@ -195,7 +205,6 @@ export function useFormController<T extends FieldValues>({
 		: '';
 
 	const getFirstFieldError = () => {
-		// Si fieldNames est fourni, on l'utilise
 		if (fieldNames.length > 0) {
 			for (const fieldName of fieldNames) {
 				const error = getFieldError(fieldName);
@@ -206,7 +215,6 @@ export function useFormController<T extends FieldValues>({
 			return '';
 		}
 
-		// Sinon, on cherche dans toutes les erreurs disponibles
 		const formErrorKeys = Object.keys(errors) as (keyof T)[];
 		for (const fieldName of formErrorKeys) {
 			const error = getFieldError(fieldName);
@@ -252,7 +260,6 @@ export function useFormController<T extends FieldValues>({
 		isSubmitting,
 		isValid,
 		hasChanges,
-		// Enhanced error handling
 		hasMultipleErrors,
 		globalErrorMsg,
 		displayedError,
