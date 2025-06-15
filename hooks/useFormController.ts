@@ -7,6 +7,7 @@ import {
 } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState, useEffect } from 'react';
+import { useAuth } from './useAuth';
 
 interface FormControllerOptions<T extends FieldValues>
 	extends Omit<UseFormProps<T>, 'defaultValues'> {
@@ -17,6 +18,9 @@ interface FormControllerOptions<T extends FieldValues>
 	};
 	defaultValues?: DefaultValues<T>;
 	isEditForm?: boolean;
+	fieldNames?: (keyof T)[];
+	authErrorMsg?: string;
+	enableClearError?: boolean;
 }
 
 export function useFormController<T extends FieldValues>({
@@ -25,6 +29,9 @@ export function useFormController<T extends FieldValues>({
 	asyncValidation,
 	defaultValues,
 	isEditForm = false,
+	fieldNames = [],
+	authErrorMsg,
+	enableClearError = true,
 	...formOptions
 }: FormControllerOptions<T>) {
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -32,6 +39,8 @@ export function useFormController<T extends FieldValues>({
 		Partial<Record<keyof T, string>>
 	>({});
 	const [hasChanges, setHasChanges] = useState(false);
+
+	const { clearError } = useAuth();
 
 	const form = useForm<T>({
 		resolver: zodResolver(schema),
@@ -78,6 +87,7 @@ export function useFormController<T extends FieldValues>({
 				return false;
 			} else {
 				setAsyncErrors((prev) => ({ ...prev, [fieldName]: undefined }));
+				clearErrors(fieldName as Path<T>);
 				return true;
 			}
 		}
@@ -102,6 +112,9 @@ export function useFormController<T extends FieldValues>({
 	const handleFieldFocus = (fieldName: keyof T) => {
 		clearErrors(fieldName as Path<T>);
 		setAsyncErrors((prev) => ({ ...prev, [fieldName]: undefined }));
+		if (enableClearError && clearError) {
+			clearError();
+		}
 	};
 
 	const processAsyncValidation = async (data: T) => {
@@ -143,7 +156,7 @@ export function useFormController<T extends FieldValues>({
 			.then(() => {
 				setIsSubmitting(false);
 			})
-			.catch((error) => {
+			.catch((error: any) => {
 				console.error('Form submission error:', error);
 				setIsSubmitting(false);
 			});
@@ -166,6 +179,59 @@ export function useFormController<T extends FieldValues>({
 		return false;
 	};
 
+	// Logique d'affichage des erreurs
+	const hasMultipleErrors =
+		fieldNames.length > 0
+			? fieldNames.filter((fieldName) => hasFieldError(fieldName))
+					.length > 1
+			: Object.keys(errors).length +
+					Object.keys(asyncErrors).filter(
+						(key) => asyncErrors[key as keyof T]
+					).length >
+			  1;
+
+	const globalErrorMsg = hasMultipleErrors
+		? 'Please correct the fields in red before continuing'
+		: '';
+
+	const getFirstFieldError = () => {
+		// Si fieldNames est fourni, on l'utilise
+		if (fieldNames.length > 0) {
+			for (const fieldName of fieldNames) {
+				const error = getFieldError(fieldName);
+				if (error) {
+					return error;
+				}
+			}
+			return '';
+		}
+
+		// Sinon, on cherche dans toutes les erreurs disponibles
+		const formErrorKeys = Object.keys(errors) as (keyof T)[];
+		for (const fieldName of formErrorKeys) {
+			const error = getFieldError(fieldName);
+			if (error) {
+				return error;
+			}
+		}
+
+		const asyncErrorKeys = Object.keys(asyncErrors) as (keyof T)[];
+		for (const fieldName of asyncErrorKeys) {
+			if (asyncErrors[fieldName]) {
+				return asyncErrors[fieldName] as string;
+			}
+		}
+
+		return '';
+	};
+
+	const displayedError =
+		globalErrorMsg || getFirstFieldError() || authErrorMsg || '';
+
+	const getFieldErrorWrapper = (fieldName: string) => {
+		return getFieldError(fieldName as keyof T);
+	};
+
 	const isSubmitDisabled = isEditForm
 		? isSubmitting ||
 		  Object.keys(asyncErrors).some((key) => asyncErrors[key as keyof T]) ||
@@ -186,5 +252,10 @@ export function useFormController<T extends FieldValues>({
 		isSubmitting,
 		isValid,
 		hasChanges,
+		// Enhanced error handling
+		hasMultipleErrors,
+		globalErrorMsg,
+		displayedError,
+		getFieldErrorWrapper,
 	};
 }

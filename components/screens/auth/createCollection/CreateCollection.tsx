@@ -9,7 +9,6 @@ import { useCreateCollection } from '@/hooks/useCreateCollection';
 import { useFormController } from '@/hooks/useFormController';
 import { useSession } from '@/context/authContext';
 import { z } from 'zod';
-import { useFormErrorHandling } from '@/hooks/useFormErrorHandling';
 
 const collectionSchema = z.object({
     collectionName: z.string().min(4, 'Collection name is required and must be at least 4 characters long.'),
@@ -30,26 +29,19 @@ export default function CreateCollection() {
         getFieldError,
         hasFieldError,
         isSubmitDisabled,
+        displayedError,
+        getFieldErrorWrapper,
     } = useFormController<CollectionFormData>({
         schema: collectionSchema,
         defaultValues: {
             collectionName: '',
         },
-        onSubmit: async (data) => {
-            createCollection(data.collectionName)
-        },
-    });
-
-    const {
-        displayedError,
-        getFieldErrorWrapper,
-    } = useFormErrorHandling<CollectionFormData>({
-        getFieldError,
-        hasFieldError,
-        handleFieldFocus,
         fieldNames: ['collectionName'],
         authErrorMsg: createCollectionError,
         enableClearError: false,
+        onSubmit: async (data) => {
+            createCollection(data.collectionName)
+        },
     });
 
     useEffect(() => {

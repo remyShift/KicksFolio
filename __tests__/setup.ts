@@ -43,24 +43,31 @@ jest.mock('@expo/vector-icons', () => {
 	};
 });
 
-jest.mock('@/services/AuthService', () => ({
+jest.mock('../services/AuthService', () => ({
 	AuthService: jest.fn().mockImplementation(() => mockAuthService),
 }));
 
-jest.mock('@/hooks/useAuth', () => ({
+jest.mock('../hooks/useAuth', () => ({
 	useAuth: () => mockUseAuth,
 }));
 
-jest.mock('@/context/signUpPropsContext', () => ({
+jest.mock('../context/signUpPropsContext', () => ({
 	useSignUpProps: () => mockUseSignUpProps,
 }));
 
-jest.mock('@/hooks/useCreateCollection', () => ({
+jest.mock('../hooks/useCreateCollection', () => ({
 	useCreateCollection: () => mockUseCreateCollection,
 }));
 
-jest.mock('@/context/authContext', () => ({
-	...jest.requireActual('@/context/authContext'),
+jest.mock('../hooks/useAsyncValidation', () => ({
+	useAsyncValidation: () => ({
+		checkUsernameExists: jest.fn().mockResolvedValue(null),
+		checkEmailExists: jest.fn().mockResolvedValue(null),
+	}),
+}));
+
+jest.mock('../context/authContext', () => ({
+	...jest.requireActual('../context/authContext'),
 	useSession: () => ({
 		user: mockUser,
 		sessionToken: 'mock-token',
@@ -97,5 +104,9 @@ export const fillAndBlurInput = async (
 	});
 	await act(async () => {
 		fireEvent(input, 'blur');
+	});
+	// Attendre que la validation se termine
+	await act(async () => {
+		await new Promise((resolve) => setTimeout(resolve, 100));
 	});
 };

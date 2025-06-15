@@ -26,9 +26,13 @@ export const EditFormStep = () => {
         reset,
         trigger,
         watch,
-        formState: { isValid }
+        formState: { isValid },
+        displayedError,
+        getFieldErrorWrapper,
     } = useFormController<SneakerFormData>({
         schema: sneakerSchema,
+        fieldNames: ['model', 'brand', 'status', 'size', 'condition', 'price_paid', 'images'],
+        authErrorMsg: errorMsg,
         defaultValues: {
             model: currentSneaker?.model || '',
             brand: currentSneaker?.brand || '',
@@ -152,32 +156,7 @@ export const EditFormStep = () => {
         };
     }, []);
 
-    const hasMultipleErrors = [
-        hasFieldError('model'),
-        hasFieldError('brand'),
-        hasFieldError('status'),
-        hasFieldError('size'),
-        hasFieldError('condition'),
-    ].filter(Boolean).length > 1;
-
-    const globalErrorMsg = hasMultipleErrors 
-        ? 'Please correct the fields in red before continuing'
-        : '';
-
-    const displayedError = globalErrorMsg || 
-        getFieldError('model') || 
-        getFieldError('brand') || 
-        getFieldError('status') || 
-        getFieldError('size') || 
-        getFieldError('condition') || 
-        getFieldError('price_paid') || 
-        getFieldError('images') ||
-        errorMsg || 
-        '';
-
-    const getFieldErrorWrapper = (fieldName: string) => {
-        return getFieldError(fieldName as keyof typeof sneakerSchema._type);
-    };
+    // La logique d'affichage des erreurs est maintenant gérée par useFormController
 
     return (
         <KeyboardAvoidingView 

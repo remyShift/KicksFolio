@@ -25,9 +25,13 @@ export const FormStep = () => {
         reset,
         trigger,
         watch,
-        formState: { isValid }
+        formState: { isValid },
+        displayedError,
+        getFieldErrorWrapper,
     } = useFormController<SneakerFormData>({
         schema: sneakerSchema,
+        fieldNames: ['model', 'brand', 'status', 'size', 'condition', 'price_paid', 'images'],
+        authErrorMsg: errorMsg,
         defaultValues: {
             model: '',
             brand: '',
@@ -161,33 +165,7 @@ export const FormStep = () => {
         };
     }, []);
 
-    const hasMultipleErrors = [
-        hasFieldError('model'),
-        hasFieldError('brand'),
-        hasFieldError('status'),
-        hasFieldError('size'),
-        hasFieldError('condition'),
-    ].filter(Boolean).length > 1;
-
-    const globalErrorMsg = hasMultipleErrors 
-        ? 'Please correct the fields in red before continuing'
-        : '';
-
-    const otherFieldErrors = getFieldError('model') || 
-                            getFieldError('brand') || 
-                            getFieldError('status') || 
-                            getFieldError('size') || 
-                            getFieldError('condition') || 
-                            getFieldError('price_paid');
-
-    const displayedError = globalErrorMsg || 
-        otherFieldErrors ||
-        errorMsg || 
-        '';
-
-    const getFieldErrorWrapper = (fieldName: string) => {
-        return getFieldError(fieldName as keyof typeof sneakerSchema._type);
-    };
+    // La logique d'affichage des erreurs est maintenant gérée par useFormController
 
     useEffect(() => {
         return () => {

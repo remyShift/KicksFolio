@@ -10,7 +10,6 @@ import FormTextInput from "@/components/ui/inputs/FormTextInput";
 import { useFormController } from "@/hooks/useFormController";
 import { forgotPasswordSchema, ForgotPasswordFormData } from "@/validation/schemas";
 import PageLink from "@/components/ui/links/LoginPageLink";
-import { useFormErrorHandling } from "@/hooks/useFormErrorHandling";
 
 export default function ForgotPasswordForm() {
     const scrollViewRef = useRef<ScrollView>(null);
@@ -26,26 +25,18 @@ export default function ForgotPasswordForm() {
         getFieldError,
         hasFieldError,
         isSubmitDisabled,
+        displayedError,
+        getFieldErrorWrapper,
     } = useFormController<ForgotPasswordFormData>({
         schema: forgotPasswordSchema,
         defaultValues: {
             email: '',
         },
+        fieldNames: ['email'],
+        authErrorMsg,
         onSubmit: async (data) => {
             await forgotPassword(data.email);
         },
-    });
-
-    const {
-        handleFieldFocusWithClearError,
-        displayedError,
-        getFieldErrorWrapper,
-    } = useFormErrorHandling<ForgotPasswordFormData>({
-        getFieldError,
-        hasFieldError,
-        handleFieldFocus,
-        fieldNames: ['email'],
-        authErrorMsg,
     });
 
     return (
@@ -75,7 +66,7 @@ export default function ForgotPasswordForm() {
                             ref={emailInputRef}
                             keyboardType="email-address"
                             autoComplete="email"
-                            onFocus={() => handleFieldFocusWithClearError('email')}
+                            onFocus={() => handleFieldFocus('email')}
                             onBlur={async (value) => { await validateFieldOnBlur('email', value); }}
                             onSubmitEditing={handleFormSubmit}
                             error={getFieldErrorWrapper('email')}

@@ -8,7 +8,6 @@ import { useAuth } from "@/hooks/useAuth";
 import FormPasswordInput from "@/components/ui/inputs/FormPasswordInput";
 import { useFormController } from "@/hooks/useFormController";
 import { resetPasswordSchema, ResetPasswordFormData } from "@/validation/schemas";
-import { useFormErrorHandling } from "@/hooks/useFormErrorHandling";
 
 export default function ResetPasswordForm() {
     const { token } = useLocalSearchParams();
@@ -26,27 +25,19 @@ export default function ResetPasswordForm() {
         getFieldError,
         hasFieldError,
         isSubmitDisabled,
+        displayedError,
+        getFieldErrorWrapper,
     } = useFormController<ResetPasswordFormData>({
         schema: resetPasswordSchema,
         defaultValues: {
             password: '',
             confirmPassword: '',
         },
+        fieldNames: ['password', 'confirmPassword'],
+        authErrorMsg,
         onSubmit: async (data) => {
             await resetPassword(token as string, data.password, data.confirmPassword);
         },
-    });
-
-    const {
-        handleFieldFocusWithClearError,
-        displayedError,
-        getFieldErrorWrapper,
-    } = useFormErrorHandling<ResetPasswordFormData>({
-        getFieldError,
-        hasFieldError,
-        handleFieldFocus,
-        fieldNames: ['password', 'confirmPassword'],
-        authErrorMsg,
     });
 
     return (
@@ -75,7 +66,7 @@ export default function ResetPasswordForm() {
                             placeholder="********"
                             ref={passwordInputRef}
                             nextInputRef={confirmPasswordInputRef}
-                            onFocus={() => handleFieldFocusWithClearError('password')}
+                            onFocus={() => handleFieldFocus('password')}
                             onBlur={async (value) => { await validateFieldOnBlur('password', value); }}
                             error={getFieldErrorWrapper('password')}
                             getFieldError={getFieldErrorWrapper}
@@ -87,7 +78,7 @@ export default function ResetPasswordForm() {
                             label="*Confirm New Password"
                             placeholder="********"
                             ref={confirmPasswordInputRef}
-                            onFocus={() => handleFieldFocusWithClearError('confirmPassword')}
+                            onFocus={() => handleFieldFocus('confirmPassword')}
                             onBlur={async (value) => { await validateFieldOnBlur('confirmPassword', value); }}
                             onSubmitEditing={handleFormSubmit}
                             error={getFieldErrorWrapper('confirmPassword')}

@@ -11,7 +11,6 @@ import { useFormController } from '@/hooks/useFormController';
 import { signUpStep2Schema, SignUpStep2FormData } from '@/validation/schemas';
 import { Link } from 'expo-router';
 import PageLink from '@/components/ui/links/LoginPageLink';
-import { useFormErrorHandling } from '@/hooks/useFormErrorHandling';
 
 export default function SignUpSecondForm() {
     const { signUpProps, setSignUpProps } = useSignUpProps();
@@ -27,9 +26,9 @@ export default function SignUpSecondForm() {
         handleFormSubmit,
         handleFieldFocus,
         validateFieldOnBlur,
-        getFieldError,
-        hasFieldError,
         isSubmitDisabled,
+        displayedError,
+        getFieldErrorWrapper,
     } = useFormController<SignUpStep2FormData>({
         schema: signUpStep2Schema,
         defaultValues: {
@@ -38,6 +37,8 @@ export default function SignUpSecondForm() {
             size: signUpProps.sneaker_size ? String(signUpProps.sneaker_size) : '',
             profile_picture: signUpProps.profile_picture || '',
         },
+        fieldNames: ['firstName', 'lastName', 'size'],
+        enableClearError: false,
         onSubmit: async (data) => {
             const updatedSignUpProps = {
                 ...signUpProps,
@@ -50,17 +51,6 @@ export default function SignUpSecondForm() {
             setSignUpProps(updatedSignUpProps);
             signUp(updatedSignUpProps);
         },
-    });
-
-    const {
-        displayedError,
-        getFieldErrorWrapper,
-    } = useFormErrorHandling<SignUpStep2FormData>({
-        getFieldError,
-        hasFieldError,
-        handleFieldFocus,
-        fieldNames: ['firstName', 'lastName', 'size'],
-        enableClearError: false,
     });
 
     return (

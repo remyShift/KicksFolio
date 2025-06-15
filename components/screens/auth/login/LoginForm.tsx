@@ -11,7 +11,6 @@ import FormPasswordInput from "@/components/ui/inputs/FormPasswordInput";
 import { useFormController } from "@/hooks/useFormController";
 import { loginSchema, LoginFormData } from "@/validation/schemas";
 import PageLink from "@/components/ui/links/LoginPageLink";
-import { useFormErrorHandling } from "@/hooks/useFormErrorHandling";
 
 export default function LoginForm() {
     const scrollViewRef = useRef<ScrollView>(null);
@@ -31,27 +30,19 @@ export default function LoginForm() {
         getFieldError,
         hasFieldError,
         isSubmitDisabled,
+        displayedError,
+        getFieldErrorWrapper,
     } = useFormController<LoginFormData>({
         schema: loginSchema,
         defaultValues: {
             email: '',
             password: '',
         },
+        fieldNames: ['email', 'password'],
+        authErrorMsg,
         onSubmit: async (data) => {
             await login(data.email, data.password);
         },
-    });
-
-    const {
-        handleFieldFocusWithClearError,
-        displayedError,
-        getFieldErrorWrapper,
-    } = useFormErrorHandling<LoginFormData>({
-        getFieldError,
-        hasFieldError,
-        handleFieldFocus,
-        fieldNames: ['email', 'password'],
-        authErrorMsg,
     });
 
     useEffect(() => {
@@ -94,7 +85,7 @@ export default function LoginForm() {
                             nextInputRef={passwordInputRef}
                             keyboardType="email-address"
                             autoComplete="email"
-                            onFocus={() => handleFieldFocusWithClearError('email')}
+                            onFocus={() => handleFieldFocus('email')}
                             onBlur={async (value) => { await validateFieldOnBlur('email', value); }}
                             error={getFieldErrorWrapper('email')}
                             getFieldError={getFieldErrorWrapper}
@@ -106,7 +97,7 @@ export default function LoginForm() {
                             label="*Password"
                             placeholder="********"
                             ref={passwordInputRef}
-                            onFocus={() => handleFieldFocusWithClearError('password')}
+                            onFocus={() => handleFieldFocus('password')}
                             onBlur={async (value) => { await validateFieldOnBlur('password', value); }}
                             onSubmitEditing={handleFormSubmit}
                             error={getFieldErrorWrapper('password')}

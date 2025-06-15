@@ -1,6 +1,6 @@
 import EditProfileForm from "@/components/screens/app/profile/EditProfileForm";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react-native";
-import { mockUseAuth, mockUser } from "./authSetup";
+import { mockUseAuth, mockUser } from "../auth/authSetup";
 import { ReactTestInstance } from "react-test-renderer";
 import { fillAndBlurInput } from "@/__tests__/setup";
 

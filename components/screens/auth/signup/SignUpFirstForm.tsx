@@ -3,7 +3,6 @@ import PageTitle from "@/components/ui/text/PageTitle";
 import { ScrollView, View, TextInput, KeyboardAvoidingView, Platform } from "react-native";
 import { useRef } from "react";
 import MainButton from "@/components/ui/buttons/MainButton";
-import LoginPageLink from "@/components/ui/links/LoginPageLink";
 import FormTextInput from "@/components/ui/inputs/FormTextInput";
 import FormPasswordInput from "@/components/ui/inputs/FormPasswordInput";
 import { useSignUpProps } from "@/context/signUpPropsContext";
@@ -12,7 +11,6 @@ import { useAsyncValidation } from "@/hooks/useAsyncValidation";
 import { useAuth } from "@/hooks/useAuth";
 import { signUpStep1Schema, SignUpStep1FormData } from "@/validation/schemas";
 import PageLink from "@/components/ui/links/LoginPageLink";
-import { useFormErrorHandling } from "@/hooks/useFormErrorHandling";
 
 export default function SignUpFirstForm() {
     const scrollViewRef = useRef<ScrollView>(null);
@@ -30,9 +28,9 @@ export default function SignUpFirstForm() {
         handleFormSubmit,
         handleFieldFocus,
         validateFieldOnBlur,
-        getFieldError,
-        hasFieldError,
         isSubmitDisabled,
+        displayedError,
+        getFieldErrorWrapper,
     } = useFormController<SignUpStep1FormData>({
         schema: signUpStep1Schema,
         defaultValues: {
@@ -41,6 +39,8 @@ export default function SignUpFirstForm() {
             password: signUpProps.password || '',
             confirmPassword: signUpProps.confirmPassword || '',
         },
+        fieldNames: ['username', 'email', 'password', 'confirmPassword'],
+        enableClearError: false,
         asyncValidation: {
             username: checkUsernameExists,
             email: checkEmailExists,
@@ -62,17 +62,6 @@ export default function SignUpFirstForm() {
                 confirmPassword: data.confirmPassword,
             });
         },
-    });
-
-    const {
-        displayedError,
-        getFieldErrorWrapper,
-    } = useFormErrorHandling<SignUpStep1FormData>({
-        getFieldError,
-        hasFieldError,
-        handleFieldFocus,
-        fieldNames: ['username', 'email', 'password', 'confirmPassword'],
-        enableClearError: false,
     });
 
     return (

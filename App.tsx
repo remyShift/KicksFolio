@@ -1,7 +1,6 @@
 import { registerRootComponent } from 'expo';
 import { ExpoRoot } from 'expo-router';
 import { ExpoConfig } from 'expo/config';
-import Constants from 'expo-constants';
 
 const config: ExpoConfig = {
   name: 'KicksFolio',
