@@ -29,14 +29,12 @@ export const useAuth = () => {
 			});
 	};
 
-	const signUp = async (userData: UserData) => {
-		return SupabaseAuthService.signUp(userData.email, userData.password, {
-			email: userData.email,
-			username: userData.username,
-			first_name: userData.first_name,
-			last_name: userData.last_name,
-			sneaker_size: userData.sneaker_size,
-		})
+	const createUserAccount = async (userData: UserData) => {
+		return SupabaseAuthService.signUp(
+			userData.email,
+			userData.password,
+			userData
+		)
 			.then((response) => {
 				if (response.user) {
 					return SupabaseAuthService.signIn(
@@ -44,17 +42,23 @@ export const useAuth = () => {
 						userData.password
 					).then((loginResponse) => {
 						if (loginResponse.user) {
-							setTimeout(() => {
-								router.replace('/collection');
-							}, 250);
-							return true;
+							return SupabaseAuthService.createUserProfile({
+								username: userData.username,
+								first_name: userData.first_name,
+								last_name: userData.last_name,
+								sneaker_size: userData.sneaker_size,
+								profile_picture:
+									userData.profile_picture || undefined,
+							}).then(() => {
+								return true;
+							});
 						}
 						return false;
 					});
 				}
 				return false;
 			})
-			.catch((error) => {
+			.catch((error: any) => {
 				setErrorMsg(
 					error instanceof Error
 						? error.message
@@ -62,6 +66,16 @@ export const useAuth = () => {
 				);
 				return false;
 			});
+	};
+
+	const signUp = async (userData: UserData) => {
+		const success = await createUserAccount(userData);
+		if (success) {
+			setTimeout(() => {
+				router.replace('/collection');
+			}, 250);
+		}
+		return success;
 	};
 
 	const forgotPassword = async (email: string) => {
@@ -173,15 +187,20 @@ export const useAuth = () => {
 	): Promise<string | null> => {
 		const validation = await validateSignUpStep1(signUpProps);
 		if (!validation.isValid) {
-			setErrorMsg(validation.errors[0]);
-			return validation.errors[0];
+			setErrorMsg(validation.errorMsg);
+			return validation.errorMsg;
 		}
+
+		setTimeout(() => {
+			router.push('/sign-up-second');
+		}, 250);
 		return null;
 	};
 
 	return {
 		login,
 		signUp,
+		createUserAccount,
 		forgotPassword,
 		resetPassword,
 		logout,

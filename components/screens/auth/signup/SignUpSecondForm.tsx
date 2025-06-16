@@ -1,4 +1,4 @@
-import { View, Text, TextInput, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { View, TextInput, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { useSignUpProps } from '@/context/signUpPropsContext';
 import { useRef } from 'react';
 import FormTextInput from '@/components/ui/inputs/FormTextInput';
@@ -9,8 +9,8 @@ import PageTitle from '@/components/ui/text/PageTitle';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import { useFormController } from '@/hooks/useFormController';
 import { signUpStep2Schema, SignUpStep2FormData } from '@/validation/schemas';
-import { Link } from 'expo-router';
 import PageLink from '@/components/ui/links/LoginPageLink';
+import { router } from 'expo-router';
 
 export default function SignUpSecondForm() {
     const { signUpProps, setSignUpProps } = useSignUpProps();
@@ -19,7 +19,7 @@ export default function SignUpSecondForm() {
     const sizeInputRef = useRef<TextInput>(null);
     const firstNameInputRef = useRef<TextInput>(null);
 
-    const { signUp } = useAuth();
+    const { createUserAccount } = useAuth();
 
     const {
         control,
@@ -49,7 +49,13 @@ export default function SignUpSecondForm() {
             };
             
             setSignUpProps(updatedSignUpProps);
-            signUp(updatedSignUpProps);
+
+            console.log('updatedSignUpProps', updatedSignUpProps);
+            
+            const success = await createUserAccount(updatedSignUpProps);
+            if (success) {
+                router.replace('/(auth)/(signup)/collection');
+            }
         },
     });
 

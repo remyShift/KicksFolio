@@ -31,23 +31,38 @@ export function SessionProvider({ children }: PropsWithChildren) {
     const [userSneakers, setUserSneakers] = useState<Sneaker[] | null>(null);
 
     useEffect(() => {
-        // Écouter les changements d'état d'authentification Supabase
         const { data: { subscription } } = supabase.auth.onAuthStateChange(
             async (event, session) => {
                 console.log('Auth state changed:', event, session?.user?.email);
                 
                 if (session?.user) {
-                    // Utilisateur connecté
                     setSessionTokenState(session.access_token);
                     await initializeUserData(session.user.id);
                 } else {
-                    // Utilisateur déconnecté
                     clearUserData();
                 }
                 
                 setIsLoading(false);
             }
         );
+
+        // Vérifier et nettoyer les sessions problématiques au démarrage
+        const checkInitialSession = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session?.user) {
+                // Vérifier si l'utilisateur existe dans notre table
+                try {
+                    await SupabaseAuthService.getCurrentUser();
+                } catch (error: any) {
+                    if (error.code === 'PGRST116') {
+                        console.log('Session utilisateur orpheline détectée, nettoyage...');
+                        await supabase.auth.signOut();
+                        clearUserData();
+                    }
+                }
+            }
+        };
+        checkInitialSession();
 
         // Nettoyage
         return () => {
@@ -60,18 +75,46 @@ export function SessionProvider({ children }: PropsWithChildren) {
     }, [appState]);
 
     const initializeUserData = async (userId: string) => {
-        try {
-            // Récupérer les données utilisateur depuis Supabase
-            const userData = await SupabaseAuthService.getCurrentUser();
-            if (userData) {
-                setUser(userData);
-                storageService.setItem('user', userData);
-                await refreshUserData(userData);
-            }
-        } catch (error) {
-            console.error('Error initializing user data:', error);
-            clearUserData();
-        }
+        const maxRetries = 3;
+        const retryDelay = 1000;
+
+        const getUserWithRetries = async (attempt: number): Promise<any> => {
+            return SupabaseAuthService.getCurrentUser()
+                .then((userData) => {
+                    if (userData) {
+                        setUser(userData);
+                        storageService.setItem('user', userData);
+                        return refreshUserData(userData);
+                    } else if (attempt < maxRetries) {
+                        console.log(`User not found, retrying in ${retryDelay}ms... (attempt ${attempt + 1}/${maxRetries})`);
+                        return new Promise((resolve) => {
+                            setTimeout(() => {
+                                resolve(getUserWithRetries(attempt + 1));
+                            }, retryDelay);
+                        });
+                    } else {
+                        throw new Error('User not found after multiple attempts');
+                    }
+                })
+                .catch((error) => {
+                    if (attempt < maxRetries && error.code === 'PGRST116') {
+                        console.log(`Database error, retrying in ${retryDelay}ms... (attempt ${attempt + 1}/${maxRetries})`);
+                        return new Promise((resolve) => {
+                            setTimeout(() => {
+                                resolve(getUserWithRetries(attempt + 1));
+                            }, retryDelay);
+                        });
+                    } else {
+                        throw error;
+                    }
+                });
+        };
+
+        getUserWithRetries(0)
+            .catch((error) => {
+                console.error('Error initializing user data:', error);
+                clearUserData();
+            });
     };
 
     const refreshUserData = async (currentUser?: User) => {
@@ -80,15 +123,13 @@ export function SessionProvider({ children }: PropsWithChildren) {
         if (!userData) return;
 
         try {
-            // Récupérer les collections depuis Supabase
             const collections = await SupabaseCollectionService.getUserCollections(userData.id);
-            const collection = collections?.[0] || null; // Prendre la première collection
+            const collection = collections?.[0] || null;
             
             setUserCollection(collection);
             storageService.setItem('collection', collection);
             
             if (collection?.id) {
-                // Récupérer les sneakers depuis Supabase
                 const sneakers = await SupabaseSneakerService.getSneakersByCollection(collection.id);
                 setUserSneakers(sneakers || []);
                 storageService.setItem('sneakers', sneakers || []);
@@ -142,7 +183,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
         }
     };
 
-    // Fonction pour compatibilité avec l'ancienne interface
     const setSessionToken = (value: string | null | ((prev: string | null) => string | null)) => {
         if (typeof value === 'function') {
             setSessionTokenState(value(sessionToken));
@@ -166,7 +206,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
                 refreshUserSneakers,
                 setSessionToken
             }}>
-            {children}
-        </AuthContext.Provider>
-    );
+			{children}
+		</AuthContext.Provider>
+	);
 }

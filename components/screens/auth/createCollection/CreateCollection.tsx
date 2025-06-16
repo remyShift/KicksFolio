@@ -8,6 +8,7 @@ import FormTextInput from '@/components/ui/inputs/FormTextInput';
 import { useCreateCollection } from '@/hooks/useCreateCollection';
 import { useFormController } from '@/hooks/useFormController';
 import { useSession } from '@/context/authContext';
+import { useAuth } from '@/hooks/useAuth';
 import { z } from 'zod';
 
 const collectionSchema = z.object({
@@ -40,7 +41,10 @@ export default function CreateCollection() {
         authErrorMsg: createCollectionError,
         enableClearError: false,
         onSubmit: async (data) => {
-            createCollection(data.collectionName)
+            const success = await createCollection(data.collectionName);
+            if (success) {
+                router.replace('/(app)/(tabs)');
+            }
         },
     });
 

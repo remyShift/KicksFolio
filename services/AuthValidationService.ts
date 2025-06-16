@@ -1,36 +1,59 @@
-import { BaseApiService } from './BaseApiService';
+import { supabase } from './supabase';
 
-export class AuthValidationService extends BaseApiService {
+export class AuthValidationService {
 	async checkUsernameExists(username: string): Promise<boolean> {
-		const response = await fetch(`${this.baseUrl}/users`, {
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-		});
-
-		if (!response.ok) return false;
-
-		const data = await response.json();
-		return data.users.some(
-			(user: { username: string }) => user.username === username
-		);
+		return Promise.resolve(
+			supabase
+				.from('users')
+				.select('id')
+				.eq('username', username)
+				.limit(1)
+		)
+			.then(({ data, error }) => {
+				if (error) {
+					console.error('Error checking username:', error);
+					return false;
+				}
+				return data && data.length > 0;
+			})
+			.catch((error: any) => {
+				console.error('Error checking username:', error);
+				return false;
+			});
 	}
 
 	async checkEmailExists(email: string): Promise<boolean> {
-		const response = await fetch(`${this.baseUrl}/users`, {
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-		});
+		return supabase.auth.admin
+			.listUsers()
+			.then(({ data: authUsers, error: authError }) => {
+				if (authError) {
+					console.error('Error checking email in auth:', authError);
+					return supabase
+						.from('users')
+						.select('id')
+						.eq('email', email)
+						.limit(1)
+						.then(({ data, error }) => {
+							if (error) {
+								console.error(
+									'Error checking email in users table:',
+									error
+								);
+								return false;
+							}
+							return data && data.length > 0;
+						});
+				}
 
-		if (!response.ok) return false;
-
-		const data = await response.json();
-		return data.users.some(
-			(user: { email: string }) => user.email === email
-		);
+				const emailExists = authUsers.users.some(
+					(user) => user.email === email
+				);
+				return emailExists;
+			})
+			.catch((error) => {
+				console.error('Error checking email:', error);
+				return false;
+			});
 	}
 }
 
