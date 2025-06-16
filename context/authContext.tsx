@@ -2,13 +2,13 @@ import { createContext, useContext, type PropsWithChildren, useState, useEffect 
 import { AuthContextType } from '@/types/auth';
 import { storageService } from '@/services/StorageService';
 import { useAppState } from '@react-native-community/hooks';
-import { useStorageState } from '@/hooks/useStorageState';
 import { User } from '@/types/User';
 import { Collection } from '@/types/Collection';
 import { Sneaker } from '@/types/Sneaker';
-import { authService } from '@/services/AuthService';
-import { collectionService } from '@/services/CollectionService';
-import { SneakersService } from '@/services/SneakersService';
+import { SupabaseAuthService } from '@/services/AuthService';
+import { SupabaseCollectionService } from '@/services/CollectionService';
+import { SupabaseSneakerService } from '@/services/SneakersService';
+import { supabase } from '@/services/supabase';
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
@@ -24,102 +24,105 @@ export function useSession() {
 
 export function SessionProvider({ children }: PropsWithChildren) {
     const appState = useAppState();
-    const [[isLoading, sessionToken], setSessionToken] = useStorageState('sessionToken');
+    const [isLoading, setIsLoading] = useState(true);
+    const [sessionToken, setSessionTokenState] = useState<string | null>(null);
     const [user, setUser] = useState<User | null>(null);
     const [userCollection, setUserCollection] = useState<Collection | null>(null);
     const [userSneakers, setUserSneakers] = useState<Sneaker[] | null>(null);
 
     useEffect(() => {
-        initializeData();
-    }, [sessionToken]);
+        // Écouter les changements d'état d'authentification Supabase
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(
+            async (event, session) => {
+                console.log('Auth state changed:', event, session?.user?.email);
+                
+                if (session?.user) {
+                    // Utilisateur connecté
+                    setSessionTokenState(session.access_token);
+                    await initializeUserData(session.user.id);
+                } else {
+                    // Utilisateur déconnecté
+                    clearUserData();
+                }
+                
+                setIsLoading(false);
+            }
+        );
+
+        // Nettoyage
+        return () => {
+            subscription?.unsubscribe();
+        };
+    }, []);
 
     useEffect(() => {
         handleAppStateChange();
     }, [appState]);
 
-    const initializeData = async () => {
-        if (sessionToken) {
-            authService.getUser(sessionToken)
-                .then(({ user: userData }) => {
-                    setUser(userData);
-                    storageService.setItem('user', userData);
-                    return refreshUserData(userData, sessionToken);
-                })
-                .catch((error) => {
-                    console.error('Error initializing user data:', error);
-                    clearUserData();
-                });
-        } else {
+    const initializeUserData = async (userId: string) => {
+        try {
+            // Récupérer les données utilisateur depuis Supabase
+            const userData = await SupabaseAuthService.getCurrentUser();
+            if (userData) {
+                setUser(userData);
+                storageService.setItem('user', userData);
+                await refreshUserData(userData);
+            }
+        } catch (error) {
+            console.error('Error initializing user data:', error);
             clearUserData();
         }
     };
 
-    const refreshUserData = async (currentUser?: User, token?: string) => {
+    const refreshUserData = async (currentUser?: User) => {
         const userData = currentUser || user;
-        const sessionTokenToUse = token || sessionToken;
         
-        if (!userData || !sessionTokenToUse) return;
+        if (!userData) return;
 
-        collectionService.getUserCollection(userData.id, sessionTokenToUse)
-            .then(async (collectionResponse) => {
-                const collection = collectionResponse.collection;
-                
-                setUserCollection(collection);
-                storageService.setItem('collection', collection);
-                
-                if (collection && collection.id) {
-                    new SneakersService(userData.id, sessionTokenToUse)
-                        .getUserSneakers()
-                        .then((sneakersData) => {
-                            const sneakers = sneakersData.sneakers || [];
-                            setUserSneakers(sneakers);
-                            storageService.setItem('sneakers', sneakers);
-                        })
-                        .catch((sneakersError) => {
-                            console.error('Error fetching sneakers:', sneakersError);
-                            setUserSneakers([]);
-                            storageService.setItem('sneakers', []);
-                        });
-                } else {
-                    setUserSneakers([]);
-                    storageService.setItem('sneakers', []);
-                }
-            })
-            .catch((error) => {
-                console.error('Error refreshing user data:', error);
-                if (error.message?.includes('Collection not found') || error.message?.includes('404')) {
-                    setUserCollection(null);
-                    setUserSneakers([]);
-                    storageService.removeItem('collection');
-                    storageService.setItem('sneakers', []);
-                }
-            });
+        try {
+            // Récupérer les collections depuis Supabase
+            const collections = await SupabaseCollectionService.getUserCollections(userData.id);
+            const collection = collections?.[0] || null; // Prendre la première collection
+            
+            setUserCollection(collection);
+            storageService.setItem('collection', collection);
+            
+            if (collection?.id) {
+                // Récupérer les sneakers depuis Supabase
+                const sneakers = await SupabaseSneakerService.getSneakersByCollection(collection.id);
+                setUserSneakers(sneakers || []);
+                storageService.setItem('sneakers', sneakers || []);
+            } else {
+                setUserSneakers([]);
+                storageService.setItem('sneakers', []);
+            }
+        } catch (error) {
+            console.error('Error refreshing user data:', error);
+            setUserSneakers([]);
+            storageService.setItem('sneakers', []);
+        }
     };
 
     const refreshUserSneakers = async () => {
-        if (!user || !sessionToken) return;
-
-        if (!userCollection || !userCollection.id) {
-            console.log('No collection found, setting empty sneakers array');
+        if (!user || !userCollection?.id) {
             setUserSneakers([]);
             storageService.setItem('sneakers', []);
             return;
         }
         
-        const sneakersService = new SneakersService(user.id, sessionToken);
-        sneakersService.getUserSneakers()
-            .then((data) => {
-                setUserSneakers(data.sneakers || []);
-                storageService.setItem('sneakers', data.sneakers || []);
-            })
-            .catch((error) => {
-                console.error('Error refreshing sneakers:', error);
-                setUserSneakers([]);
-                storageService.setItem('sneakers', []);
-            });
+        try {
+            const sneakers = await SupabaseSneakerService.getSneakersByCollection(userCollection.id);
+            setUserSneakers(sneakers || []);
+            storageService.setItem('sneakers', sneakers || []);
+        } catch (error) {
+            console.error('Error refreshing sneakers:', error);
+            setUserSneakers([]);
+            storageService.setItem('sneakers', []);
+        }
     };
 
     const clearUserData = () => {
+        setSessionTokenState(null);
         setUser(null);
         setUserCollection(null);
         setUserSneakers(null);
@@ -139,6 +142,15 @@ export function SessionProvider({ children }: PropsWithChildren) {
         }
     };
 
+    // Fonction pour compatibilité avec l'ancienne interface
+    const setSessionToken = (value: string | null | ((prev: string | null) => string | null)) => {
+        if (typeof value === 'function') {
+            setSessionTokenState(value(sessionToken));
+        } else {
+            setSessionTokenState(value);
+        }
+    };
+
     return (
         <AuthContext.Provider
             value={{
@@ -152,13 +164,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
                 setUserSneakers,
                 refreshUserData,
                 refreshUserSneakers,
-                setSessionToken: (value) => {
-                    if (typeof value === 'function') {
-                        setSessionToken((value as (prev: string | null) => string | null)(null));
-                    } else {
-                        setSessionToken(value);
-                    }
-                }
+                setSessionToken
             }}>
             {children}
         </AuthContext.Provider>

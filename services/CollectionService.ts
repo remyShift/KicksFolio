@@ -1,89 +1,70 @@
 import { BaseApiService } from '@/services/BaseApiService';
+import { supabase } from './supabase';
 
-export class CollectionService extends BaseApiService {
-	async create(name: string, userId: string, sessionToken: string) {
-		const existingCollection = await this.getUserCollection(
-			userId,
-			sessionToken
-		)
-			.then((response) => response.collection)
-			.catch(() => null);
-
-		if (existingCollection) {
-			throw new Error(
-				'Vous avez déjà une collection. Vous ne pouvez pas en créer une autre.'
-			);
-		}
-
-		return fetch(`${this.baseUrl}/users/${userId}/collection`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				...this.getAuthHeaders(sessionToken),
-			},
-			body: JSON.stringify({ collection: { name } }),
-		})
-			.then(async (response) => {
-				const responseText = await response.text();
-
-				if (!response.ok) {
-					const errorData = JSON.parse(responseText);
-					throw new Error(
-						errorData?.errors?.join(', ') ||
-							errorData?.message ||
-							errorData?.error ||
-							'Échec de la création de la collection'
-					);
-				}
-
-				return JSON.parse(responseText);
-			})
-			.catch((error) => {
-				console.error('Error creating collection:', error);
-				throw error;
-			});
-	}
-
-	async getUserCollection(userId: string, token: string) {
-		return fetch(`${this.baseUrl}/users/${userId}/collection`, {
-			headers: this.getAuthHeaders(token),
-		})
-			.then(async (response) => {
-				const responseText = await response.text();
-
-				if (!response.ok) {
-					return Promise.resolve()
-						.then(() => {
-							return JSON.parse(responseText);
-						})
-						.then((errorData) => {
-							throw new Error(
-								errorData?.errors?.join(', ') ||
-									errorData?.message ||
-									errorData?.error ||
-									'Failed to get user collection'
-							);
-						})
-						.catch(() => {
-							throw new Error(
-								responseText || 'Failed to get user collection'
-							);
-						});
-				}
-
-				return Promise.resolve()
-					.then(() => {
-						return JSON.parse(responseText);
-					})
-					.catch(() => {
-						throw new Error('Invalid JSON response from server');
-					});
-			})
-			.catch((error) => {
-				console.error('Error getting user collection:', error);
-				throw error;
-			});
-	}
+export interface SupabaseCollection {
+	id: string;
+	name: string;
+	user_id: string;
+	created_at: string;
+	updated_at: string;
 }
 
-export const collectionService = new CollectionService();
+export class SupabaseCollectionService extends BaseApiService {
+	static async getUserCollections(userId: string) {
+		const { data, error } = await supabase
+			.from('collections')
+			.select('*')
+			.eq('user_id', userId);
+
+		if (error) throw error;
+		return data;
+	}
+
+	static async createCollection(name: string) {
+		const {
+			data: { user },
+			error: authError,
+		} = await supabase.auth.getUser();
+
+		if (authError) throw authError;
+		if (!user) throw new Error('No user found');
+
+		const { data, error } = await supabase
+			.from('collections')
+			.insert([
+				{
+					name,
+					user_id: user.id,
+				},
+			])
+			.select()
+			.single();
+
+		if (error) throw error;
+		return data;
+	}
+
+	static async updateCollection(
+		id: string,
+		updates: Partial<SupabaseCollection>
+	) {
+		const { data, error } = await supabase
+			.from('collections')
+			.update(updates)
+			.eq('id', id)
+			.select()
+			.single();
+
+		if (error) throw error;
+		return data;
+	}
+
+	static async deleteCollection(id: string) {
+		const { error } = await supabase
+			.from('collections')
+			.delete()
+			.eq('id', id);
+
+		if (error) throw error;
+	}
+}

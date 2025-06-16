@@ -1,167 +1,92 @@
-import { SneakerFormData } from '@/components/modals/SneakersModal/types';
 import { BaseApiService } from '@/services/BaseApiService';
+import { supabase } from './supabase';
 
-type ReactNativeFile = {
-	uri: string;
-	type: string;
-	name: string;
-};
-
-declare global {
-	namespace FormData {
-		interface FormData {
-			append(name: string, value: ReactNativeFile): void;
-		}
-	}
+export interface SupabaseSneaker {
+	id: string;
+	brand: string;
+	model: string;
+	size: number;
+	purchase_date?: string;
+	price_paid?: number;
+	condition: number;
+	estimated_value?: number;
+	description?: string;
+	status: string;
+	collection_id: string;
+	created_at: string;
+	updated_at: string;
 }
 
-export class SneakersService extends BaseApiService {
-	private userId: string;
-	private sessionToken: string;
+export class SupabaseSneakerService extends BaseApiService {
+	static async getSneakersByCollection(collectionId: string) {
+		const { data, error } = await supabase
+			.from('sneakers')
+			.select('*')
+			.eq('collection_id', collectionId)
+			.order('created_at', { ascending: false });
 
-	constructor(userId: string, sessionToken: string) {
-		super();
-		this.userId = userId;
-		this.sessionToken = sessionToken;
-	}
-
-	public async add(sneaker: SneakerFormData) {
-		const formData = new FormData();
-		formData.append('sneaker[model]', sneaker.model);
-		formData.append('sneaker[brand]', sneaker.brand);
-		const formattedSize = sneaker.size.replace(',', '.');
-		formData.append('sneaker[size]', formattedSize);
-		formData.append('sneaker[condition]', sneaker.condition.toString());
-		formData.append('sneaker[status]', sneaker.status.toLowerCase());
-		formData.append(
-			'sneaker[price_paid]',
-			sneaker.price_paid?.toString() || ''
-		);
-		formData.append('sneaker[description]', sneaker.description || '');
-
-		if (sneaker.images && sneaker.images.length > 0) {
-			this.appendImages(formData, sneaker.images);
-		}
-
-		const response = await fetch(
-			`${this.baseUrl}/users/${this.userId}/collection/sneakers`,
-			{
-				method: 'POST',
-				headers: {
-					Authorization: `Bearer ${this.sessionToken}`,
-					Accept: 'application/json',
-				},
-				body: formData,
-			}
-		);
-
-		const text = await response.text();
-		if (!response.ok) {
-			throw new Error(text);
-		}
-		return JSON.parse(text);
-	}
-
-	public async update(sneakerId: string, sneaker: SneakerFormData) {
-		const formData = new FormData();
-		formData.append('sneaker[model]', sneaker.model);
-		formData.append('sneaker[brand]', sneaker.brand);
-		const formattedSize = sneaker.size.replace(',', '.');
-		formData.append('sneaker[size]', formattedSize);
-		formData.append('sneaker[condition]', sneaker.condition.toString());
-		formData.append('sneaker[status]', sneaker.status.toLowerCase());
-		formData.append(
-			'sneaker[price_paid]',
-			sneaker.price_paid?.toString() || ''
-		);
-		formData.append('sneaker[description]', sneaker.description || '');
-
-		if (sneaker.images && sneaker.images.length > 0) {
-			this.appendImages(formData, sneaker.images);
-		}
-
-		const response = await fetch(
-			`${this.baseUrl}/users/${this.userId}/collection/sneakers/${sneakerId}`,
-			{
-				method: 'PATCH',
-				headers: {
-					Authorization: `Bearer ${this.sessionToken}`,
-					Accept: 'application/json',
-				},
-				body: formData,
-			}
-		);
-
-		if (!response.ok) {
-			throw new Error('Error updating sneaker');
-		}
-		return this.handleResponse(response);
-	}
-
-	public async delete(sneakerId: string) {
-		const response = await fetch(
-			`${this.baseUrl}/users/${this.userId}/collection/sneakers/${sneakerId}`,
-			{
-				method: 'DELETE',
-				headers: {
-					Authorization: `Bearer ${this.sessionToken}`,
-				},
-			}
-		);
-
-		if (!response.ok) {
-			throw new Error(`HTTP error! status: ${response.status}`);
-		}
-
-		return this.handleResponse(response);
-	}
-
-	public async searchBySku(sku: string) {
-		const response = await fetch(`${this.baseUrl}/sku_lookup?sku=${sku}`, {
-			headers: {
-				Authorization: `Bearer ${this.sessionToken}`,
-				Accept: 'application/json',
-				'Content-Type': 'application/json',
-			},
-		});
-
-		if (!response.ok) {
-			throw new Error(`HTTP error! status: ${response.status}`);
-		}
-
-		const data = await response.json();
-		if (!data) {
-			throw new Error('No data found for this SKU');
-		}
+		if (error) throw error;
 		return data;
 	}
 
-	public async getUserSneakers() {
-		const response = await fetch(
-			`${this.baseUrl}/users/${this.userId}/collection/sneakers`,
-			{
-				headers: this.getAuthHeaders(this.sessionToken),
-			}
-		);
+	static async createSneaker(
+		sneakerData: Omit<SupabaseSneaker, 'id' | 'created_at' | 'updated_at'>
+	) {
+		const { data, error } = await supabase
+			.from('sneakers')
+			.insert([sneakerData])
+			.select()
+			.single();
 
-		return this.handleResponse(response);
+		if (error) throw error;
+		return data;
 	}
 
-	private appendImages(formData: FormData, images: Array<{ url: string }>) {
-		images.forEach((image, index) => {
-			const imageUriParts = image.url.split('.');
-			const fileType = imageUriParts[imageUriParts.length - 1];
+	static async updateSneaker(id: string, updates: Partial<SupabaseSneaker>) {
+		const { data, error } = await supabase
+			.from('sneakers')
+			.update(updates)
+			.eq('id', id)
+			.select()
+			.single();
 
-			const imageFile: ReactNativeFile = {
-				uri: image.url,
-				type: 'image/jpeg',
-				name: `photo_${index}.${fileType}`,
-			};
+		if (error) throw error;
+		return data;
+	}
 
-			const rnFormData = formData as FormData & {
-				append(name: string, value: ReactNativeFile): void;
-			};
-			rnFormData.append('sneaker[images][]', imageFile);
-		});
+	static async deleteSneaker(id: string) {
+		const { error } = await supabase.from('sneakers').delete().eq('id', id);
+
+		if (error) throw error;
+	}
+
+	static async uploadSneakerImage(sneakerId: string, imageUri: string) {
+		const {
+			data: { user },
+			error: authError,
+		} = await supabase.auth.getUser();
+
+		if (authError) throw authError;
+		if (!user) throw new Error('No user found');
+
+		// Créer un nom de fichier unique
+		const fileName = `${user.id}/${sneakerId}/${Date.now()}.jpg`;
+
+		// Convertir l'URI en blob pour l'upload
+		const response = await fetch(imageUri);
+		const blob = await response.blob();
+
+		const { data, error } = await supabase.storage
+			.from('sneakers')
+			.upload(fileName, blob);
+
+		if (error) throw error;
+
+		// Obtenir l'URL publique
+		const { data: urlData } = supabase.storage
+			.from('sneakers')
+			.getPublicUrl(fileName);
+
+		return urlData.publicUrl;
 	}
 }

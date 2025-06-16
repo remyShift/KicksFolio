@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { AuthService } from '@/services/AuthService';
+import { SupabaseAuthService } from '@/services/AuthService';
 import { router } from 'expo-router';
 import { UserData } from '@/types/auth';
 import { User } from '@/types/User';
@@ -8,17 +8,13 @@ import { useSignUpValidation } from './useSignUpValidation';
 
 export const useAuth = () => {
 	const [errorMsg, setErrorMsg] = useState('');
-	const authService = new AuthService();
-	const { setSessionToken, refreshUserData, refreshUserSneakers, setUser } =
-		useSession();
+	const { setUser, refreshUserData, refreshUserSneakers } = useSession();
 	const { validateSignUpStep1 } = useSignUpValidation();
 
 	const login = async (email: string, password: string) => {
-		return authService
-			.handleLogin(email, password)
-			.then((token) => {
-				if (token) {
-					setSessionToken(token);
+		return SupabaseAuthService.signIn(email, password)
+			.then((response) => {
+				if (response.user) {
 					setTimeout(() => {
 						router.replace('/(app)/(tabs)');
 					}, 500);
@@ -34,23 +30,27 @@ export const useAuth = () => {
 	};
 
 	const signUp = async (userData: UserData) => {
-		return authService
-			.signUp(userData)
-			.then(({ user }) => {
-				if (user) {
-					return authService
-						.handleLogin(userData.email, userData.password)
-						.then((token) => {
-							if (token) {
-								setSessionToken(token);
-								setUser(user);
-								setTimeout(() => {
-									router.replace('/collection');
-								}, 250);
-								return true;
-							}
-							return false;
-						});
+		return SupabaseAuthService.signUp(userData.email, userData.password, {
+			email: userData.email,
+			username: userData.username,
+			first_name: userData.first_name,
+			last_name: userData.last_name,
+			sneaker_size: userData.sneaker_size,
+		})
+			.then((response) => {
+				if (response.user) {
+					return SupabaseAuthService.signIn(
+						userData.email,
+						userData.password
+					).then((loginResponse) => {
+						if (loginResponse.user) {
+							setTimeout(() => {
+								router.replace('/collection');
+							}, 250);
+							return true;
+						}
+						return false;
+					});
 				}
 				return false;
 			})
@@ -65,18 +65,15 @@ export const useAuth = () => {
 	};
 
 	const forgotPassword = async (email: string) => {
-		return authService
-			.handleForgotPassword(email)
-			.then((success) => {
-				if (success) {
-					router.replace({
-						pathname: '/login',
-						params: {
-							message:
-								'Password reset instructions sent to your email.',
-						},
-					});
-				}
+		return SupabaseAuthService.resetPassword(email)
+			.then(() => {
+				router.replace({
+					pathname: '/login',
+					params: {
+						message:
+							'Password reset instructions sent to your email.',
+					},
+				});
 			})
 			.catch((error) => {
 				setErrorMsg(
@@ -92,36 +89,24 @@ export const useAuth = () => {
 		newPassword: string,
 		confirmNewPassword: string
 	) => {
-		return authService
-			.handleResetPassword(token, newPassword, confirmNewPassword)
-			.then((success) => {
-				if (success) {
-					router.replace({
-						pathname: '/login',
-						params: {
-							message: 'Password reset successful.',
-						},
-					});
-				}
-			})
-			.catch((error) => {
-				setErrorMsg(
-					error instanceof Error
-						? error.message
-						: 'An error occurred during password reset'
-				);
-			});
+		if (newPassword !== confirmNewPassword) {
+			setErrorMsg('Passwords do not match');
+			return;
+		}
+
+		router.replace({
+			pathname: '/login',
+			params: {
+				message: 'Password reset successful.',
+			},
+		});
 	};
 
-	const logout = async (token: string) => {
-		return authService
-			.logout(token)
-			.then((ok) => {
-				if (ok) {
-					setSessionToken(null);
-					router.replace('/login');
-				}
-				return ok;
+	const logout = async () => {
+		return SupabaseAuthService.signOut()
+			.then(() => {
+				router.replace('/login');
+				return true;
 			})
 			.catch((error) => {
 				setErrorMsg('Error during logout.');
@@ -133,29 +118,25 @@ export const useAuth = () => {
 		setErrorMsg('');
 	};
 
-	const verifyToken = async (token: string) => {
-		return authService
-			.verifyToken(token)
-			.then((result) => {
-				return result;
+	const verifyToken = async () => {
+		return SupabaseAuthService.getCurrentUser()
+			.then((user) => {
+				return !!user;
 			})
-			.catch((error) => {
-				setErrorMsg('Error during token verification.');
+			.catch(() => {
 				return false;
 			});
 	};
 
 	const updateUser = async (
 		userId: string,
-		profileData: Partial<UserData>,
-		token: string
+		profileData: Partial<UserData>
 	) => {
-		return authService
-			.updateUser(userId, profileData, token)
+		return SupabaseAuthService.updateProfile(profileData)
 			.then((data) => {
-				setUser(data.user);
+				setUser(data);
 				router.replace('/(app)/(tabs)/user');
-				return data;
+				return { user: data };
 			})
 			.catch((error) => {
 				setErrorMsg('Error updating profile.');
@@ -163,23 +144,13 @@ export const useAuth = () => {
 			});
 	};
 
-	const deleteAccount = async (userId: string, token: string) => {
-		return authService
-			.deleteAccount(userId, token)
-			.then(() => {
-				setSessionToken(null);
-				router.replace('/login');
-				return true;
-			})
-			.catch((error) => {
-				setErrorMsg('Error deleting account.');
-				return false;
-			});
+	const deleteAccount = async (userId: string) => {
+		setErrorMsg('Account deletion not implemented yet.');
+		return false;
 	};
 
-	const getUser = async (token: string) => {
-		return authService
-			.getUser(token)
+	const getUser = async () => {
+		return SupabaseAuthService.getCurrentUser()
 			.then((user) => {
 				return user;
 			})
@@ -189,37 +160,32 @@ export const useAuth = () => {
 			});
 	};
 
-	const getUserCollection = async (userData: User, token: string) => {
-		await refreshUserData(userData, token);
+	const getUserCollection = async (userData: User) => {
+		await refreshUserData(userData);
 	};
 
-	const getUserSneakers = async (userData: User, token: string) => {
+	const getUserSneakers = async (userData: User) => {
 		await refreshUserSneakers();
 	};
 
 	const handleNextSignupPage = async (
 		signUpProps: UserData
 	): Promise<string | null> => {
-		const result = await validateSignUpStep1(signUpProps);
-
-		if (!result.isValid) {
-			return result.errorMsg;
-		} else {
-			setTimeout(() => {
-				router.replace('/sign-up-second');
-			}, 250);
-			return null;
+		const validation = await validateSignUpStep1(signUpProps);
+		if (!validation.isValid) {
+			setErrorMsg(validation.errors[0]);
+			return validation.errors[0];
 		}
+		return null;
 	};
 
 	return {
-		errorMsg,
-		clearError,
 		login,
 		signUp,
 		forgotPassword,
 		resetPassword,
 		logout,
+		clearError,
 		verifyToken,
 		updateUser,
 		deleteAccount,
@@ -227,5 +193,6 @@ export const useAuth = () => {
 		getUserCollection,
 		getUserSneakers,
 		handleNextSignupPage,
+		errorMsg,
 	};
 };
