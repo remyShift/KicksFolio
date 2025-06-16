@@ -46,11 +46,9 @@ export function SessionProvider({ children }: PropsWithChildren) {
             }
         );
 
-        // Vérifier et nettoyer les sessions problématiques au démarrage
         const checkInitialSession = async () => {
             const { data: { session } } = await supabase.auth.getSession();
             if (session?.user) {
-                // Vérifier si l'utilisateur existe dans notre table
                 try {
                     await SupabaseAuthService.getCurrentUser();
                 } catch (error: any) {
@@ -64,7 +62,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
         };
         checkInitialSession();
 
-        // Nettoyage
         return () => {
             subscription?.unsubscribe();
         };

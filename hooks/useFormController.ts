@@ -8,6 +8,7 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState, useEffect } from 'react';
 import { useAuth } from './useAuth';
+import { useSession } from '@/context/authContext';
 
 interface FormControllerOptions<T extends FieldValues>
 	extends Omit<UseFormProps<T>, 'defaultValues'> {
@@ -45,6 +46,7 @@ export function useFormController<T extends FieldValues>({
 	const [hasChanges, setHasChanges] = useState(false);
 
 	const { clearError } = useAuth();
+	const { refreshUserData } = useSession();
 
 	const form = useForm<T>({
 		resolver: zodResolver(schema),
@@ -162,9 +164,14 @@ export function useFormController<T extends FieldValues>({
 			})
 			.then(() => {
 				setIsSubmitting(false);
+				refreshUserData();
 			})
 			.catch((error: any) => {
 				console.error('Form submission error:', error);
+				setError(error as Path<T>, {
+					type: 'manual',
+					message: error,
+				});
 				setIsSubmitting(false);
 			});
 	});

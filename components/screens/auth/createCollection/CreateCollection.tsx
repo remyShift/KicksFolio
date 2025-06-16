@@ -5,10 +5,9 @@ import PageTitle from '@/components/ui/text/PageTitle';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import MainButton from '@/components/ui/buttons/MainButton';
 import FormTextInput from '@/components/ui/inputs/FormTextInput';
-import { useCreateCollection } from '@/hooks/useCreateCollection';
+import { useCollections } from '@/hooks/useCollections';
 import { useFormController } from '@/hooks/useFormController';
 import { useSession } from '@/context/authContext';
-import { useAuth } from '@/hooks/useAuth';
 import { z } from 'zod';
 
 const collectionSchema = z.object({
@@ -19,7 +18,7 @@ type CollectionFormData = z.infer<typeof collectionSchema>;
 
 export default function CreateCollection() {
     const scrollViewRef = useRef<ScrollView>(null);
-    const { createCollection, error: createCollectionError } = useCreateCollection();
+    const { createCollection } = useCollections();
     const { userCollection } = useSession();
 
     const {
@@ -27,8 +26,6 @@ export default function CreateCollection() {
         handleFormSubmit,
         handleFieldFocus,
         validateFieldOnBlur,
-        getFieldError,
-        hasFieldError,
         isSubmitDisabled,
         displayedError,
         getFieldErrorWrapper,
@@ -38,8 +35,8 @@ export default function CreateCollection() {
             collectionName: '',
         },
         fieldNames: ['collectionName'],
-        authErrorMsg: createCollectionError,
-        enableClearError: false,
+        authErrorMsg: '',
+        enableClearError: true,
         onSubmit: async (data) => {
             const success = await createCollection(data.collectionName);
             if (success) {
@@ -49,6 +46,7 @@ export default function CreateCollection() {
     });
 
     useEffect(() => {
+        console.log('userCollection', userCollection);
         if (userCollection) {
             router.replace('/(app)/(tabs)');
         }
