@@ -1,5 +1,8 @@
 import { Sneaker } from '@/types/Sneaker';
-import { SneakersService } from '@/services/SneakersService';
+import {
+	SupabaseSneakerService,
+	SupabaseSneaker,
+} from '@/services/SneakersService';
 import { SneakerFormData } from '../types';
 import { ModalStep } from '../types';
 import { FetchedSneaker } from '@/store/useModalStore';
@@ -14,8 +17,18 @@ interface Callbacks {
 	setErrorMsg: (error: string) => void;
 }
 
+interface SkuSearchResponse {
+	results: Array<{
+		name: string;
+		brand: string;
+		story: string;
+		image: {
+			original: string;
+		};
+	}>;
+}
+
 export const useSneakerAPI = (sessionToken: string, userId: string) => {
-	const sneakerService = new SneakersService(userId, sessionToken);
 	const { refreshUserSneakers, userSneakers } = useSession();
 
 	const validateSneakerData = (formData: SneakerFormData) => {
@@ -62,13 +75,16 @@ export const useSneakerAPI = (sessionToken: string, userId: string) => {
 
 		callbacks.setErrorMsg('');
 
-		return sneakerService
-			.searchBySku(sku.trim())
-			.then((response) => {
-				if (response) {
+		return SupabaseSneakerService.searchBySku(sku.trim())
+			.then((response: SkuSearchResponse) => {
+				if (
+					response &&
+					response.results &&
+					response.results.length > 0
+				) {
 					const responseResult = response.results[0];
 
-					const transformedSneaker = {
+					const transformedSneaker: FetchedSneaker = {
 						model: responseResult.name || '',
 						brand: responseResult.brand.toLowerCase() || '',
 						description: responseResult.story || '',
@@ -81,19 +97,49 @@ export const useSneakerAPI = (sessionToken: string, userId: string) => {
 				}
 				return response;
 			})
-			.catch((error: string) => {
-				callbacks.setErrorMsg(error);
+			.catch((error: Error) => {
+				callbacks.setErrorMsg(
+					error.message || 'An error occurred during SKU search'
+				);
 				throw error;
 			});
 	};
 
+	const convertSupabaseSneakerToSneaker = (
+		supabaseSneaker: SupabaseSneaker
+	): Sneaker => {
+		return {
+			id: supabaseSneaker.id,
+			brand: supabaseSneaker.brand,
+			model: supabaseSneaker.model,
+			size: supabaseSneaker.size,
+			condition: supabaseSneaker.condition,
+			status: supabaseSneaker.status,
+			images: supabaseSneaker.images,
+			price_paid: supabaseSneaker.price_paid || 0,
+			description: supabaseSneaker.description || '',
+			purchase_date: supabaseSneaker.purchase_date || '',
+			estimated_value: supabaseSneaker.estimated_value || 0,
+			created_at: supabaseSneaker.created_at,
+			updated_at: supabaseSneaker.updated_at,
+			release_date: null,
+			collection_id: supabaseSneaker.collection_id,
+		};
+	};
+
 	const handleFormSubmit = async (
 		formData: SneakerFormData,
-		callbacks?: Callbacks
+		callbacks?: Callbacks,
+		collectionId?: string
 	) => {
 		if (!sessionToken) {
 			callbacks?.setErrorMsg('No session token');
 			return Promise.reject('No session token');
+		}
+
+		if (!collectionId) {
+			callbacks?.setErrorMsg('No collection ID provided');
+			return Promise.reject('No collection ID provided');
 		}
 
 		return validateSneakerData(formData)
@@ -108,25 +154,33 @@ export const useSneakerAPI = (sessionToken: string, userId: string) => {
 					return Promise.reject('Validation failed');
 				}
 
-				const sneakerToAdd: SneakerFormData = {
+				const sneakerToAdd: Omit<
+					SupabaseSneaker,
+					'id' | 'created_at' | 'updated_at'
+				> = {
 					model: formData.model,
 					brand: formData.brand,
 					status: formData.status,
-					size: formData.size.toString(),
-					condition: formData.condition.toString(),
+					size: parseInt(formData.size.toString()),
+					condition: parseInt(formData.condition.toString()),
 					images: formData.images.map((img) => ({
 						id: '',
 						url: img.url,
 					})),
-					price_paid: formData.price_paid?.toString() || '',
+					price_paid: formData.price_paid
+						? parseFloat(formData.price_paid.toString())
+						: undefined,
 					description: formData.description,
+					collection_id: collectionId,
 				};
 
-				return sneakerService.add(sneakerToAdd);
+				return SupabaseSneakerService.createSneaker(sneakerToAdd);
 			})
-			.then((response) => {
+			.then((response: SupabaseSneaker) => {
 				if (response && callbacks) {
-					callbacks.setCurrentSneaker?.(response.sneaker);
+					const convertedSneaker =
+						convertSupabaseSneakerToSneaker(response);
+					callbacks.setCurrentSneaker?.(convertedSneaker);
 					callbacks.setModalStep('view');
 
 					setTimeout(() => {
@@ -135,9 +189,9 @@ export const useSneakerAPI = (sessionToken: string, userId: string) => {
 				}
 				return response;
 			})
-			.catch((error: string) => {
+			.catch((error: Error) => {
 				callbacks?.setErrorMsg(
-					`An error occurred while submitting the sneaker: ${error}`
+					`An error occurred while submitting the sneaker: ${error.message}`
 				);
 				throw error;
 			});
@@ -153,8 +207,6 @@ export const useSneakerAPI = (sessionToken: string, userId: string) => {
 			return Promise.reject('No session token');
 		}
 
-		let sneakerToUpdate: SneakerFormData;
-
 		return validateSneakerData(formData)
 			.then((validationResult) => {
 				if (!validationResult.isValid) {
@@ -167,33 +219,32 @@ export const useSneakerAPI = (sessionToken: string, userId: string) => {
 					return Promise.reject('Validation failed');
 				}
 
-				sneakerToUpdate = {
+				const sneakerUpdates: Partial<SupabaseSneaker> = {
 					model: formData.model,
 					brand: formData.brand,
 					status: formData.status,
-					size: formData.size.toString(),
-					condition: formData.condition.toString(),
+					size: parseInt(formData.size.toString()),
+					condition: parseInt(formData.condition.toString()),
 					images: formData.images.map((img) => ({
 						id: '',
 						url: img.url,
 					})),
-					price_paid: formData.price_paid?.toString() || '',
+					price_paid: formData.price_paid
+						? parseFloat(formData.price_paid.toString())
+						: undefined,
 					description: formData.description,
 				};
 
-				return sneakerService.update(sneakerId, sneakerToUpdate);
+				return SupabaseSneakerService.updateSneaker(
+					sneakerId,
+					sneakerUpdates
+				);
 			})
-			.then((response) => {
+			.then((response: SupabaseSneaker) => {
 				if (response && callbacks) {
-					const updatedSneaker = {
-						...response.sneaker,
-						images:
-							response.sneaker.images ||
-							sneakerToUpdate.images ||
-							[],
-					};
-
-					callbacks.setCurrentSneaker?.(updatedSneaker);
+					const convertedSneaker =
+						convertSupabaseSneakerToSneaker(response);
+					callbacks.setCurrentSneaker?.(convertedSneaker);
 					callbacks.setModalStep('view');
 
 					setTimeout(() => {
@@ -204,9 +255,9 @@ export const useSneakerAPI = (sessionToken: string, userId: string) => {
 				}
 				return response;
 			})
-			.catch((error: string) => {
+			.catch((error: Error) => {
 				callbacks?.setErrorMsg(
-					`An error occurred while updating the sneaker: ${error}`
+					`An error occurred while updating the sneaker: ${error.message}`
 				);
 				throw error;
 			});
@@ -241,13 +292,14 @@ export const useSneakerAPI = (sessionToken: string, userId: string) => {
 			return Promise.reject('No session token');
 		}
 
-		return sneakerService
-			.delete(sneakerId)
-			.then(async (response) => {
-				await refreshUserSneakers();
-				return response;
+		return SupabaseSneakerService.deleteSneaker(sneakerId)
+			.then(() => {
+				return refreshUserSneakers();
 			})
-			.catch((error: string) => {
+			.then(() => {
+				return { success: true };
+			})
+			.catch((error: Error) => {
 				throw error;
 			});
 	};

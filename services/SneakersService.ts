@@ -12,6 +12,7 @@ export interface SupabaseSneaker {
 	estimated_value?: number;
 	description?: string;
 	status: string;
+	images: { id: string; url: string }[];
 	collection_id: string;
 	created_at: string;
 	updated_at: string;
@@ -69,10 +70,8 @@ export class SupabaseSneakerService extends BaseApiService {
 		if (authError) throw authError;
 		if (!user) throw new Error('No user found');
 
-		// Créer un nom de fichier unique
 		const fileName = `${user.id}/${sneakerId}/${Date.now()}.jpg`;
 
-		// Convertir l'URI en blob pour l'upload
 		const response = await fetch(imageUri);
 		const blob = await response.blob();
 
@@ -82,11 +81,21 @@ export class SupabaseSneakerService extends BaseApiService {
 
 		if (error) throw error;
 
-		// Obtenir l'URL publique
 		const { data: urlData } = supabase.storage
 			.from('sneakers')
 			.getPublicUrl(fileName);
 
 		return urlData.publicUrl;
+	}
+
+	static async searchBySku(sku: string) {
+		const { data, error } = await supabase.functions.invoke('sku-lookup', {
+			body: { sku },
+		});
+
+		if (error) throw error;
+		if (!data) throw new Error('No data found for this SKU');
+
+		return data;
 	}
 }
