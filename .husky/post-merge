@@ -1,6 +1,9 @@
 if [ "$(git branch --show-current)" = "main" ]; then
-    echo "🚀 Merge détecté sur la branche principale"
-    
-    npx expo prebuild --clean
+    echo "🚀 Merge detected on main branch"
+    rm -rf ios android
+    echo "🧹 Removing iOS and Android folders"
+    npx expo prebuild --clean --platform all
+    echo "✅ Prebuild completed"
     eas build --platform all --profile development
+    echo "✅ Build completed"
 fi 
