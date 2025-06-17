@@ -12,6 +12,7 @@ export default function CollectionCard({ userCollection, userSneakers }: { userC
             onPress={() => {
                 router.push(`/(app)/(tabs)/user`);
             }}
+            testID="collection-card"
         >
             <View className="flex flex-row items-center gap-1 w-full h-24">
                 {userSneakers?.slice(0, 2).map((sneaker, index) => (
@@ -25,15 +26,16 @@ export default function CollectionCard({ userCollection, userSneakers }: { userC
                             contentFit="cover"
                             contentPosition="center"
                             cachePolicy="memory-disk"
+                            testID="sneaker-image"
                         />
                     ) : (
-                        <View key={index} className="w-1/2 h-full bg-slate-200 rounded-md flex flex-row items-center justify-center">
+                        <View key={index} className="w-1/2 h-full bg-slate-200 rounded-md flex flex-row items-center justify-center" testID="empty-slot">
                             <MaterialCommunityIcons name="shoe-sneaker" size={24} color="white" />
                         </View>
                     )
                 ))}
                 {Array.from({ length: Math.max(0, 2 - (userSneakers?.length || 0)) }).map((_, index) => (
-                    <View key={`empty-top-${index}`} className="w-1/2 h-full bg-slate-200 rounded-md flex flex-row items-center justify-center">
+                    <View key={`empty-top-${index}`} className="w-1/2 h-full bg-slate-200 rounded-md flex flex-row items-center justify-center" testID="empty-slot">
                         <MaterialCommunityIcons name="shoe-sneaker" size={24} color="white" />
                     </View>
                 ))}
@@ -52,15 +54,16 @@ export default function CollectionCard({ userCollection, userSneakers }: { userC
                             contentFit="cover"
                             contentPosition="center"
                             cachePolicy="memory-disk"
+                            testID="sneaker-image"
                         />
                     ) : (
-                        <View key={index} className="w-1/2 h-full bg-slate-200 rounded-md flex flex-row items-center justify-center">
+                        <View key={index} className="w-1/2 h-full bg-slate-200 rounded-md flex flex-row items-center justify-center" testID="empty-slot">
                             <MaterialCommunityIcons name="shoe-sneaker" size={24} color="white" />
                         </View>
                     )
                 ))}
                 {Array.from({ length: Math.max(0, 2 - (userSneakers?.slice(2, 4).length || 0)) }).map((_, index) => (
-                    <View key={`empty-bottom-${index}`} className="w-1/2 h-full bg-slate-200 rounded-md flex flex-row items-center justify-center">
+                    <View key={`empty-bottom-${index}`} className="w-1/2 h-full bg-slate-200 rounded-md flex flex-row items-center justify-center" testID="empty-slot">
                         <MaterialCommunityIcons name="shoe-sneaker" size={24} color="white" />
                     </View>
                 ))}

@@ -81,6 +81,24 @@ jest.mock('../context/authContext', () => ({
 	}),
 }));
 
+jest.mock('expo-font', () => ({
+	loadAsync: jest.fn().mockResolvedValue(undefined),
+	isLoaded: jest.fn().mockReturnValue(true),
+	useFonts: () => [true, null],
+	unloadAsync: jest.fn(),
+	loadedNativeFonts: [],
+}));
+
+jest.mock('expo-router', () => ({
+	Link: ({ children }: { children: React.ReactNode }) => children,
+	useLocalSearchParams: () => ({}),
+	router: {
+		push: jest.fn(),
+		replace: jest.fn(),
+		back: jest.fn(),
+	},
+}));
+
 const originalConsoleError = console.error;
 
 beforeEach(() => {

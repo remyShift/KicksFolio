@@ -6,7 +6,7 @@ export const mockUseAuth = {
 	handleNextSignupPage: jest.fn(),
 	forgotPassword: jest.fn(),
 	updateUser: jest.fn(),
-	resetPassword: jest.fn((token, newPassword, confirmNewPassword) => {
+	resetPassword: jest.fn((newPassword, confirmNewPassword) => {
 		return Promise.resolve(true);
 	}),
 };

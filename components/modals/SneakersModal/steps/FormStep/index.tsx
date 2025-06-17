@@ -92,7 +92,6 @@ export const FormStep = () => {
         const handleValidateAndSubmit = async () => {
             setErrorMsg('');
             
-            // Synchroniser les images du store avec le formulaire avant validation
             const currentSneakerToAdd = useModalStore.getState().sneakerToAdd;
             const currentFormValues = watch();
             
@@ -165,7 +164,6 @@ export const FormStep = () => {
         };
     }, []);
 
-    // La logique d'affichage des erreurs est maintenant gérée par useFormController
 
     useEffect(() => {
         return () => {
