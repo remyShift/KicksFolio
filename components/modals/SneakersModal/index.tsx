@@ -17,7 +17,7 @@ export const SneakersModal = () => {
     if (!isVisible) return null;
 
     return (
-        <View className="flex-1">
+        <View className="flex-1" testID="sneakers-modal">
             <View className="flex-1">
                 {modalStep === 'index' && (
                     <InitialStep />

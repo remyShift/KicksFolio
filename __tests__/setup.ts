@@ -91,12 +91,24 @@ jest.mock('expo-font', () => ({
 
 jest.mock('expo-router', () => ({
 	Link: ({ children }: { children: React.ReactNode }) => children,
-	useLocalSearchParams: () => ({}),
+	useLocalSearchParams: jest.fn().mockReturnValue({ newUser: 'true' }),
 	router: {
 		push: jest.fn(),
 		replace: jest.fn(),
 		back: jest.fn(),
 	},
+}));
+
+jest.mock('../store/useModalStore', () => ({
+	useModalStore: () => ({
+		modalStep: 'index',
+		isVisible: false,
+		currentSneaker: null,
+		setModalStep: jest.fn(),
+		setIsVisible: jest.fn(),
+		setCurrentSneaker: jest.fn(),
+		resetModal: jest.fn(),
+	}),
 }));
 
 const originalConsoleError = console.error;
