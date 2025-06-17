@@ -1,0 +1,6 @@
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.(js|jsx|ts|tsx)$' | tr '\n' ' ')
+
+if [ -n "$STAGED_FILES" ]; then
+    echo "Running tests for staged files: $STAGED_FILES"
+    npx jest --bail --findRelatedTests $STAGED_FILES
+fi
