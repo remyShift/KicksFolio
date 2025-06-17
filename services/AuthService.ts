@@ -23,6 +23,13 @@ export class SupabaseAuthService {
 			password,
 			options: {
 				emailRedirectTo: undefined,
+				data: {
+					username: userData.username,
+					first_name: userData.first_name,
+					last_name: userData.last_name,
+					sneaker_size: userData.sneaker_size,
+					profile_picture: userData.profile_picture,
+				},
 			},
 		});
 
@@ -32,11 +39,31 @@ export class SupabaseAuthService {
 				status: result.error.status,
 				code: result.error.name,
 			});
+			throw result.error;
 		}
 
-		if (result.error) throw result.error;
+		const { data: user, error: userError } = await supabase
+			.from('users')
+			.insert([
+				{
+					id: result.data.user?.id,
+					email: email,
+					username: userData.username,
+					first_name: userData.first_name,
+					last_name: userData.last_name,
+					sneaker_size: userData.sneaker_size,
+					profile_picture: userData.profile_picture,
+				},
+			])
+			.select()
+			.single();
 
-		return result.data;
+		if (userError) {
+			await supabase.auth.signOut();
+			throw userError;
+		}
+
+		return { ...result.data, user };
 	}
 
 	static async signIn(email: string, password: string) {
@@ -47,6 +74,23 @@ export class SupabaseAuthService {
 
 		if (error) throw error;
 		return data;
+	}
+
+	static async deleteUser(userId: string) {
+		const { error } = await supabase
+			.from('users')
+			.delete()
+			.eq('id', userId);
+		if (error) throw error;
+
+		const { error: authError } = await supabase.rpc('delete_user_account', {
+			user_id: userId,
+		});
+		if (authError) throw authError;
+
+		await supabase.auth.signOut();
+
+		return true;
 	}
 
 	static async signOut() {
@@ -91,67 +135,6 @@ export class SupabaseAuthService {
 	static async resetPassword(email: string) {
 		const { error } = await supabase.auth.resetPasswordForEmail(email);
 		if (error) throw error;
-	}
-
-	static async createUserProfile(userData: Partial<SupabaseUser>) {
-		const {
-			data: { user },
-			error: authError,
-		} = await supabase.auth.getUser();
-
-		if (authError) throw authError;
-		if (!user) throw new Error('No authenticated user found');
-
-		const { error: updateError } = await supabase.auth.updateUser({
-			data: {
-				username: userData.username,
-				first_name: userData.first_name,
-				last_name: userData.last_name,
-				sneaker_size: userData.sneaker_size,
-				profile_picture: userData.profile_picture || null,
-			},
-		});
-
-		if (updateError) {
-			console.error('Error updating user metadata:', updateError);
-		} else {
-			// console.log('User metadata updated successfully');
-		}
-
-		const { data: existingUser } = await supabase
-			.from('users')
-			.select('id')
-			.eq('id', user.id)
-			.single();
-
-		if (existingUser) {
-			// console.log('User profile already exists');
-			return existingUser;
-		}
-
-		const userToInsert = {
-			id: user.id,
-			email: userData.email || user.email,
-			username: userData.username,
-			first_name: userData.first_name,
-			last_name: userData.last_name,
-			sneaker_size: userData.sneaker_size,
-			profile_picture: userData.profile_picture || null,
-		};
-
-		const { data, error } = await supabase
-			.from('users')
-			.insert([userToInsert])
-			.select()
-			.single();
-
-		if (error) {
-			console.error('Error creating user profile:', error);
-			throw error;
-		}
-
-		// console.log('User profile created successfully:', data);
-		return data;
 	}
 
 	static async cleanupOrphanedSessions() {

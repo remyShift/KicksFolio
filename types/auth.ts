@@ -13,6 +13,7 @@ export interface AuthContextType {
 	setUser: Dispatch<SetStateAction<User | null>>;
 	refreshUserData: (currentUser?: User) => Promise<void>;
 	refreshUserSneakers: () => Promise<void>;
+	clearUserData: () => void;
 }
 
 export interface UserData {

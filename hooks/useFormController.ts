@@ -80,6 +80,7 @@ export function useFormController<T extends FieldValues>({
 		});
 		setHasChanges(hasFormChanges);
 	}, [formValues, defaultValues, isEditForm]);
+
 	const validateFieldAsync = async (fieldName: keyof T, value: any) => {
 		const errorMsg = await asyncValidation![fieldName]!(value);
 		if (errorMsg) {
@@ -98,23 +99,42 @@ export function useFormController<T extends FieldValues>({
 
 	const validateFieldOnBlur = async (
 		fieldName: keyof T,
-		value: string | number
+		value: T[keyof T]
 	) => {
+		console.log('validateFieldOnBlur called', fieldName, value);
+
 		await trigger(fieldName as Path<T>);
 
-		setErrorsAsync({
-			...errorsAsync,
+		if (asyncValidation?.[fieldName]) {
+			console.log('Running async validation for', fieldName);
+			try {
+				const errorMsg = await asyncValidation[fieldName]!(value);
+				if (errorMsg) {
+					setAsyncErrors((prev) => ({
+						...prev,
+						[fieldName]: errorMsg,
+					}));
+					setError(fieldName as Path<T>, {
+						type: 'manual',
+						message: errorMsg,
+					});
+				} else {
+					setAsyncErrors((prev) => ({
+						...prev,
+						[fieldName]: undefined,
+					}));
+					clearErrors(fieldName as Path<T>);
+				}
+			} catch (error) {
+				console.error('Async validation error:', error);
+			}
+		}
+
+		setErrorsAsync((prev) => ({
+			...prev,
 			[fieldName]: form.formState.errors[fieldName as Path<T>]
 				?.message as string,
-		});
-
-		if (
-			asyncValidation?.[fieldName] &&
-			value &&
-			value.toString().trim() !== ''
-		) {
-			await validateFieldAsync(fieldName, value);
-		}
+		}));
 	};
 
 	const handleFieldFocus = (fieldName: keyof T) => {

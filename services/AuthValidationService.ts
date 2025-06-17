@@ -3,55 +3,36 @@ import { supabase } from './supabase';
 export class AuthValidationService {
 	async checkUsernameExists(username: string): Promise<boolean> {
 		return Promise.resolve(
-			supabase
-				.from('users')
-				.select('id')
-				.eq('username', username)
-				.limit(1)
+			supabase.rpc('check_username_availability', {
+				username_to_check: username,
+			})
 		)
 			.then(({ data, error }) => {
 				if (error) {
-					console.error('Error checking username:', error);
 					return false;
 				}
-				return data && data.length > 0;
+				return data;
 			})
-			.catch((error: any) => {
-				console.error('Error checking username:', error);
+			.catch((error) => {
+				console.error('Error in checkUsernameExists:', error);
 				return false;
 			});
 	}
 
 	async checkEmailExists(email: string): Promise<boolean> {
-		return supabase.auth.admin
-			.listUsers()
-			.then(({ data: authUsers, error: authError }) => {
-				if (authError) {
-					console.error('Error checking email in auth:', authError);
-					return supabase
-						.from('users')
-						.select('id')
-						.eq('email', email)
-						.limit(1)
-						.then(({ data, error }) => {
-							if (error) {
-								console.error(
-									'Error checking email in users table:',
-									error
-								);
-								return false;
-							}
-							return data && data.length > 0;
-						});
+		return Promise.resolve(
+			supabase.rpc('check_email_availability', {
+				email_to_check: email,
+			})
+		)
+			.then(({ data, error }) => {
+				if (error) {
+					return false;
 				}
-
-				const emailExists = authUsers.users.some(
-					(user) => user.email === email
-				);
-				return emailExists;
+				return data;
 			})
 			.catch((error) => {
-				console.error('Error checking email:', error);
+				console.error('Error in checkEmailExists:', error);
 				return false;
 			});
 	}

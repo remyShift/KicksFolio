@@ -1,15 +1,17 @@
 import { AuthValidationService } from '@/services/AuthValidationService';
 
+type ValidationValue = string | number | boolean | null | undefined;
+
 export function useAsyncValidation() {
 	const validationService = new AuthValidationService();
 
 	const checkUsernameExists = async (
-		username: string
+		value: ValidationValue
 	): Promise<string | null> => {
-		if (!username || username.length < 4) return null;
+		if (!value || value.toString().length < 4) return null;
 
 		return validationService
-			.checkUsernameExists(username)
+			.checkUsernameExists(value.toString())
 			.then((exists) => {
 				return exists ? 'This username is already taken.' : null;
 			})
@@ -19,12 +21,14 @@ export function useAsyncValidation() {
 			});
 	};
 
-	const checkEmailExists = async (email: string): Promise<string | null> => {
+	const checkEmailExists = async (
+		value: ValidationValue
+	): Promise<string | null> => {
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-		if (!email || !emailRegex.test(email)) return null;
+		if (!value || !emailRegex.test(value.toString())) return null;
 
 		return validationService
-			.checkEmailExists(email)
+			.checkEmailExists(value.toString())
 			.then((exists) => {
 				return exists
 					? 'An account with this email already exists, please login.'

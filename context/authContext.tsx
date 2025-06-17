@@ -32,9 +32,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
 
     useEffect(() => {
         const { data: { subscription } } = supabase.auth.onAuthStateChange(
-            async (event, session) => {
-                // console.log('Auth state changed:', event, session?.user?.email);
-                
+            async (event, session) => {                
                 if (session?.user) {
                     await initializeUserData(session.user.id);
                 } else {
@@ -52,7 +50,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
                     await SupabaseAuthService.getCurrentUser();
                 } catch (error: any) {
                     if (error.code === 'PGRST116') {
-                        // console.log('Session utilisateur orpheline détectée, nettoyage...');
                         await supabase.auth.signOut();
                         clearUserData();
                     }
@@ -82,7 +79,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
                         storageService.setItem('user', userData);
                         return refreshUserData(userData);
                     } else if (attempt < maxRetries) {
-                        // console.log(`User not found, retrying in ${retryDelay}ms... (attempt ${attempt + 1}/${maxRetries})`);
                         return new Promise((resolve) => {
                             setTimeout(() => {
                                 resolve(getUserWithRetries(attempt + 1));
@@ -163,9 +159,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
         setUserCollection(null);
         setUserSneakers(null);
 
-        storageService.removeItem('user');
-        storageService.removeItem('collection');
-        storageService.removeItem('sneakers');
+        storageService.clearSessionData();
     };
 
     const handleAppStateChange = async () => {
@@ -191,7 +185,8 @@ export function SessionProvider({ children }: PropsWithChildren) {
                 userSneakers,
                 setUserSneakers,
                 refreshUserData,
-                refreshUserSneakers
+                refreshUserSneakers,
+                clearUserData
             }}>
 			{children}
 		</AuthContext.Provider>

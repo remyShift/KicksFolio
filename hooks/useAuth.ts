@@ -8,7 +8,8 @@ import { useSignUpValidation } from './useSignUpValidation';
 
 export const useAuth = () => {
 	const [errorMsg, setErrorMsg] = useState('');
-	const { setUser, refreshUserData, refreshUserSneakers } = useSession();
+	const { setUser, refreshUserData, refreshUserSneakers, clearUserData } =
+		useSession();
 	const { validateSignUpStep1 } = useSignUpValidation();
 
 	const login = async (email: string, password: string) => {
@@ -29,7 +30,7 @@ export const useAuth = () => {
 			});
 	};
 
-	const createUserAccount = async (userData: UserData) => {
+	const signUp = async (userData: UserData) => {
 		return SupabaseAuthService.signUp(
 			userData.email,
 			userData.password,
@@ -37,26 +38,10 @@ export const useAuth = () => {
 		)
 			.then((response) => {
 				if (response.user) {
-					return SupabaseAuthService.signIn(
-						userData.email,
-						userData.password
-					).then((loginResponse) => {
-						if (loginResponse.user) {
-							return SupabaseAuthService.createUserProfile({
-								username: userData.username,
-								first_name: userData.first_name,
-								last_name: userData.last_name,
-								sneaker_size: userData.sneaker_size,
-								profile_picture:
-									userData.profile_picture || undefined,
-							}).then(() => {
-								return true;
-							});
-						}
-						return false;
-					});
+					console.log('response.user', response.user);
+					setUser(response.user);
+					login(userData.email, userData.password);
 				}
-				return false;
 			})
 			.catch((error: any) => {
 				setErrorMsg(
@@ -64,18 +49,7 @@ export const useAuth = () => {
 						? error.message
 						: 'An error occurred during sign up'
 				);
-				return false;
 			});
-	};
-
-	const signUp = async (userData: UserData) => {
-		const success = await createUserAccount(userData);
-		if (success) {
-			setTimeout(() => {
-				router.replace('/collection');
-			}, 250);
-		}
-		return success;
 	};
 
 	const forgotPassword = async (email: string) => {
@@ -149,8 +123,16 @@ export const useAuth = () => {
 	};
 
 	const deleteAccount = async (userId: string) => {
-		setErrorMsg('Account deletion not implemented yet.');
-		return false;
+		console.log('Deleting account for user:', userId);
+		return SupabaseAuthService.deleteUser(userId)
+			.then(() => {
+				clearUserData();
+				router.replace('/login');
+				return true;
+			})
+			.catch((error) => {
+				throw error;
+			});
 	};
 
 	const getUser = async () => {
@@ -190,7 +172,6 @@ export const useAuth = () => {
 	return {
 		login,
 		signUp,
-		createUserAccount,
 		forgotPassword,
 		resetPassword,
 		logout,

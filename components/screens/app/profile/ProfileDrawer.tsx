@@ -76,15 +76,16 @@ export default function ProfileDrawer({
             style: 'destructive',
             onPress: () => {
                 if (user) {
-                    deleteAccount(user.id).then((success) => {
-                        if (success) {
+                    deleteAccount(user.id)
+                        .then(() => {
                             onClose();
                             onLogout();
                             Alert.alert('Success', 'Your account has been deleted successfully');
-                        } else {
-                            Alert.alert('Error', 'An error occurred while deleting your account');
-                        }
-                    });
+                        })
+                        .catch((error) => {
+                            console.log('Error deleting account:', error);
+                            Alert.alert('Error', error.message );
+                        });
                 }
             }
             }
