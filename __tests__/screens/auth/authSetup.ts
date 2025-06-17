@@ -51,3 +51,8 @@ export const newMockUser = {
 	...mockUser,
 	username: 'remysnkr',
 };
+
+export const mockUseAsyncValidation = {
+	checkUsernameExists: jest.fn(),
+	checkEmailExists: jest.fn(),
+};

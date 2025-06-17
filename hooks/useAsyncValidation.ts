@@ -6,14 +6,17 @@ export function useAsyncValidation() {
 	const validationService = new AuthValidationService();
 
 	const checkUsernameExists = async (
-		value: ValidationValue
+		username: string
 	): Promise<string | null> => {
-		if (!value || value.toString().length < 4) return null;
+		if (!username || username.length < 4) return null;
 
 		return validationService
-			.checkUsernameExists(value.toString())
+			.checkUsernameExists(username)
 			.then((exists) => {
-				return exists ? 'This username is already taken.' : null;
+				if (exists) {
+					return 'This username is already taken.';
+				}
+				return null;
 			})
 			.catch((error) => {
 				console.error('Error checking username:', error);

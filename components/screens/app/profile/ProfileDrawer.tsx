@@ -83,7 +83,6 @@ export default function ProfileDrawer({
                             Alert.alert('Success', 'Your account has been deleted successfully');
                         })
                         .catch((error) => {
-                            console.log('Error deleting account:', error);
                             Alert.alert('Error', error.message );
                         });
                 }

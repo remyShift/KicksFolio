@@ -6,7 +6,8 @@ import {
 	mockUseSignUpProps,
 	mockUseCollections,
 	mockUser,
-} from './pages/auth/authSetup';
+	mockUseAsyncValidation,
+} from './screens/auth/authSetup';
 
 jest.mock('@react-native-async-storage/async-storage', () => ({
 	__esModule: true,
@@ -109,6 +110,10 @@ jest.mock('../store/useModalStore', () => ({
 		setCurrentSneaker: jest.fn(),
 		resetModal: jest.fn(),
 	}),
+}));
+
+jest.mock('../hooks/useAsyncValidation', () => ({
+	useAsyncValidation: () => mockUseAsyncValidation,
 }));
 
 const originalConsoleError = console.error;

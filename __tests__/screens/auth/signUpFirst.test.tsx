@@ -3,6 +3,7 @@ import { act, fireEvent, render, screen } from '@testing-library/react-native';
 import { mockAuthService, mockUseAuth } from './authSetup';
 import { fillAndBlurInput } from '../../setup';
 import { ReactTestInstance } from 'react-test-renderer';
+import { mockUseAsyncValidation } from './authSetup';
 
 describe('SignUpFirstPage', () => {
     let userNameInput: ReactTestInstance;
@@ -86,6 +87,12 @@ describe('SignUpFirstPage', () => {
             expect(errorMessage.props.children).toBe('Username must not contain special characters.');
         });
 
+        it('should display an appropriate error if the username is already taken on blur', async () => {
+            mockUseAsyncValidation.checkUsernameExists.mockResolvedValue('This username is already taken.');
+            await fillAndBlurInput(userNameInput, 'johnSneakers');
+            expect(errorMessage.props.children).toBe('This username is already taken.');
+        });
+
         it('should display an appropriate error if the email is not a valid email on blur', async () => {
             await fillAndBlurInput(emailInput, 'test@test');
             expect(errorMessage.props.children).toBe('Please put a valid email.');
@@ -136,6 +143,8 @@ describe('SignUpFirstPage', () => {
     });
 
     it('should display main button enabled if fields are filled with valid values', async () => {
+        mockUseAsyncValidation.checkUsernameExists.mockResolvedValue(null);
+        mockUseAsyncValidation.checkEmailExists.mockResolvedValue(null);
         await fillAndBlurInput(userNameInput, 'validUsername');
         await fillAndBlurInput(emailInput, 'valid@email.com');
         await fillAndBlurInput(passwordInput, 'ValidPassword14*');

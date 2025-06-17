@@ -38,7 +38,6 @@ export const useAuth = () => {
 		)
 			.then((response) => {
 				if (response.user) {
-					console.log('response.user', response.user);
 					setUser(response.user);
 					login(userData.email, userData.password);
 				}
@@ -123,7 +122,6 @@ export const useAuth = () => {
 	};
 
 	const deleteAccount = async (userId: string) => {
-		console.log('Deleting account for user:', userId);
 		return SupabaseAuthService.deleteUser(userId)
 			.then(() => {
 				clearUserData();

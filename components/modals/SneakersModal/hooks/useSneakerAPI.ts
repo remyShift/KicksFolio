@@ -251,7 +251,7 @@ export const useSneakerAPI = (userId: string) => {
 						refreshUserSneakers();
 					}, 100);
 				} else {
-					console.log('No response or callbacks');
+					console.error('No response or callbacks');
 				}
 				return response;
 			})

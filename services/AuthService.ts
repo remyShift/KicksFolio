@@ -34,11 +34,6 @@ export class SupabaseAuthService {
 		});
 
 		if (result.error) {
-			console.log('Error details:', {
-				message: result.error.message,
-				status: result.error.status,
-				code: result.error.name,
-			});
 			throw result.error;
 		}
 

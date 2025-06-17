@@ -1,7 +1,7 @@
 import { renderHook, act } from '@testing-library/react-native';
 import { useFormController } from '../../hooks/useFormController';
 import { z } from 'zod';
-import { mockUseAuth } from '../pages/auth/authSetup';
+import { mockUseAuth } from '../screens/auth/authSetup';
 
 const testSchema = z.object({
 	username: z.string().min(2, 'Username must be at least 2 characters'),
@@ -112,6 +112,7 @@ describe('useFormController', () => {
 			);
 
 			await act(async () => {
+				result.current.setValue('username', 'validuser');
 				await result.current.validateFieldOnBlur('username', 'validuser');
 			});
 

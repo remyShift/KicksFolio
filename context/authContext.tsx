@@ -90,7 +90,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
                 })
                 .catch((error) => {
                     if (attempt < maxRetries && error.code === 'PGRST116') {
-                        // console.log(`Database error, retrying in ${retryDelay}ms... (attempt ${attempt + 1}/${maxRetries})`);
                         return new Promise((resolve) => {
                             setTimeout(() => {
                                 resolve(getUserWithRetries(attempt + 1));

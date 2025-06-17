@@ -46,7 +46,6 @@ export default function CreateCollection() {
     });
 
     useEffect(() => {
-        // console.log('userCollection', userCollection);
         if (userCollection) {
             router.replace('/(app)/(tabs)');
         }

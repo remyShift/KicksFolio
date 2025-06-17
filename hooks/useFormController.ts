@@ -36,10 +36,6 @@ export function useFormController<T extends FieldValues>({
 	...formOptions
 }: FormControllerOptions<T>) {
 	const [isSubmitting, setIsSubmitting] = useState(false);
-	const [errorsAsync, setErrorsAsync] = useState<
-		Partial<Record<keyof T, string>>
-	>({});
-
 	const [asyncErrors, setAsyncErrors] = useState<
 		Partial<Record<keyof T, string>>
 	>({});
@@ -101,46 +97,44 @@ export function useFormController<T extends FieldValues>({
 		fieldName: keyof T,
 		value: T[keyof T]
 	) => {
-		console.log('validateFieldOnBlur called', fieldName, value);
+		const validationResult = await trigger(fieldName as Path<T>);
 
-		await trigger(fieldName as Path<T>);
+		if (!validationResult) {
+			const error = form.formState.errors[fieldName as Path<T>]
+				?.message as string;
+			setAsyncErrors((prev) => ({
+				...prev,
+				[fieldName]: error,
+			}));
+			return false;
+		}
 
-		if (asyncValidation?.[fieldName]) {
-			console.log('Running async validation for', fieldName);
-			try {
-				const errorMsg = await asyncValidation[fieldName]!(value);
-				if (errorMsg) {
-					setAsyncErrors((prev) => ({
-						...prev,
-						[fieldName]: errorMsg,
-					}));
-					setError(fieldName as Path<T>, {
-						type: 'manual',
-						message: errorMsg,
-					});
-				} else {
-					setAsyncErrors((prev) => ({
-						...prev,
-						[fieldName]: undefined,
-					}));
-					clearErrors(fieldName as Path<T>);
-				}
-			} catch (error) {
-				console.error('Async validation error:', error);
+		if (asyncValidation?.[fieldName] && value) {
+			const errorMsg = await asyncValidation[fieldName]!(value);
+			if (errorMsg) {
+				setAsyncErrors((prev) => ({
+					...prev,
+					[fieldName]: errorMsg,
+				}));
+				setError(fieldName as Path<T>, {
+					type: 'manual',
+					message: errorMsg,
+				});
+				return false;
 			}
 		}
 
-		setErrorsAsync((prev) => ({
+		setAsyncErrors((prev) => ({
 			...prev,
-			[fieldName]: form.formState.errors[fieldName as Path<T>]
-				?.message as string,
+			[fieldName]: undefined,
 		}));
+		clearErrors(fieldName as Path<T>);
+		return true;
 	};
 
 	const handleFieldFocus = (fieldName: keyof T) => {
 		clearErrors(fieldName as Path<T>);
 		setAsyncErrors((prev) => ({ ...prev, [fieldName]: undefined }));
-		setErrorsAsync((prev) => ({ ...prev, [fieldName]: undefined }));
 		if (enableClearError && clearError) {
 			clearError();
 		}
@@ -193,24 +187,13 @@ export function useFormController<T extends FieldValues>({
 	});
 
 	const getFieldError = (fieldName: keyof T): string | undefined => {
-		return (
-			(errors[fieldName as Path<T>]?.message as string) ||
-			asyncErrors[fieldName] ||
-			(form.formState.errors[fieldName as Path<T>]?.message as string) ||
-			errorsAsync[fieldName]
-		);
+		const syncError = errors[fieldName as Path<T>]?.message as string;
+		const asyncError = asyncErrors[fieldName];
+		return syncError || asyncError;
 	};
 
 	const hasFieldError = (fieldName: keyof T): boolean => {
-		if (
-			errors[fieldName as Path<T>]?.message ||
-			asyncErrors[fieldName] ||
-			form.formState.errors[fieldName as Path<T>]?.message ||
-			errorsAsync[fieldName]
-		) {
-			return true;
-		}
-		return false;
+		return !!getFieldError(fieldName);
 	};
 
 	const hasMultipleErrors =
@@ -269,7 +252,8 @@ export function useFormController<T extends FieldValues>({
 		  !hasChanges
 		: !isValid ||
 		  isSubmitting ||
-		  Object.keys(asyncErrors).some((key) => asyncErrors[key as keyof T]);
+		  Object.keys(asyncErrors).some((key) => asyncErrors[key as keyof T]) ||
+		  Object.keys(errors).length > 0;
 
 	return {
 		...form,
