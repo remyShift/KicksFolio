@@ -130,7 +130,7 @@ export const sneakerBrandOptions = [
 	{ label: 'Converse', value: 'converse' },
 	{ label: 'Jordan', value: 'jordan' },
 	{ label: 'Yeezy', value: 'yeezy' },
-	{ label: 'New Balance', value: 'new_balance' },
+	{ label: 'New Balance', value: 'new balance' },
 	{ label: 'Asics', value: 'asics' },
 	{ label: 'Reebok', value: 'reebok' },
 ];

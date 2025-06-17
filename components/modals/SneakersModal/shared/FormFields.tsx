@@ -42,7 +42,6 @@ export const FormFields = ({
 
     const imageDisplayed = sneakerToAdd?.images?.[0]?.url || currentSneaker?.images?.[0]?.url;
     
-    // Vérifier s'il y a une erreur spécifique aux images
     const imageError = getFieldErrorWrapper('images');
     const hasImageError = !!imageError;
 
@@ -61,7 +60,6 @@ export const FormFields = ({
                 setIsError={() => {}}
             />
 
-            {/* Afficher l'erreur spécifique aux images si elle existe, sinon l'erreur générale */}
             {(imageError || displayedError) && (
                 <ErrorMsg 
                     content={imageError || displayedError} 
