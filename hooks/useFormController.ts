@@ -166,12 +166,8 @@ export function useFormController<T extends FieldValues>({
 				setIsSubmitting(false);
 				refreshUserData();
 			})
-			.catch((error: any) => {
+			.catch((error) => {
 				console.error('Form submission error:', error);
-				setError(error as Path<T>, {
-					type: 'manual',
-					message: error,
-				});
 				setIsSubmitting(false);
 			});
 	});

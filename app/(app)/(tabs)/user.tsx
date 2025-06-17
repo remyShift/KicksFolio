@@ -13,7 +13,7 @@ import SneakersModalWrapper from '@/components/screens/app/profile/SneakersModal
 import { useModalStore } from '@/store/useModalStore';
 
 export default function User() {
-  const { user, userSneakers, sessionToken, refreshUserData } = useSession();
+  const { user, userSneakers, refreshUserData } = useSession();
   const { logout } = useAuth();
   const { setModalStep, setIsVisible, setCurrentSneaker } = useModalStore();
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -21,7 +21,7 @@ export default function User() {
 
   const onRefresh = async () => {
     setRefreshing(true);
-    if (user && sessionToken) {
+    if (user) {
       await refreshUserData();
     }
     setRefreshing(false);
@@ -87,9 +87,8 @@ export default function User() {
       <ProfileDrawer 
         visible={drawerVisible}
         onClose={() => setDrawerVisible(false)}
-        onLogout={() => logout(sessionToken!)}
+        onLogout={() => logout()}
         user={user}
-        sessionToken={sessionToken}
       />
 
       {userSneakers && userSneakers.length > 0 && (

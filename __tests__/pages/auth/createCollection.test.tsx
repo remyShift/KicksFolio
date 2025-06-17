@@ -2,7 +2,7 @@ import { fillAndBlurInput } from '@/__tests__/setup';
 import CreateCollectionPage from '@/app/(auth)/(signup)/collection';
 import { act, fireEvent, render, screen } from '@testing-library/react-native';
 import { ReactTestInstance } from 'react-test-renderer';
-import { mockUseCreateCollection } from './authSetup';
+import { mockUseCollections } from './authSetup';
 
 describe('CreateCollectionPage', () => {
     let collectionNameInput: ReactTestInstance;
@@ -58,7 +58,7 @@ describe('CreateCollectionPage', () => {
                 fireEvent.press(mainButton);
             });
 
-            expect(mockUseCreateCollection.createCollection).toHaveBeenCalledWith('My Sneakers Collection');
+            expect(mockUseCollections.createCollection).toHaveBeenCalledWith('My Sneakers Collection');
         });
     });
 });

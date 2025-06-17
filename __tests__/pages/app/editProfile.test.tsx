@@ -170,8 +170,7 @@ describe('Edit Profile Form', () => {
                     last_name: mockUser.last_name,
                     sneaker_size: parseInt(mockUser.sneaker_size),
                     profile_picture: mockUser.profile_picture_url,
-                },
-                'mock-token'
+                }
             );
         });
     });

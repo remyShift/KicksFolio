@@ -24,7 +24,6 @@ export interface Friendship {
 	updated_at: string;
 }
 
-// Service de gestion des amitiés
 export class SupabaseFriendshipService {
 	static async sendFriendRequest(friendId: string) {
 		const {

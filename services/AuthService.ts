@@ -61,34 +61,26 @@ export class SupabaseAuthService {
 		} = await supabase.auth.getUser();
 
 		if (error) throw error;
-
-		if (user) {
-			const { data: userData, error: userError } = await supabase
-				.from('users')
-				.select('*')
-				.eq('id', user.id)
-				.single();
-
-			if (userError) throw userError;
-			return userData;
-		}
-
-		return null;
-	}
-
-	static async updateProfile(userData: Partial<SupabaseUser>) {
-		const {
-			data: { user },
-			error: authError,
-		} = await supabase.auth.getUser();
-
-		if (authError) throw authError;
 		if (!user) throw new Error('No user found');
 
+		const { data: userData, error: userError } = await supabase
+			.from('users')
+			.select('*')
+			.eq('id', user.id)
+			.single();
+
+		if (userError) throw userError;
+		return userData;
+	}
+
+	static async updateProfile(
+		userId: string,
+		userData: Partial<SupabaseUser>
+	) {
 		const { data, error } = await supabase
 			.from('users')
 			.update(userData)
-			.eq('id', user.id)
+			.eq('id', userId)
 			.select()
 			.single();
 
@@ -123,7 +115,7 @@ export class SupabaseAuthService {
 		if (updateError) {
 			console.error('Error updating user metadata:', updateError);
 		} else {
-			console.log('User metadata updated successfully');
+			// console.log('User metadata updated successfully');
 		}
 
 		const { data: existingUser } = await supabase
@@ -133,7 +125,7 @@ export class SupabaseAuthService {
 			.single();
 
 		if (existingUser) {
-			console.log('User profile already exists');
+			// console.log('User profile already exists');
 			return existingUser;
 		}
 
@@ -147,8 +139,6 @@ export class SupabaseAuthService {
 			profile_picture: userData.profile_picture || null,
 		};
 
-		console.log('Creating user profile manually:', userToInsert);
-
 		const { data, error } = await supabase
 			.from('users')
 			.insert([userToInsert])
@@ -160,17 +150,12 @@ export class SupabaseAuthService {
 			throw error;
 		}
 
-		console.log('User profile created successfully:', data);
+		// console.log('User profile created successfully:', data);
 		return data;
 	}
 
 	static async cleanupOrphanedSessions() {
-		console.log('Nettoyage des sessions orphelines...');
 		const { error } = await supabase.auth.signOut();
-		if (error) {
-			console.error('Erreur lors du nettoyage des sessions:', error);
-		} else {
-			console.log('Sessions nettoyées avec succès');
-		}
+		if (error) throw error;
 	}
 }

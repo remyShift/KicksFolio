@@ -32,7 +32,7 @@ export const mockUseSignUpProps = {
 	setSignUpProps: jest.fn(),
 };
 
-export const mockUseCreateCollection = {
+export const mockUseCollections = {
 	createCollection: jest.fn(),
 	error: '',
 };

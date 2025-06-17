@@ -132,21 +132,11 @@ export const useAuth = () => {
 		setErrorMsg('');
 	};
 
-	const verifyToken = async () => {
-		return SupabaseAuthService.getCurrentUser()
-			.then((user) => {
-				return !!user;
-			})
-			.catch(() => {
-				return false;
-			});
-	};
-
 	const updateUser = async (
 		userId: string,
 		profileData: Partial<UserData>
 	) => {
-		return SupabaseAuthService.updateProfile(profileData)
+		return SupabaseAuthService.updateProfile(userId, profileData)
 			.then((data) => {
 				setUser(data);
 				router.replace('/(app)/(tabs)/user');
@@ -205,7 +195,6 @@ export const useAuth = () => {
 		resetPassword,
 		logout,
 		clearError,
-		verifyToken,
 		updateUser,
 		deleteAccount,
 		getUser,

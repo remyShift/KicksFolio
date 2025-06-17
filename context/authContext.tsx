@@ -25,7 +25,7 @@ export function useSession() {
 export function SessionProvider({ children }: PropsWithChildren) {
     const appState = useAppState();
     const [isLoading, setIsLoading] = useState(true);
-    const [sessionToken, setSessionTokenState] = useState<string | null>(null);
+
     const [user, setUser] = useState<User | null>(null);
     const [userCollection, setUserCollection] = useState<Collection | null>(null);
     const [userSneakers, setUserSneakers] = useState<Sneaker[] | null>(null);
@@ -33,10 +33,9 @@ export function SessionProvider({ children }: PropsWithChildren) {
     useEffect(() => {
         const { data: { subscription } } = supabase.auth.onAuthStateChange(
             async (event, session) => {
-                console.log('Auth state changed:', event, session?.user?.email);
+                // console.log('Auth state changed:', event, session?.user?.email);
                 
                 if (session?.user) {
-                    setSessionTokenState(session.access_token);
                     await initializeUserData(session.user.id);
                 } else {
                     clearUserData();
@@ -53,7 +52,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
                     await SupabaseAuthService.getCurrentUser();
                 } catch (error: any) {
                     if (error.code === 'PGRST116') {
-                        console.log('Session utilisateur orpheline détectée, nettoyage...');
+                        // console.log('Session utilisateur orpheline détectée, nettoyage...');
                         await supabase.auth.signOut();
                         clearUserData();
                     }
@@ -83,7 +82,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
                         storageService.setItem('user', userData);
                         return refreshUserData(userData);
                     } else if (attempt < maxRetries) {
-                        console.log(`User not found, retrying in ${retryDelay}ms... (attempt ${attempt + 1}/${maxRetries})`);
+                        // console.log(`User not found, retrying in ${retryDelay}ms... (attempt ${attempt + 1}/${maxRetries})`);
                         return new Promise((resolve) => {
                             setTimeout(() => {
                                 resolve(getUserWithRetries(attempt + 1));
@@ -95,7 +94,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
                 })
                 .catch((error) => {
                     if (attempt < maxRetries && error.code === 'PGRST116') {
-                        console.log(`Database error, retrying in ${retryDelay}ms... (attempt ${attempt + 1}/${maxRetries})`);
+                        // console.log(`Database error, retrying in ${retryDelay}ms... (attempt ${attempt + 1}/${maxRetries})`);
                         return new Promise((resolve) => {
                             setTimeout(() => {
                                 resolve(getUserWithRetries(attempt + 1));
@@ -160,7 +159,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
     };
 
     const clearUserData = () => {
-        setSessionTokenState(null);
         setUser(null);
         setUserCollection(null);
         setUserSneakers(null);
@@ -180,18 +178,11 @@ export function SessionProvider({ children }: PropsWithChildren) {
         }
     };
 
-    const setSessionToken = (value: string | null | ((prev: string | null) => string | null)) => {
-        if (typeof value === 'function') {
-            setSessionTokenState(value(sessionToken));
-        } else {
-            setSessionTokenState(value);
-        }
-    };
+
 
     return (
         <AuthContext.Provider
             value={{
-                sessionToken,
                 isLoading,
                 user,
                 setUser,
@@ -200,8 +191,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
                 userSneakers,
                 setUserSneakers,
                 refreshUserData,
-                refreshUserSneakers,
-                setSessionToken
+                refreshUserSneakers
             }}>
 			{children}
 		</AuthContext.Provider>

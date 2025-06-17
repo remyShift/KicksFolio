@@ -4,7 +4,6 @@ import { Sneaker } from './Sneaker';
 import { Dispatch, SetStateAction } from 'react';
 
 export interface AuthContextType {
-	sessionToken: string | null;
 	isLoading: boolean;
 	userCollection: Collection | null;
 	setUserCollection: Dispatch<SetStateAction<Collection | null>>;
@@ -12,8 +11,7 @@ export interface AuthContextType {
 	setUserSneakers: Dispatch<SetStateAction<Sneaker[] | null>>;
 	user: User | null;
 	setUser: Dispatch<SetStateAction<User | null>>;
-	setSessionToken: Dispatch<SetStateAction<string | null>>;
-	refreshUserData: (currentUser?: User, token?: string) => Promise<void>;
+	refreshUserData: (currentUser?: User) => Promise<void>;
 	refreshUserSneakers: () => Promise<void>;
 }
 

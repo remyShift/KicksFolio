@@ -22,7 +22,6 @@ interface ModalStore {
 	fetchedSneaker: FetchedSneaker | null;
 	sneakerSKU: string;
 	errorMsg: string;
-	modalSessionToken: string | null;
 	validateForm:
 		| (() => Promise<{
 				isValid: boolean;
@@ -39,7 +38,6 @@ interface ModalStore {
 	setFetchedSneaker: (sneaker: FetchedSneaker | null) => void;
 	setSneakerSKU: (sku: string) => void;
 	setErrorMsg: (error: string) => void;
-	setModalSessionToken: (token: string | null) => void;
 	setValidateForm: (
 		fn:
 			| (() => Promise<{
@@ -61,7 +59,6 @@ export const useModalStore = create<ModalStore>((set) => ({
 	fetchedSneaker: null,
 	sneakerSKU: '',
 	errorMsg: '',
-	modalSessionToken: null,
 	validateForm: null,
 	clearFormErrors: null,
 
@@ -72,7 +69,6 @@ export const useModalStore = create<ModalStore>((set) => ({
 	setFetchedSneaker: (sneaker) => set({ fetchedSneaker: sneaker }),
 	setSneakerSKU: (sku) => set({ sneakerSKU: sku }),
 	setErrorMsg: (error) => set({ errorMsg: error }),
-	setModalSessionToken: (token) => set({ modalSessionToken: token }),
 	setValidateForm: (fn) => set({ validateForm: fn }),
 	setClearFormErrors: (fn) => set({ clearFormErrors: fn }),
 	resetModalData: () =>

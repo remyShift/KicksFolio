@@ -9,9 +9,9 @@
 		"android": "expo run:android",
 		"ios": "expo run:ios",
 		"web": "expo start --web",
-		"test": "jest --watchAll",
-		"test:ci": "jest",
-		"test:coverage": "jest --coverage",
+		"test": "jest --watchAll --verbose",
+		"test:ci": "jest --verbose",
+		"test:coverage": "jest --coverage --verbose",
 		"lint": "expo lint",
 		"prepare": "husky",
 		"commit": "cz"

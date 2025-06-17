@@ -24,8 +24,8 @@ export const ModalFooter = () => {
         resetModalData
     } = useModalStore();
 
-    const { sessionToken, user, userSneakers } = useSession();
-    const { handleSkuSearch, handleFormSubmit, handleFormUpdate, handleNext, handlePrevious, handleSneakerDelete } = useSneakerAPI(sessionToken!, user!.id);
+    const { user, userSneakers } = useSession();
+    const { handleSkuSearch, handleFormSubmit, handleFormUpdate, handleNext, handlePrevious, handleSneakerDelete } = useSneakerAPI(user!.id);
 
     const [nextSneaker, setNextSneaker] = useState<Sneaker | null>(null);
     const [prevSneaker, setPrevSneaker] = useState<Sneaker | null>(null);

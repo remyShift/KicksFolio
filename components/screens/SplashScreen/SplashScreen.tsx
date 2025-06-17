@@ -7,9 +7,9 @@ import { AnimatedIcon } from './AnimatedIcon';
 import { AnimatedLogo } from './AnimatedText';
 import { useInitialData } from '@/hooks/useInitialData';
 
-export default function SplashScreen({ sessionToken, setIsSplashScreenVisible }: { sessionToken: string | null | undefined, setIsSplashScreenVisible: (value: boolean) => void }) {
+export default function SplashScreen({ setIsSplashScreenVisible }: { setIsSplashScreenVisible: (value: boolean) => void }) {
     const [textAnimationFinished, setTextAnimationFinished] = useState(false);
-    const { userSneakers } = useSession();
+    const { userSneakers, user } = useSession();
     const AnimatedView = Animated.createAnimatedComponent(View);
     const { loadAndSetInitialData } = useInitialData();
 
@@ -19,7 +19,7 @@ export default function SplashScreen({ sessionToken, setIsSplashScreenVisible }:
     };
 
     const initializeApp = async () => {
-        if (sessionToken) {
+        if (user) {
             await loadAndSetInitialData()
                 .then(() => {
                     console.log('[SplashScreen] loadAndSetInitialData resolved');
@@ -41,7 +41,7 @@ export default function SplashScreen({ sessionToken, setIsSplashScreenVisible }:
 
     useEffect(() => {
         initializeApp();
-    }, [sessionToken, textAnimationFinished]);
+    }, [user, textAnimationFinished]);
 
     return (
         <AnimatedView 

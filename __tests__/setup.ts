@@ -4,7 +4,7 @@ import {
 	mockAuthService,
 	mockUseAuth,
 	mockUseSignUpProps,
-	mockUseCreateCollection,
+	mockUseCollections,
 	mockUser,
 } from './pages/auth/authSetup';
 
@@ -55,8 +55,8 @@ jest.mock('../context/signUpPropsContext', () => ({
 	useSignUpProps: () => mockUseSignUpProps,
 }));
 
-jest.mock('../hooks/useCreateCollection', () => ({
-	useCreateCollection: () => mockUseCreateCollection,
+jest.mock('../hooks/useCollections', () => ({
+	useCollections: () => mockUseCollections,
 }));
 
 jest.mock('../hooks/useAsyncValidation', () => ({
@@ -70,14 +70,12 @@ jest.mock('../context/authContext', () => ({
 	...jest.requireActual('../context/authContext'),
 	useSession: () => ({
 		user: mockUser,
-		sessionToken: 'mock-token',
 		isLoading: false,
 		userCollection: null,
 		setUserCollection: jest.fn(),
 		userSneakers: null,
 		setUserSneakers: jest.fn(),
 		setUser: jest.fn(),
-		setSessionToken: jest.fn(),
 		refreshUserData: jest.fn(),
 		refreshUserSneakers: jest.fn(),
 	}),
@@ -105,7 +103,6 @@ export const fillAndBlurInput = async (
 	await act(async () => {
 		fireEvent(input, 'blur');
 	});
-	// Attendre que la validation se termine
 	await act(async () => {
 		await new Promise((resolve) => setTimeout(resolve, 100));
 	});

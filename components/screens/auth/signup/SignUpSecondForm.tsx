@@ -19,7 +19,7 @@ export default function SignUpSecondForm() {
     const sizeInputRef = useRef<TextInput>(null);
     const firstNameInputRef = useRef<TextInput>(null);
 
-    const { createUserAccount } = useAuth();
+    const { signUp } = useAuth();
 
     const {
         control,
@@ -49,10 +49,8 @@ export default function SignUpSecondForm() {
             };
             
             setSignUpProps(updatedSignUpProps);
-
-            console.log('updatedSignUpProps', updatedSignUpProps);
             
-            const success = await createUserAccount(updatedSignUpProps);
+            const success = await signUp(updatedSignUpProps);
             if (success) {
                 router.replace('/(auth)/(signup)/collection');
             }

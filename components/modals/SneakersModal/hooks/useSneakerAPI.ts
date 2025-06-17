@@ -28,8 +28,8 @@ interface SkuSearchResponse {
 	}>;
 }
 
-export const useSneakerAPI = (sessionToken: string, userId: string) => {
-	const { refreshUserSneakers, userSneakers } = useSession();
+export const useSneakerAPI = (userId: string) => {
+	const { refreshUserSneakers, userSneakers, user } = useSession();
 
 	const validateSneakerData = (formData: SneakerFormData) => {
 		return new Promise<{
@@ -63,7 +63,7 @@ export const useSneakerAPI = (sessionToken: string, userId: string) => {
 	};
 
 	const handleSkuSearch = async (sku: string, callbacks: Callbacks) => {
-		if (!sessionToken) {
+		if (!user) {
 			callbacks.setErrorMsg('Session expired. Please login again.');
 			return Promise.resolve();
 		}
@@ -132,7 +132,7 @@ export const useSneakerAPI = (sessionToken: string, userId: string) => {
 		callbacks?: Callbacks,
 		collectionId?: string
 	) => {
-		if (!sessionToken) {
+		if (!user) {
 			callbacks?.setErrorMsg('No session token');
 			return Promise.reject('No session token');
 		}
@@ -202,7 +202,7 @@ export const useSneakerAPI = (sessionToken: string, userId: string) => {
 		formData: SneakerFormData,
 		callbacks?: Callbacks
 	) => {
-		if (!sessionToken) {
+		if (!user) {
 			callbacks?.setErrorMsg('No session token');
 			return Promise.reject('No session token');
 		}
@@ -288,7 +288,7 @@ export const useSneakerAPI = (sessionToken: string, userId: string) => {
 	};
 
 	const handleSneakerDelete = async (sneakerId: string) => {
-		if (!sessionToken) {
+		if (!user) {
 			return Promise.reject('No session token');
 		}
 

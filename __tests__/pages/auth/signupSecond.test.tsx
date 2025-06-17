@@ -3,6 +3,7 @@ import { act, cleanup, fireEvent, render, screen } from '@testing-library/react-
 import { mockAuthService, mockUseAuth, mockUseSignUpProps } from './authSetup';
 import { fillAndBlurInput } from '../../setup';
 import { ReactTestInstance } from 'react-test-renderer';
+import { UserData } from '@/types/auth';
 
 describe('SignUpFirstPage', () => {
     let firstNameInput: ReactTestInstance;
@@ -162,6 +163,8 @@ describe('SignUpFirstPage', () => {
                 profile_picture: ''
             };
 
+            mockUseAuth.signUp.mockResolvedValue(true);
+
             await fillAndBlurInput(firstNameInput, 'validFirstName');
             await fillAndBlurInput(lastNameInput, 'validLastName');
             await fillAndBlurInput(sneakerSizeInput, '10.5');
@@ -179,7 +182,7 @@ describe('SignUpFirstPage', () => {
                 last_name: 'validLastName',
                 profile_picture: '',
                 sneaker_size: 10.5
-            });
+            } as UserData);
         });
         
         it('should not proceed if validation fails on step 2', async () => {

@@ -10,7 +10,6 @@ interface ProfileDrawerProps {
     onClose: () => void;
     onLogout: () => void;
     user: User | null;
-    sessionToken: string | null;
 }
 
 export default function ProfileDrawer({ 
@@ -18,7 +17,6 @@ export default function ProfileDrawer({
     onClose, 
     onLogout,
     user,
-    sessionToken 
 }: ProfileDrawerProps) {
     const translateX = useRef(new Animated.Value(400)).current;
     const [isVisible, setIsVisible] = useState(false);
@@ -77,8 +75,8 @@ export default function ProfileDrawer({
             text: 'Delete',
             style: 'destructive',
             onPress: () => {
-                if (user && sessionToken) {
-                    deleteAccount(user.id, sessionToken).then((success) => {
+                if (user) {
+                    deleteAccount(user.id).then((success) => {
                         if (success) {
                             onClose();
                             onLogout();

@@ -6,7 +6,6 @@ import PageTitle from '@/components/ui/text/PageTitle'
 import MainButton from '@/components/ui/buttons/MainButton'
 import ErrorMsg from '@/components/ui/text/ErrorMsg'
 import { useSession } from '@/context/authContext'
-import { UserData } from '@/types/auth'
 import FormTextInput from '@/components/ui/inputs/FormTextInput'
 import FormImageInput from '@/components/ui/inputs/FormImageInput'
 import { useAuth } from '@/hooks/useAuth'
@@ -14,7 +13,7 @@ import { useFormController } from '@/hooks/useFormController'
 import { editProfileSchema } from '@/validation/schemas'
 
 export default function EditProfileForm() {
-    const { user, sessionToken } = useSession()
+    const { user } = useSession()
     const { updateUser } = useAuth()
     const scrollViewRef = useRef<ScrollView>(null)
     const usernameInputRef = useRef<TextInput>(null)
@@ -41,11 +40,11 @@ export default function EditProfileForm() {
         },
         isEditForm: true,
         onSubmit: async (data) => {
-            if (!user || !sessionToken) return
+            if (!user) return
             await updateUser(user.id, {
                 ...data,
                 sneaker_size: parseInt(data.sneaker_size),
-            }, sessionToken)
+            })
         },
     })
 
