@@ -1,6 +1,6 @@
 import { View } from 'react-native';
 import Animated, { FadeOut } from 'react-native-reanimated';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useSession } from '@/context/authContext';
 import { Image } from 'expo-image';
 import { AnimatedIcon } from './AnimatedIcon';
@@ -12,6 +12,7 @@ export default function SplashScreen({ setIsSplashScreenVisible }: { setIsSplash
     const { userSneakers, user } = useSession();
     const AnimatedView = Animated.createAnimatedComponent(View);
     const { loadAndSetInitialData } = useInitialData();
+    const hasInitialized = useRef(false);
 
     const preloadImages = async (imageUris: string[]) => {
         const prefetchTasks = imageUris.map(uri => Image.prefetch(uri));
@@ -19,7 +20,8 @@ export default function SplashScreen({ setIsSplashScreenVisible }: { setIsSplash
     };
 
     const initializeApp = async () => {
-        if (user) {
+        if (user && !hasInitialized.current) {
+            hasInitialized.current = true;
             await loadAndSetInitialData()
                 .then(() => {
                     console.log('[SplashScreen] loadAndSetInitialData resolved');
@@ -41,7 +43,7 @@ export default function SplashScreen({ setIsSplashScreenVisible }: { setIsSplash
 
     useEffect(() => {
         initializeApp();
-    }, [user, textAnimationFinished]);
+    }, [textAnimationFinished]);
 
     return (
         <AnimatedView 
