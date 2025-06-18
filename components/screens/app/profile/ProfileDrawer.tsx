@@ -10,6 +10,7 @@ interface ProfileDrawerProps {
     onClose: () => void;
     onLogout: () => void;
     user: User | null;
+    testID?: string;
 }
 
 export default function ProfileDrawer({ 
@@ -17,6 +18,7 @@ export default function ProfileDrawer({
     onClose, 
     onLogout,
     user,
+    testID = 'profile-drawer'
 }: ProfileDrawerProps) {
     const translateX = useRef(new Animated.Value(400)).current;
     const [isVisible, setIsVisible] = useState(false);
@@ -25,11 +27,13 @@ export default function ProfileDrawer({
     useEffect(() => {
         if (visible) {
             setIsVisible(true);
-            Animated.timing(translateX, {
-                toValue: 0,
-                duration: 300,
-                useNativeDriver: true
-            }).start();
+            requestAnimationFrame(() => {
+                Animated.timing(translateX, {
+                    toValue: 0,
+                    duration: 300,
+                    useNativeDriver: true
+                }).start();
+            });
         } else {
             Animated.timing(translateX, {
                 toValue: 400,
@@ -96,11 +100,13 @@ export default function ProfileDrawer({
 
     return (
         <>
-        <Pressable 
-            className="absolute inset-0 bg-black/50 z-40" 
-            onPress={onClose}
-        />
+            <Pressable 
+                className="absolute inset-0 bg-black/50 z-40" 
+                onPress={onClose}
+                testID={`${testID}-overlay`}
+            />
             <Animated.View 
+                testID={testID}
                 style={{
                 position: 'absolute',
                 right: 0,

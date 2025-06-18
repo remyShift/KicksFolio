@@ -13,6 +13,7 @@
 		"test:ci": "jest --verbose",
 		"test:coverage": "jest --coverage --verbose",
 		"test:quick": "jest --bail --findRelatedTests",
+		"test:watch": "jest --watch",
 		"lint": "expo lint",
 		"prepare": "husky",
 		"commit": "cz"

@@ -14,7 +14,7 @@ export default function ProfileInfo({ user, userSneakers }: ProfileInfoProps) {
     if (!user) return null;
 
     return (
-        <View className="flex-col gap-4">
+        <View className="flex-col gap-4" testID='profile-info'>
             <Title content={user.username} />
 
             <View className="flex-row justify-between w-full px-4 gap-4 items-center">
