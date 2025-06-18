@@ -1,11 +1,11 @@
 import SignUpSecondPage from '@/app/(auth)/(signup)/sign-up-second';
-import { act, cleanup, fireEvent, render, screen } from '@testing-library/react-native';
+import { act, fireEvent, render, screen } from '@testing-library/react-native';
 import { mockAuthService, mockUseAuth, mockUseSignUpProps } from './authSetup';
 import { fillAndBlurInput } from '../../setup';
 import { ReactTestInstance } from 'react-test-renderer';
 import { UserData } from '@/types/auth';
 
-describe('SignUpFirstPage', () => {
+describe('SignUpSecondPage', () => {
     let firstNameInput: ReactTestInstance;
     let lastNameInput: ReactTestInstance;
     let sneakerSizeInput: ReactTestInstance;
