@@ -31,7 +31,7 @@ export const ViewStep = () => {
 
             <View className="flex-row justify-between items-center px-2">
                 <View className="flex gap-0">
-                    <Text className="font-spacemono-bold text-lg">{currentSneaker.model}</Text>
+                    <Text testID="sneaker-display-name" className="font-spacemono-bold text-lg">{currentSneaker.model}</Text>
                     <Text className="font-spacemono-bold-italic text-base">{currentSneaker.brand.toUpperCase()}</Text>
                 </View>
             </View>

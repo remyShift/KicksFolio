@@ -50,7 +50,7 @@ jest.mock('../services/AuthService', () => ({
 }));
 
 jest.mock('../hooks/useAuth', () => ({
-	useAuth: () => mockUseAuth,
+	useAuth: jest.fn().mockReturnValue(mockUseAuth),
 }));
 
 jest.mock('../context/signUpPropsContext', () => ({
@@ -69,12 +69,12 @@ jest.mock('../hooks/useAsyncValidation', () => ({
 }));
 
 jest.mock('../context/authContext', () => ({
-	useSession: () => ({
+	useSession: jest.fn().mockReturnValue({
 		user: mockUser,
 		isLoading: false,
 		userCollection: null,
 		setUserCollection: jest.fn(),
-		userSneakers: mockSneakers,
+		userSneakers: [],
 		setUserSneakers: jest.fn(),
 		setUser: jest.fn(),
 		refreshUserData: jest.fn(),

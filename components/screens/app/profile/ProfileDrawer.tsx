@@ -132,6 +132,7 @@ export default function ProfileDrawer({
                         icon="exit-outline"
                         label="Logout"
                         onPress={handleLogout}
+                        testID="logout"
                     />
                     
                     <DrawerMenuItem 
@@ -144,6 +145,7 @@ export default function ProfileDrawer({
                         icon="person-outline"
                         label="Edit profile"
                         onPress={() => router.push('/edit-profile')}
+                        testID="edit-profile"
                     />
 
                     <DrawerMenuItem 
@@ -152,6 +154,7 @@ export default function ProfileDrawer({
                         onPress={handleDeleteAccount}
                         color="#dc2626"
                         textColor="#dc2626"
+                        testID="delete-account"
                     />
                 </View>
             </Animated.View>

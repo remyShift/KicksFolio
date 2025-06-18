@@ -55,12 +55,14 @@ export default function User() {
   return (
     <>
       <ScrollView className="flex-1"
+        testID="scroll-view"
         refreshControl={
           <RefreshControl 
             refreshing={refreshing} 
             onRefresh={onRefresh}
             tintColor="#FF6B6B"
             progressViewOffset={60}
+            testID="refresh-control"
           />
         }
       >

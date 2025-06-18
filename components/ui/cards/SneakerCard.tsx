@@ -17,6 +17,7 @@ export default function SneakerCard({ sneaker, setModalStep, setModalVisible, se
                 setModalStep('view');
                 setModalVisible(true);
             }}
+            testID="sneaker-card"
         >
             <Image source={{ uri: sneaker.images?.[0]?.url }}
                 style={{

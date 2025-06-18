@@ -7,6 +7,7 @@ interface DrawerMenuItemProps {
     onPress: () => void;
     color?: string;
     textColor?: string;
+    testID?: string;
 }
 
 export default function DrawerMenuItem({ 
@@ -14,10 +15,11 @@ export default function DrawerMenuItem({
     label, 
     onPress, 
     color = '#666',
-    textColor
+    textColor,
+    testID
 }: DrawerMenuItemProps) {
     return (
-        <Pressable onPress={onPress}>
+        <Pressable onPress={onPress} testID={`drawer-button-${testID}`}>
             <View className="flex-row items-center gap-4">
                 <Ionicons name={icon} size={24} color={color} />
                 <Text className="font-spacemono-bold text-base" style={{ color: textColor }}>

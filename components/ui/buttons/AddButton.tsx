@@ -53,6 +53,7 @@ export default function AddButton({ onPress }: { onPress: () => void }) {
             <AnimatedPressable 
                 style={animatedStyle}
                 className="bg-primary w-16 h-16 rounded-full flex items-center justify-center shadow-sm"
+                testID="add-button"
             >
                 <FontAwesome name="plus" size={28} color="white" />
             </AnimatedPressable>
