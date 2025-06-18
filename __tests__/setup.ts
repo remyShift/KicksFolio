@@ -8,6 +8,7 @@ import {
 	mockUser,
 	mockUseAsyncValidation,
 } from './screens/auth/authSetup';
+import { mockSneakers } from './screens/app/appSetup';
 
 jest.mock('@react-native-async-storage/async-storage', () => ({
 	__esModule: true,
@@ -68,13 +69,12 @@ jest.mock('../hooks/useAsyncValidation', () => ({
 }));
 
 jest.mock('../context/authContext', () => ({
-	...jest.requireActual('../context/authContext'),
 	useSession: () => ({
 		user: mockUser,
 		isLoading: false,
 		userCollection: null,
 		setUserCollection: jest.fn(),
-		userSneakers: null,
+		userSneakers: mockSneakers,
 		setUserSneakers: jest.fn(),
 		setUser: jest.fn(),
 		refreshUserData: jest.fn(),

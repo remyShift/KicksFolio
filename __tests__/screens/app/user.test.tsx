@@ -1,11 +1,14 @@
 import User from '@/app/(app)/(tabs)/user';
 import { render, screen, fireEvent, act } from '@testing-library/react-native';
 import { ReactTestInstance } from 'react-test-renderer';
+import { mockSneakers } from './appSetup';
 
 describe('User', () => {
     let profileHeader: ReactTestInstance;
     let profileInfo: ReactTestInstance;
     let pageTitle: ReactTestInstance;
+    let usernameTitle: ReactTestInstance;
+    let sneakersCount: ReactTestInstance;
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -14,13 +17,13 @@ describe('User', () => {
         profileHeader = screen.getByTestId('profile-header');
         profileInfo = screen.getByTestId('profile-info');
         pageTitle = screen.getByTestId('page-title');
+        usernameTitle = screen.getByTestId('username-title');
+        sneakersCount = screen.getByTestId('sneakers-count');
     });
 
 	it('should render the user page', () => {
-        const profileHeader = screen.getByTestId('profile-header');
-        const profileInfo = screen.getByTestId('profile-info');
-        const pageTitle = screen.getByTestId('page-title');
-
+        expect(sneakersCount.props.children).toBe(mockSneakers.length);
+        expect(usernameTitle.props.children).toBe('testuser');
         expect(profileHeader).toBeTruthy();
         expect(profileInfo).toBeTruthy();
         expect(pageTitle.props.children).toBe('Profile');

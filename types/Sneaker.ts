@@ -1,20 +1,29 @@
+export type SneakerBrand =
+	| 'Nike'
+	| 'Adidas'
+	| 'Converse'
+	| 'New Balance'
+	| 'Puma'
+	| 'Jordan'
+	| 'Yeezy'
+	| 'Asics'
+	| 'Reebok'
+	| 'Vans';
+
 export type Sneaker = {
-    id: string;
-    model: string;
-    price_paid: number;
-    brand: string;
-    size: number;
-    condition: number;
-    status: string;
-    purchase_date: string;
-    description: string;
-    estimated_value: number;
-    release_date: string | null;
-    collection_id: string;
-    created_at: string;
-    updated_at: string;
-    images: {
-        id: string;
-        url: string;
-    }[];
-}
+	id: string;
+	model: string;
+	price_paid: number;
+	brand: SneakerBrand;
+	size: number;
+	condition: number;
+	status: string;
+	description: string | null;
+	collection_id: string;
+	created_at: string;
+	updated_at: string;
+	images: {
+		id: string;
+		url: string;
+	}[];
+};

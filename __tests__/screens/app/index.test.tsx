@@ -1,10 +1,8 @@
 import Index from '@/app/(app)/(tabs)/index';
 import { fireEvent, render, screen } from '@testing-library/react-native';
 import { ReactTestInstance } from 'react-test-renderer';
-import { router, useLocalSearchParams } from 'expo-router';
+import { router } from 'expo-router';
 import { useSession } from '@/context/authContext';
-import { useModalStore } from '@/store/useModalStore';
-import { boolean } from 'zod';
 
 jest.mock('@/context/authContext', () => ({
 	useSession: jest.fn()

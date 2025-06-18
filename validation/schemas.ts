@@ -1,3 +1,4 @@
+import { SneakerBrand } from '@/types/Sneaker';
 import { z } from 'zod';
 
 export const signUpStep1Schema = z
@@ -122,17 +123,17 @@ export const sneakerStatusOptions = [
 	{ label: 'Selling', value: 'selling' },
 ];
 
-export const sneakerBrandOptions = [
-	{ label: 'Nike', value: 'nike' },
-	{ label: 'Adidas', value: 'adidas' },
-	{ label: 'Puma', value: 'puma' },
-	{ label: 'Vans', value: 'vans' },
-	{ label: 'Converse', value: 'converse' },
-	{ label: 'Jordan', value: 'jordan' },
-	{ label: 'Yeezy', value: 'yeezy' },
-	{ label: 'New Balance', value: 'new balance' },
-	{ label: 'Asics', value: 'asics' },
-	{ label: 'Reebok', value: 'reebok' },
+export const sneakerBrandOptions: { label: string; value: SneakerBrand }[] = [
+	{ label: 'Nike', value: 'Nike' },
+	{ label: 'Adidas', value: 'Adidas' },
+	{ label: 'Puma', value: 'Puma' },
+	{ label: 'Vans', value: 'Vans' },
+	{ label: 'Converse', value: 'Converse' },
+	{ label: 'Jordan', value: 'Jordan' },
+	{ label: 'Yeezy', value: 'Yeezy' },
+	{ label: 'New Balance', value: 'New Balance' },
+	{ label: 'Asics', value: 'Asics' },
+	{ label: 'Reebok', value: 'Reebok' },
 ];
 
 export const editProfileSchema = z.object({
