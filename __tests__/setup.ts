@@ -112,6 +112,22 @@ jest.mock('../store/useModalStore', () => ({
 	}),
 }));
 
+jest.mock('../config/supabase', () => ({
+	SUPABASE_CONFIG: {
+		url: 'http://toto.com',
+		anonKey: 'test',
+		options: {
+			auth: {
+				autoRefreshToken: true,
+				persistSession: true,
+				detectSessionInUrl: false,
+			},
+		},
+	},
+
+	validateSupabaseConfig: jest.fn().mockReturnValue(true),
+}));
+
 jest.mock('../hooks/useAsyncValidation', () => ({
 	useAsyncValidation: () => mockUseAsyncValidation,
 }));

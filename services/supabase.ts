@@ -2,13 +2,11 @@ import { createClient } from '@supabase/supabase-js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SUPABASE_CONFIG, validateSupabaseConfig } from '../config/supabase';
 
-if (!validateSupabaseConfig()) {
-	throw new Error('Invalid Supabase configuration');
-}
+validateSupabaseConfig();
 
 export const supabase = createClient(
-	SUPABASE_CONFIG.url!,
-	SUPABASE_CONFIG.anonKey!,
+	SUPABASE_CONFIG.url || '',
+	SUPABASE_CONFIG.anonKey || '',
 	{
 		auth: {
 			storage: AsyncStorage,
