@@ -124,40 +124,40 @@ describe('SignUpFirstPage', () => {
             await fillAndBlurInput(emailInput, 'test@test');
             expect(errorMessage.props.children).toBe('Please correct the fields in red before continuing');
         });
-    });
 
-    it('should display fields with a red border if an error is present', async () => {
-        await fillAndBlurInput(userNameInput, 're');
-        await fillAndBlurInput(emailInput, 'test@test');
-        await fillAndBlurInput(passwordInput, 'totototo14');
-        await fillAndBlurInput(confirmPasswordInput, 'Totototo14*');
+        it('should display fields with a red border if an error is present', async () => {
+            await fillAndBlurInput(userNameInput, 're');
+            await fillAndBlurInput(emailInput, 'test@test');
+            await fillAndBlurInput(passwordInput, 'totototo14');
+            await fillAndBlurInput(confirmPasswordInput, 'Totototo14*');
+    
+            expect(userNameInput.props.className).toContain('border-2 border-red-500');
+            expect(emailInput.props.className).toContain('border-2 border-red-500');
+            expect(passwordInput.props.className).toContain('border-2 border-red-500');
+            expect(confirmPasswordInput.props.className).toContain('border-2 border-red-500');
+        });
 
-        expect(userNameInput.props.className).toContain('border-2 border-red-500');
-        expect(emailInput.props.className).toContain('border-2 border-red-500');
-        expect(passwordInput.props.className).toContain('border-2 border-red-500');
-        expect(confirmPasswordInput.props.className).toContain('border-2 border-red-500');
-    });
+        it('should display main button disabled if fields are not filled', async () => {
+            expect(mainButton.props.accessibilityState.disabled).toBe(true);
+        });
 
-    it('should display main button disabled if fields are not filled', async () => {
-        expect(mainButton.props.accessibilityState.disabled).toBe(true);
-    });
+        it('should display main button enabled if fields are filled with valid values', async () => {
+            mockUseAsyncValidation.checkUsernameExists.mockResolvedValue(null);
+            mockUseAsyncValidation.checkEmailExists.mockResolvedValue(null);
+            await fillAndBlurInput(userNameInput, 'validUsername');
+            await fillAndBlurInput(emailInput, 'valid@email.com');
+            await fillAndBlurInput(passwordInput, 'ValidPassword14*');
+            await fillAndBlurInput(confirmPasswordInput, 'ValidPassword14*');
+            expect(mainButton.props.accessibilityState.disabled).toBe(false);
+        });
 
-    it('should display main button enabled if fields are filled with valid values', async () => {
-        mockUseAsyncValidation.checkUsernameExists.mockResolvedValue(null);
-        mockUseAsyncValidation.checkEmailExists.mockResolvedValue(null);
-        await fillAndBlurInput(userNameInput, 'validUsername');
-        await fillAndBlurInput(emailInput, 'valid@email.com');
-        await fillAndBlurInput(passwordInput, 'ValidPassword14*');
-        await fillAndBlurInput(confirmPasswordInput, 'ValidPassword14*');
-        expect(mainButton.props.accessibilityState.disabled).toBe(false);
-    });
-
-    it('should display main button disabled if at least one field is filled with invalid values', async () => {
-        await fillAndBlurInput(userNameInput, 'r');
-        await fillAndBlurInput(emailInput, 'test@test');
-        await fillAndBlurInput(passwordInput, 'totototo14');
-        await fillAndBlurInput(confirmPasswordInput, 'Totototo14*');
-        expect(mainButton.props.accessibilityState.disabled).toBe(true);
+        it('should display main button disabled if at least one field is filled with invalid values', async () => {
+            await fillAndBlurInput(userNameInput, 'r');
+            await fillAndBlurInput(emailInput, 'test@test');
+            await fillAndBlurInput(passwordInput, 'totototo14');
+            await fillAndBlurInput(confirmPasswordInput, 'Totototo14*');
+            expect(mainButton.props.accessibilityState.disabled).toBe(true);
+        });
     });
 
     describe('Sign up step 1 attempts', () => {
