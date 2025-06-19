@@ -77,86 +77,92 @@ describe('SignUpFirstPage', () => {
     });
 
     describe('form validation', () => {
-        it('should display an appropriate error if the username is not 4 characters long on blur', async () => {
-            await fillAndBlurInput(userNameInput, 'r');
-            expect(errorMessage.props.children).toBe('Username must be at least 4 characters long.');
-        });
-
-        it('should display an appropriate error if the username contains special characters on blur', async () => {
-            await fillAndBlurInput(userNameInput, 'rea@');
-            expect(errorMessage.props.children).toBe('Username must not contain special characters.');
-        });
-
-        it('should display an appropriate error if the username is already taken on blur', async () => {
-            mockUseAsyncValidation.checkUsernameExists.mockResolvedValue('This username is already taken.');
-            await fillAndBlurInput(userNameInput, 'johnSneakers');
-            expect(errorMessage.props.children).toBe('This username is already taken.');
-        });
-
-        it('should display an appropriate error if the email is not a valid email on blur', async () => {
-            await fillAndBlurInput(emailInput, 'test@test');
-            expect(errorMessage.props.children).toBe('Please put a valid email.');
-        });
-
-        it('should display an appropriate error if the password is not 8 characters long on blur', async () => {
-            await fillAndBlurInput(passwordInput, '1234567');
-            expect(errorMessage.props.children).toBe('Password must be at least 8 characters long.');
-        });
-
-        it('should display an appropriate error if the password does not contain at least one uppercase letter on blur', async () => {
-            await fillAndBlurInput(passwordInput, 'totototo14');
-            expect(errorMessage.props.children).toBe('Password must contain at least one uppercase letter and one number.');
-        });
-
-        it('should display an appropriate error if the password does not contain at least one number on blur', async () => {
-            await fillAndBlurInput(passwordInput, 'Totototo');
-            expect(errorMessage.props.children).toBe('Password must contain at least one uppercase letter and one number.');
-        });
-
-        it('should display an appropriate error if the password does not match the confirm password on blur', async () => {
-            await fillAndBlurInput(passwordInput, 'Totototo14');
-            await fillAndBlurInput(confirmPasswordInput, 'Totototo14*');
-            expect(errorMessage.props.children).toBe('Passwords do not match.');
-        });
-
-        it('should display a global error message if multiple errors are present', async () => {
-            await fillAndBlurInput(userNameInput, 're');
-            await fillAndBlurInput(emailInput, 'test@test');
-            expect(errorMessage.props.children).toBe('Please correct the fields in red before continuing');
-        });
-
-        it('should display fields with a red border if an error is present', async () => {
-            await fillAndBlurInput(userNameInput, 're');
-            await fillAndBlurInput(emailInput, 'test@test');
-            await fillAndBlurInput(passwordInput, 'totototo14');
-            await fillAndBlurInput(confirmPasswordInput, 'Totototo14*');
+        describe('displaying errors', () => {
+            it('should display an appropriate error if the username is not 4 characters long on blur', async () => {
+                await fillAndBlurInput(userNameInput, 'r');
+                expect(errorMessage.props.children).toBe('Username must be at least 4 characters long.');
+            });
     
-            expect(userNameInput.props.className).toContain('border-2 border-red-500');
-            expect(emailInput.props.className).toContain('border-2 border-red-500');
-            expect(passwordInput.props.className).toContain('border-2 border-red-500');
-            expect(confirmPasswordInput.props.className).toContain('border-2 border-red-500');
+            it('should display an appropriate error if the username contains special characters on blur', async () => {
+                await fillAndBlurInput(userNameInput, 'rea@');
+                expect(errorMessage.props.children).toBe('Username must not contain special characters.');
+            });
+    
+            it('should display an appropriate error if the username is already taken on blur', async () => {
+                mockUseAsyncValidation.checkUsernameExists.mockResolvedValue('This username is already taken.');
+                await fillAndBlurInput(userNameInput, 'johnSneakers');
+                expect(errorMessage.props.children).toBe('This username is already taken.');
+            });
+    
+            it('should display an appropriate error if the email is not a valid email on blur', async () => {
+                await fillAndBlurInput(emailInput, 'test@test');
+                expect(errorMessage.props.children).toBe('Please put a valid email.');
+            });
+    
+            it('should display an appropriate error if the password is not 8 characters long on blur', async () => {
+                await fillAndBlurInput(passwordInput, '1234567');
+                expect(errorMessage.props.children).toBe('Password must be at least 8 characters long.');
+            });
+    
+            it('should display an appropriate error if the password does not contain at least one uppercase letter on blur', async () => {
+                await fillAndBlurInput(passwordInput, 'totototo14');
+                expect(errorMessage.props.children).toBe('Password must contain at least one uppercase letter and one number.');
+            });
+    
+            it('should display an appropriate error if the password does not contain at least one number on blur', async () => {
+                await fillAndBlurInput(passwordInput, 'Totototo');
+                expect(errorMessage.props.children).toBe('Password must contain at least one uppercase letter and one number.');
+            });
+    
+            it('should display an appropriate error if the password does not match the confirm password on blur', async () => {
+                await fillAndBlurInput(passwordInput, 'Totototo14');
+                await fillAndBlurInput(confirmPasswordInput, 'Totototo14*');
+                expect(errorMessage.props.children).toBe('Passwords do not match.');
+            });
+    
+            it('should display a global error message if multiple errors are present', async () => {
+                await fillAndBlurInput(userNameInput, 're');
+                await fillAndBlurInput(emailInput, 'test@test');
+                expect(errorMessage.props.children).toBe('Please correct the fields in red before continuing');
+            });
         });
 
-        it('should display main button disabled if fields are not filled', async () => {
-            expect(mainButton.props.accessibilityState.disabled).toBe(true);
+        describe('displaying fields with a red border', () => {
+            it('should display fields with a red border if an error is present', async () => {
+                await fillAndBlurInput(userNameInput, 're');
+                await fillAndBlurInput(emailInput, 'test@test');
+                await fillAndBlurInput(passwordInput, 'totototo14');
+                await fillAndBlurInput(confirmPasswordInput, 'Totototo14*');
+        
+                expect(userNameInput.props.className).toContain('border-2 border-red-500');
+                expect(emailInput.props.className).toContain('border-2 border-red-500');
+                expect(passwordInput.props.className).toContain('border-2 border-red-500');
+                expect(confirmPasswordInput.props.className).toContain('border-2 border-red-500');
+            });    
         });
 
-        it('should display main button enabled if fields are filled with valid values', async () => {
-            mockUseAsyncValidation.checkUsernameExists.mockResolvedValue(null);
-            mockUseAsyncValidation.checkEmailExists.mockResolvedValue(null);
-            await fillAndBlurInput(userNameInput, 'validUsername');
-            await fillAndBlurInput(emailInput, 'valid@email.com');
-            await fillAndBlurInput(passwordInput, 'ValidPassword14*');
-            await fillAndBlurInput(confirmPasswordInput, 'ValidPassword14*');
-            expect(mainButton.props.accessibilityState.disabled).toBe(false);
-        });
+        describe('main button', () => {
+            it('should display main button disabled if fields are not filled', async () => {
+                expect(mainButton.props.accessibilityState.disabled).toBe(true);
+            });
 
-        it('should display main button disabled if at least one field is filled with invalid values', async () => {
-            await fillAndBlurInput(userNameInput, 'r');
-            await fillAndBlurInput(emailInput, 'test@test');
-            await fillAndBlurInput(passwordInput, 'totototo14');
-            await fillAndBlurInput(confirmPasswordInput, 'Totototo14*');
-            expect(mainButton.props.accessibilityState.disabled).toBe(true);
+            it('should display main button enabled if fields are filled with valid values', async () => {
+                mockUseAsyncValidation.checkUsernameExists.mockResolvedValue(null);
+                mockUseAsyncValidation.checkEmailExists.mockResolvedValue(null);
+                await fillAndBlurInput(userNameInput, 'validUsername');
+                await fillAndBlurInput(emailInput, 'valid@email.com');
+                await fillAndBlurInput(passwordInput, 'ValidPassword14*');
+                await fillAndBlurInput(confirmPasswordInput, 'ValidPassword14*');
+                expect(mainButton.props.accessibilityState.disabled).toBe(false);
+            });
+    
+            it('should display main button disabled if at least one field is filled with invalid values', async () => {
+                await fillAndBlurInput(userNameInput, 'r');
+                await fillAndBlurInput(emailInput, 'test@test');
+                await fillAndBlurInput(passwordInput, 'totototo14');
+                await fillAndBlurInput(confirmPasswordInput, 'Totototo14*');
+                expect(mainButton.props.accessibilityState.disabled).toBe(true);
+            });
         });
     });
 

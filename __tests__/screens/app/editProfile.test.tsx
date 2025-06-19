@@ -42,85 +42,91 @@ describe('Edit Profile Form', () => {
     });
 
     describe('form validation', () => {
-        it('should have the main button button disabled if the username is changed to the same value on blur', async () => {
-            await fillAndBlurInput(userNameInput, mockUser.username);
-            expect(mainButton.props.accessibilityState.disabled).toBe(true);
+        describe('displaying errors', () => {
+            it('should display an appropriate error message if the username is not valid on blur', async () => {
+                await fillAndBlurInput(userNameInput, 'r');
+                expect(errorMessage.props.children).toBe('Username must be at least 4 characters long.');
+            });
+    
+            it('should display an appropriate error message if the first name is not valid on blur', async () => {
+                await fillAndBlurInput(firstNameInput, 'T');
+                expect(errorMessage.props.children).toBe('First name must be at least 2 characters long.');
+            });
+    
+            it('should display an appropriate error message if the last name is not valid on blur', async () => {
+                await fillAndBlurInput(lastNameInput, 'T');
+                expect(errorMessage.props.children).toBe('Last name must be at least 2 characters long.');
+            });
+    
+            it('should display an appropriate error message if the sneaker size is not valid on blur', async () => {
+                await fillAndBlurInput(sizeInput, '0');
+                expect(errorMessage.props.children).toBe('Please enter a valid size, size must be a number between 7 and 15.');
+            });
+    
+            it('should display a global error message if multiple fields are not valid on blur', async () => {
+                await fillAndBlurInput(userNameInput, 'r');
+                await fillAndBlurInput(sizeInput, '0');
+                expect(errorMessage.props.children).toBe('Please correct the fields in red before continuing');
+            });
         });
 
-        it('should have the main button button enabled if the first name is changed on blur', async () => {
-            await fillAndBlurInput(firstNameInput, 'Toto');
-            expect(mainButton.props.accessibilityState.disabled).toBe(false);
+        describe('main button', () => {
+            it('should have the main button button disabled if the username is changed to the same value on blur', async () => {
+                await fillAndBlurInput(userNameInput, mockUser.username);
+                expect(mainButton.props.accessibilityState.disabled).toBe(true);
+            });
+
+            it('should have the main button button enabled if the first name is changed on blur', async () => {
+                await fillAndBlurInput(firstNameInput, 'Toto');
+                expect(mainButton.props.accessibilityState.disabled).toBe(false);
+            });
+
+            it('should have the main button button disabled if the first name is changed to the same value on blur', async () => {
+                await fillAndBlurInput(firstNameInput, mockUser.first_name);
+                expect(mainButton.props.accessibilityState.disabled).toBe(true);
+            });
+
+            it('should have the main button button enabled if the last name is changed on blur', async () => {
+                await fillAndBlurInput(lastNameInput, 'Toto');
+                expect(mainButton.props.accessibilityState.disabled).toBe(false);
+            });
+            
+            it('should have the main button button disabled if the last name is changed to the same value on blur', async () => {
+                await fillAndBlurInput(lastNameInput, mockUser.last_name);
+                expect(mainButton.props.accessibilityState.disabled).toBe(true);
+            });
+
+            it('should have the main button button enabled if the sneaker size is changed on blur', async () => {
+                await fillAndBlurInput(sizeInput, '9');
+                expect(mainButton.props.accessibilityState.disabled).toBe(false);
+            });
+
+            it('should have the main button button disabled if the sneaker size is changed to the same value on blur', async () => {
+                await fillAndBlurInput(sizeInput, mockUser.sneaker_size);
+                expect(mainButton.props.accessibilityState.disabled).toBe(true);
+            });
         });
 
-        it('should have the main button button disabled if the first name is changed to the same value on blur', async () => {
-            await fillAndBlurInput(firstNameInput, mockUser.first_name);
-            expect(mainButton.props.accessibilityState.disabled).toBe(true);
-        });
-
-        it('should have the main button button enabled if the last name is changed on blur', async () => {
-            await fillAndBlurInput(lastNameInput, 'Toto');
-            expect(mainButton.props.accessibilityState.disabled).toBe(false);
-        });
-
-        it('should have the main button button disabled if the last name is changed to the same value on blur', async () => {
-            await fillAndBlurInput(lastNameInput, mockUser.last_name);
-            expect(mainButton.props.accessibilityState.disabled).toBe(true);
-        });
-
-        it('should have the main button button enabled if the sneaker size is changed on blur', async () => {
-            await fillAndBlurInput(sizeInput, '9');
-            expect(mainButton.props.accessibilityState.disabled).toBe(false);
-        });
-
-        it('should have the main button button disabled if the sneaker size is changed to the same value on blur', async () => {
-            await fillAndBlurInput(sizeInput, mockUser.sneaker_size);
-            expect(mainButton.props.accessibilityState.disabled).toBe(true);
-        });
-
-        it('should display an appropriate error message if the username is not valid on blur', async () => {
-            await fillAndBlurInput(userNameInput, 'r');
-            expect(errorMessage.props.children).toBe('Username must be at least 4 characters long.');
-        });
-
-        it('should display an appropriate error message if the first name is not valid on blur', async () => {
-            await fillAndBlurInput(firstNameInput, 'T');
-            expect(errorMessage.props.children).toBe('First name must be at least 2 characters long.');
-        });
-
-        it('should display an appropriate error message if the last name is not valid on blur', async () => {
-            await fillAndBlurInput(lastNameInput, 'T');
-            expect(errorMessage.props.children).toBe('Last name must be at least 2 characters long.');
-        });
-
-        it('should display an appropriate error message if the sneaker size is not valid on blur', async () => {
-            await fillAndBlurInput(sizeInput, '0');
-            expect(errorMessage.props.children).toBe('Please enter a valid size, size must be a number between 7 and 15.');
-        });
-
-        it('should display a global error message if multiple fields are not valid on blur', async () => {
-            await fillAndBlurInput(userNameInput, 'r');
-            await fillAndBlurInput(sizeInput, '0');
-            expect(errorMessage.props.children).toBe('Please correct the fields in red before continuing');
-        });
-
-        it('should set a red border to the username input if the username is not valid on blur', async () => {
-            await fillAndBlurInput(userNameInput, 'r');
-            expect(userNameInput.props.className).toContain('border-2 border-red-500');
-        });
-
-        it('should set a red border to the first name input if the first name is not valid on blur', async () => {
-            await fillAndBlurInput(firstNameInput, 'T');
-            expect(firstNameInput.props.className).toContain('border-2 border-red-500');
-        });
-
-        it('should set a red border to the last name input if the last name is not valid on blur', async () => {
-            await fillAndBlurInput(lastNameInput, 'T');
-            expect(lastNameInput.props.className).toContain('border-2 border-red-500');
-        });
-
-        it('should set a red border to the sneaker size input if the sneaker size is not valid on blur', async () => {
-            await fillAndBlurInput(sizeInput, '0');
-            expect(sizeInput.props.className).toContain('border-2 border-red-500');
+        describe('displaying fields with a red border', () => {            
+            it('should set a red border to the username input if the username is not valid on blur', async () => {
+                await fillAndBlurInput(userNameInput, 'r');
+                expect(userNameInput.props.className).toContain('border-2 border-red-500');
+            });
+    
+            it('should set a red border to the first name input if the first name is not valid on blur', async () => {
+                await fillAndBlurInput(firstNameInput, 'T');
+                expect(firstNameInput.props.className).toContain('border-2 border-red-500');
+            });
+    
+            it('should set a red border to the last name input if the last name is not valid on blur', async () => {
+                await fillAndBlurInput(lastNameInput, 'T');
+                expect(lastNameInput.props.className).toContain('border-2 border-red-500');
+            });
+    
+            it('should set a red border to the sneaker size input if the sneaker size is not valid on blur', async () => {
+                await fillAndBlurInput(sizeInput, '0');
+                expect(sizeInput.props.className).toContain('border-2 border-red-500');
+            });
         });
     });
 

@@ -36,18 +36,29 @@ describe('CreateCollectionPage', () => {
     });
 
     describe('form validation', () => {
-        it('should have the main button disabled if the collection name is not provided', async () => {
-            expect(mainButton.props.accessibilityState.disabled).toBe(true);
+        describe('displaying errors', () => {
+            it('should display an error message if the collection name is not 4 characters long', async () => {
+                await fillAndBlurInput(collectionNameInput, 'My');
+                expect(errorMessage.props.children).toBe('Collection name is required and must be at least 4 characters long.');
+            });
+        });
+        
+        describe('displaying fields with a red border', () => {
+            it('should display the collection name input with a red border if the collection name is not provided', async () => {
+                await fillAndBlurInput(collectionNameInput, 'My');
+                expect(collectionNameInput.props.className).toContain('border-2 border-red-500');
+            });
         });
 
-        it('should display an error message if the collection name is not 4 characters long', async () => {
-            await fillAndBlurInput(collectionNameInput, 'My');
-            expect(errorMessage.props.children).toBe('Collection name is required and must be at least 4 characters long.');
-        });
-
-        it('should have the main button enabled if the collection name is provided with appropriate value', async () => {
-            await fillAndBlurInput(collectionNameInput, 'My Sneakers Collection');
-            expect(mainButton.props.accessibilityState.disabled).toBe(false);
+        describe('main button', () => {
+            it('should have the main button disabled if the collection name is not provided', async () => {
+                expect(mainButton.props.accessibilityState.disabled).toBe(true);
+            });
+    
+            it('should have the main button enabled if the collection name is provided with appropriate value', async () => {
+                await fillAndBlurInput(collectionNameInput, 'My Sneakers Collection');
+                expect(mainButton.props.accessibilityState.disabled).toBe(false);
+            });
         });
     });
 

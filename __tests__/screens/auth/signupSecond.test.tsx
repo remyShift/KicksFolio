@@ -79,74 +79,80 @@ describe('SignUpSecondPage', () => {
     });
 
     describe('form validation', () => {
-        it('should display an appropriate error if the first name is not 2 characters long on blur', async () => {
-            await fillAndBlurInput(firstNameInput, 'r');
-            expect(errorMessage.props.children).toBe('First name must be at least 2 characters long.');
+        describe('displaying errors', () => {
+            it('should display an appropriate error if the first name is not 2 characters long on blur', async () => {
+                await fillAndBlurInput(firstNameInput, 'r');
+                expect(errorMessage.props.children).toBe('First name must be at least 2 characters long.');
+            });
+            
+            it('should display an appropriate error if the first name contains special characters on blur', async () => {
+                await fillAndBlurInput(firstNameInput, 'rea@');
+                expect(errorMessage.props.children).toBe('First name must not contain special characters or numbers.');
+            });
+    
+            it('should display an appropriate error if the last name is not 2 characters long on blur', async () => {
+                await fillAndBlurInput(lastNameInput, 'r');
+                expect(errorMessage.props.children).toBe('Last name must be at least 2 characters long.');
+            });
+    
+            it('should display an appropriate error if the last name contains special characters on blur', async () => {
+                await fillAndBlurInput(lastNameInput, 'rea@');
+                expect(errorMessage.props.children).toBe('Last name must not contain special characters or numbers.');
+            });
+    
+            it('should display an appropriate error if the sneaker size is not a number on blur', async () => {
+                await fillAndBlurInput(sneakerSizeInput, 'totototo14');
+                expect(errorMessage.props.children).toBe('Please enter a valid size, size must be a number between 7 and 15.');
+            });
+    
+            it('should display an appropriate error if the sneaker size is not a number between 7 and 15 on blur', async () => {
+                await fillAndBlurInput(sneakerSizeInput, '16');
+                expect(errorMessage.props.children).toBe('Please enter a valid size, size must be a number between 7 and 15.');
+            });
+    
+            it('should display an appropriate error if the sneaker size is not a multiple of 0.5 on blur', async () => {
+                await fillAndBlurInput(sneakerSizeInput, '10.6');
+                expect(errorMessage.props.children).toBe('Size must be a multiple of 0.5 (e.g., 7, 7.5, 8, 8.5).');
+            });
+    
+            it('should display a global error message if multiple errors are present', async () => {
+                await fillAndBlurInput(firstNameInput, 're');
+                await fillAndBlurInput(lastNameInput, 'test@test');
+                await fillAndBlurInput(sneakerSizeInput, '10.6');
+                expect(errorMessage.props.children).toBe('Please correct the fields in red before continuing');
+            });
         });
 
-        it('should display an appropriate error if the first name contains special characters on blur', async () => {
-            await fillAndBlurInput(firstNameInput, 'rea@');
-            expect(errorMessage.props.children).toBe('First name must not contain special characters or numbers.');
+        describe('displaying fields with a red border', () => {            
+            it('should display fields with a red border if an error is present', async () => {
+                await fillAndBlurInput(firstNameInput, 'r');
+                await fillAndBlurInput(lastNameInput, 'test@test');
+                await fillAndBlurInput(sneakerSizeInput, '5');
+    
+                expect(firstNameInput.props.className).toContain('border-2 border-red-500');
+                expect(lastNameInput.props.className).toContain('border-2 border-red-500');
+                expect(sneakerSizeInput.props.className).toContain('border-2 border-red-500');
+            });
         });
 
-        it('should display an appropriate error if the last name is not 2 characters long on blur', async () => {
-            await fillAndBlurInput(lastNameInput, 'r');
-            expect(errorMessage.props.children).toBe('Last name must be at least 2 characters long.');
-        });
+        describe('main button', () => {
+            it('should display main button disabled if fields are not filled', async () => {
+                expect(mainButton.props.accessibilityState.disabled).toBe(true);
+            });
 
-        it('should display an appropriate error if the last name contains special characters on blur', async () => {
-            await fillAndBlurInput(lastNameInput, 'rea@');
-            expect(errorMessage.props.children).toBe('Last name must not contain special characters or numbers.');
-        });
+            it('should display main button enabled if fields are filled with valid values', async () => {
+                await fillAndBlurInput(firstNameInput, 'validFirstName');
+                await fillAndBlurInput(lastNameInput, 'validLastName');
+                await fillAndBlurInput(sneakerSizeInput, '10.5');
+                expect(mainButton.props.accessibilityState.disabled).toBe(false);
+            });
 
-        it('should display an appropriate error if the sneaker size is not a number on blur', async () => {
-            await fillAndBlurInput(sneakerSizeInput, 'totototo14');
-            expect(errorMessage.props.children).toBe('Please enter a valid size, size must be a number between 7 and 15.');
-        });
-
-        it('should display an appropriate error if the sneaker size is not a number between 7 and 15 on blur', async () => {
-            await fillAndBlurInput(sneakerSizeInput, '16');
-            expect(errorMessage.props.children).toBe('Please enter a valid size, size must be a number between 7 and 15.');
-        });
-
-        it('should display an appropriate error if the sneaker size is not a multiple of 0.5 on blur', async () => {
-            await fillAndBlurInput(sneakerSizeInput, '10.6');
-            expect(errorMessage.props.children).toBe('Size must be a multiple of 0.5 (e.g., 7, 7.5, 8, 8.5).');
-        });
-
-        it('should display a global error message if multiple errors are present', async () => {
-            await fillAndBlurInput(firstNameInput, 're');
-            await fillAndBlurInput(lastNameInput, 'test@test');
-            await fillAndBlurInput(sneakerSizeInput, '10.6');
-            expect(errorMessage.props.children).toBe('Please correct the fields in red before continuing');
-        });
-
-        it('should display fields with a red border if an error is present', async () => {
-            await fillAndBlurInput(firstNameInput, 'r');
-            await fillAndBlurInput(lastNameInput, 'test@test');
-            await fillAndBlurInput(sneakerSizeInput, '5');
-
-            expect(firstNameInput.props.className).toContain('border-2 border-red-500');
-            expect(lastNameInput.props.className).toContain('border-2 border-red-500');
-            expect(sneakerSizeInput.props.className).toContain('border-2 border-red-500');
-        });
-
-        it('should display main button disabled if fields are not filled', async () => {
-            expect(mainButton.props.accessibilityState.disabled).toBe(true);
-        });
-
-        it('should display main button enabled if fields are filled with valid values', async () => {
-            await fillAndBlurInput(firstNameInput, 'validFirstName');
-            await fillAndBlurInput(lastNameInput, 'validLastName');
-            await fillAndBlurInput(sneakerSizeInput, '10.5');
-            expect(mainButton.props.accessibilityState.disabled).toBe(false);
-        });
-
-        it('should display main button disabled if at least one field is filled with invalid values', async () => {
-            await fillAndBlurInput(firstNameInput, 'r');
-            await fillAndBlurInput(lastNameInput, 'test@test');
-            await fillAndBlurInput(sneakerSizeInput, '10.5');
-            expect(mainButton.props.accessibilityState.disabled).toBe(true);
+            it('should display main button disabled if at least one field is filled with invalid values', async () => {
+                await fillAndBlurInput(firstNameInput, 'r');
+                await fillAndBlurInput(lastNameInput, 'test@test');
+                await fillAndBlurInput(sneakerSizeInput, '10.5');
+                expect(mainButton.props.accessibilityState.disabled).toBe(true);
+            });
         });
     });
 
