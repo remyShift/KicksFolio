@@ -36,10 +36,11 @@ export const useAuth = () => {
 			userData.password,
 			userData
 		)
-			.then((response) => {
+			.then(async (response) => {
 				if (response.user) {
 					setUser(response.user);
-					login(userData.email, userData.password);
+					await login(userData.email, userData.password);
+					return true;
 				}
 			})
 			.catch((error: any) => {
@@ -48,6 +49,7 @@ export const useAuth = () => {
 						? error.message
 						: 'An error occurred during sign up'
 				);
+				return false;
 			});
 	};
 

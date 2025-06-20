@@ -268,7 +268,6 @@ export function useFormController<T extends FieldValues>({
 		isSubmitting,
 		isValid,
 		hasChanges,
-		hasMultipleErrors,
 		globalErrorMsg,
 		displayedError,
 		getFieldErrorWrapper,

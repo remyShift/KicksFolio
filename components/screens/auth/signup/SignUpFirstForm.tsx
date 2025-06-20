@@ -157,5 +157,5 @@ export default function SignUpFirstForm() {
                 </View>
             </ScrollView>
         </KeyboardAvoidingView>
-    )
+    );
 }

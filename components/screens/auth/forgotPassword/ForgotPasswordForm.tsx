@@ -4,7 +4,6 @@ import PageTitle from '@/components/ui/text/PageTitle';
 import { View } from 'react-native'
 import { useRef } from "react";
 import MainButton from "@/components/ui/buttons/MainButton";
-import { Link } from "expo-router";
 import { useAuth } from "@/hooks/useAuth";
 import FormTextInput from "@/components/ui/inputs/FormTextInput";
 import { useFormController } from "@/hooks/useFormController";
@@ -22,8 +21,6 @@ export default function ForgotPasswordForm() {
         handleFormSubmit,
         handleFieldFocus,
         validateFieldOnBlur,
-        getFieldError,
-        hasFieldError,
         isSubmitDisabled,
         displayedError,
         getFieldErrorWrapper,
@@ -90,5 +87,5 @@ export default function ForgotPasswordForm() {
                 </View>
             </ScrollView>
         </KeyboardAvoidingView>
-    )
+    );
 }

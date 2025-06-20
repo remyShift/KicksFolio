@@ -27,7 +27,7 @@ export default function EditProfileForm() {
         handleFieldFocus,
         validateFieldOnBlur,
         getFieldError,
-        globalErrorMsg,
+        displayedError,
         isSubmitDisabled,
     } = useFormController({
         schema: editProfileSchema,
@@ -47,13 +47,6 @@ export default function EditProfileForm() {
             })
         },
     })
-
-    const displayedError = globalErrorMsg || 
-        getFieldError('username') || 
-        getFieldError('first_name') || 
-        getFieldError('last_name') || 
-        getFieldError('sneaker_size') || 
-        ''
 
     const getFieldErrorWrapper = (fieldName: string) => {
         return getFieldError(fieldName as keyof typeof editProfileSchema._type);

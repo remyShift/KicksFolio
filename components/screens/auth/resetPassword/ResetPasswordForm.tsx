@@ -22,8 +22,6 @@ export default function ResetPasswordForm() {
         handleFormSubmit,
         handleFieldFocus,
         validateFieldOnBlur,
-        getFieldError,
-        hasFieldError,
         isSubmitDisabled,
         displayedError,
         getFieldErrorWrapper,
@@ -101,5 +99,5 @@ export default function ResetPasswordForm() {
                 </View>
             </ScrollView>
         </KeyboardAvoidingView>
-    )
+    );
 }
