@@ -196,17 +196,18 @@ export function useFormController<T extends FieldValues>({
 		return !!getFieldError(fieldName);
 	};
 
-	const hasMultipleErrors =
-		fieldNames.length > 0
+	const hasMultipleErrors = (fieldNames: (keyof T)[]): boolean => {
+		return fieldNames.length > 0
 			? fieldNames.filter((fieldName) => hasFieldError(fieldName))
 					.length > 1
 			: Object.keys(errors).length +
 					Object.keys(asyncErrors).filter(
 						(key) => asyncErrors[key as keyof T]
 					).length >
-			  1;
+					1;
+	};
 
-	const globalErrorMsg = hasMultipleErrors
+	const globalErrorMsg = hasMultipleErrors(fieldNames)
 		? 'Please correct the fields in red before continuing'
 		: '';
 

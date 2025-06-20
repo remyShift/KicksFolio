@@ -27,7 +27,7 @@ export default function EditProfileForm() {
         handleFieldFocus,
         validateFieldOnBlur,
         getFieldError,
-        hasFieldError,
+        globalErrorMsg,
         isSubmitDisabled,
     } = useFormController({
         schema: editProfileSchema,
@@ -47,17 +47,6 @@ export default function EditProfileForm() {
             })
         },
     })
-
-    const hasMultipleErrors = [
-        hasFieldError('username'),
-        hasFieldError('first_name'),
-        hasFieldError('last_name'),
-        hasFieldError('sneaker_size'),
-    ].filter(Boolean).length > 1
-
-    const globalErrorMsg = hasMultipleErrors 
-        ? 'Please correct the fields in red before continuing'
-        : ''
 
     const displayedError = globalErrorMsg || 
         getFieldError('username') || 
@@ -166,5 +155,5 @@ export default function EditProfileForm() {
                 </View>
             </ScrollView>
         </KeyboardAvoidingView>
-    )
-} 
+    );
+}
