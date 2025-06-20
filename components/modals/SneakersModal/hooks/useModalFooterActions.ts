@@ -22,6 +22,11 @@ export const useModalFooterActions = () => {
 		setIsVisible,
 		currentSneaker,
 	} = useModalStore();
+
+	if (!user) {
+		throw new Error('User is not authenticated');
+	}
+
 	const {
 		handleSkuSearch,
 		handleFormSubmit,

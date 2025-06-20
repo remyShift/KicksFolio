@@ -26,6 +26,7 @@ describe('Index', () => {
 	beforeEach(() => {
 		jest.clearAllMocks();
 		(useSession as jest.Mock).mockReturnValue({
+			user: { id: 'test-user-id' },
 			userCollection: { name: 'Test Collection' },
 			userSneakers: []
 		});
@@ -60,6 +61,7 @@ describe('Index', () => {
 
 		it('should display 1 sneaker and 3 empty slots', () => {
 			(useSession as jest.Mock).mockReturnValue({
+				user: { id: 'test-user-id' },
 				userCollection: { name: 'Test Collection' },
 				userSneakers: [{
 					images: [{ url: 'test-url-1' }]
@@ -76,6 +78,7 @@ describe('Index', () => {
 
 		it('should display 2 sneakers and 2 empty slots', () => {
 			(useSession as jest.Mock).mockReturnValue({
+				user: { id: 'test-user-id' },
 				userCollection: { name: 'Test Collection' },
 				userSneakers: [
 					{ images: [{ url: 'test-url-1' }] },
@@ -93,6 +96,7 @@ describe('Index', () => {
 
 		it('should display 3 sneakers and 1 empty slot', () => {
 			(useSession as jest.Mock).mockReturnValue({
+				user: { id: 'test-user-id' },
 				userCollection: { name: 'Test Collection' },
 				userSneakers: [
 					{ images: [{ url: 'test-url-1' }] },
@@ -111,6 +115,7 @@ describe('Index', () => {
 
 		it('should display 4 sneakers and no empty slots', () => {
 			(useSession as jest.Mock).mockReturnValue({
+				user: { id: 'test-user-id' },
 				userCollection: { name: 'Test Collection' },
 				userSneakers: [
 					{ images: [{ url: 'test-url-1' }] },
@@ -130,6 +135,7 @@ describe('Index', () => {
 
 		it('should display only first 4 sneakers when more than 4 sneakers', () => {
 			(useSession as jest.Mock).mockReturnValue({
+				user: { id: 'test-user-id' },
 				userCollection: { name: 'Test Collection' },
 				userSneakers: [
 					{ images: [{ url: 'test-url-1' }] },
@@ -170,6 +176,7 @@ describe('Index', () => {
 			}));
 
 			(useSession as jest.Mock).mockReturnValue({
+				user: { id: 'test-user-id' },
 				userCollection: { name: 'Test Collection' },
 				userSneakers: []
 			});
@@ -194,6 +201,7 @@ describe('Index', () => {
 			}));
 
 			(useSession as jest.Mock).mockReturnValue({
+				user: { id: 'test-user-id' },
 				userCollection: { name: 'Test Collection' },
 				userSneakers: [{ images: [{ url: 'test-url-1' }] }]
 			});
@@ -215,6 +223,7 @@ describe('Index', () => {
 			}));
 
 			(useSession as jest.Mock).mockReturnValue({
+				user: { id: 'test-user-id' },
 				userCollection: { name: 'Test Collection' },
 				userSneakers: []
 			});

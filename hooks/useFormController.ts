@@ -210,6 +210,8 @@ export function useFormController<T extends FieldValues>({
 		return syncErrorKeys.length + asyncErrorKeys.length;
 	};
 
+	const hasMultipleErrors = getErrorCount() > 1;
+
 	const getFirstFieldError = (): string => {
 		if (fieldNames.length > 0) {
 			for (const fieldName of fieldNames) {
@@ -283,5 +285,6 @@ export function useFormController<T extends FieldValues>({
 		globalErrorMsg,
 		displayedError,
 		getFieldErrorWrapper,
+		hasMultipleErrors,
 	};
 }

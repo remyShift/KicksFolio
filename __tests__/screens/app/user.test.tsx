@@ -58,6 +58,7 @@ describe('User', () => {
 
         it('should display sneakers cards if the user has sneakers and the main button is not displayed but the add button is', () => {
             (useSession as jest.Mock).mockReturnValue({
+                user: { id: 'test-user-id' },
                 userSneakers: mockSneakers,
             });
 
@@ -87,6 +88,7 @@ describe('User', () => {
             }));
 
             (useSession as jest.Mock).mockReturnValue({
+                user: { id: 'test-user-id' },
                 userSneakers: mockSneakers,
             });
 
@@ -215,28 +217,6 @@ describe('User', () => {
             const refreshControl = scrollView.props.refreshControl;
             
             expect(refreshControl.props.refreshing).toBe(false);
-        });
-
-        it('should handle refresh when user is null', async () => {
-            const refreshUserData = jest.fn();
-            (useSession as jest.Mock).mockReturnValue({
-                user: null,
-                userSneakers: [],
-                refreshUserData
-            });
-
-            render(<UserPage />);
-            
-            const scrollView = screen.getByTestId('scroll-view');
-            const refreshControl = scrollView.props.refreshControl;
-            
-            if (refreshControl && refreshControl.props.onRefresh) {
-                await act(async () => {
-                    await refreshControl.props.onRefresh();
-                });
-            }
-            
-            expect(refreshUserData).not.toHaveBeenCalled();
         });
 
         it('should set refreshing state correctly during refresh', async () => {
