@@ -196,22 +196,21 @@ export function useFormController<T extends FieldValues>({
 		return !!getFieldError(fieldName);
 	};
 
-	const hasMultipleErrors = (fieldNames: (keyof T)[]): boolean => {
-		return fieldNames.length > 0
-			? fieldNames.filter((fieldName) => hasFieldError(fieldName))
-					.length > 1
-			: Object.keys(errors).length +
-					Object.keys(asyncErrors).filter(
-						(key) => asyncErrors[key as keyof T]
-					).length >
-					1;
+	const getErrorCount = (): number => {
+		// Compter les erreurs sync qui ont un message
+		const syncErrorKeys = Object.keys(errors).filter(
+			(key) => errors[key as Path<T>]?.message
+		);
+
+		// Compter les erreurs async qui ont un message ET qui ne sont pas déjà dans les erreurs sync
+		const asyncErrorKeys = Object.keys(asyncErrors).filter(
+			(key) => asyncErrors[key as keyof T] && !syncErrorKeys.includes(key)
+		);
+
+		return syncErrorKeys.length + asyncErrorKeys.length;
 	};
 
-	const globalErrorMsg = hasMultipleErrors(fieldNames)
-		? 'Please correct the fields in red before continuing'
-		: '';
-
-	const getFirstFieldError = () => {
+	const getFirstFieldError = (): string => {
 		if (fieldNames.length > 0) {
 			for (const fieldName of fieldNames) {
 				const error = getFieldError(fieldName);
@@ -219,7 +218,6 @@ export function useFormController<T extends FieldValues>({
 					return error;
 				}
 			}
-			return '';
 		}
 
 		const formErrorKeys = Object.keys(errors) as (keyof T)[];
@@ -240,8 +238,22 @@ export function useFormController<T extends FieldValues>({
 		return '';
 	};
 
-	const displayedError =
-		globalErrorMsg || getFirstFieldError() || authErrorMsg || '';
+	const globalErrorMsg = 'Please correct the fields in red before continuing';
+
+	const displayedError = (() => {
+		const errorCount = getErrorCount();
+
+		if (errorCount === 0) {
+			return authErrorMsg || '';
+		}
+
+		if (errorCount > 1) {
+			return globalErrorMsg;
+		}
+
+		const firstError = getFirstFieldError();
+		return firstError || authErrorMsg || '';
+	})();
 
 	const getFieldErrorWrapper = (fieldName: string) => {
 		return getFieldError(fieldName as keyof T);
