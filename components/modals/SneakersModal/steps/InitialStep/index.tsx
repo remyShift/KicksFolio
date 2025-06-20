@@ -17,6 +17,7 @@ export const InitialStep = ({ userSneakersLength = 0 }: InitialStepProps) => {
                 <View className="flex-col justify-center items-center gap-1 px-6">
                     <Pressable
                         onPress={() => setModalStep('sku')}
+                        testID="search-by-sku-button"
                     >
                         <Text className="font-spacemono-bold text-lg text-center text-primary">
                             By sneakers SKU
@@ -29,6 +30,7 @@ export const InitialStep = ({ userSneakersLength = 0 }: InitialStepProps) => {
                 <View className="flex-col justify-center items-center gap-1 px-6">
                     <Pressable
                         onPress={() => setModalStep('addForm')}
+                        testID="add-manually-button"
                     >
                         <Text className="font-spacemono-bold text-lg text-center text-primary">
                             Add manually

@@ -22,6 +22,7 @@ interface FormSelectInputProps<T extends FieldValues> {
     options: Option[];
     onFocus?: () => void;
     error?: string;
+    testID?: string;
 }
 
 export default function FormSelectInput<T extends FieldValues>({
@@ -32,6 +33,7 @@ export default function FormSelectInput<T extends FieldValues>({
     options,
     onFocus,
     error,
+    testID,
 }: FormSelectInputProps<T>) {
     const [isOpen, setIsOpen] = useState(false);
     const [isFocused, setIsFocused] = useState(false);
@@ -85,8 +87,11 @@ export default function FormSelectInput<T extends FieldValues>({
                                     ${isOpen ? 'border-2 border-primary rounded-t-md' : 'rounded-md border-2 border-gray-300'}
                                     ${error ? 'border-2 border-red-500' : ''}
                                     ${isFocused && !isOpen ? 'border-2 border-orange-500' : ''}`}
+                                    testID={`${testID}-input`}
                             >
-                                <Text className={`font-spacemono-bold-italic text-base ${selectedOption ? 'text-black' : 'text-gray-400'}`}>
+                                <Text className={`font-spacemono-bold-italic text-base ${selectedOption ? 'text-black' : 'text-gray-400'}`}
+                                    testID={`${testID}-input-value`}
+                                >
                                     {selectedOption ? selectedOption.label.toUpperCase() : (placeholder || label)}
                                 </Text>
                                 <MaterialIcons 

@@ -18,7 +18,6 @@ export const ModalFooter = () => {
         setFetchedSneaker,
         setErrorMsg,
         setCurrentSneaker,
-        sneakerToAdd,
         validateForm,
         currentSneaker,
         resetModalData
@@ -208,11 +207,12 @@ export const ModalFooter = () => {
             {modalStep === 'sku' && (
                 <View className="flex-row justify-between w-full">
                     <BackButton 
-                        onPressAction={handleBackAction} 
+                        onPressAction={handleBackAction}
                     />
                     <NextButton
                         content="Search"
                         onPressAction={handleNextAction}
+                        testID="search"
                     />
                 </View>
             )}
@@ -224,6 +224,7 @@ export const ModalFooter = () => {
                     <NextButton
                         content="Add"
                         onPressAction={handleNextAction}
+                        testID="add"
                     />
                 </View>
             )}
@@ -235,12 +236,14 @@ export const ModalFooter = () => {
                         />
                         <DeleteButton 
                             onPressAction={handleDeleteAction}
+                            testID="delete"
                         />
                     </View>
 
                     <NextButton 
-                        content="Next" 
+                        content="Edit" 
                         onPressAction={handleNextAction}
+                        testID="edit"
                     />
                 </View>
             )}
@@ -252,12 +255,14 @@ export const ModalFooter = () => {
                         />
                         <EditButton 
                             onPressAction={handleEditAction}
+                            testID="edit-button"
                         />
                     </View>
 
                     <NextButton 
                         content="Next" 
                         onPressAction={handleNextAction}
+                        testID="next"
                     />
                 </View>
             )}

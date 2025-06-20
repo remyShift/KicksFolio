@@ -23,6 +23,7 @@ interface FormTextInputProps<T extends FieldValues> {
     scrollEnabled?: boolean;
     textAlignVertical?: 'top' | 'center' | 'bottom';
     accessibilityLabel?: string;
+    testID?: string;
 }
 
 const FormTextInput = forwardRef<TextInput, FormTextInputProps<any>>(
@@ -46,6 +47,7 @@ const FormTextInput = forwardRef<TextInput, FormTextInputProps<any>>(
         scrollEnabled = false,
         textAlignVertical = 'center',
         accessibilityLabel,
+        testID,
     }, ref) => {
 
     const [isFocused, setIsFocused] = useState(false);
@@ -111,6 +113,7 @@ const FormTextInput = forwardRef<TextInput, FormTextInputProps<any>>(
                                     ? 'border-2 border-orange-500' 
                                     : ''
                             }`}
+                            testID={`${testID}-input`}
                         />
                     );
                 }}

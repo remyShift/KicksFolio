@@ -12,7 +12,7 @@ import { useModalStore } from '@/store/useModalStore';
 interface FormFieldsProps {
     control: Control<SneakerFormData>;
     handleFieldFocus: (fieldName: keyof SneakerFormData) => void;
-    validateFieldOnBlur: (fieldName: keyof SneakerFormData, value: string) => Promise<void>;
+    validateFieldOnBlur: (fieldName: keyof SneakerFormData, value: string) => Promise<boolean>;
     getFieldError: (fieldName: string) => string | undefined;
     modelInputRef: React.RefObject<TextInput>;
     brandInputRef: React.RefObject<TextInput>;
@@ -78,6 +78,7 @@ export const FormFields = ({
                 onBlur={async (value) => { await validateFieldOnBlur('model', value); }}
                 error={getFieldErrorWrapper('model')}
                 getFieldError={getFieldErrorWrapper}
+                testID="model"
             />
 
             <View className="flex flex-row gap-1">
@@ -88,6 +89,7 @@ export const FormFields = ({
                     options={sneakerBrandOptions}
                     onFocus={() => handleFieldFocus('brand')}
                     error={getFieldErrorWrapper('brand')}
+                    testID="brand"
                 />
 
                 <FormSelectInput
@@ -97,6 +99,7 @@ export const FormFields = ({
                     options={sneakerStatusOptions}
                     onFocus={() => handleFieldFocus('status')}
                     error={getFieldErrorWrapper('status')}
+                    testID="status"
                 />
             </View>
 
@@ -114,6 +117,7 @@ export const FormFields = ({
                         onBlur={async (value) => { await validateFieldOnBlur('size', value); }}
                         error={getFieldErrorWrapper('size')}
                         getFieldError={getFieldErrorWrapper}
+                        testID="size"
                     />
                 </View>
 
@@ -128,6 +132,7 @@ export const FormFields = ({
                         onBlur={async (value) => { await validateFieldOnBlur('condition', value); }}
                         error={getFieldErrorWrapper('condition')}
                         getFieldError={getFieldErrorWrapper}
+                        testID="condition"
                     />
                 </View>
 
@@ -144,6 +149,7 @@ export const FormFields = ({
                         onBlur={async (value) => { await validateFieldOnBlur('price_paid', value); }}
                         error={getFieldErrorWrapper('price_paid')}
                         getFieldError={getFieldErrorWrapper}
+                        testID="price"
                     />
                 </View>
             </View>
@@ -160,6 +166,7 @@ export const FormFields = ({
                 multiline={true}
                 scrollEnabled={true}
                 textAlignVertical="top"
+                testID="description"
             />
         </View>
     );

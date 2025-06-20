@@ -31,6 +31,7 @@ jest.mock('@expo/vector-icons', () => {
 	return {
 		Ionicons: Text,
 		FontAwesome: Text,
+		FontAwesome6: Text,
 		MaterialIcons: Text,
 		AntDesign: Text,
 		Entypo: Text,

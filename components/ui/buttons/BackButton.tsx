@@ -9,6 +9,7 @@ export default function BackButton({onPressAction}: {onPressAction: () => void})
             onPress={() => {
                 onPressAction();
             }}
+            testID="back-button"
         >
             <MaterialIcons name="arrow-back-ios-new" size={20} color="black" />
         </Pressable>

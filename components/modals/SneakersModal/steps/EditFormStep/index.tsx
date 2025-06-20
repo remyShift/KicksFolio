@@ -18,15 +18,12 @@ export const EditFormStep = () => {
 
     const {
         control,
-        handleFormSubmit,
         handleFieldFocus,
         validateFieldOnBlur,
         getFieldError,
-        hasFieldError,
         reset,
         trigger,
         watch,
-        formState: { isValid },
         displayedError,
         getFieldErrorWrapper,
     } = useFormController<SneakerFormData>({
@@ -83,8 +80,6 @@ export const EditFormStep = () => {
         }
     }, [currentSneaker]);
 
-    const formValues = watch();
-
     useEffect(() => {
         if (currentSneaker?.images && currentSneaker.images.length > 0 && 
             (!sneakerToAdd?.images || sneakerToAdd.images.length === 0)) {
@@ -102,12 +97,11 @@ export const EditFormStep = () => {
     }, [currentSneaker?.images, sneakerToAdd]);
 
     useEffect(() => {
-                const handleValidateAndSubmit = async () => {
+        const handleValidateAndSubmit = async () => {
             setErrorMsg('');
             const isFormValid = await trigger();
             
             if (isFormValid) {
-                // Récupérer les données actuelles du formulaire
                 const currentFormValues = watch();
                 const finalData = {
                     model: currentFormValues.model || '',
@@ -155,8 +149,6 @@ export const EditFormStep = () => {
             setSneakerToAdd(null);
         };
     }, []);
-
-    // La logique d'affichage des erreurs est maintenant gérée par useFormController
 
     return (
         <KeyboardAvoidingView 

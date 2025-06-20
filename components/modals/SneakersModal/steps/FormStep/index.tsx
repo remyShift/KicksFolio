@@ -17,15 +17,12 @@ export const FormStep = () => {
 
     const {
         control,
-        handleFormSubmit,
         handleFieldFocus,
         validateFieldOnBlur,
         getFieldError,
-        hasFieldError,
         reset,
         trigger,
         watch,
-        formState: { isValid },
         displayedError,
         getFieldErrorWrapper,
     } = useFormController<SneakerFormData>({
@@ -85,8 +82,6 @@ export const FormStep = () => {
             setFetchedSneaker(null);
         }
     }, [fetchedSneaker]);
-
-    const formValues = watch();
 
     useEffect(() => {
         const handleValidateAndSubmit = async () => {

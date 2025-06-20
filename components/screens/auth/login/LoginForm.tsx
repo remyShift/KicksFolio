@@ -27,8 +27,6 @@ export default function LoginForm() {
         handleFormSubmit,
         handleFieldFocus,
         validateFieldOnBlur,
-        getFieldError,
-        hasFieldError,
         isSubmitDisabled,
         displayedError,
         getFieldErrorWrapper,
