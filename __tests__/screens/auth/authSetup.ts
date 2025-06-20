@@ -1,3 +1,5 @@
+import { router } from 'expo-router';
+
 export const mockUseAuth = {
 	login: jest.fn(),
 	signUp: jest.fn(),

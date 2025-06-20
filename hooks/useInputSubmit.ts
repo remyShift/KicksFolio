@@ -38,8 +38,8 @@ export const useInputSubmit = ({
 
 		if (onSubmitEditing) {
 			onSubmitEditing();
-		} else {
-			nextInputRef?.current?.focus();
+		} else if (nextInputRef && nextInputRef.current && !currentError) {
+			nextInputRef.current.focus();
 		}
 	};
 

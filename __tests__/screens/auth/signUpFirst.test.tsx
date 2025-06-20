@@ -4,6 +4,7 @@ import { mockAuthService, mockUseAuth } from './authSetup';
 import { fillAndBlurInput } from '../../setup';
 import { ReactTestInstance } from 'react-test-renderer';
 import { mockUseAsyncValidation } from './authSetup';
+import { router } from 'expo-router';
 
 describe('SignUpFirstPage', () => {
     let userNameInput: ReactTestInstance;
@@ -167,7 +168,9 @@ describe('SignUpFirstPage', () => {
     });
 
     describe('Sign up step 1 attempts', () => {
-        it('should handle sign up attempt with valid values', async () => {
+        it('should handle sign up attempt with valid values and redirect to step 2', async () => {
+            jest.spyOn(router, 'push');
+
             await fillAndBlurInput(userNameInput, 'validUsername');
             await fillAndBlurInput(emailInput, 'valid@email.com');
             await fillAndBlurInput(passwordInput, 'ValidPassword14*');
@@ -175,6 +178,7 @@ describe('SignUpFirstPage', () => {
             await act(async () => {
                 fireEvent.press(mainButton);
             });
+
             expect(mockUseAuth.handleNextSignupPage).toHaveBeenCalledWith({
                 username: 'validUsername',
                 email: 'valid@email.com',
