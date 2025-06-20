@@ -48,9 +48,10 @@ export const ImageUploader = ({ image, setImage, isError, isFocused, setIsError 
                     ]
                 );
             }}
-            className={`bg-gray-400 rounded-md h-48 w-full flex items-center justify-center ${
-                isError ? 'border-2 border-red-500' : ''
-            } ${isFocused ? 'border-2 border-primary' : ''}`}
+            className={`rounded-md h-48 w-full flex items-center justify-center
+                ${isError ? 'border-2 border-red-500' : ''}
+                ${image ? '' : 'bg-gray-400'}
+                ${isFocused ? 'border-2 border-primary' : ''}`}
         >
             {image ? (
                 <Image

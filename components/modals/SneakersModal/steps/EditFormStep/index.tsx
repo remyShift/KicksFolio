@@ -32,7 +32,7 @@ export const EditFormStep = () => {
         authErrorMsg: errorMsg,
         defaultValues: {
             model: currentSneaker?.model || '',
-            brand: currentSneaker?.brand || '',
+            brand: currentSneaker?.brand,
             status: currentSneaker?.status || '',
             size: currentSneaker?.size ? String(currentSneaker.size) : '',
             condition: currentSneaker?.condition ? String(currentSneaker.condition) : '',
@@ -47,7 +47,7 @@ export const EditFormStep = () => {
                 status: data.status,
                 size: data.size,
                 condition: data.condition,
-                price_paid: data.price_paid || '',
+                price_paid: data.price_paid,
                 description: data.description || '',
                 images: currentSneaker?.images || [],
             } as SneakerFormData);
@@ -76,7 +76,7 @@ export const EditFormStep = () => {
                 images: currentSneaker.images || [],
                 price_paid: currentSneaker.price_paid?.toString() || '',
                 description: currentSneaker.description || '',
-            } as any);
+            } as SneakerFormData);
         }
     }, [currentSneaker]);
 

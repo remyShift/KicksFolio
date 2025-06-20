@@ -118,11 +118,8 @@ export const useSneakerAPI = (userId: string) => {
 			images: supabaseSneaker.images,
 			price_paid: supabaseSneaker.price_paid || 0,
 			description: supabaseSneaker.description || '',
-			purchase_date: supabaseSneaker.purchase_date || '',
-			estimated_value: supabaseSneaker.estimated_value || 0,
 			created_at: supabaseSneaker.created_at,
 			updated_at: supabaseSneaker.updated_at,
-			release_date: null,
 			collection_id: supabaseSneaker.collection_id,
 		};
 	};

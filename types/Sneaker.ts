@@ -8,7 +8,8 @@ export type SneakerBrand =
 	| 'Yeezy'
 	| 'Asics'
 	| 'Reebok'
-	| 'Vans';
+	| 'Vans'
+	| 'Other';
 
 export type Sneaker = {
 	id: string;

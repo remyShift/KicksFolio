@@ -1,9 +1,10 @@
 import { BaseApiService } from '@/services/BaseApiService';
 import { supabase } from './supabase';
+import { SneakerBrand } from '@/types/Sneaker';
 
 export interface SupabaseSneaker {
 	id: string;
-	brand: string;
+	brand: SneakerBrand;
 	model: string;
 	size: number;
 	purchase_date?: string;

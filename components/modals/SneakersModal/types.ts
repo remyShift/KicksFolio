@@ -1,4 +1,4 @@
-import { Sneaker } from '@/types/Sneaker';
+import { Sneaker, SneakerBrand } from '@/types/Sneaker';
 
 export type ModalStep = 'index' | 'sku' | 'addForm' | 'editForm' | 'view';
 
@@ -44,7 +44,7 @@ export interface ValidationError {
 
 export interface SneakerFormData {
 	model: string;
-	brand: string;
+	brand: SneakerBrand;
 	status: string;
 	size: string;
 	condition: string;

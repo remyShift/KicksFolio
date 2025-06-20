@@ -78,7 +78,8 @@ export const sneakerSchema = z.object({
 		.refine(
 			(val) => sneakerBrandOptions.some((option) => option.value === val),
 			'Please select a valid brand.'
-		),
+		)
+		.transform((val) => val as SneakerBrand),
 	status: z
 		.string()
 		.min(1, 'Please select a status.')
@@ -134,6 +135,7 @@ export const sneakerBrandOptions: { label: string; value: SneakerBrand }[] = [
 	{ label: 'New Balance', value: 'New Balance' },
 	{ label: 'Asics', value: 'Asics' },
 	{ label: 'Reebok', value: 'Reebok' },
+	{ label: 'Other', value: 'Other' },
 ];
 
 export const editProfileSchema = z.object({
