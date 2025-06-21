@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { useModalStore } from '@/store/useModalStore';
-import { useFormController } from '@/hooks/useFormController';
 import { SneakerFormData } from '../types';
 
 export const useFormValidation = (

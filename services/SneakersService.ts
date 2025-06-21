@@ -90,13 +90,36 @@ export class SupabaseSneakerService extends BaseApiService {
 	}
 
 	static async searchBySku(sku: string) {
-		const { data, error } = await supabase.functions.invoke('sku-lookup', {
-			body: { sku },
-		});
+		return supabase.functions
+			.invoke('sku-lookup', {
+				body: { sku },
+			})
+			.then(({ data, error }) => {
+				console.log('SKU search response:', { data, error });
 
-		if (error) throw error;
-		if (!data) throw new Error('No data found for this SKU');
+				if (error) {
+					console.error('Supabase function error:', error);
+					console.error('Error details:', {
+						message: error.message,
+						details: error.details,
+						hint: error.hint,
+						code: error.code,
+					});
+					throw error;
+				}
 
-		return data;
+				if (!data) {
+					const errorMsg = 'No data found for this SKU';
+					console.error(errorMsg);
+					throw new Error(errorMsg);
+				}
+
+				console.log('SKU search successful:', data);
+				return data;
+			})
+			.catch((err) => {
+				console.error('SKU search failed:', err);
+				throw err;
+			});
 	}
 }

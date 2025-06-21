@@ -1,6 +1,9 @@
 import { createClient } from '@supabase/supabase-js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { SUPABASE_CONFIG, validateSupabaseConfig } from '../config/supabase';
+import {
+	SUPABASE_CONFIG,
+	validateSupabaseConfig,
+} from '../config/supabase/supabase';
 
 validateSupabaseConfig();
 
