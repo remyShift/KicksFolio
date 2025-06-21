@@ -294,6 +294,72 @@ export class SupabaseImageService {
 			url: urlData.publicUrl,
 		};
 	}
+
+	static async deleteUserFolder(
+		bucket: 'sneakers' | 'profiles',
+		userId: string
+	): Promise<boolean> {
+		return supabase.storage
+			.from(bucket)
+			.list(userId)
+			.then(({ data: files, error: listError }) => {
+				if (listError) {
+					console.error(
+						`Error listing user files in ${bucket}:`,
+						listError
+					);
+					return false;
+				}
+
+				if (!files || files.length === 0) {
+					return true;
+				}
+
+				const filePaths = files.map((file) => `${userId}/${file.name}`);
+
+				return supabase.storage
+					.from(bucket)
+					.remove(filePaths)
+					.then(({ error: deleteError }) => {
+						if (deleteError) {
+							return false;
+						}
+
+						return true;
+					});
+			})
+			.catch((error) => {
+				console.error(`Unexpected error deleting user folder:`, error);
+				return false;
+			});
+	}
+
+	static async deleteAllUserFiles(userId: string): Promise<boolean> {
+		return this.deleteUserFolder('profiles', userId)
+			.then(async (profilesResult) => {
+				return this.deleteUserFolder('sneakers', userId).then(
+					(sneakersResult) => {
+						const success = profilesResult && sneakersResult;
+
+						if (success) {
+							console.log(
+								`Successfully deleted all user files for ${userId}`
+							);
+						} else {
+							console.error(
+								`Failed to delete some user files for ${userId}`
+							);
+						}
+
+						return success;
+					}
+				);
+			})
+			.catch((error) => {
+				console.error(`Error deleting all user files:`, error);
+				return false;
+			});
+	}
 }
 
 export default SupabaseImageService;

@@ -197,7 +197,16 @@ export const useAuth = () => {
 	};
 
 	const deleteAccount = async (userId: string) => {
-		return SupabaseAuthService.deleteUser(userId)
+		return SupabaseImageService.deleteAllUserFiles(userId)
+			.then((filesDeleted) => {
+				if (!filesDeleted) {
+					console.warn(
+						'[useAuth] Some files could not be deleted, but continuing with account deletion'
+					);
+				}
+
+				return SupabaseAuthService.deleteUser(userId);
+			})
 			.then(() => {
 				clearUserData();
 				router.replace('/login');
@@ -214,7 +223,7 @@ export const useAuth = () => {
 				return user;
 			})
 			.catch((error) => {
-				setErrorMsg('Error getting user profile.');
+				setErrorMsg(`Error getting user profile: ${error}`);
 				return null;
 			});
 	};
