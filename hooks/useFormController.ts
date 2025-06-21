@@ -168,7 +168,7 @@ export function useFormController<T extends FieldValues>({
 	};
 
 	const handleFormSubmit = handleSubmit(async (data) => {
-		if (!onSubmit) return;
+		if (!onSubmit || isSubmitting) return;
 
 		setIsSubmitting(true);
 

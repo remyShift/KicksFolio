@@ -140,7 +140,11 @@ export default function EditProfileForm() {
                     <View className='flex w-full justify-center items-center'>
                         <MainButton 
                             content="Save"
-                            onPressAction={handleFormSubmit}
+                            onPressAction={() => {
+                                if (!isSubmitDisabled) {
+                                    handleFormSubmit();
+                                }
+                            }}
                             backgroundColor={isSubmitDisabled ? 'bg-primary/50' : 'bg-primary'}
                             isDisabled={isSubmitDisabled}
                         />

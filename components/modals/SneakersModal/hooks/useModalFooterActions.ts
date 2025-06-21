@@ -2,6 +2,8 @@ import { useModalStore } from '@/store/useModalStore';
 import { useSneakerAPI } from './useSneakerAPI';
 import { useSession } from '@/context/authContext';
 import { Sneaker } from '@/types/Sneaker';
+import { SneakerFormData } from '@/validation/schemas';
+import SupabaseImageService from '@/services/SupabaseImageService';
 import { useState } from 'react';
 import { Alert } from 'react-native';
 
@@ -94,38 +96,53 @@ export const useModalFooterActions = () => {
 			case 'addForm':
 				if (validateForm) {
 					validateForm()
-						.then((result) => {
+						.then(async (result) => {
 							if (result.isValid && result.data) {
-								handleFormSubmit(
-									{
-										model: result.data.model,
-										brand: result.data.brand,
-										status: result.data.status,
-										size: result.data.size,
-										condition: result.data.condition,
-										images:
-											result.data.images &&
-											result.data.images.length > 0
-												? [
-														{
-															url:
-																result.data
-																	.images[0]
-																	?.url || '',
-														},
-												  ]
-												: [],
-										price_paid:
-											result.data?.price_paid || '',
-										description:
-											result.data?.description || '',
-									},
-									{
-										setCurrentSneaker,
-										setModalStep,
-										setErrorMsg,
-									}
+								let sneakerData = { ...result.data };
+								const localImages = sneakerData.images?.filter(
+									(img) => img.url.startsWith('file://')
 								);
+
+								if (localImages && localImages.length > 0) {
+									const uploadedUrls =
+										await SupabaseImageService.uploadSneakerImages(
+											localImages,
+											user!.id
+										);
+									sneakerData.images = sneakerData.images
+										?.map((img) => {
+											const uploaded = uploadedUrls.find(
+												(u) =>
+													u.includes(
+														img.url
+															.split('/')
+															.pop()!
+													)
+											);
+											return uploaded
+												? { url: uploaded }
+												: img;
+										})
+										.filter(
+											(img) =>
+												!img.url.startsWith(
+													'file://'
+												) ||
+												uploadedUrls.some((u) =>
+													u.includes(
+														img.url
+															.split('/')
+															.pop()!
+													)
+												)
+										);
+								}
+
+								handleFormSubmit(sneakerData, {
+									setCurrentSneaker,
+									setModalStep,
+									setErrorMsg,
+								});
 							} else {
 								setErrorMsg(result.errorMsg);
 							}
@@ -141,33 +158,42 @@ export const useModalFooterActions = () => {
 			case 'editForm':
 				if (validateForm && currentSneaker) {
 					validateForm()
-						.then((result) => {
+						.then(async (result) => {
 							if (result.isValid && result.data) {
+								let sneakerData = { ...result.data };
+								const localImages = sneakerData.images?.filter(
+									(img) => img.url.startsWith('file://')
+								);
+
+								if (localImages && localImages.length > 0) {
+									const uploadedUrls =
+										await SupabaseImageService.uploadSneakerImages(
+											localImages,
+											user!.id,
+											currentSneaker.id
+										);
+
+									const existingImages =
+										currentSneaker.images?.filter(
+											(img) =>
+												!localImages.some(
+													(l) => l.url === img.url
+												)
+										) || [];
+
+									const newImages = uploadedUrls.map(
+										(url) => ({ url })
+									);
+
+									sneakerData.images = [
+										...existingImages,
+										...newImages,
+									];
+								}
+
 								handleFormUpdate(
 									currentSneaker.id,
-									{
-										model: result.data.model,
-										brand: result.data.brand,
-										status: result.data.status,
-										size: result.data.size,
-										condition: result.data.condition,
-										images:
-											result.data.images &&
-											result.data.images.length > 0
-												? [
-														{
-															url:
-																result.data
-																	.images[0]
-																	?.url || '',
-														},
-												  ]
-												: [],
-										price_paid:
-											result.data?.price_paid || '',
-										description:
-											result.data?.description || '',
-									},
+									sneakerData,
 									{
 										setCurrentSneaker,
 										setModalStep,

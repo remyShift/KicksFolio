@@ -5,6 +5,7 @@ import { UserData } from '@/types/auth';
 import { User } from '@/types/User';
 import { useSession } from '@/context/authContext';
 import { useSignUpValidation } from './useSignUpValidation';
+import SupabaseImageService from '@/services/SupabaseImageService';
 
 export const useAuth = () => {
 	const [errorMsg, setErrorMsg] = useState('');
@@ -31,26 +32,50 @@ export const useAuth = () => {
 	};
 
 	const signUp = async (userData: UserData) => {
-		return SupabaseAuthService.signUp(
-			userData.email,
-			userData.password,
-			userData
-		)
-			.then(async (response) => {
-				if (response.user) {
-					setUser(response.user);
-					await login(userData.email, userData.password);
-					return true;
+		const { profile_picture: profilePictureUri, ...restOfUserData } =
+			userData;
+
+		try {
+			const response = await SupabaseAuthService.signUp(
+				restOfUserData.email,
+				restOfUserData.password,
+				restOfUserData
+			);
+
+			if (response.user && profilePictureUri) {
+				const uploadResult =
+					await SupabaseImageService.uploadProfileImage(
+						profilePictureUri,
+						response.user.id
+					);
+
+				if (uploadResult.success && uploadResult.url) {
+					const updatedUser = await SupabaseAuthService.updateProfile(
+						response.user.id,
+						{ profile_picture: uploadResult.url }
+					);
+					setUser(updatedUser);
+				} else {
+					console.error(
+						'Failed to upload profile picture:',
+						uploadResult.error
+					);
 				}
-			})
-			.catch((error: any) => {
-				setErrorMsg(
-					error instanceof Error
-						? error.message
-						: 'An error occurred during sign up'
-				);
-				return false;
-			});
+			}
+			if (response.user) {
+				setUser(response.user);
+				await login(userData.email, userData.password);
+				return true;
+			}
+			return false;
+		} catch (error: any) {
+			setErrorMsg(
+				error instanceof Error
+					? error.message
+					: 'An error occurred during sign up'
+			);
+			return false;
+		}
 	};
 
 	const forgotPassword = async (email: string) => {
@@ -111,16 +136,64 @@ export const useAuth = () => {
 		userId: string,
 		profileData: Partial<UserData>
 	) => {
-		return SupabaseAuthService.updateProfile(userId, profileData)
-			.then((data) => {
-				setUser(data);
-				router.replace('/(app)/(tabs)/user');
-				return { user: data };
-			})
-			.catch((error) => {
-				setErrorMsg('Error updating profile.');
-				return null;
-			});
+		let newProfileData = { ...profileData };
+
+		return newProfileData.profile_picture &&
+			newProfileData.profile_picture.startsWith('file://')
+			? SupabaseAuthService.getCurrentUser()
+					.then((currentUser) => {
+						if (currentUser?.profile_picture) {
+							const oldFilePath =
+								SupabaseImageService.extractFilePathFromUrl(
+									currentUser.profile_picture,
+									'profiles'
+								);
+
+							if (oldFilePath) {
+								return SupabaseImageService.deleteImage(
+									'profiles',
+									oldFilePath
+								).then(() => currentUser);
+							}
+						}
+						return currentUser;
+					})
+					.then(() => {
+						return SupabaseImageService.uploadProfileImage(
+							newProfileData.profile_picture!,
+							userId
+						);
+					})
+					.then((uploadResult) => {
+						if (uploadResult.success && uploadResult.url) {
+							newProfileData.profile_picture = uploadResult.url;
+						} else {
+							delete newProfileData.profile_picture;
+						}
+						return SupabaseAuthService.updateProfile(
+							userId,
+							newProfileData
+						);
+					})
+					.then((data) => {
+						setUser(data);
+						router.replace('/(app)/(tabs)/user');
+						return { user: data };
+					})
+					.catch(() => {
+						setErrorMsg('Error updating profile.');
+						return null;
+					})
+			: SupabaseAuthService.updateProfile(userId, newProfileData)
+					.then((data) => {
+						setUser(data);
+						router.replace('/(app)/(tabs)/user');
+						return { user: data };
+					})
+					.catch(() => {
+						setErrorMsg('Error updating profile.');
+						return null;
+					});
 	};
 
 	const deleteAccount = async (userId: string) => {

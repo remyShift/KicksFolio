@@ -27,6 +27,7 @@
 		"@react-navigation/bottom-tabs": "^7.0.0",
 		"@react-navigation/native": "^7.0.0",
 		"@supabase/supabase-js": "^2.50.0",
+		"base64-arraybuffer": "^1.0.2",
 		"chalk": "^5.4.0",
 		"expo": "^52.0.23",
 		"expo-blur": "~14.0.1",

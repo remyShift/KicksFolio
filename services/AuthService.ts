@@ -124,7 +124,7 @@ export class SupabaseAuthService {
 			.single();
 
 		if (error) throw error;
-		return data;
+		return { ...data, profile_picture_url: data.profile_picture };
 	}
 
 	static async resetPassword(email: string) {

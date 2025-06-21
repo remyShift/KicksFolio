@@ -75,9 +75,10 @@ export function SessionProvider({ children }: PropsWithChildren) {
             return SupabaseAuthService.getCurrentUser()
                 .then((userData) => {
                     if (userData) {
-                        setUser(userData);
-                        storageService.setItem('user', userData);
-                        return refreshUserData(userData);
+                        const userWithUrl = { ...userData, profile_picture_url: userData.profile_picture };
+                        setUser(userWithUrl as User);
+                        storageService.setItem('user', userWithUrl);
+                        return refreshUserData(userWithUrl as User);
                     } else if (attempt < maxRetries) {
                         return new Promise((resolve) => {
                             setTimeout(() => {
@@ -113,8 +114,10 @@ export function SessionProvider({ children }: PropsWithChildren) {
         
         if (!userData) return;
 
+        const userWithUrl = { ...userData, profile_picture_url: userData.profile_picture };
+
         try {
-            const collections = await SupabaseCollectionService.getUserCollections(userData.id);
+            const collections = await SupabaseCollectionService.getUserCollections(userWithUrl.id);
             const collection = collections?.[0] || null;
             
             setUserCollection(collection);
@@ -170,8 +173,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
             });
         }
     };
-
-
 
     return (
         <AuthContext.Provider
