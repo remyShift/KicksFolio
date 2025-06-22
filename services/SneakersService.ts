@@ -28,7 +28,52 @@ export class SupabaseSneakerService extends BaseApiService {
 			.order('created_at', { ascending: false });
 
 		if (error) throw error;
-		return data;
+
+		return (
+			data?.map((sneaker) => ({
+				...sneaker,
+				images: this.parseImages(sneaker.images),
+			})) || []
+		);
+	}
+
+	private static parseImages(images: any): { id: string; url: string }[] {
+		if (!images) return [];
+
+		if (
+			Array.isArray(images) &&
+			images.length > 0 &&
+			typeof images[0] === 'object' &&
+			images[0].url
+		) {
+			return images;
+		}
+
+		if (Array.isArray(images)) {
+			return images.map((img) => {
+				if (typeof img === 'string') {
+					try {
+						return JSON.parse(img);
+					} catch (error) {
+						console.warn('Erreur parsing image JSON:', error);
+						return { id: '', url: img };
+					}
+				}
+				return img;
+			});
+		}
+
+		if (typeof images === 'string') {
+			try {
+				const parsed = JSON.parse(images);
+				return Array.isArray(parsed) ? parsed : [parsed];
+			} catch (error) {
+				console.warn('Erreur parsing images JSON string:', error);
+				return [{ id: '', url: images }];
+			}
+		}
+
+		return [];
 	}
 
 	static async createSneaker(
@@ -41,7 +86,13 @@ export class SupabaseSneakerService extends BaseApiService {
 			.single();
 
 		if (error) throw error;
-		return data;
+
+		return data
+			? {
+					...data,
+					images: this.parseImages(data.images),
+			  }
+			: data;
 	}
 
 	static async updateSneaker(id: string, updates: Partial<SupabaseSneaker>) {
@@ -53,7 +104,13 @@ export class SupabaseSneakerService extends BaseApiService {
 			.single();
 
 		if (error) throw error;
-		return data;
+
+		return data
+			? {
+					...data,
+					images: this.parseImages(data.images),
+			  }
+			: data;
 	}
 
 	static async deleteSneaker(id: string) {
@@ -95,8 +152,6 @@ export class SupabaseSneakerService extends BaseApiService {
 				body: { sku },
 			})
 			.then(({ data, error }) => {
-				console.log('SKU search response:', { data, error });
-
 				if (error) {
 					console.error('Supabase function error:', error);
 					console.error('Error details:', {

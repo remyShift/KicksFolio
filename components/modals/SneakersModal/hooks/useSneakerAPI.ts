@@ -9,6 +9,7 @@ import { FetchedSneaker } from '@/store/useModalStore';
 import { useSession } from '@/context/authContext';
 import { sneakerSchema } from '@/validation/schemas';
 import { ZodIssue } from 'zod';
+import SupabaseImageService from '@/services/SupabaseImageService';
 
 interface Callbacks {
 	setCurrentSneaker?: (sneaker: Sneaker | null) => void;
@@ -289,8 +290,36 @@ export const useSneakerAPI = (userId: string) => {
 			return Promise.reject('No session token');
 		}
 
+		const sneakerToDelete = userSneakers?.find((s) => s.id === sneakerId);
+
 		return SupabaseSneakerService.deleteSneaker(sneakerId)
-			.then(() => {
+			.then(async () => {
+				if (
+					sneakerToDelete?.images &&
+					sneakerToDelete.images.length > 0
+				) {
+					const deleteImagePromises = sneakerToDelete.images.map(
+						async (image) => {
+							const filePath =
+								SupabaseImageService.extractFilePathFromUrl(
+									image.url,
+									'sneakers'
+								);
+							if (filePath) {
+								return SupabaseImageService.deleteImage(
+									'sneakers',
+									filePath
+								);
+							}
+							return false;
+						}
+					);
+
+					const deleteResults = await Promise.all(
+						deleteImagePromises
+					);
+				}
+
 				return refreshUserSneakers();
 			})
 			.then(() => {

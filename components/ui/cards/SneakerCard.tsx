@@ -10,6 +10,7 @@ export default function SneakerCard({ sneaker, setModalStep, setModalVisible, se
     setSneaker: (sneaker: Sneaker) => void 
 }) {
 
+
     return (
         <Pressable className="flex-1 bg-white rounded-md p-3 w-full gap-2 shadow-card"
             onPress={() => {

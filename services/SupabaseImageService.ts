@@ -19,93 +19,79 @@ export class SupabaseImageService {
 		imageUri: string,
 		options: ImageUploadOptions
 	): Promise<UploadResult> {
-		const { bucket, userId, entityId, quality = 0.8 } = options;
+		try {
+			const { bucket, userId, entityId, quality = 0.8 } = options;
 
-		return this.validateImageUri(imageUri)
-			.then((validation) => {
-				if (!validation.isValid) {
-					throw new Error(validation.error);
-				}
-
-				const timestamp = Date.now();
-				const fileName = entityId
-					? `${userId}/${entityId}/${timestamp}.jpg`
-					: `${userId}/${timestamp}.jpg`;
-
-				return FileSystem.readAsStringAsync(imageUri, {
-					encoding: FileSystem.EncodingType.Base64,
-				}).then((base64) => ({ base64, fileName }));
-			})
-			.then(({ base64, fileName }) => {
-				const binaryString = atob(base64);
-				const bytes = new Uint8Array(binaryString.length);
-				for (let i = 0; i < binaryString.length; i++) {
-					bytes[i] = binaryString.charCodeAt(i);
-				}
-
-				return supabase.storage
-					.from(bucket)
-					.upload(fileName, bytes, {
-						contentType: 'image/jpeg',
-						upsert: false,
-					})
-					.then((result) => ({ ...result, fileName }));
-			})
-			.then(({ data, error, fileName }) => {
-				if (error) {
-					throw new Error(error.message);
-				}
-
-				const { data: urlData } = supabase.storage
-					.from(bucket)
-					.getPublicUrl(fileName);
-
-				return {
-					success: true,
-					url: urlData.publicUrl,
-				};
-			})
-			.catch((error) => {
+			const validation = await this.validateImageUri(imageUri);
+			if (!validation.isValid) {
 				return {
 					success: false,
-					error:
-						error instanceof Error
-							? error.message
-							: 'Unknown error occurred',
+					error: validation.error,
 				};
+			}
+
+			const timestamp = Date.now();
+			const fileName = entityId
+				? `${userId}/${entityId}/${timestamp}.jpg`
+				: `${userId}/${timestamp}.jpg`;
+
+			const base64 = await FileSystem.readAsStringAsync(imageUri, {
+				encoding: FileSystem.EncodingType.Base64,
 			});
+
+			const binaryString = atob(base64);
+			const bytes = new Uint8Array(binaryString.length);
+			for (let i = 0; i < binaryString.length; i++) {
+				bytes[i] = binaryString.charCodeAt(i);
+			}
+
+			const { data, error } = await supabase.storage
+				.from(bucket)
+				.upload(fileName, bytes, {
+					contentType: 'image/jpeg',
+					upsert: false,
+				});
+
+			if (error) {
+				return {
+					success: false,
+					error: error.message,
+				};
+			}
+
+			const { data: urlData } = supabase.storage
+				.from(bucket)
+				.getPublicUrl(fileName);
+
+			return {
+				success: true,
+				url: urlData.publicUrl,
+			};
+		} catch (error) {
+			return {
+				success: false,
+				error:
+					error instanceof Error
+						? error.message
+						: 'Unknown error occurred',
+			};
+		}
 	}
 
 	static async uploadSneakerImages(
 		images: Array<{ url: string }>,
 		userId: string,
 		sneakerId?: string
-	): Promise<string[]> {
-		const uploadPromises = images.map((image, index) =>
-			this.uploadImage(image.url, {
-				bucket: 'sneakers',
-				userId,
-				entityId: sneakerId || `temp_${Date.now()}_${index}`,
-			})
+	): Promise<UploadResult[]> {
+		return Promise.all(
+			images.map((image) =>
+				this.uploadImage(image.url, {
+					bucket: 'sneakers',
+					userId,
+					entityId: sneakerId,
+				})
+			)
 		);
-
-		const results = await Promise.allSettled(uploadPromises);
-
-		const successfulUrls: string[] = [];
-		results.forEach((result, index) => {
-			if (result.status === 'fulfilled' && result.value.success) {
-				successfulUrls.push(result.value.url!);
-			} else {
-				console.error(
-					`Failed to upload image ${index}:`,
-					result.status === 'rejected'
-						? result.reason
-						: result.value.error
-				);
-			}
-		});
-
-		return successfulUrls;
 	}
 
 	static async uploadProfileImage(
@@ -245,54 +231,70 @@ export class SupabaseImageService {
 		sourceUrl: string,
 		options: ImageUploadOptions
 	): Promise<UploadResult> {
-		const response = await fetch(sourceUrl);
+		try {
+			const { bucket, userId, entityId } = options;
+			const timestamp = Date.now();
+			const fileName = entityId
+				? `${userId}/${entityId}/${timestamp}.jpg`
+				: `${userId}/${timestamp}.jpg`;
 
-		if (!response.ok) {
-			return {
-				success: false,
-				error: `Failed to fetch image from ${sourceUrl}: ${response.status} ${response.statusText}`,
-			};
-		}
+			const downloadResult = await FileSystem.downloadAsync(
+				sourceUrl,
+				FileSystem.documentDirectory + 'temp_image.jpg'
+			);
 
-		const blob = await response.blob();
+			if (downloadResult.status !== 200) {
+				return {
+					success: false,
+					error: `Failed to download image: ${downloadResult.status}`,
+				};
+			}
 
-		if (blob.size === 0) {
-			return {
-				success: false,
-				error: 'Downloaded image data is empty',
-			};
-		}
+			const base64 = await FileSystem.readAsStringAsync(
+				downloadResult.uri,
+				{
+					encoding: FileSystem.EncodingType.Base64,
+				}
+			);
 
-		const { bucket, userId, entityId } = options;
+			const binaryString = atob(base64);
+			const bytes = new Uint8Array(binaryString.length);
+			for (let i = 0; i < binaryString.length; i++) {
+				bytes[i] = binaryString.charCodeAt(i);
+			}
 
-		const timestamp = Date.now();
-		const fileName = entityId
-			? `${userId}/${entityId}/${timestamp}.jpg`
-			: `${userId}/${timestamp}.jpg`;
+			const { data, error } = await supabase.storage
+				.from(bucket)
+				.upload(fileName, bytes, {
+					contentType: 'image/jpeg',
+					upsert: false,
+				});
 
-		const { data, error } = await supabase.storage
-			.from(bucket)
-			.upload(fileName, blob, {
-				contentType:
-					response.headers.get('content-type') || 'image/jpeg',
-				upsert: false,
+			await FileSystem.deleteAsync(downloadResult.uri, {
+				idempotent: true,
 			});
 
-		if (error) {
+			if (error) {
+				return {
+					success: false,
+					error: error.message,
+				};
+			}
+
+			const { data: urlData } = supabase.storage
+				.from(bucket)
+				.getPublicUrl(fileName);
+
+			return {
+				success: true,
+				url: urlData.publicUrl,
+			};
+		} catch (error) {
 			return {
 				success: false,
-				error: error.message,
+				error: error instanceof Error ? error.message : 'Unknown error',
 			};
 		}
-
-		const { data: urlData } = supabase.storage
-			.from(bucket)
-			.getPublicUrl(fileName);
-
-		return {
-			success: true,
-			url: urlData.publicUrl,
-		};
 	}
 
 	static async deleteUserFolder(
@@ -341,11 +343,7 @@ export class SupabaseImageService {
 					(sneakersResult) => {
 						const success = profilesResult && sneakersResult;
 
-						if (success) {
-							console.log(
-								`Successfully deleted all user files for ${userId}`
-							);
-						} else {
+						if (!success) {
 							console.error(
 								`Failed to delete some user files for ${userId}`
 							);

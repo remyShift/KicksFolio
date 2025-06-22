@@ -98,43 +98,102 @@ export const useModalFooterActions = () => {
 						.then(async (result) => {
 							if (result.isValid && result.data) {
 								let sneakerData = { ...result.data };
-								const localImages = sneakerData.images?.filter(
-									(img) => img.url.startsWith('file://')
-								);
 
-								if (localImages && localImages.length > 0) {
-									const uploadedUrls =
-										await SupabaseImageService.uploadSneakerImages(
+								const localImages =
+									sneakerData.images?.filter((img) =>
+										img.url.startsWith('file://')
+									) || [];
+
+								const externalApiImages =
+									sneakerData.images?.filter(
+										(img) =>
+											img.url.startsWith('https://') &&
+											!img.url.includes('supabase')
+									) || [];
+
+								const supabaseImages =
+									sneakerData.images?.filter(
+										(img) =>
+											img.url.includes('supabase') ||
+											(!img.url.startsWith('file://') &&
+												!img.url.startsWith('https://'))
+									) || [];
+
+								const allUploadPromises: Promise<any>[] = [];
+
+								if (localImages.length > 0) {
+									allUploadPromises.push(
+										SupabaseImageService.uploadSneakerImages(
 											localImages,
 											user!.id
+										)
+									);
+								}
+
+								if (externalApiImages.length > 0) {
+									const migrationPromises =
+										externalApiImages.map((img) =>
+											SupabaseImageService.migrateImageFromUrl(
+												img.url,
+												{
+													bucket: 'sneakers',
+													userId: user!.id,
+												}
+											)
 										);
-									sneakerData.images = sneakerData.images
-										?.map((img) => {
-											const uploaded = uploadedUrls.find(
-												(u) =>
-													u.includes(
-														img.url
-															.split('/')
-															.pop()!
-													)
-											);
-											return uploaded
-												? { url: uploaded }
-												: img;
-										})
-										.filter(
-											(img) =>
-												!img.url.startsWith(
-													'file://'
-												) ||
-												uploadedUrls.some((u) =>
-													u.includes(
-														img.url
-															.split('/')
-															.pop()!
-													)
-												)
-										);
+									allUploadPromises.push(
+										Promise.all(migrationPromises)
+									);
+								}
+
+								if (allUploadPromises.length > 0) {
+									const allResults = await Promise.all(
+										allUploadPromises
+									);
+
+									const localUploadResults =
+										localImages.length > 0
+											? allResults[0]
+											: [];
+									const localSuccessfulUploads =
+										localUploadResults
+											.filter(
+												(result: any) =>
+													result.success && result.url
+											)
+											.map((result: any) => result.url);
+
+									const migrationResults =
+										externalApiImages.length > 0
+											? localImages.length > 0
+												? allResults[1]
+												: allResults[0]
+											: [];
+									const migratedSuccessfulUploads =
+										migrationResults
+											.filter(
+												(result: any) =>
+													result.success && result.url
+											)
+											.map((result: any) => result.url);
+
+									const finalImages = [];
+
+									finalImages.push(...supabaseImages);
+
+									finalImages.push(
+										...localSuccessfulUploads.map(
+											(url: string) => ({ url })
+										)
+									);
+
+									finalImages.push(
+										...migratedSuccessfulUploads.map(
+											(url: string) => ({ url })
+										)
+									);
+
+									sneakerData.images = finalImages;
 								}
 
 								handleFormSubmit(
@@ -164,33 +223,101 @@ export const useModalFooterActions = () => {
 						.then(async (result) => {
 							if (result.isValid && result.data) {
 								let sneakerData = { ...result.data };
-								const localImages = sneakerData.images?.filter(
-									(img) => img.url.startsWith('file://')
-								);
 
-								if (localImages && localImages.length > 0) {
-									const uploadedUrls =
-										await SupabaseImageService.uploadSneakerImages(
+								// Séparer les différents types d'images
+								const localImages =
+									sneakerData.images?.filter((img) =>
+										img.url.startsWith('file://')
+									) || [];
+
+								const externalApiImages =
+									sneakerData.images?.filter(
+										(img) =>
+											img.url.startsWith('https://') &&
+											!img.url.includes('supabase')
+									) || [];
+
+								const supabaseImages =
+									sneakerData.images?.filter(
+										(img) =>
+											img.url.includes('supabase') ||
+											(!img.url.startsWith('file://') &&
+												!img.url.startsWith('https://'))
+									) || [];
+
+								const allUploadPromises: Promise<any>[] = [];
+
+								// Upload des images locales
+								if (localImages.length > 0) {
+									allUploadPromises.push(
+										SupabaseImageService.uploadSneakerImages(
 											localImages,
 											user!.id,
 											currentSneaker.id
+										)
+									);
+								}
+
+								// Migration des images de l'API externe vers Supabase
+								if (externalApiImages.length > 0) {
+									const migrationPromises =
+										externalApiImages.map((img) =>
+											SupabaseImageService.migrateImageFromUrl(
+												img.url,
+												{
+													bucket: 'sneakers',
+													userId: user!.id,
+													entityId: currentSneaker.id,
+												}
+											)
 										);
+									allUploadPromises.push(
+										Promise.all(migrationPromises)
+									);
+								}
 
-									const existingImages =
-										currentSneaker.images?.filter(
-											(img) =>
-												!localImages.some(
-													(l) => l.url === img.url
-												)
-										) || [];
-
-									const newImages = uploadedUrls.map(
-										(url) => ({ url })
+								if (allUploadPromises.length > 0) {
+									const allResults = await Promise.all(
+										allUploadPromises
 									);
 
+									// Traiter les résultats des uploads locaux
+									const localUploadResults =
+										localImages.length > 0
+											? allResults[0]
+											: [];
+									const localSuccessfulUploads =
+										localUploadResults
+											.filter(
+												(result: any) =>
+													result.success && result.url
+											)
+											.map((result: any) => ({
+												url: result.url,
+											}));
+
+									// Traiter les résultats des migrations d'API
+									const migrationResults =
+										externalApiImages.length > 0
+											? localImages.length > 0
+												? allResults[1]
+												: allResults[0]
+											: [];
+									const migratedSuccessfulUploads =
+										migrationResults
+											.filter(
+												(result: any) =>
+													result.success && result.url
+											)
+											.map((result: any) => ({
+												url: result.url,
+											}));
+
+									// Combiner toutes les images
 									sneakerData.images = [
-										...existingImages,
-										...newImages,
+										...supabaseImages,
+										...localSuccessfulUploads,
+										...migratedSuccessfulUploads,
 									];
 								}
 

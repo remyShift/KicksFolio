@@ -5,6 +5,7 @@ import { useModalStore } from '@/store/useModalStore';
 import { useFormController } from '@/hooks/useFormController';
 import { sneakerSchema, SneakerFormData } from '@/validation/schemas';
 import { FormFields } from '../../shared/FormFields';
+import { useFormValidation } from '../../hooks/useFormValidation';
 
 export const EditFormStep = () => {
     const scrollViewRef = useRef<ScrollView>(null);
@@ -14,7 +15,7 @@ export const EditFormStep = () => {
     const pricePaidInputRef = useRef<TextInput>(null);
     const descriptionInputRef = useRef<TextInput>(null);
     
-    const { currentSneaker, sneakerToAdd, setSneakerToAdd, setValidateForm, setClearFormErrors, errorMsg, setErrorMsg } = useModalStore();
+    const { currentSneaker, sneakerToAdd, setSneakerToAdd, errorMsg, setErrorMsg } = useModalStore();
 
     const {
         control,
@@ -53,6 +54,8 @@ export const EditFormStep = () => {
             } as SneakerFormData);
         },
     });
+
+    useFormValidation(control, watch, reset, trigger, getFieldError);
 
     useEffect(() => {
         if (currentSneaker) {
@@ -96,53 +99,7 @@ export const EditFormStep = () => {
         }
     }, [currentSneaker?.images, sneakerToAdd]);
 
-    useEffect(() => {
-        const handleValidateAndSubmit = async () => {
-            setErrorMsg('');
-            const isFormValid = await trigger();
-            
-            if (isFormValid) {
-                const currentFormValues = watch();
-                const finalData = {
-                    model: currentFormValues.model || '',
-                    brand: currentFormValues.brand || '',
-                    status: currentFormValues.status || '',
-                    size: currentFormValues.size || '',
-                    condition: currentFormValues.condition || '',
-                    price_paid: currentFormValues.price_paid || '',
-                    description: currentFormValues.description || '',
-                    images: currentSneaker?.images || [],
-                } as SneakerFormData;
-                
-                setSneakerToAdd(finalData);
-                return { isValid: true, errorMsg: '', data: finalData };
-            } else {                
-                const firstError = getFieldError('model') || 
-                                    getFieldError('brand') || 
-                                    getFieldError('status') || 
-                                    getFieldError('size') || 
-                                    getFieldError('condition') || 
-                                    getFieldError('price_paid') || 
-                                    getFieldError('images') ||
-                                    'Please correct the errors in the form';
-                
-                return { isValid: false, errorMsg: firstError };
-            }
-        };
 
-        const clearFormErrors = () => {
-            reset();
-            setErrorMsg('');
-        };
-
-        setValidateForm(handleValidateAndSubmit);
-        setClearFormErrors(clearFormErrors);
-        
-        return () => {
-            setValidateForm(null);
-            setClearFormErrors(null);
-        };
-    }, []);
 
     useEffect(() => {
         return () => {

@@ -105,7 +105,7 @@ export const sneakerSchema = z.object({
 		.min(1, 'Please select a condition.')
 		.refine(
 			(val) =>
-				!isNaN(Number(val)) && Number(val) >= 0 && Number(val) <= 10,
+				!isNaN(Number(val)) && Number(val) >= 1 && Number(val) <= 10,
 			'Please enter a valid condition, condition must be a number between 1 and 10.'
 		),
 	price_paid: z

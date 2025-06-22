@@ -27,6 +27,9 @@ export const ViewStep = () => {
                 contentFit="cover"
                 contentPosition="center"
                 cachePolicy="memory-disk"
+                onError={(error) => {
+                    setErrorMsg(`Failed to load image: ${error}`);
+                }}
             />
 
             <View className="flex-row justify-between items-center px-2">

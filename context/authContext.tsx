@@ -115,27 +115,38 @@ export function SessionProvider({ children }: PropsWithChildren) {
         if (!userData) return;
 
         const userWithUrl = { ...userData, profile_picture_url: userData.profile_picture };
+        SupabaseCollectionService.getUserCollections(userWithUrl.id)
+            .then(async (collections) => {
+                const collection = collections?.[0] || null;
 
-        try {
-            const collections = await SupabaseCollectionService.getUserCollections(userWithUrl.id);
-            const collection = collections?.[0] || null;
-            
-            setUserCollection(collection);
-            storageService.setItem('collection', collection);
-            
-            if (collection?.id) {
-                const sneakers = await SupabaseSneakerService.getSneakersByCollection(collection.id);
-                setUserSneakers(sneakers || []);
-                storageService.setItem('sneakers', sneakers || []);
-            } else {
+                setUserCollection(collection);
+                userWithUrl.collection = collection;
+                setUser(userWithUrl);
+
+                storageService.setItem('collection', collection);
+                
+                if (collection?.id) {
+                    return await SupabaseSneakerService.getSneakersByCollection(collection.id)
+                        .then(async (sneakers) => {
+                            setUserSneakers(sneakers || []);
+                            userWithUrl.sneakers = sneakers;
+                            setUser(userWithUrl);
+
+                            storageService.setItem('sneakers', sneakers || []);
+                        });
+                } else {
+                    setUserSneakers([]);
+                    userWithUrl.sneakers = [];
+                    setUser(userWithUrl);
+                    storageService.setItem('sneakers', []);
+                    return Promise.resolve();
+                }
+            })
+            .catch((error) => {
+                console.error('Error refreshing user data:', error);
                 setUserSneakers([]);
                 storageService.setItem('sneakers', []);
-            }
-        } catch (error) {
-            console.error('Error refreshing user data:', error);
-            setUserSneakers([]);
-            storageService.setItem('sneakers', []);
-        }
+            });
     };
 
     const refreshUserSneakers = async () => {
