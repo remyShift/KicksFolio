@@ -2,7 +2,6 @@ import { useModalStore } from '@/store/useModalStore';
 import { useSneakerAPI } from './useSneakerAPI';
 import { useSession } from '@/context/authContext';
 import { Sneaker } from '@/types/Sneaker';
-import { SneakerFormData } from '@/validation/schemas';
 import SupabaseImageService from '@/services/SupabaseImageService';
 import { useState } from 'react';
 import { Alert } from 'react-native';
