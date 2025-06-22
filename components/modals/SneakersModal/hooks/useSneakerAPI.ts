@@ -306,10 +306,12 @@ export const useSneakerAPI = (userId: string) => {
 									'sneakers'
 								);
 							if (filePath) {
-								return SupabaseImageService.deleteImage(
-									'sneakers',
-									filePath
-								);
+								const deleteResult =
+									await SupabaseImageService.deleteImage(
+										'sneakers',
+										filePath
+									);
+								return deleteResult;
 							}
 							return false;
 						}

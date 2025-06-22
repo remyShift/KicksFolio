@@ -108,51 +108,57 @@ export class SupabaseImageService {
 		bucket: 'sneakers' | 'profiles',
 		filePath: string
 	): Promise<boolean> {
-		const { data: fileExists, error: checkError } = await supabase.storage
-			.from(bucket)
-			.list(filePath.split('/').slice(0, -1).join('/'));
-
-		if (checkError) {
-			return false;
-		}
-
-		const fileName = filePath.split('/').pop();
-		const fileFound = fileExists?.some((file) => file.name === fileName);
-
-		if (!fileFound) {
-			return true;
-		}
-
-		const { data, error } = await supabase.storage
-			.from(bucket)
-			.remove([filePath]);
-
-		if (error) {
-			return false;
-		}
-
-		const { data: listData, error: listError } = await supabase.storage
-			.from(bucket)
-			.list(filePath.split('/').slice(0, -1).join('/'));
-
-		if (!listError && listData) {
-			const fileStillExists = listData.some(
-				(file) => file.name === fileName
-			);
-
-			if (fileStillExists) {
+		try {
+			const { data, error } = await supabase.storage
+				.from(bucket)
+				.remove([filePath]);
+			if (error) {
 				return false;
 			}
-			return true;
-		}
 
-		return true;
+			await new Promise((resolve) => setTimeout(resolve, 2000));
+
+			const folderPath = filePath.split('/').slice(0, -1).join('/');
+			const fileName = filePath.split('/').pop();
+
+			const { data: listData, error: listError } = await supabase.storage
+				.from(bucket)
+				.list(folderPath);
+
+			if (!listError && listData) {
+				const fileStillExists = listData.some(
+					(file) => file.name === fileName
+				);
+
+				if (fileStillExists) {
+					return true;
+				}
+			}
+
+			return true;
+		} catch (error) {
+			return false;
+		}
 	}
 
 	static extractFilePathFromUrl(url: string, bucket: string): string | null {
-		const bucketPattern = new RegExp(`/${bucket}/(.+)$`);
-		const match = url.match(bucketPattern);
-		return match ? match[1] : null;
+		const supabasePattern = new RegExp(
+			`/storage/v1/object/public/${bucket}/(.+)$`
+		);
+		const supabaseMatch = url.match(supabasePattern);
+
+		if (supabaseMatch) {
+			return supabaseMatch[1];
+		}
+
+		const simplePattern = new RegExp(`/${bucket}/(.+)$`);
+		const simpleMatch = url.match(simplePattern);
+
+		if (simpleMatch) {
+			return simpleMatch[1];
+		}
+
+		return null;
 	}
 
 	static async getSignedUrl(
@@ -165,7 +171,6 @@ export class SupabaseImageService {
 			.createSignedUrl(filePath, expiresIn);
 
 		if (error) {
-			console.error('Error creating signed URL:', error);
 			return null;
 		}
 
