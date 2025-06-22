@@ -78,7 +78,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
                         const userWithUrl = { ...userData, profile_picture_url: userData.profile_picture };
                         setUser(userWithUrl as User);
                         storageService.setItem('user', userWithUrl);
-                        return refreshUserData(userWithUrl as User);
+                        return refreshUserData();
                     } else if (attempt < maxRetries) {
                         return new Promise((resolve) => {
                             setTimeout(() => {
@@ -109,41 +109,44 @@ export function SessionProvider({ children }: PropsWithChildren) {
             });
     };
 
-    const refreshUserData = async (currentUser?: User) => {
-        const userData = currentUser || user;
-        
-        if (!userData) return;
-
-        const userWithUrl = { ...userData, profile_picture_url: userData.profile_picture };
-        SupabaseCollectionService.getUserCollections(userWithUrl.id)
-            .then(async (collections) => {
-                const collection = collections?.[0] || null;
-
-                setUserCollection(collection);
-                userWithUrl.collection = collection;
-                setUser(userWithUrl);
-
-                storageService.setItem('collection', collection);
-                
-                if (collection?.id) {
-                    return await SupabaseSneakerService.getSneakersByCollection(collection.id)
-                        .then(async (sneakers) => {
-                            setUserSneakers(sneakers || []);
-                            userWithUrl.sneakers = sneakers;
-                            setUser(userWithUrl);
-
-                            storageService.setItem('sneakers', sneakers || []);
-                        });
-                } else {
-                    setUserSneakers([]);
-                    userWithUrl.sneakers = [];
-                    setUser(userWithUrl);
-                    storageService.setItem('sneakers', []);
-                    return Promise.resolve();
+    const refreshUserData = async () => {
+        return SupabaseAuthService.getCurrentUser()
+            .then((freshUserData) => {
+                if (!freshUserData) {
+                    return;
                 }
+
+                const userWithUrl = { ...freshUserData, profile_picture_url: freshUserData.profile_picture };
+                
+                return SupabaseCollectionService.getUserCollections(userWithUrl.id)
+                    .then((collections) => {
+                        const collection = collections?.[0] || null;
+                        setUserCollection(collection);
+                        userWithUrl.collection = collection;
+                        
+                        setUser(userWithUrl);
+                        
+                        storageService.setItem('user', userWithUrl);
+                        storageService.setItem('collection', collection);
+                        
+                        if (collection?.id) {
+                            return SupabaseSneakerService.getSneakersByCollection(collection.id)
+                                .then((sneakers) => {
+                                    setUserSneakers(sneakers || []);
+                                    userWithUrl.sneakers = sneakers;
+                                    setUser(userWithUrl);
+                                    storageService.setItem('sneakers', sneakers || []);
+                                });
+                        } else {
+                            setUserSneakers([]);
+                            userWithUrl.sneakers = [];
+                            setUser(userWithUrl);
+                            storageService.setItem('sneakers', []);
+                        }
+                    });
             })
             .catch((error) => {
-                console.error('Error refreshing user data:', error);
+                console.error('❌ refreshUserData: Error refreshing user data:', error);
                 setUserSneakers([]);
                 storageService.setItem('sneakers', []);
             });

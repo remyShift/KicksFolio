@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { SupabaseAuthService } from '@/services/AuthService';
 import { router } from 'expo-router';
-import { UserData } from '@/types/auth';
+import { UserData, UpdateUserData } from '@/types/auth';
 import { User } from '@/types/User';
 import { useSession } from '@/context/authContext';
 import { useSignUpValidation } from './useSignUpValidation';
@@ -134,66 +134,72 @@ export const useAuth = () => {
 
 	const updateUser = async (
 		userId: string,
-		profileData: Partial<UserData>
+		profileData: Partial<UpdateUserData>
 	) => {
 		let newProfileData = { ...profileData };
 
-		return newProfileData.profile_picture &&
-			newProfileData.profile_picture.startsWith('file://')
-			? SupabaseAuthService.getCurrentUser()
-					.then((currentUser) => {
-						if (currentUser?.profile_picture) {
-							const oldFilePath =
-								SupabaseImageService.extractFilePathFromUrl(
-									currentUser.profile_picture,
-									'profiles'
-								);
+		return Promise.resolve()
+			.then(() => {
+				if (
+					newProfileData.profile_picture &&
+					newProfileData.profile_picture.startsWith('file://')
+				) {
+					return SupabaseAuthService.getCurrentUser()
+						.then((currentUser) => {
+							if (currentUser?.profile_picture) {
+								const oldFilePath =
+									SupabaseImageService.extractFilePathFromUrl(
+										currentUser.profile_picture,
+										'profiles'
+									);
 
-							if (oldFilePath) {
-								return SupabaseImageService.deleteImage(
-									'profiles',
-									oldFilePath
-								).then(() => currentUser);
+								if (oldFilePath) {
+									return SupabaseImageService.deleteImage(
+										'profiles',
+										oldFilePath
+									);
+								}
 							}
-						}
-						return currentUser;
-					})
-					.then(() => {
-						return SupabaseImageService.uploadProfileImage(
-							newProfileData.profile_picture!,
-							userId
-						);
-					})
-					.then((uploadResult) => {
-						if (uploadResult.success && uploadResult.url) {
-							newProfileData.profile_picture = uploadResult.url;
-						} else {
-							delete newProfileData.profile_picture;
-						}
-						return SupabaseAuthService.updateProfile(
-							userId,
-							newProfileData
-						);
-					})
-					.then((data) => {
-						setUser(data);
-						router.replace('/(app)/(tabs)/user');
-						return { user: data };
-					})
-					.catch(() => {
-						setErrorMsg('Error updating profile.');
-						return null;
-					})
-			: SupabaseAuthService.updateProfile(userId, newProfileData)
-					.then((data) => {
-						setUser(data);
-						router.replace('/(app)/(tabs)/user');
-						return { user: data };
-					})
-					.catch(() => {
-						setErrorMsg('Error updating profile.');
-						return null;
-					});
+						})
+						.then(() => {
+							return SupabaseImageService.uploadProfileImage(
+								newProfileData.profile_picture!,
+								userId
+							);
+						})
+						.then((uploadResult) => {
+							if (uploadResult.success && uploadResult.url) {
+								newProfileData.profile_picture =
+									uploadResult.url;
+							} else {
+								delete newProfileData.profile_picture;
+								console.error(
+									'❌ useAuth.updateUser: Failed to upload profile picture:',
+									uploadResult.error
+								);
+								throw new Error(
+									'Failed to upload profile picture'
+								);
+							}
+						});
+				}
+			})
+			.then(() => {
+				return SupabaseAuthService.updateProfile(
+					userId,
+					newProfileData
+				);
+			})
+			.then((updatedUser) => {
+				setUser(updatedUser);
+				router.replace('/(app)/(tabs)/user');
+				return { user: updatedUser };
+			})
+			.catch((error) => {
+				console.error('❌ useAuth.updateUser: Error occurred:', error);
+				setErrorMsg('Error updating profile.');
+				throw error;
+			});
 	};
 
 	const deleteAccount = async (userId: string) => {
@@ -228,11 +234,11 @@ export const useAuth = () => {
 			});
 	};
 
-	const getUserCollection = async (userData: User) => {
-		await refreshUserData(userData);
+	const getUserCollection = async () => {
+		await refreshUserData();
 	};
 
-	const getUserSneakers = async (userData: User) => {
+	const getUserSneakers = async () => {
 		await refreshUserSneakers();
 	};
 

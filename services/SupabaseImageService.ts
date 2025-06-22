@@ -342,24 +342,60 @@ export class SupabaseImageService {
 	}
 
 	static async deleteAllUserFiles(userId: string): Promise<boolean> {
-		return this.deleteUserFolder('profiles', userId)
-			.then(async (profilesResult) => {
-				return this.deleteUserFolder('sneakers', userId).then(
-					(sneakersResult) => {
-						const success = profilesResult && sneakersResult;
+		try {
+			const sneakersResult = await this.deleteUserFolder(
+				'sneakers',
+				userId
+			);
+			const profilesResult = await this.deleteUserFolder(
+				'profiles',
+				userId
+			);
 
-						if (!success) {
-							console.error(
-								`Failed to delete some user files for ${userId}`
-							);
-						}
+			return sneakersResult && profilesResult;
+		} catch (error) {
+			console.error('Error deleting all user files:', error);
+			return false;
+		}
+	}
 
-						return success;
-					}
+	static async deleteSneakerImages(
+		userId: string,
+		sneakerId: string
+	): Promise<boolean> {
+		return supabase.storage
+			.from('sneakers')
+			.list(`${userId}/${sneakerId}`)
+			.then(({ data: files, error: listError }) => {
+				if (listError) {
+					console.error('Error listing sneaker images:', listError);
+					return false;
+				}
+
+				if (!files || files.length === 0) {
+					return true;
+				}
+
+				const filePaths = files.map(
+					(file) => `${userId}/${sneakerId}/${file.name}`
 				);
+
+				return supabase.storage
+					.from('sneakers')
+					.remove(filePaths)
+					.then(({ error: deleteError }) => {
+						if (deleteError) {
+							console.error(
+								'Error deleting sneaker images:',
+								deleteError
+							);
+							return false;
+						}
+						return true;
+					});
 			})
 			.catch((error) => {
-				console.error(`Error deleting all user files:`, error);
+				console.error('Error in deleteSneakerImages:', error);
 				return false;
 			});
 	}

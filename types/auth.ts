@@ -11,7 +11,7 @@ export interface AuthContextType {
 	setUserSneakers: Dispatch<SetStateAction<Sneaker[] | null>>;
 	user: User | null;
 	setUser: Dispatch<SetStateAction<User | null>>;
-	refreshUserData: (currentUser?: User) => Promise<void>;
+	refreshUserData: () => Promise<void>;
 	refreshUserSneakers: () => Promise<void>;
 	clearUserData: () => void;
 }
@@ -25,4 +25,13 @@ export interface UserData {
 	last_name: string;
 	sneaker_size: number;
 	profile_picture?: string;
+}
+
+export interface UpdateUserData {
+	username?: string;
+	first_name?: string;
+	last_name?: string;
+	sneaker_size?: number;
+	profile_picture?: string;
+	email?: string;
 }

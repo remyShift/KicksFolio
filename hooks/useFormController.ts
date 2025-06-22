@@ -197,12 +197,10 @@ export function useFormController<T extends FieldValues>({
 	};
 
 	const getErrorCount = (): number => {
-		// Compter les erreurs sync qui ont un message
 		const syncErrorKeys = Object.keys(errors).filter(
 			(key) => errors[key as Path<T>]?.message
 		);
 
-		// Compter les erreurs async qui ont un message ET qui ne sont pas déjà dans les erreurs sync
 		const asyncErrorKeys = Object.keys(asyncErrors).filter(
 			(key) => asyncErrors[key as keyof T] && !syncErrorKeys.includes(key)
 		);

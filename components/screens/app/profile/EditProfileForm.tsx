@@ -13,7 +13,7 @@ import { useFormController } from '@/hooks/useFormController'
 import { editProfileSchema } from '@/validation/schemas'
 
 export default function EditProfileForm() {
-    const { user } = useSession()
+    const { user, refreshUserData } = useSession()
     const { updateUser } = useAuth()
     const scrollViewRef = useRef<ScrollView>(null)
     const usernameInputRef = useRef<TextInput>(null)
@@ -41,10 +41,19 @@ export default function EditProfileForm() {
         isEditForm: true,
         onSubmit: async (data) => {
             if (!user) return
-            await updateUser(user.id, {
+            return updateUser(user.id, {
                 ...data,
                 sneaker_size: parseInt(data.sneaker_size),
             })
+            .then((result) => {
+                if (result?.user) {
+                    return refreshUserData();
+                }
+            })
+            .catch((error) => {
+                console.error('❌ EditProfileForm: Error in form submission:', error);
+                throw error;
+            });
         },
     })
 
