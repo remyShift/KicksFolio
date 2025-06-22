@@ -4,9 +4,11 @@ import {
 	SupabaseCollection,
 } from '../services/CollectionService';
 import { useSupabaseAuth } from './useSupabaseAuth';
+import { useSession } from '@/context/authContext';
 
 export const useCollections = () => {
 	const { user, isAuthenticated } = useSupabaseAuth();
+	const { setUserCollection, refreshUserData } = useSession();
 	const [collections, setCollections] = useState<SupabaseCollection[]>([]);
 	const [loading, setLoading] = useState(false);
 
@@ -35,6 +37,8 @@ export const useCollections = () => {
 		return SupabaseCollectionService.createCollection(name)
 			.then((newCollection) => {
 				setCollections((prev) => [...prev, newCollection]);
+				setUserCollection(newCollection);
+				refreshUserData();
 				return newCollection;
 			})
 			.catch((error) => {

@@ -130,8 +130,8 @@ export const useSneakerAPI = (userId: string) => {
 		collectionId?: string
 	) => {
 		if (!user) {
-			callbacks?.setErrorMsg('No session token');
-			return Promise.reject('No session token');
+			callbacks?.setErrorMsg('No user authenticated');
+			return Promise.reject('No user authenticated');
 		}
 
 		if (!collectionId) {

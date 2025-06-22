@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { Alert } from 'react-native';
 
 export const useModalFooterActions = () => {
-	const { user } = useSession();
+	const { user, userCollection } = useSession();
 	const [nextSneaker, setNextSneaker] = useState<Sneaker | null>(null);
 	const [prevSneaker, setPrevSneaker] = useState<Sneaker | null>(null);
 
@@ -137,11 +137,15 @@ export const useModalFooterActions = () => {
 										);
 								}
 
-								handleFormSubmit(sneakerData, {
-									setCurrentSneaker,
-									setModalStep,
-									setErrorMsg,
-								});
+								handleFormSubmit(
+									sneakerData,
+									{
+										setCurrentSneaker,
+										setModalStep,
+										setErrorMsg,
+									},
+									userCollection!.id
+								);
 							} else {
 								setErrorMsg(result.errorMsg);
 							}
