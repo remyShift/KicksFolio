@@ -1,13 +1,7 @@
 import React from 'react';
 import { TouchableOpacity, View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { SortOption } from '@/hooks/useSneakersFiltering';
-
-interface SortButtonsProps {
-  sortBy: SortOption;
-  sortOrder: 'asc' | 'desc';
-  onToggleSort: (option: SortOption) => void;
-}
+import { useListViewStore, SortOption } from '@/store/useListViewStore';
 
 const SORT_OPTIONS: { key: SortOption; label: string }[] = [
   { key: 'name', label: 'Name' },
@@ -17,7 +11,8 @@ const SORT_OPTIONS: { key: SortOption; label: string }[] = [
   { key: 'price', label: 'Price Paid' }
 ];
 
-export default function SortButtons({ sortBy, sortOrder, onToggleSort }: SortButtonsProps) {
+export default function SortButtons() {
+  const { sortBy, sortOrder, toggleSort } = useListViewStore();
   return (
     <View className="flex-row flex-wrap gap-2 mb-2 px-4">
       <Text className="text-sm font-medium text-gray-700 mr-2">Sort by :</Text>
@@ -25,7 +20,7 @@ export default function SortButtons({ sortBy, sortOrder, onToggleSort }: SortBut
         <TouchableOpacity
           key={key}
           className={`px-2 py-1 rounded flex-row items-center gap-1 ${sortBy === key ? 'bg-primary' : 'bg-gray-200'}`}
-          onPress={() => onToggleSort(key)}
+          onPress={() => toggleSort(key)}
         >
           <Text className={`text-xs ${sortBy === key ? 'text-white' : 'text-gray-700'}`}>
             {label}

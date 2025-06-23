@@ -1,28 +1,16 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { SneakerBrand } from '@/types/Sneaker';
-import { Filter } from '@/hooks/useSneakersFiltering';
+import { useListViewStore } from '@/store/useListViewStore';
 import FilterButton from './FilterButton';
 
-interface FilterSectionProps {
-  showFilters: boolean;
-  filters: Filter;
-  uniqueValues: {
-    brands: SneakerBrand[];
-    sizes: number[];
-    conditions: number[];
-  };
-  onUpdateFilter: (key: keyof Filter, value: any) => void;
-  onClearFilters: () => void;
-}
-
-export default function FilterSection({ 
-  showFilters, 
-  filters, 
-  uniqueValues, 
-  onUpdateFilter, 
-  onClearFilters 
-}: FilterSectionProps) {
+export default function FilterSection() {
+  const { 
+    showFilters, 
+    filters, 
+    uniqueValues, 
+    updateFilter, 
+    clearFilters 
+  } = useListViewStore();
   if (!showFilters) return null;
 
   return (
@@ -33,14 +21,14 @@ export default function FilterSection({
           <FilterButton
             label="All"
             isActive={!filters.brand}
-            onPress={() => onUpdateFilter('brand', undefined)}
+            onPress={() => updateFilter('brand', undefined)}
           />
           {uniqueValues.brands.map((brand) => (
             <FilterButton
               key={brand}
               label={brand}
               isActive={filters.brand === brand}
-              onPress={() => onUpdateFilter('brand', brand)}
+              onPress={() => updateFilter('brand', brand)}
             />
           ))}
         </View>
@@ -52,14 +40,14 @@ export default function FilterSection({
           <FilterButton
             label="All"
             isActive={!filters.size}
-            onPress={() => onUpdateFilter('size', undefined)}
+            onPress={() => updateFilter('size', undefined)}
           />
           {uniqueValues.sizes.map((size) => (
             <FilterButton
               key={size}
               label={size.toString()}
               isActive={filters.size === size}
-              onPress={() => onUpdateFilter('size', size)}
+              onPress={() => updateFilter('size', size)}
             />
           ))}
         </View>
@@ -71,14 +59,14 @@ export default function FilterSection({
           <FilterButton
             label="All"
             isActive={!filters.condition}
-            onPress={() => onUpdateFilter('condition', undefined)}
+            onPress={() => updateFilter('condition', undefined)}
           />
           {uniqueValues.conditions.map((condition) => (
             <FilterButton
               key={condition}
               label={`${condition}/10`}
               isActive={filters.condition === condition}
-              onPress={() => onUpdateFilter('condition', condition)}
+              onPress={() => updateFilter('condition', condition)}
             />
           ))}
         </View>
@@ -86,7 +74,7 @@ export default function FilterSection({
 
       <TouchableOpacity
         className="bg-red-500 px-4 py-2 rounded-lg self-start"
-        onPress={onClearFilters}
+        onPress={clearFilters}
       >
         <Text className="text-white text-sm">Clear all filters</Text>
       </TouchableOpacity>

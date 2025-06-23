@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { FlatList, View, RefreshControl } from 'react-native';
 import { Sneaker } from '@/types/Sneaker';
-import { useSneakersFiltering } from '@/hooks/useSneakersFiltering';
+import { useListViewStore } from '@/store/useListViewStore';
 import SneakerListItem from './listView/SneakerListItem';
 import ListControls from './listView/ListControls';
 
@@ -20,18 +20,11 @@ export default function SneakersListView({
   refreshing = false,
   onRefresh 
 }: SneakersListViewProps) {
-  const [showFilters, setShowFilters] = useState(false);
-  
-  const {
-    filteredAndSortedSneakers,
-    uniqueValues,
-    sortBy,
-    sortOrder,
-    filters,
-    toggleSort,
-    updateFilter,
-    clearFilters
-  } = useSneakersFiltering(sneakers);
+  const { filteredAndSortedSneakers, initializeData } = useListViewStore();
+
+  useEffect(() => {
+    initializeData(sneakers);
+  }, [sneakers, initializeData]);
 
   const renderSneakerItem = ({ item }: { item: Sneaker }) => (
     <SneakerListItem sneaker={item} onPress={onSneakerPress} />
@@ -40,18 +33,7 @@ export default function SneakersListView({
   const renderListHeader = () => (
     <View className="gap-8">
       {header}
-      <ListControls
-        filteredCount={filteredAndSortedSneakers.length}
-        showFilters={showFilters}
-        onToggleFilters={() => setShowFilters(!showFilters)}
-        sortBy={sortBy}
-        sortOrder={sortOrder}
-        onToggleSort={toggleSort}
-        filters={filters}
-        uniqueValues={uniqueValues}
-        onUpdateFilter={updateFilter}
-        onClearFilters={clearFilters}
-      />
+      <ListControls />
     </View>
   );
 
