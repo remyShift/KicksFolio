@@ -68,7 +68,10 @@ export const sneakerSchema = z.object({
 		.refine(
 			(val) =>
 				!sneakerBrandOptions.some((option) =>
-					val.toLowerCase().includes(option.value.toLowerCase())
+					val
+						.toLowerCase()
+						.split(' ')
+						.includes(option.value.toLowerCase())
 				),
 			'A brand name cannot be in the model.'
 		),

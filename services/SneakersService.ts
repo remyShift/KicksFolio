@@ -1,6 +1,7 @@
 import { BaseApiService } from '@/services/BaseApiService';
 import { supabase } from './supabase';
 import { SneakerBrand } from '@/types/Sneaker';
+import { sneakerBrandOptions } from '@/validation/schemas';
 
 export interface SupabaseSneaker {
 	id: string;
@@ -169,8 +170,28 @@ export class SupabaseSneakerService extends BaseApiService {
 					throw new Error(errorMsg);
 				}
 
-				console.log('SKU search successful:', data);
-				return data;
+				const sneakerBrand = sneakerBrandOptions.find(
+					(brand) =>
+						brand.value.toLocaleLowerCase() ===
+						data.results[0].brand.toLowerCase()
+				);
+
+				const sneakerModalWithoutBrandName = data.results[0].name
+					.replace(sneakerBrand?.label || '', '')
+					.trim();
+
+				const dataWithoutBrandName = {
+					...data,
+					results: [
+						{
+							...data.results[0],
+							name: sneakerModalWithoutBrandName,
+						},
+					],
+				};
+
+				console.log('SKU search successful:', dataWithoutBrandName);
+				return dataWithoutBrandName;
 			})
 			.catch((err) => {
 				console.error('SKU search failed:', err);
