@@ -33,7 +33,6 @@ const setup = (overrides = {}) => {
         ...overrides,
     };
 
-    // Configure setModalStep to update the modalStep value
     mockSetModalStep.mockImplementation((newStep) => {
         mockStore.modalStep = newStep;
     });
@@ -68,7 +67,6 @@ describe('SneakersModal', () => {
             resetModalData: jest.fn(),
         };
 
-        // Configure setModalStep to update the modalStep value
         mockSetModalStep.mockImplementation((newStep) => {
             mockStore.modalStep = newStep;
         });

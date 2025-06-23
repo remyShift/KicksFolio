@@ -113,7 +113,7 @@ jest.mock('../store/useModalStore', () => ({
 	}),
 }));
 
-jest.mock('../config/supabase', () => ({
+jest.mock('../config/supabase/supabase', () => ({
 	SUPABASE_CONFIG: {
 		url: 'http://toto.com',
 		anonKey: 'test',
