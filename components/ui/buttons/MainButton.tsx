@@ -4,7 +4,7 @@ import Animated, {
     withSpring,
     useSharedValue 
 } from 'react-native-reanimated';
-
+import * as Haptics from 'expo-haptics';
 
 type MainButtonProps = {
     content: string;
@@ -29,6 +29,8 @@ export default function MainButton({content, onPressAction, backgroundColor, isD
             damping: 10,
             stiffness: 100
         });
+
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
     };
 
     const handlePressOut = () => {
