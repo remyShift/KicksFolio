@@ -161,10 +161,7 @@ export const useSneakerAPI = (userId: string) => {
 					status: formData.status,
 					size: parseInt(formData.size.toString()),
 					condition: parseInt(formData.condition.toString()),
-					images: formData.images.map((img) => ({
-						id: '',
-						url: img.url,
-					})),
+					images: [],
 					price_paid: formData.price_paid
 						? parseFloat(formData.price_paid.toString())
 						: undefined,
@@ -173,6 +170,30 @@ export const useSneakerAPI = (userId: string) => {
 				};
 
 				return SupabaseSneakerService.createSneaker(sneakerToAdd);
+			})
+			.then(async (createdSneaker: SupabaseSneaker) => {
+				const processedImages =
+					await SupabaseImageService.processAndUploadSneakerImages(
+						formData.images,
+						user.id,
+						createdSneaker.id
+					);
+
+				if (processedImages.length > 0) {
+					const updatedSneaker =
+						await SupabaseSneakerService.updateSneaker(
+							createdSneaker.id,
+							{
+								images: processedImages.map((img) => ({
+									id: '',
+									url: img.url,
+								})),
+							}
+						);
+					return updatedSneaker;
+				}
+
+				return createdSneaker;
 			})
 			.then((response: SupabaseSneaker) => {
 				if (response && callbacks) {
@@ -206,7 +227,7 @@ export const useSneakerAPI = (userId: string) => {
 		}
 
 		return validateSneakerData(formData)
-			.then((validationResult) => {
+			.then(async (validationResult) => {
 				if (!validationResult.isValid) {
 					const firstError = Object.values(
 						validationResult.errors
@@ -217,13 +238,20 @@ export const useSneakerAPI = (userId: string) => {
 					return Promise.reject('Validation failed');
 				}
 
+				const processedImages =
+					await SupabaseImageService.processAndUploadSneakerImages(
+						formData.images,
+						user.id,
+						sneakerId
+					);
+
 				const sneakerUpdates: Partial<SupabaseSneaker> = {
 					model: formData.model,
 					brand: formData.brand,
 					status: formData.status,
 					size: parseInt(formData.size.toString()),
 					condition: parseInt(formData.condition.toString()),
-					images: formData.images.map((img) => ({
+					images: processedImages.map((img) => ({
 						id: '',
 						url: img.url,
 					})),
@@ -290,37 +318,12 @@ export const useSneakerAPI = (userId: string) => {
 			return Promise.reject('No session token');
 		}
 
-		const sneakerToDelete = userSneakers?.find((s) => s.id === sneakerId);
-
 		return SupabaseSneakerService.deleteSneaker(sneakerId)
 			.then(async () => {
-				if (
-					sneakerToDelete?.images &&
-					sneakerToDelete.images.length > 0
-				) {
-					const deleteImagePromises = sneakerToDelete.images.map(
-						async (image) => {
-							const filePath =
-								SupabaseImageService.extractFilePathFromUrl(
-									image.url,
-									'sneakers'
-								);
-							if (filePath) {
-								const deleteResult =
-									await SupabaseImageService.deleteImage(
-										'sneakers',
-										filePath
-									);
-								return deleteResult;
-							}
-							return false;
-						}
-					);
-
-					const deleteResults = await Promise.all(
-						deleteImagePromises
-					);
-				}
+				await SupabaseImageService.deleteSneakerImages(
+					user.id,
+					sneakerId
+				);
 
 				return refreshUserSneakers();
 			})

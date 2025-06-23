@@ -81,8 +81,14 @@ export class SupabaseImageService {
 	static async uploadSneakerImages(
 		images: Array<{ url: string }>,
 		userId: string,
-		sneakerId?: string
+		sneakerId: string
 	): Promise<UploadResult[]> {
+		if (!sneakerId) {
+			throw new Error(
+				'SneakerId is required for uploading sneaker images'
+			);
+		}
+
 		return Promise.all(
 			images.map((image) =>
 				this.uploadImage(image.url, {
@@ -398,6 +404,87 @@ export class SupabaseImageService {
 				console.error('Error in deleteSneakerImages:', error);
 				return false;
 			});
+	}
+
+	static async processAndUploadSneakerImages(
+		images: Array<{ url: string }>,
+		userId: string,
+		sneakerId: string
+	): Promise<Array<{ url: string }>> {
+		if (!images || images.length === 0) {
+			return [];
+		}
+
+		const localImages = images.filter((img) =>
+			img.url.startsWith('file://')
+		);
+
+		const externalApiImages = images.filter(
+			(img) =>
+				img.url.startsWith('https://') && !img.url.includes('supabase')
+		);
+
+		const supabaseImages = images.filter(
+			(img) =>
+				img.url.includes('supabase') ||
+				(!img.url.startsWith('file://') &&
+					!img.url.startsWith('https://'))
+		);
+
+		const allUploadPromises: Promise<any>[] = [];
+
+		if (localImages.length > 0) {
+			allUploadPromises.push(
+				this.uploadSneakerImages(localImages, userId, sneakerId)
+			);
+		}
+
+		if (externalApiImages.length > 0) {
+			const migrationPromises = externalApiImages.map((img) =>
+				this.migrateImageFromUrl(img.url, {
+					bucket: 'sneakers',
+					userId,
+					entityId: sneakerId,
+				})
+			);
+			allUploadPromises.push(Promise.all(migrationPromises));
+		}
+
+		if (allUploadPromises.length > 0) {
+			const allResults = await Promise.all(allUploadPromises);
+
+			const localUploadResults =
+				localImages.length > 0 ? allResults[0] : [];
+			const localSuccessfulUploads = localUploadResults
+				.filter((result: any) => result.success && result.url)
+				.map((result: any) => result.url);
+
+			const migrationResults =
+				externalApiImages.length > 0
+					? localImages.length > 0
+						? allResults[1]
+						: allResults[0]
+					: [];
+			const migratedSuccessfulUploads = migrationResults
+				.filter((result: any) => result.success && result.url)
+				.map((result: any) => result.url);
+
+			const finalImages = [];
+
+			finalImages.push(...supabaseImages);
+
+			finalImages.push(
+				...localSuccessfulUploads.map((url: string) => ({ url }))
+			);
+
+			finalImages.push(
+				...migratedSuccessfulUploads.map((url: string) => ({ url }))
+			);
+
+			return finalImages;
+		}
+
+		return supabaseImages;
 	}
 }
 
