@@ -17,15 +17,15 @@ const brandLogos: Record<string, any> = {
     vans: require('@/assets/images/brands/vans.png'),
 };
 
-interface SneakersByBrandProps {
+interface SneakersCardByBrandProps {
     sneakersByBrand: Record<string, Sneaker[]>;
     onSneakerPress: (sneaker: Sneaker) => void;
 }
 
-export default function SneakersByBrand({ 
+export default function SneakersCardByBrand({ 
     sneakersByBrand, 
     onSneakerPress
-}: SneakersByBrandProps) {
+}: SneakersCardByBrandProps) {
     const { setModalStep } = useModalStore();
 
     return (

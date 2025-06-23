@@ -4,13 +4,15 @@ import { useState, useMemo } from 'react';
 import { Sneaker } from '@/types/Sneaker';
 import { useAuth } from '@/hooks/useAuth';
 import AddButton from '@/components/ui/buttons/AddButton';
-import ProfileHeader from '@/components/screens/app/profile/ProfileHeader';
-import ProfileInfo from '@/components/screens/app/profile/ProfileInfo';
-import EmptySneakersState from '@/components/screens/app/profile/EmptySneakersState';
-import SneakersByBrand from '@/components/screens/app/profile/SneakersByBrand';
-import ProfileDrawer from '@/components/screens/app/profile/ProfileDrawer';
+import EmptySneakersState from '@/components/screens/app/profile/displayState/EmptySneakersState';
+import SneakersCardByBrand from '@/components/screens/app/profile/displayState/SneakersCardByBrand';
+import SneakersListView from '@/components/screens/app/profile/displayState/SneakersListView';
+import ProfileDrawer from '@/components/screens/app/profile/drawer/ProfileDrawer';
 import SneakersModalWrapper from '@/components/screens/app/profile/SneakersModalWrapper';
 import { useModalStore } from '@/store/useModalStore';
+import ProfileHeader from '@/components/screens/app/profile/ProfileHeader';
+
+type ViewMode = 'card' | 'list';
 
 export default function User() {
   const { user, userSneakers, refreshUserData } = useSession();
@@ -18,6 +20,7 @@ export default function User() {
   const { setModalStep, setIsVisible, setCurrentSneaker } = useModalStore();
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [viewMode, setViewMode] = useState<ViewMode>('card');
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -52,39 +55,80 @@ export default function User() {
     setIsVisible(true);
   };
 
+  if (!user) {
+    return;
+  }
+
+  if (!userSneakers || userSneakers.length === 0) {
+    return (
+      <>
+        <ScrollView 
+          className="flex-1"
+          testID="scroll-view"
+          refreshControl={
+            <RefreshControl 
+              refreshing={refreshing} 
+              onRefresh={onRefresh}
+              tintColor="#FF6B6B"
+              progressViewOffset={60}
+              testID="refresh-control"
+            />
+          }
+        >
+          <View className="flex-1 gap-12">
+            <ProfileHeader user={user} userSneakers={userSneakers!} viewMode={viewMode} setViewMode={setViewMode} />
+            <EmptySneakersState onAddPress={handleAddSneaker} />
+          </View>
+          <SneakersModalWrapper />
+        </ScrollView>
+
+        <ProfileDrawer 
+          visible={drawerVisible}
+          onClose={() => setDrawerVisible(false)}
+          onLogout={() => logout()}
+          user={user}
+        />
+      </>
+    );
+  }
+
   return (
     <>
-      <ScrollView className="flex-1"
-        testID="scroll-view"
-        refreshControl={
-          <RefreshControl 
-            refreshing={refreshing} 
-            onRefresh={onRefresh}
-            tintColor="#FF6B6B"
-            progressViewOffset={60}
-            testID="refresh-control"
-          />
-        }
-      >
-        <View className="flex-1 gap-12">
-          <ProfileHeader onMenuPress={() => setDrawerVisible(true)} />
-          
-          <View className="flex-1 gap-12">
-            <ProfileInfo user={user} userSneakers={userSneakers} />
-
-            {userSneakers && userSneakers.length === 0 || !userSneakers ? (
-              <EmptySneakersState onAddPress={handleAddSneaker} />
-            ) : (
-              <SneakersByBrand 
-                sneakersByBrand={sneakersByBrand}
-                onSneakerPress={handleSneakerPress}
-              />
-            )}
+      {viewMode === 'card' ? (
+        <ScrollView 
+          className="flex-1"
+          testID="scroll-view"
+          refreshControl={
+            <RefreshControl 
+              refreshing={refreshing} 
+              onRefresh={onRefresh}
+              tintColor="#FF6B6B"
+              progressViewOffset={60}
+              testID="refresh-control"
+            />
+          }
+        >
+          <View className="flex-1 gap-8">
+            <ProfileHeader user={user} userSneakers={userSneakers} viewMode={viewMode} setViewMode={setViewMode} />
+            <SneakersCardByBrand 
+              sneakersByBrand={sneakersByBrand}
+              onSneakerPress={handleSneakerPress}
+            />
           </View>
+          <SneakersModalWrapper />
+        </ScrollView>
+      ) : (
+        <View className="flex-1">
+          <SneakersListView 
+            sneakers={userSneakers}
+            onSneakerPress={handleSneakerPress}
+            header={<ProfileHeader user={user} userSneakers={userSneakers} viewMode={viewMode} setViewMode={setViewMode} />}
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+          <SneakersModalWrapper />
         </View>
-
-        <SneakersModalWrapper />
-      </ScrollView>
+      )}
 
       <ProfileDrawer 
         visible={drawerVisible}

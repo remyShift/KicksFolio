@@ -1,22 +1,34 @@
-import { View, Pressable } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import PageTitle from '@/components/ui/text/PageTitle';
+import { View } from "react-native";
+import ProfileInfo from "./ProfileInfo";
+import ViewToggleButton from "@/components/ui/buttons/ViewToggleButton";
+import { useState } from "react";
+import { Sneaker } from "@/types/Sneaker";
+import { User } from "@/types/User";
+import ProfileUpperHeader from "./ProfileUpperHeader";
+
+type ViewMode = 'card' | 'list';
 
 interface ProfileHeaderProps {
-    onMenuPress: () => void;
+  user: User;
+  userSneakers: Sneaker[];
+  viewMode: ViewMode;
+  setViewMode: (mode: ViewMode) => void;
 }
 
-export default function ProfileHeader({ onMenuPress }: ProfileHeaderProps) {
-    return (
-        <View className="flex-row justify-center items-center" testID="profile-header">
-            <PageTitle content="Profile" />
-            <Pressable 
-                className="p-4 absolute right-0 mt-2 top-10 z-50"
-                onPress={onMenuPress}
-                testID="menu-button"
-            >
-                <Ionicons name="menu-outline" size={24} color="#666" />
-            </Pressable>
+export default function ProfileHeader({ user, userSneakers, viewMode, setViewMode }: ProfileHeaderProps) {
+  const [drawerVisible, setDrawerVisible] = useState(false);
+  return (
+        <View className="gap-8">
+            <ProfileUpperHeader onMenuPress={() => setDrawerVisible(true)} />
+            <ProfileInfo user={user} userSneakers={userSneakers} />
+            {userSneakers && userSneakers.length > 0 && (
+                <View className="flex-row justify-between items-center px-4">
+                    <ViewToggleButton 
+                      currentMode={viewMode}
+                      onToggle={setViewMode}
+                    />
+                </View>
+              )}
         </View>
     );
-} 
+}
