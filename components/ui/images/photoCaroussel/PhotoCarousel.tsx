@@ -14,6 +14,7 @@ interface PhotoCarouselProps {
   mode?: 'view' | 'edit';
   onPhotosChange?: (photos: Photo[]) => void;
   maxImages?: number;
+  sneakerId?: string;
 }
 
 export const PhotoCarousel = ({ 
@@ -21,7 +22,8 @@ export const PhotoCarousel = ({
   height = 200, 
   mode = 'view',
   onPhotosChange,
-  maxImages = 3
+  maxImages = 3,
+  sneakerId
 }: PhotoCarouselProps) => {
   const {
     scrollX,
@@ -38,7 +40,8 @@ export const PhotoCarousel = ({
     photos,
     onPhotosChange,
     scrollToIndex,
-    currentIndex
+    currentIndex,
+    sneakerId
   );
 
   if (!photos || photos.length === 0) {

@@ -19,7 +19,7 @@ export const PhotoSlide = ({
   onPress, 
   onRemove 
 }: PhotoSlideProps) => {
-  return (
+    return (
     <View style={{ width }} className="h-full" onMoveShouldSetResponder={() => true}>
       <Pressable
         onPress={mode === 'edit' ? onPress : undefined}
@@ -32,7 +32,6 @@ export const PhotoSlide = ({
           accessibilityLabel={
             photo.alt || `Photo ${index + 1}`
           }
-          alt={photo.alt}
           accessible={true}
         />
       </Pressable>

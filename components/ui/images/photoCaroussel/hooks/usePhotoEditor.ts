@@ -1,13 +1,18 @@
 import { Alert } from 'react-native';
 import { Photo } from '@/types/Sneaker';
 import { imageService } from '@/services/ImageService';
+import SupabaseImageService from '@/services/SupabaseImageService';
+import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
 
 export const usePhotoEditor = (
 	photos: Photo[],
 	onPhotosChange?: (photos: Photo[]) => void,
 	scrollToIndex?: (index: number) => void,
-	currentIndex?: number
+	currentIndex?: number,
+	sneakerId?: string
 ) => {
+	const { user } = useSupabaseAuth();
+
 	const handleImageSelection = async (
 		type: 'camera' | 'gallery',
 		replaceIndex?: number
@@ -22,8 +27,27 @@ export const usePhotoEditor = (
 		const newPhotos = [...photos];
 
 		if (replaceIndex !== undefined) {
+			const oldPhoto = newPhotos[replaceIndex];
+
+			if (
+				oldPhoto.id &&
+				user &&
+				sneakerId &&
+				oldPhoto.uri.includes('supabase')
+			) {
+				try {
+					await SupabaseImageService.deleteSpecificSneakerImage(
+						user.id,
+						sneakerId,
+						oldPhoto.id
+					);
+				} catch (error) {
+					console.error('Error deleting old image:', error);
+				}
+			}
+
 			newPhotos[replaceIndex] = {
-				id: newPhotos[replaceIndex].id || '',
+				id: '',
 				uri: imageUri,
 				alt: newPhotos[replaceIndex].alt,
 			};
@@ -39,6 +63,23 @@ export const usePhotoEditor = (
 	};
 
 	const removeImage = (index: number) => {
+		const photoToRemove = photos[index];
+
+		if (
+			photoToRemove.id &&
+			user &&
+			sneakerId &&
+			photoToRemove.uri.includes('supabase')
+		) {
+			SupabaseImageService.deleteSpecificSneakerImage(
+				user.id,
+				sneakerId,
+				photoToRemove.id
+			).catch((error) => {
+				console.error('Error deleting image from Supabase:', error);
+			});
+		}
+
 		const newPhotos = photos.filter((_, i) => i !== index);
 		onPhotosChange?.(newPhotos);
 

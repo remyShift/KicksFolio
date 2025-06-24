@@ -4,6 +4,7 @@ import * as FileSystem from 'expo-file-system';
 interface UploadResult {
 	success: boolean;
 	url?: string;
+	fileName?: string;
 	error?: string;
 }
 
@@ -66,6 +67,7 @@ export class SupabaseImageService {
 			return {
 				success: true,
 				url: urlData.publicUrl,
+				fileName: fileName,
 			};
 		} catch (error) {
 			return {
@@ -79,25 +81,19 @@ export class SupabaseImageService {
 	}
 
 	static async uploadSneakerImages(
-		images: Array<{ url: string }>,
+		images: Array<{ uri: string }>,
 		userId: string,
 		sneakerId: string
 	): Promise<UploadResult[]> {
-		if (!sneakerId) {
-			throw new Error(
-				'SneakerId is required for uploading sneaker images'
-			);
-		}
-
-		return Promise.all(
-			images.map((image) =>
-				this.uploadImage(image.url, {
-					bucket: 'sneakers',
-					userId,
-					entityId: sneakerId,
-				})
-			)
+		const uploadPromises = images.map((image) =>
+			this.uploadImage(image.uri, {
+				bucket: 'sneakers',
+				userId,
+				entityId: sneakerId,
+			})
 		);
+
+		return Promise.all(uploadPromises);
 	}
 
 	static async uploadProfileImage(
@@ -299,6 +295,7 @@ export class SupabaseImageService {
 			return {
 				success: true,
 				url: urlData.publicUrl,
+				fileName: fileName,
 			};
 		} catch (error) {
 			return {
@@ -407,28 +404,28 @@ export class SupabaseImageService {
 	}
 
 	static async processAndUploadSneakerImages(
-		images: Array<{ url: string }>,
+		images: Array<{ uri: string; id?: string }>,
 		userId: string,
 		sneakerId: string
-	): Promise<Array<{ url: string }>> {
+	): Promise<Array<{ id: string; uri: string }>> {
 		if (!images || images.length === 0) {
 			return [];
 		}
 
 		const localImages = images.filter((img) =>
-			img.url.startsWith('file://')
+			img.uri.startsWith('file://')
 		);
 
 		const externalApiImages = images.filter(
 			(img) =>
-				img.url.startsWith('https://') && !img.url.includes('supabase')
+				img.uri.startsWith('https://') && !img.uri.includes('supabase')
 		);
 
 		const supabaseImages = images.filter(
 			(img) =>
-				img.url.includes('supabase') ||
-				(!img.url.startsWith('file://') &&
-					!img.url.startsWith('https://'))
+				img.uri.includes('supabase') ||
+				(!img.uri.startsWith('file://') &&
+					!img.uri.startsWith('https://'))
 		);
 
 		const allUploadPromises: Promise<any>[] = [];
@@ -441,7 +438,7 @@ export class SupabaseImageService {
 
 		if (externalApiImages.length > 0) {
 			const migrationPromises = externalApiImages.map((img) =>
-				this.migrateImageFromUrl(img.url, {
+				this.migrateImageFromUrl(img.uri, {
 					bucket: 'sneakers',
 					userId,
 					entityId: sneakerId,
@@ -456,8 +453,14 @@ export class SupabaseImageService {
 			const localUploadResults =
 				localImages.length > 0 ? allResults[0] : [];
 			const localSuccessfulUploads = localUploadResults
-				.filter((result: any) => result.success && result.url)
-				.map((result: any) => result.url);
+				.filter(
+					(result: any) =>
+						result.success && result.url && result.fileName
+				)
+				.map((result: any) => ({
+					id: result.fileName,
+					uri: result.url,
+				}));
 
 			const migrationResults =
 				externalApiImages.length > 0
@@ -466,25 +469,69 @@ export class SupabaseImageService {
 						: allResults[0]
 					: [];
 			const migratedSuccessfulUploads = migrationResults
-				.filter((result: any) => result.success && result.url)
-				.map((result: any) => result.url);
+				.filter(
+					(result: any) =>
+						result.success && result.url && result.fileName
+				)
+				.map((result: any) => ({
+					id: result.fileName,
+					uri: result.url,
+				}));
 
 			const finalImages = [];
 
-			finalImages.push(...supabaseImages);
-
+			// Pour les images Supabase existantes, extraire le fileName de l'URL ou utiliser l'id existant
 			finalImages.push(
-				...localSuccessfulUploads.map((url: string) => ({ url }))
+				...supabaseImages.map((img) => ({
+					id:
+						img.id ||
+						this.extractFilePathFromUrl(img.uri, 'sneakers') ||
+						'',
+					uri: img.uri,
+				}))
 			);
 
-			finalImages.push(
-				...migratedSuccessfulUploads.map((url: string) => ({ url }))
-			);
+			finalImages.push(...localSuccessfulUploads);
+			finalImages.push(...migratedSuccessfulUploads);
 
 			return finalImages;
 		}
 
-		return supabaseImages;
+		// Pour les images Supabase existantes uniquement
+		return supabaseImages.map((img) => ({
+			id:
+				img.id ||
+				this.extractFilePathFromUrl(img.uri, 'sneakers') ||
+				'',
+			uri: img.uri,
+		}));
+	}
+
+	static async deleteSpecificSneakerImage(
+		userId: string,
+		sneakerId: string,
+		fileName: string
+	): Promise<boolean> {
+		try {
+			// Le fileName peut être soit juste le nom du fichier, soit le chemin complet
+			const filePath = fileName.includes('/')
+				? fileName
+				: `${userId}/${sneakerId}/${fileName}`;
+
+			const { error } = await supabase.storage
+				.from('sneakers')
+				.remove([filePath]);
+
+			if (error) {
+				console.error('Error deleting specific sneaker image:', error);
+				return false;
+			}
+
+			return true;
+		} catch (error) {
+			console.error('Error in deleteSpecificSneakerImage:', error);
+			return false;
+		}
 	}
 }
 

@@ -21,6 +21,7 @@ interface FormFieldsProps {
     pricePaidInputRef: React.RefObject<TextInput>;
     descriptionInputRef: React.RefObject<TextInput>;
     displayedError: string;
+    sneakerId?: string;
 }
 
 export const FormFields = ({
@@ -34,6 +35,7 @@ export const FormFields = ({
     displayedError,
     pricePaidInputRef,
     descriptionInputRef,
+    sneakerId,
 }: FormFieldsProps) => {
     const getFieldErrorWrapper = (fieldName: string) => {
         return getFieldError(fieldName);
@@ -55,6 +57,7 @@ export const FormFields = ({
                         } as SneakerFormData);
                     }}
                     isFocused={false}
+                    sneakerId={sneakerId}
                 />
 
                 {(imageError || displayedError) && (

@@ -7,15 +7,16 @@ interface ImageUploaderProps {
     images: Photo[];
     setImages: (images: Photo[]) => void;
     isFocused: boolean;
+    sneakerId?: string;
 }
 
 export const ImageUploader = ({ 
     images, 
     setImages, 
-    isFocused, 
+    isFocused,
+    sneakerId,
 }: ImageUploaderProps) => {
     const MAX_IMAGES = 3;
-
 
     return (
         <View className="gap-0 w-full mb-2">
@@ -25,6 +26,7 @@ export const ImageUploader = ({
                 mode="edit"
                 onPhotosChange={setImages}
                 maxImages={MAX_IMAGES}
+                sneakerId={sneakerId}
             />
         </View>
     );

@@ -10,6 +10,8 @@ import { useSession } from '@/context/authContext';
 import { sneakerSchema } from '@/validation/schemas';
 import { ZodIssue } from 'zod';
 import SupabaseImageService from '@/services/SupabaseImageService';
+import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
+import { useInitialData } from '@/hooks/useInitialData';
 
 interface Callbacks {
 	setCurrentSneaker?: (sneaker: Sneaker | null) => void;
@@ -116,11 +118,18 @@ export const useSneakerAPI = (userId: string) => {
 			size: supabaseSneaker.size,
 			condition: supabaseSneaker.condition,
 			status: supabaseSneaker.status,
-			images: supabaseSneaker.images.map((img, index) => ({
-				id: img.id || '',
-				uri: img.url || '',
-				alt: `${supabaseSneaker.model} image ${index + 1}`,
-			})),
+			images: supabaseSneaker.images.map((img, index) => {
+				const fileNameFromUrl =
+					SupabaseImageService.extractFilePathFromUrl(
+						img.uri,
+						'sneakers'
+					);
+				return {
+					id: img.id || fileNameFromUrl || '',
+					uri: img.uri || '',
+					alt: `${supabaseSneaker.model} image ${index + 1}`,
+				};
+			}),
 			price_paid: supabaseSneaker.price_paid || 0,
 			description: supabaseSneaker.description || '',
 			created_at: supabaseSneaker.created_at,
@@ -178,7 +187,10 @@ export const useSneakerAPI = (userId: string) => {
 			.then(async (createdSneaker: SupabaseSneaker) => {
 				const processedImages =
 					await SupabaseImageService.processAndUploadSneakerImages(
-						formData.images.map((img) => ({ url: img.uri })),
+						formData.images.map((img) => ({
+							uri: img.uri,
+							id: img.id,
+						})),
 						user.id,
 						createdSneaker.id
 					);
@@ -189,8 +201,8 @@ export const useSneakerAPI = (userId: string) => {
 							createdSneaker.id,
 							{
 								images: processedImages.map((img) => ({
-									id: '',
-									url: img.url,
+									id: img.id,
+									uri: img.uri,
 								})),
 							}
 						);
@@ -244,7 +256,10 @@ export const useSneakerAPI = (userId: string) => {
 
 				const processedImages =
 					await SupabaseImageService.processAndUploadSneakerImages(
-						formData.images.map((img) => ({ url: img.uri })),
+						formData.images.map((img) => ({
+							uri: img.uri,
+							id: img.id,
+						})),
 						user.id,
 						sneakerId
 					);
@@ -256,8 +271,8 @@ export const useSneakerAPI = (userId: string) => {
 					size: parseInt(formData.size.toString()),
 					condition: parseInt(formData.condition.toString()),
 					images: processedImages.map((img) => ({
-						id: '',
-						url: img.url,
+						id: img.id,
+						uri: img.uri,
 					})),
 					price_paid: formData.price_paid
 						? parseFloat(formData.price_paid.toString())

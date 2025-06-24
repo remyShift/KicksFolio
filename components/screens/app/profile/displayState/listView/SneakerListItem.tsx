@@ -1,5 +1,5 @@
-import React from 'react';
-import { TouchableOpacity, View, Text, Image } from 'react-native';
+import { TouchableOpacity, View, Text } from 'react-native';
+import { Image } from 'expo-image';
 import { Sneaker } from '@/types/Sneaker';
 
 interface SneakerListItemProps {
@@ -15,7 +15,14 @@ export default function SneakerListItem({ sneaker, onPress }: SneakerListItemPro
         onPress={() => onPress(sneaker)}
       >
         <View className="flex-row justify-between items-start gap-2">
-            <Image source={{ uri: sneaker.images[0].url }} className="w-16 h-16 bg-gray-100 rounded-lg" />
+          <Image 
+            source={{ uri: sneaker.images[0].uri }} 
+            className="w-16 h-16 bg-gray-100 rounded-lg" 
+            contentFit="contain" 
+            cachePolicy="memory-disk"
+            testID="sneaker-image"
+            contentPosition="center"
+          />
           <View className="flex-1">
             <Text className="text-lg font-semibold text-gray-900">{sneaker.model}</Text>
             <Text className="text-sm text-gray-600 mt-1">{sneaker.brand}</Text>

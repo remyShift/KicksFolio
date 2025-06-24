@@ -128,6 +128,7 @@ export const EditFormStep = () => {
                     pricePaidInputRef={pricePaidInputRef}
                     descriptionInputRef={descriptionInputRef}
                     displayedError={displayedError}
+                    sneakerId={currentSneaker?.id}
                 />
             </View>
         </KeyboardAwareScrollView>

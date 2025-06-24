@@ -14,7 +14,7 @@ export interface SupabaseSneaker {
 	estimated_value?: number;
 	description?: string;
 	status: string;
-	images: { id: string; url: string }[];
+	images: { id: string; uri: string }[];
 	collection_id: string;
 	created_at: string;
 	updated_at: string;
@@ -38,39 +38,57 @@ export class SupabaseSneakerService extends BaseApiService {
 		);
 	}
 
-	private static parseImages(images: any): { id: string; url: string }[] {
+	private static parseImages(images: any): { id: string; uri: string }[] {
 		if (!images) return [];
 
 		if (
 			Array.isArray(images) &&
 			images.length > 0 &&
 			typeof images[0] === 'object' &&
-			images[0].url
+			(images[0].uri || images[0].url)
 		) {
-			return images;
+			return images.map((img: any) => ({
+				id: img.id || '',
+				uri: img.uri || img.url || '',
+			}));
 		}
 
 		if (Array.isArray(images)) {
 			return images.map((img) => {
 				if (typeof img === 'string') {
 					try {
-						return JSON.parse(img);
+						const parsed = JSON.parse(img);
+						return {
+							id: parsed.id || '',
+							uri: parsed.uri || parsed.url || '',
+						};
 					} catch (error) {
 						console.warn('Erreur parsing image JSON:', error);
-						return { id: '', url: img };
+						return { id: '', uri: img };
 					}
 				}
-				return img;
+				return { id: img.id || '', uri: img.uri || img.url || '' };
 			});
 		}
 
 		if (typeof images === 'string') {
 			try {
 				const parsed = JSON.parse(images);
-				return Array.isArray(parsed) ? parsed : [parsed];
+				if (Array.isArray(parsed)) {
+					return parsed.map((img: any) => ({
+						id: img.id || '',
+						uri: img.uri || img.url || '',
+					}));
+				}
+				return [
+					{
+						id: parsed.id || '',
+						uri: parsed.uri || parsed.url || '',
+					},
+				];
 			} catch (error) {
 				console.warn('Erreur parsing images JSON string:', error);
-				return [{ id: '', url: images }];
+				return [{ id: '', uri: images }];
 			}
 		}
 

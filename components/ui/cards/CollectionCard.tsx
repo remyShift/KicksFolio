@@ -17,7 +17,7 @@ export default function CollectionCard({ userCollection, userSneakers }: { userC
             <View className="flex flex-row items-center gap-1 w-full h-24">
                 {userSneakers?.slice(0, 2).map((sneaker, index) => (
                     sneaker ? (
-                        <Image key={index} source={{ uri: sneaker.images?.[0]?.url }} 
+                        <Image key={index} source={{ uri: sneaker.images?.[0]?.uri }} 
                             style={{
                                 width: '50%',
                                 height: '100%',
@@ -45,7 +45,7 @@ export default function CollectionCard({ userCollection, userSneakers }: { userC
                 {userSneakers?.slice(2, 4).map((sneaker, index) => (
                     sneaker ? (
                         <Image key={index}
-                            source={{ uri: sneaker.images?.[0]?.url }} 
+                            source={{ uri: sneaker.images?.[0]?.uri }} 
                             style={{
                                 width: '50%',
                                 height: '100%',

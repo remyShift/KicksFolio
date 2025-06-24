@@ -28,7 +28,7 @@ export default function SplashScreen({ setIsSplashScreenVisible }: { setIsSplash
                 });
             if (userSneakers) {
                 const sneakerImages = userSneakers.map(sneaker => sneaker.images[0]);
-                const imageUris = sneakerImages.map(image => image.url);
+                const imageUris = sneakerImages.map(image => image.uri);
                 preloadImages(imageUris)
                     .then(() => {
                         console.log('[SplashScreen] preloadImages resolved');

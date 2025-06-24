@@ -20,11 +20,11 @@ export default function SneakerCard({ sneaker, setModalStep, setModalVisible, se
             }}
             testID="sneaker-card"
         >
-            <Image source={{ uri: sneaker.images?.[0]?.url }}
+            <Image source={{ uri: sneaker.images?.[0]?.uri }}
                 style={{
                     width: '100%',
-                    height: 150,
-                    borderRadius: 3
+                    height: 128,
+                    borderRadius: 8
                 }}
                 contentFit="cover"
                 contentPosition="center"
