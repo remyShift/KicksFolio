@@ -14,13 +14,13 @@ export default function CollectionCard({ userCollection, userSneakers }: { userC
             }}
             testID="collection-card"
         >
-            <View className="flex flex-row items-center gap-1 w-full h-24">
+            <View className="flex flex-row items-center gap-1 w-full h-fit">
                 {userSneakers?.slice(0, 2).map((sneaker, index) => (
                     sneaker ? (
                         <Image key={index} source={{ uri: sneaker.images?.[0]?.uri }} 
                             style={{
                                 width: '50%',
-                                height: '100%',
+                                height: 100,
                                 borderRadius: 3
                             }}
                             contentFit="cover"
@@ -48,7 +48,7 @@ export default function CollectionCard({ userCollection, userSneakers }: { userC
                             source={{ uri: sneaker.images?.[0]?.uri }} 
                             style={{
                                 width: '50%',
-                                height: '100%',
+                                height: 120,
                                 borderRadius: 3
                             }}
                             contentFit="cover"
