@@ -76,7 +76,7 @@ export default function User() {
           }
         >
           <View className="flex-1 gap-12">
-            <ProfileHeader user={user} userSneakers={userSneakers!} viewMode={viewMode} setViewMode={setViewMode} />
+            <ProfileHeader user={user} userSneakers={userSneakers!} viewMode={viewMode} setViewMode={setViewMode} onMenuPress={() => setDrawerVisible(true)} />
             <EmptySneakersState onAddPress={handleAddSneaker} />
           </View>
           <SneakersModalWrapper />
@@ -109,7 +109,7 @@ export default function User() {
           }
         >
           <View className="flex-1 gap-8">
-            <ProfileHeader user={user} userSneakers={userSneakers} viewMode={viewMode} setViewMode={setViewMode} />
+            <ProfileHeader user={user} userSneakers={userSneakers} viewMode={viewMode} setViewMode={setViewMode} onMenuPress={() => setDrawerVisible(true)} />
             <SneakersCardByBrand 
               sneakersByBrand={sneakersByBrand}
               onSneakerPress={handleSneakerPress}
@@ -122,7 +122,7 @@ export default function User() {
           <SneakersListView 
             sneakers={userSneakers}
             onSneakerPress={handleSneakerPress}
-            header={<ProfileHeader user={user} userSneakers={userSneakers} viewMode={viewMode} setViewMode={setViewMode} />}
+            header={<ProfileHeader user={user} userSneakers={userSneakers} viewMode={viewMode} setViewMode={setViewMode} onMenuPress={() => setDrawerVisible(true)} />}
             refreshing={refreshing}
             onRefresh={onRefresh}
           />

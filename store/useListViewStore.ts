@@ -16,17 +16,13 @@ export interface Filter {
 }
 
 interface ListViewState {
-	// UI State
 	showFilters: boolean;
 
-	// Sorting State
 	sortBy: SortOption;
 	sortOrder: 'asc' | 'desc';
 
-	// Filter State
 	filters: Filter;
 
-	// Data
 	originalSneakers: Sneaker[];
 	filteredAndSortedSneakers: Sneaker[];
 	uniqueValues: {
@@ -35,7 +31,6 @@ interface ListViewState {
 		conditions: number[];
 	};
 
-	// Actions
 	toggleFilters: () => void;
 	toggleSort: (option: SortOption) => void;
 	updateFilter: (key: keyof Filter, value: any) => void;
@@ -113,7 +108,6 @@ const getUniqueValues = (sneakers: Sneaker[]) => ({
 });
 
 export const useListViewStore = create<ListViewState>((set, get) => ({
-	// Initial state
 	showFilters: false,
 	sortBy: 'name',
 	sortOrder: 'asc',
@@ -122,7 +116,6 @@ export const useListViewStore = create<ListViewState>((set, get) => ({
 	filteredAndSortedSneakers: [],
 	uniqueValues: { brands: [], sizes: [], conditions: [] },
 
-	// Actions
 	toggleFilters: () => set((state) => ({ showFilters: !state.showFilters })),
 
 	toggleSort: (option: SortOption) => {
@@ -150,7 +143,6 @@ export const useListViewStore = create<ListViewState>((set, get) => ({
 	updateFilter: (key: keyof Filter, value: any) => {
 		set((state) => {
 			const newFilters = { ...state.filters, [key]: value };
-			// Si value est undefined, on supprime la clé
 			if (value === undefined) {
 				delete newFilters[key];
 			}
