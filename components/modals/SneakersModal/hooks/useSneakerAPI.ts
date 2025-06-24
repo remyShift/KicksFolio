@@ -10,8 +10,6 @@ import { useSession } from '@/context/authContext';
 import { sneakerSchema } from '@/validation/schemas';
 import { ZodIssue } from 'zod';
 import SupabaseImageService from '@/services/SupabaseImageService';
-import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
-import { useInitialData } from '@/hooks/useInitialData';
 
 interface Callbacks {
 	setCurrentSneaker?: (sneaker: Sneaker | null) => void;

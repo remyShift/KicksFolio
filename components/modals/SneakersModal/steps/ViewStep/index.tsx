@@ -25,7 +25,7 @@ export const ViewStep = () => {
             <ErrorMsg content={errorMsg} display={errorMsg !== ''}/>
             
             {photos.length > 0 ? (
-                <PhotoCarousel photos={photos} height={180} />
+                <PhotoCarousel photos={photos} height={200} />
             ) : (
                 <View className="h-50 bg-gray-200 rounded-md flex items-center justify-center">
                     <MaterialIcons name="image" size={48} color="gray" />
@@ -40,7 +40,7 @@ export const ViewStep = () => {
                 </View>
             </View>
 
-            <View className='flex gap-8'>
+            <View className='flex gap-4'>
                 <View className="flex-row items-center w-full border-t-2 border-gray-300">
                     <View className='flex-col items-center p-2 gap-1 w-1/3 border-r-2 border-gray-300'>
                         <Text className='font-spacemono text-center text-sm'>Size</Text>

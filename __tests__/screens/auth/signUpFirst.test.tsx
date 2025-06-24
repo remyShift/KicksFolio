@@ -124,7 +124,7 @@ describe('SignUpFirstPage', () => {
             it('should display a global error message if multiple errors are present', async () => {
                 await fillAndBlurInput(userNameInput, 're');
                 await fillAndBlurInput(emailInput, 'test@test');
-                expect(errorMessage.props.children).toBe('Please correct the fields in red before continuing');
+                expect(errorMessage.props.children).toBe('Please correct the errors in the form');
             });
         });
 

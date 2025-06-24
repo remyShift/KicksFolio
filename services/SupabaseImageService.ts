@@ -412,99 +412,61 @@ export class SupabaseImageService {
 			return [];
 		}
 
-		const localImages = images.filter((img) =>
-			img.uri.startsWith('file://')
-		);
+		const processedImages: Array<{ id: string; uri: string }> = [];
 
-		const externalApiImages = images.filter(
-			(img) =>
-				img.uri.startsWith('https://') && !img.uri.includes('supabase')
-		);
-
-		const supabaseImages = images.filter(
-			(img) =>
-				img.uri.includes('supabase') ||
-				(!img.uri.startsWith('file://') &&
-					!img.uri.startsWith('https://'))
-		);
-
-		const allUploadPromises: Promise<any>[] = [];
-
-		if (localImages.length > 0) {
-			allUploadPromises.push(
-				this.uploadSneakerImages(localImages, userId, sneakerId)
-			);
-		}
-
-		if (externalApiImages.length > 0) {
-			const migrationPromises = externalApiImages.map((img) =>
-				this.migrateImageFromUrl(img.uri, {
+		for (const img of images) {
+			if (img.uri.startsWith('file://')) {
+				const uploadResult = await this.uploadImage(img.uri, {
 					bucket: 'sneakers',
 					userId,
 					entityId: sneakerId,
-				})
-			);
-			allUploadPromises.push(Promise.all(migrationPromises));
-		}
+				});
 
-		if (allUploadPromises.length > 0) {
-			const allResults = await Promise.all(allUploadPromises);
+				if (
+					uploadResult.success &&
+					uploadResult.url &&
+					uploadResult.fileName
+				) {
+					processedImages.push({
+						id: uploadResult.fileName,
+						uri: uploadResult.url,
+					});
+				}
+			} else if (
+				img.uri.startsWith('https://') &&
+				!img.uri.includes('supabase')
+			) {
+				const migrationResult = await this.migrateImageFromUrl(
+					img.uri,
+					{
+						bucket: 'sneakers',
+						userId,
+						entityId: sneakerId,
+					}
+				);
 
-			const localUploadResults =
-				localImages.length > 0 ? allResults[0] : [];
-			const localSuccessfulUploads = localUploadResults
-				.filter(
-					(result: any) =>
-						result.success && result.url && result.fileName
-				)
-				.map((result: any) => ({
-					id: result.fileName,
-					uri: result.url,
-				}));
-
-			const migrationResults =
-				externalApiImages.length > 0
-					? localImages.length > 0
-						? allResults[1]
-						: allResults[0]
-					: [];
-			const migratedSuccessfulUploads = migrationResults
-				.filter(
-					(result: any) =>
-						result.success && result.url && result.fileName
-				)
-				.map((result: any) => ({
-					id: result.fileName,
-					uri: result.url,
-				}));
-
-			const finalImages = [];
-
-			// Pour les images Supabase existantes, extraire le fileName de l'URL ou utiliser l'id existant
-			finalImages.push(
-				...supabaseImages.map((img) => ({
+				if (
+					migrationResult.success &&
+					migrationResult.url &&
+					migrationResult.fileName
+				) {
+					processedImages.push({
+						id: migrationResult.fileName,
+						uri: migrationResult.url,
+					});
+				}
+			} else {
+				processedImages.push({
 					id:
 						img.id ||
 						this.extractFilePathFromUrl(img.uri, 'sneakers') ||
 						'',
 					uri: img.uri,
-				}))
-			);
-
-			finalImages.push(...localSuccessfulUploads);
-			finalImages.push(...migratedSuccessfulUploads);
-
-			return finalImages;
+				});
+			}
 		}
 
-		// Pour les images Supabase existantes uniquement
-		return supabaseImages.map((img) => ({
-			id:
-				img.id ||
-				this.extractFilePathFromUrl(img.uri, 'sneakers') ||
-				'',
-			uri: img.uri,
-		}));
+		return processedImages;
 	}
 
 	static async deleteSpecificSneakerImage(
@@ -512,26 +474,27 @@ export class SupabaseImageService {
 		sneakerId: string,
 		fileName: string
 	): Promise<boolean> {
-		try {
-			// Le fileName peut être soit juste le nom du fichier, soit le chemin complet
-			const filePath = fileName.includes('/')
-				? fileName
-				: `${userId}/${sneakerId}/${fileName}`;
+		const filePath = fileName.includes('/')
+			? fileName
+			: `${userId}/${sneakerId}/${fileName}`;
 
-			const { error } = await supabase.storage
-				.from('sneakers')
-				.remove([filePath]);
-
-			if (error) {
-				console.error('Error deleting specific sneaker image:', error);
+		return supabase.storage
+			.from('sneakers')
+			.remove([filePath])
+			.then(({ error }) => {
+				if (error) {
+					console.error(
+						'Error deleting specific sneaker image:',
+						error
+					);
+					return false;
+				}
+				return true;
+			})
+			.catch((error) => {
+				console.error('Error in deleteSpecificSneakerImage:', error);
 				return false;
-			}
-
-			return true;
-		} catch (error) {
-			console.error('Error in deleteSpecificSneakerImage:', error);
-			return false;
-		}
+			});
 	}
 }
 

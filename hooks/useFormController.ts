@@ -238,7 +238,7 @@ export function useFormController<T extends FieldValues>({
 		return '';
 	};
 
-	const globalErrorMsg = 'Please correct the fields in red before continuing';
+	const globalErrorMsg = 'Please correct the errors in the form';
 
 	const displayedError = (() => {
 		const errorCount = getErrorCount();

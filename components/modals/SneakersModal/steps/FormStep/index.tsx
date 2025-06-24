@@ -44,8 +44,7 @@ export const FormStep = () => {
         },
         onSubmit: async (data) => {
             setSneakerToAdd({
-                ...data,
-                images: sneakerToAdd?.images || [],
+                ...data
             } as SneakerFormData);
         },
     });

@@ -214,7 +214,7 @@ describe('useFormController', () => {
 			});
 
 			expect(result.current.hasMultipleErrors).toBe(true);
-			expect(result.current.displayedError).toBe('Please correct the fields in red before continuing');
+			expect(result.current.displayedError).toBe('Please correct the errors in the form');
 		});
 
 		it('should display specific error when only one field has error', async () => {

@@ -1,5 +1,5 @@
 import { View, Text } from 'react-native';
-import { Control } from 'react-hook-form';
+import { Control, Controller } from 'react-hook-form';
 import FormTextInput from '@/components/ui/inputs/FormTextInput';
 import FormSelectInput from '@/components/ui/inputs/FormSelectInput';
 import { SneakerFormData } from '@/validation/schemas';
@@ -7,7 +7,7 @@ import { sneakerStatusOptions, sneakerBrandOptions } from '@/validation/schemas'
 import { TextInput } from 'react-native';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import { useModalStore } from '@/store/useModalStore';
-import { Photo } from '@/types/Sneaker';
+import { Photo, SneakerBrand } from '@/types/Sneaker';
 import { ImageUploader } from './ImageUploader';
 
 interface FormFieldsProps {
@@ -41,22 +41,27 @@ export const FormFields = ({
         return getFieldError(fieldName);
     };
     
-    const { sneakerToAdd, setSneakerToAdd, currentSneaker } = useModalStore();
+    const { setSneakerToAdd } = useModalStore();
     const imageError = getFieldErrorWrapper('images');
-    const hasImageError = !!imageError;
 
     return (
         <View className="flex-1 gap-4">
-            <ImageUploader
-                images={sneakerToAdd?.images || []}
-                setImages={(images: Photo[]) => {
-                    setSneakerToAdd({
-                        ...sneakerToAdd,
-                        images: images,
-                    } as SneakerFormData);
+            <Controller
+                name="images"
+                control={control}
+                render={({ field: { onChange, value } }) => {
+                    console.log('Controller images value:', value);
+                    return (
+                        <ImageUploader
+                            images={value || []}
+                            setImages={(images: Photo[]) => {
+                                onChange(images);
+                            }}
+                            isFocused={false}
+                            sneakerId={sneakerId}
+                        />
+                    );
                 }}
-                isFocused={false}
-                sneakerId={sneakerId}
             />
 
             {(imageError || displayedError) && (

@@ -29,29 +29,14 @@ export const useFormValidation = (
 	const handleValidateAndSubmit = useCallback(async () => {
 		setErrorMsg('');
 
-		const currentSneakerToAdd = useModalStore.getState().sneakerToAdd;
-		const currentFormValues = watchRef.current();
-
-		if (
-			currentSneakerToAdd?.images &&
-			currentSneakerToAdd.images.length > 0
-		) {
-			resetRef.current({
-				...currentFormValues,
-				images: currentSneakerToAdd.images,
-			});
-		}
-
-		await new Promise((resolve) => setTimeout(resolve, 100));
-
 		const isFormValid = await triggerRef.current();
 
 		if (isFormValid) {
 			const updatedFormValues = watchRef.current();
 
 			if (
-				!currentSneakerToAdd?.images ||
-				currentSneakerToAdd.images.length === 0
+				!updatedFormValues.images ||
+				updatedFormValues.images.length === 0
 			) {
 				return {
 					isValid: false,
@@ -67,7 +52,7 @@ export const useFormValidation = (
 				condition: updatedFormValues.condition || '',
 				price_paid: updatedFormValues.price_paid || '',
 				description: updatedFormValues.description || '',
-				images: currentSneakerToAdd.images,
+				images: updatedFormValues.images,
 			} as SneakerFormData;
 
 			setSneakerToAdd(finalData);

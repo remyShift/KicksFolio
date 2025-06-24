@@ -119,7 +119,7 @@ describe('SignUpSecondPage', () => {
                 await fillAndBlurInput(firstNameInput, 're');
                 await fillAndBlurInput(lastNameInput, 'test@test');
                 await fillAndBlurInput(sneakerSizeInput, '10.6');
-                expect(errorMessage.props.children).toBe('Please correct the fields in red before continuing');
+                expect(errorMessage.props.children).toBe('Please correct the errors in the form');
             });
         });
 

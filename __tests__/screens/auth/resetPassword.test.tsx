@@ -71,7 +71,7 @@ describe('Reset Password Page', () => {
                 await fillAndBlurInput(passwordInput, 'toto');
                 await fillAndBlurInput(confirmPasswordInput, 'tata');
     
-                expect(screen.getByTestId('error-message').props.children).toBe('Please correct the fields in red before continuing');
+                expect(screen.getByTestId('error-message').props.children).toBe('Please correct the errors in the form');
                 expect(mainButton.props.accessibilityState.disabled).toBe(true);
             });
         });

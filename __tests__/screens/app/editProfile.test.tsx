@@ -66,7 +66,7 @@ describe('Edit Profile Form', () => {
             it('should display a global error message if multiple fields are not valid on blur', async () => {
                 await fillAndBlurInput(userNameInput, 'r');
                 await fillAndBlurInput(sizeInput, '0');
-                expect(errorMessage.props.children).toBe('Please correct the fields in red before continuing');
+                expect(errorMessage.props.children).toBe('Please correct the errors in the form');
             });
         });
 

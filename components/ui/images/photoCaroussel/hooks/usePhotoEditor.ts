@@ -52,11 +52,24 @@ export const usePhotoEditor = (
 				alt: newPhotos[replaceIndex].alt,
 			};
 		} else {
-			newPhotos.push({
-				id: '',
-				uri: imageUri,
-			});
-			setTimeout(() => scrollToIndex?.(newPhotos.length - 1), 100);
+			const hasSkuImage =
+				newPhotos.length > 0 &&
+				newPhotos[0].alt &&
+				newPhotos[0].alt.includes('from SKU search');
+
+			if (hasSkuImage) {
+				newPhotos.splice(1, 0, {
+					id: '',
+					uri: imageUri,
+				});
+				setTimeout(() => scrollToIndex?.(1), 100);
+			} else {
+				newPhotos.push({
+					id: '',
+					uri: imageUri,
+				});
+				setTimeout(() => scrollToIndex?.(newPhotos.length - 1), 100);
+			}
 		}
 
 		onPhotosChange?.(newPhotos);
