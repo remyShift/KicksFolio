@@ -23,7 +23,7 @@ export default function SneakerCard({ sneaker, setModalStep, setModalVisible, se
             <Image source={{ uri: sneaker.images?.[0]?.uri }}
                 style={{
                     width: '100%',
-                    height: 128,
+                    height: 150,
                     borderRadius: 8
                 }}
                 contentFit="cover"
