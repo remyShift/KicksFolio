@@ -20,8 +20,6 @@ export const ViewStep = () => {
         alt: `${currentSneaker.model} image ${index + 1}`
     })) || [];
 
-    console.log(photos);
-
     return (
         <View className="flex-1 gap-4">
             <ErrorMsg content={errorMsg} display={errorMsg !== ''}/>

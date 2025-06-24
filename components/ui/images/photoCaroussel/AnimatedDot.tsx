@@ -1,5 +1,6 @@
 import Animated, {
   interpolate,
+  interpolateColor,
   SharedValue,
   useAnimatedStyle,
 } from 'react-native-reanimated';
@@ -17,24 +18,44 @@ export const AnimatedDot = ({ index, scrollX, carouselWidth }: Props) => {
       index * carouselWidth,
       (index + 1) * carouselWidth,
     ];
-    const scale = interpolate(scrollX.value, inputRange, [1, 1.5, 1], {
+
+    const width = interpolate(scrollX.value, inputRange, [8, 24, 8], {
       extrapolateLeft: 'clamp',
       extrapolateRight: 'clamp',
     });
+
+    const height = interpolate(scrollX.value, inputRange, [8, 8, 8], {
+      extrapolateLeft: 'clamp',
+      extrapolateRight: 'clamp',
+    });
+
+    const borderRadius = interpolate(scrollX.value, inputRange, [4, 4, 4], {
+      extrapolateLeft: 'clamp',
+      extrapolateRight: 'clamp',
+    });
+
     const opacity = interpolate(scrollX.value, inputRange, [0.8, 1, 0.8], {
       extrapolateLeft: 'clamp',
       extrapolateRight: 'clamp',
     });
 
+    const backgroundColor = interpolateColor(
+      scrollX.value,
+      inputRange,
+      ['rgba(255, 255, 255, 0.8)', '#FF6B35', 'rgba(255, 255, 255, 0.8)']
+    );
+
     return {
+      width,
+      height,
+      borderRadius,
       opacity,
-      transform: [{ scale }],
+      backgroundColor,
     };
   });
 
   return (
     <Animated.View 
-      className="w-4 h-4 rounded-full bg-white"
       style={dotAnimatedStyle} 
     />
   );
