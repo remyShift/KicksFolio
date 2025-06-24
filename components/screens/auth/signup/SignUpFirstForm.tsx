@@ -83,7 +83,7 @@ export default function SignUpFirstForm() {
                     <FormTextInput
                         name="username"
                         control={control}
-                        label="*Username"
+                        label="Username*"
                         placeholder="johnSneakers"
                         ref={usernameInputRef}
                         nextInputRef={emailInputRef}
@@ -98,7 +98,7 @@ export default function SignUpFirstForm() {
                     <FormTextInput
                         name="email"
                         control={control}
-                        label="*Email"
+                        label="Email*"
                         placeholder="john@doe.com"
                         ref={emailInputRef}
                         nextInputRef={passwordInputRef}
@@ -113,7 +113,7 @@ export default function SignUpFirstForm() {
                     <FormPasswordInput
                         name="password"
                         control={control}
-                        label="*Password"
+                        label="Password*"
                         placeholder="********"
                         ref={passwordInputRef}
                         nextInputRef={confirmPasswordInputRef}
@@ -126,7 +126,7 @@ export default function SignUpFirstForm() {
                     <FormPasswordInput
                         name="confirmPassword"
                         control={control}
-                        label="*Confirm Password"
+                        label="Confirm Password*"
                         placeholder="********"
                         ref={confirmPasswordInputRef}
                         onFocus={() => handleFieldFocus('confirmPassword')}

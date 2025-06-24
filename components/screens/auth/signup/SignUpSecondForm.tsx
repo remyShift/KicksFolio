@@ -82,7 +82,7 @@ export default function SignUpSecondForm() {
                     <FormTextInput
                         name="firstName"
                         control={control}
-                        label="*First Name"
+                        label="First Name*"
                         placeholder="John"
                         ref={firstNameInputRef}
                         nextInputRef={lastNameInputRef}
@@ -97,7 +97,7 @@ export default function SignUpSecondForm() {
                     <FormTextInput
                         name="lastName"
                         control={control}
-                        label="*Last Name"
+                        label="Last Name*"
                         placeholder="Doe"
                         ref={lastNameInputRef}
                         nextInputRef={sizeInputRef}
@@ -112,7 +112,7 @@ export default function SignUpSecondForm() {
                     <FormTextInput
                         name="size"
                         control={control}
-                        label="*Sneaker Size (US)"
+                        label="Sneaker Size (US)*"
                         placeholder="9.5"
                         ref={sizeInputRef}
                         keyboardType="numeric"

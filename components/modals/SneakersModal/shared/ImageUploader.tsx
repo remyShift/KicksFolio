@@ -19,7 +19,7 @@ export const ImageUploader = ({
     const MAX_IMAGES = 3;
 
     return (
-        <View className="gap-0 w-full mb-2">
+        <View className="gap-0 w-full">
             <PhotoCarousel
                 photos={images}
                 height={190}

@@ -91,7 +91,7 @@ export default function EditProfileForm() {
                     <FormTextInput
                         name="username"
                         control={control}
-                        label="*Username"
+                        label="Username*"
                         placeholder="Username"
                         ref={usernameInputRef}
                         nextInputRef={firstNameInputRef}
@@ -101,13 +101,13 @@ export default function EditProfileForm() {
                         onBlur={async (value) => { await validateFieldOnBlur('username', value); }}
                         error={getFieldErrorWrapper('username')}
                         getFieldError={getFieldErrorWrapper}
-                        accessibilityLabel="*Username"
+                        accessibilityLabel="Username*"
                     />
 
                     <FormTextInput
                         name="first_name"
                         control={control}
-                        label="*First Name"
+                        label="First Name*"
                         placeholder="First Name"
                         ref={firstNameInputRef}
                         nextInputRef={lastNameInputRef}
@@ -116,13 +116,13 @@ export default function EditProfileForm() {
                         onBlur={async (value) => { await validateFieldOnBlur('first_name', value); }}
                         error={getFieldErrorWrapper('first_name')}
                         getFieldError={getFieldErrorWrapper}
-                        accessibilityLabel="*First Name"
+                        accessibilityLabel="First Name*"
                     />
 
                     <FormTextInput
                         name="last_name"
                         control={control}
-                        label="*Last Name"
+                        label="Last Name*"
                         placeholder="Last Name"
                         ref={lastNameInputRef}
                         nextInputRef={sizeInputRef}
@@ -131,13 +131,13 @@ export default function EditProfileForm() {
                         onBlur={async (value) => { await validateFieldOnBlur('last_name', value); }}
                         error={getFieldErrorWrapper('last_name')}
                         getFieldError={getFieldErrorWrapper}
-                        accessibilityLabel="*Last Name"
+                        accessibilityLabel="Last Name*"
                     />
 
                     <FormTextInput
                         name="sneaker_size"
                         control={control}
-                        label="*Sneaker Size"
+                        label="Sneaker Size*"
                         placeholder="Sneaker Size"
                         ref={sizeInputRef}
                         keyboardType="numeric"
@@ -145,7 +145,7 @@ export default function EditProfileForm() {
                         onBlur={async (value) => { await validateFieldOnBlur('sneaker_size', value); }}
                         error={getFieldErrorWrapper('sneaker_size')}
                         getFieldError={getFieldErrorWrapper}
-                        accessibilityLabel="*Sneaker Size"
+                        accessibilityLabel="Sneaker Size*"
                     />
                 </View>
 

@@ -73,7 +73,7 @@ export default function LoginForm() {
                     <FormTextInput
                         name="email"
                         control={control}
-                        label="*Email"
+                        label="Email*"
                         placeholder="john@doe.com"
                         ref={emailInputRef}
                         nextInputRef={passwordInputRef}
@@ -88,7 +88,7 @@ export default function LoginForm() {
                     <FormPasswordInput
                         name="password"
                         control={control}
-                        label="*Password"
+                        label="Password*"
                         placeholder="********"
                         ref={passwordInputRef}
                         onFocus={() => handleFieldFocus('password')}

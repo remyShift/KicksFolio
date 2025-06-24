@@ -55,7 +55,7 @@ export default function ForgotPasswordForm() {
                     <FormTextInput
                         name="email"
                         control={control}
-                        label="*Email"
+                        label="Email*"
                         placeholder="john@doe.com"
                         ref={emailInputRef}
                         keyboardType="email-address"

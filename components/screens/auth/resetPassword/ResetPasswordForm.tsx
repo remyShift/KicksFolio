@@ -57,7 +57,7 @@ export default function ResetPasswordForm() {
                     <FormPasswordInput
                         name="password"
                         control={control}
-                        label="*New Password"
+                        label="New Password*"
                         placeholder="********"
                         ref={passwordInputRef}
                         nextInputRef={confirmPasswordInputRef}
@@ -70,7 +70,7 @@ export default function ResetPasswordForm() {
                     <FormPasswordInput
                         name="confirmPassword"
                         control={control}
-                        label="*Confirm New Password"
+                        label="Confirm New Password*"
                         placeholder="********"
                         ref={confirmPasswordInputRef}
                         onFocus={() => handleFieldFocus('confirmPassword')}

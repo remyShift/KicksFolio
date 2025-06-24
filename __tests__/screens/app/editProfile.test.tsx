@@ -15,10 +15,10 @@ describe('Edit Profile Form', () => {
 
     beforeEach(() => {
         render(<EditProfileForm />);
-        userNameInput = screen.getByLabelText('*Username');
-        firstNameInput = screen.getByLabelText('*First Name');
-        lastNameInput = screen.getByLabelText('*Last Name');
-        sizeInput = screen.getByLabelText('*Sneaker Size');
+        userNameInput = screen.getByLabelText('Username*');
+        firstNameInput = screen.getByLabelText('First Name*');
+        lastNameInput = screen.getByLabelText('Last Name*');
+        sizeInput = screen.getByLabelText('Sneaker Size*');
         pageTitle = screen.getByTestId('page-title');
         mainButton = screen.getByTestId('main-button');
         errorMessage = screen.getByTestId('error-message');

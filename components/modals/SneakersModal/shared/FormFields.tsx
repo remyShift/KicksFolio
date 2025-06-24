@@ -47,26 +47,24 @@ export const FormFields = ({
 
     return (
         <View className="flex-1 gap-4">
-            <View className="flex-1 gap-2">
-                <ImageUploader
-                    images={sneakerToAdd?.images || []}
-                    setImages={(images: Photo[]) => {
-                        setSneakerToAdd({
-                            ...sneakerToAdd,
-                            images: images,
-                        } as SneakerFormData);
-                    }}
-                    isFocused={false}
-                    sneakerId={sneakerId}
-                />
+            <ImageUploader
+                images={sneakerToAdd?.images || []}
+                setImages={(images: Photo[]) => {
+                    setSneakerToAdd({
+                        ...sneakerToAdd,
+                        images: images,
+                    } as SneakerFormData);
+                }}
+                isFocused={false}
+                sneakerId={sneakerId}
+            />
 
-                {(imageError || displayedError) && (
-                    <ErrorMsg 
-                        content={imageError || displayedError} 
-                        display={true} 
-                    />
-                )}
-            </View>
+            {(imageError || displayedError) && (
+                <ErrorMsg 
+                    content={imageError || displayedError} 
+                    display={true} 
+                />
+            )}
 
             <FormTextInput
                 name="model"
@@ -106,7 +104,7 @@ export const FormFields = ({
 
             <View className="flex-row items-center w-full border-t-2 border-gray-300">
                 <View className="flex-1 flex-col items-center px-2 gap-1 border-r-2 border-gray-300">
-                    <Text className="text-base font-spacemono mt-2">*Size (US)</Text>
+                    <Text className="text-base font-spacemono mt-2">Size (US)*</Text>
                     <FormTextInput
                         name="size"
                         control={control}
@@ -123,7 +121,7 @@ export const FormFields = ({
                 </View>
 
                 <View className="flex-1 flex-col items-center px-4 gap-1 border-r-2 border-gray-300">
-                    <Text className="text-base font-spacemono mt-2">*Condition</Text>
+                    <Text className="text-base font-spacemono mt-2">Condition*</Text>
                     <FormTextInput
                         name="condition"
                         control={control}

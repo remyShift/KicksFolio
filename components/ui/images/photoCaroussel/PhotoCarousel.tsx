@@ -1,10 +1,9 @@
-import { View } from 'react-native';
+import { View, Text } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { AnimatedDot } from './AnimatedDot';
 import { Photo } from '@/types/Sneaker';
 import { PhotoSlide } from './PhotoSlide';
 import { AddPhotoSlide } from './AddPhotoSlide';
-import { CarouselControls } from './CarouselControls';
 import { usePhotoCarousel } from './hooks/usePhotoCarousel';
 import { usePhotoEditor } from './hooks/usePhotoEditor';
 
@@ -133,15 +132,14 @@ export const PhotoCarousel = ({
             ))}
           </View>
         )}
-
-        <CarouselControls
-          photos={photos}
-          currentIndex={currentIndex}
-          maxImages={maxImages}
-          mode={mode}
-          onAddPhoto={() => showImagePicker()}
-        />
       </View>
+      {photos.length > 0 && (
+        <View className="absolute top-2 right-2 bg-black/50 rounded-full px-2 py-1">
+          <Text className="text-white text-xs font-spacemono">
+            {Math.min(currentIndex + 1, photos.length)}/{mode === 'edit' ? maxImages : photos.length}
+          </Text>
+        </View>
+      )}
     </View>
   );
 };
