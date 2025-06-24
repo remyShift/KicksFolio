@@ -58,11 +58,11 @@ export const usePhotoEditor = (
 				newPhotos[0].alt.includes('from SKU search');
 
 			if (hasSkuImage) {
-				newPhotos.splice(1, 0, {
+				newPhotos.push({
 					id: '',
 					uri: imageUri,
 				});
-				setTimeout(() => scrollToIndex?.(1), 100);
+				setTimeout(() => scrollToIndex?.(newPhotos.length - 1), 100);
 			} else {
 				newPhotos.push({
 					id: '',

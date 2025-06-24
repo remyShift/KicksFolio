@@ -6,8 +6,7 @@ import { SneakerFormData } from '@/validation/schemas';
 import { sneakerStatusOptions, sneakerBrandOptions } from '@/validation/schemas';
 import { TextInput } from 'react-native';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
-import { useModalStore } from '@/store/useModalStore';
-import { Photo, SneakerBrand } from '@/types/Sneaker';
+import { Photo } from '@/types/Sneaker';
 import { ImageUploader } from './ImageUploader';
 
 interface FormFieldsProps {
@@ -41,7 +40,6 @@ export const FormFields = ({
         return getFieldError(fieldName);
     };
     
-    const { setSneakerToAdd } = useModalStore();
     const imageError = getFieldErrorWrapper('images');
 
     return (
