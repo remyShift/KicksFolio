@@ -21,7 +21,7 @@ export default function ProfileHeader({ user, userSneakers, viewMode, setViewMod
             <ProfileUpperHeader onMenuPress={onMenuPress} />
             <ProfileInfo user={user} userSneakers={userSneakers} />
             {userSneakers && userSneakers.length > 0 && (
-                <View className="flex-row justify-between items-center px-4">
+                <View className="flex-row justify-between items-center px-4 mb-8">
                     <ViewToggleButton 
                       currentMode={viewMode}
                       onToggle={setViewMode}

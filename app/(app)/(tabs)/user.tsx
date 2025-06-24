@@ -1,6 +1,6 @@
 import { RefreshControl, ScrollView, View } from 'react-native';
 import { useSession } from '@/context/authContext';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { Sneaker } from '@/types/Sneaker';
 import { useAuth } from '@/hooks/useAuth';
 import AddButton from '@/components/ui/buttons/AddButton';
@@ -55,6 +55,14 @@ export default function User() {
     setIsVisible(true);
   };
 
+  const handleMenuPress = useCallback(() => {
+    setDrawerVisible(true);
+  }, []);
+
+  const handleDrawerClose = useCallback(() => {
+    setDrawerVisible(false);
+  }, []);
+
   if (!user) {
     return;
   }
@@ -76,7 +84,7 @@ export default function User() {
           }
         >
           <View className="flex-1 gap-12">
-            <ProfileHeader user={user} userSneakers={userSneakers!} viewMode={viewMode} setViewMode={setViewMode} onMenuPress={() => setDrawerVisible(true)} />
+            <ProfileHeader user={user} userSneakers={userSneakers!} viewMode={viewMode} setViewMode={setViewMode} onMenuPress={handleMenuPress} />
             <EmptySneakersState onAddPress={handleAddSneaker} />
           </View>
           <SneakersModalWrapper />
@@ -84,7 +92,7 @@ export default function User() {
 
         <ProfileDrawer 
           visible={drawerVisible}
-          onClose={() => setDrawerVisible(false)}
+          onClose={handleDrawerClose}
           onLogout={() => logout()}
           user={user}
         />
@@ -94,6 +102,8 @@ export default function User() {
 
   return (
     <>
+      <ProfileHeader user={user} userSneakers={userSneakers} viewMode={viewMode} setViewMode={setViewMode} onMenuPress={handleMenuPress} />
+      
       {viewMode === 'card' ? (
         <ScrollView 
           className="flex-1"
@@ -109,7 +119,6 @@ export default function User() {
           }
         >
           <View className="flex-1 gap-8">
-            <ProfileHeader user={user} userSneakers={userSneakers} viewMode={viewMode} setViewMode={setViewMode} onMenuPress={() => setDrawerVisible(true)} />
             <SneakersCardByBrand 
               sneakersByBrand={sneakersByBrand}
               onSneakerPress={handleSneakerPress}
@@ -122,7 +131,6 @@ export default function User() {
           <SneakersListView 
             sneakers={userSneakers}
             onSneakerPress={handleSneakerPress}
-            header={<ProfileHeader user={user} userSneakers={userSneakers} viewMode={viewMode} setViewMode={setViewMode} onMenuPress={() => setDrawerVisible(true)} />}
             refreshing={refreshing}
             onRefresh={onRefresh}
           />
@@ -132,7 +140,7 @@ export default function User() {
 
       <ProfileDrawer 
         visible={drawerVisible}
-        onClose={() => setDrawerVisible(false)}
+        onClose={handleDrawerClose}
         onLogout={() => logout()}
         user={user}
       />
