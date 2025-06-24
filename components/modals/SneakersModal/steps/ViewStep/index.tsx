@@ -1,9 +1,10 @@
 import { View, Text, ScrollView } from 'react-native';
-import { Image } from 'expo-image';
 import { ConditionBar } from '@/components/ui/indicators/ConditionBar';
 import { useState } from 'react';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import { useModalStore } from '@/store/useModalStore';
+import { PhotoCarousel } from '@/components/ui/images/photoCaroussel/PhotoCarousel';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 export const ViewStep = () => {
     const { currentSneaker } = useModalStore();
@@ -13,24 +14,26 @@ export const ViewStep = () => {
         return null;
     }
 
+    const photos = currentSneaker.images?.map((image, index) => ({
+        id: `${currentSneaker.id || 'temp'}-${index}`,
+        uri: image.uri,
+        alt: `${currentSneaker.model} image ${index + 1}`
+    })) || [];
+
+    console.log(photos);
+
     return (
         <View className="flex-1 gap-4">
             <ErrorMsg content={errorMsg} display={errorMsg !== ''}/>
             
-            <Image 
-                source={{ uri: currentSneaker.images?.[0]?.url }} 
-                style={{
-                    width: '100%',
-                    height: 170,
-                    borderRadius: 3
-                }}
-                contentFit="cover"
-                contentPosition="center"
-                cachePolicy="memory-disk"
-                onError={(error) => {
-                    setErrorMsg(`Failed to load image: ${error}`);
-                }}
-            />
+            {photos.length > 0 ? (
+                <PhotoCarousel photos={photos} height={180} />
+            ) : (
+                <View className="h-50 bg-gray-200 rounded-md flex items-center justify-center">
+                    <MaterialIcons name="image" size={48} color="gray" />
+                    <Text className="text-gray-500 mt-2">No images available</Text>
+                </View>
+            )}
 
             <View className="flex-row justify-between items-center px-2">
                 <View className="flex gap-0">

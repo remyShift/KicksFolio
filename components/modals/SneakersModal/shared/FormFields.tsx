@@ -6,8 +6,9 @@ import { SneakerFormData } from '@/validation/schemas';
 import { sneakerStatusOptions, sneakerBrandOptions } from '@/validation/schemas';
 import { TextInput } from 'react-native';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
-import { ImageUploader } from './ImageUploader';
 import { useModalStore } from '@/store/useModalStore';
+import { Photo } from '@/types/Sneaker';
+import { ImageUploader } from './ImageUploader';
 
 interface FormFieldsProps {
     control: Control<SneakerFormData>;
@@ -39,33 +40,30 @@ export const FormFields = ({
     };
     
     const { sneakerToAdd, setSneakerToAdd, currentSneaker } = useModalStore();
-
-    const imageDisplayed = sneakerToAdd?.images?.[0]?.url || currentSneaker?.images?.[0]?.url;
-    
     const imageError = getFieldErrorWrapper('images');
     const hasImageError = !!imageError;
 
     return (
-        <View className="flex-1 gap-4">
-            <ImageUploader
-                image={imageDisplayed || ''}
-                setImage={(uri: string) => {
-                    setSneakerToAdd({
-                        ...sneakerToAdd,
-                        images: [{ url: uri }, ...(sneakerToAdd?.images?.slice(1) || [])],
-                    } as any);
-                }}
-                isError={hasImageError}
-                isFocused={false}
-                setIsError={() => {}}
-            />
-
-            {(imageError || displayedError) && (
-                <ErrorMsg 
-                    content={imageError || displayedError} 
-                    display={true} 
+        <View className="flex-1 gap-3">
+            <View className="flex-1 gap-2">
+                <ImageUploader
+                    images={sneakerToAdd?.images || []}
+                    setImages={(images: Photo[]) => {
+                        setSneakerToAdd({
+                            ...sneakerToAdd,
+                            images: images,
+                        } as SneakerFormData);
+                    }}
+                    isFocused={false}
                 />
-            )}
+
+                {(imageError || displayedError) && (
+                    <ErrorMsg 
+                        content={imageError || displayedError} 
+                        display={true} 
+                    />
+                )}
+            </View>
 
             <FormTextInput
                 name="model"
@@ -104,7 +102,7 @@ export const FormFields = ({
             </View>
 
             <View className="flex-row items-center w-full border-t-2 border-gray-300">
-                <View className="flex-1 flex-col items-center px-4 gap-1 border-r-2 border-gray-300">
+                <View className="flex-1 flex-col items-center px-2 gap-1 border-r-2 border-gray-300">
                     <Text className="text-base font-spacemono mt-2">*Size (US)</Text>
                     <FormTextInput
                         name="size"

@@ -16,13 +16,11 @@ export const useFormValidation = (
 		setSneakerToAdd,
 	} = useModalStore();
 
-	// Utilisation de useRef pour éviter les re-créations constantes
 	const watchRef = useRef(watch);
 	const resetRef = useRef(reset);
 	const triggerRef = useRef(trigger);
 	const getFieldErrorRef = useRef(getFieldError);
 
-	// Mise à jour des refs
 	watchRef.current = watch;
 	resetRef.current = reset;
 	triggerRef.current = trigger;

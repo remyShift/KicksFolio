@@ -6,6 +6,7 @@ import { sneakerSchema, SneakerFormData } from '@/validation/schemas';
 import { FormFields } from '../../shared/FormFields';
 import { useFormValidation } from '../../hooks/useFormValidation';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
+import { Photo, SneakerBrand } from '@/types/Sneaker';
 
 export const FormStep = () => {
     const scrollViewRef = useRef<ScrollView>(null);
@@ -33,7 +34,7 @@ export const FormStep = () => {
         authErrorMsg: errorMsg,
         defaultValues: {
             model: '',
-            brand: 'Other',
+            brand: SneakerBrand.Other,
             status: '',
             size: '',
             condition: '',
@@ -43,13 +44,7 @@ export const FormStep = () => {
         },
         onSubmit: async (data) => {
             setSneakerToAdd({
-                model: data.model,
-                brand: data.brand,
-                status: data.status,
-                size: data.size,
-                condition: data.condition,
-                price_paid: data.price_paid,
-                description: data.description,
+                ...data,
                 images: sneakerToAdd?.images || [],
             } as SneakerFormData);
         },
@@ -59,29 +54,25 @@ export const FormStep = () => {
 
     useEffect(() => {
         if (fetchedSneaker) {
-            const imageData = fetchedSneaker.image?.url ? [{ url: fetchedSneaker.image.url }] : [];
+            const imageData: Photo[] = fetchedSneaker.image?.uri ? [{
+                id: '',
+                uri: fetchedSneaker.image.uri,
+                alt: `${fetchedSneaker.model} from SKU search`
+            }] : [];
             
-            reset({
+            const formData: SneakerFormData = {
                 model: fetchedSneaker.model || '',
-                brand: fetchedSneaker.brand || 'Other',
+                brand: fetchedSneaker.brand as SneakerBrand,
                 status: '',
                 size: '',
                 condition: '',
                 price_paid: '',
                 description: fetchedSneaker.description || '',
                 images: imageData,
-            } as SneakerFormData);
+            };
             
-            setSneakerToAdd({
-                model: fetchedSneaker.model || '',
-                brand: fetchedSneaker.brand || 'Other',
-                status: '',
-                size: '',
-                condition: '',
-                images: imageData,
-                price_paid: '',
-                description: fetchedSneaker.description || '',
-            } as SneakerFormData);
+            reset(formData);
+            setSneakerToAdd(formData);
             
             setFetchedSneaker(null);
         }
@@ -90,10 +81,14 @@ export const FormStep = () => {
     useEffect(() => {
         return () => {
             setErrorMsg('');
-            setSneakerToAdd({
-                ...sneakerToAdd,
-                images: [],
-            } as SneakerFormData);
+            if (sneakerToAdd) {
+                const resetData: SneakerFormData = {
+                    ...sneakerToAdd,
+                    brand: sneakerToAdd.brand as SneakerBrand,
+                    images: [],
+                };
+                setSneakerToAdd(resetData);
+            }
         };
     }, []);
 

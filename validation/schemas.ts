@@ -1,6 +1,26 @@
 import { SneakerBrand } from '@/types/Sneaker';
 import { z } from 'zod';
 
+export const sneakerStatusOptions = [
+	{ label: 'Stocking', value: 'stocking' },
+	{ label: 'Rocking', value: 'rocking' },
+	{ label: 'Selling', value: 'selling' },
+];
+
+export const sneakerBrandOptions: { label: string; value: SneakerBrand }[] = [
+	{ label: 'Nike', value: SneakerBrand.Nike },
+	{ label: 'Adidas', value: SneakerBrand.Adidas },
+	{ label: 'Puma', value: SneakerBrand.Puma },
+	{ label: 'Vans', value: SneakerBrand.Vans },
+	{ label: 'Converse', value: SneakerBrand.Converse },
+	{ label: 'Jordan', value: SneakerBrand.Jordan },
+	{ label: 'Yeezy', value: SneakerBrand.Yeezy },
+	{ label: 'New Balance', value: SneakerBrand.NewBalance },
+	{ label: 'Asics', value: SneakerBrand.Asics },
+	{ label: 'Reebok', value: SneakerBrand.Reebok },
+	{ label: 'Other', value: SneakerBrand.Other },
+];
+
 export const signUpStep1Schema = z
 	.object({
 		username: z
@@ -60,8 +80,15 @@ export const loginSchema = z.object({
 
 export const sneakerSchema = z.object({
 	images: z
-		.array(z.object({ url: z.string() }))
-		.min(1, 'Please upload at least one image.'),
+		.array(
+			z.object({
+				id: z.string().optional(),
+				uri: z.string(),
+				alt: z.string().optional(),
+			})
+		)
+		.min(1, 'Please upload at least one image.')
+		.max(3, 'You can upload a maximum of 3 images.'),
 	model: z
 		.string()
 		.min(2, 'Sneaker model must be at least 2 characters long.')
@@ -76,12 +103,7 @@ export const sneakerSchema = z.object({
 			'A brand name cannot be in the model.'
 		),
 	brand: z
-		.string()
-		.min(1, 'Please select a brand.')
-		.refine(
-			(val) => sneakerBrandOptions.some((option) => option.value === val),
-			'Please select a valid brand.'
-		)
+		.enum(Object.values(SneakerBrand) as [string, ...string[]])
 		.transform((val) => val as SneakerBrand),
 	status: z
 		.string()
@@ -120,26 +142,6 @@ export const sneakerSchema = z.object({
 		),
 	description: z.string().optional(),
 });
-
-export const sneakerStatusOptions = [
-	{ label: 'Stocking', value: 'stocking' },
-	{ label: 'Rocking', value: 'rocking' },
-	{ label: 'Selling', value: 'selling' },
-];
-
-export const sneakerBrandOptions: { label: string; value: SneakerBrand }[] = [
-	{ label: 'Nike', value: 'Nike' },
-	{ label: 'Adidas', value: 'Adidas' },
-	{ label: 'Puma', value: 'Puma' },
-	{ label: 'Vans', value: 'Vans' },
-	{ label: 'Converse', value: 'Converse' },
-	{ label: 'Jordan', value: 'Jordan' },
-	{ label: 'Yeezy', value: 'Yeezy' },
-	{ label: 'New Balance', value: 'New Balance' },
-	{ label: 'Asics', value: 'Asics' },
-	{ label: 'Reebok', value: 'Reebok' },
-	{ label: 'Other', value: 'Other' },
-];
 
 export const editProfileSchema = z.object({
 	username: z

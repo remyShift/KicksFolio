@@ -1,4 +1,4 @@
-import { Sneaker } from '@/types/Sneaker';
+import { Sneaker, Photo } from '@/types/Sneaker';
 import {
 	SupabaseSneakerService,
 	SupabaseSneaker,
@@ -90,7 +90,7 @@ export const useSneakerAPI = (userId: string) => {
 						brand: responseResult.brand.toLowerCase() || '',
 						description: responseResult.story || '',
 						image: {
-							url: responseResult.image.original || '',
+							uri: responseResult.image.original || '',
 						},
 					};
 					callbacks.setFetchedSneaker?.(transformedSneaker);
@@ -116,7 +116,11 @@ export const useSneakerAPI = (userId: string) => {
 			size: supabaseSneaker.size,
 			condition: supabaseSneaker.condition,
 			status: supabaseSneaker.status,
-			images: supabaseSneaker.images,
+			images: supabaseSneaker.images.map((img, index) => ({
+				id: img.id || '',
+				uri: img.url || '',
+				alt: `${supabaseSneaker.model} image ${index + 1}`,
+			})),
 			price_paid: supabaseSneaker.price_paid || 0,
 			description: supabaseSneaker.description || '',
 			created_at: supabaseSneaker.created_at,
@@ -174,7 +178,7 @@ export const useSneakerAPI = (userId: string) => {
 			.then(async (createdSneaker: SupabaseSneaker) => {
 				const processedImages =
 					await SupabaseImageService.processAndUploadSneakerImages(
-						formData.images,
+						formData.images.map((img) => ({ url: img.uri })),
 						user.id,
 						createdSneaker.id
 					);
@@ -240,7 +244,7 @@ export const useSneakerAPI = (userId: string) => {
 
 				const processedImages =
 					await SupabaseImageService.processAndUploadSneakerImages(
-						formData.images,
+						formData.images.map((img) => ({ url: img.uri })),
 						user.id,
 						sneakerId
 					);

@@ -1,15 +1,22 @@
-export type SneakerBrand =
-	| 'Nike'
-	| 'Adidas'
-	| 'Converse'
-	| 'New Balance'
-	| 'Puma'
-	| 'Jordan'
-	| 'Yeezy'
-	| 'Asics'
-	| 'Reebok'
-	| 'Vans'
-	| 'Other';
+export enum SneakerBrand {
+	Nike = 'Nike',
+	Adidas = 'Adidas',
+	Converse = 'Converse',
+	NewBalance = 'New Balance',
+	Puma = 'Puma',
+	Jordan = 'Jordan',
+	Yeezy = 'Yeezy',
+	Asics = 'Asics',
+	Reebok = 'Reebok',
+	Vans = 'Vans',
+	Other = 'Other',
+}
+
+export type Photo = {
+	id?: string;
+	uri: string;
+	alt?: string;
+};
 
 export type Sneaker = {
 	id: string;
@@ -23,8 +30,5 @@ export type Sneaker = {
 	collection_id: string;
 	created_at: string;
 	updated_at: string;
-	images: {
-		id: string;
-		url: string;
-	}[];
+	images: Photo[];
 };

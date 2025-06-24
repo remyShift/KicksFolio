@@ -1,4 +1,4 @@
-import { Sneaker, SneakerBrand } from '@/types/Sneaker';
+import { Sneaker, SneakerBrand, Photo } from '@/types/Sneaker';
 
 export type ModalStep = 'index' | 'sku' | 'addForm' | 'editForm' | 'view';
 
@@ -48,7 +48,7 @@ export interface SneakerFormData {
 	status: string;
 	size: string;
 	condition: string;
-	images: { url: string }[];
+	images: Photo[];
 	price_paid?: string;
 	description?: string;
 }
