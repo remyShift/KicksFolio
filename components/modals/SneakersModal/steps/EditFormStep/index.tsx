@@ -1,4 +1,4 @@
-import { View, ScrollView, TextInput } from 'react-native';
+import { ScrollView, TextInput } from 'react-native';
 import { useRef, useEffect } from 'react';
 import { useModalStore } from '@/store/useModalStore';
 import { useFormController } from '@/hooks/useFormController';
@@ -116,21 +116,19 @@ export const EditFormStep = () => {
             contentContainerStyle={{ flexGrow: 1, padding: 8 }}
             bottomOffset={10}
         >
-            <View className="flex-1 gap-4">
-                <FormFields
-                    control={control}
-                    handleFieldFocus={handleFieldFocus}
-                    validateFieldOnBlur={validateFieldOnBlur}
-                    getFieldError={getFieldErrorWrapper}
-                    modelInputRef={modelInputRef}
-                    brandInputRef={brandInputRef}
-                    sizeInputRef={sizeInputRef}
-                    pricePaidInputRef={pricePaidInputRef}
-                    descriptionInputRef={descriptionInputRef}
-                    displayedError={displayedError}
-                    sneakerId={currentSneaker?.id}
-                />
-            </View>
+            <FormFields
+                control={control}
+                handleFieldFocus={handleFieldFocus}
+                validateFieldOnBlur={validateFieldOnBlur}
+                getFieldError={getFieldErrorWrapper}
+                modelInputRef={modelInputRef}
+                brandInputRef={brandInputRef}
+                sizeInputRef={sizeInputRef}
+                pricePaidInputRef={pricePaidInputRef}
+                descriptionInputRef={descriptionInputRef}
+                displayedError={displayedError}
+                sneakerId={currentSneaker?.id}
+            />
         </KeyboardAwareScrollView>
     );
 }; 

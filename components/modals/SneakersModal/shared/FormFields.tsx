@@ -46,7 +46,7 @@ export const FormFields = ({
     const hasImageError = !!imageError;
 
     return (
-        <View className="flex-1 gap-3">
+        <View className="flex-1 gap-4">
             <View className="flex-1 gap-2">
                 <ImageUploader
                     images={sneakerToAdd?.images || []}
