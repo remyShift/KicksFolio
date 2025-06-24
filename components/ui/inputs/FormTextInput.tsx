@@ -52,7 +52,7 @@ const FormTextInput = forwardRef<TextInput, FormTextInputProps<any>>(
 
     const [isFocused, setIsFocused] = useState(false);
 
-    const textInputHeight = multiline ? 140 : 40;
+    const textInputHeight = multiline ? 135 : 40;
 
     return (
         <View className="flex flex-col gap-2 w-full">

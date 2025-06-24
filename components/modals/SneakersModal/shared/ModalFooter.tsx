@@ -41,7 +41,7 @@ export const ModalFooter = () => {
     }, [currentSneaker, modalStep, userSneakers]);
 
     return (
-        <View className="justify-end items-start w-full pb-5">
+        <View className="justify-end items-start w-full pb-6">
             {modalStep === 'sku' && (
                 <View className="flex-row justify-between w-full">
                     <BackButton 

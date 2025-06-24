@@ -65,7 +65,7 @@ export const signUpStep2Schema = z.object({
 		.refine((val) => {
 			const num = Number(val);
 			return !isNaN(num) && num >= 7 && num <= 15;
-		}, 'Please enter a valid size, size must be a number between 7 and 15.')
+		}, 'Size must be a number between 7 and 15.')
 		.refine((val) => {
 			const num = Number(val);
 			return (num * 2) % 1 === 0;
@@ -120,7 +120,7 @@ export const sneakerSchema = z.object({
 		.refine((val) => {
 			const num = Number(val);
 			return !isNaN(num) && num >= 7 && num <= 15;
-		}, 'Please enter a valid size, size must be a number between 7 and 15.')
+		}, 'Size must be a number between 7 and 15.')
 		.refine((val) => {
 			const num = Number(val);
 			return (num * 2) % 1 === 0;
@@ -131,7 +131,7 @@ export const sneakerSchema = z.object({
 		.refine(
 			(val) =>
 				!isNaN(Number(val)) && Number(val) >= 1 && Number(val) <= 10,
-			'Please enter a valid condition, condition must be a number between 1 and 10.'
+			'Condition must be a number between 1 and 10.'
 		),
 	price_paid: z
 		.string()
@@ -169,7 +169,7 @@ export const editProfileSchema = z.object({
 		.transform((val) => val.replace(',', '.'))
 		.refine(
 			(val) => !isNaN(Number(val)) && Number(val) > 7 && Number(val) < 16,
-			'Please enter a valid size, size must be a number between 7 and 15.'
+			'Size must be a number between 7 and 15.'
 		)
 		.refine((val) => {
 			const num = Number(val);
