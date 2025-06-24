@@ -110,32 +110,26 @@ export const EditFormStep = () => {
 
     return (
         <KeyboardAwareScrollView
-            contentContainerStyle={{ flexGrow: 1 }}
+            ref={scrollViewRef}
+            className='flex-1'
             keyboardShouldPersistTaps="handled"
-            extraKeyboardSpace={100}
+            contentContainerStyle={{ flexGrow: 1, padding: 8 }}
+            bottomOffset={10}
         >
-            <ScrollView 
-                ref={scrollViewRef}
-                className='flex-1'
-                keyboardShouldPersistTaps="handled"
-                nestedScrollEnabled={true}
-                contentContainerStyle={{ minHeight: '100%' }}
-            >
-                <View className="flex-1 h-full p-2 gap-4">
-                    <FormFields
-                        control={control}
-                        handleFieldFocus={handleFieldFocus}
-                        validateFieldOnBlur={validateFieldOnBlur}
-                        getFieldError={getFieldErrorWrapper}
-                        modelInputRef={modelInputRef}
-                        brandInputRef={brandInputRef}
-                        sizeInputRef={sizeInputRef}
-                        pricePaidInputRef={pricePaidInputRef}
-                        descriptionInputRef={descriptionInputRef}
-                        displayedError={displayedError}
-                    />
-                </View>
-            </ScrollView>
+            <View className="flex-1 gap-4">
+                <FormFields
+                    control={control}
+                    handleFieldFocus={handleFieldFocus}
+                    validateFieldOnBlur={validateFieldOnBlur}
+                    getFieldError={getFieldErrorWrapper}
+                    modelInputRef={modelInputRef}
+                    brandInputRef={brandInputRef}
+                    sizeInputRef={sizeInputRef}
+                    pricePaidInputRef={pricePaidInputRef}
+                    descriptionInputRef={descriptionInputRef}
+                    displayedError={displayedError}
+                />
+            </View>
         </KeyboardAwareScrollView>
     );
 }; 

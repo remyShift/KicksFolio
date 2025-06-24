@@ -1,10 +1,11 @@
 import { Slot } from 'expo-router';
-import { SessionProvider, useSession } from '@/context/authContext';
+import { SessionProvider } from '@/context/authContext';
 import { useFonts } from 'expo-font';
 import "../global.css";
 import SplashScreen from '@/components/screens/SplashScreen/SplashScreen'
 import { useState, useCallback } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { KeyboardProvider } from "react-native-keyboard-controller";
 
 const FONTS = {
     'Actonia': require('../assets/fonts/Actonia.ttf'),
@@ -41,9 +42,11 @@ function AppContent() {
 export default function RootLayout() {
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
-            <SessionProvider>
-                <AppContent />
-            </SessionProvider>
+            <KeyboardProvider>
+                <SessionProvider>
+                    <AppContent />
+                </SessionProvider>
+            </KeyboardProvider>
         </GestureHandlerRootView>
     );
 }

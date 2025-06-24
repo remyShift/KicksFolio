@@ -1,13 +1,14 @@
-import { Platform, View, KeyboardAvoidingView, Text } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 import { useSession } from '@/context/authContext';
 import { useModalStore } from '@/store/useModalStore';
 import SkuInput from './SkuInput';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Link } from 'expo-router';
 import { FontAwesome6 } from '@expo/vector-icons';
 import { useSneakerAPI } from '../../hooks/useSneakerAPI';
 import { useForm } from 'react-hook-form';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 interface SkuFormValues {
     sku: string;
@@ -15,6 +16,7 @@ interface SkuFormValues {
 
 export const SkuStep = () => {
     const { user } = useSession();
+    const scrollViewRef = useRef<ScrollView>(null);
     const { control, handleSubmit, watch } = useForm<SkuFormValues>({
         defaultValues: {
             sku: ''
@@ -54,10 +56,12 @@ export const SkuStep = () => {
     };
 
     return (
-        <KeyboardAvoidingView 
+        <KeyboardAwareScrollView 
+            ref={scrollViewRef}
             className="flex-1" 
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            keyboardVerticalOffset={Platform.OS === 'ios' ? 120 : 20}
+            keyboardShouldPersistTaps="handled"
+            contentContainerStyle={{ flexGrow: 1, padding: 8 }}
+            bottomOffset={10}
         >
             <View className="w-full justify-center items-center gap-12 mt-10">
                 <View className="flex-row items-center">
@@ -85,6 +89,6 @@ export const SkuStep = () => {
                     NB : For Nike sneakers dont forget the "-" and the 3 numbers following it or it will not work.
                 </Text>
             </View>
-        </KeyboardAvoidingView>
+        </KeyboardAwareScrollView>
     );
 };

@@ -1,10 +1,11 @@
-import { View, KeyboardAvoidingView, ScrollView, Platform, TextInput } from 'react-native';
+import { View, ScrollView, Platform, TextInput } from 'react-native';
 import { useRef, useEffect } from 'react';
 import { useModalStore } from '@/store/useModalStore';
 import { useFormController } from '@/hooks/useFormController';
 import { sneakerSchema, SneakerFormData } from '@/validation/schemas';
 import { FormFields } from '../../shared/FormFields';
 import { useFormValidation } from '../../hooks/useFormValidation';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 export const FormStep = () => {
     const scrollViewRef = useRef<ScrollView>(null);
@@ -97,33 +98,27 @@ export const FormStep = () => {
     }, []);
 
     return (
-        <KeyboardAvoidingView 
-            className="flex-1" 
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            keyboardVerticalOffset={Platform.OS === 'ios' ? 120 : 20}
+        <KeyboardAwareScrollView
+            ref={scrollViewRef}
+            className='flex-1'
+            keyboardShouldPersistTaps="handled"
+            contentContainerStyle={{ flexGrow: 1, padding: 8 }}
+            bottomOffset={10}
         >
-            <ScrollView 
-                ref={scrollViewRef}
-                className='flex-1'
-                keyboardShouldPersistTaps="handled"
-                nestedScrollEnabled={true}
-                contentContainerStyle={{ minHeight: '100%' }}
-            >
-                <View className="flex-1 h-full p-2 gap-4">
-                    <FormFields
-                        control={control}
-                        displayedError={displayedError}
-                        handleFieldFocus={handleFieldFocus}
-                        validateFieldOnBlur={validateFieldOnBlur}
-                        getFieldError={getFieldErrorWrapper}
-                        modelInputRef={modelInputRef}
-                        brandInputRef={brandInputRef}
-                        sizeInputRef={sizeInputRef}
-                        pricePaidInputRef={pricePaidInputRef}
-                        descriptionInputRef={descriptionInputRef}
-                    />
-                </View>
-            </ScrollView>
-        </KeyboardAvoidingView>
+            <View className="flex-1 h-full p-2 gap-4">
+                <FormFields
+                    control={control}
+                    displayedError={displayedError}
+                    handleFieldFocus={handleFieldFocus}
+                    validateFieldOnBlur={validateFieldOnBlur}
+                    getFieldError={getFieldErrorWrapper}
+                    modelInputRef={modelInputRef}
+                    brandInputRef={brandInputRef}
+                    sizeInputRef={sizeInputRef}
+                    pricePaidInputRef={pricePaidInputRef}
+                    descriptionInputRef={descriptionInputRef}
+                />
+            </View>
+        </KeyboardAwareScrollView>
     );
 };

@@ -1,4 +1,4 @@
-import { View, ScrollView, KeyboardAvoidingView, Platform, Pressable, TextInput } from 'react-native'
+import { View, ScrollView, Pressable, TextInput } from 'react-native'
 import { useRef } from 'react'
 import { router } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
@@ -11,6 +11,7 @@ import FormImageInput from '@/components/ui/inputs/FormImageInput'
 import { useAuth } from '@/hooks/useAuth'
 import { useFormController } from '@/hooks/useFormController'
 import { editProfileSchema } from '@/validation/schemas'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller'
 
 export default function EditProfileForm() {
     const { user, refreshUserData } = useSession()
@@ -62,104 +63,105 @@ export default function EditProfileForm() {
     };
 
     return (
-        <KeyboardAvoidingView 
+        <KeyboardAwareScrollView 
+            ref={scrollViewRef}
             className="flex-1 bg-background" 
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            keyboardShouldPersistTaps="handled"
+            contentContainerStyle={{ flexGrow: 1, padding: 8 }}
+            bottomOffset={10}
         >
-            <ScrollView className="flex-1" ref={scrollViewRef}>
-                <View className="flex-1 p-4 gap-8">
-                    <Pressable onPress={() => router.back()} className='absolute right-5 top-14'>
-                        <Ionicons name="close-outline" size={32} color="#666" />
-                    </Pressable>
-                    <View className="flex-row justify-center items-center">
-                        <PageTitle content="Edit profile" />
-                    </View>
+            <View className="flex-1 p-4 gap-8">
+                <Pressable onPress={() => router.back()} className='absolute right-5 top-14'>
+                    <Ionicons name="close-outline" size={32} color="#666" />
+                </Pressable>
+                <View className="flex-row justify-center items-center">
+                    <PageTitle content="Edit profile" />
+                </View>
 
-                    <FormImageInput
-                        name="profile_picture"
+                <FormImageInput
+                    name="profile_picture"
+                    control={control}
+                    size={128}
+                    isRounded={true}
+                />
+
+                <View className="flex flex-col gap-4 w-full justify-center items-center px-12">
+                    <ErrorMsg content={displayedError} display={displayedError !== ''} />
+
+                    <FormTextInput
+                        name="username"
                         control={control}
-                        size={128}
-                        isRounded={true}
+                        label="*Username"
+                        placeholder="Username"
+                        ref={usernameInputRef}
+                        nextInputRef={firstNameInputRef}
+                        autoComplete="username"
+                        maxLength={16}
+                        onFocus={() => handleFieldFocus('username')}
+                        onBlur={async (value) => { await validateFieldOnBlur('username', value); }}
+                        error={getFieldErrorWrapper('username')}
+                        getFieldError={getFieldErrorWrapper}
+                        accessibilityLabel="*Username"
                     />
 
-                    <View className="flex flex-col gap-4 w-full justify-center items-center px-12">
-                        <ErrorMsg content={displayedError} display={displayedError !== ''} />
+                    <FormTextInput
+                        name="first_name"
+                        control={control}
+                        label="*First Name"
+                        placeholder="First Name"
+                        ref={firstNameInputRef}
+                        nextInputRef={lastNameInputRef}
+                        autoComplete="name"
+                        onFocus={() => handleFieldFocus('first_name')}
+                        onBlur={async (value) => { await validateFieldOnBlur('first_name', value); }}
+                        error={getFieldErrorWrapper('first_name')}
+                        getFieldError={getFieldErrorWrapper}
+                        accessibilityLabel="*First Name"
+                    />
 
-                        <FormTextInput
-                            name="username"
-                            control={control}
-                            label="*Username"
-                            placeholder="Username"
-                            ref={usernameInputRef}
-                            nextInputRef={firstNameInputRef}
-                            autoComplete="username"
-                            maxLength={16}
-                            onFocus={() => handleFieldFocus('username')}
-                            onBlur={async (value) => { await validateFieldOnBlur('username', value); }}
-                            error={getFieldErrorWrapper('username')}
-                            getFieldError={getFieldErrorWrapper}
-                            accessibilityLabel="*Username"
-                        />
+                    <FormTextInput
+                        name="last_name"
+                        control={control}
+                        label="*Last Name"
+                        placeholder="Last Name"
+                        ref={lastNameInputRef}
+                        nextInputRef={sizeInputRef}
+                        autoComplete="name"
+                        onFocus={() => handleFieldFocus('last_name')}
+                        onBlur={async (value) => { await validateFieldOnBlur('last_name', value); }}
+                        error={getFieldErrorWrapper('last_name')}
+                        getFieldError={getFieldErrorWrapper}
+                        accessibilityLabel="*Last Name"
+                    />
 
-                        <FormTextInput
-                            name="first_name"
-                            control={control}
-                            label="*First Name"
-                            placeholder="First Name"
-                            ref={firstNameInputRef}
-                            nextInputRef={lastNameInputRef}
-                            autoComplete="name"
-                            onFocus={() => handleFieldFocus('first_name')}
-                            onBlur={async (value) => { await validateFieldOnBlur('first_name', value); }}
-                            error={getFieldErrorWrapper('first_name')}
-                            getFieldError={getFieldErrorWrapper}
-                            accessibilityLabel="*First Name"
-                        />
-
-                        <FormTextInput
-                            name="last_name"
-                            control={control}
-                            label="*Last Name"
-                            placeholder="Last Name"
-                            ref={lastNameInputRef}
-                            nextInputRef={sizeInputRef}
-                            autoComplete="name"
-                            onFocus={() => handleFieldFocus('last_name')}
-                            onBlur={async (value) => { await validateFieldOnBlur('last_name', value); }}
-                            error={getFieldErrorWrapper('last_name')}
-                            getFieldError={getFieldErrorWrapper}
-                            accessibilityLabel="*Last Name"
-                        />
-
-                        <FormTextInput
-                            name="sneaker_size"
-                            control={control}
-                            label="*Sneaker Size"
-                            placeholder="Sneaker Size"
-                            ref={sizeInputRef}
-                            keyboardType="numeric"
-                            onFocus={() => handleFieldFocus('sneaker_size')}
-                            onBlur={async (value) => { await validateFieldOnBlur('sneaker_size', value); }}
-                            error={getFieldErrorWrapper('sneaker_size')}
-                            getFieldError={getFieldErrorWrapper}
-                            accessibilityLabel="*Sneaker Size"
-                        />
-                    </View>
-
-                    <View className='flex w-full justify-center items-center'>
-                        <MainButton 
-                            content="Save"
-                            onPressAction={() => {
-                                if (!isSubmitDisabled) {
-                                    handleFormSubmit();
-                                }
-                            }}
-                            backgroundColor={isSubmitDisabled ? 'bg-primary/50' : 'bg-primary'}
-                            isDisabled={isSubmitDisabled}
-                        />
-                    </View>
+                    <FormTextInput
+                        name="sneaker_size"
+                        control={control}
+                        label="*Sneaker Size"
+                        placeholder="Sneaker Size"
+                        ref={sizeInputRef}
+                        keyboardType="numeric"
+                        onFocus={() => handleFieldFocus('sneaker_size')}
+                        onBlur={async (value) => { await validateFieldOnBlur('sneaker_size', value); }}
+                        error={getFieldErrorWrapper('sneaker_size')}
+                        getFieldError={getFieldErrorWrapper}
+                        accessibilityLabel="*Sneaker Size"
+                    />
                 </View>
-            </ScrollView>
-        </KeyboardAvoidingView>
+
+                <View className='flex w-full justify-center items-center'>
+                    <MainButton 
+                        content="Save"
+                        onPressAction={() => {
+                            if (!isSubmitDisabled) {
+                                handleFormSubmit();
+                            }
+                        }}
+                        backgroundColor={isSubmitDisabled ? 'bg-primary/50' : 'bg-primary'}
+                        isDisabled={isSubmitDisabled}
+                    />
+                </View>
+            </View>
+        </KeyboardAwareScrollView>
     );
 }
