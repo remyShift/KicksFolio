@@ -48,7 +48,6 @@ export const FormFields = ({
                 name="images"
                 control={control}
                 render={({ field: { onChange, value } }) => {
-                    console.log('Controller images value:', value);
                     return (
                         <ImageUploader
                             images={value || []}
