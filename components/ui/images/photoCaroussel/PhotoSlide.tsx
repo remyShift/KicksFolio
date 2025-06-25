@@ -1,6 +1,7 @@
-import { View, Pressable, Image, Alert } from 'react-native';
+import { View, Pressable, Alert } from 'react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Photo } from '@/types/Sneaker';
+import { Image } from 'expo-image';
 
 interface PhotoSlideProps {
   photo: Photo;
@@ -20,15 +21,21 @@ export const PhotoSlide = ({
   onRemove 
 }: PhotoSlideProps) => {
     return (
-    <View style={{ width }} className="h-full" onMoveShouldSetResponder={() => true}>
+    <View style={{ width }} onMoveShouldSetResponder={() => true}>
       <Pressable
         onPress={mode === 'edit' ? onPress : undefined}
         className="w-full h-full"
       >
         <Image
           source={{ uri: photo.uri }}
-          className="w-full h-full rounded-lg"
-          resizeMode="cover"
+          style={{
+            width: '100%',
+            height: '100%',
+            borderRadius: 8
+          }}
+          cachePolicy="memory-disk"
+          contentFit="cover"
+          contentPosition="center"
           accessibilityLabel={
             photo.alt || `Photo ${index + 1}`
           }

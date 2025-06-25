@@ -117,7 +117,7 @@ export default function SneakersModalWrapper() {
                     <PanGestureHandler onGestureEvent={gestureHandler}>
                         <Animated.View className="flex-1 bg-background rounded-t-3xl">
                             
-                            <View className="flex-1 px-4 pb-4">
+                            <View className="flex-1 px-4 py-3">
                                 <SneakersModal />
                             </View>
                         </Animated.View>

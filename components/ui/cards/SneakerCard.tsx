@@ -12,7 +12,7 @@ export default function SneakerCard({ sneaker, setModalStep, setModalVisible, se
 
 
     return (
-        <Pressable className="flex-1 bg-white rounded-md p-3 w-full gap-2 shadow-card"
+        <Pressable className="bg-white rounded-md p-3 gap-2 shadow-card w-96"
             onPress={() => {
                 setSneaker(sneaker);
                 setModalStep('view');
@@ -23,8 +23,8 @@ export default function SneakerCard({ sneaker, setModalStep, setModalVisible, se
             <Image source={{ uri: sneaker.images?.[0]?.uri }}
                 style={{
                     width: '100%',
-                    height: 150,
-                    aspectRatio: 1.9,
+                    minHeight: 180,
+                    flex: 1,
                     borderRadius: 8
                 }}
                 contentFit="cover"

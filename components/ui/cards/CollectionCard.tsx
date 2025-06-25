@@ -20,7 +20,8 @@ export default function CollectionCard({ userCollection, userSneakers }: { userC
                         <Image key={index} source={{ uri: sneaker.images?.[0]?.uri }} 
                             style={{
                                 width: '50%',
-                                height: 100,
+                                height: 'auto',
+                                aspectRatio: 1.5,
                                 borderRadius: 3
                             }}
                             contentFit="cover"

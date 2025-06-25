@@ -46,16 +46,20 @@ export default function SneakersCardByBrand({
                         <ScrollView
                             horizontal
                             showsHorizontalScrollIndicator={false}
+                            contentContainerStyle={{
+                                gap: 20,
+                                paddingHorizontal: 10,
+                                paddingVertical: 15
+                            }}
                         >
                             {sneakers.map((sneaker) => (
-                                <View key={sneaker.id} className="w-96 p-4">
-                                    <SneakerCard
-                                        setModalVisible={() => onSneakerPress(sneaker)}
-                                        sneaker={sneaker}
-                                        setSneaker={(s) => onSneakerPress(s)}
-                                        setModalStep={setModalStep}
-                                    />
-                                </View>
+                                <SneakerCard
+                                    key={sneaker.id}
+                                    setModalVisible={() => onSneakerPress(sneaker)}
+                                    sneaker={sneaker}
+                                    setSneaker={(s) => onSneakerPress(s)}
+                                    setModalStep={setModalStep}
+                                />
                             ))}
                         </ScrollView>
                     </View>
