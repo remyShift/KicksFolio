@@ -58,15 +58,13 @@ export const usePhotoEditor = (
 
 			onPhotosChange?.(newPhotos);
 		} else {
-			// Pour la galerie : utiliser sélection multiple si on peut ajouter plusieurs images
 			const maxImages = 3;
 			const canAddMultiple =
 				replaceIndex === undefined && photos.length < maxImages;
 
 			if (canAddMultiple) {
-				// Sélection multiple possible
 				const availableSlots = maxImages - photos.length;
-				const imageUris = await imageService.pickMultipleImages(
+				const imageUris = await imageService.pickMultipleSneakerImages(
 					availableSlots
 				);
 				if (!imageUris || imageUris.length === 0) return;
@@ -83,20 +81,17 @@ export const usePhotoEditor = (
 
 				onPhotosChange?.(newPhotos);
 
-				// Faire défiler vers la première nouvelle image ajoutée
 				if (imagesToAdd.length > 0) {
 					const firstNewIndex = photos.length;
 					setTimeout(() => scrollToIndex?.(firstNewIndex), 100);
 				}
 			} else {
-				// Sélection unique avec recadrage
-				const imageUri = await imageService.pickImage();
+				const imageUri = await imageService.pickSneakerImage();
 				if (!imageUri) return;
 
 				const newPhotos = [...photos];
 
 				if (replaceIndex !== undefined) {
-					// Mode remplacement
 					const oldPhoto = newPhotos[replaceIndex];
 
 					if (
@@ -122,7 +117,6 @@ export const usePhotoEditor = (
 						alt: newPhotos[replaceIndex].alt,
 					};
 				} else {
-					// Mode ajout
 					newPhotos.push({
 						id: `temp_${Date.now()}`,
 						uri: imageUri,
