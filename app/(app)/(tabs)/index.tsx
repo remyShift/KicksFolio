@@ -7,7 +7,7 @@ import { useSession } from '@/context/authContext';
 import { useLocalSearchParams } from "expo-router";
 import { useEffect } from 'react';
 import { useModalStore } from '@/store/useModalStore';
-import SneakersModalWrapper from '@/components/screens/app/profile/SneakersModalWrapper';
+import SneakersModalWrapper from '@/components/screens/app/SneakersModalWrapper';
 
 export default function Index() {
     const params = useLocalSearchParams();

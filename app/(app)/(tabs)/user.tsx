@@ -8,7 +8,7 @@ import EmptySneakersState from '@/components/screens/app/profile/displayState/Em
 import SneakersCardByBrand from '@/components/screens/app/profile/displayState/SneakersCardByBrand';
 import SneakersListView from '@/components/screens/app/profile/displayState/SneakersListView';
 import ProfileDrawer from '@/components/screens/app/profile/drawer/ProfileDrawer';
-import SneakersModalWrapper from '@/components/screens/app/profile/SneakersModalWrapper';
+import SneakersModalWrapper from '@/components/screens/app/SneakersModalWrapper';
 import { useModalStore } from '@/store/useModalStore';
 import ProfileHeader from '@/components/screens/app/profile/ProfileHeader';
 
