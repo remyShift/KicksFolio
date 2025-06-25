@@ -107,7 +107,7 @@ export const PhotoCarousel = ({
           ref={flatListRef}
           data={displayPhotos}
           renderItem={renderItem}
-          keyExtractor={(item, index) => item.id || index.toString()}
+          keyExtractor={(item, index) => item.id || `${item.uri}-${index}`}
           horizontal
           pagingEnabled
           showsHorizontalScrollIndicator={false}

@@ -17,62 +17,149 @@ export const usePhotoEditor = (
 		type: 'camera' | 'gallery',
 		replaceIndex?: number
 	) => {
-		const imageUri =
-			type === 'camera'
-				? await imageService.takePhoto()
-				: await imageService.pickImage();
+		if (type === 'camera') {
+			const imageUri = await imageService.takePhoto();
+			if (!imageUri) return;
 
-		if (!imageUri) return;
+			const newPhotos = [...photos];
 
-		const newPhotos = [...photos];
+			if (replaceIndex !== undefined) {
+				const oldPhoto = newPhotos[replaceIndex];
 
-		if (replaceIndex !== undefined) {
-			const oldPhoto = newPhotos[replaceIndex];
-
-			if (
-				oldPhoto.id &&
-				user &&
-				sneakerId &&
-				oldPhoto.uri.includes('supabase')
-			) {
-				try {
-					await SupabaseImageService.deleteSpecificSneakerImage(
-						user.id,
-						sneakerId,
-						oldPhoto.id
-					);
-				} catch (error) {
-					console.error('Error deleting old image:', error);
+				if (
+					oldPhoto.id &&
+					user &&
+					sneakerId &&
+					oldPhoto.uri.includes('supabase')
+				) {
+					try {
+						await SupabaseImageService.deleteSpecificSneakerImage(
+							user.id,
+							sneakerId,
+							oldPhoto.id
+						);
+					} catch (error) {
+						console.error('Error deleting old image:', error);
+					}
 				}
-			}
 
-			newPhotos[replaceIndex] = {
-				id: '',
-				uri: imageUri,
-				alt: newPhotos[replaceIndex].alt,
-			};
-		} else {
-			const hasSkuImage =
-				newPhotos.length > 0 &&
-				newPhotos[0].alt &&
-				newPhotos[0].alt.includes('from SKU search');
-
-			if (hasSkuImage) {
-				newPhotos.push({
-					id: '',
+				newPhotos[replaceIndex] = {
+					id: `temp_${Date.now()}`,
 					uri: imageUri,
-				});
-				setTimeout(() => scrollToIndex?.(newPhotos.length - 1), 100);
+					alt: newPhotos[replaceIndex].alt,
+				};
 			} else {
 				newPhotos.push({
-					id: '',
+					id: `temp_${Date.now()}`,
 					uri: imageUri,
 				});
 				setTimeout(() => scrollToIndex?.(newPhotos.length - 1), 100);
 			}
-		}
 
-		onPhotosChange?.(newPhotos);
+			onPhotosChange?.(newPhotos);
+		} else {
+			// Pour la galerie, utiliser la sélection multiple
+			const imageUris = await imageService.pickMultipleImages();
+			if (!imageUris || imageUris.length === 0) return;
+
+			const newPhotos = [...photos];
+
+			if (replaceIndex !== undefined) {
+				// Si plusieurs images sélectionnées, traiter comme un ajout intelligent
+				if (imageUris.length > 1) {
+					// Remplacer l'image à l'index donné par la première
+					const oldPhoto = newPhotos[replaceIndex];
+					if (
+						oldPhoto.id &&
+						user &&
+						sneakerId &&
+						oldPhoto.uri.includes('supabase')
+					) {
+						try {
+							await SupabaseImageService.deleteSpecificSneakerImage(
+								user.id,
+								sneakerId,
+								oldPhoto.id
+							);
+						} catch (error) {
+							console.error('Error deleting old image:', error);
+						}
+					}
+
+					newPhotos[replaceIndex] = {
+						id: `temp_${Date.now()}`,
+						uri: imageUris[0],
+						alt: newPhotos[replaceIndex].alt,
+					};
+
+					// Ajouter les images supplémentaires
+					const maxImages = 3;
+					const availableSlots = maxImages - newPhotos.length;
+					const remainingImages = imageUris.slice(1); // Exclure la première déjà utilisée
+					const imagesToAdd = remainingImages.slice(
+						0,
+						availableSlots
+					);
+
+					imagesToAdd.forEach((uri, index) => {
+						newPhotos.push({
+							id: `temp_${Date.now()}_${index + 1}`,
+							uri: uri,
+						});
+					});
+
+					onPhotosChange?.(newPhotos);
+				} else {
+					// Mode remplacement normal avec une seule image
+					const oldPhoto = newPhotos[replaceIndex];
+
+					if (
+						oldPhoto.id &&
+						user &&
+						sneakerId &&
+						oldPhoto.uri.includes('supabase')
+					) {
+						try {
+							await SupabaseImageService.deleteSpecificSneakerImage(
+								user.id,
+								sneakerId,
+								oldPhoto.id
+							);
+						} catch (error) {
+							console.error('Error deleting old image:', error);
+						}
+					}
+
+					newPhotos[replaceIndex] = {
+						id: `temp_${Date.now()}`,
+						uri: imageUris[0],
+						alt: newPhotos[replaceIndex].alt,
+					};
+
+					onPhotosChange?.(newPhotos);
+				}
+			} else {
+				// Mode ajout : ajouter toutes les images possibles
+				const maxImages = 3;
+				const availableSlots = maxImages - newPhotos.length;
+				const imagesToAdd = imageUris.slice(0, availableSlots);
+
+				imagesToAdd.forEach((uri, index) => {
+					newPhotos.push({
+						id: `temp_${Date.now()}_${index}`,
+						uri: uri,
+					});
+				});
+
+				onPhotosChange?.(newPhotos);
+
+				// Faire défiler vers la première nouvelle image ajoutée
+				if (imagesToAdd.length > 0) {
+					const firstNewIndex = photos.length;
+					setTimeout(() => scrollToIndex?.(firstNewIndex), 100);
+				}
+			}
+		}
 	};
 
 	const removeImage = (index: number) => {
@@ -122,7 +209,7 @@ export const usePhotoEditor = (
 				{
 					text: 'Cancel',
 					style: 'cancel',
-				},
+				} as any,
 			]
 		);
 	};
