@@ -10,12 +10,14 @@ export enum SneakerBrand {
 	Reebok = 'Reebok',
 	Vans = 'Vans',
 	Other = 'Other',
+	null = 'null',
 }
 
 export enum SneakerStatus {
 	Stocking = 'Stocking',
 	Rocking = 'Rocking',
 	Selling = 'Selling',
+	null = 'null',
 }
 
 export type Photo = {

@@ -3,11 +3,11 @@ import {
 	ModalStep,
 	SneakerFormData,
 } from '@/components/modals/SneakersModal/types';
-import { Sneaker, Photo } from '@/types/Sneaker';
+import { Sneaker, SneakerBrand } from '@/types/Sneaker';
 
 export interface FetchedSneaker {
 	model: string;
-	brand: string;
+	brand: SneakerBrand;
 	description: string;
 	image: {
 		uri: string;

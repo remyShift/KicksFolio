@@ -6,7 +6,8 @@ import { sneakerSchema, SneakerFormData } from '@/validation/schemas';
 import { FormFields } from '../../shared/FormFields';
 import { useFormValidation } from '../../hooks/useFormValidation';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
-import { Photo, SneakerBrand } from '@/types/Sneaker';
+import { Photo } from '@/types/Sneaker';
+import { SneakerBrand, SneakerStatus } from '@/types/Sneaker';
 
 export const FormStep = () => {
     const scrollViewRef = useRef<ScrollView>(null);
@@ -34,8 +35,8 @@ export const FormStep = () => {
         authErrorMsg: errorMsg,
         defaultValues: {
             model: '',
-            brand: SneakerBrand.Other,
-            status: '',
+            brand: SneakerBrand.null,
+            status: SneakerStatus.null,
             size: '',
             condition: '',
             price_paid: '',
@@ -43,9 +44,7 @@ export const FormStep = () => {
             images: [],
         },
         onSubmit: async (data) => {
-            setSneakerToAdd({
-                ...data
-            } as SneakerFormData);
+            setSneakerToAdd(data);
         },
     });
     
@@ -62,7 +61,7 @@ export const FormStep = () => {
             const formData: SneakerFormData = {
                 model: fetchedSneaker.model || '',
                 brand: fetchedSneaker.brand as SneakerBrand,
-                status: '',
+                status: SneakerStatus.null,
                 size: '',
                 condition: '',
                 price_paid: '',
@@ -83,7 +82,7 @@ export const FormStep = () => {
             if (sneakerToAdd) {
                 const resetData: SneakerFormData = {
                     ...sneakerToAdd,
-                    brand: sneakerToAdd.brand as SneakerBrand,
+                    status: sneakerToAdd.status as SneakerStatus,
                     images: [],
                 };
                 setSneakerToAdd(resetData);
