@@ -19,7 +19,7 @@ export const AnimatedDot = ({ index, scrollX, carouselWidth }: Props) => {
       (index + 1) * carouselWidth,
     ];
 
-    const width = interpolate(scrollX.value, inputRange, [8, 24, 8], {
+    const width = interpolate(scrollX.value, inputRange, [8, 40, 8], {
       extrapolateLeft: 'clamp',
       extrapolateRight: 'clamp',
     });

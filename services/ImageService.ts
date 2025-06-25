@@ -15,10 +15,9 @@ export class ImageService {
 
 		const result = await ImagePicker.launchImageLibraryAsync({
 			mediaTypes: 'images',
-			allowsMultipleSelection: true,
-			orderedSelection: true,
-			selectionLimit: 1,
-			aspect: [4, 3],
+			allowsMultipleSelection: false,
+			allowsEditing: true,
+			aspect: [2, 1],
 			quality: 0.85,
 		});
 
@@ -29,7 +28,7 @@ export class ImageService {
 		return result.assets[0].uri;
 	}
 
-	async pickMultipleImages(): Promise<string[] | null> {
+	async pickMultipleImages(maxImages: number = 3): Promise<string[] | null> {
 		const { status } =
 			await ImagePicker.requestMediaLibraryPermissionsAsync();
 		if (status !== 'granted') {
@@ -44,8 +43,8 @@ export class ImageService {
 			mediaTypes: 'images',
 			allowsMultipleSelection: true,
 			orderedSelection: true,
-			selectionLimit: 3,
-			aspect: [4, 3],
+			selectionLimit: Math.max(1, Math.min(maxImages, 3)),
+			aspect: [2, 1],
 			quality: 0.85,
 		});
 
@@ -68,7 +67,7 @@ export class ImageService {
 
 		const result = await ImagePicker.launchCameraAsync({
 			allowsEditing: true,
-			aspect: [1, 1],
+			aspect: [2, 1],
 			quality: 0.8,
 		});
 

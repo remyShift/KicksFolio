@@ -119,7 +119,7 @@ export const PhotoCarousel = ({
 
         {displayPhotos.length > 1 && (
           <View
-            className="absolute bottom-4 left-0 right-0 flex-row justify-center gap-2"
+            className="absolute bottom-2 left-0 right-0 flex-row justify-center gap-1"
             accessible={false}
           >
             {displayPhotos.map((_, index) => (
