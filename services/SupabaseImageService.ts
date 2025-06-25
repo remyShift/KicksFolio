@@ -160,46 +160,31 @@ export class SupabaseImageService {
 			return null;
 		}
 
-		// Pattern pour les URLs Supabase standard
 		const supabasePattern = new RegExp(
 			`/storage/v1/object/public/${bucket}/(.+)$`
 		);
 		const supabaseMatch = url.match(supabasePattern);
 
 		if (supabaseMatch) {
-			console.log(
-				`[DEBUG] extractFilePathFromUrl: Found Supabase pattern match: ${supabaseMatch[1]}`
-			);
 			return supabaseMatch[1];
 		}
 
-		// Pattern plus simple au cas où l'URL est différente
 		const simplePattern = new RegExp(`/${bucket}/(.+)$`);
 		const simpleMatch = url.match(simplePattern);
 
 		if (simpleMatch) {
-			console.log(
-				`[DEBUG] extractFilePathFromUrl: Found simple pattern match: ${simpleMatch[1]}`
-			);
 			return simpleMatch[1];
 		}
 
-		// Pattern pour les URLs avec sous-domaine
 		const subdomainPattern = new RegExp(
 			`supabase\\.co/storage/v1/object/public/${bucket}/(.+)$`
 		);
 		const subdomainMatch = url.match(subdomainPattern);
 
 		if (subdomainMatch) {
-			console.log(
-				`[DEBUG] extractFilePathFromUrl: Found subdomain pattern match: ${subdomainMatch[1]}`
-			);
 			return subdomainMatch[1];
 		}
 
-		console.warn(
-			`[DEBUG] extractFilePathFromUrl: No pattern matched for URL: ${url}, bucket: ${bucket}`
-		);
 		return null;
 	}
 
