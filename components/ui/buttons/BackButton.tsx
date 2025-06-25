@@ -1,6 +1,5 @@
 import { Pressable } from 'react-native';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import Animated, { useAnimatedStyle } from 'react-native-reanimated';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 export default function BackButton({onPressAction}: {onPressAction: () => void}) {
     return (
@@ -11,7 +10,7 @@ export default function BackButton({onPressAction}: {onPressAction: () => void})
             }}
             testID="back-button"
         >
-            <MaterialIcons name="arrow-back-ios-new" size={20} color="black" />
+            <Ionicons name="arrow-back" size={24} color="black" />
         </Pressable>
     );
 }

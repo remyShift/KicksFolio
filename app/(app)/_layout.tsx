@@ -36,5 +36,9 @@ export default function AppLayout() {
         return <Redirect href="/collection" />;
     }
 
-    return <Stack screenOptions={{ headerShown: false }} />;
+    return (
+        <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="settings" options={{ animationTypeForReplace: 'push' }} />
+        </Stack>
+    );
 }

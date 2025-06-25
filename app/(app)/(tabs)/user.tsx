@@ -3,11 +3,11 @@ import { useSession } from '@/context/authContext';
 import { useState, useMemo, useCallback } from 'react';
 import { Sneaker } from '@/types/Sneaker';
 import { useAuth } from '@/hooks/useAuth';
+import { router } from 'expo-router';
 import AddButton from '@/components/ui/buttons/AddButton';
 import EmptySneakersState from '@/components/screens/app/profile/displayState/EmptySneakersState';
 import SneakersCardByBrand from '@/components/screens/app/profile/displayState/SneakersCardByBrand';
 import SneakersListView from '@/components/screens/app/profile/displayState/SneakersListView';
-import ProfileDrawer from '@/components/screens/app/profile/drawer/ProfileDrawer';
 import SneakersModalWrapper from '@/components/screens/app/SneakersModalWrapper';
 import { useModalStore } from '@/store/useModalStore';
 import ProfileHeader from '@/components/screens/app/profile/ProfileHeader';
@@ -18,7 +18,6 @@ export default function User() {
   const { user, userSneakers, refreshUserData } = useSession();
   const { logout } = useAuth();
   const { setModalStep, setIsVisible, setCurrentSneaker } = useModalStore();
-  const [drawerVisible, setDrawerVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>('card');
 
@@ -56,11 +55,7 @@ export default function User() {
   };
 
   const handleMenuPress = useCallback(() => {
-    setDrawerVisible(true);
-  }, []);
-
-  const handleDrawerClose = useCallback(() => {
-    setDrawerVisible(false);
+    router.push('/settings');
   }, []);
 
   if (!user) {
@@ -89,13 +84,6 @@ export default function User() {
           </View>
           <SneakersModalWrapper />
         </ScrollView>
-
-        <ProfileDrawer 
-          visible={drawerVisible}
-          onClose={handleDrawerClose}
-          onLogout={() => logout()}
-          user={user}
-        />
       </>
     );
   }
@@ -137,13 +125,6 @@ export default function User() {
           <SneakersModalWrapper />
         </View>
       )}
-
-      <ProfileDrawer 
-        visible={drawerVisible}
-        onClose={handleDrawerClose}
-        onLogout={() => logout()}
-        user={user}
-      />
 
       {userSneakers && userSneakers.length > 0 && (
         <AddButton onPress={handleAddSneaker} />
