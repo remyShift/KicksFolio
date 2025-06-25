@@ -24,6 +24,7 @@ export default function SneakerCard({ sneaker, setModalStep, setModalVisible, se
                 style={{
                     width: '100%',
                     height: 150,
+                    aspectRatio: 1.9,
                     borderRadius: 8
                 }}
                 contentFit="cover"
@@ -31,6 +32,7 @@ export default function SneakerCard({ sneaker, setModalStep, setModalVisible, se
                 cachePolicy="memory-disk"
                 transition={200}
             />
+
             <View className="flex flex-row justify-between items-center px-1">
                 <Text className="font-spacemono-bold text-lg flex-1 mr-2 flex-shrink" numberOfLines={1} ellipsizeMode="tail">
                     {sneaker.model}
