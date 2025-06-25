@@ -6,8 +6,7 @@ import { SneakerFormData } from '@/validation/schemas';
 import { sneakerStatusOptions, sneakerBrandOptions } from '@/validation/schemas';
 import { TextInput } from 'react-native';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
-import { Photo } from '@/types/Sneaker';
-import { ImageUploader } from './ImageUploader';
+import { PhotoCarousel } from '@/components/ui/images/photoCaroussel/PhotoCarousel';
 
 interface FormFieldsProps {
     control: Control<SneakerFormData>;
@@ -49,12 +48,12 @@ export const FormFields = ({
                 control={control}
                 render={({ field: { onChange, value } }) => {
                     return (
-                        <ImageUploader
-                            images={value || []}
-                            setImages={(images: Photo[]) => {
-                                onChange(images);
-                            }}
-                            isFocused={false}
+                        <PhotoCarousel
+                            photos={value || []}
+                            height={190}
+                            mode="edit"
+                            onPhotosChange={onChange}
+                            maxImages={3}
                             sneakerId={sneakerId}
                         />
                     );

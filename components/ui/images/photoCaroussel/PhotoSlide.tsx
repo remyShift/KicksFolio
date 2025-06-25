@@ -1,4 +1,4 @@
-import { View, Pressable, Image } from 'react-native';
+import { View, Pressable, Image, Alert } from 'react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Photo } from '@/types/Sneaker';
 
@@ -38,7 +38,12 @@ export const PhotoSlide = ({
       
       {mode === 'edit' && onRemove && (
         <Pressable
-          onPress={onRemove}
+          onPress={() => {
+            Alert.alert('Removing photo', 'Are you sure you want to remove this photo?', [
+              { text: 'Cancel', style: 'cancel' },
+              { text: 'Remove', style: 'destructive', onPress: onRemove }
+            ]);
+          }}
           className="absolute top-2 left-2 bg-red-500 rounded-full w-8 h-8 items-center justify-center"
         >
           <MaterialIcons name="delete" size={18} color="white" />
