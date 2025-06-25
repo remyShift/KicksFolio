@@ -1,6 +1,6 @@
 import { Alert } from 'react-native';
 import { Photo } from '@/types/Sneaker';
-import { imageService } from '@/services/ImageService';
+import { ImageService } from '@/services/ImageService';
 import SupabaseImageService from '@/services/SupabaseImageService';
 import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
 
@@ -18,7 +18,7 @@ export const usePhotoEditor = (
 		replaceIndex?: number
 	) => {
 		if (type === 'camera') {
-			const imageUri = await imageService.takePhoto();
+			const imageUri = await ImageService.takeSneakerPhoto();
 			if (!imageUri) return;
 
 			const newPhotos = [...photos];
@@ -39,7 +39,10 @@ export const usePhotoEditor = (
 							oldPhoto.id
 						);
 					} catch (error) {
-						console.error('Error deleting old image:', error);
+						console.error(
+							'❌ usePhotoEditor.handleImageSelection: Error deleting old image:',
+							error
+						);
 					}
 				}
 
@@ -64,7 +67,7 @@ export const usePhotoEditor = (
 
 			if (canAddMultiple) {
 				const availableSlots = maxImages - photos.length;
-				const imageUris = await imageService.pickMultipleSneakerImages(
+				const imageUris = await ImageService.pickMultipleSneakerImages(
 					availableSlots
 				);
 				if (!imageUris || imageUris.length === 0) return;
@@ -72,7 +75,7 @@ export const usePhotoEditor = (
 				const newPhotos = [...photos];
 				const imagesToAdd = imageUris;
 
-				imagesToAdd.forEach((uri, index) => {
+				imagesToAdd.forEach((uri: string, index: number) => {
 					newPhotos.push({
 						id: `temp_${Date.now()}_${index}`,
 						uri: uri,
@@ -86,7 +89,7 @@ export const usePhotoEditor = (
 					setTimeout(() => scrollToIndex?.(firstNewIndex), 100);
 				}
 			} else {
-				const imageUri = await imageService.pickSneakerImage();
+				const imageUri = await ImageService.pickSneakerImage();
 				if (!imageUri) return;
 
 				const newPhotos = [...photos];
@@ -107,7 +110,10 @@ export const usePhotoEditor = (
 								oldPhoto.id
 							);
 						} catch (error) {
-							console.error('Error deleting old image:', error);
+							console.error(
+								'❌ usePhotoEditor.handleImageSelection: Error deleting old image:',
+								error
+							);
 						}
 					}
 
@@ -168,13 +174,13 @@ export const usePhotoEditor = (
 			'Make sure the sneaker is in the center of the image.',
 			[
 				{
-					text: 'Take a photo',
-					onPress: () => handleImageSelection('camera', replaceIndex),
-				},
-				{
 					text: 'Choose from gallery',
 					onPress: () =>
 						handleImageSelection('gallery', replaceIndex),
+				},
+				{
+					text: 'Take a photo',
+					onPress: () => handleImageSelection('camera', replaceIndex),
 				},
 				{
 					text: 'Cancel',

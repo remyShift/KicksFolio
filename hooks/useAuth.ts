@@ -57,7 +57,7 @@ export const useAuth = () => {
 					setUser(updatedUser);
 				} else {
 					console.error(
-						'Failed to upload profile picture:',
+						'❌ useAuth.signUp: Failed to upload profile picture:',
 						uploadResult.error
 					);
 				}
@@ -142,7 +142,14 @@ export const useAuth = () => {
 			.then(() => {
 				if (
 					newProfileData.profile_picture &&
-					newProfileData.profile_picture.startsWith('file://')
+					(newProfileData.profile_picture.startsWith('file://') ||
+						newProfileData.profile_picture.startsWith(
+							'/private/var/mobile/'
+						) ||
+						newProfileData.profile_picture.startsWith(
+							'/data/user/'
+						) ||
+						!newProfileData.profile_picture.startsWith('http'))
 				) {
 					return SupabaseAuthService.getCurrentUser()
 						.then((currentUser) => {
@@ -157,9 +164,17 @@ export const useAuth = () => {
 									return SupabaseImageService.deleteImage(
 										'profiles',
 										oldFilePath
-									);
+									).then((deleted) => {
+										if (!deleted) {
+											console.warn(
+												'Could not delete old profile picture'
+											);
+										}
+										return deleted;
+									});
 								}
 							}
+							return Promise.resolve(true);
 						})
 						.then(() => {
 							return SupabaseImageService.uploadProfileImage(

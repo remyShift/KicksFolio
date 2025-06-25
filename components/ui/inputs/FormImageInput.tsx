@@ -25,24 +25,32 @@ const FormImageInput = <T extends FieldValues>({
             'Select an image from your gallery or take a photo with your camera.',
             [
                 {
-                    text: 'Pick from gallery',
-                    onPress: () => handleImageSelection('gallery').then(uri => {
-                        if (!uri) {
-                            Alert.alert('Sorry, we need permission to access your photos!');
-                            return;
-                        }
-                        onChange(uri);
-                    }),
+                    text: 'Choose from gallery',
+                    onPress: () => {
+                        handleImageSelection('gallery').then(uri => {
+                            if (!uri) {
+                                Alert.alert('Sorry, we need permission to access your photos!');
+                                return;
+                            }
+                            onChange(uri);
+                        }).catch(error => {
+                            console.error('❌ FormImageInput.handleImagePress: Gallery selection error', error);
+                        });
+                    },
                 },
                 {
                     text: 'Take a photo',
-                    onPress: () => handleImageSelection('camera').then(uri => {
-                        if (!uri) {
-                            Alert.alert('Sorry, we need permission to access your camera!');
-                            return;
-                        }
-                        onChange(uri);
-                    }),
+                    onPress: () => {
+                        handleImageSelection('camera').then(uri => {
+                            if (!uri) {
+                                Alert.alert('Sorry, we need permission to access your camera!');
+                                return;
+                            }
+                            onChange(uri);
+                        }).catch(error => {
+                            console.error('❌ FormImageInput.handleImagePress: Camera error', error);
+                        });
+                    },
                 },
                 {
                     text: 'Cancel',

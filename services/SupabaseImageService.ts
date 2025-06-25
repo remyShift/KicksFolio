@@ -111,55 +111,95 @@ export class SupabaseImageService {
 		filePath: string
 	): Promise<boolean> {
 		try {
-			const { data, error } = await supabase.storage
+			const { error } = await supabase.storage
 				.from(bucket)
 				.remove([filePath]);
+
 			if (error) {
+				console.error(
+					`Failed to delete image from ${bucket}:`,
+					error.message
+				);
 				return false;
 			}
 
-			await new Promise((resolve) => setTimeout(resolve, 2000));
+			// Vérification optionnelle que le fichier a bien été supprimé
+			// On attend un peu pour que Supabase traite la suppression
+			await new Promise((resolve) => setTimeout(resolve, 1000));
 
 			const folderPath = filePath.split('/').slice(0, -1).join('/');
 			const fileName = filePath.split('/').pop();
 
-			const { data: listData, error: listError } = await supabase.storage
-				.from(bucket)
-				.list(folderPath);
+			if (folderPath && fileName) {
+				const { data: listData, error: listError } =
+					await supabase.storage.from(bucket).list(folderPath);
 
-			if (!listError && listData) {
-				const fileStillExists = listData.some(
-					(file) => file.name === fileName
-				);
+				if (!listError && listData) {
+					const fileStillExists = listData.some(
+						(file) => file.name === fileName
+					);
 
-				if (fileStillExists) {
-					return true;
+					if (fileStillExists) {
+						console.warn(
+							`File ${fileName} still exists after deletion attempt`
+						);
+						return false;
+					}
 				}
 			}
 
 			return true;
 		} catch (error) {
+			console.error('Error deleting image:', error);
 			return false;
 		}
 	}
 
 	static extractFilePathFromUrl(url: string, bucket: string): string | null {
+		if (!url || typeof url !== 'string') {
+			return null;
+		}
+
+		// Pattern pour les URLs Supabase standard
 		const supabasePattern = new RegExp(
 			`/storage/v1/object/public/${bucket}/(.+)$`
 		);
 		const supabaseMatch = url.match(supabasePattern);
 
 		if (supabaseMatch) {
+			console.log(
+				`[DEBUG] extractFilePathFromUrl: Found Supabase pattern match: ${supabaseMatch[1]}`
+			);
 			return supabaseMatch[1];
 		}
 
+		// Pattern plus simple au cas où l'URL est différente
 		const simplePattern = new RegExp(`/${bucket}/(.+)$`);
 		const simpleMatch = url.match(simplePattern);
 
 		if (simpleMatch) {
+			console.log(
+				`[DEBUG] extractFilePathFromUrl: Found simple pattern match: ${simpleMatch[1]}`
+			);
 			return simpleMatch[1];
 		}
 
+		// Pattern pour les URLs avec sous-domaine
+		const subdomainPattern = new RegExp(
+			`supabase\\.co/storage/v1/object/public/${bucket}/(.+)$`
+		);
+		const subdomainMatch = url.match(subdomainPattern);
+
+		if (subdomainMatch) {
+			console.log(
+				`[DEBUG] extractFilePathFromUrl: Found subdomain pattern match: ${subdomainMatch[1]}`
+			);
+			return subdomainMatch[1];
+		}
+
+		console.warn(
+			`[DEBUG] extractFilePathFromUrl: No pattern matched for URL: ${url}, bucket: ${bucket}`
+		);
 		return null;
 	}
 
@@ -415,7 +455,12 @@ export class SupabaseImageService {
 		const processedImages: Array<{ id: string; uri: string }> = [];
 
 		for (const img of images) {
-			if (img.uri.startsWith('file://')) {
+			if (
+				img.uri.startsWith('file://') ||
+				img.uri.startsWith('/private/var/mobile/') ||
+				img.uri.startsWith('/data/user/') ||
+				(!img.uri.startsWith('http') && !img.uri.includes('supabase'))
+			) {
 				const uploadResult = await this.uploadImage(img.uri, {
 					bucket: 'sneakers',
 					userId,

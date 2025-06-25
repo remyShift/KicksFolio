@@ -1,4 +1,4 @@
-import { Sneaker, Photo } from '@/types/Sneaker';
+import { Sneaker, Photo, SneakerBrand, SneakerStatus } from '@/types/Sneaker';
 import {
 	SupabaseSneakerService,
 	SupabaseSneaker,
@@ -87,7 +87,7 @@ export const useSneakerAPI = (userId: string) => {
 
 					const transformedSneaker: FetchedSneaker = {
 						model: responseResult.name || '',
-						brand: responseResult.brand.toLowerCase() || '',
+						brand: responseResult.brand.toLowerCase() as SneakerBrand,
 						description: responseResult.story || '',
 						image: {
 							uri: responseResult.image.original || '',
@@ -115,7 +115,7 @@ export const useSneakerAPI = (userId: string) => {
 			model: supabaseSneaker.model,
 			size: supabaseSneaker.size,
 			condition: supabaseSneaker.condition,
-			status: supabaseSneaker.status,
+			status: supabaseSneaker.status as SneakerStatus,
 			images: supabaseSneaker.images.map((img, index) => {
 				const fileNameFromUrl =
 					SupabaseImageService.extractFilePathFromUrl(
@@ -168,8 +168,8 @@ export const useSneakerAPI = (userId: string) => {
 					'id' | 'created_at' | 'updated_at'
 				> = {
 					model: formData.model,
-					brand: formData.brand,
-					status: formData.status,
+					brand: formData.brand as any,
+					status: formData.status as any,
 					size: parseInt(formData.size.toString()),
 					condition: parseInt(formData.condition.toString()),
 					images: [],
