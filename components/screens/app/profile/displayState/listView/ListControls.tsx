@@ -8,9 +8,9 @@ import FilterSection from './FilterSection';
 export default function ListControls() {
   const { 
     filteredAndSortedSneakers, 
-    showFilters, 
     toggleFilters 
   } = useListViewStore();
+
   return (
     <View className="py-2 bg-background border-b border-gray-200 mb-2">
       <View className="flex-row justify-between items-center mb-3 px-4">

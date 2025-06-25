@@ -1,18 +1,13 @@
 import { create } from 'zustand';
-import { Sneaker, SneakerBrand } from '@/types/Sneaker';
+import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/Sneaker';
 
-export type SortOption =
-	| 'name'
-	| 'brand'
-	| 'size'
-	| 'condition'
-	| 'price'
-	| 'date';
+export type SortOption = 'name' | 'brand' | 'size' | 'condition' | 'price';
 
 export interface Filter {
 	brand?: SneakerBrand;
 	size?: number;
 	condition?: number;
+	status?: SneakerStatus;
 }
 
 interface ListViewState {
@@ -29,6 +24,7 @@ interface ListViewState {
 		brands: SneakerBrand[];
 		sizes: number[];
 		conditions: number[];
+		statuses: SneakerStatus[];
 	};
 
 	toggleFilters: () => void;
@@ -68,10 +64,6 @@ const sortSneakers = (
 				aVal = a.price_paid;
 				bVal = b.price_paid;
 				break;
-			case 'date':
-				aVal = new Date(a.created_at);
-				bVal = new Date(b.created_at);
-				break;
 			default:
 				aVal = a.model.toLowerCase();
 				bVal = b.model.toLowerCase();
@@ -95,7 +87,9 @@ const filterSneakers = (sneakers: Sneaker[], filters: Filter): Sneaker[] => {
 	if (filters.condition) {
 		result = result.filter((s) => s.condition === filters.condition);
 	}
-
+	if (filters.status) {
+		result = result.filter((s) => s.status === filters.status);
+	}
 	return result;
 };
 
@@ -105,6 +99,7 @@ const getUniqueValues = (sneakers: Sneaker[]) => ({
 	conditions: [...new Set(sneakers.map((s) => s.condition))].sort(
 		(a, b) => b - a
 	),
+	statuses: [...new Set(sneakers.map((s) => s.status))],
 });
 
 export const useListViewStore = create<ListViewState>((set, get) => ({
@@ -114,7 +109,7 @@ export const useListViewStore = create<ListViewState>((set, get) => ({
 	filters: {},
 	originalSneakers: [],
 	filteredAndSortedSneakers: [],
-	uniqueValues: { brands: [], sizes: [], conditions: [] },
+	uniqueValues: { brands: [], sizes: [], conditions: [], statuses: [] },
 
 	toggleFilters: () => set((state) => ({ showFilters: !state.showFilters })),
 

@@ -1,10 +1,10 @@
-import { SneakerBrand } from '@/types/Sneaker';
+import { SneakerBrand, SneakerStatus } from '@/types/Sneaker';
 import { z } from 'zod';
 
 export const sneakerStatusOptions = [
-	{ label: 'Stocking', value: 'stocking' },
-	{ label: 'Rocking', value: 'rocking' },
-	{ label: 'Selling', value: 'selling' },
+	{ label: 'Stocking', value: SneakerStatus.Stocking },
+	{ label: 'Rocking', value: SneakerStatus.Rocking },
+	{ label: 'Selling', value: SneakerStatus.Selling },
 ];
 
 export const sneakerBrandOptions: { label: string; value: SneakerBrand }[] = [
@@ -106,13 +106,8 @@ export const sneakerSchema = z.object({
 		.enum(Object.values(SneakerBrand) as [string, ...string[]])
 		.transform((val) => val as SneakerBrand),
 	status: z
-		.string()
-		.min(1, 'Please select a status.')
-		.refine(
-			(val) =>
-				sneakerStatusOptions.some((option) => option.value === val),
-			'Please select a valid status.'
-		),
+		.enum(Object.values(SneakerStatus) as [string, ...string[]])
+		.transform((val) => val as SneakerStatus),
 	size: z
 		.string()
 		.min(1, 'Please enter the size.')

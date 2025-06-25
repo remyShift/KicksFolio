@@ -12,6 +12,12 @@ export enum SneakerBrand {
 	Other = 'Other',
 }
 
+export enum SneakerStatus {
+	Stocking = 'Stocking',
+	Rocking = 'Rocking',
+	Selling = 'Selling',
+}
+
 export type Photo = {
 	id?: string;
 	uri: string;
@@ -25,7 +31,7 @@ export type Sneaker = {
 	brand: SneakerBrand;
 	size: number;
 	condition: number;
-	status: string;
+	status: SneakerStatus;
 	description: string | null;
 	collection_id: string;
 	created_at: string;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useListViewStore } from '@/store/useListViewStore';
-import FilterButton from './FilterButton';
+import FilterGroup from './FilterGroup';
 
 export default function FilterSection() {
   const { 
@@ -11,66 +11,61 @@ export default function FilterSection() {
     updateFilter, 
     clearFilters 
   } = useListViewStore();
+  
   if (!showFilters) return null;
+  const brandOptions = uniqueValues.brands.map(brand => ({
+    label: brand,
+    value: brand
+  }));
+
+  const sizeOptions = uniqueValues.sizes.map(size => ({
+    label: size.toString(),
+    value: size
+  }));
+
+  const conditionOptions = uniqueValues.conditions.map(condition => ({
+    label: `${condition}/10`,
+    value: condition
+  }));
+
+  const statusOptions = uniqueValues.statuses.map(status => ({
+    label: status.charAt(0).toUpperCase() + status.slice(1),
+    value: status
+  }));
 
   return (
     <View className="py-3 border-t bg-white border-gray-200 px-4">
-      <View className="mb-3">
-        <Text className="text-sm font-medium text-gray-700 mb-2">Brand :</Text>
-        <View className="flex-row flex-wrap">
-          <FilterButton
-            label="All"
-            isActive={!filters.brand}
-            onPress={() => updateFilter('brand', undefined)}
-          />
-          {uniqueValues.brands.map((brand) => (
-            <FilterButton
-              key={brand}
-              label={brand}
-              isActive={filters.brand === brand}
-              onPress={() => updateFilter('brand', brand)}
-            />
-          ))}
-        </View>
-      </View>
+      <FilterGroup
+        title="Brand"
+        filterKey="brand"
+        options={brandOptions}
+        activeValue={filters.brand}
+        onFilter={updateFilter}
+      />
 
-      <View className="mb-3">
-        <Text className="text-sm font-medium text-gray-700 mb-2">Size :</Text>
-        <View className="flex-row flex-wrap">
-          <FilterButton
-            label="All"
-            isActive={!filters.size}
-            onPress={() => updateFilter('size', undefined)}
-          />
-          {uniqueValues.sizes.map((size) => (
-            <FilterButton
-              key={size}
-              label={size.toString()}
-              isActive={filters.size === size}
-              onPress={() => updateFilter('size', size)}
-            />
-          ))}
-        </View>
-      </View>
+      <FilterGroup
+        title="Size"
+        filterKey="size"
+        options={sizeOptions}
+        activeValue={filters.size}
+        onFilter={updateFilter}
+      />
 
-      <View className="mb-3">
-        <Text className="text-sm font-medium text-gray-700 mb-2">Condition :</Text>
-        <View className="flex-row flex-wrap">
-          <FilterButton
-            label="All"
-            isActive={!filters.condition}
-            onPress={() => updateFilter('condition', undefined)}
-          />
-          {uniqueValues.conditions.map((condition) => (
-            <FilterButton
-              key={condition}
-              label={`${condition}/10`}
-              isActive={filters.condition === condition}
-              onPress={() => updateFilter('condition', condition)}
-            />
-          ))}
-        </View>
-      </View>
+      <FilterGroup
+        title="Condition"
+        filterKey="condition"
+        options={conditionOptions}
+        activeValue={filters.condition}
+        onFilter={updateFilter}
+      />
+
+      <FilterGroup
+        title="Status"
+        filterKey="status"
+        options={statusOptions}
+        activeValue={filters.status}
+        onFilter={updateFilter}
+      />
 
       <TouchableOpacity
         className="bg-red-500 px-4 py-2 rounded-lg self-start"
