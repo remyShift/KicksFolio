@@ -28,7 +28,7 @@ export default function SneakersModalWrapper() {
 
     const handleCloseModal = () => {
         translateY.value = withTiming(MODAL_HEIGHT, {
-            duration: 300,
+            duration: 180,
         }, () => {
             runOnJS(closeModal)();
         });
@@ -47,7 +47,7 @@ export default function SneakersModalWrapper() {
             
             if (shouldClose) {
                 translateY.value = withTiming(MODAL_HEIGHT, {
-                    duration: 300,
+                    duration: 180,
                 }, () => {
                     runOnJS(closeModal)();
                 });

@@ -17,7 +17,6 @@ export class ImageService {
 			mediaTypes: 'images',
 			allowsMultipleSelection: false,
 			allowsEditing: true,
-			aspect: [2, 1],
 			quality: 0.85,
 		});
 
