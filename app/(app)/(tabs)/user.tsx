@@ -63,7 +63,7 @@ export default function User() {
   }
 
   return (
-    <View className="flex-1 pt-24">
+    <View className="flex-1 pt-16">
       <ProfileHeader user={user} userSneakers={userSneakers || []} viewMode={viewMode} setViewMode={setViewMode} onMenuPress={handleMenuPress} />
 
       {!userSneakers || userSneakers.length === 0 ? (

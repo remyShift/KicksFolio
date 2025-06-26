@@ -1,6 +1,5 @@
 import { View, Pressable } from 'react-native';
-import { Feather, Ionicons, SimpleLineIcons } from '@expo/vector-icons';
-import PageTitle from '@/components/ui/text/PageTitle';
+import { SimpleLineIcons } from '@expo/vector-icons';
 
 interface ProfileUpperHeaderProps {
     onMenuPress: () => void;
@@ -10,7 +9,7 @@ export default function ProfileUpperHeader({ onMenuPress }: ProfileUpperHeaderPr
     return (
         <View className="flex-row justify-center items-center" testID="profile-header">
             <Pressable 
-                className="p-4 absolute right-0 mt-2 -top-8 z-50"
+                className="p-4 absolute right-0 -top-0  z-50"
                 onPress={onMenuPress}
                 testID="menu-button"
             >

@@ -14,7 +14,7 @@ export default function ProfileStats({ sneakersCount, friendsCount, totalValue }
                     <Text className="font-spacemono text-lg">
                         Sneakers
                     </Text>
-                    <Text className="font-spacemono-bold text-lg" testID='sneakers-count'>
+                    <Text className="font-spacemono-bold text-2xl" testID='sneakers-count'>
                         {sneakersCount}
                     </Text>
                 </View>
@@ -23,7 +23,7 @@ export default function ProfileStats({ sneakersCount, friendsCount, totalValue }
                     <Text className="font-spacemono text-lg">
                         Friends
                     </Text>
-                    <Text className="font-spacemono-bold text-lg">
+                    <Text className="font-spacemono-bold text-2xl">
                         {friendsCount}
                     </Text>
                 </View>
@@ -33,7 +33,7 @@ export default function ProfileStats({ sneakersCount, friendsCount, totalValue }
                 <Text className="font-spacemono text-lg">
                     Value
                 </Text>
-                <Text className="font-spacemono-bold text-lg">
+                <Text className="font-spacemono-bold text-2xl">
                     ${totalValue}
                 </Text>
             </View>
