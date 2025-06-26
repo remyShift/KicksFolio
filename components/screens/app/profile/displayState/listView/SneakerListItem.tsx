@@ -9,45 +9,43 @@ interface SneakerListItemProps {
 
 export default function SneakerListItem({ sneaker, onPress }: SneakerListItemProps) {  
   return (
-    <View className="px-4">
-      <TouchableOpacity
-        className="bg-white p-3 mb-2 rounded-md shadow-sm border border-gray-100"
-        onPress={() => onPress(sneaker)}
-      >
-        <View className="flex-row justify-between items-center gap-3">
-          <Image 
-            source={{ uri: sneaker.images[0]?.uri }} 
-            style={{
-              width: 80,
-              height: 80,
-              borderRadius: 8,
-              backgroundColor: '#f3f4f6',
-            }}
-            contentFit="contain"
-            cachePolicy="memory-disk"
-            testID="sneaker-image"
-          />
-          <View className="flex-1">
-            <Text 
-              className="text-lg font-semibold text-gray-900" 
-              numberOfLines={1}
-              ellipsizeMode="tail"
-            >
-              {sneaker.model || ''}
-            </Text>
-            <Text className="text-sm text-gray-600 mt-1">{sneaker.brand || ''}</Text>
-            <View className="flex-row items-center mt-2 gap-4">
-              <Text className="text-sm text-gray-500">Size: {sneaker.size ? `${sneaker.size}US` : 'N/A'}</Text>
-              <Text className="text-sm text-gray-500">Condition: {sneaker.condition ? `${sneaker.condition}/10` : 'N/A'}</Text>
-              {sneaker.price_paid > 0 && (
-                <Text className="text-sm font-medium text-green-600">
-                  {sneaker.price_paid}€
-                </Text>
-              )}
-            </View>
+    <TouchableOpacity
+      className="bg-white p-4 border border-gray-100 mb-1"
+      onPress={() => onPress(sneaker)}
+    >
+      <View className="flex-row justify-between items-center gap-3">
+        <Image 
+          source={{ uri: sneaker.images[0]?.uri }} 
+          style={{
+            width: 80,
+            height: 80,
+            borderRadius: 8,
+            backgroundColor: '#f3f4f6'
+          }}
+          contentFit="contain"
+          cachePolicy="memory-disk"
+          testID="sneaker-image"
+        />
+        <View className="flex-1">
+          <Text className="text-sm text-gray-600 mt-1">{sneaker.brand || ''}</Text>
+          <Text 
+            className="text-lg font-semibold text-gray-900" 
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
+            {sneaker.model || ''}
+          </Text>
+          <View className="flex-row items-center mt-2 gap-4">
+            <Text className="text-sm text-gray-500">Size: {sneaker.size ? `${sneaker.size}US` : 'N/A'}</Text>
+            <Text className="text-sm text-gray-500">Condition: {sneaker.condition ? `${sneaker.condition}/10` : 'N/A'}</Text>
+            {sneaker.price_paid > 0 && (
+              <Text className="text-sm font-medium text-green-600">
+                {sneaker.price_paid}€
+              </Text>
+            )}
           </View>
         </View>
-      </TouchableOpacity>
-    </View>
+      </View>
+    </TouchableOpacity>
   );
 } 
