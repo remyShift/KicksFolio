@@ -1,5 +1,5 @@
 import { View, Pressable } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Feather, Ionicons, SimpleLineIcons } from '@expo/vector-icons';
 import PageTitle from '@/components/ui/text/PageTitle';
 
 interface ProfileUpperHeaderProps {
@@ -15,7 +15,7 @@ export default function ProfileUpperHeader({ onMenuPress }: ProfileUpperHeaderPr
                 onPress={onMenuPress}
                 testID="menu-button"
             >
-                <Ionicons name="menu-outline" size={24} color="#666" />
+                <SimpleLineIcons name="settings" size={24} color="black" />
             </Pressable>
         </View>
     );
