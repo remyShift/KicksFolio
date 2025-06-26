@@ -15,6 +15,7 @@ interface FormPasswordInputProps<T extends FieldValues> {
     getFieldError?: (fieldName: string) => string | undefined;
     nextInputRef?: RefObject<TextInput>;
     onSubmitEditing?: () => void;
+    description?: string;
 }
 
 const FormPasswordInput = forwardRef<TextInput, FormPasswordInputProps<any>>(
@@ -29,6 +30,7 @@ const FormPasswordInput = forwardRef<TextInput, FormPasswordInputProps<any>>(
         getFieldError,
         nextInputRef,
         onSubmitEditing,
+        description,
     }, ref) => {
     const [isFocused, setIsFocused] = useState(false);
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -36,6 +38,7 @@ const FormPasswordInput = forwardRef<TextInput, FormPasswordInputProps<any>>(
     return (
         <View className="w-full flex flex-col gap-2">
             <Text className="font-spacemono-bold text-lg">{label}</Text>
+            {description && <Text className="font-spacemono text-sm text-gray-500">{description}</Text>}
             <Controller
                 name={name}
                 control={control}
