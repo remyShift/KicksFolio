@@ -8,7 +8,7 @@ export default function SettingsHeader() {
         <>
             <PageTitle content="Settings" />
             <View className="absolute top-16 left-2">
-                <BackButton onPressAction={() => router.back()} />
+                <BackButton onPressAction={() => router.canGoBack() ? router.back() : router.push('/(app)/(tabs)/user')} />
             </View>
         </>
     )

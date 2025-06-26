@@ -3,8 +3,6 @@ import { router } from 'expo-router';
 import { useAuth } from '@/hooks/useAuth';
 import { useSession } from '@/context/authContext';
 import DrawerMenuItem from '@/components/screens/app/profile/drawer/DrawerMenuItem';
-import BackButton from '@/components/ui/buttons/BackButton';
-import PageTitle from '@/components/ui/text/PageTitle';
 import SettingsHeader from '@/components/screens/app/settings/SettingsHeader';
 
 export default function Settings() {
