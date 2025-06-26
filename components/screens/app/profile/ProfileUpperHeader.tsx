@@ -9,9 +9,8 @@ interface ProfileUpperHeaderProps {
 export default function ProfileUpperHeader({ onMenuPress }: ProfileUpperHeaderProps) {
     return (
         <View className="flex-row justify-center items-center" testID="profile-header">
-            <PageTitle content="Profile" />
             <Pressable 
-                className="p-4 absolute right-0 mt-2 top-10 z-50"
+                className="p-4 absolute right-0 mt-2 -top-8 z-50"
                 onPress={onMenuPress}
                 testID="menu-button"
             >

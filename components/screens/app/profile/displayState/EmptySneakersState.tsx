@@ -8,7 +8,7 @@ interface EmptySneakersStateProps {
 
 export default function EmptySneakersState({ onAddPress }: EmptySneakersStateProps) {
     return (
-        <View className="flex-1 gap-8 items-center">
+        <View className="flex-1 gap-8 items-center justify-center">
             <Title content='Add Sneakers' isTextCenter={true} />
             <MainButton 
                 content='Add' 

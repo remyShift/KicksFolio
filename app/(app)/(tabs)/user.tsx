@@ -62,37 +62,15 @@ export default function User() {
     return;
   }
 
-  if (!userSneakers || userSneakers.length === 0) {
-    return (
-      <>
-        <ScrollView 
-          className="flex-1"
-          testID="scroll-view"
-          refreshControl={
-            <RefreshControl 
-              refreshing={refreshing} 
-              onRefresh={onRefresh}
-              tintColor="#FF6B6B"
-              progressViewOffset={60}
-              testID="refresh-control"
-            />
-          }
-        >
-          <View className="flex-1 gap-12">
-            <ProfileHeader user={user} userSneakers={userSneakers!} viewMode={viewMode} setViewMode={setViewMode} onMenuPress={handleMenuPress} />
-            <EmptySneakersState onAddPress={handleAddSneaker} />
-          </View>
-          <SneakersModalWrapper />
-        </ScrollView>
-      </>
-    );
-  }
-
   return (
-    <>
-      <ProfileHeader user={user} userSneakers={userSneakers} viewMode={viewMode} setViewMode={setViewMode} onMenuPress={handleMenuPress} />
-      
-      {viewMode === 'card' ? (
+    <View className="flex-1 pt-24">
+      <ProfileHeader user={user} userSneakers={userSneakers || []} viewMode={viewMode} setViewMode={setViewMode} onMenuPress={handleMenuPress} />
+
+      {!userSneakers || userSneakers.length === 0 ? (
+        <View className="flex-1 justify-center">
+          <EmptySneakersState onAddPress={handleAddSneaker} />
+        </View>
+      ) : viewMode === 'card' ? (
         <ScrollView 
           className="flex-1"
           testID="scroll-view"
@@ -129,6 +107,6 @@ export default function User() {
       {userSneakers && userSneakers.length > 0 && (
         <AddButton onPress={handleAddSneaker} />
       )}
-    </>
+    </View>
   );
 }
