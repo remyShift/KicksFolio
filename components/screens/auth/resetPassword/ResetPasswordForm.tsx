@@ -58,6 +58,7 @@ export default function ResetPasswordForm() {
                         name="password"
                         control={control}
                         label="New Password*"
+                        description="At least 8 characters, 1 uppercase, 1 lowercase and 1 number."
                         placeholder="********"
                         ref={passwordInputRef}
                         nextInputRef={confirmPasswordInputRef}
