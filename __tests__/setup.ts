@@ -133,6 +133,157 @@ jest.mock('../hooks/useAsyncValidation', () => ({
 	useAsyncValidation: () => mockUseAsyncValidation,
 }));
 
+jest.mock('../hooks/useSupabaseAuth', () => ({
+	useSupabaseAuth: () => ({
+		user: null,
+		session: null,
+		loading: false,
+		signOut: jest.fn().mockResolvedValue(undefined),
+		isAuthenticated: false,
+	}),
+}));
+
+jest.mock('react-native-keyboard-controller', () => {
+	const { ScrollView } = require('react-native');
+	return {
+		KeyboardAwareScrollView: ScrollView,
+		KeyboardProvider: ({ children }: { children: React.ReactNode }) =>
+			children,
+		KeyboardController: {
+			setInputMode: jest.fn(),
+			setDefaultMode: jest.fn(),
+		},
+	};
+});
+
+// Mock react-native-gesture-handler
+jest.mock('react-native-gesture-handler', () => {
+	const View = require('react-native').View;
+	return {
+		GestureHandlerRootView: View,
+		PanGestureHandler: View,
+		State: {},
+		PinchGestureHandler: View,
+		RotationGestureHandler: View,
+		FlingGestureHandler: View,
+		LongPressGestureHandler: View,
+		TapGestureHandler: View,
+		createNativeWrapper: jest.fn(),
+		Directions: {},
+	};
+});
+
+// Mock react-native-image-crop-picker
+jest.mock('react-native-image-crop-picker', () => ({
+	openPicker: jest.fn().mockResolvedValue({
+		path: 'mocked-image-path',
+		mime: 'image/jpeg',
+		size: 1024,
+		width: 500,
+		height: 500,
+	}),
+	openCamera: jest.fn().mockResolvedValue({
+		path: 'mocked-camera-path',
+		mime: 'image/jpeg',
+		size: 1024,
+		width: 500,
+		height: 500,
+	}),
+	openCropper: jest.fn(),
+	clean: jest.fn(),
+	cleanSingle: jest.fn(),
+}));
+
+// Mock @supabase/supabase-js
+jest.mock('@supabase/supabase-js', () => ({
+	createClient: jest.fn().mockReturnValue({
+		auth: {
+			signUp: jest.fn().mockResolvedValue({ data: null, error: null }),
+			signInWithPassword: jest
+				.fn()
+				.mockResolvedValue({ data: null, error: null }),
+			signOut: jest.fn().mockResolvedValue({ error: null }),
+			resetPasswordForEmail: jest
+				.fn()
+				.mockResolvedValue({ data: null, error: null }),
+			updateUser: jest
+				.fn()
+				.mockResolvedValue({ data: null, error: null }),
+			getSession: jest
+				.fn()
+				.mockResolvedValue({ data: { session: null }, error: null }),
+			onAuthStateChange: jest.fn().mockReturnValue({
+				data: { subscription: { unsubscribe: jest.fn() } },
+			}),
+		},
+		from: jest.fn().mockReturnValue({
+			select: jest.fn().mockReturnThis(),
+			insert: jest.fn().mockReturnThis(),
+			update: jest.fn().mockReturnThis(),
+			delete: jest.fn().mockReturnThis(),
+			eq: jest.fn().mockReturnThis(),
+			order: jest.fn().mockReturnThis(),
+			limit: jest.fn().mockReturnThis(),
+			single: jest.fn(),
+		}),
+		storage: {
+			from: jest.fn().mockReturnValue({
+				upload: jest.fn(),
+				download: jest.fn(),
+				remove: jest.fn(),
+				getPublicUrl: jest
+					.fn()
+					.mockReturnValue({ data: { publicUrl: 'mocked-url' } }),
+			}),
+		},
+	}),
+}));
+
+// Mock services/supabase.ts
+jest.mock('../services/supabase', () => ({
+	supabase: {
+		auth: {
+			signUp: jest.fn().mockResolvedValue({ data: null, error: null }),
+			signInWithPassword: jest
+				.fn()
+				.mockResolvedValue({ data: null, error: null }),
+			signOut: jest.fn().mockResolvedValue({ error: null }),
+			resetPasswordForEmail: jest
+				.fn()
+				.mockResolvedValue({ data: null, error: null }),
+			updateUser: jest
+				.fn()
+				.mockResolvedValue({ data: null, error: null }),
+			getSession: jest
+				.fn()
+				.mockResolvedValue({ data: { session: null }, error: null }),
+			onAuthStateChange: jest.fn().mockReturnValue({
+				data: { subscription: { unsubscribe: jest.fn() } },
+			}),
+		},
+		from: jest.fn().mockReturnValue({
+			select: jest.fn().mockReturnThis(),
+			insert: jest.fn().mockReturnThis(),
+			update: jest.fn().mockReturnThis(),
+			delete: jest.fn().mockReturnThis(),
+			eq: jest.fn().mockReturnThis(),
+			order: jest.fn().mockReturnThis(),
+			limit: jest.fn().mockReturnThis(),
+			single: jest.fn(),
+		}),
+		storage: {
+			from: jest.fn().mockReturnValue({
+				upload: jest.fn(),
+				download: jest.fn(),
+				remove: jest.fn(),
+				getPublicUrl: jest
+					.fn()
+					.mockReturnValue({ data: { publicUrl: 'mocked-url' } }),
+			}),
+		},
+	},
+}));
+
 const originalConsoleError = console.error;
 
 beforeEach(() => {

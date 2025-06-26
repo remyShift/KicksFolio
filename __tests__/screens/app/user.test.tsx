@@ -4,8 +4,24 @@ import { ReactTestInstance } from 'react-test-renderer';
 import { mockSneakers } from './appSetup';
 import { useSession } from '@/context/authContext';
 import { useAuth } from '@/hooks/useAuth';
-import { Alert } from 'react-native';
 import { router } from 'expo-router';
+
+// Mock react-native-gesture-handler
+jest.mock('react-native-gesture-handler', () => {
+    const View = require('react-native').View;
+    return {
+        GestureHandlerRootView: View,
+        PanGestureHandler: View,
+        State: {},
+        PinchGestureHandler: View,
+        RotationGestureHandler: View,
+        FlingGestureHandler: View,
+        LongPressGestureHandler: View,
+        TapGestureHandler: View,
+        createNativeWrapper: jest.fn(),
+        Directions: {},
+    };
+});
 
 jest.mock('@/store/useModalStore', () => ({
     useModalStore: () => ({
@@ -58,8 +74,9 @@ describe('User', () => {
 
         it('should display sneakers cards if the user has sneakers and the main button is not displayed but the add button is', () => {
             (useSession as jest.Mock).mockReturnValue({
-                user: { id: 'test-user-id' },
+                user: { id: 'test-user-id', username: 'testuser' },
                 userSneakers: mockSneakers,
+                refreshUserData: jest.fn(),
             });
 
             render(<UserPage />);
@@ -88,8 +105,9 @@ describe('User', () => {
             }));
 
             (useSession as jest.Mock).mockReturnValue({
-                user: { id: 'test-user-id' },
+                user: { id: 'test-user-id', username: 'testuser' },
                 userSneakers: mockSneakers,
+                refreshUserData: jest.fn(),
             });
 
             render(<UserPage />);
@@ -110,80 +128,24 @@ describe('User', () => {
         });
     });
 
-    describe('Drawer', () => {
+    describe('Settings navigation', () => {
         let menuButton: ReactTestInstance;
 
         beforeEach(() => {
             jest.clearAllMocks();
             (useAuth as jest.Mock).mockReturnValue({
                 logout: jest.fn(),
+                deleteAccount: jest.fn(),
             });
             
             render(<UserPage />);
             menuButton = screen.getByTestId('menu-button');
         });
 
-        it('should open the drawer', () => {
+        it('should navigate to settings when menu button is pressed', () => {
             fireEvent.press(menuButton);
             
-            const drawer = screen.getByTestId('profile-drawer');
-            expect(drawer).toBeTruthy();
-        });
-
-        it('should close the drawer', () => {
-            fireEvent.press(menuButton);
-            
-            const drawer = screen.getByTestId('profile-drawer');
-            expect(drawer).toBeTruthy();
-
-            const overlay = screen.getByTestId('profile-drawer-overlay');
-            fireEvent.press(overlay);
-            
-            expect(screen.queryByTestId('profile-drawer')).toBeNull();
-        });
-
-        it('should navigate to edit profile when edit profile is pressed', () => {            
-            const menuButton = screen.getByTestId('menu-button');
-            fireEvent.press(menuButton);
-            
-            const editProfileButton = screen.getByTestId('drawer-button-edit-profile');
-            fireEvent.press(editProfileButton);
-            
-            expect(router.push).toHaveBeenCalledWith('/edit-profile');
-        });
-    
-        it('should show logout confirmation alert', () => {
-            const alertSpy = jest.spyOn(Alert, 'alert');
-            
-            const menuButton = screen.getByTestId('menu-button');
-            fireEvent.press(menuButton);
-            
-            const logoutButton = screen.getByTestId('drawer-button-logout');
-            fireEvent.press(logoutButton);
-            
-            expect(alertSpy).toHaveBeenCalledWith(
-                'Logout',
-                'Are you sure you want to logout ?',
-                expect.any(Array)
-            );
-        });
-    
-        it('should show delete account confirmation alert', () => {
-            const alertSpy = jest.spyOn(Alert, 'alert');
-            
-            render(<UserPage />);
-            
-            const menuButton = screen.getByTestId('menu-button');
-            fireEvent.press(menuButton);
-            
-            const deleteAccountButton = screen.getByTestId('drawer-button-delete-account');
-            fireEvent.press(deleteAccountButton);
-            
-            expect(alertSpy).toHaveBeenCalledWith(
-                'Delete account',
-                'Are you sure you want to delete your account ? This action is irreversible.',
-                expect.any(Array)
-            );
+            expect(router.push).toHaveBeenCalledWith('/settings');
         });
     });
 

@@ -229,14 +229,14 @@ describe('SneakersModal', () => {
                     await fillAndBlurInput(sizeInput, '6.5');
                     errorMessage = screen.getByTestId('error-message');
 
-                    expect(errorMessage.props.children).toBe('Please enter a valid size, size must be a number between 7 and 15.');
+                    expect(errorMessage.props.children).toBe('Size must be a number between 7 and 15.');
                 });
 
                 it('should display error if size is greater than 15 on blur', async () => {
                     await fillAndBlurInput(sizeInput, '15.5');
                     errorMessage = screen.getByTestId('error-message');
 
-                    expect(errorMessage.props.children).toBe('Please enter a valid size, size must be a number between 7 and 15.');
+                    expect(errorMessage.props.children).toBe('Size must be a number between 7 and 15.');
                 });
 
                 it('should display error if size is not a multiple of 0.5 on blur', async () => {
@@ -250,7 +250,7 @@ describe('SneakersModal', () => {
                     await fillAndBlurInput(sizeInput, 'a');
                     errorMessage = screen.getByTestId('error-message');
 
-                    expect(errorMessage.props.children).toBe('Please enter a valid size, size must be a number between 7 and 15.');
+                    expect(errorMessage.props.children).toBe('Size must be a number between 7 and 15.');
                 });
             });
 
@@ -259,21 +259,21 @@ describe('SneakersModal', () => {
                     await fillAndBlurInput(conditionInput, '-1');
                     errorMessage = screen.getByTestId('error-message');
 
-                    expect(errorMessage.props.children).toBe('Please enter a valid condition, condition must be a number between 1 and 10.');
+                    expect(errorMessage.props.children).toBe('Condition must be a number between 1 and 10.');
                 });
 
                 it('should display error if condition is greater than 10 on blur', async () => {
                     await fillAndBlurInput(conditionInput, '11');
                     errorMessage = screen.getByTestId('error-message');
 
-                    expect(errorMessage.props.children).toBe('Please enter a valid condition, condition must be a number between 1 and 10.');
+                    expect(errorMessage.props.children).toBe('Condition must be a number between 1 and 10.');
                 });
 
                 it('should display error if condition is not a number on blur', async () => {
                     await fillAndBlurInput(conditionInput, 'a');
                     errorMessage = screen.getByTestId('error-message');
 
-                    expect(errorMessage.props.children).toBe('Please enter a valid condition, condition must be a number between 1 and 10.');
+                    expect(errorMessage.props.children).toBe('Condition must be a number between 1 and 10.');
                 });
             });
 
@@ -358,7 +358,7 @@ describe('SneakersModal', () => {
             it('should display error if size is invalid on blur', async () => {
                 await fillAndBlurInput(sizeInput, '6');
                 errorMessage = screen.getByTestId('error-message');
-                expect(errorMessage.props.children).toBe('Please enter a valid size, size must be a number between 7 and 15.');
+                expect(errorMessage.props.children).toBe('Size must be a number between 7 and 15.');
             });
         });
     });

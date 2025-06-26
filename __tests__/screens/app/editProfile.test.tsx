@@ -60,7 +60,7 @@ describe('Edit Profile Form', () => {
     
             it('should display an appropriate error message if the sneaker size is not valid on blur', async () => {
                 await fillAndBlurInput(sizeInput, '0');
-                expect(errorMessage.props.children).toBe('Please enter a valid size, size must be a number between 7 and 15.');
+                expect(errorMessage.props.children).toBe('Size must be a number between 7 and 15.');
             });
     
             it('should display a global error message if multiple fields are not valid on blur', async () => {

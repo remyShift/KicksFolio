@@ -102,12 +102,12 @@ describe('SignUpSecondPage', () => {
     
             it('should display an appropriate error if the sneaker size is not a number on blur', async () => {
                 await fillAndBlurInput(sneakerSizeInput, 'totototo14');
-                expect(errorMessage.props.children).toBe('Please enter a valid size, size must be a number between 7 and 15.');
+                expect(errorMessage.props.children).toBe('Size must be a number between 7 and 15.');
             });
     
             it('should display an appropriate error if the sneaker size is not a number between 7 and 15 on blur', async () => {
                 await fillAndBlurInput(sneakerSizeInput, '16');
-                expect(errorMessage.props.children).toBe('Please enter a valid size, size must be a number between 7 and 15.');
+                expect(errorMessage.props.children).toBe('Size must be a number between 7 and 15.');
             });
     
             it('should display an appropriate error if the sneaker size is not a multiple of 0.5 on blur', async () => {
