@@ -1,10 +1,5 @@
-import { Pressable, Text } from 'react-native';
-import Animated, { 
-    useAnimatedStyle, 
-    withSpring,
-    useSharedValue 
-} from 'react-native-reanimated';
-import * as Haptics from 'expo-haptics';
+import { Text } from 'react-native';
+import useAnimatedButtons from '@/hooks/useAnimatedButtons';
 
 type MainButtonProps = {
     content: string;
@@ -13,34 +8,8 @@ type MainButtonProps = {
     isDisabled?: boolean;
 }
 
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
-
 export default function MainButton({content, onPressAction, backgroundColor, isDisabled = false}: MainButtonProps) {
-    const scale = useSharedValue(1);
-
-    const animatedStyle = useAnimatedStyle(() => ({
-        transform: [{ scale: scale.value }]
-    }));
-
-    const handlePressIn = () => {
-        if (isDisabled) return;
-
-        scale.value = withSpring(0.95, {
-            damping: 10,
-            stiffness: 100
-        });
-
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
-    };
-
-    const handlePressOut = () => {
-        if (isDisabled) return;
-
-        scale.value = withSpring(1, {
-            damping: 10,
-            stiffness: 100
-        });
-    };
+    const { animatedStyle, handlePressIn, handlePressOut, AnimatedPressable } = useAnimatedButtons(isDisabled);
 
     return (
         <AnimatedPressable 

@@ -2,8 +2,9 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import Feather from '@expo/vector-icons/Feather';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { Tabs } from 'expo-router';
-import { TouchableOpacity, View } from 'react-native';
+import { Pressable } from 'react-native';
 import { useModalStore } from '@/store/useModalStore';
+import TabAddButton from '@/components/ui/buttons/TabAddButton';
 
 export default function TabLayout() {
     const { setIsVisible, setModalStep } = useModalStore();
@@ -20,7 +21,8 @@ export default function TabLayout() {
             tabBarShowLabel: true,
             tabBarStyle: {
                 height: 85,
-                paddingTop: 10,
+                paddingTop: 5,
+                paddingHorizontal: 15,
             },
             sceneStyle: {
                 backgroundColor: '#ECECEC',
@@ -44,22 +46,8 @@ export default function TabLayout() {
                 name="add"
                 options={{
                     title: '',
-                    tabBarIcon: ({ focused }) => (
-                        <TouchableOpacity
-                            onPress={handleAddPress}
-                            style={{
-                                width: 50,
-                                height: 50,
-                                borderRadius: 25,
-                                backgroundColor: '#F27329',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                marginBottom: 55,
-                                elevation: 5,
-                            }}
-                        >
-                            <Ionicons name="add" size={34} color="white" />
-                        </TouchableOpacity>
+                    tabBarIcon: () => (
+                        <TabAddButton handleAddPress={handleAddPress} />
                     ),
                 }}
                 listeners={{
