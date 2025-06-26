@@ -46,10 +46,9 @@ export default function SneakersCardByBrand({
                         <ScrollView
                             horizontal
                             showsHorizontalScrollIndicator={false}
+                            className="p-4"
                             contentContainerStyle={{
                                 gap: 20,
-                                paddingHorizontal: 10,
-                                paddingVertical: 15
                             }}
                         >
                             {sneakers.map((sneaker) => (

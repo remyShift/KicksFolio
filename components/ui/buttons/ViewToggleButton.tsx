@@ -11,7 +11,7 @@ interface ViewToggleButtonProps {
 
 export default function ViewToggleButton({ currentMode, onToggle }: ViewToggleButtonProps) {
   return (
-    <View className="flex-row bg-gray-100 rounded-lg overflow-hidden">
+    <View className="flex-row bg-gray-100 rounded-lg overflow-hidden absolute right-5">
       <TouchableOpacity
         className={`px-4 py-2 ${currentMode === 'card' ? 'bg-primary' : 'bg-transparent'}`}
         onPress={() => onToggle('card')}

@@ -63,7 +63,19 @@ export default function User() {
   }
 
   return (
-    <View className="flex-1 pt-16">
+    <ScrollView 
+    className="flex-1 pt-16"
+    testID="scroll-view"
+    scrollEnabled={userSneakers && userSneakers.length > 0 ? true : false}
+    refreshControl={
+      <RefreshControl 
+        refreshing={refreshing} 
+        onRefresh={onRefresh}
+        tintColor="#FF6B6B"
+        progressViewOffset={60}
+        testID="refresh-control"
+      />
+    }>
       <ProfileHeader user={user} userSneakers={userSneakers || []} viewMode={viewMode} setViewMode={setViewMode} onMenuPress={handleMenuPress} />
 
       {!userSneakers || userSneakers.length === 0 ? (
@@ -71,27 +83,12 @@ export default function User() {
           <EmptySneakersState onAddPress={handleAddSneaker} />
         </View>
       ) : viewMode === 'card' ? (
-        <ScrollView 
-          className="flex-1"
-          testID="scroll-view"
-          refreshControl={
-            <RefreshControl 
-              refreshing={refreshing} 
-              onRefresh={onRefresh}
-              tintColor="#FF6B6B"
-              progressViewOffset={60}
-              testID="refresh-control"
-            />
-          }
-        >
           <View className="flex-1 gap-8">
             <SneakersCardByBrand 
               sneakersByBrand={sneakersByBrand}
               onSneakerPress={handleSneakerPress}
             />
           </View>
-          <SneakersModalWrapper />
-        </ScrollView>
       ) : (
         <View className="flex-1">
           <SneakersListView 
@@ -99,14 +96,12 @@ export default function User() {
             onSneakerPress={handleSneakerPress}
             refreshing={refreshing}
             onRefresh={onRefresh}
+            scrollEnabled={false}
           />
-          <SneakersModalWrapper />
         </View>
       )}
 
-      {userSneakers && userSneakers.length > 0 && (
-        <AddButton onPress={handleAddSneaker} />
-      )}
-    </View>
+      <SneakersModalWrapper />
+    </ScrollView>
   );
 }

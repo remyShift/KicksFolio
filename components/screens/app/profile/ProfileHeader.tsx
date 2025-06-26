@@ -4,6 +4,7 @@ import ViewToggleButton from "@/components/ui/buttons/ViewToggleButton";
 import { Sneaker } from "@/types/Sneaker";
 import { User } from "@/types/User";
 import ProfileUpperHeader from "./ProfileUpperHeader";
+import Title from "@/components/ui/text/Title";
 
 type ViewMode = 'card' | 'list';
 
@@ -21,7 +22,8 @@ export default function ProfileHeader({ user, userSneakers, viewMode, setViewMod
             <ProfileUpperHeader onMenuPress={onMenuPress} />
             <ProfileInfo user={user} userSneakers={userSneakers} />
             {userSneakers && userSneakers.length > 0 && (
-                <View className="flex-row justify-between items-center px-4 mb-8">
+                <View className="flex-row mb-8 items-center">
+                    <Title content="My collection" />
                     <ViewToggleButton 
                       currentMode={viewMode}
                       onToggle={setViewMode}

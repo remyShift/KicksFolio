@@ -11,6 +11,7 @@ interface SneakersListViewProps {
   header?: React.ReactElement;
   refreshing?: boolean;
   onRefresh?: () => Promise<void>;
+  scrollEnabled?: boolean;
 }
 
 export default function SneakersListView({ 
@@ -18,7 +19,8 @@ export default function SneakersListView({
   onSneakerPress, 
   header,
   refreshing = false,
-  onRefresh 
+  onRefresh,
+  scrollEnabled = true 
 }: SneakersListViewProps) {
   const { filteredAndSortedSneakers, initializeData } = useListViewStore();
 
@@ -45,8 +47,9 @@ export default function SneakersListView({
       ListHeaderComponent={renderListHeader}
       contentContainerStyle={{ paddingTop: 0 }}
       showsVerticalScrollIndicator={false}
+      scrollEnabled={scrollEnabled}
       refreshControl={
-        onRefresh ? (
+        onRefresh && scrollEnabled ? (
           <RefreshControl 
             refreshing={refreshing} 
             onRefresh={onRefresh}
