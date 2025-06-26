@@ -27,31 +27,24 @@ export default function Index() {
     }, [isNewUser, userSneakers]);
 
     return (
-        <View className="flex-1">
-            <ScrollView className="flex-1">
-                <View className="flex-1 gap-10">
-                    <PageTitle content="KicksFolio" />
-
-                    <View className='flex-1 gap-32'>
-                        <View className="flex-1 gap-4">
-                            <Title content="My collection" />
-                            <View className="flex-1 px-4">
-                                <CollectionCard userCollection={userCollection} userSneakers={userSneakers} />
-                            </View>
+        <ScrollView className="flex-1 pt-32">
+                <View className='flex-1 gap-32'>
+                    <View className="flex-1 gap-4">
+                        <Title content="My collection" />
+                        <View className="flex-1 px-4">
+                            <CollectionCard userCollection={userCollection} userSneakers={userSneakers} />
                         </View>
-                        <View className="flex-1 gap-4">
-                            <View className="flex-1 gap-4 items-center justify-center">
-                                <Title content="Add some friends" isTextCenter={true} />
-                                <MainButton content="Browse" backgroundColor="bg-primary" onPressAction={() => {
-                                    alert('Feature in development ...');
-                                }} />
-                            </View>
+                    </View>
+                    <View className="flex-1 gap-4">
+                        <View className="flex-1 gap-4 items-center justify-center">
+                            <Title content="Add some friends" isTextCenter={true} />
+                            <MainButton content="Browse" backgroundColor="bg-primary" onPressAction={() => {
+                                alert('Feature in development ...');
+                            }} />
                         </View>
                     </View>
                 </View>
-            </ScrollView>
-
-            <SneakersModalWrapper />
-        </View>
+                <SneakersModalWrapper />
+        </ScrollView>
     );
 }
