@@ -50,14 +50,16 @@ export const signUpStep2Schema = z.object({
 		.regex(
 			/^[a-zA-Z\s]+$/,
 			'First name must not contain special characters or numbers.'
-		),
+		)
+		.transform((val) => val.charAt(0).toUpperCase() + val.slice(1)),
 	lastName: z
 		.string()
 		.min(2, 'Last name must be at least 2 characters long.')
 		.regex(
 			/^[a-zA-Z\s]+$/,
 			'Last name must not contain special characters or numbers.'
-		),
+		)
+		.transform((val) => val.charAt(0).toUpperCase() + val.slice(1)),
 	size: z
 		.string()
 		.min(1, 'Please enter your sneaker size.')

@@ -8,31 +8,33 @@ interface ProfileStatsProps {
 
 export default function ProfileStats({ sneakersCount, friendsCount, totalValue }: ProfileStatsProps) {
     return (
-        <View className="flex-row w-full gap-10">
-            <View>
-                <Text className="font-spacemono-bold text-lg text-center" testID='sneakers-count'>
-                    {sneakersCount}
-                </Text>
-                <Text className="font-spacemono text-base text-center">
-                    sneakers
-                </Text>
+        <View className="flex-col w-full gap-5 px-4">
+            <View className="flex-row w-full justify-between">
+                <View className="bg-primary/20 p-6 rounded-lg w-48">
+                    <Text className="font-spacemono text-lg">
+                        Sneakers
+                    </Text>
+                    <Text className="font-spacemono-bold text-lg" testID='sneakers-count'>
+                        {sneakersCount}
+                    </Text>
+                </View>
+
+                <View className="bg-primary/20 p-6 rounded-lg w-48">
+                    <Text className="font-spacemono text-lg">
+                        Friends
+                    </Text>
+                    <Text className="font-spacemono-bold text-lg">
+                        {friendsCount}
+                    </Text>
+                </View>
             </View>
 
-            <View>
-                <Text className="font-spacemono-bold text-lg text-center">
-                    {friendsCount}
+            <View className="bg-primary/15 p-6 rounded-lg w-full">
+                <Text className="font-spacemono text-lg">
+                    Value
                 </Text>
-                <Text className="font-spacemono text-base text-center">
-                    friends
-                </Text>
-            </View>
-
-            <View>
-                <Text className="font-spacemono-bold text-lg text-center">
+                <Text className="font-spacemono-bold text-lg">
                     ${totalValue}
-                </Text>
-                <Text className="font-spacemono text-base text-center">
-                    value
                 </Text>
             </View>
         </View>
