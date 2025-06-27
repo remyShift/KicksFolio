@@ -163,15 +163,19 @@ export function SessionProvider({ children }: PropsWithChildren) {
             return;
         }
         
-        try {
-            const sneakers = await SupabaseSneakerService.getSneakersByCollection(userCollection.id);
-            setUserSneakers(sneakers || []);
-            storageService.setItem('sneakers', sneakers || []);
-        } catch (error) {
-            console.error('Error refreshing sneakers:', error);
-            setUserSneakers([]);
-            storageService.setItem('sneakers', []);
-        }
+        return SupabaseSneakerService.getSneakersByCollection(userCollection.id)
+            .then((sneakers) => {
+                const estimatedValueAggregated = sneakers.reduce((acc, sneaker) => acc + sneaker.estimated_value, 0);
+                userCollection.estimated_value = estimatedValueAggregated;
+                setUserSneakers(sneakers || []);
+                storageService.setItem('sneakers', sneakers || []);
+                storageService.setItem('collection', userCollection);
+            })
+            .catch((error) => {
+                console.error('Error refreshing sneakers:', error);
+                setUserSneakers([]);
+                storageService.setItem('sneakers', []);
+            });
     };
 
     const clearUserData = () => {

@@ -221,10 +221,7 @@ export const useSneakerAPI = (userId: string) => {
 						convertSupabaseSneakerToSneaker(response);
 					callbacks.setCurrentSneaker?.(convertedSneaker);
 					callbacks.setModalStep('view');
-
-					setTimeout(() => {
-						refreshUserSneakers();
-					}, 100);
+					refreshUserSneakers();
 				}
 				return response;
 			})
@@ -295,10 +292,7 @@ export const useSneakerAPI = (userId: string) => {
 						convertSupabaseSneakerToSneaker(response);
 					callbacks.setCurrentSneaker?.(convertedSneaker);
 					callbacks.setModalStep('view');
-
-					setTimeout(() => {
-						refreshUserSneakers();
-					}, 100);
+					refreshUserSneakers();
 				} else {
 					console.error('No response or callbacks');
 				}
