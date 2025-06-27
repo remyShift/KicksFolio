@@ -8,7 +8,7 @@ import { SneakerFormData } from '@/validation/schemas';
 import useToast from '@/hooks/useToast';
 
 export const useModalFooterActions = () => {
-	const { showSuccessToast, showErrorToast } = useToast();
+	const { showSuccessToast, showErrorToast, showInfoToast } = useToast();
 	const { user, userCollection, refreshUserData } = useSession();
 	const [nextSneaker, setNextSneaker] = useState<Sneaker | null>(null);
 	const [prevSneaker, setPrevSneaker] = useState<Sneaker | null>(null);
@@ -61,6 +61,10 @@ export const useModalFooterActions = () => {
 						text: 'Delete',
 						style: 'destructive',
 						onPress: () => {
+							showInfoToast(
+								'🔍 Deleting your sneaker...',
+								'Please wait...'
+							);
 							handleSneakerDelete(currentSneaker.id)
 								.then(() => {
 									refreshUserData();
@@ -104,6 +108,10 @@ export const useModalFooterActions = () => {
 					setErrorMsg('Please enter a SKU.');
 					return;
 				}
+				showInfoToast(
+					'🔍 Searching for your sneaker...',
+					'Please wait...'
+				);
 				setErrorMsg('');
 				setIsLoading(true);
 				handleSkuSearch(sneakerSKU, {
@@ -116,6 +124,10 @@ export const useModalFooterActions = () => {
 				if (isLoading) return;
 
 				if (validateForm) {
+					showInfoToast(
+						'🔍 Adding sneaker to your collection...',
+						'Please wait...'
+					);
 					setIsLoading(true);
 					validateForm()
 						.then(async (result) => {
@@ -147,6 +159,10 @@ export const useModalFooterActions = () => {
 				if (isLoading) return;
 
 				if (validateForm && currentSneaker) {
+					showInfoToast(
+						'🔍 Updating your sneaker...',
+						'Please wait...'
+					);
 					setIsLoading(true);
 					validateForm()
 						.then(async (result) => {
