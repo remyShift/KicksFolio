@@ -26,6 +26,8 @@ export const useModalFooterActions = () => {
 		setCurrentSneaker,
 		setIsVisible,
 		currentSneaker,
+		isLoading,
+		setIsLoading,
 	} = useModalStore();
 
 	if (!user) {
@@ -96,23 +98,29 @@ export const useModalFooterActions = () => {
 				setModalStep('sku');
 				break;
 			case 'sku':
+				if (isLoading) return;
+
 				if (!sneakerSKU.trim()) {
 					setErrorMsg('Please enter a SKU.');
 					return;
 				}
 				setErrorMsg('');
+				setIsLoading(true);
 				handleSkuSearch(sneakerSKU, {
 					setFetchedSneaker,
 					setModalStep,
 					setErrorMsg,
-				});
+				}).finally(() => setIsLoading(false));
 				break;
 			case 'addForm':
+				if (isLoading) return;
+
 				if (validateForm) {
+					setIsLoading(true);
 					validateForm()
 						.then(async (result) => {
 							if (result.isValid && result.data) {
-								handleFormSubmit(
+								return handleFormSubmit(
 									result.data as SneakerFormData,
 									{
 										setCurrentSneaker,
@@ -131,15 +139,19 @@ export const useModalFooterActions = () => {
 								'An error occurred while validating the sneaker : ' +
 									error
 							);
-						});
+						})
+						.finally(() => setIsLoading(false));
 				}
 				break;
 			case 'editForm':
+				if (isLoading) return;
+
 				if (validateForm && currentSneaker) {
+					setIsLoading(true);
 					validateForm()
 						.then(async (result) => {
 							if (result.isValid && result.data) {
-								handleFormUpdate(
+								return handleFormUpdate(
 									currentSneaker.id,
 									result.data as SneakerFormData,
 									{
@@ -157,7 +169,8 @@ export const useModalFooterActions = () => {
 								'An error occurred while validating the sneaker : ' +
 									error
 							);
-						});
+						})
+						.finally(() => setIsLoading(false));
 				} else {
 					if (!validateForm) setErrorMsg('validateForm is missing');
 					if (!currentSneaker)
@@ -206,5 +219,6 @@ export const useModalFooterActions = () => {
 		handleDeleteAction,
 		setNextSneaker,
 		setPrevSneaker,
+		isLoading,
 	};
 };

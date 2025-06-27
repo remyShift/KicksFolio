@@ -16,7 +16,7 @@ export const ModalFooter = () => {
     } = useModalStore();
 
     const { user, userSneakers } = useSession();
-    const { handleBackAction, handleNextAction, handleEditAction, handleDeleteAction, setNextSneaker, setPrevSneaker } = useModalFooterActions();
+    const { handleBackAction, handleNextAction, handleEditAction, handleDeleteAction, setNextSneaker, setPrevSneaker, isLoading } = useModalFooterActions();
 
     if (!user) return null;
 
@@ -48,7 +48,12 @@ export const ModalFooter = () => {
                     />
                     <NextButton
                         content="Search"
-                        onPressAction={handleNextAction}
+                        onPressAction={() => {
+                            if (!isLoading) {
+                                handleNextAction();
+                            }
+                        }}
+                        disabled={isLoading}
                         testID="search"
                     />
                 </View>
@@ -60,7 +65,12 @@ export const ModalFooter = () => {
                     />
                     <NextButton
                         content="Add"
-                        onPressAction={handleNextAction}
+                        onPressAction={() => {
+                            if (!isLoading) {
+                                handleNextAction();
+                            }
+                        }}
+                        disabled={isLoading}
                         testID="add"
                     />
                 </View>
@@ -79,7 +89,12 @@ export const ModalFooter = () => {
 
                     <NextButton 
                         content="Edit" 
-                        onPressAction={handleNextAction}
+                        onPressAction={() => {
+                            if (!isLoading) {
+                                handleNextAction();
+                            }
+                        }}
+                        disabled={isLoading}
                         testID="edit"
                     />
                 </View>
