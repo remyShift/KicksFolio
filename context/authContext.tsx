@@ -67,6 +67,44 @@ export function SessionProvider({ children }: PropsWithChildren) {
         handleAppStateChange();
     }, [appState]);
 
+    const loadUserCollectionsAndSneakers = async (userWithUrl: User) => {
+        return SupabaseCollectionService.getUserCollections(userWithUrl.id)
+            .then((collections) => {
+                const collection = collections?.[0] || null;
+                
+                if (collection?.id) {
+                    return SupabaseSneakerService.getSneakersByCollection(collection.id)
+                    .then((sneakers) => {
+                        setUserSneakers(sneakers || []);
+                        storageService.setItem('sneakers', sneakers || []);
+
+                        const estimatedValueAggregated = sneakers.reduce((acc, sneaker) => acc + sneaker.estimated_value, 0);
+                        collection.estimated_value = estimatedValueAggregated;
+                        userWithUrl.collection = collection;
+                
+                        setUser(userWithUrl);
+                        
+                        setUserCollection(collection);
+                        storageService.setItem('collection', collection);
+                        
+                        userWithUrl.sneakers = sneakers;
+                        setUser(userWithUrl);
+                        storageService.setItem('user', userWithUrl);
+                    });
+                } else {
+                    setUserSneakers([]);
+                    userWithUrl.sneakers = [];
+                    setUser(userWithUrl);
+                    storageService.setItem('sneakers', []);
+                }
+            })
+            .catch((error) => {
+                console.error('Error loading user collections and sneakers:', error);
+                setUserSneakers([]);
+                storageService.setItem('sneakers', []);
+            });
+    };
+
     const initializeUserData = async (userId: string) => {
         const maxRetries = 3;
         const retryDelay = 1000;
@@ -78,7 +116,8 @@ export function SessionProvider({ children }: PropsWithChildren) {
                         const userWithUrl = { ...userData, profile_picture_url: userData.profile_picture };
                         setUser(userWithUrl as User);
                         storageService.setItem('user', userWithUrl);
-                        return refreshUserData();
+                        
+                        return loadUserCollectionsAndSneakers(userWithUrl);
                     } else if (attempt < maxRetries) {
                         return new Promise((resolve) => {
                             setTimeout(() => {
@@ -119,7 +158,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
         }
         
         if (!session?.user) {
-            console.log('❌ refreshUserData: No valid session found');
+            console.log('ℹ️ refreshUserData: No valid session found, skipping data refresh');
             return;
         }
 
@@ -131,36 +170,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
 
                 const userWithUrl = { ...freshUserData, profile_picture_url: freshUserData.profile_picture };
                 
-                return SupabaseCollectionService.getUserCollections(userWithUrl.id)
-                    .then((collections) => {
-                        const collection = collections?.[0] || null;
-                        
-                        if (collection?.id) {
-                            return SupabaseSneakerService.getSneakersByCollection(collection.id)
-                            .then((sneakers) => {
-                                setUserSneakers(sneakers || []);
-                                storageService.setItem('sneakers', sneakers || []);
-
-                                const estimatedValueAggregated = sneakers.reduce((acc, sneaker) => acc + sneaker.estimated_value, 0);
-                                collection.estimated_value = estimatedValueAggregated;
-                                userWithUrl.collection = collection;
-                        
-                                setUser(userWithUrl);
-                                
-                                setUserCollection(collection);
-                                storageService.setItem('collection', collection);
-                                
-                                userWithUrl.sneakers = sneakers;
-                                setUser(userWithUrl);
-                                storageService.setItem('user', userWithUrl);
-                            });
-                        } else {
-                            setUserSneakers([]);
-                            userWithUrl.sneakers = [];
-                            setUser(userWithUrl);
-                            storageService.setItem('sneakers', []);
-                        }
-                    });
+                return loadUserCollectionsAndSneakers(userWithUrl);
             })
             .catch((error) => {
                 console.error('❌ refreshUserData: Error refreshing user data:', error);
