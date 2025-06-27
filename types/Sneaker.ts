@@ -40,4 +40,5 @@ export type Sneaker = {
 	updated_at: string;
 	images: Photo[];
 	estimated_value: number;
+	wishlist: boolean | false;
 };

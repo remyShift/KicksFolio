@@ -18,6 +18,7 @@ export interface SupabaseSneaker {
 	collection_id: string;
 	created_at: string;
 	updated_at: string;
+	wishlist?: boolean;
 }
 
 export class SupabaseSneakerService extends BaseApiService {
@@ -136,6 +137,24 @@ export class SupabaseSneakerService extends BaseApiService {
 		const { error } = await supabase.from('sneakers').delete().eq('id', id);
 
 		if (error) throw error;
+	}
+
+	static async updateWishlistStatus(id: string, wishlist: boolean) {
+		const { data, error } = await supabase
+			.from('sneakers')
+			.update({ wishlist })
+			.eq('id', id)
+			.select()
+			.single();
+
+		if (error) throw error;
+
+		return data
+			? {
+					...data,
+					images: this.parseImages(data.images),
+			  }
+			: data;
 	}
 
 	static async uploadSneakerImage(sneakerId: string, imageUri: string) {

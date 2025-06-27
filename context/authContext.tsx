@@ -29,6 +29,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
     const [user, setUser] = useState<User | null>(null);
     const [userCollection, setUserCollection] = useState<Collection | null>(null);
     const [userSneakers, setUserSneakers] = useState<Sneaker[] | null>(null);
+    const [wishlistSneakers, setWishlistSneakers] = useState<Sneaker[] | null>(null);
 
     useEffect(() => {
         const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -75,8 +76,11 @@ export function SessionProvider({ children }: PropsWithChildren) {
                 if (collection?.id) {
                     return SupabaseSneakerService.getSneakersByCollection(collection.id)
                     .then((sneakers) => {
+                        const wishlistSneakersAggregated = sneakers.filter((sneaker) => sneaker.wishlist);
+                        setWishlistSneakers(wishlistSneakersAggregated || []);
                         setUserSneakers(sneakers || []);
                         storageService.setItem('sneakers', sneakers || []);
+                        storageService.setItem('wishlistSneakers', wishlistSneakersAggregated || []);
 
                         const estimatedValueAggregated = sneakers.reduce((acc, sneaker) => acc + sneaker.estimated_value, 0);
                         collection.estimated_value = estimatedValueAggregated;
@@ -149,7 +153,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
     };
 
     const refreshUserData = async () => {
-        // Vérifier d'abord si nous avons une session valide
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
         
         if (sessionError) {
@@ -182,22 +185,30 @@ export function SessionProvider({ children }: PropsWithChildren) {
     const refreshUserSneakers = async () => {
         if (!user || !userCollection?.id) {
             setUserSneakers([]);
+            setWishlistSneakers([]);
             storageService.setItem('sneakers', []);
+            storageService.setItem('wishlistSneakers', []);
             return;
         }
         
         return SupabaseSneakerService.getSneakersByCollection(userCollection.id)
             .then((sneakers) => {
+                const wishlistSneakersAggregated = sneakers.filter((sneaker) => sneaker.wishlist);
+                setWishlistSneakers(wishlistSneakersAggregated || []);
+                
                 const estimatedValueAggregated = sneakers.reduce((acc, sneaker) => acc + sneaker.estimated_value, 0);
                 userCollection.estimated_value = estimatedValueAggregated;
                 setUserSneakers(sneakers || []);
                 storageService.setItem('sneakers', sneakers || []);
+                storageService.setItem('wishlistSneakers', wishlistSneakersAggregated || []);
                 storageService.setItem('collection', userCollection);
             })
             .catch((error) => {
                 console.error('Error refreshing sneakers:', error);
                 setUserSneakers([]);
+                setWishlistSneakers([]);
                 storageService.setItem('sneakers', []);
+                storageService.setItem('wishlistSneakers', []);
             });
     };
 
@@ -205,6 +216,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
         setUser(null);
         setUserCollection(null);
         setUserSneakers(null);
+        setWishlistSneakers(null);
 
         storageService.clearSessionData();
     };
@@ -231,7 +243,8 @@ export function SessionProvider({ children }: PropsWithChildren) {
                 setUserSneakers,
                 refreshUserData,
                 refreshUserSneakers,
-                clearUserData
+                clearUserData,
+                wishlistSneakers
             }}>
 			{children}
 		</AuthContext.Provider>

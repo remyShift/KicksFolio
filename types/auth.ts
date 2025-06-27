@@ -14,6 +14,7 @@ export interface AuthContextType {
 	refreshUserData: () => Promise<void>;
 	refreshUserSneakers: () => Promise<void>;
 	clearUserData: () => void;
+	wishlistSneakers: Sneaker[] | null;
 }
 
 export interface UserData {

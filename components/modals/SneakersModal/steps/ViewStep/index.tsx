@@ -5,6 +5,7 @@ import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import { useModalStore } from '@/store/useModalStore';
 import { PhotoCarousel } from '@/components/ui/images/photoCaroussel/PhotoCarousel';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import LoveButton from '@/components/ui/buttons/LoveButton';
 
 export const ViewStep = () => {
     const { currentSneaker } = useModalStore();
@@ -38,6 +39,7 @@ export const ViewStep = () => {
                     <Text testID="sneaker-display-name" className="font-spacemono-bold text-lg">{currentSneaker.model}</Text>
                     <Text className="font-spacemono-bold-italic text-base">{currentSneaker.brand.toUpperCase()}</Text>
                 </View>
+                    <LoveButton sneaker={currentSneaker} />
             </View>
 
             <View className='flex gap-4'>
