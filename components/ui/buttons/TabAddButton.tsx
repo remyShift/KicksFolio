@@ -10,10 +10,10 @@ export default function TabAddButton({handleAddPress, isDisabled = false}: {hand
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
         style={animatedStyle}
-        className="w-14 h-14 mb-12 rounded-full bg-orange-500 justify-center items-center"
+        className="w-16 h-16 mb-12 rounded-full bg-orange-500 justify-center items-center"
         disabled={isDisabled}
     >
-            <Ionicons name="add" size={34} color="white" />
+            <Ionicons name="add" size={38} color="white" />
         </AnimatedPressable>
     )
 }

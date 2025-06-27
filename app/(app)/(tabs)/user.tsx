@@ -15,7 +15,6 @@ type ViewMode = 'card' | 'list';
 
 export default function User() {
   const { user, userSneakers, refreshUserData } = useSession();
-  const { logout } = useAuth();
   const { setModalStep, setIsVisible, setCurrentSneaker } = useModalStore();
   const [refreshing, setRefreshing] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>('card');

@@ -2,6 +2,7 @@ import MainButton from '@/components/ui/buttons/MainButton';
 import Title from '@/components/ui/text/Title';
 import { Text, View } from 'react-native';
 import useToast from '@/hooks/useToast';
+import SneakersModalWrapper from '@/components/screens/app/SneakersModalWrapper';
 
 export default function Wishlist() {
   const { showInfoToast } = useToast();
@@ -18,6 +19,7 @@ export default function Wishlist() {
       <MainButton content="Browse" backgroundColor="bg-primary" onPressAction={() => {
         showInfoToast('Feature in development ...', 'We are working on it ! 💪🏼');
       }} />
+      <SneakersModalWrapper />
     </View>
   );
 }
