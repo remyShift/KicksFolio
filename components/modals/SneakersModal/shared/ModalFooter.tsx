@@ -88,7 +88,7 @@ export const ModalFooter = () => {
                     </View>
 
                     <NextButton 
-                        content="Edit" 
+                        content="Edit"
                         onPressAction={() => {
                             if (!isLoading) {
                                 handleNextAction();
