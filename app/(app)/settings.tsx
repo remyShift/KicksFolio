@@ -5,10 +5,12 @@ import { useSession } from '@/context/authContext';
 import SettingsMenuItem from '@/components/screens/app/settings/SettingsMenuItem';
 import SettingsHeader from '@/components/screens/app/settings/SettingsHeader';
 import SettingsCategory from '@/components/screens/app/settings/SettingsCategory';
+import useToast from '@/hooks/useToast';
 
 export default function Settings() {
     const { user } = useSession();
     const { logout, deleteAccount } = useAuth();
+    const { showSuccessToast, showErrorToast } = useToast();
 
     const handleLogout = () => {
         Alert.alert(
@@ -24,6 +26,7 @@ export default function Settings() {
                     style: 'destructive',
                     onPress: () => {
                         logout();
+                        showSuccessToast('👋🏼 Logged out', 'See you soon !');
                     }
                 }
             ]
@@ -47,10 +50,10 @@ export default function Settings() {
                             deleteAccount(user.id)
                                 .then(() => {
                                     logout();
-                                    Alert.alert('Success', 'Your account has been deleted successfully');
+                                    showSuccessToast('🗑️ Account deleted', 'Your account has been deleted successfully');
                                 })
                                 .catch((error) => {
-                                    Alert.alert('Error', error.message);
+                                    showErrorToast('❌ Account deletion failed', 'An error occurred while deleting your account.');
                                 });
                         }
                     }
