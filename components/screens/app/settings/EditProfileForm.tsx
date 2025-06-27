@@ -12,9 +12,11 @@ import { useAuth } from '@/hooks/useAuth'
 import { useFormController } from '@/hooks/useFormController'
 import { editProfileSchema } from '@/validation/schemas'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller'
+import useToast from '@/hooks/useToast'
 
 export default function EditProfileForm() {
     const { user, refreshUserData } = useSession()
+    const { showSuccessToast, showErrorToast } = useToast();
     const { updateUser } = useAuth()
     const scrollViewRef = useRef<ScrollView>(null)
     const usernameInputRef = useRef<TextInput>(null)
@@ -48,10 +50,12 @@ export default function EditProfileForm() {
             })
             .then((result) => {
                 if (result?.user) {
-                    return refreshUserData();
+                    refreshUserData();
+                    showSuccessToast('👤 Profile updated', 'Your profile has been updated successfully.');
                 }
             })
             .catch((error) => {
+                showErrorToast('❌ Profile update failed', 'An error occurred while updating your profile.');
                 console.error('❌ EditProfileForm: Error in form submission:', error);
                 throw error;
             });
