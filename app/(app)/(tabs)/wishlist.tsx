@@ -1,9 +1,11 @@
 import MainButton from '@/components/ui/buttons/MainButton';
-import PageTitle from '@/components/ui/text/PageTitle';
 import Title from '@/components/ui/text/Title';
 import { Text, View } from 'react-native';
+import useToast from '@/hooks/useToast';
 
 export default function Wishlist() {
+  const { showInfoToast } = useToast();
+
   return (
     <View className="flex-1 gap-4 items-center justify-center">
       <Title content="No favorites yet" isTextCenter={true} />
@@ -14,7 +16,7 @@ export default function Wishlist() {
         </Text>
       </View>
       <MainButton content="Browse" backgroundColor="bg-primary" onPressAction={() => {
-        alert('Feature in development ...');
+        showInfoToast('Feature in development ...', 'We are working on it ! 💪🏼');
       }} />
     </View>
   );

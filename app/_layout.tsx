@@ -6,6 +6,7 @@ import SplashScreen from '@/components/screens/SplashScreen/SplashScreen'
 import { useState, useCallback } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from "react-native-keyboard-controller";
+import Toast from 'react-native-toast-message';
 
 const FONTS = {
     'Actonia': require('../assets/fonts/Actonia.ttf'),
@@ -47,6 +48,7 @@ export default function RootLayout() {
                     <AppContent />
                 </SessionProvider>
             </KeyboardProvider>
+            <Toast topOffset={60} />
         </GestureHandlerRootView>
     );
 }
