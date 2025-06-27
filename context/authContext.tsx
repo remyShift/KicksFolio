@@ -110,6 +110,19 @@ export function SessionProvider({ children }: PropsWithChildren) {
     };
 
     const refreshUserData = async () => {
+        // Vérifier d'abord si nous avons une session valide
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        
+        if (sessionError) {
+            console.error('❌ refreshUserData: Error getting session:', sessionError);
+            return;
+        }
+        
+        if (!session?.user) {
+            console.log('❌ refreshUserData: No valid session found');
+            return;
+        }
+
         return SupabaseAuthService.getCurrentUser()
             .then((freshUserData) => {
                 if (!freshUserData) {

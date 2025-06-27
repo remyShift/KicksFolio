@@ -12,6 +12,7 @@ import { signUpStep2Schema, SignUpStep2FormData } from '@/validation/schemas';
 import PageLink from '@/components/ui/links/LoginPageLink';
 import { router } from 'expo-router';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
+import useToast from '@/hooks/useToast';
 
 export default function SignUpSecondForm() {
     const { signUpProps, setSignUpProps } = useSignUpProps();
@@ -21,6 +22,7 @@ export default function SignUpSecondForm() {
     const firstNameInputRef = useRef<TextInput>(null);
 
     const { signUp } = useAuth();
+    const { showSuccessToast } = useToast();
 
     const {
         control,
@@ -54,6 +56,7 @@ export default function SignUpSecondForm() {
             const success = await signUp(updatedSignUpProps);
             if (success) {
                 router.replace('/(auth)/(signup)/collection');
+                showSuccessToast('🎉 Account created', 'Let\'s name your collection !');
             }
         },
     });

@@ -10,6 +10,7 @@ import { useFormController } from '@/hooks/useFormController';
 import { useSession } from '@/context/authContext';
 import { z } from 'zod';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
+import useToast from '@/hooks/useToast';
 
 const collectionSchema = z.object({
     collectionName: z.string().min(4, 'Collection name is required and must be at least 4 characters long.'),
@@ -21,6 +22,7 @@ export default function CreateCollection() {
     const scrollViewRef = useRef<ScrollView>(null);
     const { createCollection } = useCollections();
     const { userCollection } = useSession();
+    const { showSuccessToast } = useToast();
 
     const {
         control,
@@ -42,6 +44,7 @@ export default function CreateCollection() {
             const success = await createCollection(data.collectionName);
             if (success) {
                 router.replace('/(app)/(tabs)');
+                showSuccessToast('🎉 Collection created', 'Let\'s add your first sneaker !');
             }
         },
     });

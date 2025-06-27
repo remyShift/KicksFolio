@@ -26,7 +26,9 @@ export default function Settings() {
                     style: 'destructive',
                     onPress: () => {
                         logout();
-                        showSuccessToast('👋🏼 Logged out', 'See you soon !');
+                        setTimeout(() => {
+                            showSuccessToast('👋🏼 Logged out', 'See you soon !');
+                        }, 200);
                     }
                 }
             ]

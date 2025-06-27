@@ -19,7 +19,7 @@ export const useAuth = () => {
 				if (response.user) {
 					setTimeout(() => {
 						router.replace('/(app)/(tabs)');
-					}, 500);
+					}, 800);
 				}
 			})
 			.catch((error) => {

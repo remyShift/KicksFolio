@@ -12,6 +12,7 @@ import { useFormController } from "@/hooks/useFormController";
 import { loginSchema, LoginFormData } from "@/validation/schemas";
 import PageLink from "@/components/ui/links/LoginPageLink"; 
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
+import useToast from "@/hooks/useToast";
 
 export default function LoginForm() {
     const scrollViewRef = useRef<ScrollView>(null);
@@ -19,7 +20,7 @@ export default function LoginForm() {
     const passwordInputRef = useRef<TextInput>(null);
 
     const { login, errorMsg: authErrorMsg } = useAuth();
-
+    const { showSuccessToast } = useToast();
     const params = useLocalSearchParams();
     const [resetPasswordSuccess, setResetPasswordSuccess] = useState(params.message as string);
 
@@ -41,6 +42,9 @@ export default function LoginForm() {
         authErrorMsg,
         onSubmit: async (data) => {
             await login(data.email, data.password);
+            setTimeout(() => {
+                showSuccessToast('👋🏼 Welcome back', `Glad to see you again !`);
+            }, 1000);
         },
     });
 
