@@ -121,22 +121,26 @@ export function SessionProvider({ children }: PropsWithChildren) {
                 return SupabaseCollectionService.getUserCollections(userWithUrl.id)
                     .then((collections) => {
                         const collection = collections?.[0] || null;
-                        setUserCollection(collection);
-                        userWithUrl.collection = collection;
-                        
-                        setUser(userWithUrl);
-                        
-                        storageService.setItem('user', userWithUrl);
-                        storageService.setItem('collection', collection);
                         
                         if (collection?.id) {
                             return SupabaseSneakerService.getSneakersByCollection(collection.id)
-                                .then((sneakers) => {
-                                    setUserSneakers(sneakers || []);
-                                    userWithUrl.sneakers = sneakers;
-                                    setUser(userWithUrl);
-                                    storageService.setItem('sneakers', sneakers || []);
-                                });
+                            .then((sneakers) => {
+                                setUserSneakers(sneakers || []);
+                                storageService.setItem('sneakers', sneakers || []);
+
+                                const estimatedValueAggregated = sneakers.reduce((acc, sneaker) => acc + sneaker.estimated_value, 0);
+                                collection.estimated_value = estimatedValueAggregated;
+                                userWithUrl.collection = collection;
+                        
+                                setUser(userWithUrl);
+                                
+                                setUserCollection(collection);
+                                storageService.setItem('collection', collection);
+                                
+                                userWithUrl.sneakers = sneakers;
+                                setUser(userWithUrl);
+                                storageService.setItem('user', userWithUrl);
+                            });
                         } else {
                             setUserSneakers([]);
                             userWithUrl.sneakers = [];

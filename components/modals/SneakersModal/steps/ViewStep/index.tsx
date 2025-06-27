@@ -57,10 +57,10 @@ export const ViewStep = () => {
                     </View>
 
                     <View className='flex-col items-center p-2 gap-1 w-1/3'>
-                        <Text className='font-spacemono text-center text-sm'>Estimated Value</Text>
+                        <Text className='font-spacemono text-center text-sm'>Value</Text>
                         <View className="w-4/5">
                             <Text className="font-spacemono-bold text-lg text-center">
-                                {currentSneaker.estimated_value ? currentSneaker.estimated_value + '$' : 'N/A'}
+                                {currentSneaker.estimated_value ? '$' + currentSneaker.estimated_value : 'N/A'}
                             </Text>
                         </View>
                     </View>

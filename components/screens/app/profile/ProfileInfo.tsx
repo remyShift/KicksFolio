@@ -32,7 +32,6 @@ export default function ProfileInfo({ user, userSneakers }: ProfileInfoProps) {
                 <ProfileStats 
                     sneakersCount={userSneakers?.length || 0}
                     friendsCount={0}
-                    totalValue={0}
                 />
         </View>
     );

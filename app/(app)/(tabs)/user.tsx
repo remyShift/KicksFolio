@@ -4,7 +4,6 @@ import { useState, useMemo, useCallback } from 'react';
 import { Sneaker } from '@/types/Sneaker';
 import { useAuth } from '@/hooks/useAuth';
 import { router } from 'expo-router';
-import AddButton from '@/components/ui/buttons/AddButton';
 import EmptySneakersState from '@/components/screens/app/profile/displayState/EmptySneakersState';
 import SneakersCardByBrand from '@/components/screens/app/profile/displayState/SneakersCardByBrand';
 import SneakersListView from '@/components/screens/app/profile/displayState/SneakersListView';
@@ -66,7 +65,7 @@ export default function User() {
     <ScrollView 
     className="flex-1 pt-16"
     testID="scroll-view"
-    scrollEnabled={userSneakers && userSneakers.length > 0 ? true : false}
+    scrollEnabled={true}
     refreshControl={
       <RefreshControl 
         refreshing={refreshing} 

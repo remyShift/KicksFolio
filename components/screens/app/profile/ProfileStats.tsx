@@ -1,12 +1,13 @@
 import { View, Text } from 'react-native';
+import { useSession } from '@/context/authContext';
 
 interface ProfileStatsProps {
     sneakersCount: number;
     friendsCount: number;
-    totalValue: number;
 }
 
-export default function ProfileStats({ sneakersCount, friendsCount, totalValue }: ProfileStatsProps) {
+export default function ProfileStats({ sneakersCount, friendsCount }: ProfileStatsProps) {
+    const { userCollection } = useSession();
     return (
         <View className="flex-col w-full gap-5 px-4">
             <View className="flex-row w-full justify-between">
@@ -34,7 +35,7 @@ export default function ProfileStats({ sneakersCount, friendsCount, totalValue }
                     Value
                 </Text>
                 <Text className="font-spacemono-bold text-2xl">
-                    ${totalValue}
+                    ${userCollection?.estimated_value || 0}
                 </Text>
             </View>
         </View>

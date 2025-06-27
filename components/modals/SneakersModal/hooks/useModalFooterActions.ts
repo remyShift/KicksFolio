@@ -7,7 +7,7 @@ import { Alert } from 'react-native';
 import { SneakerFormData } from '@/validation/schemas';
 
 export const useModalFooterActions = () => {
-	const { user, userCollection } = useSession();
+	const { user, userCollection, refreshUserData } = useSession();
 	const [nextSneaker, setNextSneaker] = useState<Sneaker | null>(null);
 	const [prevSneaker, setPrevSneaker] = useState<Sneaker | null>(null);
 
@@ -59,6 +59,7 @@ export const useModalFooterActions = () => {
 						onPress: () => {
 							handleSneakerDelete(currentSneaker.id)
 								.then(() => {
+									refreshUserData();
 									resetModalData();
 									setModalStep('index');
 									setIsVisible(false);
