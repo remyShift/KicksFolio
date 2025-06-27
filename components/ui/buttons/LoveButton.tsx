@@ -11,7 +11,7 @@ export default function LoveButton({ sneaker }: { sneaker: Sneaker }) {
     const [isWishlisted, setIsWishlisted] = useState(sneaker.wishlist || false);
     const [isLoading, setIsLoading] = useState(false);
     const { refreshUserData } = useSession();
-    const { showSuccessToast } = useToast();
+    const { showSuccessToast, showErrorToast } = useToast();
 
     useEffect(() => {
         setIsWishlisted(sneaker.wishlist || false);
@@ -35,6 +35,7 @@ export default function LoveButton({ sneaker }: { sneaker: Sneaker }) {
                 return refreshUserData();
             })
             .catch((error) => {
+                showErrorToast('❌ Error updating wishlist status', 'Please try again later');
                 console.error('Error updating wishlist status:', error);
                 setIsWishlisted(!newWishlistStatus);
             })
