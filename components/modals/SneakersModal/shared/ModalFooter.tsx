@@ -1,13 +1,12 @@
-import { Alert, View } from 'react-native';
+import { View } from 'react-native';
 import BackButton from '@/components/ui/buttons/BackButton';
 import NextButton from '@/components/ui/buttons/NextButton';
 import EditButton from '@/components/ui/buttons/EditButton';
 import { useModalStore } from '@/store/useModalStore';
-import { useSneakerAPI } from '../hooks/useSneakerAPI';
 import { useSession } from '@/context/authContext';
 import DeleteButton from '@/components/ui/buttons/DeleteButton';
 import { Sneaker } from '@/types/Sneaker';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useModalFooterActions } from '../hooks/useModalFooterActions';
 
 export const ModalFooter = () => {

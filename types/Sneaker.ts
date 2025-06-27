@@ -39,4 +39,5 @@ export type Sneaker = {
 	created_at: string;
 	updated_at: string;
 	images: Photo[];
+	estimated_value: number;
 };

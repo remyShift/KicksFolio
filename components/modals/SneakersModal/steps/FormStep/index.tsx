@@ -17,7 +17,7 @@ export const FormStep = () => {
     const pricePaidInputRef = useRef<TextInput>(null);
     const descriptionInputRef = useRef<TextInput>(null);
     
-    const { fetchedSneaker, setFetchedSneaker, sneakerToAdd, setSneakerToAdd, errorMsg, setErrorMsg } = useModalStore();
+    const { fetchedSneaker, setFetchedSneaker, sneakerToAdd, setSneakerToAdd, errorMsg, setErrorMsg, setEstimatedValue } = useModalStore();
     
     const {
         control,
@@ -71,6 +71,7 @@ export const FormStep = () => {
             
             reset(formData);
             setSneakerToAdd(formData);
+            setEstimatedValue(fetchedSneaker.estimated_value);
             
             setFetchedSneaker(null);
         }

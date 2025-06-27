@@ -3,7 +3,7 @@ import {
 	SupabaseSneakerService,
 	SupabaseSneaker,
 } from '@/services/SneakersService';
-import { SneakerFormData } from '../types';
+import { SneakerFormData } from '@/validation/schemas';
 import { ModalStep } from '../types';
 import { FetchedSneaker } from '@/store/useModalStore';
 import { useSession } from '@/context/authContext';
@@ -23,6 +23,7 @@ interface SkuSearchResponse {
 		name: string;
 		brand: string;
 		story: string;
+		estimatedMarketValue: number;
 		image: {
 			original: string;
 		};
@@ -89,6 +90,8 @@ export const useSneakerAPI = (userId: string) => {
 						model: responseResult.name || '',
 						brand: responseResult.brand.toLowerCase() as SneakerBrand,
 						description: responseResult.story || '',
+						estimated_value:
+							responseResult.estimatedMarketValue || 0,
 						image: {
 							uri: responseResult.image.original || '',
 						},
@@ -133,13 +136,15 @@ export const useSneakerAPI = (userId: string) => {
 			created_at: supabaseSneaker.created_at,
 			updated_at: supabaseSneaker.updated_at,
 			collection_id: supabaseSneaker.collection_id,
+			estimated_value: supabaseSneaker.estimated_value || 0,
 		};
 	};
 
 	const handleFormSubmit = async (
 		formData: SneakerFormData,
 		callbacks?: Callbacks,
-		collectionId?: string
+		collectionId?: string,
+		estimatedValue?: number | null
 	) => {
 		if (!user) {
 			callbacks?.setErrorMsg('No user authenticated');
@@ -168,8 +173,8 @@ export const useSneakerAPI = (userId: string) => {
 					'id' | 'created_at' | 'updated_at'
 				> = {
 					model: formData.model,
-					brand: formData.brand as any,
-					status: formData.status as any,
+					brand: formData.brand,
+					status: formData.status,
 					size: parseInt(formData.size.toString()),
 					condition: parseInt(formData.condition.toString()),
 					images: [],
@@ -178,6 +183,7 @@ export const useSneakerAPI = (userId: string) => {
 						: undefined,
 					description: formData.description,
 					collection_id: collectionId,
+					estimated_value: estimatedValue || undefined,
 				};
 
 				return SupabaseSneakerService.createSneaker(sneakerToAdd);

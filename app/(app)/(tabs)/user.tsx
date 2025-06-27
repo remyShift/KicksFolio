@@ -79,9 +79,7 @@ export default function User() {
       <ProfileHeader user={user} userSneakers={userSneakers || []} viewMode={viewMode} setViewMode={setViewMode} onMenuPress={handleMenuPress} />
 
       {!userSneakers || userSneakers.length === 0 ? (
-        <View className="flex-1 justify-center">
           <EmptySneakersState onAddPress={handleAddSneaker} />
-        </View>
       ) : viewMode === 'card' ? (
           <View className="flex-1 gap-8">
             <SneakersCardByBrand 

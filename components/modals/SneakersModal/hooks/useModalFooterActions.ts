@@ -4,6 +4,7 @@ import { useSession } from '@/context/authContext';
 import { Sneaker } from '@/types/Sneaker';
 import { useState } from 'react';
 import { Alert } from 'react-native';
+import { SneakerFormData } from '@/validation/schemas';
 
 export const useModalFooterActions = () => {
 	const { user, userCollection } = useSession();
@@ -16,6 +17,8 @@ export const useModalFooterActions = () => {
 		setModalStep,
 		setErrorMsg,
 		setFetchedSneaker,
+		fetchedSneaker,
+		estimatedValue,
 		validateForm,
 		resetModalData,
 		setCurrentSneaker,
@@ -97,13 +100,14 @@ export const useModalFooterActions = () => {
 						.then(async (result) => {
 							if (result.isValid && result.data) {
 								handleFormSubmit(
-									result.data,
+									result.data as SneakerFormData,
 									{
 										setCurrentSneaker,
 										setModalStep,
 										setErrorMsg,
 									},
-									userCollection!.id
+									userCollection!.id,
+									estimatedValue
 								);
 							} else {
 								setErrorMsg(result.errorMsg);
@@ -124,7 +128,7 @@ export const useModalFooterActions = () => {
 							if (result.isValid && result.data) {
 								handleFormUpdate(
 									currentSneaker.id,
-									result.data,
+									result.data as SneakerFormData,
 									{
 										setCurrentSneaker,
 										setModalStep,
