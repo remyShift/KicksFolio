@@ -5,8 +5,10 @@ import { Sneaker } from '@/types/Sneaker';
 import { useState } from 'react';
 import { Alert } from 'react-native';
 import { SneakerFormData } from '@/validation/schemas';
+import useToast from '@/hooks/useToast';
 
 export const useModalFooterActions = () => {
+	const { showSuccessToast, showErrorToast } = useToast();
 	const { user, userCollection, refreshUserData } = useSession();
 	const [nextSneaker, setNextSneaker] = useState<Sneaker | null>(null);
 	const [prevSneaker, setPrevSneaker] = useState<Sneaker | null>(null);
@@ -65,7 +67,17 @@ export const useModalFooterActions = () => {
 									setIsVisible(false);
 									setCurrentSneaker(null);
 								})
+								.then(() => {
+									showSuccessToast(
+										'🗑️ Sneaker deleted',
+										'The sneaker has been deleted successfully.'
+									);
+								})
 								.catch(() => {
+									showErrorToast(
+										'❌ Sneaker deletion failed',
+										'An error occurred while deleting the sneaker.'
+									);
 									setErrorMsg(
 										'An error occurred while deleting the sneaker.'
 									);

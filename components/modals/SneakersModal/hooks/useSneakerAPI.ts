@@ -10,6 +10,7 @@ import { useSession } from '@/context/authContext';
 import { sneakerSchema } from '@/validation/schemas';
 import { ZodIssue } from 'zod';
 import SupabaseImageService from '@/services/SupabaseImageService';
+import useToast from '@/hooks/useToast';
 
 interface Callbacks {
 	setCurrentSneaker?: (sneaker: Sneaker | null) => void;
@@ -32,6 +33,7 @@ interface SkuSearchResponse {
 
 export const useSneakerAPI = (userId: string) => {
 	const { refreshUserSneakers, userSneakers, user } = useSession();
+	const { showSuccessToast } = useToast();
 
 	const validateSneakerData = (formData: SneakerFormData) => {
 		return new Promise<{
@@ -221,7 +223,12 @@ export const useSneakerAPI = (userId: string) => {
 						convertSupabaseSneakerToSneaker(response);
 					callbacks.setCurrentSneaker?.(convertedSneaker);
 					callbacks.setModalStep('view');
-					refreshUserSneakers();
+					refreshUserSneakers().then(() => {
+						showSuccessToast(
+							`➕ ${convertedSneaker.model} added`,
+							'The sneaker has been added successfully.'
+						);
+					});
 				}
 				return response;
 			})
@@ -292,7 +299,12 @@ export const useSneakerAPI = (userId: string) => {
 						convertSupabaseSneakerToSneaker(response);
 					callbacks.setCurrentSneaker?.(convertedSneaker);
 					callbacks.setModalStep('view');
-					refreshUserSneakers();
+					refreshUserSneakers().then(() => {
+						showSuccessToast(
+							`♻️ ${convertedSneaker.model} updated`,
+							'The sneaker has been updated successfully.'
+						);
+					});
 				} else {
 					console.error('No response or callbacks');
 				}
