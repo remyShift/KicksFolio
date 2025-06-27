@@ -13,7 +13,7 @@ interface WishlistHeaderProps {
 
 export default function WishlistHeader({ wishlistSneakers, viewMode, setViewMode }: WishlistHeaderProps) {
     return (
-        <View className="gap-8 pt-24">
+        <View className="gap-8 pt-32">
         {wishlistSneakers && wishlistSneakers.length > 0 && (
             <View className="flex-row mb-8 items-center">
             <Title content="My wishlist" />
