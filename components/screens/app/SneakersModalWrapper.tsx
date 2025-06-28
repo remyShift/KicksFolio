@@ -3,6 +3,7 @@ import { Modal, Pressable, View, Dimensions } from 'react-native';
 import { SneakersModal } from '@/components/modals/SneakersModal';
 import { useModalStore } from '@/store/useModalStore';
 import { PanGestureHandler, GestureHandlerRootView } from 'react-native-gesture-handler';
+import Toast from 'react-native-toast-message';
 import Animated, {
     useSharedValue,
     useAnimatedStyle,
@@ -123,6 +124,8 @@ export default function SneakersModalWrapper() {
                         </Animated.View>
                     </PanGestureHandler>
                 </Animated.View>
+                
+                <Toast topOffset={60} />
             </GestureHandlerRootView>
         </Modal>
     );
