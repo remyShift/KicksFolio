@@ -2,7 +2,6 @@ import { View } from 'react-native';
 import Title from '@/components/ui/text/Title';
 import MainButton from '@/components/ui/buttons/MainButton';
 import useToast from '@/hooks/useToast';
-import SneakersModalWrapper from '@/components/screens/app/SneakersModalWrapper';
 
 export default function Friends() {
     const { showInfoToast } = useToast();
@@ -13,6 +12,6 @@ export default function Friends() {
         <MainButton content="Add" backgroundColor="bg-primary" onPressAction={() => {
           showInfoToast('Feature in development ...', 'We are working on it ! 💪🏼');
         }} />
-        <SneakersModalWrapper />
       </View>
-)}
+  );
+}

@@ -1,6 +1,7 @@
 import { Text } from 'react-native';
 import { Redirect, Stack } from 'expo-router';
 import { useSession } from '@/context/authContext';
+import SneakersModalWrapper from '@/components/screens/app/SneakersModalWrapper';
 
 export default function AppLayout() {
     const { isLoading, user } = useSession();
@@ -14,8 +15,11 @@ export default function AppLayout() {
     }
 
     return (
-        <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="settings" options={{ animationTypeForReplace: 'push' }} />
-        </Stack>
+        <>
+            <Stack screenOptions={{ headerShown: false }}>
+                <Stack.Screen name="settings" options={{ animationTypeForReplace: 'push' }} />
+            </Stack>
+            <SneakersModalWrapper />
+        </>
     );
 }

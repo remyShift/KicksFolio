@@ -1,31 +1,26 @@
-import CollectionCard from '@/components/ui/cards/CollectionCard';
-import Title from '@/components/ui/text/Title';
-import MainButton from '@/components/ui/buttons/MainButton';
 import { ScrollView, View } from 'react-native';
 import { useSession } from '@/context/authContext';
-import { useLocalSearchParams } from "expo-router";
 import { useEffect } from 'react';
+import Title from '@/components/ui/text/Title';
+import CollectionCard from '@/components/ui/cards/CollectionCard';
+import MainButton from '@/components/ui/buttons/MainButton';
 import { useModalStore } from '@/store/useModalStore';
-import SneakersModalWrapper from '@/components/screens/app/SneakersModalWrapper';
 import useToast from '@/hooks/useToast';
 
 export default function Index() {
-    const params = useLocalSearchParams();
-    const isNewUser = params.newUser === 'true';
-    const { userSneakers } = useSession();
-    const { setModalStep, setIsVisible, modalStep, isVisible } = useModalStore();
+    const { user, userSneakers } = useSession();
+    const { setModalStep, setIsVisible } = useModalStore();
     const { showInfoToast } = useToast();
 
+    // Afficher automatiquement la modale pour les nouveaux utilisateurs
     useEffect(() => {
-        if (isNewUser || !userSneakers || userSneakers.length === 0) {
-            setModalStep('index');
-            setIsVisible(true);
-        } else {
-            if (!isVisible || (modalStep !== 'view' && modalStep !== 'editForm')) {
-                setIsVisible(false);
-            }
+        if (user && (!userSneakers || userSneakers.length === 0)) {
+            setTimeout(() => {
+                setModalStep('index');
+                setIsVisible(true);
+            }, 1000);
         }
-    }, [isNewUser, userSneakers]);
+    }, [user, userSneakers, setModalStep, setIsVisible]);
 
     return (
         <ScrollView className="flex-1 pt-32">
@@ -45,7 +40,6 @@ export default function Index() {
                         </View>
                     </View>
                 </View>
-                <SneakersModalWrapper />
         </ScrollView>
     );
 }

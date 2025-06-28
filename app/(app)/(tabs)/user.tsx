@@ -7,7 +7,6 @@ import { router } from 'expo-router';
 import EmptySneakersState from '@/components/screens/app/profile/displayState/EmptySneakersState';
 import SneakersCardByBrand from '@/components/screens/app/profile/displayState/SneakersCardByBrand';
 import SneakersListView from '@/components/screens/app/profile/displayState/SneakersListView';
-import SneakersModalWrapper from '@/components/screens/app/SneakersModalWrapper';
 import { useModalStore } from '@/store/useModalStore';
 import ProfileHeader from '@/components/screens/app/profile/ProfileHeader';
 
@@ -96,8 +95,6 @@ export default function User() {
           />
         </View>
       )}
-
-      <SneakersModalWrapper />
     </ScrollView>
   );
 }

@@ -2,7 +2,6 @@ import { RefreshControl, ScrollView, View } from 'react-native';
 import { useSession } from '@/context/authContext';
 import { useState, useMemo, useCallback } from 'react';
 import { Sneaker } from '@/types/Sneaker';
-import SneakersModalWrapper from '@/components/screens/app/SneakersModalWrapper';
 import EmptyWishlistState from '@/components/screens/app/wishlist/EmptyWishlistState';
 import WishlistHeader from '@/components/screens/app/wishlist/WishlistHeader';
 import SneakersCardByBrand from '@/components/screens/app/profile/displayState/SneakersCardByBrand';
@@ -86,8 +85,6 @@ export default function Wishlist() {
           />
         </View>
       )}
-
-      <SneakersModalWrapper />
     </ScrollView>
   );
 }
