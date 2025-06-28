@@ -1,5 +1,6 @@
 import { View, Text, Pressable } from 'react-native';
 import { Image } from 'expo-image';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { Sneaker } from '@/types/Sneaker';
 import { ModalStep } from '@/components/modals/SneakersModal/types';
 
@@ -26,18 +27,25 @@ export default function SneakerCard({
             }}
             testID="sneaker-card"
         >
-            <Image source={{ uri: sneaker.images?.[0]?.uri }}
-                style={{
-                    width: '100%',
-                    minHeight: 180,
-                    flex: 1,
-                    borderRadius: 8
-                }}
-                contentFit="cover"
-                contentPosition="center"
-                cachePolicy="memory-disk"
-                transition={200}
-            />
+            {sneaker.images?.[0]?.uri ? (
+                <Image source={{ uri: sneaker.images[0].uri }}
+                    style={{
+                        width: '100%',
+                        minHeight: 180,
+                        flex: 1,
+                        borderRadius: 8
+                    }}
+                    contentFit="cover"
+                    contentPosition="center"
+                    cachePolicy="memory-disk"
+                    transition={200}
+                />
+            ) : (
+                <View className="w-full h-45 bg-gray-200 rounded-lg flex items-center justify-center" style={{ minHeight: 180 }}>
+                    <MaterialCommunityIcons name="shoe-sneaker" size={48} color="#9CA3AF" />
+                    <Text className="text-gray-500 mt-2 text-sm">No image</Text>
+                </View>
+            )}
 
             <View className="flex flex-row justify-between items-center px-1">
                 <Text className="font-spacemono-bold text-lg flex-1 mr-2 flex-shrink" numberOfLines={1} ellipsizeMode="tail">

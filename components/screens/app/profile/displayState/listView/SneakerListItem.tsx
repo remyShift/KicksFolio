@@ -1,5 +1,6 @@
 import { TouchableOpacity, View, Text } from 'react-native';
 import { Image } from 'expo-image';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { Sneaker } from '@/types/Sneaker';
 
 interface SneakerListItemProps {
@@ -15,18 +16,24 @@ export default function SneakerListItem({ sneaker, onPress, showOwnerInfo = fals
       onPress={() => onPress(sneaker)}
     >
       <View className="flex-row justify-between items-center gap-3">
-        <Image 
-          source={{ uri: sneaker.images[0]?.uri }} 
-          style={{
-            width: 80,
-            height: 80,
-            borderRadius: 8,
-            backgroundColor: '#f3f4f6'
-          }}
-          contentFit="contain"
-          cachePolicy="memory-disk"
-          testID="sneaker-image"
-        />
+        {sneaker.images?.[0]?.uri ? (
+          <Image 
+            source={{ uri: sneaker.images[0].uri }} 
+            style={{
+              width: 80,
+              height: 80,
+              borderRadius: 8,
+              backgroundColor: '#f3f4f6'
+            }}
+            contentFit="contain"
+            cachePolicy="memory-disk"
+            testID="sneaker-image"
+          />
+        ) : (
+          <View className="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center">
+            <MaterialCommunityIcons name="shoe-sneaker" size={32} color="#9CA3AF" />
+          </View>
+        )}
         <View className="flex-1">
           <Text className="text-sm text-gray-600 mt-1">{sneaker.brand || ''}</Text>
           <Text 

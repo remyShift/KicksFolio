@@ -123,10 +123,29 @@ export class SupabaseWishlistService extends BaseApiService {
 			const owner = sneaker?.users;
 
 			if (!sneaker?.id || !owner?.id) {
+				console.warn(
+					'🔍 WishlistService: Missing sneaker or owner data:',
+					{ sneaker: !!sneaker?.id, owner: !!owner?.id }
+				);
 				return null;
 			}
 
-			return {
+			console.log(
+				'🔍 WishlistService: Raw sneaker images:',
+				sneaker.images
+			);
+			console.log(
+				'🔍 WishlistService: Images type:',
+				typeof sneaker.images,
+				Array.isArray(sneaker.images)
+			);
+
+			const parsedImages = SupabaseWishlistService.parseImages(
+				sneaker.images
+			);
+			console.log('🔍 WishlistService: Parsed images:', parsedImages);
+
+			const transformedSneaker = {
 				id: String(sneaker.id),
 				model: String(sneaker.model || ''),
 				price_paid: Number(sneaker.price_paid || 0),
@@ -139,7 +158,7 @@ export class SupabaseWishlistService extends BaseApiService {
 				created_at: String(sneaker.created_at),
 				updated_at: String(sneaker.updated_at),
 				estimated_value: Number(sneaker.estimated_value || 0),
-				images: SupabaseWishlistService.parseImages(sneaker.images),
+				images: parsedImages,
 				owner: {
 					id: String(owner.id),
 					username: String(owner.username || ''),
@@ -149,22 +168,96 @@ export class SupabaseWishlistService extends BaseApiService {
 				},
 				wishlist_added_at: String(item.created_at),
 			};
+
+			console.log(
+				'✅ WishlistService: Transformed sneaker with images:',
+				transformedSneaker.images.length
+			);
+			return transformedSneaker;
 		} catch (error) {
-			console.error('Error transforming wishlist item:', error);
+			console.error(
+				'❌ WishlistService: Error transforming wishlist item:',
+				error
+			);
 			return null;
 		}
 	}
 
 	private static parseImages(images: unknown): Photo[] {
 		if (!images) return [];
+
+		// Si c'est déjà un tableau d'objets avec uri/url
+		if (
+			Array.isArray(images) &&
+			images.length > 0 &&
+			typeof images[0] === 'object' &&
+			(images[0].uri || images[0].url)
+		) {
+			return images.map((img: any, index: number) => ({
+				id: img.id || String(index),
+				uri: img.uri || img.url || '',
+				alt: img.alt || `Sneaker image ${index + 1}`,
+			}));
+		}
+
+		// Si c'est un tableau d'éléments à parser
+		if (Array.isArray(images)) {
+			return images.map((img: any, index: number) => {
+				if (typeof img === 'string') {
+					try {
+						const parsed = JSON.parse(img);
+						return {
+							id: parsed.id || String(index),
+							uri: parsed.uri || parsed.url || '',
+							alt: parsed.alt || `Sneaker image ${index + 1}`,
+						};
+					} catch (error) {
+						console.warn('Erreur parsing image JSON:', error);
+						return {
+							id: String(index),
+							uri: img,
+							alt: `Sneaker image ${index + 1}`,
+						};
+					}
+				}
+				return {
+					id: img.id || String(index),
+					uri: img.uri || img.url || '',
+					alt: img.alt || `Sneaker image ${index + 1}`,
+				};
+			});
+		}
+
+		// Si c'est une string JSON
 		if (typeof images === 'string') {
 			try {
 				const parsed = JSON.parse(images);
-				return Array.isArray(parsed) ? (parsed as Photo[]) : [];
-			} catch {
-				return [];
+				if (Array.isArray(parsed)) {
+					return parsed.map((img: any, index: number) => ({
+						id: img.id || String(index),
+						uri: img.uri || img.url || '',
+						alt: img.alt || `Sneaker image ${index + 1}`,
+					}));
+				}
+				return [
+					{
+						id: parsed.id || '0',
+						uri: parsed.uri || parsed.url || '',
+						alt: parsed.alt || 'Sneaker image 1',
+					},
+				];
+			} catch (error) {
+				console.warn('Erreur parsing images JSON string:', error);
+				return [
+					{
+						id: '0',
+						uri: images,
+						alt: 'Sneaker image 1',
+					},
+				];
 			}
 		}
-		return Array.isArray(images) ? (images as Photo[]) : [];
+
+		return [];
 	}
 }
