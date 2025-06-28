@@ -19,6 +19,10 @@ export interface SupabaseSneaker {
 	created_at: string;
 	updated_at: string;
 	wishlist?: boolean;
+	og_box?: boolean;
+	gender?: 'men' | 'women';
+	ds?: boolean;
+	sku?: string;
 }
 
 export class SupabaseSneakerService extends BaseApiService {
@@ -102,17 +106,30 @@ export class SupabaseSneakerService extends BaseApiService {
 			'id' | 'created_at' | 'updated_at' | 'user_id'
 		>
 	) {
+		console.log('🔄 Creating sneaker with data:', sneakerData);
+
 		const {
 			data: { user },
 			error: authError,
 		} = await supabase.auth.getUser();
-		if (authError) throw authError;
-		if (!user) throw new Error('No user found');
+
+		if (authError) {
+			console.error('❌ Auth error:', authError);
+			throw authError;
+		}
+		if (!user) {
+			console.error('❌ No user found');
+			throw new Error('No user found');
+		}
+
+		console.log('✅ User found:', user.id);
 
 		const sneakerWithUser = {
 			...sneakerData,
 			user_id: user.id,
 		};
+
+		console.log('🔄 Inserting sneaker:', sneakerWithUser);
 
 		const { data, error } = await supabase
 			.from('sneakers')
@@ -120,7 +137,18 @@ export class SupabaseSneakerService extends BaseApiService {
 			.select()
 			.single();
 
-		if (error) throw error;
+		if (error) {
+			console.error('❌ Database error:', error);
+			console.error('Error details:', {
+				message: error.message,
+				details: error.details,
+				hint: error.hint,
+				code: error.code,
+			});
+			throw error;
+		}
+
+		console.log('✅ Sneaker created successfully:', data);
 
 		return data
 			? {
