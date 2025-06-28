@@ -17,8 +17,10 @@ export default function SneakerListItem({ sneaker, onPress, showOwnerInfo = fals
     <TouchableOpacity
       className="bg-white p-4 border border-gray-100 mb-1"
       onPress={() => onPress(sneaker)}
+      activeOpacity={0.7}
+      hitSlop={{ top: 5, bottom: 5, left: 5, right: 5 }}
     >
-      <View className="flex-row justify-between items-center gap-3">
+      <View className="flex-row justify-between items-center gap-3" pointerEvents="none">
         {sneaker.images?.[0]?.uri ? (
           <Image 
             source={{ uri: sneaker.images[0].uri }} 

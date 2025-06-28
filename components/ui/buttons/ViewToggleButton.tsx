@@ -15,6 +15,8 @@ export default function ViewToggleButton({ currentMode, onToggle }: ViewToggleBu
       <TouchableOpacity
         className={`px-4 py-2 ${currentMode === 'card' ? 'bg-primary' : 'bg-transparent'}`}
         onPress={() => onToggle('card')}
+        activeOpacity={0.7}
+        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
       >
         <Ionicons 
           name="grid" 
@@ -26,6 +28,8 @@ export default function ViewToggleButton({ currentMode, onToggle }: ViewToggleBu
       <TouchableOpacity
         className={`px-4 py-2 ${currentMode === 'list' ? 'bg-primary' : 'bg-transparent'}`}
         onPress={() => onToggle('list')}
+        activeOpacity={0.7}
+        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
       >
         <Ionicons 
           name="list" 

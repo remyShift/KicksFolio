@@ -21,53 +21,58 @@ export default function SneakerCard({
     const { user } = useSession();
 
     return (
-        <Pressable className="bg-white rounded-md p-3 gap-2 shadow-card w-96"
+        <Pressable 
+            className="bg-white rounded-md p-3 gap-2 shadow-card w-96"
             onPress={() => {
                 setSneaker(sneaker);
                 setModalStep('view');
                 setModalVisible(true);
             }}
             testID="sneaker-card"
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            android_ripple={{ color: '#f3f4f6', borderless: false }}
         >
-            {sneaker.images?.[0]?.uri ? (
-                <Image source={{ uri: sneaker.images[0].uri }}
-                    style={{
-                        width: '100%',
-                        minHeight: 180,
-                        flex: 1,
-                        borderRadius: 8
-                    }}
-                    contentFit="cover"
-                    contentPosition="center"
-                    cachePolicy="memory-disk"
-                    transition={200}
-                />
-            ) : (
-                <View className="w-full h-45 bg-gray-200 rounded-lg flex items-center justify-center" style={{ minHeight: 180 }}>
-                    <MaterialCommunityIcons name="shoe-sneaker" size={48} color="#9CA3AF" />
-                    <Text className="text-gray-500 mt-2 text-sm">No image</Text>
-                </View>
-            )}
+            <View pointerEvents="none">
+                {sneaker.images?.[0]?.uri ? (
+                    <Image source={{ uri: sneaker.images[0].uri }}
+                        style={{
+                            width: '100%',
+                            minHeight: 180,
+                            flex: 1,
+                            borderRadius: 8
+                        }}
+                        contentFit="cover"
+                        contentPosition="center"
+                        cachePolicy="memory-disk"
+                        transition={200}
+                    />
+                ) : (
+                    <View className="w-full h-45 bg-gray-200 rounded-lg flex items-center justify-center" style={{ minHeight: 180 }}>
+                        <MaterialCommunityIcons name="shoe-sneaker" size={48} color="#9CA3AF" />
+                        <Text className="text-gray-500 mt-2 text-sm">No image</Text>
+                    </View>
+                )}
 
-            <View className="flex flex-row justify-between items-center px-1">
-                <Text className="font-spacemono-bold text-lg flex-1 mr-2 flex-shrink" numberOfLines={1} ellipsizeMode="tail">
-                    {sneaker.model}
-                </Text>
-                <Text className="text-primary font-spacemono-bold text-lg flex-shrink-0">
-                    {sneaker.size}US
-                </Text>
+                <View className="flex flex-row justify-between items-center px-1">
+                    <Text className="font-spacemono-bold text-lg flex-1 mr-2 flex-shrink" numberOfLines={1} ellipsizeMode="tail">
+                        {sneaker.model}
+                    </Text>
+                    <Text className="text-primary font-spacemono-bold text-lg flex-shrink-0">
+                        {sneaker.size}US
+                    </Text>
+                </View>
+
+                {showOwnerInfo && sneaker.owner && (
+                    <View className="flex-row items-center mt-2 gap-1">
+                        <Text className="font-spacemono text-xs text-gray-600 uppercase">
+                            Owned by
+                        </Text>
+                        <Text className="font-spacemono text-sm text-primary mb-1">
+                            {sneaker.owner.username === user!.username ? 'me' : `@${sneaker.owner.username}`}
+                        </Text>
+                    </View>
+                )}
             </View>
-
-            {showOwnerInfo && sneaker.owner && (
-                <View className="flex-row items-center mt-2 gap-1">
-                    <Text className="font-spacemono text-xs text-gray-600 uppercase">
-                        Owned by
-                    </Text>
-                    <Text className="font-spacemono text-sm text-primary mb-1">
-                        {sneaker.owner.username === user!.username ? 'me' : `@${sneaker.owner.username}`}
-                    </Text>
-                </View>
-            )}
         </Pressable>
     );
 }

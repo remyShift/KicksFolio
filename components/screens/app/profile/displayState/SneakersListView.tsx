@@ -50,8 +50,11 @@ export default function SneakersListView({
       contentContainerStyle={{ paddingTop: 0 }}
       showsVerticalScrollIndicator={false}
       scrollEnabled={scrollEnabled}
+      nestedScrollEnabled={!scrollEnabled}
+      keyboardShouldPersistTaps="handled"
+      removeClippedSubviews={false}
       refreshControl={
-        onRefresh && scrollEnabled ? (
+        (onRefresh && scrollEnabled) ? (
           <RefreshControl 
             refreshing={refreshing} 
             onRefresh={onRefresh}
