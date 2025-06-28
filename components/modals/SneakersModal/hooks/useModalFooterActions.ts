@@ -9,7 +9,7 @@ import useToast from '@/hooks/useToast';
 
 export const useModalFooterActions = () => {
 	const { showSuccessToast, showErrorToast, showInfoToast } = useToast();
-	const { user, userCollection, refreshUserData } = useSession();
+	const { user, refreshUserData } = useSession();
 	const [nextSneaker, setNextSneaker] = useState<Sneaker | null>(null);
 	const [prevSneaker, setPrevSneaker] = useState<Sneaker | null>(null);
 
@@ -139,7 +139,6 @@ export const useModalFooterActions = () => {
 										setModalStep,
 										setErrorMsg,
 									},
-									userCollection!.id,
 									estimatedValue
 								);
 							} else {

@@ -1,11 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { User } from '@/types/User';
-import { Collection } from '@/types/Collection';
 import { Sneaker } from '@/types/Sneaker';
 
 interface AppState {
 	user: User | null;
-	collection: Collection | null;
 	sneakers: Sneaker[] | null;
 }
 
@@ -50,7 +48,6 @@ export class StorageService {
 		return this.handleStorageOperation(
 			Promise.all([
 				this.removeItem('user'),
-				this.removeItem('collection'),
 				this.removeItem('sneakers'),
 			]).then(() => void 0),
 			'Error clearing session data:'
@@ -65,14 +62,6 @@ export class StorageService {
 		return this.getItem<User>('user');
 	}
 
-	async setCollectionData(collection: Collection): Promise<void> {
-		return this.setItem('collection', collection);
-	}
-
-	async getCollectionData(): Promise<Collection | null> {
-		return this.getItem<Collection>('collection');
-	}
-
 	async setSneakersData(sneakers: Sneaker[]): Promise<void> {
 		return this.setItem('sneakers', sneakers);
 	}
@@ -83,15 +72,12 @@ export class StorageService {
 
 	async initializeStorageData(): Promise<AppState> {
 		return this.handleStorageOperation(
-			Promise.all([
-				this.getUserData(),
-				this.getCollectionData(),
-				this.getSneakersData(),
-			]).then(([user, collection, sneakers]) => ({
-				user,
-				collection,
-				sneakers,
-			})),
+			Promise.all([this.getUserData(), this.getSneakersData()]).then(
+				([user, sneakers]) => ({
+					user,
+					sneakers,
+				})
+			),
 			'Error initializing storage data:'
 		);
 	}
@@ -101,9 +87,6 @@ export class StorageService {
 
 		if (data.user) {
 			promises.push(this.setUserData(data.user));
-		}
-		if (data.collection) {
-			promises.push(this.setCollectionData(data.collection));
 		}
 		if (data.sneakers) {
 			promises.push(this.setSneakersData(data.sneakers));

@@ -1,15 +1,21 @@
 import { View, Text, Pressable } from 'react-native';
-import { Sneaker } from '@/types/Sneaker';
 import { Image } from 'expo-image';
+import { Sneaker } from '@/types/Sneaker';
 import { ModalStep } from '@/components/modals/SneakersModal/types';
 
-export default function SneakerCard({ sneaker, setModalStep, setModalVisible, setSneaker }: { 
+export default function SneakerCard({ 
+    sneaker, 
+    setModalStep, 
+    setModalVisible, 
+    setSneaker,
+    showOwnerInfo = false 
+}: { 
     sneaker: Sneaker, 
     setModalStep: (step: ModalStep) => void, 
     setModalVisible: (visible: boolean) => void,
-    setSneaker: (sneaker: Sneaker) => void 
+    setSneaker: (sneaker: Sneaker) => void,
+    showOwnerInfo?: boolean
 }) {
-
 
     return (
         <Pressable className="bg-white rounded-md p-3 gap-2 shadow-card w-96"
@@ -41,6 +47,18 @@ export default function SneakerCard({ sneaker, setModalStep, setModalVisible, se
                     {sneaker.size}US
                 </Text>
             </View>
+
+            {/* Informations du propriétaire si applicable */}
+            {showOwnerInfo && sneaker.owner && (
+                <View className="bg-gray-50 p-2 rounded-lg mt-2">
+                    <Text className="font-spacemono text-xs text-gray-600 uppercase">
+                        Owned by
+                    </Text>
+                    <Text className="font-spacemono text-sm text-primary">
+                        @{sneaker.owner.username}
+                    </Text>
+                </View>
+            )}
         </Pressable>
     );
 }

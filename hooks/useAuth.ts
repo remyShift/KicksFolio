@@ -249,10 +249,6 @@ export const useAuth = () => {
 			});
 	};
 
-	const getUserCollection = async () => {
-		await refreshUserData();
-	};
-
 	const getUserSneakers = async () => {
 		await refreshUserSneakers();
 	};
@@ -282,7 +278,7 @@ export const useAuth = () => {
 		updateUser,
 		deleteAccount,
 		getUser,
-		getUserCollection,
+
 		getUserSneakers,
 		handleNextSignupPage,
 		errorMsg,

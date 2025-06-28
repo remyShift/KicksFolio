@@ -34,11 +34,6 @@ export const mockUseSignUpProps = {
 	setSignUpProps: jest.fn(),
 };
 
-export const mockUseCollections = {
-	createCollection: jest.fn(),
-	error: '',
-};
-
 export const mockUser = {
 	id: '1',
 	username: 'testuser',

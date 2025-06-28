@@ -12,6 +12,7 @@ interface SneakersListViewProps {
   refreshing?: boolean;
   onRefresh?: () => Promise<void>;
   scrollEnabled?: boolean;
+  showOwnerInfo?: boolean;
 }
 
 export default function SneakersListView({ 
@@ -20,7 +21,8 @@ export default function SneakersListView({
   header,
   refreshing = false,
   onRefresh,
-  scrollEnabled = true 
+  scrollEnabled = true,
+  showOwnerInfo = false
 }: SneakersListViewProps) {
   const { filteredAndSortedSneakers, initializeData } = useListViewStore();
 
@@ -29,7 +31,7 @@ export default function SneakersListView({
   }, [sneakers, initializeData]);
 
   const renderSneakerItem = ({ item }: { item: Sneaker }) => (
-    <SneakerListItem sneaker={item} onPress={onSneakerPress} />
+    <SneakerListItem sneaker={item} onPress={onSneakerPress} showOwnerInfo={showOwnerInfo} />
   );
 
   const renderListHeader = () => (

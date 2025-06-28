@@ -5,9 +5,10 @@ import { Sneaker } from '@/types/Sneaker';
 interface SneakerListItemProps {
   sneaker: Sneaker;
   onPress: (sneaker: Sneaker) => void;
+  showOwnerInfo?: boolean;
 }
 
-export default function SneakerListItem({ sneaker, onPress }: SneakerListItemProps) {  
+export default function SneakerListItem({ sneaker, onPress, showOwnerInfo = false }: SneakerListItemProps) {  
   return (
     <TouchableOpacity
       className="bg-white p-4 border border-gray-100 mb-1"
@@ -35,6 +36,19 @@ export default function SneakerListItem({ sneaker, onPress }: SneakerListItemPro
           >
             {sneaker.model || ''}
           </Text>
+          
+          {/* Informations du propriétaire si applicable */}
+          {showOwnerInfo && sneaker.owner && (
+            <View className="bg-gray-50 p-2 rounded-lg mt-2 mb-2">
+              <Text className="font-spacemono text-xs text-gray-600 uppercase">
+                Owned by
+              </Text>
+              <Text className="font-spacemono text-sm text-primary">
+                @{sneaker.owner.username}
+              </Text>
+            </View>
+          )}
+          
           <View className="flex-row items-center mt-2 gap-4">
             <Text className="text-sm text-gray-500">Size: {sneaker.size ? `${sneaker.size}US` : 'N/A'}</Text>
             <Text className="text-sm text-gray-500">Condition: {sneaker.condition ? `${sneaker.condition}/10` : 'N/A'}</Text>

@@ -1,12 +1,9 @@
 import { User } from './User';
-import { Collection } from './Collection';
 import { Sneaker } from './Sneaker';
 import { Dispatch, SetStateAction } from 'react';
 
 export interface AuthContextType {
 	isLoading: boolean;
-	userCollection: Collection | null;
-	setUserCollection: Dispatch<SetStateAction<Collection | null>>;
 	userSneakers: Sneaker[] | null;
 	setUserSneakers: Dispatch<SetStateAction<Sneaker[] | null>>;
 	user: User | null;

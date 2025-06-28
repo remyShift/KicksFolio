@@ -26,6 +26,14 @@ export type Photo = {
 	alt?: string;
 };
 
+export type SneakerOwner = {
+	id: string;
+	username: string;
+	first_name?: string;
+	last_name?: string;
+	profile_picture_url?: string;
+};
+
 export type Sneaker = {
 	id: string;
 	model: string;
@@ -35,10 +43,12 @@ export type Sneaker = {
 	condition: number;
 	status: SneakerStatus;
 	description: string | null;
-	collection_id: string;
+	user_id: string;
 	created_at: string;
 	updated_at: string;
 	images: Photo[];
 	estimated_value: number;
-	wishlist: boolean | false;
+	owner?: SneakerOwner;
+	wishlist_added_at?: string;
+	wishlist?: boolean | false;
 };

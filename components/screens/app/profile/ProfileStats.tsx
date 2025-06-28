@@ -7,7 +7,9 @@ interface ProfileStatsProps {
 }
 
 export default function ProfileStats({ sneakersCount, friendsCount }: ProfileStatsProps) {
-    const { userCollection } = useSession();
+    const { userSneakers } = useSession();
+    
+    const totalValue = userSneakers?.reduce((acc, sneaker) => acc + (sneaker.estimated_value || 0), 0) || 0;
     return (
         <View className="flex-col w-full gap-5 px-4">
             <View className="flex-row w-full justify-between">
@@ -35,7 +37,7 @@ export default function ProfileStats({ sneakersCount, friendsCount }: ProfileSta
                     Value
                 </Text>
                 <Text className="font-spacemono-bold text-2xl">
-                    ${userCollection?.estimated_value || 0}
+                    ${totalValue}
                 </Text>
             </View>
         </View>

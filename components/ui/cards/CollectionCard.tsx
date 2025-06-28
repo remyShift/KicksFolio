@@ -1,11 +1,10 @@
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { Text, View, Pressable } from 'react-native';
-import { Collection } from '@/types/Collection';
 import { Sneaker } from '@/types/Sneaker';
 import { router } from 'expo-router';
 import { Image } from 'expo-image';
 
-export default function CollectionCard({ userCollection, userSneakers }: { userCollection: Collection | null | undefined, userSneakers: Sneaker[] | null | undefined }) {
+export default function CollectionCard({ userSneakers }: { userSneakers: Sneaker[] | null | undefined }) {
 
     return (
         <Pressable className="flex-1 bg-white rounded-md gap-2 p-4 h-fit shadow-card"
@@ -71,7 +70,7 @@ export default function CollectionCard({ userCollection, userSneakers }: { userC
             </View>
 
             <View className="flex flex-row justify-between items-center">
-                <Text className="font-spacemono-bold text-lg">{userCollection?.name}</Text>
+                <Text className="font-spacemono-bold text-lg">My Collection</Text>
                 <Text className="text-primary font-spacemono-bold text-lg">{userSneakers?.length || 0} shoes</Text>
             </View>
         </Pressable>

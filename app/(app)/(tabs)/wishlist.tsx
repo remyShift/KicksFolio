@@ -71,6 +71,7 @@ export default function Wishlist() {
           <SneakersCardByBrand 
             sneakersByBrand={sneakersByBrand}
             onSneakerPress={handleSneakerPress}
+            showOwnerInfo={true}
           />
         </View>
       ) : (
@@ -81,6 +82,7 @@ export default function Wishlist() {
             refreshing={refreshing}
             onRefresh={onRefresh}
             scrollEnabled={false}
+            showOwnerInfo={true}
           />
         </View>
       )}

@@ -12,7 +12,7 @@ import useToast from '@/hooks/useToast';
 export default function Index() {
     const params = useLocalSearchParams();
     const isNewUser = params.newUser === 'true';
-    const { userCollection, userSneakers } = useSession();
+    const { userSneakers } = useSession();
     const { setModalStep, setIsVisible, modalStep, isVisible } = useModalStore();
     const { showInfoToast } = useToast();
 
@@ -33,7 +33,7 @@ export default function Index() {
                     <View className="flex-1 gap-4">
                         <Title content="My collection" />
                         <View className="flex-1 px-4">
-                            <CollectionCard userCollection={userCollection} userSneakers={userSneakers} />
+                            <CollectionCard userSneakers={userSneakers} />
                         </View>
                     </View>
                     <View className="flex-1 gap-4">

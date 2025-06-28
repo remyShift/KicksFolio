@@ -1,4 +1,3 @@
-import { Collection } from './Collection';
 import { Sneaker } from './Sneaker';
 
 export type User = {
@@ -11,7 +10,6 @@ export type User = {
 	sneaker_size: number;
 	created_at: string;
 	updated_at: string;
-	collection?: Collection;
 	friends: User[];
 	sneakers: Sneaker[];
 	profile_picture: string;

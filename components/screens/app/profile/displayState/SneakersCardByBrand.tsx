@@ -20,11 +20,13 @@ const brandLogos: Record<string, any> = {
 interface SneakersCardByBrandProps {
     sneakersByBrand: Record<string, Sneaker[]>;
     onSneakerPress: (sneaker: Sneaker) => void;
+    showOwnerInfo?: boolean;
 }
 
 export default function SneakersCardByBrand({ 
     sneakersByBrand, 
-    onSneakerPress
+    onSneakerPress,
+    showOwnerInfo = false
 }: SneakersCardByBrandProps) {
     const { setModalStep } = useModalStore();
 
@@ -58,6 +60,7 @@ export default function SneakersCardByBrand({
                                     sneaker={sneaker}
                                     setSneaker={(s) => onSneakerPress(s)}
                                     setModalStep={setModalStep}
+                                    showOwnerInfo={showOwnerInfo}
                                 />
                             ))}
                         </ScrollView>

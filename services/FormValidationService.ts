@@ -1,6 +1,14 @@
 import { TextInput } from 'react-native';
 import { RefObject } from 'react';
-import { FieldName } from './FormService';
+type FieldName =
+	| 'username'
+	| 'email'
+	| 'password'
+	| 'confirmPassword'
+	| 'firstName'
+	| 'lastName'
+	| 'size'
+	| 'sku';
 
 export class FormValidationService {
 	public async validateField(
@@ -39,9 +47,7 @@ export class FormValidationService {
 			case 'size':
 				isValid = this.validateSize(Number(value));
 				break;
-			case 'collectionName':
-				isValid = this.validateCollectionName(value);
-				break;
+
 			case 'sku':
 				isValid = this.validateSku(value);
 				break;
@@ -134,20 +140,6 @@ export class FormValidationService {
 			return false;
 		}
 		if (name.match(/[^a-zA-Z\s]/)) {
-			return false;
-		}
-
-		return true;
-	}
-
-	private validateCollectionName(collectionName: string): boolean {
-		if (!collectionName) {
-			return false;
-		}
-		if (collectionName.length < 4) {
-			return false;
-		}
-		if (collectionName.match(/[^a-zA-Z\s]/)) {
 			return false;
 		}
 

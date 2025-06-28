@@ -1,4 +1,4 @@
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, Pressable } from 'react-native';
 import { ConditionBar } from '@/components/ui/indicators/ConditionBar';
 import { useState } from 'react';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
@@ -6,6 +6,10 @@ import { useModalStore } from '@/store/useModalStore';
 import { PhotoCarousel } from '@/components/ui/images/photoCaroussel/PhotoCarousel';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import LoveButton from '@/components/ui/buttons/LoveButton';
+import ShareButton from '@/components/ui/buttons/ShareButton';
+import EditButton from '@/components/ui/buttons/EditButton';
+import DeleteButton from '@/components/ui/buttons/DeleteButton';
+import SneakerTitle from '@/components/ui/text/SneakerTitle';
 
 export const ViewStep = () => {
     const { currentSneaker } = useModalStore();

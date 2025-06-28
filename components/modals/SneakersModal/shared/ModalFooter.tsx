@@ -105,10 +105,12 @@ export const ModalFooter = () => {
                         <BackButton 
                             onPressAction={handleBackAction}
                         />
-                        <EditButton 
-                            onPressAction={handleEditAction}
-                            testID="edit-button"
-                        />
+                        {currentSneaker!.owner?.id === user.id && (
+                            <EditButton 
+                                onPressAction={handleEditAction}
+                                testID="edit-button"
+                            />
+                        )}
                     </View>
 
                     <NextButton 

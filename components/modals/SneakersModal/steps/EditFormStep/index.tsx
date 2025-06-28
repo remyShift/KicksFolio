@@ -6,6 +6,7 @@ import { sneakerSchema, SneakerFormData } from '@/validation/schemas';
 import { FormFields } from '../../shared/FormFields';
 import { useFormValidation } from '../../hooks/useFormValidation';
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
+import { SneakerStatus } from '@/types/Sneaker';
 
 
 export const EditFormStep = () => {
@@ -35,7 +36,7 @@ export const EditFormStep = () => {
         defaultValues: {
             model: currentSneaker?.model || '',
             brand: currentSneaker?.brand,
-            status: currentSneaker?.status || '',
+            status: currentSneaker?.status || SneakerStatus.null,
             size: currentSneaker?.size ? String(currentSneaker.size) : '',
             condition: currentSneaker?.condition ? String(currentSneaker.condition) : '',
             price_paid: currentSneaker?.price_paid ? String(currentSneaker.price_paid) : '',

@@ -3,11 +3,11 @@ import { AuthContextType } from '@/types/auth';
 import { storageService } from '@/services/StorageService';
 import { useAppState } from '@react-native-community/hooks';
 import { User } from '@/types/User';
-import { Collection } from '@/types/Collection';
 import { Sneaker } from '@/types/Sneaker';
 import { SupabaseAuthService } from '@/services/AuthService';
-import { SupabaseCollectionService } from '@/services/CollectionService';
+
 import { SupabaseSneakerService } from '@/services/SneakersService';
+import { SupabaseWishlistService } from '@/services/WishlistService';
 import { supabase } from '@/services/supabase';
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
@@ -27,7 +27,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
     const [isLoading, setIsLoading] = useState(true);
 
     const [user, setUser] = useState<User | null>(null);
-    const [userCollection, setUserCollection] = useState<Collection | null>(null);
     const [userSneakers, setUserSneakers] = useState<Sneaker[] | null>(null);
     const [wishlistSneakers, setWishlistSneakers] = useState<Sneaker[] | null>(null);
 
@@ -68,44 +67,28 @@ export function SessionProvider({ children }: PropsWithChildren) {
         handleAppStateChange();
     }, [appState]);
 
-    const loadUserCollectionsAndSneakers = async (userWithUrl: User) => {
-        return SupabaseCollectionService.getUserCollections(userWithUrl.id)
-            .then((collections) => {
-                const collection = collections?.[0] || null;
+    const loadUserSneakers = async (userWithUrl: User) => {
+        const sneakersPromise = SupabaseSneakerService.getSneakersByUser(userWithUrl.id);
+        const wishlistPromise = SupabaseWishlistService.getUserWishlistSneakers(userWithUrl.id);
+        
+        return Promise.all([sneakersPromise, wishlistPromise])
+            .then(([sneakers, wishlistSneakers]) => {
+                setUserSneakers(sneakers || []);
+                setWishlistSneakers(wishlistSneakers || []);
                 
-                if (collection?.id) {
-                    return SupabaseSneakerService.getSneakersByCollection(collection.id)
-                    .then((sneakers) => {
-                        const wishlistSneakersAggregated = sneakers.filter((sneaker) => sneaker.wishlist);
-                        setWishlistSneakers(wishlistSneakersAggregated || []);
-                        setUserSneakers(sneakers || []);
-                        storageService.setItem('sneakers', sneakers || []);
-                        storageService.setItem('wishlistSneakers', wishlistSneakersAggregated || []);
-
-                        const estimatedValueAggregated = sneakers.reduce((acc, sneaker) => acc + sneaker.estimated_value, 0);
-                        collection.estimated_value = estimatedValueAggregated;
-                        userWithUrl.collection = collection;
+                storageService.setItem('sneakers', sneakers || []);
+                storageService.setItem('wishlistSneakers', wishlistSneakers || []);
                 
-                        setUser(userWithUrl);
-                        
-                        setUserCollection(collection);
-                        storageService.setItem('collection', collection);
-                        
-                        userWithUrl.sneakers = sneakers;
-                        setUser(userWithUrl);
-                        storageService.setItem('user', userWithUrl);
-                    });
-                } else {
-                    setUserSneakers([]);
-                    userWithUrl.sneakers = [];
-                    setUser(userWithUrl);
-                    storageService.setItem('sneakers', []);
-                }
+                userWithUrl.sneakers = sneakers;
+                setUser(userWithUrl);
+                storageService.setItem('user', userWithUrl);
             })
             .catch((error) => {
-                console.error('Error loading user collections and sneakers:', error);
+                console.error('Error loading user sneakers:', error);
                 setUserSneakers([]);
+                setWishlistSneakers([]);
                 storageService.setItem('sneakers', []);
+                storageService.setItem('wishlistSneakers', []);
             });
     };
 
@@ -121,7 +104,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
                         setUser(userWithUrl as User);
                         storageService.setItem('user', userWithUrl);
                         
-                        return loadUserCollectionsAndSneakers(userWithUrl);
+                        return loadUserSneakers(userWithUrl);
                     } else if (attempt < maxRetries) {
                         return new Promise((resolve) => {
                             setTimeout(() => {
@@ -173,17 +156,19 @@ export function SessionProvider({ children }: PropsWithChildren) {
 
                 const userWithUrl = { ...freshUserData, profile_picture_url: freshUserData.profile_picture };
                 
-                return loadUserCollectionsAndSneakers(userWithUrl);
+                return loadUserSneakers(userWithUrl);
             })
             .catch((error) => {
                 console.error('❌ refreshUserData: Error refreshing user data:', error);
                 setUserSneakers([]);
+                setWishlistSneakers([]);
                 storageService.setItem('sneakers', []);
+                storageService.setItem('wishlistSneakers', []);
             });
     };
 
     const refreshUserSneakers = async () => {
-        if (!user || !userCollection?.id) {
+        if (!user?.id) {
             setUserSneakers([]);
             setWishlistSneakers([]);
             storageService.setItem('sneakers', []);
@@ -191,17 +176,16 @@ export function SessionProvider({ children }: PropsWithChildren) {
             return;
         }
         
-        return SupabaseSneakerService.getSneakersByCollection(userCollection.id)
-            .then((sneakers) => {
-                const wishlistSneakersAggregated = sneakers.filter((sneaker) => sneaker.wishlist);
-                setWishlistSneakers(wishlistSneakersAggregated || []);
-                
-                const estimatedValueAggregated = sneakers.reduce((acc, sneaker) => acc + sneaker.estimated_value, 0);
-                userCollection.estimated_value = estimatedValueAggregated;
+        const sneakersPromise = SupabaseSneakerService.getSneakersByUser(user.id);
+        const wishlistPromise = SupabaseWishlistService.getUserWishlistSneakers(user.id);
+        
+        return Promise.all([sneakersPromise, wishlistPromise])
+            .then(([sneakers, wishlistSneakers]) => {
                 setUserSneakers(sneakers || []);
+                setWishlistSneakers(wishlistSneakers || []);
+                
                 storageService.setItem('sneakers', sneakers || []);
-                storageService.setItem('wishlistSneakers', wishlistSneakersAggregated || []);
-                storageService.setItem('collection', userCollection);
+                storageService.setItem('wishlistSneakers', wishlistSneakers || []);
             })
             .catch((error) => {
                 console.error('Error refreshing sneakers:', error);
@@ -214,7 +198,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
 
     const clearUserData = () => {
         setUser(null);
-        setUserCollection(null);
         setUserSneakers(null);
         setWishlistSneakers(null);
 
@@ -225,7 +208,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
         if (appState === 'background') {
             await storageService.saveAppState({
                 user,
-                collection: userCollection,
                 sneakers: userSneakers
             });
         }
@@ -237,8 +219,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
                 isLoading,
                 user,
                 setUser,
-                userCollection,
-                setUserCollection,
                 userSneakers,
                 setUserSneakers,
                 refreshUserData,

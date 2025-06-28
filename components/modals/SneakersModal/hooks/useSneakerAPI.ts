@@ -137,7 +137,7 @@ export const useSneakerAPI = (userId: string) => {
 			description: supabaseSneaker.description || '',
 			created_at: supabaseSneaker.created_at,
 			updated_at: supabaseSneaker.updated_at,
-			collection_id: supabaseSneaker.collection_id,
+			user_id: supabaseSneaker.user_id,
 			estimated_value: supabaseSneaker.estimated_value || 0,
 		};
 	};
@@ -145,17 +145,11 @@ export const useSneakerAPI = (userId: string) => {
 	const handleFormSubmit = async (
 		formData: SneakerFormData,
 		callbacks?: Callbacks,
-		collectionId?: string,
 		estimatedValue?: number | null
 	) => {
 		if (!user) {
 			callbacks?.setErrorMsg('No user authenticated');
 			return Promise.reject('No user authenticated');
-		}
-
-		if (!collectionId) {
-			callbacks?.setErrorMsg('No collection ID provided');
-			return Promise.reject('No collection ID provided');
 		}
 
 		return validateSneakerData(formData)
@@ -172,7 +166,7 @@ export const useSneakerAPI = (userId: string) => {
 
 				const sneakerToAdd: Omit<
 					SupabaseSneaker,
-					'id' | 'created_at' | 'updated_at'
+					'id' | 'created_at' | 'updated_at' | 'user_id'
 				> = {
 					model: formData.model,
 					brand: formData.brand,
@@ -184,7 +178,6 @@ export const useSneakerAPI = (userId: string) => {
 						? parseFloat(formData.price_paid.toString())
 						: undefined,
 					description: formData.description,
-					collection_id: collectionId,
 					estimated_value: estimatedValue || undefined,
 				};
 

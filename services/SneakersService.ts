@@ -15,18 +15,18 @@ export interface SupabaseSneaker {
 	description?: string;
 	status: string;
 	images: { id: string; uri: string }[];
-	collection_id: string;
+	user_id: string;
 	created_at: string;
 	updated_at: string;
 	wishlist?: boolean;
 }
 
 export class SupabaseSneakerService extends BaseApiService {
-	static async getSneakersByCollection(collectionId: string) {
+	static async getSneakersByUser(userId: string) {
 		const { data, error } = await supabase
 			.from('sneakers')
 			.select('*')
-			.eq('collection_id', collectionId)
+			.eq('user_id', userId)
 			.order('created_at', { ascending: false });
 
 		if (error) throw error;
@@ -97,11 +97,26 @@ export class SupabaseSneakerService extends BaseApiService {
 	}
 
 	static async createSneaker(
-		sneakerData: Omit<SupabaseSneaker, 'id' | 'created_at' | 'updated_at'>
+		sneakerData: Omit<
+			SupabaseSneaker,
+			'id' | 'created_at' | 'updated_at' | 'user_id'
+		>
 	) {
+		const {
+			data: { user },
+			error: authError,
+		} = await supabase.auth.getUser();
+		if (authError) throw authError;
+		if (!user) throw new Error('No user found');
+
+		const sneakerWithUser = {
+			...sneakerData,
+			user_id: user.id,
+		};
+
 		const { data, error } = await supabase
 			.from('sneakers')
-			.insert([sneakerData])
+			.insert([sneakerWithUser])
 			.select()
 			.single();
 

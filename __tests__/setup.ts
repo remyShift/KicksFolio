@@ -4,7 +4,6 @@ import {
 	mockAuthService,
 	mockUseAuth,
 	mockUseSignUpProps,
-	mockUseCollections,
 	mockUser,
 	mockUseAsyncValidation,
 } from './screens/auth/authSetup';
@@ -56,10 +55,6 @@ jest.mock('../hooks/useAuth', () => ({
 
 jest.mock('../context/signUpPropsContext', () => ({
 	useSignUpProps: () => mockUseSignUpProps,
-}));
-
-jest.mock('../hooks/useCollections', () => ({
-	useCollections: () => mockUseCollections,
 }));
 
 jest.mock('../hooks/useAsyncValidation', () => ({

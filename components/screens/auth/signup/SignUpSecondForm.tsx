@@ -55,8 +55,8 @@ export default function SignUpSecondForm() {
             
             const success = await signUp(updatedSignUpProps);
             if (success) {
-                router.replace('/(auth)/(signup)/collection');
-                showSuccessToast('🎉 Account created', 'Let\'s name your collection !');
+                router.replace('/(app)/(tabs)');
+                showSuccessToast('🎉 Account created', 'Welcome to KicksFolio !');
             }
         },
     });
