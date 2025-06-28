@@ -41,7 +41,17 @@ export const ViewStep = () => {
             <View className="flex-row justify-between items-center px-2">
                 <View className="flex gap-0">
                     <Text testID="sneaker-display-name" className="font-spacemono-bold text-lg">{currentSneaker.model}</Text>
-                    <Text className="font-spacemono-bold-italic text-base">{currentSneaker.brand.toUpperCase()}</Text>
+                    <View className="flex-row items-center gap-1">
+                        <Text className="font-spacemono-bold-italic text-base">{currentSneaker.brand.toUpperCase()}</Text>
+                        {currentSneaker.sku && (
+                            <View className="flex-row items-center gap-1">
+                                <Text className="font-spacemono-bold text-sm">|</Text>
+                                <Text className="font-spacemono-bold text-sm">
+                                    {currentSneaker.sku.toUpperCase()}
+                                </Text>
+                            </View>
+                        )}
+                    </View>
                 </View>
                     <LoveButton sneaker={currentSneaker} />
             </View>

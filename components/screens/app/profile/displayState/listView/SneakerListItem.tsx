@@ -40,7 +40,17 @@ export default function SneakerListItem({ sneaker, onPress, showOwnerInfo = fals
           </View>
         )}
         <View className="flex-1">
-          <Text className="text-sm text-gray-600 mt-1">{sneaker.brand || ''}</Text>
+          <View className="flex-row items-center gap-1">
+            <Text className="text-sm text-gray-600 mt-1">{sneaker.brand || ''}</Text>
+            {sneaker.sku && (
+              <View className="flex-row items-center gap-1 mt-1">
+                <Text className="text-xs text-gray-600">|</Text>
+                <Text className="text-xs text-gray-600">
+                  {sneaker.sku.toUpperCase()}
+                </Text>
+              </View>
+            )}
+          </View>
           <Text 
             className="text-lg font-semibold text-gray-900" 
             numberOfLines={1}
