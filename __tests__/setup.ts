@@ -68,8 +68,6 @@ jest.mock('../context/authContext', () => ({
 	useSession: jest.fn().mockReturnValue({
 		user: mockUser,
 		isLoading: false,
-		userCollection: null,
-		setUserCollection: jest.fn(),
 		userSneakers: [],
 		setUserSneakers: jest.fn(),
 		setUser: jest.fn(),
