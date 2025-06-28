@@ -130,20 +130,9 @@ export class SupabaseWishlistService extends BaseApiService {
 				return null;
 			}
 
-			console.log(
-				'🔍 WishlistService: Raw sneaker images:',
-				sneaker.images
-			);
-			console.log(
-				'🔍 WishlistService: Images type:',
-				typeof sneaker.images,
-				Array.isArray(sneaker.images)
-			);
-
 			const parsedImages = SupabaseWishlistService.parseImages(
 				sneaker.images
 			);
-			console.log('🔍 WishlistService: Parsed images:', parsedImages);
 
 			const transformedSneaker = {
 				id: String(sneaker.id),
@@ -167,12 +156,10 @@ export class SupabaseWishlistService extends BaseApiService {
 					profile_picture_url: String(owner.profile_picture || ''),
 				},
 				wishlist_added_at: String(item.created_at),
+				sku: String(sneaker.sku || ''),
+				gender: String(sneaker.gender || ''),
 			};
 
-			console.log(
-				'✅ WishlistService: Transformed sneaker with images:',
-				transformedSneaker.images.length
-			);
 			return transformedSneaker;
 		} catch (error) {
 			console.error(
@@ -186,7 +173,6 @@ export class SupabaseWishlistService extends BaseApiService {
 	private static parseImages(images: unknown): Photo[] {
 		if (!images) return [];
 
-		// Si c'est déjà un tableau d'objets avec uri/url
 		if (
 			Array.isArray(images) &&
 			images.length > 0 &&
@@ -200,7 +186,6 @@ export class SupabaseWishlistService extends BaseApiService {
 			}));
 		}
 
-		// Si c'est un tableau d'éléments à parser
 		if (Array.isArray(images)) {
 			return images.map((img: any, index: number) => {
 				if (typeof img === 'string') {
@@ -228,7 +213,6 @@ export class SupabaseWishlistService extends BaseApiService {
 			});
 		}
 
-		// Si c'est une string JSON
 		if (typeof images === 'string') {
 			try {
 				const parsed = JSON.parse(images);
