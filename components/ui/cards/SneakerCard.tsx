@@ -3,6 +3,7 @@ import { Image } from 'expo-image';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { Sneaker } from '@/types/Sneaker';
 import { ModalStep } from '@/components/modals/SneakersModal/types';
+import { useSession } from '@/context/authContext';
 
 export default function SneakerCard({ 
     sneaker, 
@@ -17,6 +18,7 @@ export default function SneakerCard({
     setSneaker: (sneaker: Sneaker) => void,
     showOwnerInfo?: boolean
 }) {
+    const { user } = useSession();
 
     return (
         <Pressable className="bg-white rounded-md p-3 gap-2 shadow-card w-96"
@@ -56,14 +58,13 @@ export default function SneakerCard({
                 </Text>
             </View>
 
-            {/* Informations du propriétaire si applicable */}
             {showOwnerInfo && sneaker.owner && (
-                <View className="bg-gray-50 p-2 rounded-lg mt-2">
+                <View className="flex-row items-center mt-2 gap-1">
                     <Text className="font-spacemono text-xs text-gray-600 uppercase">
                         Owned by
                     </Text>
-                    <Text className="font-spacemono text-sm text-primary">
-                        @{sneaker.owner.username}
+                    <Text className="font-spacemono text-sm text-primary mb-1">
+                        {sneaker.owner.username === user!.username ? 'me' : `@${sneaker.owner.username}`}
                     </Text>
                 </View>
             )}
