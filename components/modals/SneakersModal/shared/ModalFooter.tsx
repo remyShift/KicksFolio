@@ -105,7 +105,7 @@ export const ModalFooter = () => {
                         <BackButton 
                             onPressAction={handleBackAction}
                         />
-                        {currentSneaker!.owner?.id === user.id && (
+                        {(currentSneaker!.owner?.id === user.id || currentSneaker!.user_id === user.id) && (
                             <EditButton 
                                 onPressAction={handleEditAction}
                                 testID="edit-button"
