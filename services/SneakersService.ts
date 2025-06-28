@@ -122,14 +122,10 @@ export class SupabaseSneakerService extends BaseApiService {
 			throw new Error('No user found');
 		}
 
-		console.log('✅ User found:', user.id);
-
 		const sneakerWithUser = {
 			...sneakerData,
 			user_id: user.id,
 		};
-
-		console.log('🔄 Inserting sneaker:', sneakerWithUser);
 
 		const { data, error } = await supabase
 			.from('sneakers')
@@ -233,6 +229,7 @@ export class SupabaseSneakerService extends BaseApiService {
 				body: { sku },
 			})
 			.then(({ data, error }) => {
+				const response = data.data;
 				if (error) {
 					console.error('Supabase function error:', error);
 					console.error('Error details:', {
@@ -244,28 +241,30 @@ export class SupabaseSneakerService extends BaseApiService {
 					throw error;
 				}
 
-				if (!data) {
+				if (!response) {
 					const errorMsg = 'No data found for this SKU';
 					console.error(errorMsg);
 					throw new Error(errorMsg);
 				}
 
+				const result = response.results[0];
+
 				const sneakerBrand = sneakerBrandOptions.find(
 					(brand) =>
 						brand.value.toLocaleLowerCase() ===
-						data.results[0].brand.toLowerCase()
+						result.brand.toLowerCase()
 				);
 
-				const sneakerModalWithoutBrandName = data.results[0].name
+				const sneakerModelWithoutBrandName = response.results[0].title
 					.replace(sneakerBrand?.label || '', '')
 					.trim();
 
 				const dataWithoutBrandName = {
-					...data,
+					...response,
 					results: [
 						{
-							...data.results[0],
-							name: sneakerModalWithoutBrandName,
+							...response.results[0],
+							title: sneakerModelWithoutBrandName,
 						},
 					],
 				};

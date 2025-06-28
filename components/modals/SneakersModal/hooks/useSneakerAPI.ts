@@ -21,12 +21,19 @@ interface Callbacks {
 
 interface SkuSearchResponse {
 	results: Array<{
-		name: string;
+		title: string;
 		brand: string;
-		story: string;
-		estimatedMarketValue: number;
-		image: {
-			original: string;
+		description: string;
+		market: {
+			statistics: {
+				last90Days: {
+					averagePrice: number;
+				};
+			};
+		};
+		gender: string;
+		media: {
+			smallImageUrl: string;
 		};
 	}>;
 }
@@ -89,13 +96,16 @@ export const useSneakerAPI = (userId: string) => {
 					const responseResult = response.results[0];
 
 					const transformedSneaker: FetchedSneaker = {
-						model: responseResult.name || '',
+						model: responseResult.title || '',
 						brand: responseResult.brand.toLowerCase() as SneakerBrand,
-						description: responseResult.story || '',
+						sku: sku.toUpperCase(),
+						description: responseResult.description || '',
+						gender: responseResult.gender || '',
 						estimated_value:
-							responseResult.estimatedMarketValue || 0,
+							responseResult.market.statistics.last90Days
+								.averagePrice || 0,
 						image: {
-							uri: responseResult.image.original || '',
+							uri: responseResult.media.smallImageUrl || '',
 						},
 					};
 					callbacks.setFetchedSneaker?.(transformedSneaker);
@@ -142,10 +152,12 @@ export const useSneakerAPI = (userId: string) => {
 		};
 	};
 
-	const handleFormSubmit = async (
+	const handleAddSneaker = async (
 		formData: SneakerFormData,
 		callbacks?: Callbacks,
-		estimatedValue?: number | null
+		estimatedValue?: number | null,
+		gender?: string | null,
+		sku?: string | null
 	) => {
 		if (!user) {
 			callbacks?.setErrorMsg('No user authenticated');
@@ -179,6 +191,8 @@ export const useSneakerAPI = (userId: string) => {
 						: undefined,
 					description: formData.description,
 					estimated_value: estimatedValue || undefined,
+					gender: gender as 'men' | 'women' | undefined,
+					sku: sku || undefined,
 				};
 
 				return SupabaseSneakerService.createSneaker(sneakerToAdd);
@@ -359,7 +373,7 @@ export const useSneakerAPI = (userId: string) => {
 
 	return {
 		handleSkuSearch,
-		handleFormSubmit,
+		handleAddSneaker,
 		handleFormUpdate,
 		handleNext,
 		handlePrevious,

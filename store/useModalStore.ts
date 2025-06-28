@@ -13,6 +13,8 @@ export interface FetchedSneaker {
 		uri: string;
 	};
 	estimated_value: number;
+	gender?: string;
+	sku: string;
 }
 
 interface ModalStore {
@@ -24,6 +26,8 @@ interface ModalStore {
 	sneakerSKU: string;
 	errorMsg: string;
 	estimatedValue: number | null;
+	gender: string | null;
+	sku: string | null;
 	isLoading: boolean;
 	validateForm:
 		| (() => Promise<{
@@ -42,6 +46,8 @@ interface ModalStore {
 	setSneakerSKU: (sku: string) => void;
 	setErrorMsg: (error: string) => void;
 	setEstimatedValue: (value: number | null) => void;
+	setGender: (gender: string | null) => void;
+	setSku: (sku: string | null) => void;
 	setIsLoading: (isLoading: boolean) => void;
 	setValidateForm: (
 		fn:
@@ -65,6 +71,8 @@ export const useModalStore = create<ModalStore>((set) => ({
 	sneakerSKU: '',
 	errorMsg: '',
 	estimatedValue: null,
+	gender: null,
+	sku: null,
 	isLoading: false,
 	validateForm: null,
 	clearFormErrors: null,
@@ -77,6 +85,8 @@ export const useModalStore = create<ModalStore>((set) => ({
 	setSneakerSKU: (sku) => set({ sneakerSKU: sku }),
 	setErrorMsg: (error) => set({ errorMsg: error }),
 	setEstimatedValue: (value) => set({ estimatedValue: value }),
+	setGender: (gender) => set({ gender }),
+	setSku: (sku) => set({ sku }),
 	setIsLoading: (isLoading) => set({ isLoading }),
 	setValidateForm: (fn) => set({ validateForm: fn }),
 	setClearFormErrors: (fn) => set({ clearFormErrors: fn }),
@@ -88,6 +98,8 @@ export const useModalStore = create<ModalStore>((set) => ({
 			errorMsg: '',
 			sneakerSKU: '',
 			estimatedValue: null,
+			gender: null,
+			sku: null,
 			isLoading: false,
 		}),
 }));

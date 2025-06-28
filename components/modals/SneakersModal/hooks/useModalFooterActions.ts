@@ -21,6 +21,8 @@ export const useModalFooterActions = () => {
 		setFetchedSneaker,
 		fetchedSneaker,
 		estimatedValue,
+		gender,
+		sku,
 		validateForm,
 		resetModalData,
 		setCurrentSneaker,
@@ -36,7 +38,7 @@ export const useModalFooterActions = () => {
 
 	const {
 		handleSkuSearch,
-		handleFormSubmit,
+		handleAddSneaker,
 		handleFormUpdate,
 		handleNext,
 		handlePrevious,
@@ -132,14 +134,16 @@ export const useModalFooterActions = () => {
 					validateForm()
 						.then(async (result) => {
 							if (result.isValid && result.data) {
-								return handleFormSubmit(
+								return handleAddSneaker(
 									result.data as SneakerFormData,
 									{
 										setCurrentSneaker,
 										setModalStep,
 										setErrorMsg,
 									},
-									estimatedValue
+									estimatedValue,
+									gender,
+									sku
 								);
 							} else {
 								setErrorMsg(result.errorMsg);
