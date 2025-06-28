@@ -149,24 +149,6 @@ jest.mock('react-native-keyboard-controller', () => {
 	};
 });
 
-// Mock react-native-gesture-handler
-jest.mock('react-native-gesture-handler', () => {
-	const View = require('react-native').View;
-	return {
-		GestureHandlerRootView: View,
-		PanGestureHandler: View,
-		State: {},
-		PinchGestureHandler: View,
-		RotationGestureHandler: View,
-		FlingGestureHandler: View,
-		LongPressGestureHandler: View,
-		TapGestureHandler: View,
-		createNativeWrapper: jest.fn(),
-		Directions: {},
-	};
-});
-
-// Mock react-native-image-crop-picker
 jest.mock('react-native-image-crop-picker', () => ({
 	openPicker: jest.fn().mockResolvedValue({
 		path: 'mocked-image-path',
@@ -187,7 +169,52 @@ jest.mock('react-native-image-crop-picker', () => ({
 	cleanSingle: jest.fn(),
 }));
 
-// Mock @supabase/supabase-js
+jest.mock('react-native-gesture-handler', () => {
+	const { View, ScrollView } = require('react-native');
+	return {
+		GestureHandlerRootView: View,
+		PanGestureHandler: View,
+		TapGestureHandler: View,
+		LongPressGestureHandler: View,
+		PinchGestureHandler: View,
+		RotationGestureHandler: View,
+		FlingGestureHandler: View,
+		ForceTouchGestureHandler: View,
+		NativeViewGestureHandler: View,
+		createNativeWrapper: jest.fn(),
+		ScrollView: ScrollView,
+		Swipeable: View,
+		DrawerLayout: View,
+		State: {
+			UNDETERMINED: 0,
+			FAILED: 1,
+			BEGAN: 2,
+			CANCELLED: 3,
+			ACTIVE: 4,
+			END: 5,
+		},
+		Directions: {
+			RIGHT: 1,
+			LEFT: 2,
+			UP: 4,
+			DOWN: 8,
+		},
+		gestureHandlerRootHOC: jest
+			.fn()
+			.mockImplementation((component) => component),
+		Gesture: {
+			Tap: jest.fn().mockReturnThis(),
+			Pan: jest.fn().mockReturnThis(),
+			Pinch: jest.fn().mockReturnThis(),
+			Rotation: jest.fn().mockReturnThis(),
+			Fling: jest.fn().mockReturnThis(),
+			LongPress: jest.fn().mockReturnThis(),
+			ForceTouch: jest.fn().mockReturnThis(),
+		},
+		GestureDetector: View,
+	};
+});
+
 jest.mock('@supabase/supabase-js', () => ({
 	createClient: jest.fn().mockReturnValue({
 		auth: {
@@ -232,7 +259,6 @@ jest.mock('@supabase/supabase-js', () => ({
 	}),
 }));
 
-// Mock services/supabase.ts
 jest.mock('../services/supabase', () => ({
 	supabase: {
 		auth: {
@@ -296,10 +322,16 @@ export const fillAndBlurInput = async (
 	await act(async () => {
 		fireEvent.changeText(input, value);
 	});
+
 	await act(async () => {
 		fireEvent(input, 'blur');
 	});
+
 	await act(async () => {
-		await new Promise((resolve) => setTimeout(resolve, 100));
+		await new Promise((resolve) => setTimeout(resolve, 300));
+	});
+
+	await act(async () => {
+		await new Promise(setImmediate);
 	});
 };

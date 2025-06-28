@@ -137,21 +137,27 @@ describe('SignUpSecondPage', () => {
 
         describe('main button', () => {
             it('should display main button disabled if fields are not filled', async () => {
-                expect(mainButton.props.accessibilityState.disabled).toBe(true);
+                const currentMainButton = screen.getByTestId('main-button');
+
+                expect(currentMainButton.props.accessibilityState.disabled).toBe(true);
             });
 
             it('should display main button enabled if fields are filled with valid values', async () => {
                 await fillAndBlurInput(firstNameInput, 'validFirstName');
                 await fillAndBlurInput(lastNameInput, 'validLastName');
                 await fillAndBlurInput(sneakerSizeInput, '10.5');
-                expect(mainButton.props.accessibilityState.disabled).toBe(false);
+                const currentMainButton = screen.getByTestId('main-button');
+
+                expect(currentMainButton.props.accessibilityState.disabled).toBe(false);
             });
 
             it('should display main button disabled if at least one field is filled with invalid values', async () => {
                 await fillAndBlurInput(firstNameInput, 'r');
                 await fillAndBlurInput(lastNameInput, 'test@test');
                 await fillAndBlurInput(sneakerSizeInput, '10.5');
-                expect(mainButton.props.accessibilityState.disabled).toBe(true);
+                const currentMainButton = screen.getByTestId('main-button');
+
+                expect(currentMainButton.props.accessibilityState.disabled).toBe(true);
             });
         });
     });
@@ -176,7 +182,9 @@ describe('SignUpSecondPage', () => {
             await fillAndBlurInput(sneakerSizeInput, '10.5');
             
             await act(async () => {
-                fireEvent.press(mainButton);
+                const currentMainButton = screen.getByTestId('main-button');
+
+                fireEvent.press(currentMainButton);
             });
 
             expect(mockUseAuth.signUp).toHaveBeenCalledWith({
@@ -184,8 +192,8 @@ describe('SignUpSecondPage', () => {
                 email: 'valid@email.com',
                 password: 'ValidPassword14*',
                 confirmPassword: 'ValidPassword14*',
-                first_name: 'validFirstName',
-                last_name: 'validLastName',
+                first_name: 'ValidFirstName',
+                last_name: 'ValidLastName',
                 profile_picture: '',
                 sneaker_size: 10.5
             } as UserData);
@@ -208,7 +216,9 @@ describe('SignUpSecondPage', () => {
             await fillAndBlurInput(sneakerSizeInput, '5');
             
             await act(async () => {
-                fireEvent.press(mainButton);
+                const currentMainButton = screen.getByTestId('main-button');
+
+                fireEvent.press(currentMainButton);
             });
 
             expect(mockUseAuth.signUp).not.toHaveBeenCalled();

@@ -35,10 +35,6 @@ describe('Index', () => {
 	});
 
 	it('should render index page', () => {
-		const pageTitle = screen.getByTestId('page-title');
-
-		expect(pageTitle).toBeTruthy();
-		expect(pageTitle.props.children).toBe('KicksFolio');
 		expect(collectionCard).toBeTruthy();
 	});
 

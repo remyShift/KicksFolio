@@ -43,7 +43,9 @@ describe('Forgot Password Page', () => {
                 await fillAndBlurInput(emailInput, 'toto');
     
                 expect(screen.getByTestId('error-message').props.children).toBe('Please enter a valid email address.');
-                expect(mainButton.props.accessibilityState.disabled).toBe(true);
+                const currentMainButton = screen.getByTestId('main-button');
+
+                expect(currentMainButton.props.accessibilityState.disabled).toBe(true);
             });
         });
 
@@ -57,15 +59,19 @@ describe('Forgot Password Page', () => {
 
         describe('main button', () => {
             it('should render the main button with disabled state', () => {
-                expect(mainButton).toBeTruthy();
-                expect(mainButton.props.accessibilityState.disabled).toBe(true);
+                const currentMainButton = screen.getByTestId('main-button');
+
+                expect(currentMainButton).toBeTruthy();
+                expect(currentMainButton.props.accessibilityState.disabled).toBe(true);
             });
 
             it('should have the main button enabled if the email is provided with appropriate value', async () => {
                 await fillAndBlurInput(emailInput, 'john@doe.com');
     
                 expect(emailInput.props.value).toBe('john@doe.com');
-                expect(mainButton.props.accessibilityState.disabled).toBe(false);
+                const currentMainButton = screen.getByTestId('main-button');
+
+                expect(currentMainButton.props.accessibilityState.disabled).toBe(false);
             });
         });
 
@@ -75,7 +81,9 @@ describe('Forgot Password Page', () => {
         it('should call the forgotPassword function if the email is provided with appropriate value', async () => {
             await fillAndBlurInput(emailInput, 'john@doe.com');
             await act(async () => {
-                fireEvent.press(mainButton);
+                const currentMainButton = screen.getByTestId('main-button');
+
+                fireEvent.press(currentMainButton);
             });
 
             expect(mockUseAuth.forgotPassword).toHaveBeenCalledWith('john@doe.com');

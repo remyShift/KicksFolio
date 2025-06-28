@@ -154,7 +154,9 @@ describe('SignUpFirstPage', () => {
                 await fillAndBlurInput(emailInput, 'valid@email.com');
                 await fillAndBlurInput(passwordInput, 'ValidPassword14*');
                 await fillAndBlurInput(confirmPasswordInput, 'ValidPassword14*');
-                expect(mainButton.props.accessibilityState.disabled).toBe(false);
+                
+                const currentMainButton = screen.getByTestId('main-button');
+                expect(currentMainButton.props.accessibilityState.disabled).toBe(false);
             });
     
             it('should display main button disabled if at least one field is filled with invalid values', async () => {
@@ -162,7 +164,9 @@ describe('SignUpFirstPage', () => {
                 await fillAndBlurInput(emailInput, 'test@test');
                 await fillAndBlurInput(passwordInput, 'totototo14');
                 await fillAndBlurInput(confirmPasswordInput, 'Totototo14*');
-                expect(mainButton.props.accessibilityState.disabled).toBe(true);
+                
+                const currentMainButton = screen.getByTestId('main-button');
+                expect(currentMainButton.props.accessibilityState.disabled).toBe(true);
             });
         });
     });
@@ -175,8 +179,10 @@ describe('SignUpFirstPage', () => {
             await fillAndBlurInput(emailInput, 'valid@email.com');
             await fillAndBlurInput(passwordInput, 'ValidPassword14*');
             await fillAndBlurInput(confirmPasswordInput, 'ValidPassword14*');
+            
+            const currentMainButton = screen.getByTestId('main-button');
             await act(async () => {
-                fireEvent.press(mainButton);
+                fireEvent.press(currentMainButton);
             });
 
             expect(mockUseAuth.handleNextSignupPage).toHaveBeenCalledWith({

@@ -56,7 +56,7 @@ describe('Reset Password Page', () => {
                 await fillAndBlurInput(passwordInput, 'toto');
     
                 expect(screen.getByTestId('error-message').props.children).toBe('Password must be at least 8 characters long.');
-                expect(mainButton.props.accessibilityState.disabled).toBe(true);
+                expect(screen.getByTestId('main-button').props.accessibilityState.disabled).toBe(true);
             });
 
             it('should display an error if the confirm password does not match the password', async () => {
@@ -64,7 +64,7 @@ describe('Reset Password Page', () => {
                 await fillAndBlurInput(confirmPasswordInput, 'Tititoto15');
     
                 expect(screen.getByTestId('error-message').props.children).toBe('Passwords don\'t match.');
-                expect(mainButton.props.accessibilityState.disabled).toBe(true);
+                expect(screen.getByTestId('main-button').props.accessibilityState.disabled).toBe(true);
             });
 
             it('should display a global error message if the password is not provided with appropriate value and the confirm password does not match the password', async () => {
@@ -72,7 +72,7 @@ describe('Reset Password Page', () => {
                 await fillAndBlurInput(confirmPasswordInput, 'tata');
     
                 expect(screen.getByTestId('error-message').props.children).toBe('Please correct the errors in the form');
-                expect(mainButton.props.accessibilityState.disabled).toBe(true);
+                expect(screen.getByTestId('main-button').props.accessibilityState.disabled).toBe(true);
             });
         });
 
@@ -98,22 +98,25 @@ describe('Reset Password Page', () => {
 
             it('should render the main button with disabled state if the password is not provided with appropriate value', async () => {
                 await fillAndBlurInput(passwordInput, 'toto');
-    
-                expect(mainButton.props.accessibilityState.disabled).toBe(true);
+                const currentMainButton = screen.getByTestId('main-button');
+
+                expect(currentMainButton.props.accessibilityState.disabled).toBe(true);
             });
 
             it('should render the main button with disabled state if the confirm password does not match the password', async () => {
                 await fillAndBlurInput(passwordInput, 'Tititoto14');
                 await fillAndBlurInput(confirmPasswordInput, 'Tititoto15');
-    
-                expect(mainButton.props.accessibilityState.disabled).toBe(true);
+                const currentMainButton = screen.getByTestId('main-button');
+
+                expect(currentMainButton.props.accessibilityState.disabled).toBe(true);
             });
 
             it('should render the main button with enabled state if fields are filled with appropriate values', async () => {
                 await fillAndBlurInput(passwordInput, 'Tititoto14');
                 await fillAndBlurInput(confirmPasswordInput, 'Tititoto14');
+                const currentMainButton = screen.getByTestId('main-button');
 
-                expect(mainButton.props.accessibilityState.disabled).toBe(false);
+                expect(currentMainButton.props.accessibilityState.disabled).toBe(false);
             });
         });
     });
@@ -126,8 +129,10 @@ describe('Reset Password Page', () => {
             const password = passwordInput.props.value;
             const confirmPassword = confirmPasswordInput.props.value;
 
+            const currentMainButton = screen.getByTestId('main-button');
+
             await act(async () => {
-                fireEvent.press(mainButton);
+                fireEvent.press(currentMainButton);
             });
 
             expect(mockUseAuth.resetPassword).toHaveBeenCalledWith('1234567890', password, confirmPassword);

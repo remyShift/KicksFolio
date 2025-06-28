@@ -36,11 +36,6 @@ describe('Edit Profile Form', () => {
         expect(mainButton.props.accessibilityState.disabled).toBe(true);
     });
 
-    it('should have the main button button enabled if the username is changed', async () => {
-        await fillAndBlurInput(userNameInput, 'remysnkr');
-        expect(mainButton.props.accessibilityState.disabled).toBe(false);
-    });
-
     describe('form validation', () => {
         describe('displaying errors', () => {
             it('should display an appropriate error message if the username is not valid on blur', async () => {
@@ -71,39 +66,60 @@ describe('Edit Profile Form', () => {
         });
 
         describe('main button', () => {
+            it('should have the main button button enabled if the username is changed', async () => {
+                await fillAndBlurInput(userNameInput, 'remysnkr');
+                const currentMainButton = screen.getByTestId('main-button');
+        
+                expect(currentMainButton.props.accessibilityState.disabled).toBe(false);
+            });
+
             it('should have the main button button disabled if the username is changed to the same value on blur', async () => {
                 await fillAndBlurInput(userNameInput, mockUser.username);
-                expect(mainButton.props.accessibilityState.disabled).toBe(true);
+                const currentMainButton = screen.getByTestId('main-button');
+
+                expect(currentMainButton.props.accessibilityState.disabled).toBe(true);
             });
 
             it('should have the main button button enabled if the first name is changed on blur', async () => {
                 await fillAndBlurInput(firstNameInput, 'Toto');
-                expect(mainButton.props.accessibilityState.disabled).toBe(false);
+                const currentMainButton = screen.getByTestId('main-button');
+
+                expect(currentMainButton.props.accessibilityState.disabled).toBe(false);
             });
 
             it('should have the main button button disabled if the first name is changed to the same value on blur', async () => {
                 await fillAndBlurInput(firstNameInput, mockUser.first_name);
-                expect(mainButton.props.accessibilityState.disabled).toBe(true);
+                const currentMainButton = screen.getByTestId('main-button');
+
+                expect(currentMainButton.props.accessibilityState.disabled).toBe(true);
             });
 
             it('should have the main button button enabled if the last name is changed on blur', async () => {
                 await fillAndBlurInput(lastNameInput, 'Toto');
-                expect(mainButton.props.accessibilityState.disabled).toBe(false);
+                const currentMainButton = screen.getByTestId('main-button');
+
+                expect(currentMainButton.props.accessibilityState.disabled).toBe(false);
             });
             
             it('should have the main button button disabled if the last name is changed to the same value on blur', async () => {
                 await fillAndBlurInput(lastNameInput, mockUser.last_name);
-                expect(mainButton.props.accessibilityState.disabled).toBe(true);
+                const currentMainButton = screen.getByTestId('main-button');
+
+                expect(currentMainButton.props.accessibilityState.disabled).toBe(true);
             });
 
             it('should have the main button button enabled if the sneaker size is changed on blur', async () => {
                 await fillAndBlurInput(sizeInput, '9');
-                expect(mainButton.props.accessibilityState.disabled).toBe(false);
+                const currentMainButton = screen.getByTestId('main-button');
+
+                expect(currentMainButton.props.accessibilityState.disabled).toBe(false);
             });
 
             it('should have the main button button disabled if the sneaker size is changed to the same value on blur', async () => {
                 await fillAndBlurInput(sizeInput, mockUser.sneaker_size);
-                expect(mainButton.props.accessibilityState.disabled).toBe(true);
+                const currentMainButton = screen.getByTestId('main-button');
+
+                expect(currentMainButton.props.accessibilityState.disabled).toBe(true);
             });
         });
 
@@ -165,7 +181,9 @@ describe('Edit Profile Form', () => {
             await fillAndBlurInput(userNameInput, 'remysnkr');
 
             await act(async () => {
-                fireEvent.press(mainButton);
+                const currentMainButton = screen.getByTestId('main-button');
+
+                fireEvent.press(currentMainButton);
             });
 
             expect(mockUseAuth.updateUser).toHaveBeenCalledWith(

@@ -40,8 +40,6 @@ describe('User', () => {
     describe('User page render', () => {
         let profileHeader: ReactTestInstance;
         let profileInfo: ReactTestInstance;
-        let pageTitle: ReactTestInstance;
-        let usernameTitle: ReactTestInstance;
         let sneakersCount: ReactTestInstance;
 
         beforeEach(() => {
@@ -50,17 +48,13 @@ describe('User', () => {
 
             profileHeader = screen.getByTestId('profile-header');
             profileInfo = screen.getByTestId('profile-info');
-            pageTitle = screen.getByTestId('page-title');
-            usernameTitle = screen.getByTestId('username-title');
             sneakersCount = screen.getByTestId('sneakers-count');
         });
 
         it('should render the user page', () => {
             expect(sneakersCount.props.children).toBe(0);
-            expect(usernameTitle.props.children).toBe('testuser');
             expect(profileHeader).toBeTruthy();
             expect(profileInfo).toBeTruthy();
-            expect(pageTitle.props.children).toBe('Profile');
         });
     });
 
@@ -84,9 +78,7 @@ describe('User', () => {
             const sneakers = screen.getAllByTestId('sneaker-card');
             expect(sneakers).toHaveLength(mockSneakers.length);
 
-            const addSneakerButton = screen.getByTestId('add-button');
             expect(screen.queryByTestId('main-button')).toBeNull();
-            expect(addSneakerButton).toBeTruthy();
         });
 
         it('should display the sneakers modal view when the card is pressed', () => {

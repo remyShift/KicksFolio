@@ -80,7 +80,8 @@ describe('LoginPage', () => {
             it('should have the main button enabled if the email and password are provided', async () => {
                 await fillAndBlurInput(emailInput, 'test@test.com');
                 await fillAndBlurInput(passwordInput, 'password');
-                expect(mainButton.props.accessibilityState.disabled).toBe(false);
+                const currentMainButton = screen.getByTestId('main-button');
+                expect(currentMainButton.props.accessibilityState.disabled).toBe(false);
             });
         });
 
@@ -100,8 +101,10 @@ describe('LoginPage', () => {
 
             await fillAndBlurInput(emailInput, 'test@test.com');
             await fillAndBlurInput(passwordInput, 'password');
+
+            const currentMainButton = screen.getByTestId('main-button');
             await act(async () => {
-                fireEvent.press(mainButton);
+                fireEvent.press(currentMainButton);
             });
             expect(errorMessage.props.children).toBe('Email or password incorrect');
         });
@@ -112,8 +115,10 @@ describe('LoginPage', () => {
 
             await fillAndBlurInput(emailInput, 'test@test.com');
             await fillAndBlurInput(passwordInput, 'TestToto14*');
+
+            const currentMainButton = screen.getByTestId('main-button');
             await act(async () => {
-                fireEvent.press(mainButton);
+                fireEvent.press(currentMainButton);
             });
             expect(errorMessage.props.children).toBe('');
         });
