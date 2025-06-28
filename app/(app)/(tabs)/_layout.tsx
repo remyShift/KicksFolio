@@ -15,19 +15,22 @@ export default function TabLayout() {
     };
 
     return (
-        <Tabs screenOptions={{
-            headerShown: false,
-            tabBarActiveTintColor: '#F27329',
-            tabBarShowLabel: true,
-            tabBarStyle: {
-                height: 85,
-                paddingTop: 5,
-                paddingHorizontal: 15,
-            },
-            sceneStyle: {
-                backgroundColor: '#ECECEC',
-            }
-        }}>
+        <Tabs 
+            initialRouteName="index"
+            screenOptions={{
+                headerShown: false,
+                tabBarActiveTintColor: '#F27329',
+                tabBarShowLabel: true,
+                tabBarStyle: {
+                    height: 85,
+                    paddingTop: 5,
+                    paddingHorizontal: 15,
+                },
+                sceneStyle: {
+                    backgroundColor: '#ECECEC',
+                }
+            }}
+        >
             <Tabs.Screen
                 name="index"
                 options={{
