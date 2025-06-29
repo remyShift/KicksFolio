@@ -6,28 +6,33 @@ import SettingsMenuItem from '@/components/screens/app/settings/SettingsMenuItem
 import SettingsHeader from '@/components/screens/app/settings/SettingsHeader';
 import SettingsCategory from '@/components/screens/app/settings/SettingsCategory';
 import useToast from '@/hooks/useToast';
+import { useTranslation } from 'react-i18next';
 
 export default function Settings() {
+    const { t } = useTranslation();
     const { user } = useSession();
     const { logout, deleteAccount } = useAuth();
     const { showSuccessToast, showErrorToast } = useToast();
 
     const handleLogout = () => {
         Alert.alert(
-            'Logout',
-            'Are you sure you want to logout ?',
+            t('alert.titles.logout'),
+            t('alert.descriptions.logout'),
             [
                 {
-                    text: 'Cancel',
+                    text: t('alert.choices.cancel'),
                     style: 'cancel'
                 },
                 {
-                    text: 'Logout',
+                    text: t('alert.choices.logout'),
                     style: 'destructive',
                     onPress: () => {
                         logout();
                         setTimeout(() => {
-                            showSuccessToast('👋🏼 Logged out', 'See you soon !');
+                            showSuccessToast(
+                                t('alert.titles.loggedOut'),
+                                t('alert.descriptions.loggedOut')
+                            );
                         }, 200);
                     }
                 }
@@ -37,25 +42,31 @@ export default function Settings() {
 
     const handleDeleteAccount = () => {
         Alert.alert(
-            'Delete account',
-            'Are you sure you want to delete your account ? This action is irreversible.',
+            t('alert.titles.deleteAccount'),
+            t('alert.descriptions.deleteAccount'),
             [
                 {
-                    text: 'Cancel',
+                    text: t('alert.choices.cancel'),
                     style: 'cancel'
                 },
                 {
-                    text: 'Delete',
+                    text: t('alert.choices.delete'),
                     style: 'destructive',
                     onPress: () => {
                         if (user) {
                             deleteAccount(user.id)
                                 .then(() => {
                                     logout();
-                                    showSuccessToast('🗑️ Account deleted', 'Your account has been deleted successfully');
+                                    showSuccessToast(
+                                        t('settings.deleteAccount.accountDeleted'),
+                                        t('settings.deleteAccount.accountDeletedDescription')
+                                    );
                                 })
                                 .catch((error) => {
-                                    showErrorToast('❌ Account deletion failed', 'An error occurred while deleting your account.');
+                                    showErrorToast(
+                                        t('settings.deleteAccount.accountDeletionFailed'),
+                                        t('settings.deleteAccount.accountDeletionFailedDescription')
+                                    );
                                 });
                         }
                     }
@@ -67,10 +78,10 @@ export default function Settings() {
     return (
         <View className="flex-1 bg-white px-4">
             <SettingsHeader />
-            <SettingsCategory title="Account">
+            <SettingsCategory title={t('settings.titles.account')}>
                 <SettingsMenuItem 
                     icon="exit-outline"
-                    label="Logout"
+                    label={t('settings.titles.logout')}
                     onPress={handleLogout}
                     testID="logout"
                 />
@@ -79,7 +90,7 @@ export default function Settings() {
                 
                 <SettingsMenuItem 
                     icon="document-text-outline"
-                    label="Privacy Policy"
+                    label={t('auth.data-privacy.privacyPolicy')}
                     onPress={() => Linking.openURL('https://remyshift.github.io/KicksFolio/')}
                 />
 
@@ -87,7 +98,7 @@ export default function Settings() {
 
                 <SettingsMenuItem 
                     icon="person-outline"
-                    label="Edit profile"
+                    label={t('settings.titles.editProfile')}
                     onPress={() => router.push('/edit-profile')}
                     testID="edit-profile"
                 />
@@ -96,7 +107,7 @@ export default function Settings() {
 
                 <SettingsMenuItem 
                     icon="trash-outline"
-                    label="Delete account"
+                    label={t('settings.titles.deleteAccount')}
                     onPress={handleDeleteAccount}
                     color="#dc2626"
                     textColor="#dc2626"

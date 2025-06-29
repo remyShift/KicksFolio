@@ -9,10 +9,20 @@
 		"profileUpdateFailed": "❌ Profile update failed",
 		"profileUpdateFailedDescription": "An error occurred while updating your profile."
 	},
+	"deleteAccount": {
+		"accountDeleted": "🗑️ Account deleted",
+		"accountDeletedDescription": "Your account has been deleted successfully.",
+		"accountDeletionFailed": "❌ Account deletion failed",
+		"accountDeletionFailedDescription": "An error occurred while deleting your account."
+	},
 	"buttons": {
 		"save": "Save"
 	},
 	"titles": {
-		"editProfile": "Edit profile"
+		"editProfile": "Edit profile",
+		"account": "Account settings",
+		"logout": "Logout",
+		"deleteAccount": "Delete account",
+		"settings": "Settings"
 	}
 } 

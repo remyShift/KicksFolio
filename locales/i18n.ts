@@ -5,10 +5,12 @@ import { getLocales } from 'expo-localization';
 import enAuth from './en/auth.json';
 import enForm from './en/form.json';
 import enSettings from './en/settings.json';
+import enAlert from './en/alert.json';
 
 import frAuth from './fr/auth.json';
 import frForm from './fr/form.json';
 import frSettings from './fr/settings.json';
+import frAlert from './fr/alert.json';
 
 const resources = {
 	en: {
@@ -16,6 +18,7 @@ const resources = {
 			auth: enAuth,
 			form: enForm,
 			settings: enSettings,
+			alert: enAlert,
 		},
 	},
 	fr: {
@@ -23,6 +26,7 @@ const resources = {
 			auth: frAuth,
 			form: frForm,
 			settings: frSettings,
+			alert: frAlert,
 		},
 	},
 };

@@ -9,10 +9,20 @@
 		"profileUpdateFailed": "❌ Échec de la mise à jour du profil",
 		"profileUpdateFailedDescription": "Une erreur est survenue lors de la mise à jour de votre profil."
 	},
+	"deleteAccount": {
+		"accountDeleted": "🗑️ Compte supprimé",
+		"accountDeletedDescription": "Votre compte a été supprimé avec succès.",
+		"accountDeletionFailed": "❌ Échec de la suppression du compte",
+		"accountDeletionFailedDescription": "Une erreur est survenue lors de la suppression de votre compte."
+	},
 	"buttons": {
 		"save": "Enregistrer"
 	},
 	"titles": {
-		"editProfile": "Modifier le profil"
+		"editProfile": "Modifier le profil",
+		"account": "Paramètres du compte",
+		"logout": "Déconnexion",
+		"deleteAccount": "Supprimer le compte",
+		"settings": "Paramètres"
 	}
 } 

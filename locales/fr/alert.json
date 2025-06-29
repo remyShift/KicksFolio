@@ -1,0 +1,18 @@
+{
+	"titles": {
+		"deleteAccount": "Supprimer le compte",
+		"logout": "Déconnexion",
+		"loggedOut": "👋🏼 Déconnecté",
+		"loggedOutDescription": "À bientôt !"
+	},
+	"descriptions": {
+		"deleteAccount": "Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.",
+		"logout": "Êtes-vous sûr de vouloir vous déconnecter ?",
+		"loggedOut": "Vous avez été déconnecté avec succès."
+	},
+	"choices": {
+		"cancel": "Annuler",
+		"delete": "Supprimer",
+		"logout": "Déconnection"
+	}
+}

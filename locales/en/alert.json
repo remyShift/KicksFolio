@@ -1,0 +1,18 @@
+{
+	"titles": {
+		"deleteAccount": "Delete account",
+		"logout": "Logout",
+		"loggedOut": "👋🏼 Logged out",
+		"loggedOutDescription": "See you soon !"
+	},
+	"descriptions": {
+		"deleteAccount": "Are you sure you want to delete your account ? This action is irreversible.",
+		"logout": "Are you sure you want to logout ?",
+		"loggedOut": "You have been logged out successfully."
+	},
+	"choices": {
+		"cancel": "Cancel",
+		"delete": "Delete",
+		"logout": "Logout"
+	}
+}
