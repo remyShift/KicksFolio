@@ -5,8 +5,10 @@ import { Tabs } from 'expo-router';
 import { Pressable } from 'react-native';
 import { useModalStore } from '@/store/useModalStore';
 import TabAddButton from '@/components/ui/buttons/TabAddButton';
+import { useTranslation } from 'react-i18next';
 
 export default function TabLayout() {
+    const { t } = useTranslation();
     const { setIsVisible, setModalStep } = useModalStore();
 
     const handleAddPress = () => {
@@ -34,14 +36,14 @@ export default function TabLayout() {
             <Tabs.Screen
                 name="index"
                 options={{
-                    title: 'Home',
+                    title: t('common.navbar.home'),
                     tabBarIcon: ({ color }) => <Ionicons name="home-outline" size={25} color={color} />,
                 }}
             />
             <Tabs.Screen
                 name="friends"
                 options={{
-                    title: 'Friends',
+                    title: t('common.navbar.friends'),
                     tabBarIcon: ({ color }) => <Feather name="users" size={25} color={color} />,
                 }}
             />
@@ -63,14 +65,14 @@ export default function TabLayout() {
             <Tabs.Screen
                 name="wishlist"
                 options={{
-                    title: 'Wishlist',
+                    title: t('common.navbar.wishlist'),
                     tabBarIcon: ({ color }) => <AntDesign name="hearto" size={25} color={color} />,
                 }}
             />
             <Tabs.Screen
                 name="user"
                 options={{
-                    title: 'User',
+                    title: t('common.navbar.profile'),
                     tabBarIcon: ({ color }) => <Feather name="user" size={25} color={color} />,
                 }}
             />

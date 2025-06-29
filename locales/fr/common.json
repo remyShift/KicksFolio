@@ -3,6 +3,22 @@
 		"global": "Veuillez corriger les erreurs dans le formulaire."
 	},
 	"titles": {
-		"collection": "Ma collection"
+		"collection": "Ma collection",
+		"addFriends": "Ajoutes des amis",
+		"noFriends": "Pas encore d'amis",
+		"noWishlist": "Aucune sneakers"
+	},
+	"descriptions": {
+		"noWishlist": "Sur cette page vous pouvez voir vos sneakers wishlistées, allez sur une sneaker et ajoutez-la à votre wishlist en cliquant sur l'icône coeur."
+	},
+	"buttons": {
+		"add": "Ajouter",
+		"browse": "Parcourir"
+	},
+	"navbar": {
+		"home": "Accueil",
+		"friends": "Amis",
+		"profile": "Profil",
+		"wishlist": "Wishlist"
 	}
 }

@@ -3,6 +3,22 @@
 		"global": "Please correct the errors in the form."
 	},
 	"titles": {
-		"collection": "My collection"
+		"collection": "My collection",
+		"addFriends": "Add some friends",
+		"noFriends": "No friends yet",
+		"noWishlist": "No sneakers yet"
+	},
+	"descriptions": {
+		"noWishlist": "On this page you can see your wishlisted sneakers, go to a sneaker and add it to your wishlist by clicking the heart icon."
+	},
+	"buttons": {
+		"add": "Add",
+		"browse": "Browse"
+	},
+	"navbar": {
+		"home": "Home",
+		"friends": "Friends",
+		"profile": "Profile",
+		"wishlist": "Wishlist"
 	}
 }
