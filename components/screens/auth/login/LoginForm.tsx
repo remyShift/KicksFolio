@@ -25,7 +25,7 @@ export default function LoginForm() {
     const { user } = useSession();
 
     const { login, errorMsg: authErrorMsg } = useAuth();
-    const { showSuccessToast } = useToast();
+    const { showSuccessToast, showErrorToast } = useToast();
     const params = useLocalSearchParams();
     const [resetPasswordSuccess, setResetPasswordSuccess] = useState(params.message as string);
 
@@ -50,18 +50,19 @@ export default function LoginForm() {
                 .then((user) => {
                     if (user) {
                         const userName = user.user_metadata?.first_name || user.user_metadata?.username || '';
+                        router.replace('/(app)/(tabs)');
                         showSuccessToast(
                             t('auth.login.welcomeBack', { name: userName }), 
                             t('auth.login.gladToSeeYou')
                         );
-                        
-                        setTimeout(() => {
-                            router.replace('/(app)/(tabs)');
-                        }, 500);
                     }
                 })
                 .catch((error) => {
-                    console.log('Erreur lors de la connexion:', error);
+                    console.error('Error during login:', error.message);
+                    showErrorToast(
+                        t('auth.error.login'), 
+                        error.message
+                    );
                 });
         },
     });
