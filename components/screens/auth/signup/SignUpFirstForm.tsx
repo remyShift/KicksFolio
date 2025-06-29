@@ -1,6 +1,6 @@
 import ErrorMsg from "@/components/ui/text/ErrorMsg";
 import PageTitle from "@/components/ui/text/PageTitle";
-import { ScrollView, View, TextInput, Platform } from "react-native";
+import { ScrollView, View, TextInput } from "react-native";
 import { useRef } from "react";
 import MainButton from "@/components/ui/buttons/MainButton";
 import FormTextInput from "@/components/ui/inputs/FormTextInput";

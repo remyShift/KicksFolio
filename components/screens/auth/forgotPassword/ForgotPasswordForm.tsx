@@ -1,4 +1,4 @@
-import { ScrollView, Platform, TextInput } from "react-native";
+import { ScrollView, TextInput } from "react-native";
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import PageTitle from '@/components/ui/text/PageTitle';
 import { View } from 'react-native'
