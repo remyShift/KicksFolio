@@ -63,6 +63,17 @@
 				"sneakerSize-multiple": "Sneaker size must be a multiple of 0.5 (e.g., 7, 7.5, 8, 8.5)."
 			}
 		},
+		"forgot-password": {
+			"title": "Forgot Password",
+			"email": "Email*",
+			"emailPlaceholder": "john@doe.com",
+			"forgotPasswordButton": "Send Reset Link",
+			"back": "Back",
+			"error": {
+				"email": "Please enter a valid email address.",
+				"emailNotExists": "No account found with this email address."
+			}
+		},
 		"data-privacy": {
 			"title": "See how we handle your data",
 			"privacyPolicy": "Privacy Policy"

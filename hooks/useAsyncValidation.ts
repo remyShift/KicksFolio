@@ -37,7 +37,7 @@ export function useAsyncValidation() {
 			.then((exists) => {
 				return exists
 					? t('auth.signup-first-step.error.emailExists')
-					: null;
+					: t('auth.forgot-password.error.emailNotExists');
 			})
 			.catch((error) => {
 				console.error('Error checking email:', error);

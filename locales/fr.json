@@ -63,6 +63,17 @@
 				"sneakerSize-multiple": "La pointure doit être un multiple de 0.5 (ex : 7, 7.5, 8, 8.5)."
 			}
 		},
+		"forgot-password": {
+			"title": "Mot de passe oublié",
+			"email": "Email*",
+			"emailPlaceholder": "john@doe.com",
+			"forgotPasswordButton": "Envoyer",
+			"back": "Retour",
+			"error": {
+				"email": "Veuillez entrer une adresse email valide.",
+				"emailNotExists": "Aucun compte trouvé avec cette adresse email."
+			}
+		},
 		"data-privacy": {
 			"title": "Voir comment nous gérons vos données",
 			"privacyPolicy": "Politique de confidentialité"
