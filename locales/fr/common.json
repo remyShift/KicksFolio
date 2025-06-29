@@ -1,5 +1,8 @@
 {
 	"error": {
 		"global": "Veuillez corriger les erreurs dans le formulaire."
+	},
+	"titles": {
+		"collection": "Ma collection"
 	}
 }

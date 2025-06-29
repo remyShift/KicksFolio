@@ -3,30 +3,30 @@ import { initReactI18next } from 'react-i18next';
 import { getLocales } from 'expo-localization';
 
 import enAuth from './en/auth.json';
-import enForm from './en/form.json';
 import enSettings from './en/settings.json';
 import enAlert from './en/alert.json';
+import enCommon from './en/common.json';
 
 import frAuth from './fr/auth.json';
-import frForm from './fr/form.json';
 import frSettings from './fr/settings.json';
 import frAlert from './fr/alert.json';
+import frCommon from './fr/common.json';
 
 const resources = {
 	en: {
 		translation: {
 			auth: enAuth,
-			form: enForm,
 			settings: enSettings,
 			alert: enAlert,
+			common: enCommon,
 		},
 	},
 	fr: {
 		translation: {
 			auth: frAuth,
-			form: frForm,
 			settings: frSettings,
 			alert: frAlert,
+			common: frCommon,
 		},
 	},
 };
