@@ -19,7 +19,7 @@ export default function ProfileInfo({ user, userSneakers }: ProfileInfoProps) {
                     profilePictureUrl={user.profile_picture_url} 
                 />
                 
-                <View>
+                <View className="flex-col items-center">
                     <Text className="font-spacemono-bold text-xl">
                         {user.first_name} {user.last_name}
                     </Text>

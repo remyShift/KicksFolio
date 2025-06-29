@@ -2,5 +2,17 @@
 	"language": {
 		"title": "Language",
 		"description": "Choose the app language"
+	},
+	"editProfile": {
+		"profileUpdated": "👤 Profile updated",
+		"profileUpdatedDescription": "Your profile has been updated successfully.",
+		"profileUpdateFailed": "❌ Profile update failed",
+		"profileUpdateFailedDescription": "An error occurred while updating your profile."
+	},
+	"buttons": {
+		"save": "Save"
+	},
+	"titles": {
+		"editProfile": "Edit profile"
 	}
 } 

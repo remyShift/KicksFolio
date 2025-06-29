@@ -2,5 +2,17 @@
 	"language": {
 		"title": "Langue",
 		"description": "Choisissez la langue de l'application"
+	},
+	"editProfile": {
+		"profileUpdated": "👤 Profil mis à jour",
+		"profileUpdatedDescription": "Votre profil a été mis à jour avec succès.",
+		"profileUpdateFailed": "❌ Échec de la mise à jour du profil",
+		"profileUpdateFailedDescription": "Une erreur est survenue lors de la mise à jour de votre profil."
+	},
+	"buttons": {
+		"save": "Enregistrer"
+	},
+	"titles": {
+		"editProfile": "Modifier le profil"
 	}
 } 

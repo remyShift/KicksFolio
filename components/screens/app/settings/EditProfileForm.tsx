@@ -10,11 +10,13 @@ import FormTextInput from '@/components/ui/inputs/FormTextInput'
 import FormImageInput from '@/components/ui/inputs/FormImageInput'
 import { useAuth } from '@/hooks/useAuth'
 import { useFormController } from '@/hooks/useFormController'
-import { editProfileSchema } from '@/validation/schemas'
+import { createEditProfileSchema, EditProfileFormData } from '@/validation/schemas'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller'
 import useToast from '@/hooks/useToast'
+import { useTranslation } from 'react-i18next'
 
 export default function EditProfileForm() {
+    const { t } = useTranslation();
     const { user, refreshUserData } = useSession()
     const { showSuccessToast, showErrorToast } = useToast();
     const { updateUser } = useAuth()
@@ -29,11 +31,11 @@ export default function EditProfileForm() {
         handleFormSubmit,
         handleFieldFocus,
         validateFieldOnBlur,
-        getFieldError,
         displayedError,
         isSubmitDisabled,
-    } = useFormController({
-        schema: editProfileSchema,
+        getFieldErrorWrapper,
+    } = useFormController<EditProfileFormData>({
+        schema: createEditProfileSchema(),
         defaultValues: {
             username: user!.username,
             first_name: user!.first_name,
@@ -51,20 +53,24 @@ export default function EditProfileForm() {
             .then((result) => {
                 if (result?.user) {
                     refreshUserData();
-                    showSuccessToast('👤 Profile updated', 'Your profile has been updated successfully.');
+                    showSuccessToast(
+                        t('settings.editProfile.profileUpdated'), 
+                        t('settings.editProfile.profileUpdatedDescription')
+                    );
                 }
             })
             .catch((error) => {
-                showErrorToast('❌ Profile update failed', 'An error occurred while updating your profile.');
+                showErrorToast(
+                    t('settings.editProfile.profileUpdateFailed'), 
+                    t('settings.editProfile.profileUpdateFailedDescription')
+                );
                 console.error('❌ EditProfileForm: Error in form submission:', error);
                 throw error;
             });
         },
     })
 
-    const getFieldErrorWrapper = (fieldName: string) => {
-        return getFieldError(fieldName as keyof typeof editProfileSchema._type);
-    };
+
 
     return (
         <KeyboardAwareScrollView 
@@ -79,7 +85,7 @@ export default function EditProfileForm() {
                     <Ionicons name="close-outline" size={32} color="#666" />
                 </Pressable>
                 <View className="flex-row justify-center items-center">
-                    <PageTitle content="Edit profile" />
+                    <PageTitle content={t('settings.titles.editProfile')} />
                 </View>
 
                 <FormImageInput
@@ -95,8 +101,8 @@ export default function EditProfileForm() {
                     <FormTextInput
                         name="username"
                         control={control}
-                        label="Username*"
-                        placeholder="Username"
+                        label={t('auth.form.username.label')}
+                        placeholder={t('auth.form.username.placeholder')}
                         ref={usernameInputRef}
                         nextInputRef={firstNameInputRef}
                         autoComplete="username"
@@ -111,8 +117,8 @@ export default function EditProfileForm() {
                     <FormTextInput
                         name="first_name"
                         control={control}
-                        label="First Name*"
-                        placeholder="First Name"
+                        label={t('auth.form.firstName.label')}
+                        placeholder={t('auth.form.firstName.placeholder')}
                         ref={firstNameInputRef}
                         nextInputRef={lastNameInputRef}
                         autoComplete="name"
@@ -126,8 +132,8 @@ export default function EditProfileForm() {
                     <FormTextInput
                         name="last_name"
                         control={control}
-                        label="Last Name*"
-                        placeholder="Last Name"
+                        label={t('auth.form.lastName.label')}
+                        placeholder={t('auth.form.lastName.placeholder')}
                         ref={lastNameInputRef}
                         nextInputRef={sizeInputRef}
                         autoComplete="name"
@@ -141,8 +147,8 @@ export default function EditProfileForm() {
                     <FormTextInput
                         name="sneaker_size"
                         control={control}
-                        label="Sneaker Size*"
-                        placeholder="Sneaker Size"
+                        label={t('auth.form.sneakerSize.label')}
+                        placeholder={t('auth.form.sneakerSize.placeholder')}
                         ref={sizeInputRef}
                         keyboardType="numeric"
                         onFocus={() => handleFieldFocus('sneaker_size')}
@@ -155,7 +161,7 @@ export default function EditProfileForm() {
 
                 <View className='flex w-full justify-center items-center'>
                     <MainButton 
-                        content="Save"
+                        content={t('settings.buttons.save')}
                         onPressAction={() => {
                             if (!isSubmitDisabled) {
                                 handleFormSubmit();

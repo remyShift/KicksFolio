@@ -150,36 +150,30 @@ export const createEditProfileSchema = () => {
 	return z.object({
 		username: z
 			.string()
-			.min(4, 'Username must be at least 4 characters long.')
-			.max(16, 'Username must be less than 16 characters.')
-			.regex(/^\w+$/, 'Username must not contain special characters.'),
+			.min(4, t('auth.form.username.error.size'))
+			.max(16, t('auth.form.username.error.size'))
+			.regex(/^\w+$/, t('auth.form.username.error.format')),
 		first_name: z
 			.string()
-			.min(2, 'First name must be at least 2 characters long.')
-			.regex(
-				/^[a-zA-Z\s]+$/,
-				'First name must not contain special characters.'
-			),
+			.min(2, t('auth.form.firstName.error.size'))
+			.regex(/^[a-zA-Z\s]+$/, t('auth.form.firstName.error.format')),
 		last_name: z
 			.string()
-			.min(2, 'Last name must be at least 2 characters long.')
-			.regex(
-				/^[a-zA-Z\s]+$/,
-				'Last name must not contain special characters.'
-			),
+			.min(2, t('auth.form.lastName.error.size'))
+			.regex(/^[a-zA-Z\s]+$/, t('auth.form.lastName.error.format')),
 		sneaker_size: z
 			.string()
-			.min(1, 'Sneaker size is required.')
+			.min(1, t('auth.form.sneakerSize.error.required'))
 			.transform((val) => val.replace(',', '.'))
-			.refine(
-				(val) =>
-					!isNaN(Number(val)) && Number(val) > 7 && Number(val) < 16,
-				'Size must be a number between 7 and 15.'
-			)
+			.refine((val) => {
+				const num = Number(val);
+				if (isNaN(num)) return false;
+				return (num >= 7 && num <= 15) || (num >= 35 && num <= 48);
+			}, t('auth.form.sneakerSize.error.size'))
 			.refine((val) => {
 				const num = Number(val);
 				return (num * 2) % 1 === 0;
-			}, 'Size must be a multiple of 0.5 (e.g., 7, 7.5, 8, 8.5).'),
+			}, t('auth.form.sneakerSize.error.multiple')),
 		profile_picture: z.string().optional(),
 	});
 };
@@ -223,4 +217,7 @@ export type ForgotPasswordFormData = z.infer<
 >;
 export type ResetPasswordFormData = z.infer<
 	ReturnType<typeof createResetPasswordSchema>
+>;
+export type EditProfileFormData = z.infer<
+	ReturnType<typeof createEditProfileSchema>
 >;
