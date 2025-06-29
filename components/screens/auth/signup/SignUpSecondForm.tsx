@@ -13,8 +13,10 @@ import PageLink from '@/components/ui/links/LoginPageLink';
 import { router } from 'expo-router';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import useToast from '@/hooks/useToast';
+import { useTranslation } from 'react-i18next';
 
 export default function SignUpSecondForm() {
+    const { t } = useTranslation();
     const { signUpProps, setSignUpProps } = useSignUpProps();
     const scrollViewRef = useRef<ScrollView>(null);
     const lastNameInputRef = useRef<TextInput>(null);
@@ -70,7 +72,7 @@ export default function SignUpSecondForm() {
             bottomOffset={10}
         >
             <View className="flex-1 items-center gap-12 p-4">
-                <PageTitle content='Sign Up' />
+                <PageTitle content={t('auth.signup-second-step.title')} />
                 <View className='flex gap-6 justify-center items-center w-full mt-8 px-12'>
                 <View className='w-full absolute' style={{ top: -50 }}>   
                         <ErrorMsg content={displayedError} display={displayedError !== ''} />
@@ -85,8 +87,8 @@ export default function SignUpSecondForm() {
                     <FormTextInput
                         name="firstName"
                         control={control}
-                        label="First Name*"
-                        placeholder="John"
+                        label={t('auth.signup-second-step.firstName')}
+                        placeholder={t('auth.signup-second-step.firstNamePlaceholder')}
                         ref={firstNameInputRef}
                         nextInputRef={lastNameInputRef}
                         autoComplete="name"
@@ -100,8 +102,8 @@ export default function SignUpSecondForm() {
                     <FormTextInput
                         name="lastName"
                         control={control}
-                        label="Last Name*"
-                        placeholder="Doe"
+                        label={t('auth.signup-second-step.lastName')}
+                        placeholder={t('auth.signup-second-step.lastNamePlaceholder')}
                         ref={lastNameInputRef}
                         nextInputRef={sizeInputRef}
                         autoComplete="name"
@@ -115,8 +117,8 @@ export default function SignUpSecondForm() {
                     <FormTextInput
                         name="size"
                         control={control}
-                        label="Sneaker Size (US)*"
-                        placeholder="9.5"
+                        label={t('auth.signup-second-step.sneakerSize')}
+                        placeholder={t('auth.signup-second-step.sneakerSizePlaceholder')}
                         ref={sizeInputRef}
                         keyboardType="numeric"
                         onFocus={() => handleFieldFocus('size')}
@@ -127,7 +129,7 @@ export default function SignUpSecondForm() {
                     />
 
                     <MainButton 
-                        content='Sign Up' 
+                        content={t('auth.signup-second-step.signUpButton')} 
                         backgroundColor={isSubmitDisabled ? 'bg-primary/50' : 'bg-primary'}
                         onPressAction={() => {
                             if (!isSubmitDisabled) {
@@ -137,7 +139,7 @@ export default function SignUpSecondForm() {
                         isDisabled={isSubmitDisabled}
                     />
 
-                    <PageLink href='/sign-up' linkText='Back' />
+                    <PageLink href='/sign-up' linkText={t('auth.signup-second-step.back')} />
                 </View>
             </View>
         </KeyboardAwareScrollView>

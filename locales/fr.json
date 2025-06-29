@@ -13,6 +13,32 @@
 			"welcomeBack": "👋🏼 Bon retour {{name}}",
 			"gladToSeeYou": "Ravi de vous revoir !"
 		},
+		"signup-first-step": {
+			"title": "Inscription",
+			"username": "Nom d'utilisateur*",
+			"usernamePlaceholder": "johnSneakers",
+			"email": "Email*",
+			"emailPlaceholder": "john@doe.com",
+			"password": "Mot de passe*",
+			"passwordDescription": "Au moins 8 caractères, 1 majuscule, 1 minuscule et 1 chiffre.",
+			"passwordPlaceholder": "********",
+			"confirmPassword": "Confirmer le mot de passe*",
+			"confirmPasswordPlaceholder": "********",
+			"signUpButton": "Suivant",
+			"alreadyHaveAccount": "Déjà un compte ?",
+			"login": "Se connecter"
+		},
+		"signup-second-step": {
+			"title": "Inscription",
+			"firstName": "Prénom*",
+			"firstNamePlaceholder": "John",
+			"lastName": "Nom*",
+			"lastNamePlaceholder": "Doe",
+			"sneakerSize": "Pointure (EU)*",
+			"sneakerSizePlaceholder": "42",
+			"signUpButton": "S'inscrire",
+			"back": "Retour"
+		},
 		"data-privacy": {
 			"title": "Voir comment nous gérons vos données",
 			"privacyPolicy": "Politique de confidentialité"
