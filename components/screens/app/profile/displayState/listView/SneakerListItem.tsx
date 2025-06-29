@@ -69,7 +69,6 @@ export default function SneakerListItem({ sneaker, onPress, showOwnerInfo = fals
             )}
           </View>
 
-          {/* Informations du propriétaire si applicable */}
           {showOwnerInfo && sneaker.owner && (
             <View className="flex-row items-center mt-2 gap-1">
               <Text className="font-spacemono text-xs text-gray-600 uppercase">

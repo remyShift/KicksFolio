@@ -5,7 +5,7 @@ interface ProfileUpperHeaderProps {
     onMenuPress: () => void;
 }
 
-export default function ProfileUpperHeader({ onMenuPress }: ProfileUpperHeaderProps) {
+export default function SettingsButton({ onMenuPress }: ProfileUpperHeaderProps) {
     return (
         <View className="flex-row justify-center items-center" testID="profile-header">
             <Pressable 

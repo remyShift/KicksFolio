@@ -1,13 +1,12 @@
-import React from 'react';
+import { useEffect } from 'react';
 import { Modal, Pressable, View, Dimensions } from 'react-native';
 import { SneakersModal } from '@/components/modals/SneakersModal';
 import { useModalStore } from '@/store/useModalStore';
-import { PanGestureHandler, GestureHandlerRootView } from 'react-native-gesture-handler';
+import { GestureHandlerRootView, Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
 import Animated, {
     useSharedValue,
     useAnimatedStyle,
-    useAnimatedGestureHandler,
     withSpring,
     withTiming,
     runOnJS,
@@ -35,15 +34,12 @@ export default function SneakersModalWrapper() {
         });
     };
 
-    const gestureHandler = useAnimatedGestureHandler({
-        onStart: (_, context: { startY: number }) => {
-            context.startY = translateY.value;
-        },
-        onActive: (event, context: { startY: number }) => {
-            const newTranslateY = context.startY + event.translationY;
+    const panGesture = Gesture.Pan()
+        .onUpdate((event) => {
+            const newTranslateY = event.translationY;
             translateY.value = Math.max(0, newTranslateY);
-        },
-        onEnd: (event) => {
+        })
+        .onEnd((event) => {
             const shouldClose = event.translationY > MODAL_HEIGHT * 0.3 || event.velocityY > 1000;
             
             if (shouldClose) {
@@ -58,8 +54,7 @@ export default function SneakersModalWrapper() {
                     stiffness: 400,
                 });
             }
-        },
-    });
+        });
 
     const modalStyle = useAnimatedStyle(() => {
         return {
@@ -80,7 +75,7 @@ export default function SneakersModalWrapper() {
         };
     });
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (isVisible) {
             translateY.value = withTiming(0, {
                 duration: 400,
@@ -115,14 +110,13 @@ export default function SneakersModalWrapper() {
                     <View className="w-full items-center pt-3 pb-2">
                         <View className="w-24 h-1 bg-gray-300 rounded-full" />
                     </View>
-                    <PanGestureHandler onGestureEvent={gestureHandler}>
+                    <GestureDetector gesture={panGesture}>
                         <Animated.View className="flex-1 bg-background rounded-t-3xl">
-                            
                             <View className="flex-1 px-4 py-3">
                                 <SneakersModal />
                             </View>
                         </Animated.View>
-                    </PanGestureHandler>
+                    </GestureDetector>
                 </Animated.View>
                 
                 <Toast topOffset={60} />

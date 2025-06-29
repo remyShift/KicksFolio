@@ -1,4 +1,3 @@
-import React from 'react';
 import { View, ScrollView } from 'react-native';
 import BrandTitle from '@/components/ui/text/BrandTitle';
 import SneakerCard from '@/components/ui/cards/SneakerCard';
@@ -39,11 +38,7 @@ export default function SneakersCardByBrand({
                     <View key={normalizedBrand} className="flex-1">
                         <BrandTitle
                             content={originalBrandName} 
-                            brandLogo={
-                                normalizedBrand === 'new balance' ? 
-                                    require('@/assets/images/brands/newbalance.png') : 
-                                    brandLogos[normalizedBrand]
-                            } 
+                            brandLogo={brandLogos[normalizedBrand]}
                         />
                         <ScrollView
                             horizontal

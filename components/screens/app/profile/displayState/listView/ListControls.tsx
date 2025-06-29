@@ -1,4 +1,3 @@
-import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useListViewStore } from '@/store/useListViewStore';

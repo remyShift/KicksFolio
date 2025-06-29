@@ -2,7 +2,6 @@ import { RefreshControl, ScrollView, View } from 'react-native';
 import { useSession } from '@/context/authContext';
 import { useState, useMemo, useCallback } from 'react';
 import { Sneaker } from '@/types/Sneaker';
-import { useAuth } from '@/hooks/useAuth';
 import { router } from 'expo-router';
 import EmptySneakersState from '@/components/screens/app/profile/displayState/EmptySneakersState';
 import SneakersCardByBrand from '@/components/screens/app/profile/displayState/SneakersCardByBrand';
