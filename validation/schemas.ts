@@ -1,9 +1,6 @@
 import { SneakerBrand, SneakerStatus } from '@/types/Sneaker';
 import { z } from 'zod';
 import { t } from 'i18next';
-import { useLanguageStore } from '@/store/useLanguageStore';
-
-const { currentLanguage } = useLanguageStore.getState();
 
 export const sneakerStatusOptions = [
 	{ label: 'Stocking', value: SneakerStatus.Stocking },
@@ -66,19 +63,9 @@ export const createSignUpStep2Schema = () => {
 			.min(1, t('auth.form.sneakerSize.error.required'))
 			.transform((val) => val.replace(',', '.'))
 			.refine((val) => {
-				if (currentLanguage === 'fr') {
-					return (
-						!isNaN(Number(val)) &&
-						Number(val) >= 35 &&
-						Number(val) <= 48
-					);
-				} else {
-					return (
-						!isNaN(Number(val)) &&
-						Number(val) >= 7 &&
-						Number(val) <= 15
-					);
-				}
+				const num = Number(val);
+				if (isNaN(num)) return false;
+				return (num >= 7 && num <= 15) || (num >= 35 && num <= 48);
 			}, t('auth.form.sneakerSize.error.size'))
 			.refine((val) => {
 				const num = Number(val);

@@ -21,9 +21,7 @@ export const useAuth = () => {
 				}
 			})
 			.catch((error) => {
-				setErrorMsg(
-					`${t('auth.login.error.global')} + ${error.message}`
-				);
+				setErrorMsg(`${t('auth.error.login')} : ${error.message}`);
 			});
 	};
 
@@ -31,47 +29,47 @@ export const useAuth = () => {
 		const { profile_picture: profilePictureUri, ...restOfUserData } =
 			userData;
 
-		try {
-			const response = await SupabaseAuthService.signUp(
-				restOfUserData.email,
-				restOfUserData.password,
-				restOfUserData
-			);
-
-			if (response.user && profilePictureUri) {
-				const uploadResult =
-					await SupabaseImageService.uploadProfileImage(
+		return SupabaseAuthService.signUp(
+			restOfUserData.email,
+			restOfUserData.password,
+			restOfUserData
+		)
+			.then((response) => {
+				if (response.user && profilePictureUri) {
+					return SupabaseImageService.uploadProfileImage(
 						profilePictureUri,
 						response.user.id
-					);
-
-				if (uploadResult.success && uploadResult.url) {
-					const updatedUser = await SupabaseAuthService.updateProfile(
-						response.user.id,
-						{ profile_picture: uploadResult.url }
-					);
-					setUser(updatedUser);
-				} else {
-					console.error(
-						'❌ useAuth.signUp: Failed to upload profile picture:',
-						uploadResult.error
-					);
+					).then((uploadResult) => {
+						if (uploadResult.success && uploadResult.url) {
+							return SupabaseAuthService.updateProfile(
+								response.user.id,
+								{ profile_picture: uploadResult.url }
+							).then((updatedUser) => {
+								setUser(updatedUser);
+								return response;
+							});
+						} else {
+							console.error(
+								'❌ useAuth.signUp: Failed to upload profile picture:',
+								uploadResult.error
+							);
+							return response;
+						}
+					});
 				}
-			}
-			if (response.user) {
-				setUser(response.user);
-				await login(userData.email, userData.password);
-				return true;
-			}
-			return false;
-		} catch (error: any) {
-			setErrorMsg(
-				error instanceof Error
-					? error.message
-					: 'An error occurred during sign up'
-			);
-			return false;
-		}
+				return response;
+			})
+			.then((response) => {
+				if (response.user) {
+					setUser(response.user);
+					return true;
+				}
+				return false;
+			})
+			.catch((error) => {
+				setErrorMsg(`${t('auth.error.signUp')} : ${error.message}`);
+				return false;
+			});
 	};
 
 	const forgotPassword = async (email: string) => {
