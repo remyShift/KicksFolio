@@ -52,7 +52,16 @@
 			"sneakerSize": "Pointure (EU)*",
 			"sneakerSizePlaceholder": "42",
 			"signUpButton": "S'inscrire",
-			"back": "Retour"
+			"back": "Retour",
+			"error": {
+				"firstName-size": "Le prénom doit contenir au moins 2 caractères.",
+				"firstName-format": "Le prénom ne doit pas contenir de caractères spéciaux ou de chiffres.",
+				"lastName-size": "Le nom doit contenir au moins 2 caractères.",
+				"lastName-format": "Le nom ne doit pas contenir de caractères spéciaux ou de chiffres.",
+				"sneakerSize-size": "La pointure doit contenir au moins 1 caractère.",
+				"sneakerSize-format": "La pointure doit être un nombre entre 7 et 15.",
+				"sneakerSize-multiple": "La pointure doit être un multiple de 0.5 (ex : 7, 7.5, 8, 8.5)."
+			}
 		},
 		"data-privacy": {
 			"title": "Voir comment nous gérons vos données",
@@ -62,6 +71,12 @@
 	"form": {
 		"error": {
 			"global": "Veuillez corriger les erreurs dans le formulaire."
+		}
+	},
+	"settings": {
+		"language": {
+			"title": "Langue",
+			"description": "Choisissez la langue de l'application"
 		}
 	}
 }

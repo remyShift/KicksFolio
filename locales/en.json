@@ -52,7 +52,16 @@
 			"sneakerSize": "Sneaker Size (US)*",
 			"sneakerSizePlaceholder": "10",
 			"signUpButton": "Sign Up",
-			"back": "Back"
+			"back": "Back",
+			"error": {
+				"firstName-size": "First name must be at least 2 characters long.",
+				"firstName-format": "First name must not contain special characters or numbers.",
+				"lastName-size": "Last name must be at least 2 characters long.",
+				"lastName-format": "Last name must not contain special characters or numbers.",
+				"sneakerSize-size": "Sneaker size must be at least 1 character long.",
+				"sneakerSize-format": "Sneaker size must be a number between 7 and 15.",
+				"sneakerSize-multiple": "Sneaker size must be a multiple of 0.5 (e.g., 7, 7.5, 8, 8.5)."
+			}
 		},
 		"data-privacy": {
 			"title": "See how we handle your data",
@@ -62,6 +71,12 @@
 	"form": {
 		"error": {
 			"global": "Please correct the errors in the form."
+		}
+	},
+	"settings": {
+		"language": {
+			"title": "Language",
+			"description": "Choose the app language"
 		}
 	}
 }

@@ -53,32 +53,32 @@ export const createSignUpStep2Schema = () => {
 	return z.object({
 		firstName: z
 			.string()
-			.min(2, 'First name must be at least 2 characters long.')
+			.min(2, t('auth.signup-second-step.error.firstName-size'))
 			.regex(
 				/^[a-zA-Z\s]+$/,
-				'First name must not contain special characters or numbers.'
+				t('auth.signup-second-step.error.firstName-format')
 			)
 			.transform((val) => val.charAt(0).toUpperCase() + val.slice(1)),
 		lastName: z
 			.string()
-			.min(2, 'Last name must be at least 2 characters long.')
+			.min(2, t('auth.signup-second-step.error.lastName-size'))
 			.regex(
 				/^[a-zA-Z\s]+$/,
-				'Last name must not contain special characters or numbers.'
+				t('auth.signup-second-step.error.lastName-format')
 			)
 			.transform((val) => val.charAt(0).toUpperCase() + val.slice(1)),
 		size: z
 			.string()
-			.min(1, 'Please enter your sneaker size.')
+			.min(1, t('auth.signup-second-step.error.sneakerSize-size'))
 			.transform((val) => val.replace(',', '.'))
 			.refine((val) => {
 				const num = Number(val);
 				return !isNaN(num) && num >= 7 && num <= 15;
-			}, 'Size must be a number between 7 and 15.')
+			}, t('auth.signup-second-step.error.sneakerSize-format'))
 			.refine((val) => {
 				const num = Number(val);
 				return (num * 2) % 1 === 0;
-			}, 'Size must be a multiple of 0.5 (e.g., 7, 7.5, 8, 8.5).'),
+			}, t('auth.signup-second-step.error.sneakerSize-multiple')),
 		profile_picture: z.string().optional(),
 	});
 };
