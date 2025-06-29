@@ -2,15 +2,16 @@ import { useState } from 'react';
 import { SupabaseAuthService } from '@/services/AuthService';
 import { router } from 'expo-router';
 import { UserData, UpdateUserData } from '@/types/auth';
-import { User } from '@/types/User';
 import { useSession } from '@/context/authContext';
 import { useSignUpValidation } from './useSignUpValidation';
 import SupabaseImageService from '@/services/SupabaseImageService';
+import { useTranslation } from 'react-i18next';
 
 export const useAuth = () => {
 	const [errorMsg, setErrorMsg] = useState('');
 	const { setUser, refreshUserSneakers, clearUserData } = useSession();
-	const { validateSignUpStep1 } = useSignUpValidation();
+	const { validateSignUpStep1Async } = useSignUpValidation();
+	const { t } = useTranslation();
 
 	const login = async (email: string, password: string) => {
 		return SupabaseAuthService.signIn(email, password)
@@ -21,9 +22,7 @@ export const useAuth = () => {
 			})
 			.catch((error) => {
 				setErrorMsg(
-					error instanceof Error
-						? error.message
-						: 'An error occurred during login'
+					`${t('auth.login.error.global')} + ${error.message}`
 				);
 			});
 	};
@@ -252,7 +251,7 @@ export const useAuth = () => {
 	const handleNextSignupPage = async (
 		signUpProps: UserData
 	): Promise<string | null> => {
-		const validation = await validateSignUpStep1(signUpProps);
+		const validation = await validateSignUpStep1Async(signUpProps);
 		if (!validation.isValid) {
 			setErrorMsg(validation.errorMsg);
 			return validation.errorMsg;

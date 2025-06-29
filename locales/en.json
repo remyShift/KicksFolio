@@ -11,7 +11,12 @@
 			"signUp": "Sign Up",
 			"forgotPassword": "Forgot Password?",
 			"welcomeBack": "👋🏼 Welcome back {{name}}",
-			"gladToSeeYou": "Glad to see you again !"
+			"gladToSeeYou": "Glad to see you again !",
+			"error": {
+				"global": "An error occurred during login",
+				"email": "Please put a valid email.",
+				"password": "Please enter your password."
+			}
 		},
 		"signup-first-step": {
 			"title": "Sign Up",
@@ -26,7 +31,17 @@
 			"confirmPasswordPlaceholder": "********",
 			"signUpButton": "Next",
 			"alreadyHaveAccount": "Already have an account ?",
-			"login": "Login"
+			"login": "Login",
+			"error": {
+				"username-size": "Username must be between 4 and 16 characters.",
+				"username-format": "Username must not contain special characters.",
+				"usernameExists": "This username is already taken.",
+				"email": "Please enter a valid email address.",
+				"emailExists": "This email address is already in use.",
+				"password-size": "Password must be at least 8 characters long.",
+				"password-format": "Password must contain at least 1 uppercase letter and 1 number.",
+				"confirmPassword": "Passwords do not match."
+			}
 		},
 		"signup-second-step": {
 			"title": "Sign Up",
@@ -42,6 +57,11 @@
 		"data-privacy": {
 			"title": "See how we handle your data",
 			"privacyPolicy": "Privacy Policy"
+		}
+	},
+	"form": {
+		"error": {
+			"global": "Please correct the errors in the form."
 		}
 	}
 }

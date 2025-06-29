@@ -9,6 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useState, useEffect } from 'react';
 import { useAuth } from './useAuth';
 import { useSession } from '@/context/authContext';
+import { useTranslation } from 'react-i18next';
 
 interface FormControllerOptions<T extends FieldValues>
 	extends Omit<UseFormProps<T>, 'defaultValues'> {
@@ -41,6 +42,7 @@ export function useFormController<T extends FieldValues>({
 	>({});
 	const [hasChanges, setHasChanges] = useState(false);
 
+	const { t } = useTranslation();
 	const { clearError } = useAuth();
 	const { refreshUserData } = useSession();
 
@@ -238,7 +240,7 @@ export function useFormController<T extends FieldValues>({
 		return '';
 	};
 
-	const globalErrorMsg = 'Please correct the errors in the form';
+	const globalErrorMsg = t('form.error.global');
 
 	const displayedError = (() => {
 		const errorCount = getErrorCount();

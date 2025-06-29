@@ -1,9 +1,11 @@
 import { AuthValidationService } from '@/services/AuthValidationService';
+import { useTranslation } from 'react-i18next';
 
 type ValidationValue = string | number | boolean | null | undefined;
 
 export function useAsyncValidation() {
 	const validationService = new AuthValidationService();
+	const { t } = useTranslation();
 
 	const checkUsernameExists = async (
 		username: string
@@ -14,7 +16,7 @@ export function useAsyncValidation() {
 			.checkUsernameExists(username)
 			.then((exists) => {
 				if (exists) {
-					return 'This username is already taken.';
+					return t('auth.signup-first-step.error.usernameExists');
 				}
 				return null;
 			})
@@ -34,7 +36,7 @@ export function useAsyncValidation() {
 			.checkEmailExists(value.toString())
 			.then((exists) => {
 				return exists
-					? 'An account with this email already exists, please login.'
+					? t('auth.signup-first-step.error.emailExists')
 					: null;
 			})
 			.catch((error) => {

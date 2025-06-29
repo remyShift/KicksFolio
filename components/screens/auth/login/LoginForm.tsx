@@ -9,7 +9,7 @@ import { useAuth } from "@/hooks/useAuth";
 import FormTextInput from "@/components/ui/inputs/FormTextInput";
 import FormPasswordInput from "@/components/ui/inputs/FormPasswordInput";
 import { useFormController } from "@/hooks/useFormController";
-import { loginSchema, LoginFormData } from "@/validation/schemas";
+import { createLoginSchema, LoginFormData } from "@/validation/schemas";
 import PageLink from "@/components/ui/links/LoginPageLink"; 
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import useToast from "@/hooks/useToast";
@@ -38,7 +38,7 @@ export default function LoginForm() {
         displayedError,
         getFieldErrorWrapper,
     } = useFormController<LoginFormData>({
-        schema: loginSchema,
+        schema: createLoginSchema(),
         defaultValues: {
             email: '',
             password: '',

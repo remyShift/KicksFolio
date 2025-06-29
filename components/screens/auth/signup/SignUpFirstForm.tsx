@@ -9,7 +9,7 @@ import { useSignUpProps } from "@/context/signUpPropsContext";
 import { useFormController } from "@/hooks/useFormController";
 import { useAsyncValidation } from "@/hooks/useAsyncValidation";
 import { useAuth } from "@/hooks/useAuth";
-import { signUpStep1Schema, SignUpStep1FormData } from "@/validation/schemas";
+import { createSignUpStep1Schema, SignUpStep1FormData } from "@/validation/schemas";
 import PageLink from "@/components/ui/links/LoginPageLink";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useTranslation } from "react-i18next";
@@ -35,7 +35,7 @@ export default function SignUpFirstForm() {
         displayedError,
         getFieldErrorWrapper,
     } = useFormController<SignUpStep1FormData>({
-        schema: signUpStep1Schema,
+        schema: createSignUpStep1Schema(),
         defaultValues: {
             username: signUpProps.username || '',
             email: signUpProps.email || '',

@@ -8,7 +8,7 @@ import { useAuth } from '@/hooks/useAuth';
 import PageTitle from '@/components/ui/text/PageTitle';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import { useFormController } from '@/hooks/useFormController';
-import { signUpStep2Schema, SignUpStep2FormData } from '@/validation/schemas';
+import { createSignUpStep2Schema, SignUpStep2FormData } from '@/validation/schemas';
 import PageLink from '@/components/ui/links/LoginPageLink';
 import { router } from 'expo-router';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
@@ -35,7 +35,7 @@ export default function SignUpSecondForm() {
         displayedError,
         getFieldErrorWrapper,
     } = useFormController<SignUpStep2FormData>({
-        schema: signUpStep2Schema,
+        schema: createSignUpStep2Schema(),
         defaultValues: {
             firstName: signUpProps.first_name || '',
             lastName: signUpProps.last_name || '',

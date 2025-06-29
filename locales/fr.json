@@ -11,7 +11,12 @@
 			"signUp": "S'inscrire",
 			"forgotPassword": "Mot de passe oublié ?",
 			"welcomeBack": "👋🏼 Bon retour {{name}}",
-			"gladToSeeYou": "Ravi de vous revoir !"
+			"gladToSeeYou": "Ravi de vous revoir !",
+			"error": {
+				"global": "Une erreur est survenue lors de la connexion",
+				"email": "Veuillez entrer une adresse email valide.",
+				"password": "Veuillez entrer votre mot de passe."
+			}
 		},
 		"signup-first-step": {
 			"title": "Inscription",
@@ -26,7 +31,17 @@
 			"confirmPasswordPlaceholder": "********",
 			"signUpButton": "Suivant",
 			"alreadyHaveAccount": "Déjà un compte ?",
-			"login": "Se connecter"
+			"login": "Se connecter",
+			"error": {
+				"username-size": "Le nom d'utilisateur doit contenir entre 4 et 16 caractères.",
+				"username-format": "Le nom d'utilisateur ne doit pas contenir de caractères spéciaux.",
+				"usernameExists": "Ce nom d'utilisateur est déjà pris.",
+				"email": "Veuillez entrer une adresse email valide.",
+				"emailExists": "Cette adresse email est déjà utilisée.",
+				"password-size": "Le mot de passe doit contenir au moins 8 caractères.",
+				"password-format": "Le mot de passe doit contenir au moins 1 majuscule et 1 chiffre.",
+				"confirmPassword": "Les mots de passe ne correspondent pas."
+			}
 		},
 		"signup-second-step": {
 			"title": "Inscription",
@@ -42,6 +57,11 @@
 		"data-privacy": {
 			"title": "Voir comment nous gérons vos données",
 			"privacyPolicy": "Politique de confidentialité"
+		}
+	},
+	"form": {
+		"error": {
+			"global": "Veuillez corriger les erreurs dans le formulaire."
 		}
 	}
 }
