@@ -6,7 +6,10 @@
 		"collection": "Ma collection",
 		"addFriends": "Ajoutes des amis",
 		"noFriends": "Pas encore d'amis",
-		"noWishlist": "Aucune sneakers"
+		"noWishlist": "Aucune sneakers",
+		"sneakers": "Sneakers",
+		"friends": "Amis",
+		"value": "Valeur estimée"
 	},
 	"descriptions": {
 		"noWishlist": "Sur cette page vous pouvez voir vos sneakers wishlistées, allez sur une sneaker et ajoutez-la à votre wishlist en cliquant sur l'icône coeur."

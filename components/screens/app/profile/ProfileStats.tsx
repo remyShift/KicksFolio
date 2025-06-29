@@ -1,5 +1,6 @@
 import { View, Text } from 'react-native';
 import { useSession } from '@/context/authContext';
+import { useTranslation } from 'react-i18next';
 
 interface ProfileStatsProps {
     sneakersCount: number;
@@ -8,14 +9,14 @@ interface ProfileStatsProps {
 
 export default function ProfileStats({ sneakersCount, friendsCount }: ProfileStatsProps) {
     const { userSneakers } = useSession();
-    
+    const { t } = useTranslation();
     const totalValue = userSneakers?.reduce((acc, sneaker) => acc + (sneaker.estimated_value || 0), 0) || 0;
     return (
         <View className="flex-col w-full gap-5 px-4">
             <View className="flex-row w-full justify-between">
                 <View className="bg-primary/20 p-6 rounded-lg w-48">
                     <Text className="font-spacemono text-lg">
-                        Sneakers
+                        {t('common.titles.sneakers')}
                     </Text>
                     <Text className="font-spacemono-bold text-2xl" testID='sneakers-count'>
                         {sneakersCount}
@@ -24,7 +25,7 @@ export default function ProfileStats({ sneakersCount, friendsCount }: ProfileSta
 
                 <View className="bg-primary/20 p-6 rounded-lg w-48">
                     <Text className="font-spacemono text-lg">
-                        Friends
+                        {t('common.titles.friends')}
                     </Text>
                     <Text className="font-spacemono-bold text-2xl">
                         {friendsCount}
@@ -34,7 +35,7 @@ export default function ProfileStats({ sneakersCount, friendsCount }: ProfileSta
 
             <View className="bg-primary/15 p-6 rounded-lg w-full">
                 <Text className="font-spacemono text-lg">
-                    Value
+                    {t('common.titles.value')}
                 </Text>
                 <Text className="font-spacemono-bold text-2xl">
                     ${totalValue}
