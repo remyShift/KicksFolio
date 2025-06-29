@@ -9,19 +9,39 @@
 		"noWishlist": "No sneakers yet",
 		"sneakers": "Sneakers",
 		"friends": "Friends",
-		"value": "Estimated value"
+		"value": "Estimated value",
+		"noSneakers": "No sneakers yet",
+		"sneakerAddedToWishlist": "❤️ Sneaker added to your wishlist",
+		"sneakerRemovedFromWishlist": "💔 Sneaker removed from your wishlist",
+		"errorUpdatingWishlistStatus": "❌ Error updating wishlist status"
 	},
 	"descriptions": {
-		"noWishlist": "On this page you can see your wishlisted sneakers, go to a sneaker and add it to your wishlist by clicking the heart icon."
+		"noWishlist": "On this page you can see your wishlisted sneakers, go to a sneaker and add it to your wishlist by clicking the heart icon.",
+		"sneakerAddedToWishlist": "You can see it in your wishlist page",
+		"sneakerRemovedFromWishlist": "Let's find other one !",
+		"errorUpdatingWishlistStatus": "Please try again later"
 	},
 	"buttons": {
 		"add": "Add",
-		"browse": "Browse"
+		"browse": "Browse",
+		"all": "All",
+		"clearAllFilters": "Clear all filters"
 	},
 	"navbar": {
 		"home": "Home",
 		"friends": "Friends",
 		"profile": "Profile",
 		"wishlist": "Wishlist"
+	},
+	"sneaker": {
+		"name": "Name",
+		"brand": "Brand",
+		"size": "Size",
+		"condition": "Condition",
+		"value": "Value",
+		"sku": "SKU",
+		"sortBy": "Sort by",
+		"status": "Status",
+		"filters": "Filters"
 	}
 }

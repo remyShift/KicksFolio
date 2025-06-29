@@ -1,5 +1,6 @@
 import { Text, View } from "react-native";
 import FilterButton from "./FilterButton";
+import { useTranslation } from "react-i18next";
 
 interface FilterGroupProps {
     title: string;
@@ -10,12 +11,13 @@ interface FilterGroupProps {
 }
 
 export default function FilterGroup({ title, filterKey, options, activeValue, onFilter }: FilterGroupProps) {
+    const { t } = useTranslation();
     return (
         <View className="mb-3">
             <Text className="text-sm font-medium text-gray-700 mb-2">{title} :</Text>
             <View className="flex-row flex-wrap">
             <FilterButton
-                label="All"
+                label={t('common.buttons.all')}
                 isActive={!activeValue}
                 onPress={() => onFilter(filterKey, undefined)}
             />

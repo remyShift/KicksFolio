@@ -1,11 +1,12 @@
 import { useSession } from '@/context/authContext';
 import { SupabaseWishlistService } from '@/services/WishlistService';
 import useToast from '../../../../hooks/useToast';
+import { useTranslation } from 'react-i18next';
 
 const useWishlist = () => {
 	const { showSuccessToast, showErrorToast } = useToast();
 	const { refreshUserData } = useSession();
-
+	const { t } = useTranslation();
 	const addToWishList = async (
 		sneakerId: string,
 		setIsWishlisted: (isWishlisted: boolean) => void,
@@ -14,15 +15,15 @@ const useWishlist = () => {
 		SupabaseWishlistService.addToWishlist(sneakerId)
 			.then(() => {
 				showSuccessToast(
-					'❤️ Sneaker added to your wishlist',
-					'You can see it in your wishlist page'
+					t('common.titles.sneakerAddedToWishlist'),
+					t('common.descriptions.sneakerAddedToWishlist')
 				);
 				return refreshUserData();
 			})
 			.catch((error) => {
 				showErrorToast(
-					'❌ Error updating wishlist status',
-					'Please try again later'
+					t('common.titles.errorUpdatingWishlistStatus'),
+					t('common.descriptions.errorUpdatingWishlistStatus')
 				);
 				console.error('Error updating wishlist status:', error);
 				setIsWishlisted(true);
@@ -40,15 +41,15 @@ const useWishlist = () => {
 		SupabaseWishlistService.removeFromWishlist(sneakerId)
 			.then(() => {
 				showSuccessToast(
-					'💔 Sneaker removed from your wishlist',
-					"Let's find other one !"
+					t('common.titles.sneakerRemovedFromWishlist'),
+					t('common.descriptions.sneakerRemovedFromWishlist')
 				);
 				return refreshUserData();
 			})
 			.catch((error) => {
 				showErrorToast(
-					'❌ Error updating wishlist status',
-					'Please try again later'
+					t('common.titles.errorUpdatingWishlistStatus'),
+					t('common.descriptions.errorUpdatingWishlistStatus')
 				);
 				console.error('Error updating wishlist status:', error);
 				setIsWishlisted(false);

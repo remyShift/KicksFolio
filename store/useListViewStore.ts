@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/Sneaker';
 
-export type SortOption = 'name' | 'brand' | 'size' | 'condition' | 'price';
+export type SortOption = 'name' | 'brand' | 'size' | 'condition' | 'value';
 
 export interface Filter {
 	brand?: SneakerBrand;
@@ -60,9 +60,9 @@ const sortSneakers = (
 				aVal = a.condition;
 				bVal = b.condition;
 				break;
-			case 'price':
-				aVal = a.price_paid;
-				bVal = b.price_paid;
+			case 'value':
+				aVal = a.estimated_value;
+				bVal = b.estimated_value;
 				break;
 			default:
 				aVal = a.model.toLowerCase();

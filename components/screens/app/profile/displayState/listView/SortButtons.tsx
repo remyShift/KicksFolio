@@ -1,20 +1,22 @@
 import { TouchableOpacity, View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useListViewStore, SortOption } from '@/store/useListViewStore';
+import { useTranslation } from 'react-i18next';
 
 const SORT_OPTIONS: { key: SortOption; label: string }[] = [
-  { key: 'name', label: 'Name' },
-  { key: 'brand', label: 'Brand' },
-  { key: 'size', label: 'Size' },
-  { key: 'condition', label: 'Condition' },
-  { key: 'price', label: 'Price Paid' }
+  { key: 'name', label: 'common.sneaker.name' },
+  { key: 'brand', label: 'common.sneaker.brand' },
+  { key: 'size', label: 'common.sneaker.size' },
+  { key: 'condition', label: 'common.sneaker.condition' },
+  { key: 'value', label: 'common.sneaker.value' }
 ];
 
 export default function SortButtons() {
   const { sortBy, sortOrder, toggleSort } = useListViewStore();
+  const { t } = useTranslation();
   return (
     <View className="flex-row flex-wrap gap-2 mb-2 px-4">
-      <Text className="text-sm font-medium text-gray-700 mr-2">Sort by :</Text>
+      <Text className="text-sm font-medium text-gray-700 mr-2">{t('common.sneaker.sortBy')}</Text>
       {SORT_OPTIONS.map(({ key, label }) => (
         <TouchableOpacity
           key={key}
@@ -22,7 +24,7 @@ export default function SortButtons() {
           onPress={() => toggleSort(key)}
         >
           <Text className={`text-xs ${sortBy === key ? 'text-white' : 'text-gray-700'}`}>
-            {label}
+            {t(label)}
           </Text>
           {sortBy === key && (
             <Ionicons 

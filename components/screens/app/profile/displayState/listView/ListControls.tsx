@@ -3,8 +3,10 @@ import { Ionicons } from '@expo/vector-icons';
 import { useListViewStore } from '@/store/useListViewStore';
 import SortButtons from './SortButtons';
 import FilterSection from './FilterSection';
+import { useTranslation } from 'react-i18next';
 
 export default function ListControls() {
+  const { t } = useTranslation();
   const { 
     filteredAndSortedSneakers, 
     toggleFilters 
@@ -21,7 +23,7 @@ export default function ListControls() {
           onPress={toggleFilters}
         >
           <Ionicons name="filter" size={16} color="gray" />
-          <Text className="ml-1 text-gray-600">Filters</Text>
+          <Text className="ml-1 text-gray-600">{t('common.sneaker.filters')}</Text>
         </TouchableOpacity>
       </View>
 

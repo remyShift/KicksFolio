@@ -1,8 +1,10 @@
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useListViewStore } from '@/store/useListViewStore';
 import FilterGroup from './FilterGroup';
+import { useTranslation } from 'react-i18next';
 
 export default function FilterSection() {
+  const { t } = useTranslation();
   const { 
     showFilters, 
     filters, 
@@ -35,7 +37,7 @@ export default function FilterSection() {
   return (
     <View className="py-3 border-t bg-white border-gray-200 px-4">
       <FilterGroup
-        title="Brand"
+        title={t('common.sneaker.brand')}
         filterKey="brand"
         options={brandOptions}
         activeValue={filters.brand}
@@ -43,7 +45,7 @@ export default function FilterSection() {
       />
 
       <FilterGroup
-        title="Size"
+        title={t('common.sneaker.size')}
         filterKey="size"
         options={sizeOptions}
         activeValue={filters.size}
@@ -51,7 +53,7 @@ export default function FilterSection() {
       />
 
       <FilterGroup
-        title="Condition"
+        title={t('common.sneaker.condition')}
         filterKey="condition"
         options={conditionOptions}
         activeValue={filters.condition}
@@ -59,7 +61,7 @@ export default function FilterSection() {
       />
 
       <FilterGroup
-        title="Status"
+        title={t('common.sneaker.status')}
         filterKey="status"
         options={statusOptions}
         activeValue={filters.status}
@@ -70,7 +72,7 @@ export default function FilterSection() {
         className="bg-red-500 px-4 py-2 rounded-lg self-start"
         onPress={clearFilters}
       >
-        <Text className="text-white text-sm">Clear all filters</Text>
+        <Text className="text-white text-sm">{t('common.buttons.clearAllFilters')}</Text>
       </TouchableOpacity>
     </View>
   );

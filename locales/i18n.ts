@@ -31,7 +31,6 @@ const resources = {
 	},
 };
 
-// Récupération de la langue de l'appareil
 export const deviceLanguage = getLocales()[0]?.languageCode || 'en';
 
 i18n.use(initReactI18next).init({

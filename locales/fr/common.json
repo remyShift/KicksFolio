@@ -9,19 +9,40 @@
 		"noWishlist": "Aucune sneakers",
 		"sneakers": "Sneakers",
 		"friends": "Amis",
-		"value": "Valeur estimée"
+		"value": "Valeur estimée",
+		"noSneakers": "Aucune sneakers",
+		"sneakerAddedToWishlist": "❤️ Sneaker ajouté à ta wishlist",
+		"sneakerRemovedFromWishlist": "💔 Sneaker retiré de ta wishlist",
+		"errorUpdatingWishlistStatus": "❌ Erreur lors de la mise à jour du statut de la wishlist"
 	},
 	"descriptions": {
-		"noWishlist": "Sur cette page vous pouvez voir vos sneakers wishlistées, allez sur une sneaker et ajoutez-la à votre wishlist en cliquant sur l'icône coeur."
+		"noWishlist": "Sur cette page tu peux voir tes sneakers wishlistées, allez sur une sneaker et ajoutez-la à ta wishlist en cliquant sur l'icône coeur.",
+		"sneakerAddedToWishlist": "Tu peux le voir dans ta page wishlist",
+		"sneakerRemovedFromWishlist": "Retrouves-en d'autres !",
+		"errorUpdatingWishlistStatus": "Réessaye plus tard"
 	},
 	"buttons": {
 		"add": "Ajouter",
-		"browse": "Parcourir"
+		"browse": "Parcourir",
+		"all": "Tout",
+		"clearAllFilters": "Effacer tous les filtres"
 	},
 	"navbar": {
 		"home": "Accueil",
 		"friends": "Amis",
 		"profile": "Profil",
 		"wishlist": "Wishlist"
+	},
+	"sneaker": {
+		"name": "Nom",
+		"brand": "Marque",
+		"size": "Taille",
+		"condition": "Condition",
+		"price": "Prix",
+		"value": "Valeur",
+		"sku": "SKU",
+		"sortBy": "Trier par",
+		"status": "Statut",
+		"filters": "Filtres"
 	}
 }
