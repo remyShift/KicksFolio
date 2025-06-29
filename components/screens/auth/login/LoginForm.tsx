@@ -13,11 +13,14 @@ import { loginSchema, LoginFormData } from "@/validation/schemas";
 import PageLink from "@/components/ui/links/LoginPageLink"; 
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import useToast from "@/hooks/useToast";
+import { useTranslation } from 'react-i18next';
 
 export default function LoginForm() {
     const scrollViewRef = useRef<ScrollView>(null);
     const emailInputRef = useRef<TextInput>(null);
     const passwordInputRef = useRef<TextInput>(null);
+
+    const { t } = useTranslation();
 
     const { login, errorMsg: authErrorMsg } = useAuth();
     const { showSuccessToast } = useToast();
@@ -43,7 +46,10 @@ export default function LoginForm() {
         onSubmit: async (data) => {
             await login(data.email, data.password);
             setTimeout(() => {
-                showSuccessToast('👋🏼 Welcome back', `Glad to see you again !`);
+                showSuccessToast(
+                    t('auth.login.welcomeBack'), 
+                    t('auth.login.gladToSeeYou')
+                );
             }, 1000);
         },
     });
@@ -68,7 +74,7 @@ export default function LoginForm() {
             bottomOffset={10}
         >
             <View className="flex-1 items-center gap-12 p-4">
-                <PageTitle content='Login' />
+                <PageTitle content={t('auth.login.title')} />
                 <View className='flex justify-center items-center gap-8 w-full mt-36 px-12'>
                     <View className='w-full absolute' style={{ top: -50 }}>   
                         <ErrorMsg content={displayedError} display={displayedError !== ''} />
@@ -77,8 +83,8 @@ export default function LoginForm() {
                     <FormTextInput
                         name="email"
                         control={control}
-                        label="Email*"
-                        placeholder="john@doe.com"
+                        label={t('auth.login.email')}
+                        placeholder={t('auth.login.emailPlaceholder')}
                         ref={emailInputRef}
                         nextInputRef={passwordInputRef}
                         keyboardType="email-address"
@@ -92,8 +98,8 @@ export default function LoginForm() {
                     <FormPasswordInput
                         name="password"
                         control={control}
-                        label="Password*"
-                        placeholder="********"
+                        label={t('auth.login.password')}
+                        placeholder={t('auth.login.passwordPlaceholder')}
                         ref={passwordInputRef}
                         onFocus={() => handleFieldFocus('password')}
                         onBlur={async (value) => { await validateFieldOnBlur('password', value); }}
@@ -105,7 +111,7 @@ export default function LoginForm() {
 
                 <View className='flex gap-5 w-full justify-center items-center'>                      
                     <MainButton 
-                        content='Login' 
+                        content={t('auth.login.loginButton')} 
                         backgroundColor={isSubmitDisabled ? 'bg-primary/50' : 'bg-primary'}
                         onPressAction={() => {
                             if (!isSubmitDisabled) {
@@ -115,8 +121,15 @@ export default function LoginForm() {
                         isDisabled={isSubmitDisabled}
                     />
                     <View className='flex gap-3 justify-center items-center w-full'>
-                        <PageLink href='/sign-up' textBeforeLink="Don't have an account ?" linkText='Sign Up' />
-                        <PageLink href='/forgot-password' linkText='Forgot Password?' />
+                        <PageLink 
+                            href='/sign-up' 
+                            textBeforeLink={t('auth.login.noAccount')} 
+                            linkText={t('auth.login.signUp')} 
+                        />
+                        <PageLink 
+                            href='/forgot-password' 
+                            linkText={t('auth.login.forgotPassword')} 
+                        />
                     </View>
                 </View>
             </View>

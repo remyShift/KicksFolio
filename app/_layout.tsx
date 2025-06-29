@@ -7,6 +7,7 @@ import { useState, useCallback } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import Toast from 'react-native-toast-message';
+import '@/locales/i18n';
 
 const FONTS = {
     'Actonia': require('../assets/fonts/Actonia.ttf'),

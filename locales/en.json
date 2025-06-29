@@ -1,0 +1,17 @@
+{
+	"auth": {
+		"login": {
+			"title": "Login",
+			"email": "Email*",
+			"emailPlaceholder": "john@doe.com",
+			"password": "Password*",
+			"passwordPlaceholder": "********",
+			"loginButton": "Login",
+			"noAccount": "Don't have an account ?",
+			"signUp": "Sign Up",
+			"forgotPassword": "Forgot Password?",
+			"welcomeBack": "👋🏼 Welcome back",
+			"gladToSeeYou": "Glad to see you again !"
+		}
+	}
+}

@@ -1,0 +1,17 @@
+{
+	"auth": {
+		"login": {
+			"title": "Connexion",
+			"email": "Email*",
+			"emailPlaceholder": "john@doe.com",
+			"password": "Mot de passe*",
+			"passwordPlaceholder": "********",
+			"loginButton": "Se connecter",
+			"noAccount": "Vous n'avez pas de compte ?",
+			"signUp": "S'inscrire",
+			"forgotPassword": "Mot de passe oublié ?",
+			"welcomeBack": "👋🏼 Bon retour",
+			"gladToSeeYou": "Ravi de vous revoir !"
+		}
+	}
+}
