@@ -4,7 +4,7 @@ import PageTitle from '@/components/ui/text/PageTitle';
 import { View } from 'react-native'
 import { useEffect, useRef, useState } from "react";
 import MainButton from "@/components/ui/buttons/MainButton";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useAuth } from "@/hooks/useAuth";
 import FormTextInput from "@/components/ui/inputs/FormTextInput";
 import FormPasswordInput from "@/components/ui/inputs/FormPasswordInput";
@@ -14,6 +14,7 @@ import PageLink from "@/components/ui/links/LoginPageLink";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import useToast from "@/hooks/useToast";
 import { useTranslation } from 'react-i18next';
+import { useSession } from '@/context/authContext';
 
 export default function LoginForm() {
     const scrollViewRef = useRef<ScrollView>(null);
@@ -21,6 +22,7 @@ export default function LoginForm() {
     const passwordInputRef = useRef<TextInput>(null);
 
     const { t } = useTranslation();
+    const { user } = useSession();
 
     const { login, errorMsg: authErrorMsg } = useAuth();
     const { showSuccessToast } = useToast();
@@ -44,13 +46,23 @@ export default function LoginForm() {
         fieldNames: ['email', 'password'],
         authErrorMsg,
         onSubmit: async (data) => {
-            await login(data.email, data.password);
-            setTimeout(() => {
-                showSuccessToast(
-                    t('auth.login.welcomeBack'), 
-                    t('auth.login.gladToSeeYou')
-                );
-            }, 1000);
+            login(data.email, data.password)
+                .then((user) => {
+                    if (user) {
+                        const userName = user.user_metadata?.first_name || user.user_metadata?.username || '';
+                        showSuccessToast(
+                            t('auth.login.welcomeBack', { name: userName }), 
+                            t('auth.login.gladToSeeYou')
+                        );
+                        
+                        setTimeout(() => {
+                            router.replace('/(app)/(tabs)');
+                        }, 500);
+                    }
+                })
+                .catch((error) => {
+                    console.log('Erreur lors de la connexion:', error);
+                });
         },
     });
 

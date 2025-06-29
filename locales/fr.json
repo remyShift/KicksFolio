@@ -7,11 +7,15 @@
 			"password": "Mot de passe*",
 			"passwordPlaceholder": "********",
 			"loginButton": "Se connecter",
-			"noAccount": "Vous n'avez pas de compte ?",
+			"noAccount": "Pas encore membre ?",
 			"signUp": "S'inscrire",
 			"forgotPassword": "Mot de passe oublié ?",
-			"welcomeBack": "👋🏼 Bon retour",
+			"welcomeBack": "👋🏼 Bon retour {{name}}",
 			"gladToSeeYou": "Ravi de vous revoir !"
+		},
+		"data-privacy": {
+			"title": "Voir comment nous gérons vos données",
+			"privacyPolicy": "Politique de confidentialité"
 		}
 	}
 }

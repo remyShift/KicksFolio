@@ -10,8 +10,12 @@
 			"noAccount": "Don't have an account ?",
 			"signUp": "Sign Up",
 			"forgotPassword": "Forgot Password?",
-			"welcomeBack": "👋🏼 Welcome back",
+			"welcomeBack": "👋🏼 Welcome back {{name}}",
 			"gladToSeeYou": "Glad to see you again !"
+		},
+		"data-privacy": {
+			"title": "See how we handle your data",
+			"privacyPolicy": "Privacy Policy"
 		}
 	}
 }

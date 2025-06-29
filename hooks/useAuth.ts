@@ -9,17 +9,14 @@ import SupabaseImageService from '@/services/SupabaseImageService';
 
 export const useAuth = () => {
 	const [errorMsg, setErrorMsg] = useState('');
-	const { setUser, refreshUserData, refreshUserSneakers, clearUserData } =
-		useSession();
+	const { setUser, refreshUserSneakers, clearUserData } = useSession();
 	const { validateSignUpStep1 } = useSignUpValidation();
 
 	const login = async (email: string, password: string) => {
 		return SupabaseAuthService.signIn(email, password)
 			.then((response) => {
 				if (response.user) {
-					setTimeout(() => {
-						router.replace('/(app)/(tabs)');
-					}, 800);
+					return response.user;
 				}
 			})
 			.catch((error) => {
