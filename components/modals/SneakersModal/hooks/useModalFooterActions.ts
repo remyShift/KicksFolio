@@ -19,7 +19,6 @@ export const useModalFooterActions = () => {
 		setModalStep,
 		setErrorMsg,
 		setFetchedSneaker,
-		fetchedSneaker,
 		estimatedValue,
 		gender,
 		sku,

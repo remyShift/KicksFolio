@@ -66,7 +66,7 @@ export const SkuStep = () => {
             <View className="w-full justify-center items-center gap-12 mt-10">
                 <View className="flex-row items-center">
                     <Text className="font-spacemono-bold text-xl text-center px-6">
-                        Put you sneakers SKU below
+                        Put you sneakers SKU or model below
                     </Text>
                     <Link href="https://www.wikihow.com/Find-Model-Numbers-on-Nike-Shoes" 
                         className="flex-row justify-center items-center gap-2">
@@ -80,13 +80,13 @@ export const SkuStep = () => {
                     <SkuInput
                         name="sku"
                         control={control}
-                        placeholder="CJ5482-100"
+                        placeholder="CJ5482-100 | Air Force 1"
                         onSubmitEditing={handleSubmit(onSubmit)}
                     />
                 </View>
 
                 <Text className="font-spacemono-bold text-sm text-center px-6">
-                    NB : For Nike sneakers dont forget the "-" and the 3 numbers following it or it will not work.
+                    NB : For Nike's sku, dont forget the "-" and the 3 numbers following it or it will not work.
                 </Text>
             </View>
         </KeyboardAwareScrollView>

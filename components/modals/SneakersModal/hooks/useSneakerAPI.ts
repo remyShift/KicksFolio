@@ -126,6 +126,8 @@ export const useSneakerAPI = (userId: string) => {
 	): Sneaker => {
 		return {
 			id: supabaseSneaker.id,
+			sku: supabaseSneaker.sku || '',
+			gender: supabaseSneaker.gender || '',
 			brand: supabaseSneaker.brand,
 			model: supabaseSneaker.model,
 			size: supabaseSneaker.size,

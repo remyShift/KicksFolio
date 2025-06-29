@@ -20,11 +20,11 @@ export const InitialStep = ({ userSneakersLength = 0 }: InitialStepProps) => {
                         testID="search-by-sku-button"
                     >
                         <Text className="font-spacemono-bold text-lg text-center text-primary">
-                            By sneakers SKU
+                            By search
                         </Text>
                     </Pressable>
                     <Text className="font-spacemono-bold text-sm text-center">
-                        Prefetch the sneaker information from the SKU.
+                        Prefetch the sneaker information from a query (sku, model, ...).
                     </Text>
                 </View>
                 <View className="flex-col justify-center items-center gap-1 px-6">

@@ -77,6 +77,14 @@ export const FormStep = () => {
             
             setFetchedSneaker(null);
         }
+
+        return () => {
+            setGender(null);
+            setSku(null);
+            setFetchedSneaker(null);
+            setSneakerToAdd(null);
+            setEstimatedValue(null);
+        };
     }, [fetchedSneaker]);
 
     useEffect(() => {
