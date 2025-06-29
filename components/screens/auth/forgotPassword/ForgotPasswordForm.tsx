@@ -19,7 +19,7 @@ export default function ForgotPasswordForm() {
     const emailInputRef = useRef<TextInput>(null);
 
     const { forgotPassword, errorMsg: authErrorMsg } = useAuth();
-    const { checkEmailExists } = useAsyncValidation();
+    const { checkEmailExistsForReset } = useAsyncValidation();
 
     const {
         control,
@@ -37,7 +37,7 @@ export default function ForgotPasswordForm() {
         fieldNames: ['email'],
         authErrorMsg,
         asyncValidation: {
-            email: checkEmailExists,
+            email: checkEmailExistsForReset,
         },
         onSubmit: async (data) => {
             await forgotPassword(data.email);
@@ -53,7 +53,7 @@ export default function ForgotPasswordForm() {
             bottomOffset={10}
         >
             <View className="flex-1 items-center p-4 gap-12">
-                <PageTitle content={t('auth.forgot-password.title')} />
+                <PageTitle content={t('auth.titles.forgotPassword')} />
                 <View className='flex-1 justify-center items-center gap-8 w-full px-12'>
                     <View className='w-full'>   
                         <ErrorMsg content={displayedError} display={displayedError !== ''} />
@@ -62,8 +62,8 @@ export default function ForgotPasswordForm() {
                     <FormTextInput
                         name="email"
                         control={control}
-                        label={t('auth.forgot-password.email')}
-                        placeholder={t('auth.forgot-password.emailPlaceholder')}
+                        label={t('auth.form.email.label')}
+                        placeholder={t('auth.form.email.placeholder')}
                         ref={emailInputRef}
                         keyboardType="email-address"
                         autoComplete="email"
@@ -76,7 +76,7 @@ export default function ForgotPasswordForm() {
 
                     <View className='flex gap-3 w-full justify-center items-center'>
                         <MainButton 
-                            content={t('auth.forgot-password.forgotPasswordButton')} 
+                            content={t('auth.buttons.forgotPassword')} 
                             backgroundColor={isSubmitDisabled ? 'bg-primary/50' : 'bg-primary'}
                             onPressAction={() => {
                                 if (!isSubmitDisabled) {
@@ -85,7 +85,7 @@ export default function ForgotPasswordForm() {
                             }}
                             isDisabled={isSubmitDisabled}
                         />
-                        <PageLink href='/login' linkText={t('auth.forgot-password.back')} />
+                        <PageLink href='/login' linkText={t('auth.links.back')} />
                     </View>
                 </View>
             </View>

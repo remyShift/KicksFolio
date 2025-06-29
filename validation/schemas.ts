@@ -27,24 +27,21 @@ export const createSignUpStep1Schema = () => {
 		.object({
 			username: z
 				.string()
-				.min(4, t('auth.signup-first-step.error.username-size'))
-				.max(16, t('auth.signup-first-step.error.username-size'))
-				.regex(
-					/^\w+$/,
-					t('auth.signup-first-step.error.username-format')
-				),
-			email: z.string().email(t('auth.signup-first-step.error.email')),
+				.min(4, t('auth.form.username.error.size'))
+				.max(16, t('auth.form.username.error.size'))
+				.regex(/^\w+$/, t('auth.form.username.error.format')),
+			email: z.string().email(t('auth.form.email.error.invalid')),
 			password: z
 				.string()
-				.min(8, t('auth.signup-first-step.error.password-size'))
+				.min(8, t('auth.form.password.error.size'))
 				.regex(
 					/^(?=.*[A-Z])(?=.*\d).+$/,
-					t('auth.signup-first-step.error.password-format')
+					t('auth.form.password.error.format')
 				),
 			confirmPassword: z.string(),
 		})
 		.refine((data) => data.password === data.confirmPassword, {
-			message: t('auth.signup-first-step.error.confirmPassword'),
+			message: t('auth.form.confirmPassword.error.match'),
 			path: ['confirmPassword'],
 		});
 };
@@ -53,40 +50,34 @@ export const createSignUpStep2Schema = () => {
 	return z.object({
 		firstName: z
 			.string()
-			.min(2, t('auth.signup-second-step.error.firstName-size'))
-			.regex(
-				/^[a-zA-Z\s]+$/,
-				t('auth.signup-second-step.error.firstName-format')
-			)
+			.min(2, t('auth.form.firstName.error.size'))
+			.regex(/^[a-zA-Z\s]+$/, t('auth.form.firstName.error.format'))
 			.transform((val) => val.charAt(0).toUpperCase() + val.slice(1)),
 		lastName: z
 			.string()
-			.min(2, t('auth.signup-second-step.error.lastName-size'))
-			.regex(
-				/^[a-zA-Z\s]+$/,
-				t('auth.signup-second-step.error.lastName-format')
-			)
+			.min(2, t('auth.form.lastName.error.size'))
+			.regex(/^[a-zA-Z\s]+$/, t('auth.form.lastName.error.format'))
 			.transform((val) => val.charAt(0).toUpperCase() + val.slice(1)),
 		size: z
 			.string()
-			.min(1, t('auth.signup-second-step.error.sneakerSize-size'))
+			.min(1, t('auth.form.sneakerSize.error.required'))
 			.transform((val) => val.replace(',', '.'))
 			.refine((val) => {
 				const num = Number(val);
 				return !isNaN(num) && num >= 7 && num <= 15;
-			}, t('auth.signup-second-step.error.sneakerSize-format'))
+			}, t('auth.form.sneakerSize.error.size'))
 			.refine((val) => {
 				const num = Number(val);
 				return (num * 2) % 1 === 0;
-			}, t('auth.signup-second-step.error.sneakerSize-multiple')),
+			}, t('auth.form.sneakerSize.error.multiple')),
 		profile_picture: z.string().optional(),
 	});
 };
 
 export const createLoginSchema = () => {
 	return z.object({
-		email: z.string().email(t('auth.login.error.email')),
-		password: z.string().min(1, t('auth.login.error.password')),
+		email: z.string().email(t('auth.form.email.error.invalid')),
+		password: z.string().min(1, t('auth.form.password.error.required')),
 	});
 };
 
@@ -194,7 +185,7 @@ export const createEditProfileSchema = () => {
 
 export const createForgotPasswordSchema = () => {
 	return z.object({
-		email: z.string().email(t('auth.forgot-password.error.email')),
+		email: z.string().email(t('auth.form.email.error.invalid')),
 	});
 };
 
@@ -203,15 +194,17 @@ export const createResetPasswordSchema = () => {
 		.object({
 			password: z
 				.string()
-				.min(8, 'Password must be at least 8 characters long.')
+				.min(8, t('auth.form.password.error.size'))
 				.regex(
 					/^(?=.*[A-Z])(?=.*\d).+$/,
-					'Password must contain at least one uppercase letter and one number.'
+					t('auth.form.password.error.format')
 				),
-			confirmPassword: z.string().min(1, 'Please confirm your password.'),
+			confirmPassword: z
+				.string()
+				.min(1, t('auth.form.password.error.required')),
 		})
 		.refine((data) => data.password === data.confirmPassword, {
-			message: "Passwords don't match.",
+			message: t('auth.form.confirmPassword.error.match'),
 			path: ['confirmPassword'],
 		});
 };

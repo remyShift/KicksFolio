@@ -16,7 +16,7 @@ export function useAsyncValidation() {
 			.checkUsernameExists(username)
 			.then((exists) => {
 				if (exists) {
-					return t('auth.signup-first-step.error.usernameExists');
+					return t('auth.form.username.error.exists');
 				}
 				return null;
 			})
@@ -35,9 +35,24 @@ export function useAsyncValidation() {
 		return validationService
 			.checkEmailExists(value.toString())
 			.then((exists) => {
-				return exists
-					? t('auth.signup-first-step.error.emailExists')
-					: t('auth.forgot-password.error.emailNotExists');
+				return exists ? t('auth.form.email.error.exists') : null;
+			})
+			.catch((error) => {
+				console.error('Error checking email:', error);
+				return null;
+			});
+	};
+
+	const checkEmailExistsForReset = async (
+		value: ValidationValue
+	): Promise<string | null> => {
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		if (!value || !emailRegex.test(value.toString())) return null;
+
+		return validationService
+			.checkEmailExists(value.toString())
+			.then((exists) => {
+				return !exists ? t('auth.form.email.error.notExists') : null;
 			})
 			.catch((error) => {
 				console.error('Error checking email:', error);
@@ -48,5 +63,6 @@ export function useAsyncValidation() {
 	return {
 		checkUsernameExists,
 		checkEmailExists,
+		checkEmailExistsForReset,
 	};
 }

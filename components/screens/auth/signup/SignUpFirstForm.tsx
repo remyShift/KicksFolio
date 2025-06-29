@@ -76,7 +76,7 @@ export default function SignUpFirstForm() {
             bottomOffset={10}
         >
             <View className="flex-1 items-center p-4 gap-12">
-                <PageTitle content={t('auth.signup-first-step.title')} />
+                <PageTitle content={t('auth.titles.signup')} />
                 <View className='flex justify-center items-center gap-8 w-full mt-10 px-12'>
                     <View className='w-full absolute' style={{ top: -50 }}>   
                         <ErrorMsg content={displayedError} display={displayedError !== ''} />
@@ -85,8 +85,8 @@ export default function SignUpFirstForm() {
                     <FormTextInput
                         name="username"
                         control={control}
-                        label={t('auth.signup-first-step.username')}
-                        placeholder={t('auth.signup-first-step.usernamePlaceholder')}
+                        label={t('auth.form.username.label')}
+                        placeholder={t('auth.form.username.placeholder')}
                         ref={usernameInputRef}
                         nextInputRef={emailInputRef}
                         autoComplete="username"
@@ -100,8 +100,8 @@ export default function SignUpFirstForm() {
                     <FormTextInput
                         name="email"
                         control={control}
-                        label={t('auth.signup-first-step.email')}
-                        placeholder={t('auth.signup-first-step.emailPlaceholder')}
+                        label={t('auth.form.email.label')}
+                        placeholder={t('auth.form.email.placeholder')}
                         ref={emailInputRef}
                         nextInputRef={passwordInputRef}
                         keyboardType="email-address"
@@ -115,9 +115,9 @@ export default function SignUpFirstForm() {
                     <FormPasswordInput
                         name="password"
                         control={control}
-                        label={t('auth.signup-first-step.password')}
-                        description={t('auth.signup-first-step.passwordDescription')}
-                        placeholder={t('auth.signup-first-step.passwordPlaceholder')}
+                        label={t('auth.form.password.label')}
+                        description={t('auth.form.password.description')}
+                        placeholder={t('auth.form.password.placeholder')}
                         ref={passwordInputRef}
                         nextInputRef={confirmPasswordInputRef}
                         onFocus={() => handleFieldFocus('password')}
@@ -129,8 +129,8 @@ export default function SignUpFirstForm() {
                     <FormPasswordInput
                         name="confirmPassword"
                         control={control}
-                        label={t('auth.signup-first-step.confirmPassword')}
-                        placeholder={t('auth.signup-first-step.confirmPasswordPlaceholder')}
+                        label={t('auth.form.confirmPassword.label')}
+                        placeholder={t('auth.form.password.placeholder')}
                         ref={confirmPasswordInputRef}
                         onFocus={() => handleFieldFocus('confirmPassword')}
                         onBlur={async (value) => { await validateFieldOnBlur('confirmPassword', value); }}
@@ -141,7 +141,7 @@ export default function SignUpFirstForm() {
 
                     <View className='flex gap-3 w-full justify-center items-center'>
                         <MainButton 
-                            content={t('auth.signup-first-step.signUpButton')} 
+                            content={t('auth.buttons.nextStep')} 
                             backgroundColor={isSubmitDisabled ? 'bg-primary/50' : 'bg-primary'}
                             onPressAction={() => {
                                 if (!isSubmitDisabled) {
@@ -150,7 +150,7 @@ export default function SignUpFirstForm() {
                             }}
                             isDisabled={isSubmitDisabled}
                         />
-                        <PageLink href='/login' textBeforeLink={t('auth.signup-first-step.alreadyHaveAccount')} linkText={t('auth.signup-first-step.login')} />
+                        <PageLink href='/login' textBeforeLink={t('auth.links.alreadyHaveAccount')} linkText={t('auth.buttons.login')} />
                     </View>
                 </View>
             </View>

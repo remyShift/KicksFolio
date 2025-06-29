@@ -72,7 +72,7 @@ export default function SignUpSecondForm() {
             bottomOffset={10}
         >
             <View className="flex-1 items-center gap-12 p-4">
-                <PageTitle content={t('auth.signup-second-step.title')} />
+                <PageTitle content={t('auth.titles.signup')} />
                 <View className='flex gap-6 justify-center items-center w-full mt-8 px-12'>
                 <View className='w-full absolute' style={{ top: -50 }}>   
                         <ErrorMsg content={displayedError} display={displayedError !== ''} />
@@ -87,8 +87,8 @@ export default function SignUpSecondForm() {
                     <FormTextInput
                         name="firstName"
                         control={control}
-                        label={t('auth.signup-second-step.firstName')}
-                        placeholder={t('auth.signup-second-step.firstNamePlaceholder')}
+                        label={t('auth.form.firstName.label')}
+                        placeholder={t('auth.form.firstName.placeholder')}
                         ref={firstNameInputRef}
                         nextInputRef={lastNameInputRef}
                         autoComplete="name"
@@ -102,8 +102,8 @@ export default function SignUpSecondForm() {
                     <FormTextInput
                         name="lastName"
                         control={control}
-                        label={t('auth.signup-second-step.lastName')}
-                        placeholder={t('auth.signup-second-step.lastNamePlaceholder')}
+                        label={t('auth.form.lastName.label')}
+                        placeholder={t('auth.form.lastName.placeholder')}
                         ref={lastNameInputRef}
                         nextInputRef={sizeInputRef}
                         autoComplete="name"
@@ -117,8 +117,8 @@ export default function SignUpSecondForm() {
                     <FormTextInput
                         name="size"
                         control={control}
-                        label={t('auth.signup-second-step.sneakerSize')}
-                        placeholder={t('auth.signup-second-step.sneakerSizePlaceholder')}
+                        label={t('auth.form.sneakerSize.label')}
+                        placeholder={t('auth.form.sneakerSize.placeholder')}
                         ref={sizeInputRef}
                         keyboardType="numeric"
                         onFocus={() => handleFieldFocus('size')}
@@ -129,7 +129,7 @@ export default function SignUpSecondForm() {
                     />
 
                     <MainButton 
-                        content={t('auth.signup-second-step.signUpButton')} 
+                        content={t('auth.buttons.signUp')} 
                         backgroundColor={isSubmitDisabled ? 'bg-primary/50' : 'bg-primary'}
                         onPressAction={() => {
                             if (!isSubmitDisabled) {
@@ -139,7 +139,7 @@ export default function SignUpSecondForm() {
                         isDisabled={isSubmitDisabled}
                     />
 
-                    <PageLink href='/sign-up' linkText={t('auth.signup-second-step.back')} />
+                    <PageLink href='/sign-up' linkText={t('auth.links.back')} />
                 </View>
             </View>
         </KeyboardAwareScrollView>

@@ -86,7 +86,7 @@ export default function LoginForm() {
             bottomOffset={10}
         >
             <View className="flex-1 items-center gap-12 p-4">
-                <PageTitle content={t('auth.login.title')} />
+                <PageTitle content={t('auth.titles.login')} />
                 <View className='flex justify-center items-center gap-8 w-full mt-36 px-12'>
                     <View className='w-full absolute' style={{ top: -50 }}>   
                         <ErrorMsg content={displayedError} display={displayedError !== ''} />
@@ -95,8 +95,8 @@ export default function LoginForm() {
                     <FormTextInput
                         name="email"
                         control={control}
-                        label={t('auth.login.email')}
-                        placeholder={t('auth.login.emailPlaceholder')}
+                        label={t('auth.form.email.label')}
+                        placeholder={t('auth.form.email.placeholder')}
                         ref={emailInputRef}
                         nextInputRef={passwordInputRef}
                         keyboardType="email-address"
@@ -110,8 +110,8 @@ export default function LoginForm() {
                     <FormPasswordInput
                         name="password"
                         control={control}
-                        label={t('auth.login.password')}
-                        placeholder={t('auth.login.passwordPlaceholder')}
+                        label={t('auth.form.password.label')}
+                        placeholder={t('auth.form.password.placeholder')}
                         ref={passwordInputRef}
                         onFocus={() => handleFieldFocus('password')}
                         onBlur={async (value) => { await validateFieldOnBlur('password', value); }}
@@ -123,7 +123,7 @@ export default function LoginForm() {
 
                 <View className='flex gap-5 w-full justify-center items-center'>                      
                     <MainButton 
-                        content={t('auth.login.loginButton')} 
+                        content={t('auth.buttons.login')} 
                         backgroundColor={isSubmitDisabled ? 'bg-primary/50' : 'bg-primary'}
                         onPressAction={() => {
                             if (!isSubmitDisabled) {
@@ -135,12 +135,12 @@ export default function LoginForm() {
                     <View className='flex gap-3 justify-center items-center w-full'>
                         <PageLink 
                             href='/sign-up' 
-                            textBeforeLink={t('auth.login.noAccount')} 
-                            linkText={t('auth.login.signUp')} 
+                            textBeforeLink={t('auth.links.alreadyHaveAccount')} 
+                            linkText={t('auth.buttons.signUp')} 
                         />
                         <PageLink 
                             href='/forgot-password' 
-                            linkText={t('auth.login.forgotPassword')} 
+                            linkText={t('auth.links.forgotPassword')} 
                         />
                     </View>
                 </View>

@@ -6,10 +6,12 @@ import { useRef } from "react"
 import { useAuth } from "@/hooks/useAuth";
 import FormPasswordInput from "@/components/ui/inputs/FormPasswordInput";
 import { useFormController } from "@/hooks/useFormController";
-import { resetPasswordSchema, ResetPasswordFormData } from "@/validation/schemas";
+import { createResetPasswordSchema, ResetPasswordFormData } from "@/validation/schemas";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
+import { useTranslation } from 'react-i18next';
 
 export default function ResetPasswordForm() {
+    const { t } = useTranslation();
     const scrollViewRef = useRef<ScrollView>(null);
     const passwordInputRef = useRef<TextInput>(null);
     const confirmPasswordInputRef = useRef<TextInput>(null);
@@ -25,7 +27,7 @@ export default function ResetPasswordForm() {
         displayedError,
         getFieldErrorWrapper,
     } = useFormController<ResetPasswordFormData>({
-        schema: resetPasswordSchema,
+        schema: createResetPasswordSchema(),
         defaultValues: {
             password: '',
             confirmPassword: '',
@@ -46,7 +48,7 @@ export default function ResetPasswordForm() {
             bottomOffset={10}
         >
             <View className="flex-1 items-center p-4 gap-12">
-                <PageTitle content='Reset Password' />
+                <PageTitle content={t('auth.reset-password.title')} />
                 <View className='flex-1 justify-center items-center gap-8 w-full px-12'>
                     <View className='w-full absolute' style={{ top: 100 }}>   
                         <ErrorMsg content={displayedError} display={displayedError !== ''} />
@@ -55,9 +57,9 @@ export default function ResetPasswordForm() {
                     <FormPasswordInput
                         name="password"
                         control={control}
-                        label="New Password*"
-                        description="At least 8 characters, 1 uppercase, 1 lowercase and 1 number."
-                        placeholder="********"
+                        label={t('auth.form.password.label')}
+                        description={t('auth.form.password.description')}
+                        placeholder={t('auth.form.password.placeholder')}
                         ref={passwordInputRef}
                         nextInputRef={confirmPasswordInputRef}
                         onFocus={() => handleFieldFocus('password')}
@@ -69,8 +71,8 @@ export default function ResetPasswordForm() {
                     <FormPasswordInput
                         name="confirmPassword"
                         control={control}
-                        label="Confirm New Password*"
-                        placeholder="********"
+                        label={t('auth.form.confirmPassword.label')}
+                        placeholder={t('auth.form.confirmPassword.placeholder')}
                         ref={confirmPasswordInputRef}
                         onFocus={() => handleFieldFocus('confirmPassword')}
                         onBlur={async (value) => { await validateFieldOnBlur('confirmPassword', value); }}
@@ -81,7 +83,7 @@ export default function ResetPasswordForm() {
 
                     <View className='flex gap-5 w-full justify-center items-center'>
                         <MainButton 
-                            content='Reset' 
+                            content={t('auth.form.resetPasswordButton')} 
                             backgroundColor={isSubmitDisabled ? 'bg-primary/50' : 'bg-primary'}
                             onPressAction={() => {
                                 if (!isSubmitDisabled) {
