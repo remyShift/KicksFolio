@@ -1,4 +1,3 @@
-import { BaseApiService } from '@/services/BaseApiService';
 import { supabase } from './supabase';
 import { Sneaker, SneakerBrand, SneakerStatus, Photo } from '@/types/Sneaker';
 
@@ -9,7 +8,7 @@ export interface WishlistItem {
 	created_at: string;
 }
 
-export class SupabaseWishlistService extends BaseApiService {
+export class SupabaseWishlistService {
 	static async addToWishlist(sneakerId: string) {
 		const {
 			data: { user },

@@ -99,7 +99,6 @@ export const useAuth = () => {
 	};
 
 	const resetPassword = async (
-		token: string,
 		newPassword: string,
 		confirmNewPassword: string
 	) => {

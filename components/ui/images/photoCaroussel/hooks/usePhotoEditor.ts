@@ -2,7 +2,7 @@ import { Alert } from 'react-native';
 import { Photo } from '@/types/Sneaker';
 import { ImageService } from '@/services/ImageService';
 import SupabaseImageService from '@/services/SupabaseImageService';
-import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
+import { useSession } from '@/context/authContext';
 
 export const usePhotoEditor = (
 	photos: Photo[],
@@ -11,7 +11,7 @@ export const usePhotoEditor = (
 	currentIndex?: number,
 	sneakerId?: string
 ) => {
-	const { user } = useSupabaseAuth();
+	const { user } = useSession();
 
 	const handleImageSelection = async (
 		type: 'camera' | 'gallery',

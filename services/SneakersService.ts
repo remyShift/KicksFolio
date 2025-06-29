@@ -1,4 +1,3 @@
-import { BaseApiService } from '@/services/BaseApiService';
 import { supabase } from './supabase';
 import { SneakerBrand } from '@/types/Sneaker';
 import { sneakerBrandOptions } from '@/validation/schemas';
@@ -25,7 +24,7 @@ export interface SupabaseSneaker {
 	sku?: string;
 }
 
-export class SupabaseSneakerService extends BaseApiService {
+export class SupabaseSneakerService {
 	static async getSneakersByUser(userId: string) {
 		const { data, error } = await supabase
 			.from('sneakers')

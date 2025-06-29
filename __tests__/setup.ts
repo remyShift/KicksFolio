@@ -126,16 +126,6 @@ jest.mock('../hooks/useAsyncValidation', () => ({
 	useAsyncValidation: () => mockUseAsyncValidation,
 }));
 
-jest.mock('../hooks/useSupabaseAuth', () => ({
-	useSupabaseAuth: () => ({
-		user: null,
-		session: null,
-		loading: false,
-		signOut: jest.fn().mockResolvedValue(undefined),
-		isAuthenticated: false,
-	}),
-}));
-
 jest.mock('react-native-keyboard-controller', () => {
 	const { ScrollView } = require('react-native');
 	return {

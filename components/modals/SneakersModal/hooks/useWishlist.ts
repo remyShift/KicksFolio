@@ -1,6 +1,6 @@
 import { useSession } from '@/context/authContext';
 import { SupabaseWishlistService } from '@/services/WishlistService';
-import useToast from './useToast';
+import useToast from '../../../../hooks/useToast';
 
 const useWishlist = () => {
 	const { showSuccessToast, showErrorToast } = useToast();

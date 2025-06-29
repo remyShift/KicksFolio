@@ -3,7 +3,6 @@ import PageTitle from "@/components/ui/text/PageTitle"
 import ErrorMsg from "@/components/ui/text/ErrorMsg"
 import MainButton from "@/components/ui/buttons/MainButton"
 import { useRef } from "react"
-import { useLocalSearchParams } from "expo-router";
 import { useAuth } from "@/hooks/useAuth";
 import FormPasswordInput from "@/components/ui/inputs/FormPasswordInput";
 import { useFormController } from "@/hooks/useFormController";
@@ -11,7 +10,6 @@ import { resetPasswordSchema, ResetPasswordFormData } from "@/validation/schemas
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
 export default function ResetPasswordForm() {
-    const { token } = useLocalSearchParams();
     const scrollViewRef = useRef<ScrollView>(null);
     const passwordInputRef = useRef<TextInput>(null);
     const confirmPasswordInputRef = useRef<TextInput>(null);
@@ -35,7 +33,7 @@ export default function ResetPasswordForm() {
         fieldNames: ['password', 'confirmPassword'],
         authErrorMsg,
         onSubmit: async (data) => {
-            await resetPassword(token as string, data.password, data.confirmPassword);
+            await resetPassword(data.password, data.confirmPassword);
         },
     });
 
