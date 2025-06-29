@@ -9,6 +9,7 @@ import { useFormController } from "@/hooks/useFormController";
 import { createResetPasswordSchema, ResetPasswordFormData } from "@/validation/schemas";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useTranslation } from 'react-i18next';
+import useToast from "@/hooks/useToast";
 
 export default function ResetPasswordForm() {
     const { t } = useTranslation();
@@ -17,7 +18,7 @@ export default function ResetPasswordForm() {
     const confirmPasswordInputRef = useRef<TextInput>(null);
     
     const { resetPassword, errorMsg: authErrorMsg } = useAuth();
-
+    const { showSuccessToast, showErrorToast } = useToast();
     const {
         control,
         handleFormSubmit,
@@ -35,7 +36,19 @@ export default function ResetPasswordForm() {
         fieldNames: ['password', 'confirmPassword'],
         authErrorMsg,
         onSubmit: async (data) => {
-            await resetPassword(data.password, data.confirmPassword);
+            resetPassword(data.password, data.confirmPassword)
+            .then(() => {
+                showSuccessToast(
+                    t('auth.resetPassword.success'), 
+                    t('auth.resetPassword.successDescription')
+                );
+            })
+            .catch((error) => {
+                showErrorToast(
+                    t('auth.error.resetPassword'), 
+                    error.message
+                );
+            });
         },
     });
 
@@ -48,7 +61,7 @@ export default function ResetPasswordForm() {
             bottomOffset={10}
         >
             <View className="flex-1 items-center p-4 gap-12">
-                <PageTitle content={t('auth.reset-password.title')} />
+                <PageTitle content={t('auth.titles.resetPassword')} />
                 <View className='flex-1 justify-center items-center gap-8 w-full px-12'>
                     <View className='w-full absolute' style={{ top: 100 }}>   
                         <ErrorMsg content={displayedError} display={displayedError !== ''} />
@@ -83,7 +96,7 @@ export default function ResetPasswordForm() {
 
                     <View className='flex gap-5 w-full justify-center items-center'>
                         <MainButton 
-                            content={t('auth.form.resetPasswordButton')} 
+                            content={t('auth.buttons.resetPassword')} 
                             backgroundColor={isSubmitDisabled ? 'bg-primary/50' : 'bg-primary'}
                             onPressAction={() => {
                                 if (!isSubmitDisabled) {

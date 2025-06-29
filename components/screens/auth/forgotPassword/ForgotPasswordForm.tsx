@@ -12,11 +12,13 @@ import PageLink from "@/components/ui/links/LoginPageLink";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useTranslation } from 'react-i18next';
 import { useAsyncValidation } from '@/hooks/useAsyncValidation';
+import useToast from "@/hooks/useToast";
 
 export default function ForgotPasswordForm() {
     const { t } = useTranslation();
     const scrollViewRef = useRef<ScrollView>(null);
     const emailInputRef = useRef<TextInput>(null);
+    const { showSuccessToast, showErrorToast } = useToast();
 
     const { forgotPassword, errorMsg: authErrorMsg } = useAuth();
     const { checkEmailExistsForReset } = useAsyncValidation();
@@ -40,7 +42,19 @@ export default function ForgotPasswordForm() {
             email: checkEmailExistsForReset,
         },
         onSubmit: async (data) => {
-            await forgotPassword(data.email);
+            forgotPassword(data.email)
+            .then(() => {
+                showSuccessToast(
+                    t('auth.forgotPassword.success'), 
+                    t('auth.forgotPassword.successDescription')
+                );
+            })
+            .catch((error) => {
+                showErrorToast(
+                    t('auth.error.forgotPassword'), 
+                    error.message
+                );
+            });
         },
     });
 
