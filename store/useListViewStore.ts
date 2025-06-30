@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/Sneaker';
+import { useSizeUnitStore } from './useSizeUnitStore';
 
 export type SortOption = 'name' | 'brand' | 'size' | 'condition' | 'value';
 
@@ -53,8 +54,9 @@ const sortSneakers = (
 				bVal = b.brand.toLowerCase();
 				break;
 			case 'size':
-				aVal = a.size;
-				bVal = b.size;
+				const { currentUnit } = useSizeUnitStore.getState();
+				aVal = currentUnit === 'EU' ? a.size_eu : a.size_us;
+				bVal = currentUnit === 'EU' ? b.size_eu : b.size_us;
 				break;
 			case 'condition':
 				aVal = a.condition;
@@ -82,7 +84,11 @@ const filterSneakers = (sneakers: Sneaker[], filters: Filter): Sneaker[] => {
 		result = result.filter((s) => s.brand === filters.brand);
 	}
 	if (filters.size) {
-		result = result.filter((s) => s.size === filters.size);
+		const { currentUnit } = useSizeUnitStore.getState();
+		result = result.filter(
+			(s) =>
+				(currentUnit === 'EU' ? s.size_eu : s.size_us) === filters.size
+		);
 	}
 	if (filters.condition) {
 		result = result.filter((s) => s.condition === filters.condition);
@@ -95,7 +101,15 @@ const filterSneakers = (sneakers: Sneaker[], filters: Filter): Sneaker[] => {
 
 const getUniqueValues = (sneakers: Sneaker[]) => ({
 	brands: [...new Set(sneakers.map((s) => s.brand))],
-	sizes: [...new Set(sneakers.map((s) => s.size))].sort((a, b) => a - b),
+	sizes: [
+		...new Set(
+			sneakers.map((s) =>
+				useSizeUnitStore.getState().currentUnit === 'EU'
+					? s.size_eu
+					: s.size_us
+			)
+		),
+	].sort((a, b) => a - b),
 	conditions: [...new Set(sneakers.map((s) => s.condition))].sort(
 		(a, b) => b - a
 	),

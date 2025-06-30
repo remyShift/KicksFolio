@@ -7,7 +7,6 @@ export interface SupabaseSneaker {
 	id: string;
 	brand: SneakerBrand;
 	model: string;
-	size: number;
 	size_eu: number;
 	size_us: number;
 	purchase_date?: string;
@@ -134,8 +133,11 @@ export class SupabaseSneakerService {
 			(sneakerData.gender as GenderType) || 'men'
 		);
 
+		// Extract all fields except 'size' and add size_eu, size_us
+		const { size, ...sneakerDataWithoutSize } = sneakerData;
+
 		const sneakerWithUser = {
-			...sneakerData,
+			...sneakerDataWithoutSize,
 			size_eu,
 			size_us,
 			user_id: user.id,
@@ -178,8 +180,14 @@ export class SupabaseSneakerService {
 					updates.size,
 					(updates.gender as GenderType) || 'men'
 				);
-			updates.size_eu = size_eu;
-			updates.size_us = size_us;
+
+			// Remove 'size' and add size_eu, size_us
+			const { size, ...updatesWithoutSize } = updates;
+			updates = {
+				...updatesWithoutSize,
+				size_eu,
+				size_us,
+			};
 		}
 
 		const { data, error } = await supabase

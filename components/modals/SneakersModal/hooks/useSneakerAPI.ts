@@ -132,7 +132,6 @@ export const useSneakerAPI = () => {
 			gender: supabaseSneaker.gender || '',
 			brand: supabaseSneaker.brand,
 			model: supabaseSneaker.model,
-			size: supabaseSneaker.size,
 			size_eu: supabaseSneaker.size_eu,
 			size_us: supabaseSneaker.size_us,
 			condition: supabaseSneaker.condition,

@@ -8,6 +8,7 @@ import { TextInput } from 'react-native';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import { PhotoCarousel } from '@/components/ui/images/photoCaroussel/PhotoCarousel';
 import { useTranslation } from 'react-i18next';
+import { useSizeUnitStore } from '@/store/useSizeUnitStore';
 
 interface FormFieldsProps {
     control: Control<SneakerFormData>;
@@ -37,6 +38,7 @@ export const FormFields = ({
     sneakerId,
 }: FormFieldsProps) => {
     const { t } = useTranslation();
+    const { currentUnit } = useSizeUnitStore();
     const getFieldErrorWrapper = (fieldName: string) => {
         return getFieldError(fieldName);
     };
@@ -111,7 +113,7 @@ export const FormFields = ({
                     <FormTextInput
                         name="size"
                         control={control}
-                        placeholder="9.5"
+                        placeholder={currentUnit === 'EU' ? '43' : '9.5'}
                         ref={sizeInputRef}
                         nextInputRef={pricePaidInputRef}
                         keyboardType="numeric"
