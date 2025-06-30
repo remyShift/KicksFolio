@@ -16,7 +16,7 @@ export default function ProfileStats({ sneakersCount, friendsCount }: ProfileSta
             <View className="flex-row w-full justify-between">
                 <View className="bg-primary/20 p-6 rounded-lg w-48">
                     <Text className="font-spacemono text-lg">
-                        {t('common.titles.sneakers')}
+                        {t('collection.stats.sneakers')}
                     </Text>
                     <Text className="font-spacemono-bold text-2xl" testID='sneakers-count'>
                         {sneakersCount}
@@ -25,7 +25,7 @@ export default function ProfileStats({ sneakersCount, friendsCount }: ProfileSta
 
                 <View className="bg-primary/20 p-6 rounded-lg w-48">
                     <Text className="font-spacemono text-lg">
-                        {t('common.titles.friends')}
+                        {t('social.friends.title')}
                     </Text>
                     <Text className="font-spacemono-bold text-2xl">
                         {friendsCount}
@@ -35,7 +35,7 @@ export default function ProfileStats({ sneakersCount, friendsCount }: ProfileSta
 
             <View className="bg-primary/15 p-6 rounded-lg w-full">
                 <Text className="font-spacemono text-lg">
-                    {t('common.titles.value')}
+                    {t('ui.labels.value')}
                 </Text>
                 <Text className="font-spacemono-bold text-2xl">
                     ${totalValue}

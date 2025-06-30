@@ -6,9 +6,9 @@ export default function EmptyWishlistState() {
     const { t } = useTranslation();
     return (
         <View className="flex-1 gap-8 items-center justify-center h-96  w-full">
-            <Title content={t('common.titles.noWishlist')} isTextCenter={true} />
+            <Title content={t('social.wishlist.empty.title')} isTextCenter={true} />
             <Text className="font-spacemono text-base text-center px-8">
-                {t('common.descriptions.noWishlist')}
+                {t('social.wishlist.empty.description')}
             </Text>  
         </View>
     )

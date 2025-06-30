@@ -1,0 +1,28 @@
+{
+	"friends": {
+		"title": "Friends",
+		"addFriends": "Add some friends",
+		"noFriends": "No friends yet"
+	},
+	"wishlist": {
+		"title": "Wishlist",
+		"empty": {
+			"title": "No sneakers yet",
+			"description": "On this page you can see your wishlisted sneakers, go to a sneaker and add it to your wishlist by clicking the heart icon."
+		},
+		"messages": {
+			"added": {
+				"title": "❤️ Sneaker added to your wishlist",
+				"description": "You can see it in your wishlist page"
+			},
+			"removed": {
+				"title": "💔 Sneaker removed from your wishlist",
+				"description": "Let's find another one!"
+			},
+			"error": {
+				"title": "❌ Error updating wishlist status",
+				"description": "Please try again later"
+			}
+		}
+	}
+}

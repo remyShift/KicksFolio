@@ -1,0 +1,145 @@
+{
+	"pages": {
+		"title": "Ma collection",
+		"empty": {
+			"title": "Aucune sneakers",
+			"description": "Commence à construire ta collection en ajoutant ta première sneaker !"
+		}
+	},
+	"stats": {
+		"sneakers": "Sneakers"
+	},
+	"actions": {
+		"add": "Ajouter une sneaker",
+		"edit": "Modifier une sneaker",
+		"delete": "Supprimer une sneaker",
+		"search": "Rechercher une sneaker",
+		"view": "Voir la sneaker",
+		"save": "Enregistrer",
+		"cancel": "Annuler",
+		"next": "Suivant",
+		"back": "Retour"
+	},
+	"messages": {
+		"searching": {
+			"title": "🔍 Recherche de la sneaker...",
+			"description": "Veuillez patienter pendant que nous trouvons votre sneaker..."
+		},
+		"found": {
+			"title": "🔍 Sneaker trouvée",
+			"description": "La sneaker a été trouvée avec succès."
+		},
+		"adding": {
+			"title": "🔍 Ajout de la sneaker à ta collection...",
+			"description": "La sneaker est en cours d'ajout à ta collection."
+		},
+		"added": {
+			"title": "✅ Sneaker ajoutée !",
+			"description": "La sneaker a été ajoutée avec succès à ta collection."
+		},
+		"updating": {
+			"title": "🔍 Mise à jour de la sneaker...",
+			"description": "La sneaker est en cours de mise à jour."
+		},
+		"updated": {
+			"title": "✅ Sneaker mise à jour !",
+			"description": "La sneaker a été mise à jour avec succès."
+		},
+		"deleting": {
+			"title": "🗑️ Suppression de la sneaker...",
+			"description": "Veuillez patienter..."
+		},
+		"deleted": {
+			"title": "🗑️ Sneaker supprimée",
+			"description": "La sneaker a été supprimée avec succès."
+		},
+		"deletionFailed": {
+			"title": "❌ Échec de suppression",
+			"description": "La sneaker n'a pas pu être supprimée."
+		}
+	},
+	"modal": {
+		"titles": {
+			"add": "Ajouter une sneaker",
+			"edit": "Modifier une sneaker",
+			"skuStep": "Entres le SKU ou le modèle de ta sneaker ci-dessous"
+		},
+		"descriptions": {
+			"howProceed": "Comment veux-tu procéder ?",
+			"bySearch": "Précharge les informations de ta sneaker à partir d'une requête (SKU, modèle...)",
+			"manually": "Tu fournis les informations de ta sneaker manuellement dans un formulaire.",
+			"skuNote": "NB : Pour les SKU de Nike, n'oublie pas le '-' et les 3 chiffres qui suivent."
+		},
+		"buttons": {
+			"bySearch": "Par recherche",
+			"manually": "Ajouter manuellement",
+			"search": "Chercher"
+		},
+		"form": {
+			"labels": {
+				"status": "Sélectionner un statut",
+				"brand": "Sélectionner une marque"
+			},
+			"success": {
+				"added": "ajoutée !",
+				"addedDescription": "La sneaker a été ajoutée avec succès à ta collection.",
+				"updated": "mise à jour !",
+				"updatedDescription": "La sneaker a été mise à jour avec succès."
+			},
+			"errors": {
+				"images": {
+					"min": "Veuillez télécharger au moins une image.",
+					"max": "Vous ne pouvez télécharger qu'un maximum de 3 images."
+				},
+				"model": {
+					"min": "Le modèle de la sneaker doit contenir au moins 2 caractères.",
+					"brand": "Veuillez sélectionner une marque valide."
+				},
+				"size": {
+					"min": "Veuillez entrer la taille.",
+					"multiple": "La taille doit être un multiple de 0.5 (ex : 7, 7.5, 8, 8.5)."
+				},
+				"condition": {
+					"min": "Veuillez sélectionner une condition."
+				},
+				"price_paid": {
+					"min": "Veuillez entrer un prix valide."
+				},
+				"sku": {
+					"required": "Veuillez entrer un SKU."
+				},
+				"user": {
+					"required": "Aucun utilisateur authentifié"
+				},
+				"sneaker": {
+					"error": "Une erreur est survenue lors de l'ajout de la sneaker",
+					"errorDescription": "Veuillez réessayer."
+				},
+				"validateForm": {
+					"missing": "La fonction de validation est manquante"
+				},
+				"currentSneaker": {
+					"missing": "La sneaker actuelle est manquante"
+				}
+			}
+		}
+	},
+	"fields": {
+		"name": "Nom",
+		"brand": "Marque",
+		"size": "Taille",
+		"condition": "Condition",
+		"value": "Valeur",
+		"sku": "SKU",
+		"status": "Statut",
+		"description": "Description",
+		"price_paid": "Prix payé",
+		"images": "Images"
+	},
+	"filters": {
+		"title": "Filtres",
+		"sortBy": "Trier par",
+		"all": "Tout",
+		"clearAll": "Effacer tous les filtres"
+	}
+}

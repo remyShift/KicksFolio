@@ -87,7 +87,7 @@ export const FormFields = ({
                 <FormSelectInput
                     name="brand"
                     control={control}
-                    placeholder={t('common.sneaker.modal.form.labels.brand')}
+                    placeholder={t('collection.modal.form.labels.brand')}
                     options={sneakerBrandOptions}
                     onFocus={() => handleFieldFocus('brand')}
                     error={getFieldErrorWrapper('brand')}
@@ -97,7 +97,7 @@ export const FormFields = ({
                 <FormSelectInput
                     name="status"
                     control={control}
-                    placeholder={t('common.sneaker.modal.form.labels.status')}
+                    placeholder={t('collection.modal.form.labels.status')}
                     options={sneakerStatusOptions}
                     onFocus={() => handleFieldFocus('status')}
                     error={getFieldErrorWrapper('status')}
@@ -107,7 +107,7 @@ export const FormFields = ({
 
             <View className="flex-row items-center w-full border-t-2 border-gray-300">
                 <View className="flex-1 flex-col items-center px-2 gap-1 border-r-2 border-gray-300">
-                    <Text className="text-base font-spacemono mt-2">{t('common.sneaker.size')}*</Text>
+                    <Text className="text-base font-spacemono mt-2">{t('collection.fields.size')}*</Text>
                     <FormTextInput
                         name="size"
                         control={control}
@@ -124,7 +124,7 @@ export const FormFields = ({
                 </View>
 
                 <View className="flex-1 flex-col items-center px-4 gap-1 border-r-2 border-gray-300">
-                    <Text className="text-base font-spacemono mt-2">{t('common.sneaker.condition')}*</Text>
+                    <Text className="text-base font-spacemono mt-2">{t('collection.fields.condition')}*</Text>
                     <FormTextInput
                         name="condition"
                         control={control}
@@ -139,7 +139,7 @@ export const FormFields = ({
                 </View>
 
                 <View className="flex-1 flex-col items-center px-4 gap-1">
-                    <Text className="text-base font-spacemono mt-2">{t('common.sneaker.price_paid')}</Text>
+                    <Text className="text-base font-spacemono mt-2">{t('collection.fields.price_paid')}</Text>
                     <FormTextInput
                         name="price_paid"
                         control={control}
@@ -159,7 +159,7 @@ export const FormFields = ({
             <FormTextInput
                 name="description"
                 control={control}
-                placeholder={t('common.sneaker.description')}
+                placeholder={t('collection.fields.description')}
                 ref={descriptionInputRef}
                 onFocus={() => handleFieldFocus('description')}
                 onBlur={async (value) => { await validateFieldOnBlur('description', value); }}

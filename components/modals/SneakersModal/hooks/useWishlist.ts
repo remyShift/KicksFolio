@@ -15,15 +15,15 @@ const useWishlist = () => {
 		SupabaseWishlistService.addToWishlist(sneakerId)
 			.then(() => {
 				showSuccessToast(
-					t('common.titles.sneakerAddedToWishlist'),
-					t('common.descriptions.sneakerAddedToWishlist')
+					t('social.wishlist.messages.added.title'),
+					t('social.wishlist.messages.added.description')
 				);
 				return refreshUserData();
 			})
 			.catch((error) => {
 				showErrorToast(
-					t('common.titles.errorUpdatingWishlistStatus'),
-					t('common.descriptions.errorUpdatingWishlistStatus')
+					t('social.wishlist.messages.error.title'),
+					t('social.wishlist.messages.error.description')
 				);
 				console.error('Error updating wishlist status:', error);
 				setIsWishlisted(true);
@@ -41,15 +41,15 @@ const useWishlist = () => {
 		SupabaseWishlistService.removeFromWishlist(sneakerId)
 			.then(() => {
 				showSuccessToast(
-					t('common.titles.sneakerRemovedFromWishlist'),
-					t('common.descriptions.sneakerRemovedFromWishlist')
+					t('social.wishlist.messages.removed.title'),
+					t('social.wishlist.messages.removed.description')
 				);
 				return refreshUserData();
 			})
 			.catch((error) => {
 				showErrorToast(
-					t('common.titles.errorUpdatingWishlistStatus'),
-					t('common.descriptions.errorUpdatingWishlistStatus')
+					t('social.wishlist.messages.error.title'),
+					t('social.wishlist.messages.error.description')
 				);
 				console.error('Error updating wishlist status:', error);
 				setIsWishlisted(false);

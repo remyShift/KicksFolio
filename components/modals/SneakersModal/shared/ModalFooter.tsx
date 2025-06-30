@@ -49,7 +49,7 @@ export const ModalFooter = () => {
                         onPressAction={handleBackAction}
                     />
                     <NextButton
-                        content={t('common.sneaker.modal.buttons.search')}
+                        content={t('collection.modal.buttons.search')}
                         onPressAction={() => {
                             if (!isLoading) {
                                 handleNextAction();
@@ -66,7 +66,7 @@ export const ModalFooter = () => {
                         onPressAction={handleBackAction} 
                     />
                     <NextButton
-                        content={t('common.sneaker.modal.buttons.add')}
+                        content={t('collection.actions.add')}
                         onPressAction={() => {
                             if (!isLoading) {
                                 handleNextAction();
@@ -90,7 +90,7 @@ export const ModalFooter = () => {
                     </View>
 
                     <NextButton 
-                        content={t('common.sneaker.modal.buttons.edit')}
+                        content={t('ui.buttons.save')}
                         onPressAction={() => {
                             if (!isLoading) {
                                 handleNextAction();
@@ -116,7 +116,7 @@ export const ModalFooter = () => {
                     </View>
 
                     <NextButton 
-                        content={t('common.sneaker.modal.buttons.next')} 
+                        content={t('collection.actions.next')} 
                         onPressAction={handleNextAction}
                         testID="next"
                     />

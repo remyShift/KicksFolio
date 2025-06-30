@@ -23,7 +23,7 @@ export default function ListControls() {
           onPress={toggleFilters}
         >
           <Ionicons name="filter" size={16} color="gray" />
-          <Text className="ml-1 text-gray-600">{t('common.sneaker.filters')}</Text>
+          <Text className="ml-1 text-gray-600">{t('collection.filters.title')}</Text>
         </TouchableOpacity>
       </View>
 

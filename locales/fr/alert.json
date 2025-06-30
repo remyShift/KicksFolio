@@ -20,9 +20,9 @@
 		"sneakerDeleted": "La sneaker a été supprimée avec succès.",
 		"sneakerDeletionFailed": "La sneaker n'a pas pu être supprimée."
 	},
-	"choices": {
+	"buttons": {
 		"cancel": "Annuler",
 		"delete": "Supprimer",
-		"logout": "Déconnection"
+		"logout": "Se déconnecter"
 	}
 }

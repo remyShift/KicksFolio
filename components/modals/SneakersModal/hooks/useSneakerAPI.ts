@@ -81,7 +81,7 @@ export const useSneakerAPI = (userId: string) => {
 
 		if (!sku.trim()) {
 			callbacks.setErrorMsg(
-				t('common.sneaker.modal.form.errors.sku.required')
+				t('collection.modal.form.errors.sku.required')
 			);
 			return Promise.resolve();
 		}
@@ -165,7 +165,7 @@ export const useSneakerAPI = (userId: string) => {
 	) => {
 		if (!user) {
 			callbacks?.setErrorMsg(
-				t('common.sneaker.modal.form.errors.user.required')
+				t('collection.modal.form.errors.user.required')
 			);
 			return Promise.reject('No user authenticated');
 		}
@@ -239,11 +239,9 @@ export const useSneakerAPI = (userId: string) => {
 					refreshUserSneakers().then(() => {
 						showSuccessToast(
 							`➕ ${convertedSneaker.model} ${t(
-								'common.sneaker.modal.form.success.added'
+								'collection.modal.form.success.added'
 							)}`,
-							t(
-								'common.sneaker.modal.form.success.addedDescription'
-							)
+							t('collection.modal.form.success.addedDescription')
 						);
 					});
 				}
@@ -251,10 +249,8 @@ export const useSneakerAPI = (userId: string) => {
 			})
 			.catch((error: Error) => {
 				showErrorToast(
-					t('common.sneaker.modal.form.errors.sneaker.error'),
-					t(
-						'common.sneaker.modal.form.errors.sneaker.errorDescription'
-					)
+					t('collection.modal.form.errors.sneaker.error'),
+					t('collection.modal.form.errors.sneaker.errorDescription')
 				);
 				callbacks?.setErrorMsg(
 					`An error occurred while submitting the sneaker: ${error.message}`
@@ -325,10 +321,10 @@ export const useSneakerAPI = (userId: string) => {
 					refreshUserSneakers().then(() => {
 						showSuccessToast(
 							`♻️ ${convertedSneaker.model} ${t(
-								'common.sneaker.modal.form.success.updated'
+								'collection.modal.form.success.updated'
 							)}`,
 							t(
-								'common.sneaker.modal.form.success.updatedDescription'
+								'collection.modal.form.success.updatedDescription'
 							)
 						);
 					});
@@ -339,10 +335,8 @@ export const useSneakerAPI = (userId: string) => {
 			})
 			.catch((error: Error) => {
 				showErrorToast(
-					t('common.sneaker.modal.form.errors.sneaker.error'),
-					t(
-						'common.sneaker.modal.form.errors.sneaker.errorDescription'
-					)
+					t('collection.modal.form.errors.sneaker.error'),
+					t('collection.modal.form.errors.sneaker.errorDescription')
 				);
 				callbacks?.setErrorMsg(
 					`An error occurred while updating the sneaker: ${error.message}`

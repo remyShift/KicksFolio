@@ -4,11 +4,11 @@ import { useListViewStore, SortOption } from '@/store/useListViewStore';
 import { useTranslation } from 'react-i18next';
 
 const SORT_OPTIONS: { key: SortOption; label: string }[] = [
-  { key: 'name', label: 'common.sneaker.name' },
-  { key: 'brand', label: 'common.sneaker.brand' },
-  { key: 'size', label: 'common.sneaker.size' },
-  { key: 'condition', label: 'common.sneaker.condition' },
-  { key: 'value', label: 'common.sneaker.value' }
+  { key: 'name', label: 'collection.fields.name' },
+  { key: 'brand', label: 'collection.fields.brand' },
+  { key: 'size', label: 'collection.fields.size' },
+  { key: 'condition', label: 'collection.fields.condition' },
+  { key: 'value', label: 'collection.fields.value' }
 ];
 
 export default function SortButtons() {
@@ -16,7 +16,7 @@ export default function SortButtons() {
   const { t } = useTranslation();
   return (
     <View className="flex-row flex-wrap gap-2 mb-2 px-4">
-      <Text className="text-sm font-medium text-gray-700 mr-2">{t('common.sneaker.sortBy')}</Text>
+                      <Text className="text-sm font-medium text-gray-700 mr-2">{t('collection.filters.sortBy')}</Text>
       {SORT_OPTIONS.map(({ key, label }) => (
         <TouchableOpacity
           key={key}

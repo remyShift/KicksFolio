@@ -65,8 +65,8 @@ export const useModalFooterActions = () => {
 						style: 'destructive',
 						onPress: () => {
 							showInfoToast(
-								t('common.titles.deletingSneaker'),
-								t('common.descriptions.deletingSneaker')
+								t('collection.messages.deleting.title'),
+								t('collection.messages.deleting.description')
 							);
 							handleSneakerDelete(currentSneaker.id)
 								.then(() => {
@@ -78,22 +78,24 @@ export const useModalFooterActions = () => {
 								})
 								.then(() => {
 									showSuccessToast(
-										t('common.titles.sneakerDeleted'),
-										t('common.descriptions.sneakerDeleted')
+										t('collection.messages.deleted.title'),
+										t(
+											'collection.messages.deleted.description'
+										)
 									);
 								})
 								.catch(() => {
 									showErrorToast(
 										t(
-											'common.titles.sneakerDeletionFailed'
+											'collection.messages.deletionFailed.title'
 										),
 										t(
-											'common.descriptions.sneakerDeletionFailed'
+											'collection.messages.deletionFailed.description'
 										)
 									);
 									setErrorMsg(
 										t(
-											'common.descriptions.sneakerDeletionFailed'
+											'collection.messages.deletionFailed.description'
 										)
 									);
 								});
@@ -114,14 +116,12 @@ export const useModalFooterActions = () => {
 				if (isLoading) return;
 
 				if (!sneakerSKU.trim()) {
-					setErrorMsg(
-						t('common.sneaker.modal.form.errors.sku.required')
-					);
+					setErrorMsg(t('collection.modal.form.errors.sku.required'));
 					return;
 				}
 				showInfoToast(
-					t('common.titles.searchingProgressSneaker'),
-					t('common.descriptions.searchingProgressSneaker')
+					t('collection.messages.searching.title'),
+					t('collection.messages.searching.description')
 				);
 				setErrorMsg('');
 				setIsLoading(true);
@@ -132,8 +132,8 @@ export const useModalFooterActions = () => {
 				})
 					.then(() => {
 						showSuccessToast(
-							t('common.titles.searchingSneaker'),
-							t('common.descriptions.searchingSneaker')
+							t('collection.messages.found.title'),
+							t('collection.messages.found.description')
 						);
 					})
 					.finally(() => {
@@ -145,8 +145,8 @@ export const useModalFooterActions = () => {
 
 				if (validateForm) {
 					showInfoToast(
-						t('common.titles.addingSneaker'),
-						t('common.descriptions.addingSneaker')
+						t('collection.messages.adding.title'),
+						t('collection.messages.adding.description')
 					);
 					setIsLoading(true);
 					validateForm()
@@ -170,7 +170,7 @@ export const useModalFooterActions = () => {
 						.catch((error) => {
 							setErrorMsg(
 								t(
-									'common.sneaker.modal.form.errors.sneaker.error'
+									'collection.modal.form.errors.sneaker.error'
 								) + error
 							);
 						})
@@ -182,8 +182,8 @@ export const useModalFooterActions = () => {
 
 				if (validateForm && currentSneaker) {
 					showInfoToast(
-						t('common.titles.updatingSneaker'),
-						t('common.descriptions.updatingSneaker')
+						t('collection.messages.updating.title'),
+						t('collection.messages.updating.description')
 					);
 					setIsLoading(true);
 					validateForm()
@@ -205,7 +205,7 @@ export const useModalFooterActions = () => {
 						.catch((error) => {
 							setErrorMsg(
 								t(
-									'common.sneaker.modal.form.errors.sneaker.error'
+									'collection.modal.form.errors.sneaker.error'
 								) + error
 							);
 						})
@@ -214,13 +214,13 @@ export const useModalFooterActions = () => {
 					if (!validateForm)
 						setErrorMsg(
 							t(
-								'common.sneaker.modal.form.errors.validateForm.missing'
+								'collection.modal.form.errors.validateForm.missing'
 							)
 						);
 					if (!currentSneaker)
 						setErrorMsg(
 							t(
-								'common.sneaker.modal.form.errors.currentSneaker.missing'
+								'collection.modal.form.errors.currentSneaker.missing'
 							)
 						);
 				}

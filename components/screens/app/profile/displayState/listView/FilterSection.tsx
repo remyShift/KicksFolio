@@ -37,7 +37,7 @@ export default function FilterSection() {
   return (
     <View className="py-3 border-t bg-white border-gray-200 px-4">
       <FilterGroup
-        title={t('common.sneaker.brand')}
+        title={t('collection.fields.brand')}
         filterKey="brand"
         options={brandOptions}
         activeValue={filters.brand}
@@ -45,7 +45,7 @@ export default function FilterSection() {
       />
 
       <FilterGroup
-        title={t('common.sneaker.size')}
+        title={t('collection.fields.size')}
         filterKey="size"
         options={sizeOptions}
         activeValue={filters.size}
@@ -53,7 +53,7 @@ export default function FilterSection() {
       />
 
       <FilterGroup
-        title={t('common.sneaker.condition')}
+        title={t('collection.fields.condition')}
         filterKey="condition"
         options={conditionOptions}
         activeValue={filters.condition}
@@ -61,7 +61,7 @@ export default function FilterSection() {
       />
 
       <FilterGroup
-        title={t('common.sneaker.status')}
+        title={t('collection.fields.status')}
         filterKey="status"
         options={statusOptions}
         activeValue={filters.status}
@@ -72,7 +72,7 @@ export default function FilterSection() {
         className="bg-red-500 px-4 py-2 rounded-lg self-start"
         onPress={clearFilters}
       >
-        <Text className="text-white text-sm">{t('common.buttons.clearAllFilters')}</Text>
+        <Text className="text-white text-sm">{t('collection.filters.clearAll')}</Text>
       </TouchableOpacity>
     </View>
   );

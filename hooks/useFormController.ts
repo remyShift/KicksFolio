@@ -240,7 +240,7 @@ export function useFormController<T extends FieldValues>({
 		return '';
 	};
 
-	const globalErrorMsg = t('common.error.global');
+	const globalErrorMsg = t('ui.errors.global');
 
 	const displayedError = (() => {
 		const errorCount = getErrorCount();

@@ -27,15 +27,15 @@ export default function Index() {
         <ScrollView className="flex-1 pt-32">
                 <View className='flex-1 gap-32'>
                     <View className="flex-1 gap-4">
-                        <Title content={t('common.titles.collection')} />
+                        <Title content={t('collection.pages.title')} />
                         <View className="flex-1 px-4">
                             <CollectionCard userSneakers={userSneakers} />
                         </View>
                     </View>
                     <View className="flex-1 gap-4">
                         <View className="flex-1 gap-4 items-center justify-center">
-                            <Title content={t('common.titles.addFriends')} isTextCenter={true} />
-                            <MainButton content={t('common.buttons.browse')} backgroundColor="bg-primary" onPressAction={() => {
+                            <Title content={t('social.friends.addFriends')} isTextCenter={true} />
+                            <MainButton content={t('ui.buttons.browse')} backgroundColor="bg-primary" onPressAction={() => {
                                 showInfoToast('Feature in development ...', 'We are working on it ! 💪🏼');
                             }} />
                         </View>

@@ -2,15 +2,23 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { getLocales } from 'expo-localization';
 
+// Import des traductions anglaises
 import enAuth from './en/auth.json';
 import enSettings from './en/settings.json';
 import enAlert from './en/alert.json';
-import enCommon from './en/common.json';
+import enCollection from './en/collection.json';
+import enSocial from './en/social.json';
+import enNavigation from './en/navigation.json';
+import enUi from './en/ui.json';
 
+// Import des traductions françaises
 import frAuth from './fr/auth.json';
 import frSettings from './fr/settings.json';
 import frAlert from './fr/alert.json';
-import frCommon from './fr/common.json';
+import frCollection from './fr/collection.json';
+import frSocial from './fr/social.json';
+import frNavigation from './fr/navigation.json';
+import frUi from './fr/ui.json';
 
 const resources = {
 	en: {
@@ -18,7 +26,10 @@ const resources = {
 			auth: enAuth,
 			settings: enSettings,
 			alert: enAlert,
-			common: enCommon,
+			collection: enCollection,
+			social: enSocial,
+			navigation: enNavigation,
+			ui: enUi,
 		},
 	},
 	fr: {
@@ -26,7 +37,10 @@ const resources = {
 			auth: frAuth,
 			settings: frSettings,
 			alert: frAlert,
-			common: frCommon,
+			collection: frCollection,
+			social: frSocial,
+			navigation: frNavigation,
+			ui: frUi,
 		},
 	},
 };

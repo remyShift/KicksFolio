@@ -1,0 +1,11 @@
+{
+	"navbar": {
+		"home": "Home",
+		"friends": "Friends",
+		"profile": "Profile",
+		"wishlist": "Wishlist"
+	},
+	"pages": {
+		"home": "Home"
+	}
+}

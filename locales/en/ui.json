@@ -1,0 +1,19 @@
+{
+	"buttons": {
+		"add": "Add",
+		"save": "Save",
+		"cancel": "Cancel",
+		"delete": "Delete",
+		"edit": "Edit",
+		"next": "Next",
+		"back": "Back",
+		"browse": "Browse",
+		"confirm": "Confirm"
+	},
+	"labels": {
+		"value": "Estimated value"
+	},
+	"errors": {
+		"global": "Please correct the errors in the form."
+	}
+}

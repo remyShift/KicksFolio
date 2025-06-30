@@ -10,8 +10,8 @@ export default function Friends() {
 
     return (
       <View className="flex-1 gap-4 items-center justify-center">
-        <Title content={t('common.titles.noFriends')} isTextCenter={true} />
-        <MainButton content={t('common.buttons.add')} backgroundColor="bg-primary" onPressAction={() => {
+        <Title content={t('social.friends.noFriends')} isTextCenter={true} />
+        <MainButton content={t('ui.buttons.add')} backgroundColor="bg-primary" onPressAction={() => {
           showInfoToast('Feature in development ...', 'We are working on it ! 💪🏼');
         }} />
       </View>

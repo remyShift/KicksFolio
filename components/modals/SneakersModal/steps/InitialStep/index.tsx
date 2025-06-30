@@ -9,12 +9,12 @@ interface InitialStepProps {
 export const InitialStep = ({ userSneakersLength = 0 }: InitialStepProps) => {
     const { setModalStep } = useModalStore();
     const { t } = useTranslation();
-    const indexTitle = userSneakersLength === 0 ? t('common.sneaker.modal.titles.add') : t('common.sneaker.modal.titles.add');
+    const indexTitle = userSneakersLength === 0 ? t('collection.modal.titles.add') : t('collection.modal.titles.add');
 
     return (
         <View className="flex-1 justify-center items-center gap-8">
             <Text className="font-actonia text-primary text-4xl text-center">{indexTitle}</Text>
-            <Text className="font-spacemono-bold text-xl text-center">{t('common.sneaker.modal.descriptions.howProceed')}</Text>
+            <Text className="font-spacemono-bold text-xl text-center">{t('collection.modal.descriptions.howProceed')}</Text>
             <View className="flex justify-center items-center gap-12">
                 <View className="flex-col justify-center items-center gap-1 px-6">
                     <Pressable
@@ -22,11 +22,11 @@ export const InitialStep = ({ userSneakersLength = 0 }: InitialStepProps) => {
                         testID="search-by-sku-button"
                     >
                         <Text className="font-spacemono-bold text-lg text-center text-primary">
-                            {t('common.sneaker.modal.buttons.bySearch')}
+                            {t('collection.modal.buttons.bySearch')}
                         </Text>
                     </Pressable>
                     <Text className="font-spacemono-bold text-sm text-center">
-                        {t('common.sneaker.modal.descriptions.searching')}
+                        {t('collection.modal.descriptions.bySearch')}
                     </Text>
                 </View>
                 <View className="flex-col justify-center items-center gap-1 px-6">
@@ -35,11 +35,11 @@ export const InitialStep = ({ userSneakersLength = 0 }: InitialStepProps) => {
                         testID="add-manually-button"
                     >
                         <Text className="font-spacemono-bold text-lg text-center text-primary">
-                            {t('common.sneaker.modal.buttons.edit')}
+                            {t('collection.modal.buttons.manually')}
                         </Text>
                     </Pressable>
                     <Text className="font-spacemono-bold text-sm text-center">
-                        {t('common.sneaker.modal.descriptions.manually')}
+                        {t('collection.modal.descriptions.manually')}
                     </Text>
                 </View>
             </View>

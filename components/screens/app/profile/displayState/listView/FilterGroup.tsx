@@ -17,7 +17,7 @@ export default function FilterGroup({ title, filterKey, options, activeValue, on
             <Text className="text-sm font-medium text-gray-700 mb-2">{title} :</Text>
             <View className="flex-row flex-wrap">
             <FilterButton
-                label={t('common.buttons.all')}
+                label={t('collection.filters.all')}
                 isActive={!activeValue}
                 onPress={() => onFilter(filterKey, undefined)}
             />

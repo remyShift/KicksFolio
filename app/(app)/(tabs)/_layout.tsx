@@ -36,14 +36,14 @@ export default function TabLayout() {
             <Tabs.Screen
                 name="index"
                 options={{
-                    title: t('common.navbar.home'),
+                    title: t('navigation.navbar.home'),
                     tabBarIcon: ({ color }) => <Ionicons name="home-outline" size={25} color={color} />,
                 }}
             />
             <Tabs.Screen
                 name="friends"
                 options={{
-                    title: t('common.navbar.friends'),
+                    title: t('navigation.navbar.friends'),
                     tabBarIcon: ({ color }) => <Feather name="users" size={25} color={color} />,
                 }}
             />
@@ -65,14 +65,14 @@ export default function TabLayout() {
             <Tabs.Screen
                 name="wishlist"
                 options={{
-                    title: t('common.navbar.wishlist'),
+                    title: t('navigation.navbar.wishlist'),
                     tabBarIcon: ({ color }) => <AntDesign name="hearto" size={25} color={color} />,
                 }}
             />
             <Tabs.Screen
                 name="user"
                 options={{
-                    title: t('common.navbar.profile'),
+                    title: t('navigation.navbar.profile'),
                     tabBarIcon: ({ color }) => <Feather name="user" size={25} color={color} />,
                 }}
             />

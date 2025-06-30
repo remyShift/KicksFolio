@@ -92,11 +92,11 @@ export const createSneakerSchema = () => {
 					alt: z.string().optional(),
 				})
 			)
-			.min(1, t('common.sneaker.modal.form.errors.images.min'))
-			.max(3, t('common.sneaker.modal.form.errors.images.max')),
+			.min(1, t('collection.modal.form.errors.images.min'))
+			.max(3, t('collection.modal.form.errors.images.max')),
 		model: z
 			.string()
-			.min(2, t('common.sneaker.modal.form.errors.model.min'))
+			.min(2, t('collection.modal.form.errors.model.min'))
 			.refine(
 				(val) =>
 					!sneakerBrandOptions.some((option) =>
@@ -105,7 +105,7 @@ export const createSneakerSchema = () => {
 							.split(' ')
 							.includes(option.value.toLowerCase())
 					),
-				t('common.sneaker.modal.form.errors.model.brand')
+				t('collection.modal.form.errors.model.brand')
 			),
 		brand: z
 			.enum(Object.values(SneakerBrand) as [string, ...string[]])
@@ -115,7 +115,7 @@ export const createSneakerSchema = () => {
 			.transform((val) => val as SneakerStatus),
 		size: z
 			.string()
-			.min(1, t('common.sneaker.modal.form.errors.size.min'))
+			.min(1, t('collection.modal.form.errors.size.min'))
 			.transform((val) => val.replace(',', '.'))
 			.refine((val) => {
 				const num = Number(val);
@@ -123,27 +123,27 @@ export const createSneakerSchema = () => {
 					(!isNaN(num) && num >= 7 && num <= 15) ||
 					(num >= 35 && num <= 48)
 				);
-			}, t('common.sneaker.modal.form.errors.size.min'))
+			}, t('collection.modal.form.errors.size.min'))
 			.refine((val) => {
 				const num = Number(val);
 				return (num * 2) % 1 === 0;
-			}, t('common.sneaker.modal.form.errors.size.multiple')),
+			}, t('collection.modal.form.errors.size.multiple')),
 		condition: z
 			.string()
-			.min(1, t('common.sneaker.modal.form.errors.condition.min'))
+			.min(1, t('collection.modal.form.errors.condition.min'))
 			.refine(
 				(val) =>
 					!isNaN(Number(val)) &&
 					Number(val) >= 1 &&
 					Number(val) <= 10,
-				t('common.sneaker.modal.form.errors.condition.min')
+				t('collection.modal.form.errors.condition.min')
 			),
 		price_paid: z
 			.string()
 			.optional()
 			.refine(
 				(val) => !val || (!isNaN(Number(val)) && Number(val) >= 0),
-				t('common.sneaker.modal.form.errors.price_paid.min')
+				t('collection.modal.form.errors.price_paid.min')
 			),
 		description: z.string().optional(),
 	});

@@ -1,0 +1,28 @@
+{
+	"friends": {
+		"title": "Amis",
+		"addFriends": "Ajoutes des amis",
+		"noFriends": "Pas encore d'amis"
+	},
+	"wishlist": {
+		"title": "Wishlist",
+		"empty": {
+			"title": "Aucune sneakers",
+			"description": "Sur cette page tu peux voir tes sneakers wishlistées, allez sur une sneaker et ajoutez-la à ta wishlist en cliquant sur l'icône coeur."
+		},
+		"messages": {
+			"added": {
+				"title": "❤️ Sneaker ajouté à ta wishlist",
+				"description": "Tu peux le voir dans ta page wishlist"
+			},
+			"removed": {
+				"title": "💔 Sneaker retiré de ta wishlist",
+				"description": "Retrouves-en d'autres !"
+			},
+			"error": {
+				"title": "❌ Erreur lors de la mise à jour du statut de la wishlist",
+				"description": "Réessaye plus tard"
+			}
+		}
+	}
+}
