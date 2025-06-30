@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/Sneaker';
 import { useSizeUnitStore } from './useSizeUnitStore';
+import { useEffect } from 'react';
 
 export type SortOption = 'name' | 'brand' | 'size' | 'condition' | 'value';
 
@@ -33,6 +34,7 @@ interface ListViewState {
 	updateFilter: (key: keyof Filter, value: any) => void;
 	clearFilters: () => void;
 	initializeData: (sneakers: Sneaker[]) => void;
+	updateUniqueValues: () => void;
 }
 
 const sortSneakers = (
@@ -116,85 +118,117 @@ const getUniqueValues = (sneakers: Sneaker[]) => ({
 	statuses: [...new Set(sneakers.map((s) => s.status))],
 });
 
-export const useListViewStore = create<ListViewState>((set, get) => ({
-	showFilters: false,
-	sortBy: 'name',
-	sortOrder: 'asc',
-	filters: {},
-	originalSneakers: [],
-	filteredAndSortedSneakers: [],
-	uniqueValues: { brands: [], sizes: [], conditions: [], statuses: [] },
-
-	toggleFilters: () => set((state) => ({ showFilters: !state.showFilters })),
-
-	toggleSort: (option: SortOption) => {
-		set((state) => {
-			const newSortOrder =
-				state.sortBy === option
-					? state.sortOrder === 'asc'
-						? 'desc'
-						: 'asc'
-					: 'asc';
+export const useListViewStore = create<ListViewState>((set, get) => {
+	useSizeUnitStore.subscribe((state, prevState) => {
+		if (state.currentUnit !== prevState.currentUnit) {
+			const uniqueValues = getUniqueValues(get().originalSneakers);
 			const filtered = filterSneakers(
-				state.originalSneakers,
-				state.filters
+				get().originalSneakers,
+				get().filters
 			);
-			const sorted = sortSneakers(filtered, option, newSortOrder);
-
-			return {
-				sortBy: option,
-				sortOrder: newSortOrder,
-				filteredAndSortedSneakers: sorted,
-			};
-		});
-	},
-
-	updateFilter: (key: keyof Filter, value: any) => {
-		set((state) => {
-			const newFilters = { ...state.filters, [key]: value };
-			if (value === undefined) {
-				delete newFilters[key];
-			}
-
-			const filtered = filterSneakers(state.originalSneakers, newFilters);
 			const sorted = sortSneakers(
 				filtered,
-				state.sortBy,
-				state.sortOrder
+				get().sortBy,
+				get().sortOrder
 			);
 
-			return {
-				filters: newFilters,
+			set({
+				uniqueValues,
 				filteredAndSortedSneakers: sorted,
-			};
-		});
-	},
+			});
+		}
+	});
 
-	clearFilters: () => {
-		set((state) => {
-			const filtered = filterSneakers(state.originalSneakers, {});
-			const sorted = sortSneakers(
-				filtered,
-				state.sortBy,
-				state.sortOrder
-			);
-			return {
-				filters: {},
+	return {
+		showFilters: false,
+		sortBy: 'name',
+		sortOrder: 'asc',
+		filters: {},
+		originalSneakers: [],
+		filteredAndSortedSneakers: [],
+		uniqueValues: { brands: [], sizes: [], conditions: [], statuses: [] },
+
+		toggleFilters: () =>
+			set((state) => ({ showFilters: !state.showFilters })),
+
+		toggleSort: (option: SortOption) => {
+			set((state) => {
+				const newSortOrder =
+					state.sortBy === option
+						? state.sortOrder === 'asc'
+							? 'desc'
+							: 'asc'
+						: 'asc';
+				const filtered = filterSneakers(
+					state.originalSneakers,
+					state.filters
+				);
+				const sorted = sortSneakers(filtered, option, newSortOrder);
+
+				return {
+					sortBy: option,
+					sortOrder: newSortOrder,
+					filteredAndSortedSneakers: sorted,
+				};
+			});
+		},
+
+		updateFilter: (key: keyof Filter, value: any) => {
+			set((state) => {
+				const newFilters = { ...state.filters, [key]: value };
+				if (value === undefined) {
+					delete newFilters[key];
+				}
+
+				const filtered = filterSneakers(
+					state.originalSneakers,
+					newFilters
+				);
+				const sorted = sortSneakers(
+					filtered,
+					state.sortBy,
+					state.sortOrder
+				);
+
+				return {
+					filters: newFilters,
+					filteredAndSortedSneakers: sorted,
+				};
+			});
+		},
+
+		clearFilters: () => {
+			set((state) => {
+				const filtered = filterSneakers(state.originalSneakers, {});
+				const sorted = sortSneakers(
+					filtered,
+					state.sortBy,
+					state.sortOrder
+				);
+				return {
+					filters: {},
+					filteredAndSortedSneakers: sorted,
+				};
+			});
+		},
+
+		initializeData: (sneakers: Sneaker[]) => {
+			const { sortBy, sortOrder, filters } = get();
+			const uniqueValues = getUniqueValues(sneakers);
+			const filtered = filterSneakers(sneakers, filters);
+			const sorted = sortSneakers(filtered, sortBy, sortOrder);
+
+			set({
+				originalSneakers: sneakers,
 				filteredAndSortedSneakers: sorted,
-			};
-		});
-	},
+				uniqueValues,
+			});
+		},
 
-	initializeData: (sneakers: Sneaker[]) => {
-		const { sortBy, sortOrder, filters } = get();
-		const uniqueValues = getUniqueValues(sneakers);
-		const filtered = filterSneakers(sneakers, filters);
-		const sorted = sortSneakers(filtered, sortBy, sortOrder);
-
-		set({
-			originalSneakers: sneakers,
-			filteredAndSortedSneakers: sorted,
-			uniqueValues,
-		});
-	},
-}));
+		updateUniqueValues: () => {
+			const { originalSneakers } = get();
+			const uniqueValues = getUniqueValues(originalSneakers);
+			set({ uniqueValues });
+		},
+	};
+});
