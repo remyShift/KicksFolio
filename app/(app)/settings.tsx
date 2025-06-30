@@ -7,12 +7,15 @@ import SettingsHeader from '@/components/screens/app/settings/SettingsHeader';
 import SettingsCategory from '@/components/screens/app/settings/SettingsCategory';
 import useToast from '@/hooks/useToast';
 import { useTranslation } from 'react-i18next';
+import { useLanguageStore } from '@/store/useLanguageStore';
+import LanguageToggle from '@/components/screens/app/settings/LanguageToggle';
 
 export default function Settings() {
     const { t } = useTranslation();
     const { user } = useSession();
     const { logout, deleteAccount } = useAuth();
     const { showSuccessToast, showErrorToast } = useToast();
+    const { currentLanguage, setLanguage } = useLanguageStore();
 
     const handleLogout = () => {
         Alert.alert(
@@ -75,6 +78,14 @@ export default function Settings() {
         );
     };
 
+    const handleLanguageChange = (newLanguage: 'en' | 'fr') => {
+        setLanguage(newLanguage);
+        showSuccessToast(
+            t('settings.language.title'),
+            t('settings.language.description')
+        );
+    };
+
     return (
         <View className="flex-1 bg-white px-4">
             <SettingsHeader />
@@ -112,6 +123,20 @@ export default function Settings() {
                     color="#dc2626"
                     textColor="#dc2626"
                     testID="delete-account"
+                />
+
+                <View className="h-px rounded-full w-1/2 bg-gray-300" />
+
+                <SettingsMenuItem 
+                    icon="language-outline"
+                    label={t('settings.titles.language')}
+                    rightElement={
+                        <LanguageToggle 
+                            currentLanguage={currentLanguage}
+                            onToggle={handleLanguageChange}
+                        />
+                    }
+                    testID="language"
                 />
             </SettingsCategory>
         </View>

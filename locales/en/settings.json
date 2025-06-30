@@ -1,7 +1,7 @@
 {
 	"language": {
-		"title": "Language",
-		"description": "Choose the app language"
+		"title": "Language changed",
+		"description": "Your language has been changed."
 	},
 	"editProfile": {
 		"profileUpdated": "👤 Profile updated",
@@ -23,6 +23,7 @@
 		"account": "Account settings",
 		"logout": "Logout",
 		"deleteAccount": "Delete account",
-		"settings": "Settings"
+		"settings": "Settings",
+		"language": "Language"
 	}
 } 

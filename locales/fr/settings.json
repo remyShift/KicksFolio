@@ -1,7 +1,7 @@
 {
 	"language": {
-		"title": "Langue",
-		"description": "Choisissez la langue de l'application"
+		"title": "Langue changée",
+		"description": "Votre langue a été changée."
 	},
 	"editProfile": {
 		"profileUpdated": "👤 Profil mis à jour",
@@ -23,6 +23,7 @@
 		"account": "Paramètres du compte",
 		"logout": "Déconnexion",
 		"deleteAccount": "Supprimer le compte",
-		"settings": "Paramètres"
+		"settings": "Paramètres",
+		"language": "Langue"
 	}
 } 

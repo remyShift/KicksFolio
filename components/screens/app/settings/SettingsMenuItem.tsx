@@ -1,13 +1,15 @@
 import { Pressable, View, Text } from 'react-native';
 import { Entypo, Ionicons } from '@expo/vector-icons';
+import { ReactNode } from 'react';
 
 interface SettingsMenuItemProps {
     icon: keyof typeof Ionicons.glyphMap;
     label: string;
-    onPress: () => void;
+    onPress?: () => void;
     color?: string;
     textColor?: string;
     testID?: string;
+    rightElement?: ReactNode;
 }
 
 export default function SettingsMenuItem({ 
@@ -16,10 +18,16 @@ export default function SettingsMenuItem({
     onPress, 
     color = '#666',
     textColor,
-    testID
+    testID,
+    rightElement
 }: SettingsMenuItemProps) {
     return (
-        <Pressable className='w-full p-5' onPress={onPress} testID={`drawer-button-${testID}`}>
+        <Pressable 
+            className='w-full p-5' 
+            onPress={onPress} 
+            testID={`drawer-button-${testID}`}
+            disabled={!onPress}
+        >
             <View className="flex-row justify-between items-center">
                 <View className="flex-row items-center gap-4">
                     <Ionicons name={icon} size={24} color={color} />
@@ -27,7 +35,11 @@ export default function SettingsMenuItem({
                         {label}
                     </Text>
                 </View>
-                <Entypo name="chevron-small-right" size={24} color="black" />
+                {rightElement ? (
+                    rightElement
+                ) : onPress ? (
+                    <Entypo name="chevron-small-right" size={24} color="black" />
+                ) : null}
             </View>
         </Pressable>
     );
