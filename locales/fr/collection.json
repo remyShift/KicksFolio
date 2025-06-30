@@ -10,11 +10,11 @@
 		"sneakers": "Sneakers"
 	},
 	"actions": {
-		"add": "Ajouter une sneaker",
-		"edit": "Modifier une sneaker",
-		"delete": "Supprimer une sneaker",
-		"search": "Rechercher une sneaker",
-		"view": "Voir la sneaker",
+		"add": "Ajouter",
+		"edit": "Modifier",
+		"delete": "Supprimer",
+		"search": "Chercher",
+		"view": "Voir",
 		"save": "Enregistrer",
 		"cancel": "Annuler",
 		"next": "Suivant",
@@ -77,8 +77,8 @@
 		},
 		"form": {
 			"labels": {
-				"status": "Sélectionner un statut",
-				"brand": "Sélectionner une marque"
+				"status": "ROCKING",
+				"brand": "Nike"
 			},
 			"success": {
 				"added": "ajoutée !",
@@ -97,10 +97,12 @@
 				},
 				"size": {
 					"min": "Veuillez entrer la taille.",
-					"multiple": "La taille doit être un multiple de 0.5 (ex : 7, 7.5, 8, 8.5)."
+					"multiple": "La taille doit être un multiple de 0.5 (ex : 7, 7.5, 8, 8.5).",
+					"refine": "La taille doit être comprise entre 7 et 15 (US) ou entre 35 et 48 (EU)."
 				},
 				"condition": {
-					"min": "Veuillez sélectionner une condition."
+					"min": "Veuillez sélectionner une condition.",
+					"refine": "La condition doit être comprise entre 1 et 10."
 				},
 				"price_paid": {
 					"min": "Veuillez entrer un prix valide."

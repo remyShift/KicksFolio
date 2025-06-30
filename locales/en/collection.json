@@ -10,11 +10,11 @@
 		"sneakers": "Sneakers"
 	},
 	"actions": {
-		"add": "Add sneaker",
-		"edit": "Edit sneaker",
-		"delete": "Delete sneaker",
-		"search": "Search sneaker",
-		"view": "View sneaker",
+		"add": "Add",
+		"edit": "Edit",
+		"delete": "Delete",
+		"search": "Search",
+		"view": "View",
 		"save": "Save",
 		"cancel": "Cancel",
 		"next": "Next",
@@ -97,10 +97,12 @@
 				},
 				"size": {
 					"min": "Please enter the size.",
-					"multiple": "Size must be a multiple of 0.5 (e.g., 7, 7.5, 8, 8.5)."
+					"multiple": "Size must be a multiple of 0.5 (e.g., 7, 7.5, 8, 8.5).",
+					"refine": "Size must be between 7 and 15 (US) or between 35 and 48 (EU)."
 				},
 				"condition": {
-					"min": "Please select a condition."
+					"min": "Please select a condition.",
+					"refine": "Condition must be between 1 and 10."
 				},
 				"price_paid": {
 					"min": "Please enter a valid price."

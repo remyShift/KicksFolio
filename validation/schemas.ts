@@ -123,7 +123,7 @@ export const createSneakerSchema = () => {
 					(!isNaN(num) && num >= 7 && num <= 15) ||
 					(num >= 35 && num <= 48)
 				);
-			}, t('collection.modal.form.errors.size.min'))
+			}, t('collection.modal.form.errors.size.refine'))
 			.refine((val) => {
 				const num = Number(val);
 				return (num * 2) % 1 === 0;
@@ -136,7 +136,7 @@ export const createSneakerSchema = () => {
 					!isNaN(Number(val)) &&
 					Number(val) >= 1 &&
 					Number(val) <= 10,
-				t('collection.modal.form.errors.condition.min')
+				t('collection.modal.form.errors.condition.refine')
 			),
 		price_paid: z
 			.string()
