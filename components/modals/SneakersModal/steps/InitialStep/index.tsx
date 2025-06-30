@@ -1,5 +1,6 @@
 import { View, Text, Pressable } from 'react-native';
 import { useModalStore } from '@/store/useModalStore';
+import { useTranslation } from 'react-i18next';
 
 interface InitialStepProps {
     userSneakersLength?: number;
@@ -7,12 +8,13 @@ interface InitialStepProps {
 
 export const InitialStep = ({ userSneakersLength = 0 }: InitialStepProps) => {
     const { setModalStep } = useModalStore();
-    const indexTitle = userSneakersLength === 0 ? 'Add your first sneaker' : 'Add a new sneaker';
+    const { t } = useTranslation();
+    const indexTitle = userSneakersLength === 0 ? t('common.sneaker.modal.titles.add') : t('common.sneaker.modal.titles.add');
 
     return (
         <View className="flex-1 justify-center items-center gap-8">
             <Text className="font-actonia text-primary text-4xl text-center">{indexTitle}</Text>
-            <Text className="font-spacemono-bold text-xl text-center">How do you want to proceed ?</Text>
+            <Text className="font-spacemono-bold text-xl text-center">{t('common.sneaker.modal.descriptions.howProceed')}</Text>
             <View className="flex justify-center items-center gap-12">
                 <View className="flex-col justify-center items-center gap-1 px-6">
                     <Pressable
@@ -20,11 +22,11 @@ export const InitialStep = ({ userSneakersLength = 0 }: InitialStepProps) => {
                         testID="search-by-sku-button"
                     >
                         <Text className="font-spacemono-bold text-lg text-center text-primary">
-                            By search
+                            {t('common.sneaker.modal.buttons.add')}
                         </Text>
                     </Pressable>
                     <Text className="font-spacemono-bold text-sm text-center">
-                        Prefetch the sneaker information from a query (sku, model, ...).
+                        {t('common.sneaker.modal.descriptions.searching')}
                     </Text>
                 </View>
                 <View className="flex-col justify-center items-center gap-1 px-6">
@@ -33,11 +35,11 @@ export const InitialStep = ({ userSneakersLength = 0 }: InitialStepProps) => {
                         testID="add-manually-button"
                     >
                         <Text className="font-spacemono-bold text-lg text-center text-primary">
-                            Add manually
+                            {t('common.sneaker.modal.buttons.edit')}
                         </Text>
                     </Pressable>
                     <Text className="font-spacemono-bold text-sm text-center">
-                        You provide yourself the information about the sneaker.
+                        {t('common.sneaker.modal.descriptions.manually')}
                     </Text>
                 </View>
             </View>

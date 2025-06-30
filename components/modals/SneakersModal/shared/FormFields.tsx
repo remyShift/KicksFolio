@@ -7,6 +7,7 @@ import { sneakerStatusOptions, sneakerBrandOptions } from '@/validation/schemas'
 import { TextInput } from 'react-native';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import { PhotoCarousel } from '@/components/ui/images/photoCaroussel/PhotoCarousel';
+import { useTranslation } from 'react-i18next';
 
 interface FormFieldsProps {
     control: Control<SneakerFormData>;
@@ -35,6 +36,7 @@ export const FormFields = ({
     descriptionInputRef,
     sneakerId,
 }: FormFieldsProps) => {
+    const { t } = useTranslation();
     const getFieldErrorWrapper = (fieldName: string) => {
         return getFieldError(fieldName);
     };
@@ -85,7 +87,7 @@ export const FormFields = ({
                 <FormSelectInput
                     name="brand"
                     control={control}
-                    placeholder="Select brand"
+                    placeholder={t('common.sneaker.modal.form.labels.brand')}
                     options={sneakerBrandOptions}
                     onFocus={() => handleFieldFocus('brand')}
                     error={getFieldErrorWrapper('brand')}
@@ -95,7 +97,7 @@ export const FormFields = ({
                 <FormSelectInput
                     name="status"
                     control={control}
-                    placeholder="Select status"
+                    placeholder={t('common.sneaker.modal.form.labels.status')}
                     options={sneakerStatusOptions}
                     onFocus={() => handleFieldFocus('status')}
                     error={getFieldErrorWrapper('status')}
@@ -105,7 +107,7 @@ export const FormFields = ({
 
             <View className="flex-row items-center w-full border-t-2 border-gray-300">
                 <View className="flex-1 flex-col items-center px-2 gap-1 border-r-2 border-gray-300">
-                    <Text className="text-base font-spacemono mt-2">Size (US)*</Text>
+                    <Text className="text-base font-spacemono mt-2">{t('common.sneaker.size')}*</Text>
                     <FormTextInput
                         name="size"
                         control={control}
@@ -122,7 +124,7 @@ export const FormFields = ({
                 </View>
 
                 <View className="flex-1 flex-col items-center px-4 gap-1 border-r-2 border-gray-300">
-                    <Text className="text-base font-spacemono mt-2">Condition*</Text>
+                    <Text className="text-base font-spacemono mt-2">{t('common.sneaker.condition')}*</Text>
                     <FormTextInput
                         name="condition"
                         control={control}
@@ -137,7 +139,7 @@ export const FormFields = ({
                 </View>
 
                 <View className="flex-1 flex-col items-center px-4 gap-1">
-                    <Text className="text-base font-spacemono mt-2">Price Paid</Text>
+                    <Text className="text-base font-spacemono mt-2">{t('common.sneaker.price_paid')}</Text>
                     <FormTextInput
                         name="price_paid"
                         control={control}
@@ -157,7 +159,7 @@ export const FormFields = ({
             <FormTextInput
                 name="description"
                 control={control}
-                placeholder="Additional notes..."
+                placeholder={t('common.sneaker.description')}
                 ref={descriptionInputRef}
                 onFocus={() => handleFieldFocus('description')}
                 onBlur={async (value) => { await validateFieldOnBlur('description', value); }}

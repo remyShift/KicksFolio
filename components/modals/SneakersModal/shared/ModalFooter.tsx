@@ -8,8 +8,10 @@ import DeleteButton from '@/components/ui/buttons/DeleteButton';
 import { Sneaker } from '@/types/Sneaker';
 import { useEffect } from 'react';
 import { useModalFooterActions } from '../hooks/useModalFooterActions';
+import { useTranslation } from 'react-i18next';
 
 export const ModalFooter = () => {
+    const { t } = useTranslation();
     const { 
         modalStep, 
         currentSneaker,
@@ -47,7 +49,7 @@ export const ModalFooter = () => {
                         onPressAction={handleBackAction}
                     />
                     <NextButton
-                        content="Search"
+                        content={t('common.sneaker.modal.buttons.search')}
                         onPressAction={() => {
                             if (!isLoading) {
                                 handleNextAction();
@@ -64,7 +66,7 @@ export const ModalFooter = () => {
                         onPressAction={handleBackAction} 
                     />
                     <NextButton
-                        content="Add"
+                        content={t('common.sneaker.modal.buttons.add')}
                         onPressAction={() => {
                             if (!isLoading) {
                                 handleNextAction();
@@ -88,7 +90,7 @@ export const ModalFooter = () => {
                     </View>
 
                     <NextButton 
-                        content="Edit"
+                        content={t('common.sneaker.modal.buttons.edit')}
                         onPressAction={() => {
                             if (!isLoading) {
                                 handleNextAction();
@@ -114,7 +116,7 @@ export const ModalFooter = () => {
                     </View>
 
                     <NextButton 
-                        content="Next" 
+                        content={t('common.sneaker.modal.buttons.next')} 
                         onPressAction={handleNextAction}
                         testID="next"
                     />

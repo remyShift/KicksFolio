@@ -3,11 +3,10 @@ import {
 	SupabaseSneakerService,
 	SupabaseSneaker,
 } from '@/services/SneakersService';
-import { SneakerFormData } from '@/validation/schemas';
+import { SneakerFormData, createSneakerSchema } from '@/validation/schemas';
 import { ModalStep } from '../types';
 import { FetchedSneaker } from '@/store/useModalStore';
 import { useSession } from '@/context/authContext';
-import { sneakerSchema } from '@/validation/schemas';
 import { ZodIssue } from 'zod';
 import SupabaseImageService from '@/services/SupabaseImageService';
 import useToast from '@/hooks/useToast';
@@ -58,7 +57,7 @@ export const useSneakerAPI = (userId: string) => {
 				description: formData.description || undefined,
 			};
 
-			const parseResult = sneakerSchema.safeParse(validationData);
+			const parseResult = createSneakerSchema().safeParse(validationData);
 
 			if (parseResult.success) {
 				resolve({ isValid: true, errors: {} });

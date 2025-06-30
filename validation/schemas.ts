@@ -92,11 +92,11 @@ export const createSneakerSchema = () => {
 					alt: z.string().optional(),
 				})
 			)
-			.min(1, 'Please upload at least one image.')
-			.max(3, 'You can upload a maximum of 3 images.'),
+			.min(1, t('common.sneaker.modal.form.errors.images.min'))
+			.max(3, t('common.sneaker.modal.form.errors.images.max')),
 		model: z
 			.string()
-			.min(2, 'Sneaker model must be at least 2 characters long.')
+			.min(2, t('common.sneaker.modal.form.errors.model.min'))
 			.refine(
 				(val) =>
 					!sneakerBrandOptions.some((option) =>
@@ -105,7 +105,7 @@ export const createSneakerSchema = () => {
 							.split(' ')
 							.includes(option.value.toLowerCase())
 					),
-				'A brand name cannot be in the model.'
+				t('common.sneaker.modal.form.errors.model.brand')
 			),
 		brand: z
 			.enum(Object.values(SneakerBrand) as [string, ...string[]])
@@ -115,32 +115,35 @@ export const createSneakerSchema = () => {
 			.transform((val) => val as SneakerStatus),
 		size: z
 			.string()
-			.min(1, 'Please enter the size.')
+			.min(1, t('common.sneaker.modal.form.errors.size.min'))
 			.transform((val) => val.replace(',', '.'))
 			.refine((val) => {
 				const num = Number(val);
-				return !isNaN(num) && num >= 7 && num <= 15;
-			}, 'Size must be a number between 7 and 15.')
+				return (
+					(!isNaN(num) && num >= 7 && num <= 15) ||
+					(num >= 35 && num <= 48)
+				);
+			}, t('common.sneaker.modal.form.errors.size.min'))
 			.refine((val) => {
 				const num = Number(val);
 				return (num * 2) % 1 === 0;
-			}, 'Size must be a multiple of 0.5 (e.g., 7, 7.5, 8, 8.5).'),
+			}, t('common.sneaker.modal.form.errors.size.multiple')),
 		condition: z
 			.string()
-			.min(1, 'Please select a condition.')
+			.min(1, t('common.sneaker.modal.form.errors.condition.min'))
 			.refine(
 				(val) =>
 					!isNaN(Number(val)) &&
 					Number(val) >= 1 &&
 					Number(val) <= 10,
-				'Condition must be a number between 1 and 10.'
+				t('common.sneaker.modal.form.errors.condition.min')
 			),
 		price_paid: z
 			.string()
 			.optional()
 			.refine(
 				(val) => !val || (!isNaN(Number(val)) && Number(val) >= 0),
-				'Please enter a valid price.'
+				t('common.sneaker.modal.form.errors.price_paid.min')
 			),
 		description: z.string().optional(),
 	});

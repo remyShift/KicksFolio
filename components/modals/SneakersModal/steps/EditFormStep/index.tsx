@@ -2,7 +2,7 @@ import { ScrollView, TextInput } from 'react-native';
 import { useRef, useEffect } from 'react';
 import { useModalStore } from '@/store/useModalStore';
 import { useFormController } from '@/hooks/useFormController';
-import { sneakerSchema, SneakerFormData } from '@/validation/schemas';
+import { createSneakerSchema, SneakerFormData } from '@/validation/schemas';
 import { FormFields } from '../../shared/FormFields';
 import { useFormValidation } from '../../hooks/useFormValidation';
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
@@ -30,7 +30,7 @@ export const EditFormStep = () => {
         displayedError,
         getFieldErrorWrapper,
     } = useFormController<SneakerFormData>({
-        schema: sneakerSchema,
+        schema: createSneakerSchema(),
         fieldNames: ['model', 'brand', 'status', 'size', 'condition', 'price_paid', 'images'],
         authErrorMsg: errorMsg,
         defaultValues: {

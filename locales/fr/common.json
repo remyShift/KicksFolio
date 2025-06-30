@@ -34,6 +34,50 @@
 		"wishlist": "Wishlist"
 	},
 	"sneaker": {
+		"modal": {
+			"titles": {
+				"add": "Ajouter une sneaker",
+				"edit": "Modifier une sneaker",
+				"skuStep": "Entres le SKU ou le modèle de ta sneaker ci-dessous"
+			},
+			"descriptions": {
+				"howProceed": "Comment veux-tu procéder ?",
+				"searching": "Précharge les informations de ta sneaker à partir d'une requête (sku, modèle ...)",
+				"manually": "Tu fournis les informations de ta sneaker manuellement dans un formulaire.",
+				"skuStep": "NB : Pour les sku de Nike, n'oublie pas le '-' et les 3 chiffres qui suivent."
+			},
+			"buttons": {
+				"add": "Par recherche",
+				"edit": "Ajouter manuellement",
+				"search": "Chercher",
+				"next": "Suivant"
+			},
+			"form": {
+				"errors": {
+					"images": {
+						"min": "Veuillez télécharger au moins une image.",
+						"max": "Vous ne pouvez télécharger qu'un maximum de 3 images."
+					},
+					"model": {
+						"min": "Le modèle de la sneaker doit contenir au moins 2 caractères."
+					},
+					"size": {
+						"min": "Veuillez entrer la taille.",
+						"multiple": "La taille doit être un multiple de 0.5 (ex : 7, 7.5, 8, 8.5)."
+					},
+					"condition": {
+						"min": "Veuillez sélectionner une condition."
+					},
+					"price_paid": {
+						"min": "Veuillez entrer un prix valide."
+					}
+				},
+				"labels": {
+					"status": "Choisis un statut",
+					"brand": "Choisis une marque"
+				}
+			}
+		},
 		"name": "Nom",
 		"brand": "Marque",
 		"size": "Taille",
@@ -43,6 +87,9 @@
 		"sku": "SKU",
 		"sortBy": "Trier par",
 		"status": "Statut",
-		"filters": "Filtres"
+		"filters": "Filtres",
+		"description": "Description",
+		"price_paid": "Prix payé",
+		"images": "Images"
 	}
 }
