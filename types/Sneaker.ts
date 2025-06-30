@@ -42,6 +42,8 @@ export type Sneaker = {
 	sku: string;
 	price_paid: number;
 	size: number;
+	size_eu: number;
+	size_us: number;
 	condition: number;
 	status: SneakerStatus;
 	description: string | null;

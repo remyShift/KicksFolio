@@ -6,6 +6,7 @@ import { useModalStore } from '@/store/useModalStore';
 import { PhotoCarousel } from '@/components/ui/images/photoCaroussel/PhotoCarousel';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import LoveButton from '@/components/modals/SneakersModal/steps/ViewStep/LoveButton';
+import SizeDisplay from '@/components/ui/text/SizeDisplay';
 
 export const ViewStep = () => {
     const { currentSneaker } = useModalStore();
@@ -57,7 +58,10 @@ export const ViewStep = () => {
                     <View className='flex-col items-center p-2 gap-1 w-1/3 border-r-2 border-gray-300'>
                         <Text className='font-spacemono text-center text-sm'>Size</Text>
                         <View className="w-4/5">
-                            <Text className="font-spacemono-bold text-lg text-center">{currentSneaker.size}US</Text>
+                            <SizeDisplay 
+                                sneaker={currentSneaker}
+                                className='font-spacemono-bold text-lg text-center' 
+                            />
                         </View>
                     </View>
 

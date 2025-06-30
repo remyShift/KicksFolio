@@ -133,6 +133,8 @@ export const useSneakerAPI = () => {
 			brand: supabaseSneaker.brand,
 			model: supabaseSneaker.model,
 			size: supabaseSneaker.size,
+			size_eu: supabaseSneaker.size_eu,
+			size_us: supabaseSneaker.size_us,
 			condition: supabaseSneaker.condition,
 			status: supabaseSneaker.status as SneakerStatus,
 			images: supabaseSneaker.images.map((img, index) => {
@@ -184,8 +186,13 @@ export const useSneakerAPI = () => {
 
 				const sneakerToAdd: Omit<
 					SupabaseSneaker,
-					'id' | 'created_at' | 'updated_at' | 'user_id'
-				> = {
+					| 'id'
+					| 'created_at'
+					| 'updated_at'
+					| 'user_id'
+					| 'size_eu'
+					| 'size_us'
+				> & { size: number } = {
 					model: formData.model,
 					brand: formData.brand,
 					status: formData.status,
@@ -291,7 +298,9 @@ export const useSneakerAPI = () => {
 						sneakerId
 					);
 
-				const sneakerUpdates: Partial<SupabaseSneaker> = {
+				const sneakerUpdates: Partial<
+					SupabaseSneaker & { size?: number }
+				> = {
 					model: formData.model,
 					brand: formData.brand,
 					status: formData.status,

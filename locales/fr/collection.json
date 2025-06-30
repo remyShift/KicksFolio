@@ -98,7 +98,8 @@
 				"size": {
 					"min": "Veuillez entrer la taille.",
 					"multiple": "La taille doit être un multiple de 0.5 (ex : 7, 7.5, 8, 8.5).",
-					"refine": "La taille doit être comprise entre 7 et 15 (US) ou entre 35 et 48 (EU)."
+					"eu": "La taille doit être comprise entre 35 et 48 (EU).",
+					"us": "La taille doit être comprise entre 7 et 15 (US)."
 				},
 				"condition": {
 					"min": "Veuillez sélectionner une condition.",

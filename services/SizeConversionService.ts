@@ -33,19 +33,6 @@ const SIZE_MAPPINGS: SizeMapping[] = [
 	{ usMen: 14.5, usWomen: 16, eu: 49 },
 	{ usMen: 15, usWomen: 16.5, eu: 49.5 },
 	{ usMen: 15.5, usWomen: 17, eu: 50 },
-	{ usMen: 16, usWomen: 17.5, eu: 50.5 },
-	{ usMen: 16.5, usWomen: 18, eu: 51 },
-	{ usMen: 17, usWomen: 18.5, eu: 51.5 },
-	{ usMen: 17.5, usWomen: 19, eu: 52 },
-	{ usMen: 18, usWomen: 19.5, eu: 52.5 },
-	{ usMen: 18.5, usWomen: 20, eu: 53 },
-	{ usMen: 19, usWomen: 20.5, eu: 53.5 },
-	{ usMen: 19.5, usWomen: 21, eu: 54 },
-	{ usMen: 20, usWomen: 21.5, eu: 54.5 },
-	{ usMen: 20.5, usWomen: 22, eu: 55 },
-	{ usMen: 21, usWomen: 22.5, eu: 55.5 },
-	{ usMen: 21.5, usWomen: 23, eu: 56 },
-	{ usMen: 22, usWomen: 23.5, eu: 56.5 },
 ];
 
 export class SizeConversionService {
@@ -54,7 +41,7 @@ export class SizeConversionService {
 		fromUnit: SizeUnit,
 		toUnit: SizeUnit,
 		gender: GenderType = 'men'
-	): number | null {
+	): number {
 		if (fromUnit === toUnit) return size;
 
 		const mapping = SIZE_MAPPINGS.find((mapping) => {
@@ -70,7 +57,7 @@ export class SizeConversionService {
 			}
 		});
 
-		if (!mapping) return null;
+		if (!mapping) return size;
 
 		switch (toUnit) {
 			case 'US':
@@ -78,7 +65,7 @@ export class SizeConversionService {
 			case 'EU':
 				return mapping.eu;
 			default:
-				return null;
+				return size;
 		}
 	}
 
@@ -101,7 +88,7 @@ export class SizeConversionService {
 			gender
 		);
 
-		if (convertedSize === null) {
+		if (convertedSize === originalSize) {
 			return this.formatSize(originalSize, originalUnit);
 		}
 
@@ -131,5 +118,28 @@ export class SizeConversionService {
 	): boolean {
 		const availableSizes = this.getAvailableSizes(unit, gender);
 		return availableSizes.includes(size);
+	}
+
+	static detectSizeUnit(size: number): SizeUnit {
+		return size >= 3.5 && size <= 17 ? 'US' : 'EU';
+	}
+
+	static generateBothSizes(
+		inputSize: number,
+		gender: GenderType = 'men'
+	): { size_eu: number; size_us: number } {
+		const detectedUnit = this.detectSizeUnit(inputSize);
+
+		if (detectedUnit === 'EU') {
+			return {
+				size_eu: inputSize,
+				size_us: this.convertSize(inputSize, 'EU', 'US', gender),
+			};
+		} else {
+			return {
+				size_eu: this.convertSize(inputSize, 'US', 'EU', gender),
+				size_us: inputSize,
+			};
+		}
 	}
 }

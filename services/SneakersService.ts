@@ -1,12 +1,15 @@
 import { supabase } from './supabase';
 import { SneakerBrand } from '@/types/Sneaker';
 import { sneakerBrandOptions } from '@/validation/schemas';
+import { SizeConversionService, GenderType } from './SizeConversionService';
 
 export interface SupabaseSneaker {
 	id: string;
 	brand: SneakerBrand;
 	model: string;
 	size: number;
+	size_eu: number;
+	size_us: number;
 	purchase_date?: string;
 	price_paid?: number;
 	condition: number;
@@ -102,8 +105,13 @@ export class SupabaseSneakerService {
 	static async createSneaker(
 		sneakerData: Omit<
 			SupabaseSneaker,
-			'id' | 'created_at' | 'updated_at' | 'user_id'
-		>
+			| 'id'
+			| 'created_at'
+			| 'updated_at'
+			| 'user_id'
+			| 'size_eu'
+			| 'size_us'
+		> & { size: number }
 	) {
 		console.log('🔄 Creating sneaker with data:', sneakerData);
 
@@ -121,8 +129,15 @@ export class SupabaseSneakerService {
 			throw new Error('No user found');
 		}
 
+		const { size_eu, size_us } = SizeConversionService.generateBothSizes(
+			sneakerData.size,
+			(sneakerData.gender as GenderType) || 'men'
+		);
+
 		const sneakerWithUser = {
 			...sneakerData,
+			size_eu,
+			size_us,
 			user_id: user.id,
 		};
 
@@ -153,7 +168,20 @@ export class SupabaseSneakerService {
 			: data;
 	}
 
-	static async updateSneaker(id: string, updates: Partial<SupabaseSneaker>) {
+	static async updateSneaker(
+		id: string,
+		updates: Partial<SupabaseSneaker & { size?: number }>
+	) {
+		if (updates.size) {
+			const { size_eu, size_us } =
+				SizeConversionService.generateBothSizes(
+					updates.size,
+					(updates.gender as GenderType) || 'men'
+				);
+			updates.size_eu = size_eu;
+			updates.size_us = size_us;
+		}
+
 		const { data, error } = await supabase
 			.from('sneakers')
 			.update(updates)

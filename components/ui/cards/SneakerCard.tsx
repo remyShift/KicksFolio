@@ -4,6 +4,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { Sneaker } from '@/types/Sneaker';
 import { ModalStep } from '@/components/modals/SneakersModal/types';
 import { useSession } from '@/context/authContext';
+import SizeDisplay from '../text/SizeDisplay';
 
 export default function SneakerCard({ 
     sneaker, 
@@ -57,9 +58,10 @@ export default function SneakerCard({
                     <Text className="font-spacemono-bold text-lg flex-1 mr-2 flex-shrink" numberOfLines={1} ellipsizeMode="tail">
                         {sneaker.model}
                     </Text>
-                    <Text className="text-primary font-spacemono-bold text-lg flex-shrink-0">
-                        {sneaker.size}US
-                    </Text>
+                    <SizeDisplay 
+                        sneaker={sneaker}
+                        className='text-primary font-spacemono-bold text-lg flex-shrink-0' 
+                    />
                 </View>
 
                 {showOwnerInfo && sneaker.owner && (

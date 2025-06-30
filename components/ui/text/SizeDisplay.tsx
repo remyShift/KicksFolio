@@ -1,27 +1,19 @@
-import { Text } from 'react-native';
+import React from 'react';
+import { Text, TextProps } from 'react-native';
 import { useSizeConversion } from '@/hooks/useSizeConversion';
-import { SizeUnit, GenderType } from '@/services/SizeConversionService';
+import { Sneaker } from '@/types/Sneaker';
 
-interface SizeDisplayProps {
-    size: number;
-    originalUnit: SizeUnit;
-    gender?: GenderType;
-    className?: string;
+interface SizeDisplayProps extends TextProps {
+	sneaker: Sneaker;
+	className: string;
 }
 
-export default function SizeDisplay({ 
-    size, 
-    originalUnit, 
-    gender = 'men',
-    className = "text-base font-medium"
-}: SizeDisplayProps) {
-    const { formatSizeForDisplay } = useSizeConversion();
+export default function SizeDisplay({ sneaker, className }: SizeDisplayProps) {
+	const { formatSizeForDisplay } = useSizeConversion();
 
-    const displaySize = formatSizeForDisplay(size, originalUnit, gender);
-
-    return (
-        <Text className={className}>
-            {displaySize}
-        </Text>
-    );
+	return (
+		<Text className={className}>
+			{formatSizeForDisplay(sneaker)}
+		</Text>
+	);
 } 

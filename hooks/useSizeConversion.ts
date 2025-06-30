@@ -4,57 +4,38 @@ import {
 	SizeUnit,
 	GenderType,
 } from '@/services/SizeConversionService';
+import { Sneaker } from '@/types/Sneaker';
 
 export const useSizeConversion = () => {
 	const { currentUnit } = useSizeUnitStore();
+
+	const getSizeForCurrentUnit = (sneaker: Sneaker): number => {
+		return currentUnit === 'EU' ? sneaker.size_eu : sneaker.size_us;
+	};
+
+	const formatSizeForDisplay = (sneaker: Sneaker): string => {
+		const size = getSizeForCurrentUnit(sneaker);
+		return SizeConversionService.formatSize(size, currentUnit);
+	};
+
+	const generateBothSizes = (
+		inputSize: number,
+		gender: GenderType = 'men'
+	): { size_eu: number; size_us: number } => {
+		return SizeConversionService.generateBothSizes(inputSize, gender);
+	};
 
 	const convertToCurrentUnit = (
 		size: number,
 		originalUnit: SizeUnit,
 		gender: GenderType = 'men'
-	): number | null => {
+	): number => {
 		return SizeConversionService.convertSize(
 			size,
 			originalUnit,
 			currentUnit,
 			gender
 		);
-	};
-
-	const formatSizeForDisplay = (
-		size: number,
-		originalUnit: SizeUnit,
-		gender: GenderType = 'men'
-	): string => {
-		console.log(
-			'formatSizeForDisplay',
-			size,
-			originalUnit,
-			currentUnit,
-			gender
-		);
-		console.log(
-			'convertAndFormat',
-			SizeConversionService.convertAndFormat(
-				size,
-				originalUnit,
-				currentUnit,
-				gender
-			)
-		);
-		return SizeConversionService.convertAndFormat(
-			size,
-			originalUnit,
-			currentUnit,
-			gender
-		);
-	};
-
-	const getOriginalUnit = (
-		size: number,
-		gender: GenderType = 'men'
-	): SizeUnit => {
-		return size >= 7 && size <= 15 ? 'US' : 'EU';
 	};
 
 	const getAvailableSizesForCurrentUnit = (
@@ -76,9 +57,10 @@ export const useSizeConversion = () => {
 
 	return {
 		currentUnit,
-		convertToCurrentUnit,
+		getSizeForCurrentUnit,
 		formatSizeForDisplay,
-		getOriginalUnit,
+		generateBothSizes,
+		convertToCurrentUnit,
 		getAvailableSizesForCurrentUnit,
 		isValidSizeInCurrentUnit,
 		formatCurrentUnitSize,
