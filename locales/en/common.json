@@ -13,13 +13,34 @@
 		"noSneakers": "No sneakers yet",
 		"sneakerAddedToWishlist": "❤️ Sneaker added to your wishlist",
 		"sneakerRemovedFromWishlist": "💔 Sneaker removed from your wishlist",
-		"errorUpdatingWishlistStatus": "❌ Error updating wishlist status"
+		"errorUpdatingWishlistStatus": "❌ Error updating wishlist status",
+		"deletingSneaker": "🔍 Deleting sneaker...",
+		"deletingSneakerDescription": "Please wait...",
+		"sneakerDeleted": "🗑️ Sneaker deleted",
+		"sneakerDeletionFailed": "❌ Sneaker deletion failed",
+		"searchingProgressSneaker": "🔍 Searching for sneaker...",
+		"addingSneaker": "🔍 Adding sneaker to your collection...",
+		"updatingSneaker": "🔍 Updating sneaker...",
+		"searchingSneaker": "🔍 Sneaker found",
+		"searchingSneakerDescription": "The sneaker has been found successfully."
 	},
 	"descriptions": {
 		"noWishlist": "On this page you can see your wishlisted sneakers, go to a sneaker and add it to your wishlist by clicking the heart icon.",
 		"sneakerAddedToWishlist": "You can see it in your wishlist page",
 		"sneakerRemovedFromWishlist": "Let's find other one !",
-		"errorUpdatingWishlistStatus": "Please try again later"
+		"errorUpdatingWishlistStatus": "Please try again later",
+		"deletingSneaker": "The sneaker has been deleted successfully.",
+		"deletingSneakerDescription": "The sneaker has been deleted successfully.",
+		"sneakerDeleted": "The sneaker has been deleted successfully.",
+		"sneakerDeletionFailed": "The sneaker has not been deleted.",
+		"searchingProgressSneaker": "The sneaker has been searched successfully.",
+		"searchingProgressSneakerDescription": "Please wait...",
+		"addingSneaker": "The sneaker has been added successfully to your collection.",
+		"addingSneakerDescription": "The sneaker has been added successfully to your collection.",
+		"updatingSneaker": "The sneaker has been updated successfully.",
+		"updatingSneakerDescription": "The sneaker has been updated successfully.",
+		"searchingSneaker": "The sneaker has been found successfully.",
+		"searchingSneakerDescription": "The sneaker has been found successfully."
 	},
 	"buttons": {
 		"add": "Add",
@@ -47,10 +68,11 @@
 				"skuStep": "NB : For Nike's sku, dont forget the '-' and the 3 numbers following it or it will not work."
 			},
 			"buttons": {
-				"add": "By searching",
+				"bySearch": "By searching",
 				"edit": "Add manually",
 				"search": "Search",
-				"next": "Next"
+				"next": "Next",
+				"add": "Add"
 			},
 			"form": {
 				"errors": {
@@ -70,7 +92,29 @@
 					},
 					"price_paid": {
 						"min": "Please enter a valid price."
+					},
+					"sku": {
+						"required": "Please enter a SKU."
+					},
+					"user": {
+						"required": "No user authenticated"
+					},
+					"sneaker": {
+						"error": "An error occurred while submitting the sneaker",
+						"errorDescription": "Please try again."
+					},
+					"validateForm": {
+						"missing": "validateForm is missing"
+					},
+					"currentSneaker": {
+						"missing": "currentSneaker is missing"
 					}
+				},
+				"success": {
+					"added": "added !",
+					"addedDescription": "The sneaker has been added successfully to your collection.",
+					"updated": "updated !",
+					"updatedDescription": "The sneaker has been updated successfully."
 				},
 				"labels": {
 					"status": "Select a status",

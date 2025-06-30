@@ -10,6 +10,7 @@ import { useSession } from '@/context/authContext';
 import { ZodIssue } from 'zod';
 import SupabaseImageService from '@/services/SupabaseImageService';
 import useToast from '@/hooks/useToast';
+import { useTranslation } from 'react-i18next';
 
 interface Callbacks {
 	setCurrentSneaker?: (sneaker: Sneaker | null) => void;
@@ -39,8 +40,8 @@ interface SkuSearchResponse {
 
 export const useSneakerAPI = (userId: string) => {
 	const { refreshUserSneakers, userSneakers, user } = useSession();
-	const { showSuccessToast } = useToast();
-
+	const { showSuccessToast, showErrorToast } = useToast();
+	const { t } = useTranslation();
 	const validateSneakerData = (formData: SneakerFormData) => {
 		return new Promise<{
 			isValid: boolean;
@@ -79,7 +80,9 @@ export const useSneakerAPI = (userId: string) => {
 		}
 
 		if (!sku.trim()) {
-			callbacks.setErrorMsg('Please enter a SKU.');
+			callbacks.setErrorMsg(
+				t('common.sneaker.modal.form.errors.sku.required')
+			);
 			return Promise.resolve();
 		}
 
@@ -161,7 +164,9 @@ export const useSneakerAPI = (userId: string) => {
 		sku?: string | null
 	) => {
 		if (!user) {
-			callbacks?.setErrorMsg('No user authenticated');
+			callbacks?.setErrorMsg(
+				t('common.sneaker.modal.form.errors.user.required')
+			);
 			return Promise.reject('No user authenticated');
 		}
 
@@ -233,14 +238,24 @@ export const useSneakerAPI = (userId: string) => {
 					callbacks.setModalStep('view');
 					refreshUserSneakers().then(() => {
 						showSuccessToast(
-							`➕ ${convertedSneaker.model} added`,
-							'The sneaker has been added successfully.'
+							`➕ ${convertedSneaker.model} ${t(
+								'common.sneaker.modal.form.success.added'
+							)}`,
+							t(
+								'common.sneaker.modal.form.success.addedDescription'
+							)
 						);
 					});
 				}
 				return response;
 			})
 			.catch((error: Error) => {
+				showErrorToast(
+					t('common.sneaker.modal.form.errors.sneaker.error'),
+					t(
+						'common.sneaker.modal.form.errors.sneaker.errorDescription'
+					)
+				);
 				callbacks?.setErrorMsg(
 					`An error occurred while submitting the sneaker: ${error.message}`
 				);
@@ -309,8 +324,12 @@ export const useSneakerAPI = (userId: string) => {
 					callbacks.setModalStep('view');
 					refreshUserSneakers().then(() => {
 						showSuccessToast(
-							`♻️ ${convertedSneaker.model} updated`,
-							'The sneaker has been updated successfully.'
+							`♻️ ${convertedSneaker.model} ${t(
+								'common.sneaker.modal.form.success.updated'
+							)}`,
+							t(
+								'common.sneaker.modal.form.success.updatedDescription'
+							)
 						);
 					});
 				} else {
@@ -319,6 +338,12 @@ export const useSneakerAPI = (userId: string) => {
 				return response;
 			})
 			.catch((error: Error) => {
+				showErrorToast(
+					t('common.sneaker.modal.form.errors.sneaker.error'),
+					t(
+						'common.sneaker.modal.form.errors.sneaker.errorDescription'
+					)
+				);
 				callbacks?.setErrorMsg(
 					`An error occurred while updating the sneaker: ${error.message}`
 				);

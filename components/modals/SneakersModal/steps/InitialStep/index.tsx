@@ -22,7 +22,7 @@ export const InitialStep = ({ userSneakersLength = 0 }: InitialStepProps) => {
                         testID="search-by-sku-button"
                     >
                         <Text className="font-spacemono-bold text-lg text-center text-primary">
-                            {t('common.sneaker.modal.buttons.add')}
+                            {t('common.sneaker.modal.buttons.bySearch')}
                         </Text>
                     </Pressable>
                     <Text className="font-spacemono-bold text-sm text-center">

@@ -6,8 +6,10 @@ import { useState } from 'react';
 import { Alert } from 'react-native';
 import { SneakerFormData } from '@/validation/schemas';
 import useToast from '@/hooks/useToast';
+import { useTranslation } from 'react-i18next';
 
 export const useModalFooterActions = () => {
+	const { t } = useTranslation();
 	const { showSuccessToast, showErrorToast, showInfoToast } = useToast();
 	const { user, refreshUserData } = useSession();
 	const [nextSneaker, setNextSneaker] = useState<Sneaker | null>(null);
@@ -51,20 +53,20 @@ export const useModalFooterActions = () => {
 	const handleDeleteAction = () => {
 		if (currentSneaker?.id) {
 			Alert.alert(
-				'Are you sure you want to delete this sneaker?',
-				'This action cannot be undone.',
+				t('alert.titles.deleteSneaker'),
+				t('alert.descriptions.deleteSneaker'),
 				[
 					{
-						text: 'Cancel',
+						text: t('alert.buttons.cancel'),
 						style: 'cancel',
 					},
 					{
-						text: 'Delete',
+						text: t('alert.buttons.delete'),
 						style: 'destructive',
 						onPress: () => {
 							showInfoToast(
-								'🔍 Deleting your sneaker...',
-								'Please wait...'
+								t('common.titles.deletingSneaker'),
+								t('common.descriptions.deletingSneaker')
 							);
 							handleSneakerDelete(currentSneaker.id)
 								.then(() => {
@@ -76,17 +78,23 @@ export const useModalFooterActions = () => {
 								})
 								.then(() => {
 									showSuccessToast(
-										'🗑️ Sneaker deleted',
-										'The sneaker has been deleted successfully.'
+										t('common.titles.sneakerDeleted'),
+										t('common.descriptions.sneakerDeleted')
 									);
 								})
 								.catch(() => {
 									showErrorToast(
-										'❌ Sneaker deletion failed',
-										'An error occurred while deleting the sneaker.'
+										t(
+											'common.titles.sneakerDeletionFailed'
+										),
+										t(
+											'common.descriptions.sneakerDeletionFailed'
+										)
 									);
 									setErrorMsg(
-										'An error occurred while deleting the sneaker.'
+										t(
+											'common.descriptions.sneakerDeletionFailed'
+										)
 									);
 								});
 						},
@@ -106,12 +114,14 @@ export const useModalFooterActions = () => {
 				if (isLoading) return;
 
 				if (!sneakerSKU.trim()) {
-					setErrorMsg('Please enter a SKU.');
+					setErrorMsg(
+						t('common.sneaker.modal.form.errors.sku.required')
+					);
 					return;
 				}
 				showInfoToast(
-					'🔍 Searching for your sneaker...',
-					'Please wait...'
+					t('common.titles.searchingProgressSneaker'),
+					t('common.descriptions.searchingProgressSneaker')
 				);
 				setErrorMsg('');
 				setIsLoading(true);
@@ -119,15 +129,24 @@ export const useModalFooterActions = () => {
 					setFetchedSneaker,
 					setModalStep,
 					setErrorMsg,
-				}).finally(() => setIsLoading(false));
+				})
+					.then(() => {
+						showSuccessToast(
+							t('common.titles.searchingSneaker'),
+							t('common.descriptions.searchingSneaker')
+						);
+					})
+					.finally(() => {
+						setIsLoading(false);
+					});
 				break;
 			case 'addForm':
 				if (isLoading) return;
 
 				if (validateForm) {
 					showInfoToast(
-						'🔍 Adding sneaker to your collection...',
-						'Please wait...'
+						t('common.titles.addingSneaker'),
+						t('common.descriptions.addingSneaker')
 					);
 					setIsLoading(true);
 					validateForm()
@@ -150,8 +169,9 @@ export const useModalFooterActions = () => {
 						})
 						.catch((error) => {
 							setErrorMsg(
-								'An error occurred while validating the sneaker : ' +
-									error
+								t(
+									'common.sneaker.modal.form.errors.sneaker.error'
+								) + error
 							);
 						})
 						.finally(() => setIsLoading(false));
@@ -162,8 +182,8 @@ export const useModalFooterActions = () => {
 
 				if (validateForm && currentSneaker) {
 					showInfoToast(
-						'🔍 Updating your sneaker...',
-						'Please wait...'
+						t('common.titles.updatingSneaker'),
+						t('common.descriptions.updatingSneaker')
 					);
 					setIsLoading(true);
 					validateForm()
@@ -184,15 +204,25 @@ export const useModalFooterActions = () => {
 						})
 						.catch((error) => {
 							setErrorMsg(
-								'An error occurred while validating the sneaker : ' +
-									error
+								t(
+									'common.sneaker.modal.form.errors.sneaker.error'
+								) + error
 							);
 						})
 						.finally(() => setIsLoading(false));
 				} else {
-					if (!validateForm) setErrorMsg('validateForm is missing');
+					if (!validateForm)
+						setErrorMsg(
+							t(
+								'common.sneaker.modal.form.errors.validateForm.missing'
+							)
+						);
 					if (!currentSneaker)
-						setErrorMsg('currentSneaker is missing');
+						setErrorMsg(
+							t(
+								'common.sneaker.modal.form.errors.currentSneaker.missing'
+							)
+						);
 				}
 				break;
 			case 'view':

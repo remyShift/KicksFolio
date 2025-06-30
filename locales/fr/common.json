@@ -13,13 +13,29 @@
 		"noSneakers": "Aucune sneakers",
 		"sneakerAddedToWishlist": "❤️ Sneaker ajouté à ta wishlist",
 		"sneakerRemovedFromWishlist": "💔 Sneaker retiré de ta wishlist",
-		"errorUpdatingWishlistStatus": "❌ Erreur lors de la mise à jour du statut de la wishlist"
+		"errorUpdatingWishlistStatus": "❌ Erreur lors de la mise à jour du statut de la wishlist",
+		"deletingSneaker": "🔍 Suppression de la sneaker...",
+		"deletingSneakerDescription": "Veuillez patienter...",
+		"sneakerDeleted": "🗑️ Sneaker supprimée",
+		"sneakerDeletionFailed": "❌ La sneaker n'a pas pu être supprimée.",
+		"searchingProgressSneaker": "🔍 Recherche de la sneaker...",
+		"addingSneaker": "🔍 Ajout de la sneaker à ta collection...",
+		"updatingSneaker": "🔍 Mise à jour de la sneaker...",
+		"searchingSneaker": "🔍 Sneaker trouvée"
 	},
 	"descriptions": {
 		"noWishlist": "Sur cette page tu peux voir tes sneakers wishlistées, allez sur une sneaker et ajoutez-la à ta wishlist en cliquant sur l'icône coeur.",
 		"sneakerAddedToWishlist": "Tu peux le voir dans ta page wishlist",
 		"sneakerRemovedFromWishlist": "Retrouves-en d'autres !",
-		"errorUpdatingWishlistStatus": "Réessaye plus tard"
+		"errorUpdatingWishlistStatus": "Réessaye plus tard",
+		"deletingSneaker": "La sneaker a été supprimée avec succès.",
+		"deletingSneakerDescription": "La sneaker a été supprimée avec succès.",
+		"sneakerDeleted": "La sneaker a été supprimée avec succès.",
+		"sneakerDeletionFailed": "La sneaker n'a pas pu être supprimée.",
+		"searchingProgressSneaker": "Veuillez patienter...",
+		"addingSneaker": "La sneaker a été ajoutée avec succès à ta collection.",
+		"updatingSneaker": "La sneaker a été mise à jour avec succès.",
+		"searchingSneaker": "La sneaker a été trouvée avec succès."
 	},
 	"buttons": {
 		"add": "Ajouter",
@@ -47,10 +63,11 @@
 				"skuStep": "NB : Pour les sku de Nike, n'oublie pas le '-' et les 3 chiffres qui suivent."
 			},
 			"buttons": {
-				"add": "Par recherche",
+				"bySearch": "Par recherche",
 				"edit": "Ajouter manuellement",
 				"search": "Chercher",
-				"next": "Suivant"
+				"next": "Suivant",
+				"add": "Ajouter"
 			},
 			"form": {
 				"errors": {
@@ -70,11 +87,33 @@
 					},
 					"price_paid": {
 						"min": "Veuillez entrer un prix valide."
+					},
+					"sku": {
+						"required": "Veuillez entrer un SKU."
+					},
+					"user": {
+						"required": "Aucun utilisateur authentifié"
+					},
+					"sneaker": {
+						"error": "Une erreur est survenue lors de l'ajout de la sneaker",
+						"errorDescription": "Veuillez réessayer."
+					},
+					"validateForm": {
+						"missing": "validateForm est manquant"
+					},
+					"currentSneaker": {
+						"missing": "currentSneaker est manquant"
 					}
 				},
+				"success": {
+					"added": "ajouté !",
+					"addedDescription": "La sneaker a été ajoutée avec succès à ta collection.",
+					"updated": "mis à jour !",
+					"updatedDescription": "La sneaker a été mise à jour avec succès."
+				},
 				"labels": {
-					"status": "Choisis un statut",
-					"brand": "Choisis une marque"
+					"status": "ROCKING",
+					"brand": "Nike"
 				}
 			}
 		},
