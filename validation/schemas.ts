@@ -1,6 +1,7 @@
 import { SneakerBrand, SneakerStatus } from '@/types/Sneaker';
 import { z } from 'zod';
 import { t } from 'i18next';
+import { useLanguageStore } from '@/store/useLanguageStore';
 
 export const sneakerStatusOptions = [
 	{ label: 'Stocking', value: SneakerStatus.Stocking },
@@ -46,7 +47,22 @@ export const createSignUpStep1Schema = () => {
 		});
 };
 
+const validateSneakerSize = (val: string) => {
+	const num = Number(val);
+	const currentLanguage = useLanguageStore.getState().currentLanguage;
+
+	if (isNaN(num)) return false;
+
+	if (currentLanguage === 'fr') {
+		return num >= 35 && num <= 48;
+	} else {
+		return num >= 7 && num <= 15;
+	}
+};
+
 export const createSignUpStep2Schema = () => {
+	const currentLanguage = useLanguageStore.getState().currentLanguage;
+
 	return z.object({
 		firstName: z
 			.string()
@@ -62,11 +78,12 @@ export const createSignUpStep2Schema = () => {
 			.string()
 			.min(1, t('auth.form.sneakerSize.error.required'))
 			.transform((val) => val.replace(',', '.'))
-			.refine((val) => {
-				const num = Number(val);
-				if (isNaN(num)) return false;
-				return (num >= 7 && num <= 15) || (num >= 35 && num <= 48);
-			}, t('auth.form.sneakerSize.error.size'))
+			.refine(
+				validateSneakerSize,
+				currentLanguage === 'fr'
+					? t('auth.form.sneakerSize.error.size.eu')
+					: t('auth.form.sneakerSize.error.size.us')
+			)
 			.refine((val) => {
 				const num = Number(val);
 				return (num * 2) % 1 === 0;
@@ -83,6 +100,8 @@ export const createLoginSchema = () => {
 };
 
 export const createSneakerSchema = () => {
+	const currentLanguage = useLanguageStore.getState().currentLanguage;
+
 	return z.object({
 		images: z
 			.array(
@@ -117,13 +136,12 @@ export const createSneakerSchema = () => {
 			.string()
 			.min(1, t('collection.modal.form.errors.size.min'))
 			.transform((val) => val.replace(',', '.'))
-			.refine((val) => {
-				const num = Number(val);
-				return (
-					(!isNaN(num) && num >= 7 && num <= 15) ||
-					(num >= 35 && num <= 48)
-				);
-			}, t('collection.modal.form.errors.size.refine'))
+			.refine(
+				validateSneakerSize,
+				currentLanguage === 'fr'
+					? t('collection.modal.form.errors.size.eu')
+					: t('collection.modal.form.errors.size.us')
+			)
 			.refine((val) => {
 				const num = Number(val);
 				return (num * 2) % 1 === 0;
@@ -150,6 +168,8 @@ export const createSneakerSchema = () => {
 };
 
 export const createEditProfileSchema = () => {
+	const currentLanguage = useLanguageStore.getState().currentLanguage;
+
 	return z.object({
 		username: z
 			.string()
@@ -168,11 +188,12 @@ export const createEditProfileSchema = () => {
 			.string()
 			.min(1, t('auth.form.sneakerSize.error.required'))
 			.transform((val) => val.replace(',', '.'))
-			.refine((val) => {
-				const num = Number(val);
-				if (isNaN(num)) return false;
-				return (num >= 7 && num <= 15) || (num >= 35 && num <= 48);
-			}, t('auth.form.sneakerSize.error.size'))
+			.refine(
+				validateSneakerSize,
+				currentLanguage === 'fr'
+					? t('auth.form.sneakerSize.error.size.eu')
+					: t('auth.form.sneakerSize.error.size.us')
+			)
 			.refine((val) => {
 				const num = Number(val);
 				return (num * 2) % 1 === 0;

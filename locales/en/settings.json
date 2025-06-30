@@ -24,6 +24,7 @@
 		"logout": "Logout",
 		"deleteAccount": "Delete account",
 		"settings": "Settings",
-		"language": "Language"
+		"language": "Language",
+		"app": "App settings"
 	}
 } 
