@@ -93,7 +93,7 @@
 				},
 				"model": {
 					"min": "Sneaker model must be at least 2 characters long.",
-					"brand": "Please select a valid brand."
+					"brandInModel": "The model cannot contain the brand."
 				},
 				"size": {
 					"min": "Please enter the size.",

@@ -23,7 +23,7 @@
 	"messages": {
 		"searching": {
 			"title": "🔍 Recherche de la sneaker...",
-			"description": "Veuillez patienter pendant que nous trouvons votre sneaker..."
+			"description": "Veuillez patienter ..."
 		},
 		"found": {
 			"title": "🔍 Sneaker trouvée",
@@ -93,7 +93,7 @@
 				},
 				"model": {
 					"min": "Le modèle de la sneaker doit contenir au moins 2 caractères.",
-					"brand": "Veuillez sélectionner une marque valide."
+					"brandInModel": "Le modèle ne peut pas contenir la marque."
 				},
 				"size": {
 					"min": "Veuillez entrer la taille.",

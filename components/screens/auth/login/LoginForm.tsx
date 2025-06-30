@@ -15,19 +15,19 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import useToast from "@/hooks/useToast";
 import { useTranslation } from 'react-i18next';
 import { useSession } from '@/context/authContext';
-
 export default function LoginForm() {
     const scrollViewRef = useRef<ScrollView>(null);
     const emailInputRef = useRef<TextInput>(null);
     const passwordInputRef = useRef<TextInput>(null);
 
     const { t } = useTranslation();
-    const { user } = useSession();
 
     const { login, errorMsg: authErrorMsg } = useAuth();
     const { showSuccessToast, showErrorToast } = useToast();
+    const { user, isLoading } = useSession();
     const params = useLocalSearchParams();
     const [resetPasswordSuccess, setResetPasswordSuccess] = useState(params.message as string);
+    const [isLoggingIn, setIsLoggingIn] = useState(false);
 
     const {
         control,
@@ -46,19 +46,16 @@ export default function LoginForm() {
         fieldNames: ['email', 'password'],
         authErrorMsg,
         onSubmit: async (data) => {
+            setIsLoggingIn(true);
             login(data.email, data.password)
-                .then((user) => {
-                    if (user) {
-                        const userName = user.user_metadata?.first_name || user.user_metadata?.username || '';
-                        router.replace('/(app)/(tabs)');
-                        showSuccessToast(
-                            t('auth.login.welcomeBack', { name: userName }), 
-                            t('auth.login.gladToSeeYou')
-                        );
+                .then((authUser) => {
+                    if (!authUser) {
+                        setIsLoggingIn(false);
                     }
                 })
                 .catch((error) => {
                     console.error('Error during login:', error.message);
+                    setIsLoggingIn(false);
                     showErrorToast(
                         t('auth.error.login'), 
                         error.message
@@ -77,6 +74,18 @@ export default function LoginForm() {
             setResetPasswordSuccess('');
         };
     }, [resetPasswordSuccess]);
+
+    useEffect(() => {
+        if (isLoggingIn && user && !isLoading) {
+            setIsLoggingIn(false);
+            const userName = user.first_name || user.username || '';
+            router.replace('/(app)/(tabs)');
+            showSuccessToast(
+                t('auth.login.welcomeBack', { name: userName }), 
+                t('auth.login.gladToSeeYou')
+            );
+        }
+    }, [isLoggingIn, user, isLoading, showSuccessToast, t]);
 
     return (
         <KeyboardAwareScrollView 

@@ -105,7 +105,7 @@ export const createSneakerSchema = () => {
 							.split(' ')
 							.includes(option.value.toLowerCase())
 					),
-				t('collection.modal.form.errors.model.brand')
+				t('collection.modal.form.errors.model.brandInModel')
 			),
 		brand: z
 			.enum(Object.values(SneakerBrand) as [string, ...string[]])
