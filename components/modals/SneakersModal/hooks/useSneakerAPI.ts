@@ -97,6 +97,8 @@ export const useSneakerAPI = (userId: string) => {
 				) {
 					const responseResult = response.results[0];
 
+					console.log(responseResult.market.statistics);
+
 					const transformedSneaker: FetchedSneaker = {
 						model: responseResult.title || '',
 						brand: responseResult.brand.toLowerCase() as SneakerBrand,
