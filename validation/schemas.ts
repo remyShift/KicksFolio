@@ -2,6 +2,7 @@ import { SneakerBrand, SneakerStatus } from '@/types/Sneaker';
 import { z } from 'zod';
 import { t } from 'i18next';
 import { useLanguageStore } from '@/store/useLanguageStore';
+import { useSizeUnitStore } from '@/store/useSizeUnitStore';
 
 export const sneakerStatusOptions = [
 	{ label: 'Stocking', value: SneakerStatus.Stocking },
@@ -49,11 +50,11 @@ export const createSignUpStep1Schema = () => {
 
 const validateSneakerSize = (val: string) => {
 	const num = Number(val);
-	const currentLanguage = useLanguageStore.getState().currentLanguage;
+	const currentUnit = useSizeUnitStore.getState().currentUnit;
 
 	if (isNaN(num)) return false;
 
-	if (currentLanguage === 'fr') {
+	if (currentUnit === 'EU') {
 		return num >= 35 && num <= 48;
 	} else {
 		return num >= 7 && num <= 15;
@@ -80,7 +81,7 @@ export const createSignUpStep2Schema = () => {
 			.transform((val) => val.replace(',', '.'))
 			.refine(
 				validateSneakerSize,
-				currentLanguage === 'fr'
+				useSizeUnitStore.getState().currentUnit === 'EU'
 					? t('auth.form.sneakerSize.error.eu')
 					: t('auth.form.sneakerSize.error.us')
 			)
@@ -100,7 +101,7 @@ export const createLoginSchema = () => {
 };
 
 export const createSneakerSchema = () => {
-	const currentLanguage = useLanguageStore.getState().currentLanguage;
+	const currentUnit = useSizeUnitStore.getState().currentUnit;
 
 	return z.object({
 		images: z
@@ -138,7 +139,7 @@ export const createSneakerSchema = () => {
 			.transform((val) => val.replace(',', '.'))
 			.refine(
 				validateSneakerSize,
-				currentLanguage === 'fr'
+				currentUnit === 'EU'
 					? t('collection.modal.form.errors.size.eu')
 					: t('collection.modal.form.errors.size.us')
 			)
@@ -168,7 +169,7 @@ export const createSneakerSchema = () => {
 };
 
 export const createEditProfileSchema = () => {
-	const currentLanguage = useLanguageStore.getState().currentLanguage;
+	const currentUnit = useSizeUnitStore.getState().currentUnit;
 
 	return z.object({
 		username: z
@@ -190,7 +191,7 @@ export const createEditProfileSchema = () => {
 			.transform((val) => val.replace(',', '.'))
 			.refine(
 				validateSneakerSize,
-				currentLanguage === 'fr'
+				currentUnit === 'EU'
 					? t('auth.form.sneakerSize.error.eu')
 					: t('auth.form.sneakerSize.error.us')
 			)

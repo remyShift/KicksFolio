@@ -3,6 +3,8 @@ import { Image } from 'expo-image';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { Sneaker } from '@/types/Sneaker';
 import { useSession } from '@/context/authContext';
+import { useSizeUnitStore } from '@/store/useSizeUnitStore';
+import SizeDisplay from '@/components/ui/text/SizeDisplay';
 
 interface SneakerListItemProps {
   sneaker: Sneaker;
@@ -12,6 +14,7 @@ interface SneakerListItemProps {
 
 export default function SneakerListItem({ sneaker, onPress, showOwnerInfo = false }: SneakerListItemProps) {  
   const { user } = useSession();
+  const { currentUnit } = useSizeUnitStore();
 
   return (
     <TouchableOpacity
@@ -60,7 +63,7 @@ export default function SneakerListItem({ sneaker, onPress, showOwnerInfo = fals
           </Text>
                     
           <View className="flex-row items-center mt-2 gap-4">
-            <Text className="text-sm text-gray-500">Size: {sneaker.size ? `${sneaker.size}US` : 'N/A'}</Text>
+            <SizeDisplay sneaker={sneaker} className="text-sm text-gray-500" />
             <Text className="text-sm text-gray-500">Condition: {sneaker.condition ? `${sneaker.condition}/10` : 'N/A'}</Text>
             {sneaker.price_paid > 0 && (
               <Text className="text-sm font-medium text-green-600">

@@ -70,9 +70,7 @@ export class SizeConversionService {
 	}
 
 	static formatSize(size: number, unit: SizeUnit): string {
-		const formattedSize =
-			size % 1 === 0 ? size.toString() : size.toString();
-		return `${formattedSize} ${unit}`;
+		return `${String(size)} ${unit}`;
 	}
 
 	static convertAndFormat(

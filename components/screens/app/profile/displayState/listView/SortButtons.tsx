@@ -16,7 +16,7 @@ export default function SortButtons() {
   const { t } = useTranslation();
   return (
     <View className="flex-row flex-wrap gap-2 mb-2 px-4">
-                      <Text className="text-sm font-medium text-gray-700 mr-2">{t('collection.filters.sortBy')}</Text>
+      <Text className="text-sm font-medium text-gray-700 mr-2">{t('collection.filters.sortBy')}</Text>
       {SORT_OPTIONS.map(({ key, label }) => (
         <TouchableOpacity
           key={key}

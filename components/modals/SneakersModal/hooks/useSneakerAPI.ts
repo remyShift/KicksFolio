@@ -243,6 +243,7 @@ export const useSneakerAPI = () => {
 					callbacks.setCurrentSneaker?.(convertedSneaker);
 					callbacks.setModalStep('view');
 					refreshUserSneakers().then(() => {
+						console.log('sneaker added', convertedSneaker);
 						showSuccessToast(
 							`➕ ${convertedSneaker.model} ${t(
 								'collection.modal.form.success.added'
