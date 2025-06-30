@@ -111,7 +111,6 @@ export const useSneakerAPI = () => {
 						},
 					};
 					callbacks.setFetchedSneaker?.(transformedSneaker);
-					console.log('transformedSneaker', transformedSneaker);
 					callbacks.setModalStep('addForm');
 				}
 				return response;

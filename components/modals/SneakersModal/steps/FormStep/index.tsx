@@ -73,7 +73,6 @@ export const FormStep = () => {
             
             reset(formData);
             setSneakerToAdd(formData);
-            console.log('fetchedSneaker', fetchedSneaker.estimated_value);
             setEstimatedValue(fetchedSneaker.estimated_value);
             setGender(fetchedSneaker.gender || null);
             setSku(fetchedSneaker.sku);
