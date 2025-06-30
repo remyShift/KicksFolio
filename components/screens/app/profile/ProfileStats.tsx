@@ -1,6 +1,7 @@
 import { View, Text } from 'react-native';
 import { useSession } from '@/context/authContext';
 import { useTranslation } from 'react-i18next';
+import { useCurrencyStore } from '@/store/useCurrencyStore';
 
 interface ProfileStatsProps {
     sneakersCount: number;
@@ -11,6 +12,9 @@ export default function ProfileStats({ sneakersCount, friendsCount }: ProfileSta
     const { userSneakers } = useSession();
     const { t } = useTranslation();
     const totalValue = userSneakers?.reduce((acc, sneaker) => acc + (sneaker.estimated_value || 0), 0) || 0;
+
+    const { formattedPrice } = useCurrencyStore();
+
     return (
         <View className="flex-col w-full gap-5 px-4">
             <View className="flex-row w-full justify-between">
@@ -38,7 +42,7 @@ export default function ProfileStats({ sneakersCount, friendsCount }: ProfileSta
                     {t('ui.labels.value')}
                 </Text>
                 <Text className="font-spacemono-bold text-2xl">
-                    ${totalValue}
+                    {formattedPrice(totalValue)}
                 </Text>
             </View>
         </View>

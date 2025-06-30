@@ -11,9 +11,15 @@ interface CurrencyStore {
 	setCurrency: (currency: Currency) => Promise<void>;
 	initializeCurrency: () => Promise<void>;
 	getCurrentCurrency: () => Currency;
+	formattedPrice: (price: number) => string;
 }
 
 const CURRENCY_STORAGE_KEY = 'app_currency';
+
+const exchangeRates = {
+	USD: 1,
+	EUR: 0.85,
+};
 
 export const useCurrencyStore = create<CurrencyStore>((set, get) => ({
 	currentCurrency: 'USD',
@@ -66,6 +72,7 @@ export const useCurrencyStore = create<CurrencyStore>((set, get) => ({
 			.then((currencyToUse) => {
 				console.log('🔄 Updating store state to:', currencyToUse);
 				set({
+					currentCurrency: currencyToUse,
 					isInitialized: true,
 				});
 				console.log(`✅ Store state updated to: ${currencyToUse}`);
@@ -80,6 +87,20 @@ export const useCurrencyStore = create<CurrencyStore>((set, get) => ({
 					isInitialized: true,
 				});
 			});
+	},
+
+	formattedPrice: (price: number) => {
+		const priceExchange = exchangeRates[get().currentCurrency];
+		const priceInCurrency = price * priceExchange;
+
+		switch (get().currentCurrency) {
+			case 'USD':
+				return `$${priceInCurrency.toFixed(2)}`;
+			case 'EUR':
+				return `${priceInCurrency.toFixed(2)}€`;
+			default:
+				return `$${priceInCurrency.toFixed(2)}`;
+		}
 	},
 
 	getCurrentCurrency: () => get().currentCurrency,

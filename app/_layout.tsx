@@ -11,6 +11,7 @@ import '@/locales/i18n';
 import { useLanguageStore } from '@/store/useLanguageStore';
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';
 import { deviceLanguage } from '@/locales/i18n';
+import { useCurrencyStore } from '@/store/useCurrencyStore';
 
 const FONTS = {
     'Actonia': require('../assets/fonts/Actonia.ttf'),
@@ -26,6 +27,7 @@ function AppContent() {
     const [fontsLoaded] = useFonts(FONTS);
     const { initializeLanguage, isInitialized: languageInitialized } = useLanguageStore();
     const { initializeUnit, isInitialized: sizeUnitInitialized } = useSizeUnitStore();
+    const { initializeCurrency, isInitialized: currencyInitialized } = useCurrencyStore();
 
     const handleSplashScreenComplete = useCallback(() => {
         setIsSplashScreenVisible(false);
@@ -42,6 +44,12 @@ function AppContent() {
             initializeUnit();
         }
     }, [initializeUnit, sizeUnitInitialized, languageInitialized]);
+
+    useEffect(() => {
+        if (!currencyInitialized && languageInitialized) {
+            initializeCurrency();
+        }
+    }, [initializeCurrency, currencyInitialized, languageInitialized]);
 
     if (!fontsLoaded) {
         return null;

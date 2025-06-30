@@ -7,10 +7,12 @@ import { PhotoCarousel } from '@/components/ui/images/photoCaroussel/PhotoCarous
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import LoveButton from '@/components/modals/SneakersModal/steps/ViewStep/LoveButton';
 import SizeDisplay from '@/components/ui/text/SizeDisplay';
+import { useCurrencyStore } from '@/store/useCurrencyStore';
 
 export const ViewStep = () => {
     const { currentSneaker } = useModalStore();
     const [errorMsg, setErrorMsg] = useState('');
+    const { formattedPrice } = useCurrencyStore();
 
     if (!currentSneaker) {
         return null;
@@ -76,7 +78,7 @@ export const ViewStep = () => {
                         <Text className='font-spacemono text-center text-sm'>Value</Text>
                         <View className="w-4/5">
                             <Text className="font-spacemono-bold text-lg text-center">
-                                {currentSneaker.estimated_value ? '$' + currentSneaker.estimated_value : 'N/A'}
+                                {currentSneaker.estimated_value ? formattedPrice(currentSneaker.estimated_value) : 'N/A'}
                             </Text>
                         </View>
                     </View>
