@@ -7,6 +7,7 @@ interface ToggleProps {
     currentValue: string;
     onToggle: (newValue: string) => void;
     testID?: string;
+    px?: number;
 }
 
 export default function Toggle({ 
@@ -14,14 +15,15 @@ export default function Toggle({
     rightValue, 
     currentValue, 
     onToggle,
-    testID 
+    testID,
+    px = 4
 }: ToggleProps) {
     const isLeftSelected = currentValue === leftValue;
     const translateX = useRef(new Animated.Value(isLeftSelected ? 4 : 46)).current;
 
     useEffect(() => {
         Animated.spring(translateX, {
-            toValue: isLeftSelected ? 4 : 42,
+            toValue: isLeftSelected ? 3 : 46,
             useNativeDriver: true,
             damping: 20,
             stiffness: 180,
@@ -37,7 +39,7 @@ export default function Toggle({
     return (
         <View className="flex-row items-center" testID={testID}>
             <Pressable
-                className="w-[80px] h-8 rounded-full bg-gray-300 relative flex-row items-center justify-between px-4"
+                className={`w-24 h-8 rounded-full bg-gray-300 relative flex-row items-center justify-between ${px ? `px-${px}` : 'px-4'}`}
                 onPress={handlePress}
             >
                 <Text 

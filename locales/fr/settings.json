@@ -26,10 +26,15 @@
 		"settings": "Paramètres",
 		"language": "Langue",
 		"app": "Paramètres de l'application",
-		"sizeUnit": "Affichage des tailles"
+		"sizeUnit": "Affichage des tailles",
+		"currency": "Devise"
 	},
 	"sizeUnit": {
 		"title": "Affichage des tailles modifié",
 		"description": "Les tailles seront affichées en {{unit}}"
+	},
+	"currency": {
+		"title": "Devise modifiée",
+		"description": "La devise a été mise à jour avec succès"
 	}
 } 

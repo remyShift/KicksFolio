@@ -8,11 +8,14 @@ import { useLanguageStore } from "@/store/useLanguageStore";
 import { useSizeUnitStore } from "@/store/useSizeUnitStore";
 import useToast from "@/hooks/useToast";
 import Spacer from "../shared/Spacer";
+import CurrencyToggle from "./CurrencyToggle";
+import { useCurrencyStore } from "@/store/useCurrencyStore";
 
 export default function AppSettings() {
     const { t } = useTranslation();
     const { currentLanguage, setLanguage } = useLanguageStore();
     const { currentUnit, setUnit } = useSizeUnitStore();
+    const { currentCurrency, setCurrency } = useCurrencyStore();
     const { showSuccessToast } = useToast();
 
     const handleLanguageChange = (newLanguage: 'en' | 'fr') => {
@@ -28,6 +31,14 @@ export default function AppSettings() {
         showSuccessToast(
             t('settings.sizeUnit.title'),
             t('settings.sizeUnit.description', { unit: newUnit })
+        );
+    };
+
+    const handleCurrencyChange = (newCurrency: 'USD' | 'EUR') => {
+        setCurrency(newCurrency);
+        showSuccessToast(
+            t('settings.currency.title'),
+            t('settings.currency.description')
         );
     };
 
@@ -57,6 +68,20 @@ export default function AppSettings() {
                     />
                 }
                 testID="size-unit"
+            />
+
+            <Spacer />
+
+            <SettingsMenuItem 
+                icon="cash-outline"
+                label={t('settings.titles.currency')}
+                rightElement={
+                    <CurrencyToggle 
+                        currentCurrency={currentCurrency}
+                        onToggle={handleCurrencyChange}
+                    />
+                }
+                testID="currency"
             />
         </SettingsCategory>
     );

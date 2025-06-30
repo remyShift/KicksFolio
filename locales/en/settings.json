@@ -26,10 +26,15 @@
 		"settings": "Settings",
 		"language": "Language",
 		"app": "App Settings",
-		"sizeUnit": "Size display"
+		"sizeUnit": "Size display",
+		"currency": "Currency"
 	},
 	"sizeUnit": {
 		"title": "Size display changed",
 		"description": "The sneaker size display is now {{unit}}"
+	},
+	"currency": {
+		"title": "Currency changed",
+		"description": "The currency has been updated successfully"
 	}
 } 
