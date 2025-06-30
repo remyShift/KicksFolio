@@ -20,42 +20,57 @@ export const useSizeUnitStore = create<SizeUnitStore>((set, get) => ({
 	isInitialized: false,
 
 	setUnit: async (unit: SizeUnit) => {
-		AsyncStorage.setItem(SIZE_UNIT_STORAGE_KEY, unit)
+		console.log('🔄 Attempting to save size unit:', unit);
+		return AsyncStorage.setItem(SIZE_UNIT_STORAGE_KEY, unit)
 			.then(() => {
 				set({ currentUnit: unit });
-				console.log(`✅ Size unit changed to: ${unit}`);
+				console.log(`✅ Size unit saved and state updated to: ${unit}`);
 			})
 			.catch((error) => {
-				console.error('❌ Error changing size unit:', error);
+				console.error('❌ Error saving size unit:', error);
 			});
 	},
 
 	initializeUnit: async () => {
 		const { currentLanguage } = useLanguageStore.getState();
+		console.log(
+			'🔄 Initializing size unit, current language:',
+			currentLanguage
+		);
 
-		AsyncStorage.getItem(SIZE_UNIT_STORAGE_KEY)
+		return AsyncStorage.getItem(SIZE_UNIT_STORAGE_KEY)
 			.then((savedUnit) => {
-				let unitToUse: SizeUnit;
+				console.log('📦 Retrieved from storage:', savedUnit);
 
 				if (savedUnit && (savedUnit === 'US' || savedUnit === 'EU')) {
-					unitToUse = savedUnit;
-				} else {
-					unitToUse = currentLanguage === 'fr' ? 'EU' : 'US';
+					console.log('✅ Using saved unit:', savedUnit);
+					return savedUnit as SizeUnit;
 				}
 
-				return unitToUse;
+				const defaultUnit = currentLanguage === 'fr' ? 'EU' : 'US';
+				console.log('📝 Setting default unit:', defaultUnit);
+				return AsyncStorage.setItem(
+					SIZE_UNIT_STORAGE_KEY,
+					defaultUnit
+				).then(() => {
+					console.log('✅ Default unit saved:', defaultUnit);
+					return defaultUnit;
+				});
 			})
 			.then((unitToUse) => {
+				console.log('🔄 Updating store state to:', unitToUse);
 				set({
 					currentUnit: unitToUse,
 					isInitialized: true,
 				});
-				console.log(`✅ Size unit initialized to: ${unitToUse}`);
+				console.log(`✅ Store state updated to: ${unitToUse}`);
 			})
 			.catch((error) => {
-				console.error('❌ Error initializing size unit:', error);
+				console.error('❌ Error in initialization:', error);
+				const defaultUnit = currentLanguage === 'fr' ? 'EU' : 'US';
+				console.log('⚠️ Using fallback unit:', defaultUnit);
 				set({
-					currentUnit: 'EU',
+					currentUnit: defaultUnit,
 					isInitialized: true,
 				});
 			});

@@ -9,6 +9,7 @@ import { KeyboardProvider } from "react-native-keyboard-controller";
 import Toast from 'react-native-toast-message';
 import '@/locales/i18n';
 import { useLanguageStore } from '@/store/useLanguageStore';
+import { useSizeUnitStore } from '@/store/useSizeUnitStore';
 import { deviceLanguage } from '@/locales/i18n';
 
 const FONTS = {
@@ -23,17 +24,24 @@ const FONTS = {
 function AppContent() {
     const [isSplashScreenVisible, setIsSplashScreenVisible] = useState(true);
     const [fontsLoaded] = useFonts(FONTS);
-    const { initializeLanguage, isInitialized } = useLanguageStore();
+    const { initializeLanguage, isInitialized: languageInitialized } = useLanguageStore();
+    const { initializeUnit, isInitialized: sizeUnitInitialized } = useSizeUnitStore();
 
     const handleSplashScreenComplete = useCallback(() => {
         setIsSplashScreenVisible(false);
     }, []);
 
     useEffect(() => {
-        if (!isInitialized) {
+        if (!languageInitialized) {
             initializeLanguage(deviceLanguage);
         }
-    }, [initializeLanguage, isInitialized]);
+    }, [initializeLanguage, languageInitialized]);
+
+    useEffect(() => {
+        if (!sizeUnitInitialized && languageInitialized) {
+            initializeUnit();
+        }
+    }, [initializeUnit, sizeUnitInitialized, languageInitialized]);
 
     if (!fontsLoaded) {
         return null;
@@ -56,9 +64,9 @@ export default function RootLayout() {
             <KeyboardProvider>
                 <SessionProvider>
                     <AppContent />
+                    <Toast />
                 </SessionProvider>
             </KeyboardProvider>
-            <Toast topOffset={60} />
         </GestureHandlerRootView>
     );
 }
