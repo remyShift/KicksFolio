@@ -227,6 +227,7 @@ export const useAuth = () => {
 				return true;
 			})
 			.catch((error) => {
+				console.error('❌ Error deleting account:', error);
 				throw error;
 			});
 	};
