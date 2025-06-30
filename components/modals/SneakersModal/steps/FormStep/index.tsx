@@ -73,13 +73,16 @@ export const FormStep = () => {
             
             reset(formData);
             setSneakerToAdd(formData);
+            console.log('fetchedSneaker', fetchedSneaker.estimated_value);
             setEstimatedValue(fetchedSneaker.estimated_value);
             setGender(fetchedSneaker.gender || null);
             setSku(fetchedSneaker.sku);
             
             setFetchedSneaker(null);
         }
+    }, [fetchedSneaker]);
 
+    useEffect(() => {
         return () => {
             setGender(null);
             setSku(null);
@@ -87,7 +90,7 @@ export const FormStep = () => {
             setSneakerToAdd(null);
             setEstimatedValue(null);
         };
-    }, [fetchedSneaker]);
+    }, []);
 
     useEffect(() => {
         return () => {

@@ -38,7 +38,7 @@ interface SkuSearchResponse {
 	}>;
 }
 
-export const useSneakerAPI = (userId: string) => {
+export const useSneakerAPI = () => {
 	const { refreshUserSneakers, userSneakers, user } = useSession();
 	const { showSuccessToast, showErrorToast } = useToast();
 	const { t } = useTranslation();
@@ -97,8 +97,6 @@ export const useSneakerAPI = (userId: string) => {
 				) {
 					const responseResult = response.results[0];
 
-					console.log(responseResult.market.statistics);
-
 					const transformedSneaker: FetchedSneaker = {
 						model: responseResult.title || '',
 						brand: responseResult.brand.toLowerCase() as SneakerBrand,
@@ -113,6 +111,7 @@ export const useSneakerAPI = (userId: string) => {
 						},
 					};
 					callbacks.setFetchedSneaker?.(transformedSneaker);
+					console.log('transformedSneaker', transformedSneaker);
 					callbacks.setModalStep('addForm');
 				}
 				return response;
@@ -198,7 +197,7 @@ export const useSneakerAPI = (userId: string) => {
 						? parseFloat(formData.price_paid.toString())
 						: undefined,
 					description: formData.description,
-					estimated_value: estimatedValue || undefined,
+					estimated_value: estimatedValue || 0,
 					gender: gender as 'men' | 'women' | undefined,
 					sku: sku || undefined,
 				};

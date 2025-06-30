@@ -33,7 +33,7 @@ export const SkuStep = () => {
         setModalStep,
     } = useModalStore();
 
-    const { handleSkuSearch } = useSneakerAPI(user!.id);
+    const { handleSkuSearch } = useSneakerAPI();
 
     useEffect(() => {
         setErrorMsg('');

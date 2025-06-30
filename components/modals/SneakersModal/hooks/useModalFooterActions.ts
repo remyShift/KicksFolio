@@ -44,7 +44,7 @@ export const useModalFooterActions = () => {
 		handleNext,
 		handlePrevious,
 		handleSneakerDelete,
-	} = useSneakerAPI(user!.id);
+	} = useSneakerAPI();
 
 	const handleEditAction = () => {
 		setModalStep('editForm');
