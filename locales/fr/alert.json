@@ -3,22 +3,12 @@
 		"deleteAccount": "Supprimer le compte",
 		"logout": "Déconnexion",
 		"loggedOut": "👋🏼 Déconnecté",
-		"loggedOutDescription": "À bientôt !",
-		"deleteSneaker": "Supprimer la sneaker",
-		"deleteSneakerDescription": "Êtes-vous sûr de vouloir supprimer cette sneaker ? Cette action est irréversible.",
-		"deletingSneaker": "🔍 Suppression de la sneaker...",
-		"deletingSneakerDescription": "Veuillez patienter...",
-		"sneakerDeleted": "🗑️ Sneaker supprimée",
-		"sneakerDeletionFailed": "❌ La sneaker n'a pas pu être supprimée."
+		"loggedOutDescription": "À bientôt !"
 	},
 	"descriptions": {
 		"deleteAccount": "Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.",
 		"logout": "Êtes-vous sûr de vouloir vous déconnecter ?",
-		"loggedOut": "Vous avez été déconnecté avec succès.",
-		"deleteSneaker": "La sneaker a été supprimée avec succès.",
-		"deletingSneaker": "La sneaker a été supprimée avec succès.",
-		"sneakerDeleted": "La sneaker a été supprimée avec succès.",
-		"sneakerDeletionFailed": "La sneaker n'a pas pu être supprimée."
+		"loggedOut": "À bientôt !"
 	},
 	"buttons": {
 		"cancel": "Annuler",
