@@ -7,13 +7,13 @@
 		"profileUpdated": "👤 Profil mis à jour",
 		"profileUpdatedDescription": "Votre profil a été mis à jour avec succès.",
 		"profileUpdateFailed": "❌ Échec de la mise à jour du profil",
-		"profileUpdateFailedDescription": "Une erreur est survenue lors de la mise à jour de votre profil."
+		"profileUpdateFailedDescription": "Une erreur est survenue."
 	},
 	"deleteAccount": {
 		"accountDeleted": "🗑️ Compte supprimé",
 		"accountDeletedDescription": "Votre compte a été supprimé avec succès.",
 		"accountDeletionFailed": "❌ Échec de la suppression du compte",
-		"accountDeletionFailedDescription": "Une erreur est survenue lors de la suppression de votre compte."
+		"accountDeletionFailedDescription": "Une erreur est survenue."
 	},
 	"buttons": {
 		"save": "Enregistrer"
