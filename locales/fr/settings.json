@@ -1,7 +1,7 @@
 {
 	"language": {
-		"title": "Langue changée",
-		"description": "Votre langue a été changée."
+		"title": "Langue modifiée",
+		"description": "La langue de l'application a été mise à jour avec succès"
 	},
 	"editProfile": {
 		"profileUpdated": "👤 Profil mis à jour",
@@ -25,6 +25,11 @@
 		"deleteAccount": "Supprimer le compte",
 		"settings": "Paramètres",
 		"language": "Langue",
-		"app": "Paramètres de l'application"
+		"app": "Paramètres de l'application",
+		"sizeUnit": "Affichage des tailles"
+	},
+	"sizeUnit": {
+		"title": "Affichage des tailles modifié",
+		"description": "Les tailles seront affichées en {{unit}}"
 	}
 } 

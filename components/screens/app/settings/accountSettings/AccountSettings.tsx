@@ -1,6 +1,6 @@
 import { router } from 'expo-router'
-import SettingsCategory from '../SettingsCategory'
-import SettingsMenuItem from '../SettingsMenuItem'
+import SettingsCategory from '../shared/SettingsCategory'
+import SettingsMenuItem from '../shared/SettingsMenuItem'
 import { useTranslation } from 'react-i18next'
 import { Alert, Linking, View } from 'react-native'
 import { useAuth } from '@/hooks/useAuth'

@@ -1,7 +1,7 @@
 {
 	"language": {
-		"title": "Language changed",
-		"description": "Your language has been changed."
+		"title": "Language Changed",
+		"description": "The app language has been updated successfully"
 	},
 	"editProfile": {
 		"profileUpdated": "👤 Profile updated",
@@ -20,11 +20,16 @@
 	},
 	"titles": {
 		"editProfile": "Edit profile",
-		"account": "Account settings",
+		"account": "Account Settings",
 		"logout": "Logout",
 		"deleteAccount": "Delete account",
 		"settings": "Settings",
 		"language": "Language",
-		"app": "App settings"
+		"app": "App Settings",
+		"sizeUnit": "Size display"
+	},
+	"sizeUnit": {
+		"title": "Size display changed",
+		"description": "The sneaker size display is now {{unit}}"
 	}
 } 
