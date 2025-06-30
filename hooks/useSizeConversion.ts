@@ -26,12 +26,35 @@ export const useSizeConversion = () => {
 		originalUnit: SizeUnit,
 		gender: GenderType = 'men'
 	): string => {
+		console.log(
+			'formatSizeForDisplay',
+			size,
+			originalUnit,
+			currentUnit,
+			gender
+		);
+		console.log(
+			'convertAndFormat',
+			SizeConversionService.convertAndFormat(
+				size,
+				originalUnit,
+				currentUnit,
+				gender
+			)
+		);
 		return SizeConversionService.convertAndFormat(
 			size,
 			originalUnit,
 			currentUnit,
 			gender
 		);
+	};
+
+	const getOriginalUnit = (
+		size: number,
+		gender: GenderType = 'men'
+	): SizeUnit => {
+		return size >= 7 && size <= 15 ? 'US' : 'EU';
 	};
 
 	const getAvailableSizesForCurrentUnit = (
@@ -55,6 +78,7 @@ export const useSizeConversion = () => {
 		currentUnit,
 		convertToCurrentUnit,
 		formatSizeForDisplay,
+		getOriginalUnit,
 		getAvailableSizesForCurrentUnit,
 		isValidSizeInCurrentUnit,
 		formatCurrentUnitSize,

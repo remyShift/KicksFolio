@@ -81,8 +81,8 @@ export const createSignUpStep2Schema = () => {
 			.refine(
 				validateSneakerSize,
 				currentLanguage === 'fr'
-					? t('auth.form.sneakerSize.error.size.eu')
-					: t('auth.form.sneakerSize.error.size.us')
+					? t('auth.form.sneakerSize.error.eu')
+					: t('auth.form.sneakerSize.error.us')
 			)
 			.refine((val) => {
 				const num = Number(val);
@@ -191,8 +191,8 @@ export const createEditProfileSchema = () => {
 			.refine(
 				validateSneakerSize,
 				currentLanguage === 'fr'
-					? t('auth.form.sneakerSize.error.size.eu')
-					: t('auth.form.sneakerSize.error.size.us')
+					? t('auth.form.sneakerSize.error.eu')
+					: t('auth.form.sneakerSize.error.us')
 			)
 			.refine((val) => {
 				const num = Number(val);

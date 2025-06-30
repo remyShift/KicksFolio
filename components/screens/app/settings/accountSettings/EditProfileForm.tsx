@@ -14,17 +14,21 @@ import { createEditProfileSchema, EditProfileFormData } from '@/validation/schem
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller'
 import useToast from '@/hooks/useToast'
 import { useTranslation } from 'react-i18next'
+import { useSizeConversion } from '@/hooks/useSizeConversion'
 
 export default function EditProfileForm() {
     const { t } = useTranslation();
     const { user, refreshUserData } = useSession()
     const { showSuccessToast, showErrorToast } = useToast();
     const { updateUser } = useAuth()
+    const { convertToCurrentUnit, getOriginalUnit } = useSizeConversion()
     const scrollViewRef = useRef<ScrollView>(null)
     const usernameInputRef = useRef<TextInput>(null)
     const firstNameInputRef = useRef<TextInput>(null)
     const lastNameInputRef = useRef<TextInput>(null)
     const sizeInputRef = useRef<TextInput>(null)
+
+    const convertedSneakerSize = convertToCurrentUnit(user!.sneaker_size, getOriginalUnit(user!.sneaker_size))
 
     const {
         control,
@@ -40,7 +44,7 @@ export default function EditProfileForm() {
             username: user!.username,
             first_name: user!.first_name,
             last_name: user!.last_name,
-            sneaker_size: user!.sneaker_size.toString(),
+            sneaker_size: convertedSneakerSize!.toString(),
             profile_picture: user!.profile_picture_url,
         },
         isEditForm: true,
