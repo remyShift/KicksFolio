@@ -6,6 +6,7 @@ import { Alert, Linking, View } from 'react-native'
 import { useAuth } from '@/hooks/useAuth'
 import useToast from '@/hooks/useToast'
 import { useSession } from '@/context/authContext'
+import Spacer from '../shared/Spacer'
 
 export default function AccountSettings() {
     const { t } = useTranslation()
@@ -82,7 +83,7 @@ export default function AccountSettings() {
                 onPress={() => Linking.openURL('https://remyshift.github.io/KicksFolio/')}
             />
 
-            <View className="h-px rounded-full w-1/2 bg-gray-300" />
+            <Spacer />
 
             <SettingsMenuItem 
                 icon="person-outline"
@@ -91,7 +92,7 @@ export default function AccountSettings() {
                 testID="edit-profile"
             />
 
-            <View className="h-px rounded-full w-1/2 bg-gray-300" />
+            <Spacer />
 
             <SettingsMenuItem 
                 icon="exit-outline"
@@ -100,7 +101,7 @@ export default function AccountSettings() {
                 testID="logout"
             />
 
-            <View className="h-px rounded-full w-1/2 bg-gray-300" />
+            <Spacer />
 
             <SettingsMenuItem 
                 icon="trash-outline"

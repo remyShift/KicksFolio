@@ -16,7 +16,6 @@ export default function LanguageToggle({ onToggle, currentLanguage }: LanguageTo
             rightValue="fr"
             currentValue={currentLanguage}
             onToggle={handleToggle}
-            displayValue={currentLanguage === 'en' ? 'EN' : 'FR'}
             testID="language-toggle"
         />
     );

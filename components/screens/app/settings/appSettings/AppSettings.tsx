@@ -7,6 +7,7 @@ import SizeUnitToggle from "./SizeUnitToggle";
 import { useLanguageStore } from "@/store/useLanguageStore";
 import { useSizeUnitStore } from "@/store/useSizeUnitStore";
 import useToast from "@/hooks/useToast";
+import Spacer from "../shared/Spacer";
 
 export default function AppSettings() {
     const { t } = useTranslation();
@@ -43,6 +44,9 @@ export default function AppSettings() {
                 }
                 testID="language"
             />
+
+            <Spacer />
+
             <SettingsMenuItem 
                 icon="resize-outline"
                 label={t('settings.titles.sizeUnit')}

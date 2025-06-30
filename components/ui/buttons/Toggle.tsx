@@ -6,7 +6,6 @@ interface ToggleProps {
     rightValue: string;
     currentValue: string;
     onToggle: (newValue: string) => void;
-    displayValue?: string;
     testID?: string;
 }
 
@@ -14,19 +13,19 @@ export default function Toggle({
     leftValue, 
     rightValue, 
     currentValue, 
-    onToggle, 
-    displayValue,
+    onToggle,
     testID 
 }: ToggleProps) {
     const isLeftSelected = currentValue === leftValue;
-    const translateX = useRef(new Animated.Value(isLeftSelected ? 0 : 28)).current;
+    const translateX = useRef(new Animated.Value(isLeftSelected ? 4 : 46)).current;
 
     useEffect(() => {
         Animated.spring(translateX, {
-            toValue: isLeftSelected ? 4 : 28,
+            toValue: isLeftSelected ? 4 : 42,
             useNativeDriver: true,
-            damping: 15,
-            stiffness: 120,
+            damping: 20,
+            stiffness: 180,
+            mass: 0.5,
         }).start();
     }, [currentValue, isLeftSelected]);
 
@@ -36,21 +35,28 @@ export default function Toggle({
     };
 
     return (
-        <View className="flex-row items-center gap-4" testID={testID}>
+        <View className="flex-row items-center" testID={testID}>
             <Pressable
-                className="w-[56px] h-7 rounded-full bg-gray-300 relative"
+                className="w-[80px] h-8 rounded-full bg-gray-300 relative flex-row items-center justify-between px-4"
                 onPress={handlePress}
             >
+                <Text 
+                    className={`text-xs font-spacemono-bold z-10 ${isLeftSelected ? 'text-white' : 'text-gray-600'}`}
+                >
+                    {leftValue.toUpperCase()}
+                </Text>
+                <Text 
+                    className={`text-xs font-spacemono-bold z-10 ${!isLeftSelected ? 'text-white' : 'text-gray-600'}`}
+                >
+                    {rightValue.toUpperCase()}
+                </Text>
                 <Animated.View
-                    className="w-6 h-6 rounded-full bg-primary absolute top-0.5 left-0.5"
+                    className="w-10 h-7 rounded-full bg-primary absolute top-0.5"
                     style={{
                         transform: [{ translateX }],
                     }}
                 />
             </Pressable>
-            <Text className="font-spacemono-bold">
-                {displayValue || currentValue}
-            </Text>
         </View>
     );
 } 
