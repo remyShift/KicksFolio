@@ -55,6 +55,10 @@ export const useSizeConversion = () => {
 		return SizeConversionService.formatSize(size, currentUnit);
 	};
 
+	const getOriginalUnit = (size: number): SizeUnit => {
+		return SizeConversionService.detectSizeUnit(size);
+	};
+
 	return {
 		currentUnit,
 		getSizeForCurrentUnit,
@@ -64,6 +68,7 @@ export const useSizeConversion = () => {
 		getAvailableSizesForCurrentUnit,
 		isValidSizeInCurrentUnit,
 		formatCurrentUnitSize,
+		getOriginalUnit,
 		SizeConversionService,
 	};
 };
