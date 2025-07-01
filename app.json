@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "KicksFolio",
-    "slug": "KicksFolio",
+    "slug": "KicksFolio-Frontend",
     "version": "0.0.6",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -87,10 +87,6 @@
     "extra": {
       "router": {
         "origin": false
-      },
-      "eas": {
-        "projectId": "e27c7b67-44d9-4af8-9a57-d94b81359832",
-        "owner": "remyshift"
       }
     },
     "owner": "remyshift"

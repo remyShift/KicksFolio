@@ -34,7 +34,7 @@
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
-          <string>exp+kicksfolio</string>
+          <string>exp+kicksfolio-frontend</string>
         </array>
       </dict>
     </array>
