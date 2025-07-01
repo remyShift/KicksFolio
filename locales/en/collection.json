@@ -146,6 +146,7 @@
 		"clearAll": "Clear all filters"
 	},
 	"cards": {
-		"ownedBy": "Owned by"
+		"ownedBy": "Owned by",
+		"me": "me"
 	}
 }

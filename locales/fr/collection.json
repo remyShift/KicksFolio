@@ -146,6 +146,7 @@
 		"clearAll": "Effacer tous les filtres"
 	},
 	"cards": {
-		"ownedBy": "Possédé par"
+		"ownedBy": "Possédé par",
+		"me": "moi"
 	}
 }

@@ -3,9 +3,9 @@ import { Image } from 'expo-image';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { Sneaker } from '@/types/Sneaker';
 import { useSession } from '@/context/authContext';
-import { useSizeUnitStore } from '@/store/useSizeUnitStore';
 import SizeDisplay from '@/components/ui/text/SizeDisplay';
-import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
+import { useCurrencyStore } from '@/store/useCurrencyStore';
 
 interface SneakerListItemProps {
   sneaker: Sneaker;
@@ -15,7 +15,8 @@ interface SneakerListItemProps {
 
 export default function SneakerListItem({ sneaker, onPress, showOwnerInfo = false }: SneakerListItemProps) {  
   const { user } = useSession();
-  const { currentUnit } = useSizeUnitStore();
+  const { formattedPrice } = useCurrencyStore();
+  const { t } = useTranslation();
 
   return (
     <TouchableOpacity
@@ -68,7 +69,7 @@ export default function SneakerListItem({ sneaker, onPress, showOwnerInfo = fals
             <Text className="text-sm text-gray-500">{t('collection.fields.condition')} : {sneaker.condition ? `${sneaker.condition}/10` : 'N/A'}</Text>
             {sneaker.price_paid > 0 && (
               <Text className="text-sm font-medium text-green-600">
-                {sneaker.price_paid}€
+                {formattedPrice(sneaker.price_paid)}
               </Text>
             )}
           </View>
@@ -79,7 +80,7 @@ export default function SneakerListItem({ sneaker, onPress, showOwnerInfo = fals
                 {t('collection.cards.ownedBy')}
               </Text>
               <Text className="font-spacemono text-sm text-primary pb-1">
-                {sneaker.owner.username === user!.username ? 'me' : `@${sneaker.owner.username}`}
+                {sneaker.owner.username === user!.username ? t('collection.cards.me') : `@${sneaker.owner.username}`}
               </Text>
             </View>
           )}
