@@ -8,7 +8,7 @@ const brandLogos: Record<string, any> = {
     nike: require('@/assets/images/brands/nike.png'),
     adidas: require('@/assets/images/brands/adidas.png'),
     jordan: require('@/assets/images/brands/jordan.png'),
-    newbalance: require('@/assets/images/brands/newbalance.png'),
+    'new balance': require('@/assets/images/brands/newbalance.png'),
     asics: require('@/assets/images/brands/asics.png'),
     puma: require('@/assets/images/brands/puma.png'),
     reebok: require('@/assets/images/brands/reebok.png'),
