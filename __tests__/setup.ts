@@ -83,6 +83,15 @@ jest.mock('../hooks/useAsyncValidation', () => ({
 	useAsyncValidation: () => mockUseAsyncValidation,
 }));
 
+jest.mock('../hooks/useToast', () => ({
+	__esModule: true,
+	default: jest.fn(() => ({
+		showSuccessToast: jest.fn(),
+		showErrorToast: jest.fn(),
+		showInfoToast: jest.fn(),
+	})),
+}));
+
 jest.mock('../context/authContext', () => ({
 	useSession: jest.fn().mockReturnValue({
 		user: mockUser,

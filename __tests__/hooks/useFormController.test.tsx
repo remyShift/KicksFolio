@@ -206,15 +206,16 @@ describe('useFormController', () => {
 				})
 			);
 
+			// Set invalid values for multiple fields
 			await act(async () => {
 				result.current.setValue('username', 'u');
 				result.current.setValue('email', 'invalid');
-				await result.current.validateFieldOnBlur('username', 'u');
-				await result.current.validateFieldOnBlur('email', 'invalid');
+				await result.current.trigger('username');
+				await result.current.trigger('email');
 			});
 
 			expect(result.current.hasMultipleErrors).toBe(true);
-			expect(result.current.displayedError).toBe('Please correct the errors in the form');
+			expect(result.current.displayedError).toBe('ui.errors.global');
 		});
 
 		it('should display specific error when only one field has error', async () => {

@@ -10,7 +10,7 @@ export const mockUseAuth = {
 	resetPassword: jest.fn((newPassword, confirmNewPassword) => {
 		return Promise.resolve(true);
 	}),
-	forgotPassword: jest.fn(),
+	forgotPassword: jest.fn().mockResolvedValue(true),
 };
 
 export const mockAuthService = {
@@ -52,12 +52,13 @@ export const newMockUser = {
 export const mockUseAsyncValidation = {
 	checkUsernameExists: jest.fn(),
 	checkEmailExists: jest.fn(),
+	checkEmailExistsForReset: jest.fn().mockResolvedValue(null),
 };
 
 export const mockUseSizeConversion = {
 	currentUnit: 'US',
-	getSizeForCurrentUnit: jest.fn(),
-	formatSizeForDisplay: jest.fn(),
+	getSizeForCurrentUnit: jest.fn().mockReturnValue(10.5),
+	formatSizeForDisplay: jest.fn().mockReturnValue('10.5'),
 	generateBothSizes: jest.fn(),
 	convertToCurrentUnit: jest.fn().mockReturnValue(10),
 	getAvailableSizesForCurrentUnit: jest.fn(),

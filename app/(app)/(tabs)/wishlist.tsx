@@ -64,9 +64,11 @@ export default function Wishlist() {
       />
 
       {!wishlistSneakers || wishlistSneakers.length === 0 ? (
-        <EmptyWishlistState />
+        <View testID="empty-wishlist-container">
+          <EmptyWishlistState />
+        </View>
       ) : viewMode === 'card' ? (
-        <View className="flex-1 gap-8">
+        <View className="flex-1 gap-8" testID="card-view-container">
           <SneakersCardByBrand 
             sneakersByBrand={sneakersByBrand}
             onSneakerPress={handleSneakerPress}
@@ -74,7 +76,7 @@ export default function Wishlist() {
           />
         </View>
       ) : (
-        <View className="flex-1">
+        <View className="flex-1" testID="list-view-container">
           <SneakersListView 
             sneakers={wishlistSneakers}
             onSneakerPress={handleSneakerPress}

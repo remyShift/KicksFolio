@@ -82,11 +82,12 @@ describe('Forgot Password Page', () => {
             await fillAndBlurInput(emailInput, 'john@doe.com');
             
             const currentMainButton = screen.getByTestId('main-button');
-            fireEvent.press(currentMainButton);
-
-            await waitFor(() => {
-                expect(mockUseAuth.forgotPassword).toHaveBeenCalledWith('john@doe.com');
+            
+            await act(async () => {
+                fireEvent.press(currentMainButton);
             });
+
+            expect(mockUseAuth.forgotPassword).toHaveBeenCalledWith('john@doe.com');
         });
     });
 });

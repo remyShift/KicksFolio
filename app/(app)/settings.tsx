@@ -5,9 +5,9 @@ import AppSettings from '@/components/screens/app/settings/appSettings/AppSettin
 
 export default function Settings() {
     return (
-        <View className="flex-1 bg-white px-4">
+        <View className="flex-1 bg-white px-4" testID="settings-container">
             <SettingsHeader />
-            <View className="flex-1 gap-10">
+            <View className="flex-1 gap-10" testID="settings-content">
                 <AccountSettings />
                 <AppSettings />
             </View>

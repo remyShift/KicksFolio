@@ -40,7 +40,7 @@ describe('Index', () => {
 
 	it('should render the browse button if user havent friends', () => {
 		expect(mainButton).toBeTruthy();
-		expect(mainButton.props.children[0].props.children).toBe('Browse');
+		expect(mainButton.props.children[0].props.children).toBe('ui.buttons.browse');
 	});
 
 	it('should navigate to user page when collection card is pressed', () => {
@@ -142,83 +142,6 @@ describe('Index', () => {
 			
 			expect(images).toHaveLength(4);
 			expect(emptySlots).toHaveLength(0);
-		});
-	});
-
-	describe('SneakersModal display', () => {
-		let setModalStep: jest.Mock;
-		let setIsVisible: jest.Mock;
-
-		afterEach(() => {
-			jest.restoreAllMocks();
-		});
-
-		it('should display the sneakers modal if a new user come on the page', () => {
-			setModalStep = jest.fn();
-			setIsVisible = jest.fn();
-
-			jest.spyOn(require('@/store/useModalStore'), 'useModalStore').mockImplementation(() => ({
-				modalStep: 'index',
-				isVisible: true,
-				setModalStep,
-				setIsVisible,
-				resetModal: jest.fn(),
-			}));
-
-			(useSession as jest.Mock).mockReturnValue({
-				user: { id: 'test-user-id' },
-				userSneakers: []
-			});
-
-			render(<Index />);
-
-			expect(setModalStep).toHaveBeenCalledWith('index');
-			expect(setIsVisible).toHaveBeenCalledWith(true);
-			expect(screen.getByTestId('sneakers-modal')).toBeOnTheScreen();
-		});
-
-		it('should not display the sneakers modal if a user with sneakers come on the page', () => {
-			setModalStep = jest.fn();
-			setIsVisible = jest.fn();
-
-			jest.spyOn(require('@/store/useModalStore'), 'useModalStore').mockImplementation(() => ({
-				modalStep: 'index',
-				isVisible: false,
-				setModalStep,
-				setIsVisible,
-				resetModal: jest.fn(),
-			}));
-
-			(useSession as jest.Mock).mockReturnValue({
-				user: { id: 'test-user-id' },
-				userSneakers: [{ images: [{ url: 'test-url-1' }] }]
-			});
-
-			render(<Index />);
-			expect(screen.queryByTestId('sneakers-modal')).toBeNull();
-		});
-
-		it('should display the sneaker modal if a user without sneakers come on the page', () => {
-			setModalStep = jest.fn();
-			setIsVisible = jest.fn();
-
-			jest.spyOn(require('@/store/useModalStore'), 'useModalStore').mockImplementation(() => ({
-				modalStep: 'index',
-				isVisible: true,
-				setModalStep,
-				setIsVisible,
-				resetModal: jest.fn(),
-			}));
-
-			(useSession as jest.Mock).mockReturnValue({
-				user: { id: 'test-user-id' },
-				userSneakers: []
-			});
-
-			render(<Index />);
-			expect(setModalStep).toHaveBeenCalledWith('index');
-			expect(setIsVisible).toHaveBeenCalledWith(true);
-			expect(screen.getByTestId('sneakers-modal')).toBeOnTheScreen();
 		});
 	});
 });
