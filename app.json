@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "KicksFolio",
-    "slug": "KicksFolio-Frontend",
+    "slug": "KicksFolio",
     "version": "0.0.6",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",

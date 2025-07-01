@@ -4,7 +4,7 @@ import { ExpoConfig } from 'expo/config';
 
 const config: ExpoConfig = {
   name: 'KicksFolio',
-  slug: 'KicksFolio-Frontend',
+  slug: 'KicksFolio',
   scheme: 'kicksfolio',
   version: '0.0.2',
   extra: {
