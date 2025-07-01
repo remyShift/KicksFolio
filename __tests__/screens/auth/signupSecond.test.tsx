@@ -37,7 +37,7 @@ describe('SignUpSecondPage', () => {
 
         firstNameInput = screen.getByPlaceholderText('John');
         lastNameInput = screen.getByPlaceholderText('Doe');
-        sneakerSizeInput = screen.getByPlaceholderText('9.5');
+        sneakerSizeInput = screen.getByPlaceholderText('10');
         mainButton = screen.getByTestId('main-button');
         errorMessage = screen.getByTestId('error-message');
     });
@@ -102,24 +102,24 @@ describe('SignUpSecondPage', () => {
     
             it('should display an appropriate error if the sneaker size is not a number on blur', async () => {
                 await fillAndBlurInput(sneakerSizeInput, 'totototo14');
-                expect(errorMessage.props.children).toBe('Size must be a number between 7 and 15.');
+                expect(errorMessage.props.children).toBe('Sneaker size must be between 7 and 15 (US).');
             });
     
             it('should display an appropriate error if the sneaker size is not a number between 7 and 15 on blur', async () => {
                 await fillAndBlurInput(sneakerSizeInput, '16');
-                expect(errorMessage.props.children).toBe('Size must be a number between 7 and 15.');
+                expect(errorMessage.props.children).toBe('Sneaker size must be between 7 and 15 (US).');
             });
     
             it('should display an appropriate error if the sneaker size is not a multiple of 0.5 on blur', async () => {
                 await fillAndBlurInput(sneakerSizeInput, '10.6');
-                expect(errorMessage.props.children).toBe('Size must be a multiple of 0.5 (e.g., 7, 7.5, 8, 8.5).');
+                expect(errorMessage.props.children).toBe('Sneaker size must be a multiple of 0.5 (e.g., 7, 7.5, 8, 8.5).');
             });
     
             it('should display a global error message if multiple errors are present', async () => {
                 await fillAndBlurInput(firstNameInput, 're');
                 await fillAndBlurInput(lastNameInput, 'test@test');
                 await fillAndBlurInput(sneakerSizeInput, '10.6');
-                expect(errorMessage.props.children).toBe('Please correct the errors in the form');
+                expect(errorMessage.props.children).toBe('Please correct the errors in the form.');
             });
         });
 
