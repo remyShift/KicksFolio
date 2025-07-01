@@ -144,5 +144,8 @@
 		"sortBy": "Trier par",
 		"all": "Tout",
 		"clearAll": "Effacer tous les filtres"
+	},
+	"cards": {
+		"ownedBy": "Possédé par"
 	}
 }

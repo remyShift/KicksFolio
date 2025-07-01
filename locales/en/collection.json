@@ -144,5 +144,8 @@
 		"sortBy": "Sort by",
 		"all": "All",
 		"clearAll": "Clear all filters"
+	},
+	"cards": {
+		"ownedBy": "Owned by"
 	}
 }

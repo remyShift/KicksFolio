@@ -5,6 +5,7 @@ import { Sneaker } from '@/types/Sneaker';
 import { useSession } from '@/context/authContext';
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';
 import SizeDisplay from '@/components/ui/text/SizeDisplay';
+import { t } from 'i18next';
 
 interface SneakerListItemProps {
   sneaker: Sneaker;
@@ -64,7 +65,7 @@ export default function SneakerListItem({ sneaker, onPress, showOwnerInfo = fals
                     
           <View className="flex-row items-center mt-2 gap-4">
             <SizeDisplay sneaker={sneaker} className="text-sm text-gray-500" />
-            <Text className="text-sm text-gray-500">Condition: {sneaker.condition ? `${sneaker.condition}/10` : 'N/A'}</Text>
+            <Text className="text-sm text-gray-500">{t('collection.fields.condition')} : {sneaker.condition ? `${sneaker.condition}/10` : 'N/A'}</Text>
             {sneaker.price_paid > 0 && (
               <Text className="text-sm font-medium text-green-600">
                 {sneaker.price_paid}€
@@ -75,7 +76,7 @@ export default function SneakerListItem({ sneaker, onPress, showOwnerInfo = fals
           {showOwnerInfo && sneaker.owner && (
             <View className="flex-row items-center mt-2 gap-1">
               <Text className="font-spacemono text-xs text-gray-600 uppercase">
-                Owned by
+                {t('collection.cards.ownedBy')}
               </Text>
               <Text className="font-spacemono text-sm text-primary pb-1">
                 {sneaker.owner.username === user!.username ? 'me' : `@${sneaker.owner.username}`}
