@@ -72,7 +72,7 @@ export default function RootLayout() {
             <KeyboardProvider>
                 <SessionProvider>
                     <AppContent />
-                    <Toast />
+                    <Toast topOffset={60} />
                 </SessionProvider>
             </KeyboardProvider>
         </GestureHandlerRootView>
