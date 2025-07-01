@@ -68,7 +68,7 @@ describe('LoginPage', () => {
 
             it('should display an error on blur if an invalid email is provided', async () => {
                 await fillAndBlurInput(emailInput, 'test@test');
-                expect(errorMessage.props.children).toBe('Please put a valid email.');
+                expect(errorMessage.props.children).toBe('Please enter a valid email address.');
             });
         });
 

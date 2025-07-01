@@ -8,7 +8,10 @@ export const mockSneakers: Sneaker[] = [
 		status: SneakerStatus.Rocking,
 		model: 'Sneaker 1',
 		brand: SneakerBrand.Nike,
-		size: 10.5,
+		sku: '1234567890',
+		size_eu: 45,
+		size_us: 10.5,
+		condition: 5,
 		images: [
 			{
 				id: '1',
@@ -16,7 +19,6 @@ export const mockSneakers: Sneaker[] = [
 			},
 		],
 		description: null,
-		condition: 5,
 		created_at: '',
 		updated_at: '',
 		estimated_value: 120,

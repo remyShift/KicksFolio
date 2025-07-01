@@ -1,5 +1,5 @@
 import ForgotPasswordPage from "@/app/(auth)/forgot-password";
-import { act, fireEvent, render, screen } from "@testing-library/react-native";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react-native";
 import { ReactTestInstance } from "react-test-renderer";
 import { fillAndBlurInput } from "../../setup";
 import { mockUseAuth } from "./authSetup";
@@ -9,13 +9,14 @@ describe('Forgot Password Page', () => {
     let mainButton: ReactTestInstance;
 
     beforeEach(() => {
+        jest.clearAllMocks();
         render(<ForgotPasswordPage />);
         emailInput = screen.getByPlaceholderText('john@doe.com');
         mainButton = screen.getByTestId('main-button');
     });
 
     it('should render the forgot password page', () => {
-        const backToLoginLink = screen.getByText('Back to Login');
+        const backToLoginLink = screen.getByText('Back');
 		const pageTitle = screen.getByTestId('page-title');
 
 		expect(pageTitle.props.children).toBe('Forgot Password');
@@ -74,19 +75,18 @@ describe('Forgot Password Page', () => {
                 expect(currentMainButton.props.accessibilityState.disabled).toBe(false);
             });
         });
-
     });
 
     describe('Forgot password attempts', () => {
         it('should call the forgotPassword function if the email is provided with appropriate value', async () => {
             await fillAndBlurInput(emailInput, 'john@doe.com');
-            await act(async () => {
-                const currentMainButton = screen.getByTestId('main-button');
+            
+            const currentMainButton = screen.getByTestId('main-button');
+            fireEvent.press(currentMainButton);
 
-                fireEvent.press(currentMainButton);
+            await waitFor(() => {
+                expect(mockUseAuth.forgotPassword).toHaveBeenCalledWith('john@doe.com');
             });
-
-            expect(mockUseAuth.forgotPassword).toHaveBeenCalledWith('john@doe.com');
         });
     });
 });

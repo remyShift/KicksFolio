@@ -8,7 +8,8 @@ export const mockSneaker: Sneaker = {
 	status: SneakerStatus.Rocking,
 	model: 'Air Max 1',
 	brand: SneakerBrand.Nike,
-	size: 10.5,
+	size_eu: 45,
+	size_us: 10.5,
 	images: [
 		{
 			id: '1',
@@ -26,6 +27,7 @@ export const mockFetchedSneaker: FetchedSneaker = {
 	model: 'Air Max 1 x Patta',
 	brand: SneakerBrand.Nike,
 	estimated_value: 200,
+	sku: '1234567890',
 	description: 'Limited edition collaboration',
 	image: {
 		uri: 'https://example.com/fetched-sneaker.jpg',

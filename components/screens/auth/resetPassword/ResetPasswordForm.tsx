@@ -85,7 +85,7 @@ export default function ResetPasswordForm() {
                         name="confirmPassword"
                         control={control}
                         label={t('auth.form.confirmPassword.label')}
-                        placeholder={t('auth.form.confirmPassword.placeholder')}
+                        placeholder={t('auth.form.password.placeholder')}
                         ref={confirmPasswordInputRef}
                         onFocus={() => handleFieldFocus('confirmPassword')}
                         onBlur={async (value) => { await validateFieldOnBlur('confirmPassword', value); }}

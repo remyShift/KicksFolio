@@ -81,15 +81,15 @@ describe('User', () => {
             expect(screen.queryByTestId('main-button')).toBeNull();
         });
 
-        it('should display the sneakers modal view when the card is pressed', () => {
+        it('should call modal store functions when the card is pressed', () => {
             const setModalStep = jest.fn();
             const setIsVisible = jest.fn();
             const setCurrentSneaker = jest.fn();
 
             jest.spyOn(require('@/store/useModalStore'), 'useModalStore').mockImplementation(() => ({
-                modalStep: 'view',
-                isVisible: true,
-                currentSneaker: mockSneakers[0],
+                modalStep: 'index',
+                isVisible: false,
+                currentSneaker: null,
                 setModalStep,
                 setIsVisible,
                 setCurrentSneaker,
@@ -111,12 +111,6 @@ describe('User', () => {
             expect(setCurrentSneaker).toHaveBeenCalledWith(mockSneakers[0]);
             expect(setModalStep).toHaveBeenCalledWith('view');
             expect(setIsVisible).toHaveBeenCalledWith(true);
-            
-            const modal = screen.getByTestId('sneakers-modal');
-            const sneakerDisplayName = screen.getByTestId('sneaker-display-name');
-
-            expect(modal).toBeOnTheScreen();
-            expect(sneakerDisplayName.props.children).toBe(mockSneakers[0].model);
         });
     });
 

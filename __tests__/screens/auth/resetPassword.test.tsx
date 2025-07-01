@@ -71,7 +71,7 @@ describe('Reset Password Page', () => {
                 await fillAndBlurInput(passwordInput, 'toto');
                 await fillAndBlurInput(confirmPasswordInput, 'tata');
     
-                expect(screen.getByTestId('error-message').props.children).toBe('Please correct the errors in the form');
+                expect(screen.getByTestId('error-message').props.children).toBe('Please correct the errors in the form.');
                 expect(screen.getByTestId('main-button').props.accessibilityState.disabled).toBe(true);
             });
         });
@@ -135,7 +135,7 @@ describe('Reset Password Page', () => {
                 fireEvent.press(currentMainButton);
             });
 
-            expect(mockUseAuth.resetPassword).toHaveBeenCalledWith('1234567890', password, confirmPassword);
+            expect(mockUseAuth.resetPassword).toHaveBeenCalledWith(password, confirmPassword);
         });
     });
 });

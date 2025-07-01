@@ -19,6 +19,28 @@ jest.mock('@react-native-async-storage/async-storage', () => ({
 	},
 }));
 
+jest.mock('../store/useSizeUnitStore', () => ({
+	useSizeUnitStore: Object.assign(
+		() => ({
+			currentUnit: 'US',
+			isInitialized: true,
+			setUnit: jest.fn(),
+			initializeUnit: jest.fn().mockResolvedValue(undefined),
+			getCurrentUnit: jest.fn().mockReturnValue('US'),
+		}),
+		{
+			getState: () => ({
+				currentUnit: 'US',
+				isInitialized: true,
+				setUnit: jest.fn(),
+				initializeUnit: jest.fn().mockResolvedValue(undefined),
+				getCurrentUnit: jest.fn().mockReturnValue('US'),
+			}),
+			subscribe: jest.fn().mockReturnValue(() => {}),
+		}
+	),
+}));
+
 jest.mock('expo-secure-store', () => ({
 	getItemAsync: jest.fn(),
 	setItemAsync: jest.fn(),
@@ -58,10 +80,7 @@ jest.mock('../context/signUpPropsContext', () => ({
 }));
 
 jest.mock('../hooks/useAsyncValidation', () => ({
-	useAsyncValidation: () => ({
-		checkUsernameExists: jest.fn().mockResolvedValue(null),
-		checkEmailExists: jest.fn().mockResolvedValue(null),
-	}),
+	useAsyncValidation: () => mockUseAsyncValidation,
 }));
 
 jest.mock('../context/authContext', () => ({
@@ -120,10 +139,6 @@ jest.mock('../config/supabase/supabase', () => ({
 	},
 
 	validateSupabaseConfig: jest.fn().mockReturnValue(true),
-}));
-
-jest.mock('../hooks/useAsyncValidation', () => ({
-	useAsyncValidation: () => mockUseAsyncValidation,
 }));
 
 jest.mock('react-native-keyboard-controller', () => {
