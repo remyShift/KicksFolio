@@ -5,7 +5,6 @@ export enum SneakerBrand {
 	NewBalance = 'New Balance',
 	Puma = 'Puma',
 	Jordan = 'Jordan',
-	Yeezy = 'Yeezy',
 	Asics = 'Asics',
 	Reebok = 'Reebok',
 	Vans = 'Vans',

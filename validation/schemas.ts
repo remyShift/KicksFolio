@@ -17,7 +17,6 @@ export const sneakerBrandOptions: { label: string; value: SneakerBrand }[] = [
 	{ label: 'Vans', value: SneakerBrand.Vans },
 	{ label: 'Converse', value: SneakerBrand.Converse },
 	{ label: 'Jordan', value: SneakerBrand.Jordan },
-	{ label: 'Yeezy', value: SneakerBrand.Yeezy },
 	{ label: 'New Balance', value: SneakerBrand.NewBalance },
 	{ label: 'Asics', value: SneakerBrand.Asics },
 	{ label: 'Reebok', value: SneakerBrand.Reebok },
