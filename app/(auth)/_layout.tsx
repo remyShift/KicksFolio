@@ -1,7 +1,7 @@
 import { SignUpPropsProvider } from '@/context/signUpPropsContext';
 import { Stack } from 'expo-router';
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function AuthLayout() {
     return (
         <SignUpPropsProvider>
             <Stack screenOptions={{ headerShown: false }}>

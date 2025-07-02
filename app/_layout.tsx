@@ -1,5 +1,5 @@
-import { Slot } from 'expo-router';
-import { SessionProvider } from '@/context/authContext';
+import { Stack } from 'expo-router';
+import { SessionProvider, useSession } from '@/context/authContext';
 import { useFonts } from 'expo-font';
 import "../global.css";
 import SplashScreen from '@/components/screens/SplashScreen/SplashScreen'
@@ -63,7 +63,28 @@ function AppContent() {
         );
     }
 
-    return <Slot />;
+    return <RootNavigator />;
+}
+
+function RootNavigator() {
+    const { user, isLoading } = useSession();
+
+    if (isLoading) {
+        return null;
+    }
+
+    return (
+        <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Protected guard={!user}>
+                <Stack.Screen name="(auth)" />
+            </Stack.Protected>
+
+            <Stack.Protected guard={!!user}>
+                <Stack.Screen name="(app)" />
+            </Stack.Protected>
+
+        </Stack>
+    );
 }
 
 export default function RootLayout() {
