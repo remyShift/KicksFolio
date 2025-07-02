@@ -29,24 +29,32 @@ export default function SneakersModalWrapper() {
     const handleCloseModal = () => {
         translateY.value = withTiming(MODAL_HEIGHT, {
             duration: 180,
-        }, () => {
-            runOnJS(closeModal)();
+        }, (finished) => {
+            'worklet';
+            if (finished) {
+                runOnJS(closeModal)();
+            }
         });
     };
 
     const panGesture = Gesture.Pan()
         .onUpdate((event) => {
+            'worklet';
             const newTranslateY = event.translationY;
             translateY.value = Math.max(0, newTranslateY);
         })
         .onEnd((event) => {
+            'worklet';
             const shouldClose = event.translationY > MODAL_HEIGHT * 0.3 || event.velocityY > 1000;
             
             if (shouldClose) {
                 translateY.value = withTiming(MODAL_HEIGHT, {
                     duration: 180,
-                }, () => {
-                    runOnJS(closeModal)();
+                }, (finished) => {
+                    'worklet';
+                    if (finished) {
+                        runOnJS(closeModal)();
+                    }
                 });
             } else {
                 translateY.value = withSpring(0, {
@@ -57,12 +65,14 @@ export default function SneakersModalWrapper() {
         });
 
     const modalStyle = useAnimatedStyle(() => {
+        'worklet';
         return {
             transform: [{ translateY: translateY.value }],
         };
-    });
+    }, [translateY]);
 
     const overlayStyle = useAnimatedStyle(() => {
+        'worklet';
         const opacity = interpolate(
             translateY.value,
             [0, MODAL_HEIGHT],
@@ -73,7 +83,7 @@ export default function SneakersModalWrapper() {
         return {
             opacity,
         };
-    });
+    }, [translateY]);
 
     useEffect(() => {
         if (isVisible) {
@@ -83,7 +93,7 @@ export default function SneakersModalWrapper() {
         } else {
             translateY.value = MODAL_HEIGHT;
         }
-    }, [isVisible]);
+    }, [isVisible, translateY]);
 
     return (
         <Modal

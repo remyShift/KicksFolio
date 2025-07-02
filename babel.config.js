@@ -13,7 +13,13 @@ module.exports = function (api) {
 					},
 				},
 			],
-			'react-native-reanimated/plugin',
+			// Doit être le dernier plugin pour éviter les conflits
+			[
+				'react-native-reanimated/plugin',
+				{
+					globals: ['__scanCodes'],
+				},
+			],
 		],
 	};
 };

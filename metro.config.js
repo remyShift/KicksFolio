@@ -13,6 +13,11 @@ config.resolver.alias = {
 	'@': path.resolve(__dirname, './'),
 };
 
+config.transformer = {
+	...config.transformer,
+	unstable_allowRequireContext: true,
+};
+
 module.exports = wrapWithReanimatedMetroConfig(
 	withNativeWind(config, { input: './global.css' })
 );
