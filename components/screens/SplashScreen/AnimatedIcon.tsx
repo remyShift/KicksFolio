@@ -11,7 +11,7 @@ interface AnimatedIconProps {
 
 export const AnimatedIcon = ({ name, size, color, onAnimationComplete }: AnimatedIconProps) => {
     const hasAnimated = useSharedValue(false);
-    const timeoutRef = useRef<NodeJS.Timeout>();
+    const timeoutRef = useRef<ReturnType<typeof setTimeout>>(null);
     const AnimatedShoeIcon = Animated.createAnimatedComponent(MaterialCommunityIcons);
 
     const handleLayout = useCallback(() => {
@@ -19,7 +19,7 @@ export const AnimatedIcon = ({ name, size, color, onAnimationComplete }: Animate
             hasAnimated.value = true;
             timeoutRef.current = setTimeout(onAnimationComplete, 2000);
         }
-    }, [onAnimationComplete]);
+    }, [onAnimationComplete, hasAnimated]);
 
     useEffect(() => {
         return () => {

@@ -11,6 +11,7 @@ const config = getDefaultConfig(__dirname);
 config.resolver.alias = {
 	...config.resolver.alias,
 	'@': path.resolve(__dirname, './'),
+	'react-native-reanimated/plugin': 'react-native-reanimated/plugin',
 };
 
 config.transformer = {
