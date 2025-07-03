@@ -12,7 +12,6 @@ const useAnimatedButtons = (isDisabled: boolean) => {
 	const scale = useSharedValue(1);
 
 	const animatedStyle = useAnimatedStyle(() => {
-		'worklet';
 		return {
 			transform: [{ scale: scale.value }],
 		};

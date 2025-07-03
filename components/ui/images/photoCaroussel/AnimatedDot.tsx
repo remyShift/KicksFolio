@@ -13,7 +13,6 @@ export type Props = {
 
 export const AnimatedDot = ({ index, scrollX, carouselWidth }: Props) => {
   const dotAnimatedStyle = useAnimatedStyle(() => {
-    'worklet';
     const inputRange = [
       (index - 1) * carouselWidth,
       index * carouselWidth,

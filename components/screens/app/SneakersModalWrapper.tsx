@@ -30,7 +30,6 @@ export default function SneakersModalWrapper() {
         translateY.value = withTiming(MODAL_HEIGHT, {
             duration: 180,
         }, (finished) => {
-            'worklet';
             if (finished) {
                 runOnJS(closeModal)();
             }
@@ -39,19 +38,16 @@ export default function SneakersModalWrapper() {
 
     const panGesture = Gesture.Pan()
         .onUpdate((event) => {
-            'worklet';
             const newTranslateY = event.translationY;
             translateY.value = Math.max(0, newTranslateY);
         })
         .onEnd((event) => {
-            'worklet';
             const shouldClose = event.translationY > MODAL_HEIGHT * 0.3 || event.velocityY > 1000;
             
             if (shouldClose) {
                 translateY.value = withTiming(MODAL_HEIGHT, {
                     duration: 180,
                 }, (finished) => {
-                    'worklet';
                     if (finished) {
                         runOnJS(closeModal)();
                     }
@@ -65,14 +61,12 @@ export default function SneakersModalWrapper() {
         });
 
     const modalStyle = useAnimatedStyle(() => {
-        'worklet';
         return {
             transform: [{ translateY: translateY.value }],
         };
     }, [translateY]);
 
     const overlayStyle = useAnimatedStyle(() => {
-        'worklet';
         const opacity = interpolate(
             translateY.value,
             [0, MODAL_HEIGHT],
