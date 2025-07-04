@@ -3,7 +3,7 @@ import { SessionProvider, useSession } from '@/context/authContext';
 import { useFonts } from 'expo-font';
 import "../global.css";
 import SplashScreen from '@/components/screens/SplashScreen/SplashScreen'
-import { useState, useCallback, useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import Toast from 'react-native-toast-message';
@@ -12,6 +12,7 @@ import { useLanguageStore } from '@/store/useLanguageStore';
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';
 import { deviceLanguage } from '@/locales/i18n';
 import { useCurrencyStore } from '@/store/useCurrencyStore';
+import { useSplashScreenStore } from '@/store/useSplashScreenStore';
 
 const FONTS = {
     'Actonia': require('../assets/fonts/Actonia.ttf'),
@@ -23,60 +24,37 @@ const FONTS = {
 } as const;
 
 function AppContent() {
-    const [isSplashScreenVisible, setIsSplashScreenVisible] = useState(true);
     const [fontsLoaded] = useFonts(FONTS);
     const { initializeLanguage, isInitialized: languageInitialized } = useLanguageStore();
     const { initializeUnit, isInitialized: sizeUnitInitialized } = useSizeUnitStore();
     const { initializeCurrency, isInitialized: currencyInitialized } = useCurrencyStore();
-
-    const handleSplashScreenComplete = useCallback(() => {
-        setIsSplashScreenVisible(false);
-    }, []);
+    const { isVisible, isInitialized } = useSplashScreenStore();
 
     useEffect(() => {
         const initializeStores = async () => {
-            const languagePromise = !languageInitialized 
-                ? initializeLanguage(deviceLanguage)
-                : Promise.resolve();
+            try {
+                const promises = [
+                    !languageInitialized ? initializeLanguage(deviceLanguage) : Promise.resolve(),
+                    !sizeUnitInitialized ? initializeUnit() : Promise.resolve(),
+                    !currencyInitialized ? initializeCurrency() : Promise.resolve()
+                ];
 
-            const unitPromise = !sizeUnitInitialized
-                ? initializeUnit()
-                : Promise.resolve();
-
-            const currencyPromise = !currencyInitialized
-                ? initializeCurrency() 
-                : Promise.resolve();
-
-            return Promise.all([languagePromise, unitPromise, currencyPromise])
-                .then(() => {
-                    console.log('[AppContent] Stores initialized successfully');
-                })
-                .catch((error) => {
-                    console.error('[AppContent] Error initializing stores:', error);
-                });
+                await Promise.all(promises);
+                console.log('[AppContent] Stores initialized successfully');
+            } catch (error) {
+                console.error('[AppContent] Error initializing stores:', error);
+            }
         };
 
-        const timeoutId = setTimeout(() => {
-            console.warn('[AppContent] Store initialization timeout, proceeding anyway');
-        }, 3000);
-
-        initializeStores().finally(() => {
-            clearTimeout(timeoutId);
-        });
-
-        return () => clearTimeout(timeoutId);
+        initializeStores();
     }, []);
 
     if (!fontsLoaded) {
         return null;
     }
 
-    if (isSplashScreenVisible) {
-        return (
-            <SplashScreen 
-                setIsSplashScreenVisible={handleSplashScreenComplete} 
-            />
-        );
+    if (isVisible || !isInitialized) {
+        return <SplashScreen />;
     }
 
     return <RootNavigator />;
