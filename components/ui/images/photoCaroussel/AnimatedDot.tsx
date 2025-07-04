@@ -52,7 +52,7 @@ export const AnimatedDot = ({ index, scrollX, carouselWidth }: Props) => {
       opacity,
       backgroundColor,
     };
-  }, [scrollX, index, carouselWidth]);
+  });
 
   return (
     <Animated.View 

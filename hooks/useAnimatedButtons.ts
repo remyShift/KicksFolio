@@ -18,7 +18,7 @@ const useAnimatedButtons = (isDisabled: boolean) => {
 		return {
 			transform: [{ scale: scale.value }],
 		};
-	}, [scale]);
+	});
 
 	const gesture = Gesture.Tap()
 		.onBegin(() => {

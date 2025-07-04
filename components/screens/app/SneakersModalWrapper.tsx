@@ -64,7 +64,7 @@ export default function SneakersModalWrapper() {
         return {
             transform: [{ translateY: translateY.value }],
         };
-    }, [translateY]);
+    });
 
     const overlayStyle = useAnimatedStyle(() => {
         const opacity = interpolate(
@@ -77,7 +77,7 @@ export default function SneakersModalWrapper() {
         return {
             opacity,
         };
-    }, [translateY]);
+    });
 
     useEffect(() => {
         if (isVisible) {
