@@ -1,4 +1,3 @@
-import { View, Text } from 'react-native';
 import Animated, { 
     useAnimatedStyle, 
     withTiming, 
@@ -17,9 +16,6 @@ export const AnimatedLogo = ({ text, className = "text-white text-6xl font-bold 
     const translateX = useSharedValue(100);
     const opacity = useSharedValue(0);
 
-    const AnimatedView = Animated.createAnimatedComponent(View);
-    const AnimatedText = Animated.createAnimatedComponent(Text);
-
     const animatedStyle = useAnimatedStyle(() => {
         return {
             transform: [{ translateX: translateX.value }],
@@ -36,13 +32,13 @@ export const AnimatedLogo = ({ text, className = "text-white text-6xl font-bold 
     }, []);
 
     return (
-        <AnimatedView className="flex-row" style={animatedStyle}>
-            <AnimatedText
+        <Animated.View className="flex-row" style={animatedStyle}>
+            <Animated.Text
                 exiting={FadeOut.duration(500)}
                 className={className}
             >
                 {text}
-            </AnimatedText>
-        </AnimatedView>
+            </Animated.Text>
+        </Animated.View>
     );
 }; 

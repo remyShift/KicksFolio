@@ -1,5 +1,7 @@
 import { Text } from 'react-native';
 import useAnimatedButtons from '@/hooks/useAnimatedButtons';
+import { GestureDetector } from 'react-native-gesture-handler';
+import Animated from 'react-native-reanimated';
 
 type MainButtonProps = {
     content: string;
@@ -9,21 +11,21 @@ type MainButtonProps = {
 }
 
 export default function MainButton({content, onPressAction, backgroundColor, isDisabled = false}: MainButtonProps) {
-    const { animatedStyle, handlePressIn, handlePressOut, AnimatedPressable } = useAnimatedButtons(isDisabled);
+    const { animatedStyle, gesture } = useAnimatedButtons(isDisabled);
 
     return (
-        <AnimatedPressable 
+        <Animated.View
             className={`${backgroundColor} py-3 px-4 rounded-md w-1/2`}
-            onPress={onPressAction}
-            onPressIn={handlePressIn}
-            onPressOut={handlePressOut}
             style={animatedStyle}
-            disabled={isDisabled}
             testID="main-button"
         >
-            <Text className="font-spacemono-bold text-lg text-center text-white">
-                {content}
-            </Text>
-        </AnimatedPressable>
+            <GestureDetector gesture={gesture}>
+                <Animated.View onTouchEnd={onPressAction}>
+                    <Text className="font-spacemono-bold text-lg text-center text-white">
+                        {content}
+                    </Text>
+                </Animated.View>
+            </GestureDetector>
+        </Animated.View>
     );
 }

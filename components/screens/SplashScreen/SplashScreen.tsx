@@ -1,4 +1,3 @@
-import { View } from 'react-native';
 import Animated, { FadeOut } from 'react-native-reanimated';
 import { useEffect, useState, useRef } from 'react';
 import { useSession } from '@/context/authContext';
@@ -10,7 +9,6 @@ import { useInitialData } from '@/hooks/useInitialData';
 export default function SplashScreen({ setIsSplashScreenVisible }: { setIsSplashScreenVisible: (value: boolean) => void }) {
     const [textAnimationFinished, setTextAnimationFinished] = useState(false);
     const { userSneakers, user } = useSession();
-    const AnimatedView = Animated.createAnimatedComponent(View);
     const { loadAndSetInitialData } = useInitialData();
     const hasInitialized = useRef(false);
 
@@ -46,14 +44,11 @@ export default function SplashScreen({ setIsSplashScreenVisible }: { setIsSplash
     }, [textAnimationFinished]);
 
     return (
-        <AnimatedView 
+        <Animated.View 
         className="flex-1 items-center justify-center bg-primary"
         exiting={FadeOut.duration(500)}
         >
-            <View className="flex-row">
-                <AnimatedLogo text="KicksFolio" />
-            </View>            
-
+            <AnimatedLogo text="KicksFolio" />
             <AnimatedIcon
                 name="shoe-sneaker"
                 size={50}
@@ -64,6 +59,6 @@ export default function SplashScreen({ setIsSplashScreenVisible }: { setIsSplash
                     }, 1500);
                 }}
             />
-        </AnimatedView>
+        </Animated.View>
     );
 }

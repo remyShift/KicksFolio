@@ -1,15 +1,18 @@
-import Animated, {
+import {
 	useSharedValue,
 	useAnimatedStyle,
 	withSpring,
+	runOnJS,
 } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
-import { Pressable } from 'react-native';
+import { Gesture } from 'react-native-gesture-handler';
 
 const useAnimatedButtons = (isDisabled: boolean) => {
-	const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
-
 	const scale = useSharedValue(1);
+
+	const triggerHaptic = () => {
+		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+	};
 
 	const animatedStyle = useAnimatedStyle(() => {
 		return {
@@ -17,31 +20,29 @@ const useAnimatedButtons = (isDisabled: boolean) => {
 		};
 	}, [scale]);
 
-	const handlePressIn = () => {
-		if (isDisabled) return;
+	const gesture = Gesture.Tap()
+		.onBegin(() => {
+			if (isDisabled) return;
 
-		scale.value = withSpring(0.9, {
-			damping: 10,
-			stiffness: 100,
+			scale.value = withSpring(0.9, {
+				damping: 10,
+				stiffness: 100,
+			});
+
+			runOnJS(triggerHaptic)();
+		})
+		.onFinalize(() => {
+			if (isDisabled) return;
+
+			scale.value = withSpring(1, {
+				damping: 10,
+				stiffness: 100,
+			});
 		});
-
-		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-	};
-
-	const handlePressOut = () => {
-		if (isDisabled) return;
-
-		scale.value = withSpring(1, {
-			damping: 10,
-			stiffness: 100,
-		});
-	};
 
 	return {
 		animatedStyle,
-		handlePressIn,
-		handlePressOut,
-		AnimatedPressable,
+		gesture,
 	};
 };
 

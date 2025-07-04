@@ -12,7 +12,6 @@ interface AnimatedIconProps {
 export const AnimatedIcon = ({ name, size, color, onAnimationComplete }: AnimatedIconProps) => {
     const hasAnimated = useSharedValue(false);
     const timeoutRef = useRef<ReturnType<typeof setTimeout>>(null);
-    const AnimatedShoeIcon = Animated.createAnimatedComponent(MaterialCommunityIcons);
 
     const handleLayout = useCallback(() => {
         if (!hasAnimated.value) {
@@ -30,13 +29,15 @@ export const AnimatedIcon = ({ name, size, color, onAnimationComplete }: Animate
     }, []);
 
     return (
-        <AnimatedShoeIcon
-            name={name}
-            size={size}
-            color={color}
-            entering={FadeIn.duration(800).delay(1000)}
-            exiting={FadeOut.duration(500)}
-            onLayout={handleLayout}
-        />
+        <Animated.View>
+            <MaterialCommunityIcons
+                name={name}
+                size={size}
+                color={color}
+                entering={FadeIn.duration(800).delay(1000)}
+                exiting={FadeOut.duration(500)}
+                onLayout={handleLayout}
+            />
+        </Animated.View>
     );
 }; 
