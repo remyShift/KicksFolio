@@ -1,13 +1,12 @@
-import Animated, { FadeOut } from 'react-native-reanimated';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useSession } from '@/context/authContext';
 import { Image } from 'expo-image';
-import { AnimatedIcon } from './AnimatedIcon';
-import { AnimatedLogo } from './AnimatedText';
+import { ShoeIcon } from './ShoeIcon';
+import { AppTitle } from './AppTitle';
 import { useInitialData } from '@/hooks/useInitialData';
+import { View } from 'react-native';
 
 export default function SplashScreen({ setIsSplashScreenVisible }: { setIsSplashScreenVisible: (value: boolean) => void }) {
-    const [textAnimationFinished, setTextAnimationFinished] = useState(false);
     const { userSneakers, user } = useSession();
     const { loadAndSetInitialData } = useInitialData();
     const hasInitialized = useRef(false);
@@ -29,36 +28,25 @@ export default function SplashScreen({ setIsSplashScreenVisible }: { setIsSplash
                 const imageUris = sneakerImages.map(image => image.uri);
                 preloadImages(imageUris)
                     .then(() => {
+                        setIsSplashScreenVisible(false);
                         console.log('[SplashScreen] preloadImages resolved');
                     });
             }
-        }
-
-        if (textAnimationFinished) {
-            setIsSplashScreenVisible(false);
         }
     };
 
     useEffect(() => {
         initializeApp();
-    }, [textAnimationFinished]);
+    }, []);
 
     return (
-        <Animated.View 
-        className="flex-1 items-center justify-center bg-primary"
-        exiting={FadeOut.duration(500)}
-        >
-            <AnimatedLogo text="KicksFolio" />
-            <AnimatedIcon
+        <View className="flex-1 items-center justify-center bg-primary gap-1">
+            <AppTitle text="KicksFolio" />
+            <ShoeIcon
                 name="shoe-sneaker"
                 size={50}
                 color="white"
-                onAnimationComplete={() => {
-                    setTimeout(() => {
-                        setTextAnimationFinished(true);
-                    }, 1500);
-                }}
             />
-        </Animated.View>
+        </View>
     );
 }
