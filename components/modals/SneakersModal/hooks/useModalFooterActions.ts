@@ -57,11 +57,11 @@ export const useModalFooterActions = () => {
 				t('alert.descriptions.deleteSneaker'),
 				[
 					{
-						text: t('alert.buttons.cancel'),
+						text: t('alert.choices.cancel'),
 						style: 'cancel',
 					},
 					{
-						text: t('alert.buttons.delete'),
+						text: t('alert.choices.delete'),
 						style: 'destructive',
 						onPress: () => {
 							showInfoToast(

@@ -20,11 +20,11 @@ export default function AccountSettings() {
             t('alert.descriptions.logout'),
             [
                 {
-                    text: t('alert.buttons.cancel'),
+                    text: t('alert.choices.cancel'),
                     style: 'cancel'
                 },
                 {
-                    text: t('alert.buttons.logout'),
+                    text: t('alert.choices.logout'),
                     style: 'destructive',
                     onPress: () => {
                         logout();
@@ -46,11 +46,11 @@ export default function AccountSettings() {
             t('alert.descriptions.deleteAccount'),
             [
                 {
-                    text: t('alert.buttons.cancel'),
+                    text: t('alert.choices.cancel'),
                     style: 'cancel'
                 },
                 {
-                    text: t('alert.buttons.delete'),
+                    text: t('alert.choices.delete'),
                     style: 'destructive',
                     onPress: () => {
                         if (user) {
