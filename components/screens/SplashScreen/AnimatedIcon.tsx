@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef } from 'react';
-import Animated, { FadeIn, FadeOut, useSharedValue } from 'react-native-reanimated';
+import { useEffect } from 'react';
+import Animated, { FadeIn } from 'react-native-reanimated';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 interface AnimatedIconProps {
@@ -10,33 +10,17 @@ interface AnimatedIconProps {
 }
 
 export const AnimatedIcon = ({ name, size, color, onAnimationComplete }: AnimatedIconProps) => {
-    const hasAnimated = useSharedValue(false);
-    const timeoutRef = useRef<ReturnType<typeof setTimeout>>(null);
-
-    const handleLayout = useCallback(() => {
-        if (!hasAnimated.value) {
-            hasAnimated.value = true;
-            timeoutRef.current = setTimeout(onAnimationComplete, 2000);
-        }
-    }, [onAnimationComplete, hasAnimated]);
-
     useEffect(() => {
-        return () => {
-            if (timeoutRef.current) {
-                clearTimeout(timeoutRef.current);
-            }
-        };
-    }, []);
+        const timer = setTimeout(onAnimationComplete, 2000);
+        return () => clearTimeout(timer);
+    }, [onAnimationComplete]);
 
     return (
-        <Animated.View>
+        <Animated.View entering={FadeIn.duration(800).delay(1000)}>
             <MaterialCommunityIcons
                 name={name}
                 size={size}
                 color={color}
-                entering={FadeIn.duration(800).delay(1000)}
-                exiting={FadeOut.duration(500)}
-                onLayout={handleLayout}
             />
         </Animated.View>
     );
