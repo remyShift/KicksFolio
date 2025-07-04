@@ -7,37 +7,66 @@ import { useInitialData } from '@/hooks/useInitialData';
 import { View } from 'react-native';
 
 export default function SplashScreen({ setIsSplashScreenVisible }: { setIsSplashScreenVisible: (value: boolean) => void }) {
-    const { userSneakers, user } = useSession();
+    const { userSneakers, user, isLoading } = useSession();
     const { loadAndSetInitialData } = useInitialData();
     const hasInitialized = useRef(false);
 
     const preloadImages = async (imageUris: string[]) => {
         const prefetchTasks = imageUris.map(uri => Image.prefetch(uri));
-        await Promise.all(prefetchTasks);
+        return Promise.all(prefetchTasks);
     };
 
     const initializeApp = async () => {
-        if (user && !hasInitialized.current) {
-            hasInitialized.current = true;
-            await loadAndSetInitialData()
-                .then(() => {
-                    console.log('[SplashScreen] loadAndSetInitialData resolved');
-                });
-            if (userSneakers) {
-                const sneakerImages = userSneakers.map(sneaker => sneaker.images[0]);
+        if (isLoading) {
+            return;
+        }
+
+        if (hasInitialized.current) {
+            return;
+        }
+
+        hasInitialized.current = true;
+
+        await loadAndSetInitialData()
+            .then(() => {
+                console.log('[SplashScreen] loadAndSetInitialData resolved');
+            })
+            .catch((error) => {
+                console.error('[SplashScreen] loadAndSetInitialData failed:', error);
+            });
+
+        if (userSneakers && userSneakers.length > 0) {
+            const sneakerImages = userSneakers
+                .filter(sneaker => sneaker.images && sneaker.images.length > 0)
+                .map(sneaker => sneaker.images[0]);
+            
+            if (sneakerImages.length > 0) {
                 const imageUris = sneakerImages.map(image => image.uri);
-                preloadImages(imageUris)
+                await preloadImages(imageUris)
                     .then(() => {
-                        setIsSplashScreenVisible(false);
                         console.log('[SplashScreen] preloadImages resolved');
+                    })
+                    .catch((error) => {
+                        console.error('[SplashScreen] preloadImages failed:', error);
                     });
             }
         }
+
+        setIsSplashScreenVisible(false);
     };
 
     useEffect(() => {
         initializeApp();
-    }, []);
+    }, [isLoading, user, userSneakers]);
+
+    useEffect(() => {
+        const timeoutId = setTimeout(() => {
+            console.warn('[SplashScreen] Timeout reached, closing splash screen');
+            setIsSplashScreenVisible(false);
+        }, 5000);
+
+        return () => clearTimeout(timeoutId);
+    }, [setIsSplashScreenVisible]);
 
     return (
         <View className="flex-1 items-center justify-center bg-primary gap-1">

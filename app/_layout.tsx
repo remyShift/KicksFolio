@@ -34,22 +34,38 @@ function AppContent() {
     }, []);
 
     useEffect(() => {
-        if (!languageInitialized) {
-            initializeLanguage(deviceLanguage);
-        }
-    }, [initializeLanguage, languageInitialized]);
+        const initializeStores = async () => {
+            const languagePromise = !languageInitialized 
+                ? initializeLanguage(deviceLanguage)
+                : Promise.resolve();
 
-    useEffect(() => {
-        if (!sizeUnitInitialized && languageInitialized) {
-            initializeUnit();
-        }
-    }, [initializeUnit, sizeUnitInitialized, languageInitialized]);
+            const unitPromise = !sizeUnitInitialized
+                ? initializeUnit()
+                : Promise.resolve();
 
-    useEffect(() => {
-        if (!currencyInitialized && languageInitialized) {
-            initializeCurrency();
-        }
-    }, [initializeCurrency, currencyInitialized, languageInitialized]);
+            const currencyPromise = !currencyInitialized
+                ? initializeCurrency() 
+                : Promise.resolve();
+
+            return Promise.all([languagePromise, unitPromise, currencyPromise])
+                .then(() => {
+                    console.log('[AppContent] Stores initialized successfully');
+                })
+                .catch((error) => {
+                    console.error('[AppContent] Error initializing stores:', error);
+                });
+        };
+
+        const timeoutId = setTimeout(() => {
+            console.warn('[AppContent] Store initialization timeout, proceeding anyway');
+        }, 3000);
+
+        initializeStores().finally(() => {
+            clearTimeout(timeoutId);
+        });
+
+        return () => clearTimeout(timeoutId);
+    }, []);
 
     if (!fontsLoaded) {
         return null;
