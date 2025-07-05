@@ -1,18 +1,14 @@
 import { Stack } from 'expo-router';
 import { SessionProvider, useSession } from '@/context/authContext';
 import { useFonts } from 'expo-font';
-import "../global.css";
 import SplashScreen from '@/components/screens/SplashScreen/SplashScreen'
-import { useCallback, useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import Toast from 'react-native-toast-message';
-import '@/locales/i18n';
-import { useLanguageStore } from '@/store/useLanguageStore';
-import { useSizeUnitStore } from '@/store/useSizeUnitStore';
-import { deviceLanguage } from '@/locales/i18n';
-import { useCurrencyStore } from '@/store/useCurrencyStore';
+import { useAppInitialization } from '@/hooks/useAppInitialization';
 import { useSplashScreenStore } from '@/store/useSplashScreenStore';
+import '@/locales/i18n';
+import "../global.css";
 
 const FONTS = {
     'Actonia': require('../assets/fonts/Actonia.ttf'),
@@ -25,35 +21,14 @@ const FONTS = {
 
 function AppContent() {
     const [fontsLoaded] = useFonts(FONTS);
-    const { initializeLanguage, isInitialized: languageInitialized } = useLanguageStore();
-    const { initializeUnit, isInitialized: sizeUnitInitialized } = useSizeUnitStore();
-    const { initializeCurrency, isInitialized: currencyInitialized } = useCurrencyStore();
-    const { isVisible, isInitialized } = useSplashScreenStore();
-
-    useEffect(() => {
-        const initializeStores = async () => {
-            try {
-                const promises = [
-                    !languageInitialized ? initializeLanguage(deviceLanguage) : Promise.resolve(),
-                    !sizeUnitInitialized ? initializeUnit() : Promise.resolve(),
-                    !currencyInitialized ? initializeCurrency() : Promise.resolve()
-                ];
-
-                await Promise.all(promises);
-                console.log('[AppContent] Stores initialized successfully');
-            } catch (error) {
-                console.error('[AppContent] Error initializing stores:', error);
-            }
-        };
-
-        initializeStores();
-    }, []);
+    const { isInitializing } = useAppInitialization(fontsLoaded);
+    const { isVisible } = useSplashScreenStore();
 
     if (!fontsLoaded) {
         return null;
     }
 
-    if (isVisible || !isInitialized) {
+    if (isInitializing || isVisible) {
         return <SplashScreen />;
     }
 
