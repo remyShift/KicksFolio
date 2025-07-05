@@ -66,7 +66,7 @@ export default function LoginForm() {
 
     useEffect(() => {
         if (resetPasswordSuccess) {
-            showSuccessToast(t('auth.login.resetPasswordSuccess'), resetPasswordSuccess);
+            showSuccessToast(t('auth.forgotPassword.success'), t('auth.forgotPassword.successDescription'));
             setResetPasswordSuccess('');
         }
 

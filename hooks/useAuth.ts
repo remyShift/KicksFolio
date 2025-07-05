@@ -73,7 +73,7 @@ export const useAuth = () => {
 	};
 
 	const forgotPassword = async (email: string) => {
-		return SupabaseAuthService.resetPassword(email)
+		return SupabaseAuthService.forgotPassword(email)
 			.then(() => {
 				router.replace({
 					pathname: '/login',
@@ -82,6 +82,7 @@ export const useAuth = () => {
 							'Password reset instructions sent to your email.',
 					},
 				});
+				return true;
 			})
 			.catch((error) => {
 				setErrorMsg(
@@ -89,6 +90,7 @@ export const useAuth = () => {
 						? error.message
 						: 'An error occurred during password reset request'
 				);
+				throw error;
 			});
 	};
 
@@ -101,12 +103,24 @@ export const useAuth = () => {
 			return;
 		}
 
-		router.replace({
-			pathname: '/login',
-			params: {
-				message: 'Password reset successful.',
-			},
-		});
+		return SupabaseAuthService.resetPassword(newPassword)
+			.then(() => {
+				router.replace({
+					pathname: '/login',
+					params: {
+						message: 'Password reset successful.',
+					},
+				});
+				return true;
+			})
+			.catch((error) => {
+				setErrorMsg(
+					error instanceof Error
+						? error.message
+						: 'An error occurred during password reset'
+				);
+				throw error;
+			});
 	};
 
 	const logout = async () => {

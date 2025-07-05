@@ -127,9 +127,27 @@ export class SupabaseAuthService {
 		return { ...data, profile_picture_url: data.profile_picture };
 	}
 
-	static async resetPassword(email: string) {
-		const { error } = await supabase.auth.resetPasswordForEmail(email);
+	static async forgotPassword(email: string) {
+		const { error } = await supabase.auth.resetPasswordForEmail(email, {
+			redirectTo: 'kicksfolio://reset-password',
+		});
 		if (error) throw error;
+	}
+
+	static async resetPassword(newPassword: string) {
+		console.log('🔄 Attempting to reset password...');
+
+		const { data, error } = await supabase.auth.updateUser({
+			password: newPassword,
+		});
+
+		if (error) {
+			console.error('❌ Reset password error:', error);
+			throw error;
+		}
+
+		console.log('✅ Password reset successful');
+		return data;
 	}
 
 	static async cleanupOrphanedSessions() {
