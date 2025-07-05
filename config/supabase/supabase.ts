@@ -19,18 +19,19 @@ export const SUPABASE_CONFIG = {
 
 export const validateSupabaseConfig = () => {
 	if (!SUPABASE_CONFIG.url) {
-		console.warn(
-			'⚠️ SUPABASE_URL is not set. Please update your configuration.'
+		console.error(
+			'❌ SUPABASE_URL is not set. Please add EXPO_PUBLIC_SUPABASE_URL to your environment variables.'
 		);
-		return false;
+		throw new Error('SUPABASE_URL is required');
 	}
 
 	if (!SUPABASE_CONFIG.anonKey) {
-		console.warn(
-			'⚠️ SUPABASE_ANON_KEY is not set. Please update your configuration.'
+		console.error(
+			'❌ SUPABASE_ANON_KEY is not set. Please add EXPO_PUBLIC_SUPABASE_ANON_KEY to your environment variables.'
 		);
-		return false;
+		throw new Error('SUPABASE_ANON_KEY is required');
 	}
 
+	console.log('✅ Supabase configuration validated successfully');
 	return true;
 };
