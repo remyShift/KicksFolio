@@ -18,14 +18,22 @@ const { height: screenHeight } = Dimensions.get('window');
 const MODAL_HEIGHT = screenHeight * 0.8;
 
 const closeModalActions = () => {
-    const { setIsVisible, resetModalData } = useModalStore.getState();
-    setIsVisible(false);
-    resetModalData();
+    console.log('[SneakersModalWrapper] closeModalActions called');
+    try {
+        const { setIsVisible, resetModalData } = useModalStore.getState();
+        setIsVisible(false);
+        resetModalData();
+        console.log('[SneakersModalWrapper] closeModalActions completed');
+    } catch (error) {
+        console.error('[SneakersModalWrapper] closeModalActions error:', error);
+    }
 };
 
 export default function SneakersModalWrapper() {
+    console.log('[SneakersModalWrapper] Component rendering');
     const { isVisible } = useModalStore();
     const translateY = useSharedValue(MODAL_HEIGHT);
+    console.log('[SneakersModalWrapper] isVisible:', isVisible);
 
     const handleCloseModal = useCallback(() => {
         translateY.value = withTiming(MODAL_HEIGHT, {

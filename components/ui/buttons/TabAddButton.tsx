@@ -1,21 +1,14 @@
-import useAnimatedButtons from "@/hooks/useAnimatedButtons";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { GestureDetector } from "react-native-gesture-handler";
-import Animated from 'react-native-reanimated';
+import { View, Pressable } from "react-native";
 
 export default function TabAddButton({handleAddPress, isDisabled = false}: {handleAddPress: () => void, isDisabled?: boolean}) {
-    const { animatedStyle, gesture } = useAnimatedButtons(isDisabled);
-
+    console.log('[TabAddButton] Component rendering');
+    
     return (
-        <Animated.View
-            style={animatedStyle}
-            className="w-16 h-16 mb-12 rounded-full bg-orange-500 justify-center items-center"
-        >
-            <GestureDetector gesture={gesture}>
-                <Animated.View onTouchEnd={handleAddPress}>
-                    <Ionicons name="add" size={38} color="white" />
-                </Animated.View>
-            </GestureDetector>
-        </Animated.View>
+        <View className="w-16 h-16 mb-12 rounded-full bg-orange-500 justify-center items-center">
+            <Pressable onPress={handleAddPress} disabled={isDisabled}>
+                <Ionicons name="add" size={38} color="white" />
+            </Pressable>
+        </View>
     )
 }
