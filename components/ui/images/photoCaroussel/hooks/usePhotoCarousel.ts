@@ -14,22 +14,18 @@ export const usePhotoCarousel = (photos: Photo[]) => {
 	const [carouselWidth, setCarouselWidth] = useState(screenWidth);
 	const [currentIndex, setCurrentIndex] = useState(0);
 
-	const updateCurrentIndex = (index: number) => {
-		setCurrentIndex(index);
-	};
-
 	const scrollHandler = useAnimatedScrollHandler({
 		onScroll: (event) => {
 			scrollX.value = event.contentOffset.x;
 			const index = Math.round(event.contentOffset.x / carouselWidth);
-			runOnJS(updateCurrentIndex)(index);
+			runOnJS(setCurrentIndex)(index);
 		},
 	});
 
 	const scrollToIndex = (index: number) => {
 		if (flatListRef.current && index >= 0 && index < photos.length) {
 			flatListRef.current.scrollToIndex({ index, animated: true });
-			runOnJS(updateCurrentIndex)(index);
+			setCurrentIndex(index);
 		}
 	};
 

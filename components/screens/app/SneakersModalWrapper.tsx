@@ -21,20 +21,16 @@ export default function SneakersModalWrapper() {
     const { isVisible, setIsVisible, resetModalData } = useModalStore();
     const translateY = useSharedValue(MODAL_HEIGHT);
 
-    const closeModal = useCallback(() => {
-        setIsVisible(false);
-        resetModalData();
-    }, [resetModalData, setIsVisible]);
-
     const handleCloseModal = useCallback(() => {
         translateY.value = withTiming(MODAL_HEIGHT, {
             duration: 180,
         }, (finished) => {
             if (finished) {
-                runOnJS(closeModal)();
+                runOnJS(setIsVisible)(false);
+                runOnJS(resetModalData)();
             }
         });
-    }, [translateY, closeModal]);
+    }, [translateY, setIsVisible, resetModalData]);
 
     const panGesture = Gesture.Pan()
         .onUpdate((event) => {
@@ -48,7 +44,8 @@ export default function SneakersModalWrapper() {
                     duration: 180,
                 }, (finished) => {
                     if (finished) {
-                        runOnJS(closeModal)();
+                        runOnJS(setIsVisible)(false);
+                        runOnJS(resetModalData)();
                     }
                 });
             } else {

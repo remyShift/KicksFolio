@@ -9,7 +9,6 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { SneakerStatus } from '@/types/Sneaker';
 import { useSizeConversion } from '@/hooks/useSizeConversion';
 
-
 export const EditFormStep = () => {
     const scrollViewRef = useRef<ScrollView>(null);
     const modelInputRef = useRef<TextInput>(null);
@@ -19,12 +18,9 @@ export const EditFormStep = () => {
     const descriptionInputRef = useRef<TextInput>(null);
     
     const { currentSneaker, sneakerToAdd, setSneakerToAdd, errorMsg } = useModalStore();
-
-    if (!currentSneaker) return null;
-
     const { getSizeForCurrentUnit } = useSizeConversion();
     
-    const displaySize = getSizeForCurrentUnit(currentSneaker);
+    const displaySize = currentSneaker ? getSizeForCurrentUnit(currentSneaker) : 0;
 
     const {
         control,
@@ -41,13 +37,13 @@ export const EditFormStep = () => {
         fieldNames: ['model', 'brand', 'status', 'size', 'condition', 'price_paid', 'images'],
         authErrorMsg: errorMsg,
         defaultValues: {
-            model: currentSneaker.model || '',
-            brand: currentSneaker.brand,
-            status: currentSneaker.status || SneakerStatus.null,
+            model: currentSneaker?.model || '',
+            brand: currentSneaker?.brand,
+            status: currentSneaker?.status || SneakerStatus.null,
             size: displaySize.toString(),
-            condition: currentSneaker.condition ? String(currentSneaker.condition) : '',
-            price_paid: currentSneaker.price_paid ? String(currentSneaker.price_paid) : '',
-            description: currentSneaker.description || '',
+            condition: currentSneaker?.condition ? String(currentSneaker.condition) : '',
+            price_paid: currentSneaker?.price_paid ? String(currentSneaker.price_paid) : '',
+            description: currentSneaker?.description || '',
             images: [],
         },
         onSubmit: async (data) => {
@@ -59,7 +55,7 @@ export const EditFormStep = () => {
                 condition: data.condition,
                 price_paid: data.price_paid,
                 description: data.description || '',
-                images: currentSneaker.images || [],
+                images: currentSneaker?.images || [],
             } as SneakerFormData);
         },
     });
@@ -114,6 +110,8 @@ export const EditFormStep = () => {
         };
     }, []);
 
+    if (!currentSneaker) return null;
+
     return (
         <KeyboardAwareScrollView
             ref={scrollViewRef}
@@ -127,11 +125,11 @@ export const EditFormStep = () => {
                 handleFieldFocus={handleFieldFocus}
                 validateFieldOnBlur={validateFieldOnBlur}
                 getFieldError={getFieldErrorWrapper}
-                modelInputRef={modelInputRef}
-                brandInputRef={brandInputRef}
-                sizeInputRef={sizeInputRef}
-                pricePaidInputRef={pricePaidInputRef}
-                descriptionInputRef={descriptionInputRef}
+                modelInputRef={modelInputRef as React.RefObject<TextInput>}
+                brandInputRef={brandInputRef as React.RefObject<TextInput>}
+                sizeInputRef={sizeInputRef as React.RefObject<TextInput>}
+                pricePaidInputRef={pricePaidInputRef as React.RefObject<TextInput>}
+                descriptionInputRef={descriptionInputRef as React.RefObject<TextInput>}
                 displayedError={displayedError}
                 sneakerId={currentSneaker?.id}
             />
