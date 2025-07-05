@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { Modal, Pressable, View, Dimensions } from 'react-native';
 import { SneakersModal } from '@/components/modals/SneakersModal';
 import { useModalStore } from '@/store/useModalStore';
@@ -21,12 +21,12 @@ export default function SneakersModalWrapper() {
     const { isVisible, setIsVisible, resetModalData } = useModalStore();
     const translateY = useSharedValue(MODAL_HEIGHT);
 
-    const closeModal = () => {
-        resetModalData();
+    const closeModal = useCallback(() => {
         setIsVisible(false);
-    };
+        resetModalData();
+    }, [resetModalData, setIsVisible]);
 
-    const handleCloseModal = () => {
+    const handleCloseModal = useCallback(() => {
         translateY.value = withTiming(MODAL_HEIGHT, {
             duration: 180,
         }, (finished) => {
@@ -34,12 +34,11 @@ export default function SneakersModalWrapper() {
                 runOnJS(closeModal)();
             }
         });
-    };
+    }, [translateY, closeModal]);
 
     const panGesture = Gesture.Pan()
         .onUpdate((event) => {
-            const newTranslateY = event.translationY;
-            translateY.value = Math.max(0, newTranslateY);
+            translateY.value = Math.max(0, event.translationY);
         })
         .onEnd((event) => {
             const shouldClose = event.translationY > MODAL_HEIGHT * 0.3 || event.velocityY > 1000;
@@ -84,10 +83,8 @@ export default function SneakersModalWrapper() {
             translateY.value = withTiming(0, {
                 duration: 400,
             });
-        } else {
-            translateY.value = MODAL_HEIGHT;
         }
-    }, [isVisible, translateY]);
+    }, [isVisible]);
 
     return (
         <Modal

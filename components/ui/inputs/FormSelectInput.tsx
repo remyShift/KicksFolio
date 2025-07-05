@@ -36,39 +36,30 @@ export default function FormSelectInput<T extends FieldValues>({
     testID,
 }: FormSelectInputProps<T>) {
     const [isOpen, setIsOpen] = useState(false);
-    const [isFocused, setIsFocused] = useState(false);
-    const dropdownHeight = useSharedValue(0);
+    
+    const animatedStyle = useAnimatedStyle(() => {
+        const targetHeight = isOpen ? 200 : 0;
+        return {
+            maxHeight: withSpring(targetHeight, {
+                damping: 20,
+                stiffness: 150,
+            }),
+            opacity: withTiming(isOpen ? 1 : 0, { duration: 250 }),
+            overflow: 'hidden'
+        };
+    }, [isOpen]);
 
     const handleOptionSelect = (onChange: (value: string) => void, value: string) => {
         onChange(value);
-        dropdownHeight.value = withTiming(0, { duration: 300 });
         setIsOpen(false);
-        setIsFocused(false);
     };
 
     const toggleDropdown = () => {
         if (!isOpen) {
             onFocus?.();
-            setIsOpen(true);
-            setIsFocused(true);
-            dropdownHeight.value = withSpring(200, {
-                damping: 15,
-                stiffness: 100
-            });
-        } else {
-            dropdownHeight.value = withTiming(0, { duration: 300 });
-            setIsOpen(false);
-            setIsFocused(false);
         }
+        setIsOpen(!isOpen);
     };
-
-    const animatedStyle = useAnimatedStyle(() => {
-        return {
-            maxHeight: dropdownHeight.value,
-            opacity: dropdownHeight.value === 0 ? 0 : 1,
-            overflow: 'hidden'
-        };
-    });
 
     return (
         <View className="w-[49.5%]">
@@ -86,8 +77,8 @@ export default function FormSelectInput<T extends FieldValues>({
                                 className={`bg-white p-2 font-spacemono-bold flex-row justify-between items-center
                                     ${isOpen ? 'border-2 border-primary rounded-t-md' : 'rounded-md border-2 border-gray-300'}
                                     ${error ? 'border-2 border-red-500' : ''}
-                                    ${isFocused && !isOpen ? 'border-2 border-orange-500' : ''}`}
-                                    testID={`${testID}-input`}
+                                `}
+                                testID={`${testID}-input`}
                             >
                                 <Text className={`font-spacemono-bold-italic text-base ${selectedOption ? 'text-black' : 'text-gray-400'}`}
                                     testID={`${testID}-input-value`}
@@ -116,6 +107,7 @@ export default function FormSelectInput<T extends FieldValues>({
                                             onPress={() => handleOptionSelect(onChange, option.value)}
                                         >
                                             <Text className="font-spacemono-bold-italic">{option.label.toUpperCase()}</Text>
+
                                         </Pressable>
                                     ))}
                                 </ScrollView>

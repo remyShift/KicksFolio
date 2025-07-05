@@ -1,7 +1,5 @@
 import { View, Text, Pressable } from 'react-native';
-import { useEffect } from 'react';
 import Animated, { 
-    useSharedValue, 
     withSpring, 
     useAnimatedStyle 
 } from 'react-native-reanimated';
@@ -24,21 +22,17 @@ export default function Toggle({
     px = 4
 }: ToggleProps) {
     const isLeftSelected = currentValue === leftValue;
-    const translateX = useSharedValue(isLeftSelected ? 4 : 46);
 
     const animatedStyle = useAnimatedStyle(() => {
+        const targetX = isLeftSelected ? 3 : 46;
         return {
-            transform: [{ translateX: translateX.value }],
+            transform: [{ translateX: withSpring(targetX, {
+                damping: 20,
+                stiffness: 180,
+                mass: 0.5,
+            }) }],
         };
-    });
-
-    useEffect(() => {
-        translateX.value = withSpring(isLeftSelected ? 3 : 46, {
-            damping: 20,
-            stiffness: 180,
-            mass: 0.5,
-        });
-    }, [currentValue, isLeftSelected]);
+    }, [isLeftSelected]);
 
     const handlePress = () => {
         const newValue = isLeftSelected ? rightValue : leftValue;
