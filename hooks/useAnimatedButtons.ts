@@ -7,12 +7,12 @@ import {
 import * as Haptics from 'expo-haptics';
 import { Gesture } from 'react-native-gesture-handler';
 
+const triggerHaptic = () => {
+	Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+};
+
 const useAnimatedButtons = (isDisabled: boolean) => {
 	const scale = useSharedValue(1);
-
-	const triggerHaptic = () => {
-		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-	};
 
 	const animatedStyle = useAnimatedStyle(() => {
 		return {
