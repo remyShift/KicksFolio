@@ -14,6 +14,7 @@ import { router } from 'expo-router';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import useToast from '@/hooks/useToast';
 import { useTranslation } from 'react-i18next';
+import { useSizeUnitStore } from '@/store/useSizeUnitStore';
 
 export default function SignUpSecondForm() {
     const { t } = useTranslation();
@@ -23,6 +24,7 @@ export default function SignUpSecondForm() {
     const sizeInputRef = useRef<TextInput>(null);
     const firstNameInputRef = useRef<TextInput>(null);
 
+    const { currentUnit } = useSizeUnitStore();
     const { signUp } = useAuth();
     const { showSuccessToast } = useToast();
 
@@ -118,7 +120,7 @@ export default function SignUpSecondForm() {
                         name="size"
                         control={control}
                         label={t('auth.form.sneakerSize.label')}
-                        placeholder={t('auth.form.sneakerSize.placeholder')}
+                        placeholder={currentUnit === 'EU' ? '42' : '9.5'}
                         ref={sizeInputRef}
                         keyboardType="numeric"
                         onFocus={() => handleFieldFocus('size')}

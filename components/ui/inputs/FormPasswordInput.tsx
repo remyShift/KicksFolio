@@ -13,7 +13,7 @@ interface FormPasswordInputProps<T extends FieldValues> {
     onBlur?: (value: string) => Promise<void>;
     error?: string;
     getFieldError?: (fieldName: string) => string | undefined;
-    nextInputRef?: RefObject<TextInput>;
+    nextInputRef?: RefObject<TextInput | null>;
     onSubmitEditing?: () => void;
     description?: string;
 }

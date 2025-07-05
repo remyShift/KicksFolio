@@ -14,7 +14,7 @@ interface FormTextInputProps<T extends FieldValues> {
     onSubmitEditing?: () => void;
     error?: string;
     getFieldError: (fieldName: string) => string | undefined;
-    nextInputRef?: RefObject<TextInput>;
+    nextInputRef?: RefObject<TextInput | null>;
     keyboardType?: 'default' | 'email-address' | 'numeric' | 'phone-pad';
     autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
     autoComplete?: 'email' | 'username' | 'name' | 'off';

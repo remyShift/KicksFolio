@@ -5,7 +5,7 @@ interface UseInputSubmitProps {
 	ref: ForwardedRef<TextInput>;
 	fieldName: string;
 	getFieldError: (fieldName: string) => string | undefined;
-	nextInputRef?: RefObject<TextInput>;
+	nextInputRef?: RefObject<TextInput | null>;
 	onSubmitEditing?: () => void;
 	setIsFocused: (value: boolean) => void;
 	onBlur?: (value: string) => Promise<void>;

@@ -15,6 +15,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-controller'
 import useToast from '@/hooks/useToast'
 import { useTranslation } from 'react-i18next'
 import { useSizeConversion } from '@/hooks/useSizeConversion'
+import { useSizeUnitStore } from '@/store/useSizeUnitStore'
 
 export default function EditProfileForm() {
     const { t } = useTranslation();
@@ -29,6 +30,7 @@ export default function EditProfileForm() {
     const sizeInputRef = useRef<TextInput>(null)
 
     const convertedSneakerSize = convertToCurrentUnit(user!.sneaker_size, getOriginalUnit(user!.sneaker_size))
+    const { currentUnit } = useSizeUnitStore();
 
     const {
         control,
@@ -152,7 +154,7 @@ export default function EditProfileForm() {
                         name="sneaker_size"
                         control={control}
                         label={t('auth.form.sneakerSize.label')}
-                        placeholder={t('auth.form.sneakerSize.placeholder')}
+                        placeholder={currentUnit === 'EU' ? '42' : '9.5'}
                         ref={sizeInputRef}
                         keyboardType="numeric"
                         onFocus={() => handleFieldFocus('sneaker_size')}
