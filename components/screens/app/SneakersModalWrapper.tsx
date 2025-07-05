@@ -17,8 +17,14 @@ import Animated, {
 const { height: screenHeight } = Dimensions.get('window');
 const MODAL_HEIGHT = screenHeight * 0.8;
 
+const closeModalActions = () => {
+    const { setIsVisible, resetModalData } = useModalStore.getState();
+    setIsVisible(false);
+    resetModalData();
+};
+
 export default function SneakersModalWrapper() {
-    const { isVisible, setIsVisible, resetModalData } = useModalStore();
+    const { isVisible } = useModalStore();
     const translateY = useSharedValue(MODAL_HEIGHT);
 
     const handleCloseModal = useCallback(() => {
@@ -26,11 +32,10 @@ export default function SneakersModalWrapper() {
             duration: 180,
         }, (finished) => {
             if (finished) {
-                runOnJS(setIsVisible)(false);
-                runOnJS(resetModalData)();
+                runOnJS(closeModalActions)();
             }
         });
-    }, [translateY, setIsVisible, resetModalData]);
+    }, [translateY]);
 
     const panGesture = Gesture.Pan()
         .onUpdate((event) => {
@@ -44,8 +49,7 @@ export default function SneakersModalWrapper() {
                     duration: 180,
                 }, (finished) => {
                     if (finished) {
-                        runOnJS(setIsVisible)(false);
-                        runOnJS(resetModalData)();
+                        runOnJS(closeModalActions)();
                     }
                 });
             } else {

@@ -35,6 +35,13 @@
       "ios": {
         "resourceClass": "m-medium"
       }
+    },
+    "debug-prod": {
+      "ios": {
+        "buildConfiguration": "Release",
+        "distribution": "internal",
+        "developmentClient": false
+      }
     }
   },
   "submit": {
