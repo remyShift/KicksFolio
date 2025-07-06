@@ -26,9 +26,9 @@ export const BugReportModal: React.FC = () => {
 	} = useBugReportStore();
 
 	const priorityOptions = [
-		{ label: t('bugReport.priority.low'), value: 'low' },
-		{ label: t('bugReport.priority.medium'), value: 'medium' },
-		{ label: t('bugReport.priority.high'), value: 'high' },
+		{ label: t('settings.bugReport.fields.priority.low'), value: 'low' },
+		{ label: t('settings.bugReport.fields.priority.medium'), value: 'medium' },
+		{ label: t('settings.bugReport.fields.priority.high'), value: 'high' },
 	];
 
 	const handleClose = () => {
@@ -50,17 +50,17 @@ export const BugReportModal: React.FC = () => {
 		setErrorMsg('');
 		
 		if (!formData.title.trim()) {
-			setErrorMsg(t('bugReport.validation.titleRequired'));
+			setErrorMsg(t('settings.bugReport.validation.titleRequired'));
 			return false;
 		}
 		
 		if (!formData.description.trim()) {
-			setErrorMsg(t('bugReport.validation.descriptionRequired'));
+			setErrorMsg(t('settings.bugReport.validation.descriptionRequired'));
 			return false;
 		}
 		
 		if (!formData.stepsToReproduce.trim()) {
-			setErrorMsg(t('bugReport.validation.stepsRequired'));
+			setErrorMsg(t('settings.bugReport.validation.stepsRequired'));
 			return false;
 		}
 		
@@ -77,17 +77,17 @@ export const BugReportModal: React.FC = () => {
 			const result = await GitHubService.createIssue(formData);
 			
 			showSuccessToast(
-				t('bugReport.success.title'),
-				t('bugReport.success.description', { number: result.number })
+				t('settings.bugReport.success.title'),
+				t('settings.bugReport.success.description', { number: result.number })
 			);
 			
 			resetStore();
 		} catch (error) {
 			console.error('Error creating bug report:', error);
-			setErrorMsg(t('bugReport.error.createFailed'));
+			setErrorMsg(t('settings.bugReport.error.createFailed'));
 			showErrorToast(
-				t('bugReport.error.title'),
-				t('bugReport.error.description')
+				t('settings.bugReport.error.title'),
+				t('settings.bugReport.error.description')
 			);
 		} finally {
 			setIsLoading(false);
@@ -126,7 +126,7 @@ export const BugReportModal: React.FC = () => {
 				<View className="flex-row items-center justify-between p-4 border-b border-gray-200">
 					<BackButton onPressAction={handleClose} />
 					<Text className="text-xl font-bold text-gray-900">
-						{t('bugReport.modal.title')}
+						{t('settings.bugReport.modal.title')}
 					</Text>
 					<View className="w-8" />
 				</View>
@@ -136,7 +136,7 @@ export const BugReportModal: React.FC = () => {
 					<View className="flex-row items-start">
 						<Ionicons name="information-circle" size={20} color="#3B82F6" />
 						<Text className="ml-2 text-sm text-blue-700 flex-1">
-							{t('bugReport.modal.infoText')}
+							{t('settings.bugReport.modal.infoText')}
 						</Text>
 					</View>
 				</View>
@@ -153,10 +153,10 @@ export const BugReportModal: React.FC = () => {
 						{/* Title */}
 						<View>
 							<Text className="text-base font-medium text-gray-700 mb-2">
-								{t('bugReport.fields.title.label')}
+								{t('settings.bugReport.fields.title.label')}
 							</Text>
 							<TextInput
-								placeholder={t('bugReport.fields.title.placeholder')}
+								placeholder={t('settings.bugReport.fields.title.placeholder')}
 								value={formData.title}
 								onChangeText={(text: string) => updateFormData({ title: text })}
 								maxLength={100}
@@ -168,10 +168,10 @@ export const BugReportModal: React.FC = () => {
 						{/* Description */}
 						<View>
 							<Text className="text-base font-medium text-gray-700 mb-2">
-								{t('bugReport.fields.description.label')}
+								{t('settings.bugReport.fields.description.label')}
 							</Text>
 							<TextInput
-								placeholder={t('bugReport.fields.description.placeholder')}
+								placeholder={t('settings.bugReport.fields.description.placeholder')}
 								value={formData.description}
 								onChangeText={(text: string) => updateFormData({ description: text })}
 								multiline
@@ -187,10 +187,10 @@ export const BugReportModal: React.FC = () => {
 						{/* Steps to Reproduce */}
 						<View>
 							<Text className="text-base font-medium text-gray-700 mb-2">
-								{t('bugReport.fields.stepsToReproduce.label')}
+								{t('settings.bugReport.fields.stepsToReproduce.label')}
 							</Text>
 							<TextInput
-								placeholder={t('bugReport.fields.stepsToReproduce.placeholder')}
+								placeholder={t('settings.bugReport.fields.stepsToReproduce.placeholder')}
 								value={formData.stepsToReproduce}
 								onChangeText={(text: string) => updateFormData({ stepsToReproduce: text })}
 								multiline
@@ -206,10 +206,10 @@ export const BugReportModal: React.FC = () => {
 						{/* Expected Behavior */}
 						<View>
 							<Text className="text-base font-medium text-gray-700 mb-2">
-								{t('bugReport.fields.expectedBehavior.label')}
+								{t('settings.bugReport.fields.expectedBehavior.label')}
 							</Text>
 							<TextInput
-								placeholder={t('bugReport.fields.expectedBehavior.placeholder')}
+								placeholder={t('settings.bugReport.fields.expectedBehavior.placeholder')}
 								value={formData.expectedBehavior}
 								onChangeText={(text: string) => updateFormData({ expectedBehavior: text })}
 								multiline
@@ -225,10 +225,10 @@ export const BugReportModal: React.FC = () => {
 						{/* Actual Behavior */}
 						<View>
 							<Text className="text-base font-medium text-gray-700 mb-2">
-								{t('bugReport.fields.actualBehavior.label')}
+								{t('settings.bugReport.fields.actualBehavior.label')}
 							</Text>
 							<TextInput
-								placeholder={t('bugReport.fields.actualBehavior.placeholder')}
+								placeholder={t('settings.bugReport.fields.actualBehavior.placeholder')}
 								value={formData.actualBehavior}
 								onChangeText={(text: string) => updateFormData({ actualBehavior: text })}
 								multiline
@@ -244,7 +244,7 @@ export const BugReportModal: React.FC = () => {
 						{/* Priority Selection */}
 						<View className="mb-4">
 							<Text className="text-lg font-semibold mb-2 text-gray-800">
-								{t('bugReport.fields.priority.label')}
+								{t('settings.bugReport.fields.priority.label')}
 							</Text>
 							<View className="flex-row gap-4">
 								{priorityOptions.map((option) => {
@@ -282,7 +282,7 @@ export const BugReportModal: React.FC = () => {
 
 						<View className="flex flex-row justify-center mb-6">
 							<MainButton
-								content={t('bugReport.modal.button')}
+								content={t('settings.bugReport.modal.submitButton')}
 								onPressAction={handleSubmit}
 								isDisabled={isLoading}
 								backgroundColor="bg-primary"

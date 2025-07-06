@@ -1,18 +1,18 @@
 {
 	"language": {
-		"title": "Langue modifiée",
-		"description": "La langue de l'application a été mise à jour avec succès"
+		"title": "Langue modifiée.",
+		"description": "La langue de l'application a été mise à jour avec succès."
 	},
 	"editProfile": {
-		"profileUpdated": "👤 Profil mis à jour",
+		"profileUpdated": "👤 Profil mis à jour.",
 		"profileUpdatedDescription": "Votre profil a été mis à jour avec succès.",
-		"profileUpdateFailed": "❌ Échec de la mise à jour du profil",
+		"profileUpdateFailed": "❌ Échec de la mise à jour du profil.",
 		"profileUpdateFailedDescription": "Une erreur est survenue."
 	},
 	"deleteAccount": {
-		"accountDeleted": "🗑️ Compte supprimé",
+		"accountDeleted": "🗑️ Compte supprimé.",
 		"accountDeletedDescription": "Votre compte a été supprimé avec succès.",
-		"accountDeletionFailed": "❌ Échec de la suppression du compte",
+		"accountDeletionFailed": "❌ Échec de la suppression du compte.",
 		"accountDeletionFailedDescription": "Une erreur est survenue."
 	},
 	"buttons": {
@@ -31,54 +31,60 @@
 		"reportBug": "Signaler un bug"
 	},
 	"sizeUnit": {
-		"title": "Affichage des tailles modifié",
-		"description": "Les tailles seront affichées en {{unit}}"
+		"title": "Affichage des tailles modifié.",
+		"description": "Les tailles seront affichées en {{unit}}."
 	},
 	"currency": {
-		"title": "Devise modifiée",
-		"description": "La devise a été mise à jour avec succès"
+		"title": "Devise modifiée.",
+		"description": "La devise a été mise à jour avec succès."
 	},
 	"bugReport": {
 		"modal": {
 			"title": "Signaler un bug",
-			"submitButton": "Envoyer le rapport",
-			"confirmClose": {
-				"title": "Fermer le rapport ?",
-				"description": "Êtes-vous sûr de vouloir fermer ? Toutes les données saisies seront perdues."
-			},
+			"submitButton": "Envoyer",
 			"infoText": "Les informations de votre appareil seront automatiquement incluses pour nous aider à résoudre le problème plus rapidement."
 		},
 		"fields": {
-			"title": "Titre du bug",
-			"titlePlaceholder": "Décrivez brièvement le problème",
-			"description": "Description détaillée",
-			"descriptionPlaceholder": "Expliquez le problème en détail",
-			"stepsToReproduce": "Étapes pour reproduire",
-			"stepsPlaceholder": "1. Ouvrez l'application\n2. Appuyez sur...\n3. Le problème se produit",
-			"expectedBehavior": "Comportement attendu",
-			"expectedPlaceholder": "Que devrait-il se passer ?",
-			"actualBehavior": "Comportement réel",
-			"actualPlaceholder": "Que se passe-t-il réellement ?",
-			"priority": "Priorité"
-		},
-		"priority": {
-			"low": "Faible",
-			"medium": "Moyenne",
-			"high": "Élevée"
+			"title": {
+				"label": "Titre du bug*",
+				"placeholder": "Décrivez brièvement le problème."
+			},
+			"description": {
+				"label": "Description détaillée*",
+				"placeholder": "Expliquez le problème en détail."
+			},
+			"stepsToReproduce": {
+				"label": "Étapes pour reproduire*",
+				"placeholder": "1. Ouvrez l'application\n2. Appuyez sur...\n3. Le problème se produit."
+			},
+			"expectedBehavior": {
+				"label": "Comportement attendu*",
+				"placeholder": "Que devrait-il se passer ?"
+			},
+			"actualBehavior": {
+				"label": "Comportement réel*",
+				"placeholder": "Que se passe-t-il réellement ?"
+			},
+			"priority": {
+				"label": "Priorité*",
+				"low": "Faible",
+				"medium": "Moyenne",
+				"high": "Élevée"
+			}
 		},
 		"validation": {
-			"titleRequired": "Le titre est requis",
-			"descriptionRequired": "La description est requise",
-			"stepsRequired": "Les étapes pour reproduire sont requises"
+			"titleRequired": "Le titre est requis.",
+			"descriptionRequired": "La description est requise.",
+			"stepsRequired": "Les étapes pour reproduire sont requises."
 		},
 		"success": {
-			"title": "Rapport envoyé",
-			"description": "Votre rapport de bug #{{number}} a été créé avec succès. Merci pour votre contribution !"
+			"title": "📩 Rapport envoyé !",
+			"description": "Votre rapport de bug #{{number}} a été créé avec succès."
 		},
 		"error": {
-			"title": "Erreur d'envoi",
-			"description": "Une erreur est survenue lors de l'envoi du rapport",
-			"createFailed": "Impossible de créer le rapport de bug"
+			"title": "❌ Erreur d'envoi.",
+			"description": "Une erreur est survenue lors de l'envoi du rapport.",
+			"createFailed": "Impossible de créer le rapport de bug."
 		}
 	}
 } 

@@ -6,10 +6,15 @@ export const GITHUB_CONFIG = {
 };
 
 export const validateGitHubConfig = (): boolean => {
-	const { REPO_OWNER, REPO_NAME, GITHUB_TOKEN } = GITHUB_CONFIG;
+	const { REPO_OWNER, REPO_NAME, GITHUB_TOKEN, API_URL } = GITHUB_CONFIG;
 
 	if (!REPO_OWNER) {
 		console.warn('⚠️  GitHub config: REPO_OWNER needs to be configured');
+		return false;
+	}
+
+	if (!REPO_NAME) {
+		console.warn('⚠️  GitHub config: REPO_NAME needs to be configured');
 		return false;
 	}
 
@@ -18,8 +23,8 @@ export const validateGitHubConfig = (): boolean => {
 		return false;
 	}
 
-	if (!REPO_OWNER || !REPO_NAME || !GITHUB_TOKEN) {
-		console.warn('⚠️  GitHub config: Missing required configuration');
+	if (!API_URL) {
+		console.warn('⚠️  GitHub config: API_URL needs to be configured');
 		return false;
 	}
 

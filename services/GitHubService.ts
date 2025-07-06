@@ -53,27 +53,33 @@ export class GitHubService {
 	private static async getDeviceInfo(): Promise<string> {
 		const deviceInfo = [];
 
-		// Informations de base
 		deviceInfo.push(`**Device Info:**`);
 		deviceInfo.push(`- OS: ${Platform.OS} ${Platform.Version}`);
-		deviceInfo.push(`- Device: ${Device.modelName || 'Unknown'}`);
-		deviceInfo.push(
-			`- App Version: ${
-				Application.nativeApplicationVersion || 'Unknown'
-			}`
-		);
-		deviceInfo.push(
-			`- Build Version: ${Application.nativeBuildVersion || 'Unknown'}`
-		);
 
-		// Informations spécifiques iOS/Android
+		const deviceName = Device?.modelName || Device?.deviceName || 'Unknown';
+		deviceInfo.push(`- Device: ${deviceName}`);
+
+		const appVersion =
+			Application?.nativeApplicationVersion || 'Development';
+		deviceInfo.push(`- App Version: ${appVersion}`);
+
+		const buildVersion = Application?.nativeBuildVersion || 'Development';
+		deviceInfo.push(`- Build Version: ${buildVersion}`);
+
 		if (Platform.OS === 'ios') {
 			deviceInfo.push(`- iOS Version: ${Platform.Version}`);
 		} else if (Platform.OS === 'android') {
 			deviceInfo.push(`- Android API Level: ${Platform.Version}`);
 		}
 
-		return deviceInfo.join('\n');
+		if (Application?.nativeApplicationVersion === undefined) {
+			deviceInfo.push(`- Environment: Development/Simulator`);
+		}
+
+		const result = deviceInfo.join('\n');
+		console.log('✅ [GitHubService] Device info generated:', result);
+
+		return result;
 	}
 
 	private static formatIssueBody(
@@ -124,28 +130,37 @@ export class GitHubService {
 	static async createIssue(
 		formData: BugReportFormData
 	): Promise<{ url: string; number: number }> {
-		// Valider la configuration avant de créer l'issue
 		if (!validateGitHubConfig()) {
 			throw new Error(
 				'GitHub configuration is not properly set up. Please check config/github.config.ts'
 			);
 		}
 
-		const deviceInfo = await this.getDeviceInfo();
-		const priorityLabel = this.getPriorityLabel(formData.priority);
+		return this.getDeviceInfo()
+			.then((deviceInfo) => {
+				const priorityLabel = this.getPriorityLabel(formData.priority);
 
-		const issueData: GitHubIssueData = {
-			title: `[Bug Report] ${formData.title}`,
-			body: this.formatIssueBody(formData, deviceInfo),
-			labels: ['bug', 'mobile-app', priorityLabel],
-		};
+				const issueData: GitHubIssueData = {
+					title: `[Bug Report] ${formData.title}`,
+					body: this.formatIssueBody(formData, deviceInfo),
+					labels: ['bug', 'mobile-app', priorityLabel],
+				};
 
-		const url = `${this.GITHUB_API_URL}/repos/${this.REPO_OWNER}/${this.REPO_NAME}/issues`;
+				const url = `${this.GITHUB_API_URL}/repos/${this.REPO_OWNER}/${this.REPO_NAME}/issues`;
 
-		return this.makeRequest(url, 'POST', issueData).then((response) => ({
-			url: response.html_url,
-			number: response.number,
-		}));
+				return this.makeRequest(url, 'POST', issueData);
+			})
+			.then((response) => {
+				return {
+					url: response.html_url,
+					number: response.number,
+				};
+			})
+			.catch((error) => {
+				throw new Error(
+					`Failed to create bug report: ${error.message}`
+				);
+			});
 	}
 
 	static async validateConfiguration(): Promise<boolean> {

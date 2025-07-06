@@ -10,7 +10,6 @@ import enCollection from './en/collection.json';
 import enSocial from './en/social.json';
 import enNavigation from './en/navigation.json';
 import enUi from './en/ui.json';
-import enBugReport from './en/bugReport.json';
 
 // Import des traductions françaises
 import frAuth from './fr/auth.json';
@@ -20,7 +19,6 @@ import frCollection from './fr/collection.json';
 import frSocial from './fr/social.json';
 import frNavigation from './fr/navigation.json';
 import frUi from './fr/ui.json';
-import frBugReport from './fr/bugReport.json';
 
 const resources = {
 	en: {
@@ -32,7 +30,6 @@ const resources = {
 			social: enSocial,
 			navigation: enNavigation,
 			ui: enUi,
-			bugReport: enBugReport,
 		},
 	},
 	fr: {
@@ -44,7 +41,6 @@ const resources = {
 			social: frSocial,
 			navigation: frNavigation,
 			ui: frUi,
-			bugReport: frBugReport,
 		},
 	},
 };

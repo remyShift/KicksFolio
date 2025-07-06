@@ -1,18 +1,18 @@
 {
 	"language": {
-		"title": "Language Changed",
-		"description": "The app language has been updated successfully"
+		"title": "Language Changed.",
+		"description": "The app language has been updated successfully."
 	},
 	"editProfile": {
-		"profileUpdated": "👤 Profile updated",
+		"profileUpdated": "👤 Profile updated.",
 		"profileUpdatedDescription": "Your profile has been updated successfully.",
-		"profileUpdateFailed": "❌ Profile update failed",
+		"profileUpdateFailed": "❌ Profile update failed.",
 		"profileUpdateFailedDescription": "An error occurred while updating your profile."
 	},
 	"deleteAccount": {
-		"accountDeleted": "🗑️ Account deleted",
+		"accountDeleted": "🗑️ Account deleted.",
 		"accountDeletedDescription": "Your account has been deleted successfully.",
-		"accountDeletionFailed": "❌ Account deletion failed",
+		"accountDeletionFailed": "❌ Account deletion failed.",
 		"accountDeletionFailedDescription": "An error occurred while deleting your account."
 	},
 	"buttons": {
@@ -31,54 +31,60 @@
 		"reportBug": "Report a bug"
 	},
 	"sizeUnit": {
-		"title": "Size display changed",
-		"description": "The sneaker size display is now {{unit}}"
+		"title": "Size display changed.",
+		"description": "The sneaker size display is now {{unit}}."
 	},
 	"currency": {
-		"title": "Currency changed",
-		"description": "The currency has been updated successfully"
+		"title": "Currency changed.",
+		"description": "The currency has been updated successfully."
 	},
 	"bugReport": {
 		"modal": {
 			"title": "Report a Bug",
-			"submitButton": "Send Report",
-			"confirmClose": {
-				"title": "Close Report?",
-				"description": "Are you sure you want to close? All entered data will be lost."
-			},
+			"submitButton": "Send",
 			"infoText": "Your device information will be automatically included to help us resolve the issue faster."
 		},
 		"fields": {
-			"title": "Bug Title",
-			"titlePlaceholder": "Briefly describe the problem",
-			"description": "Detailed Description",
-			"descriptionPlaceholder": "Explain the problem in detail",
-			"stepsToReproduce": "Steps to Reproduce",
-			"stepsPlaceholder": "1. Open the app\n2. Tap on...\n3. The problem occurs",
-			"expectedBehavior": "Expected Behavior",
-			"expectedPlaceholder": "What should happen?",
-			"actualBehavior": "Actual Behavior",
-			"actualPlaceholder": "What actually happens?",
-			"priority": "Priority"
-		},
-		"priority": {
-			"low": "Low",
-			"medium": "Medium",
-			"high": "High"
+			"title": {
+				"label": "Bug Title*",
+				"placeholder": "Briefly describe the problem."
+			},
+			"description": {
+				"label": "Detailed Description*",
+				"placeholder": "Explain the problem in detail."
+			},
+			"stepsToReproduce": {
+				"label": "Steps to Reproduce*",
+				"placeholder": "1. Open the app\n2. Tap on...\n3. The problem occurs."
+			},
+			"expectedBehavior": {
+				"label": "Expected Behavior*",
+				"placeholder": "What should happen?"
+			},
+			"actualBehavior": {
+				"label": "Actual Behavior*",
+				"placeholder": "What actually happens ?"
+			},
+			"priority": {
+				"label": "Priority*",
+				"low": "Low",
+				"medium": "Medium",
+				"high": "High"
+			}
 		},
 		"validation": {
-			"titleRequired": "Title is required",
-			"descriptionRequired": "Description is required",
-			"stepsRequired": "Steps to reproduce are required"
+			"titleRequired": "Title is required.",
+			"descriptionRequired": "Description is required.",
+			"stepsRequired": "Steps to reproduce are required."
 		},
 		"success": {
-			"title": "Report Sent",
-			"description": "Your bug report #{{number}} has been successfully created. Thank you for your contribution!"
+			"title": "📩 Report Sent !",
+			"description": "Your bug report #{{number}} has been successfully created."
 		},
 		"error": {
-			"title": "Send Error",
-			"description": "An error occurred while sending the report",
-			"createFailed": "Unable to create bug report"
+			"title": "❌ Send Error.",
+			"description": "An error occurred while sending the report.",
+			"createFailed": "Unable to create bug report."
 		}
 	}
 } 
