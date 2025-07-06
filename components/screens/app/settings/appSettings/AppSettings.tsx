@@ -1,4 +1,4 @@
-import { Text, View } from "react-native";
+import { Linking } from "react-native";
 import SettingsCategory from "../shared/SettingsCategory";
 import SettingsMenuItem from "../shared/SettingsMenuItem";
 import { useTranslation } from "react-i18next";
@@ -10,6 +10,7 @@ import useToast from "@/hooks/useToast";
 import Spacer from "../shared/Spacer";
 import CurrencyToggle from "./CurrencyToggle";
 import { useCurrencyStore } from "@/store/useCurrencyStore";
+import { useBugReportStore } from "@/store/useBugReportStore";
 
 export default function AppSettings() {
     const { t } = useTranslation();
@@ -17,6 +18,7 @@ export default function AppSettings() {
     const { currentUnit, setUnit } = useSizeUnitStore();
     const { currentCurrency, setCurrency } = useCurrencyStore();
     const { showSuccessToast } = useToast();
+    const { setIsVisible } = useBugReportStore();
 
     const handleLanguageChange = (newLanguage: 'en' | 'fr') => {
         setLanguage(newLanguage);
@@ -42,8 +44,19 @@ export default function AppSettings() {
         );
     };
 
+    const handleBugReportPress = () => {
+        setIsVisible(true);
+    };
+
     return (
         <SettingsCategory title={t('settings.titles.app')}>
+            <SettingsMenuItem 
+                icon="bug-outline"
+                label={t('settings.titles.reportBug')}
+                onPress={handleBugReportPress}
+            />
+
+            <Spacer />
             <SettingsMenuItem 
                 icon="language-outline"
                 label={t('settings.titles.language')}

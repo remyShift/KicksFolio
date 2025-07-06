@@ -1,5 +1,6 @@
 import { Stack } from 'expo-router';
 import SneakersModalWrapper from '@/components/screens/app/SneakersModalWrapper';
+import { BugReportModal } from '@/components/modals/BugReportModal';
 
 export default function AppLayout() {
     return (
@@ -13,6 +14,7 @@ export default function AppLayout() {
                 <Stack.Screen name="edit-profile" options={{ animationTypeForReplace: 'push' }} />
             </Stack>
             <SneakersModalWrapper />
+            <BugReportModal />
         </>
     );
 }

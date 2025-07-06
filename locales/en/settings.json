@@ -27,7 +27,8 @@
 		"language": "Language",
 		"app": "App Settings",
 		"sizeUnit": "Size display",
-		"currency": "Currency"
+		"currency": "Currency",
+		"reportBug": "Report a bug"
 	},
 	"sizeUnit": {
 		"title": "Size display changed",
@@ -36,5 +37,48 @@
 	"currency": {
 		"title": "Currency changed",
 		"description": "The currency has been updated successfully"
+	},
+	"bugReport": {
+		"modal": {
+			"title": "Report a Bug",
+			"submitButton": "Send Report",
+			"confirmClose": {
+				"title": "Close Report?",
+				"description": "Are you sure you want to close? All entered data will be lost."
+			},
+			"infoText": "Your device information will be automatically included to help us resolve the issue faster."
+		},
+		"fields": {
+			"title": "Bug Title",
+			"titlePlaceholder": "Briefly describe the problem",
+			"description": "Detailed Description",
+			"descriptionPlaceholder": "Explain the problem in detail",
+			"stepsToReproduce": "Steps to Reproduce",
+			"stepsPlaceholder": "1. Open the app\n2. Tap on...\n3. The problem occurs",
+			"expectedBehavior": "Expected Behavior",
+			"expectedPlaceholder": "What should happen?",
+			"actualBehavior": "Actual Behavior",
+			"actualPlaceholder": "What actually happens?",
+			"priority": "Priority"
+		},
+		"priority": {
+			"low": "Low",
+			"medium": "Medium",
+			"high": "High"
+		},
+		"validation": {
+			"titleRequired": "Title is required",
+			"descriptionRequired": "Description is required",
+			"stepsRequired": "Steps to reproduce are required"
+		},
+		"success": {
+			"title": "Report Sent",
+			"description": "Your bug report #{{number}} has been successfully created. Thank you for your contribution!"
+		},
+		"error": {
+			"title": "Send Error",
+			"description": "An error occurred while sending the report",
+			"createFailed": "Unable to create bug report"
+		}
 	}
 } 

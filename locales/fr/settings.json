@@ -27,7 +27,8 @@
 		"language": "Langue",
 		"app": "Paramètres de l'application",
 		"sizeUnit": "Affichage des tailles",
-		"currency": "Devise"
+		"currency": "Devise",
+		"reportBug": "Signaler un bug"
 	},
 	"sizeUnit": {
 		"title": "Affichage des tailles modifié",
@@ -36,5 +37,48 @@
 	"currency": {
 		"title": "Devise modifiée",
 		"description": "La devise a été mise à jour avec succès"
+	},
+	"bugReport": {
+		"modal": {
+			"title": "Signaler un bug",
+			"submitButton": "Envoyer le rapport",
+			"confirmClose": {
+				"title": "Fermer le rapport ?",
+				"description": "Êtes-vous sûr de vouloir fermer ? Toutes les données saisies seront perdues."
+			},
+			"infoText": "Les informations de votre appareil seront automatiquement incluses pour nous aider à résoudre le problème plus rapidement."
+		},
+		"fields": {
+			"title": "Titre du bug",
+			"titlePlaceholder": "Décrivez brièvement le problème",
+			"description": "Description détaillée",
+			"descriptionPlaceholder": "Expliquez le problème en détail",
+			"stepsToReproduce": "Étapes pour reproduire",
+			"stepsPlaceholder": "1. Ouvrez l'application\n2. Appuyez sur...\n3. Le problème se produit",
+			"expectedBehavior": "Comportement attendu",
+			"expectedPlaceholder": "Que devrait-il se passer ?",
+			"actualBehavior": "Comportement réel",
+			"actualPlaceholder": "Que se passe-t-il réellement ?",
+			"priority": "Priorité"
+		},
+		"priority": {
+			"low": "Faible",
+			"medium": "Moyenne",
+			"high": "Élevée"
+		},
+		"validation": {
+			"titleRequired": "Le titre est requis",
+			"descriptionRequired": "La description est requise",
+			"stepsRequired": "Les étapes pour reproduire sont requises"
+		},
+		"success": {
+			"title": "Rapport envoyé",
+			"description": "Votre rapport de bug #{{number}} a été créé avec succès. Merci pour votre contribution !"
+		},
+		"error": {
+			"title": "Erreur d'envoi",
+			"description": "Une erreur est survenue lors de l'envoi du rapport",
+			"createFailed": "Impossible de créer le rapport de bug"
+		}
 	}
 } 
