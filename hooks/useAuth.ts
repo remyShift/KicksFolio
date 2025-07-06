@@ -79,7 +79,7 @@ export const useAuth = () => {
 				router.replace({
 					pathname: '/login',
 					params: {
-						message: t('auth.forgotPassword.successDescription'),
+						message: 'email sent',
 					},
 				});
 				return true;
@@ -99,7 +99,7 @@ export const useAuth = () => {
 		confirmNewPassword: string
 	) => {
 		if (newPassword !== confirmNewPassword) {
-			setErrorMsg(t('auth.fields.confirmPassword.error.match'));
+			setErrorMsg(t('auth.error.samePasswordAsOld'));
 			return;
 		}
 
@@ -116,13 +116,12 @@ export const useAuth = () => {
 				router.replace({
 					pathname: '/login',
 					params: {
-						message: t('auth.resetPassword.successDescription'),
+						message: 'reset successful',
 					},
 				});
 				return true;
 			})
 			.catch((error) => {
-				console.error('❌ Password reset failed:', error);
 				const errorMessage =
 					error instanceof Error
 						? error.message
@@ -133,11 +132,11 @@ export const useAuth = () => {
 						'should be different from the old password'
 					)
 				) {
-					setErrorMsg(t('auth.fields.password.error.different'));
+					setErrorMsg(t('auth.error.samePasswordAsOld'));
 				} else if (
 					errorMessage.includes('Password should be at least')
 				) {
-					setErrorMsg(t('auth.fields.password.error.size'));
+					setErrorMsg(t('auth.form.password.error.size'));
 				} else {
 					setErrorMsg(errorMessage);
 				}

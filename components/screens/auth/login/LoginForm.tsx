@@ -26,8 +26,8 @@ export default function LoginForm() {
     const { showSuccessToast, showErrorToast } = useToast();
     const { user, isLoading } = useSession();
     const params = useLocalSearchParams();
-    const [resetPasswordSuccess, setResetPasswordSuccess] = useState(params.message as string);
-    const [resetPasswordError, setResetPasswordError] = useState(params.error as string);
+    const [paramsMessage, setParamsMessage] = useState(params.message as string);
+    const [paramsError, setParamsError] = useState(params.error as string);
     const [isLoggingIn, setIsLoggingIn] = useState(false);
 
     const {
@@ -66,27 +66,33 @@ export default function LoginForm() {
     });
 
     useEffect(() => {
-        if (resetPasswordSuccess && resetPasswordSuccess.includes('reset successful')) {
-            showSuccessToast(
-                t('auth.resetPassword.success'), 
-                t('auth.resetPassword.loginWithNewPassword')
-            );
+        if (paramsMessage) {
+            if (paramsMessage.includes('email sent')) {
+                showSuccessToast(t('auth.forgotPassword.success'), t('auth.forgotPassword.successDescription'));
+            } else if (paramsMessage.includes('reset successful')) {
+                showSuccessToast(t('auth.resetPassword.success'), t('auth.resetPassword.loginWithNewPassword'));
+            } else {
+                showErrorToast(
+                    t('auth.error.resetLinkError'),
+                    t('auth.error.resetLinkErrorDescription')
+                );
+            }
         }
-        setResetPasswordSuccess('');
+        setParamsMessage('');
 
         return () => {
-            setResetPasswordSuccess('');
+            setParamsMessage('');
         };
-    }, [resetPasswordSuccess]);
+    }, [paramsMessage]);
 
     useEffect(() => {
-        if (resetPasswordError && params.message) {            
-            if (resetPasswordError === 'reset_link_expired') {
+        if (paramsError) {            
+            if (paramsError === 'reset_link_expired') {
                 showErrorToast(
                     t('auth.error.resetLinkExpired'),
                     t('auth.error.resetLinkExpiredDescription')
                 );
-            } else if (resetPasswordError === 'reset_link_invalid') {
+            } else if (paramsError === 'reset_link_invalid') {
                 showErrorToast(
                     t('auth.error.resetLinkInvalid'),
                     t('auth.error.resetLinkInvalidDescription')
@@ -98,13 +104,13 @@ export default function LoginForm() {
                 );
             }
             
-            setResetPasswordError('');
+            setParamsError('');
         }
 
         return () => {
-            setResetPasswordError('');
+            setParamsError('');
         };
-    }, [resetPasswordError, params.message]);
+    }, [paramsError]);
 
     useEffect(() => {
         if (isLoggingIn && user && !isLoading) {

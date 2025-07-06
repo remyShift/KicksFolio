@@ -43,17 +43,13 @@ export function SessionProvider({ children }: PropsWithChildren) {
 
                     const error = params.get('error');
                     const errorCode = params.get('error_code');
-                    const errorDescription = params.get('error_description');
                     
-                    if (error) {
-                        console.error('❌ Reset link error:', { error, errorCode, errorDescription });
-                        
+                    if (error) {                        
                         if (errorCode === 'otp_expired') {
                             router.replace({
                                 pathname: '/login',
                                 params: {
                                     error: 'reset_link_expired',
-                                    message: 'Le lien de reset a expiré. Veuillez en demander un nouveau.'
                                 }
                             });
                             
@@ -62,7 +58,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
                                 pathname: '/login',
                                 params: {
                                     error: 'reset_link_invalid',
-                                    message: 'Le lien de reset est invalide. Veuillez en demander un nouveau.'
                                 }
                             });
                         }
@@ -79,7 +74,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
                             pathname: '/login',
                             params: {
                                 error: 'reset_link_invalid',
-                                message: 'Le lien de reset est invalide. Veuillez en demander un nouveau.'
                             }
                         });
                     }
@@ -88,7 +82,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
                         pathname: '/login',
                         params: {
                             error: 'reset_link_invalid',
-                            message: 'Le lien de reset est invalide. Veuillez en demander un nouveau.'
                         }
                     });
                 }

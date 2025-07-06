@@ -183,10 +183,20 @@ export class SupabaseAuthService {
 							password: newPassword,
 						});
 					})
-					.then(() => {
+					.then((updateResult) => {
+						if (updateResult.error) {
+							throw updateResult.error;
+						}
+
 						return tempSupabase.auth.signOut();
 					})
-					.then(() => true);
+					.then((signOutResult) => {
+						if (signOutResult.error) {
+							throw signOutResult.error;
+						}
+
+						return true;
+					});
 			}
 		);
 	}
