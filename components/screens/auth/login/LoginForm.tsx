@@ -135,9 +135,7 @@ export default function LoginForm() {
             <View className="flex-1 justify-center items-center gap-12">
                 <PageTitle content={t('auth.titles.login')} />
                 <View className='flex justify-center items-center gap-8 w-full px-12'>
-                    <View className='w-full absolute' style={{ top: -50 }}>   
-                        <ErrorMsg content={displayedError} display={displayedError !== ''} />
-                    </View>
+                    <ErrorMsg content={displayedError} display={displayedError !== ''} />
 
                     <FormTextInput
                         name="email"
