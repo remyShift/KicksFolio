@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { View, Text, Modal, ScrollView, TouchableOpacity, Alert, TextInput } from 'react-native';
 import { useBugReportStore } from '@/store/useBugReportStore';
 import { useTranslation } from 'react-i18next';
@@ -8,10 +8,10 @@ import { GitHubService } from '@/services/GitHubService';
 import useToast from '@/hooks/useToast';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import { Ionicons } from '@expo/vector-icons';
-
-// Les options de priorité seront traduites dynamiquement
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 export const BugReportModal: React.FC = () => {
+    const scrollViewRef = useRef<ScrollView>(null);
 	const { t } = useTranslation();
 	const { showSuccessToast, showErrorToast } = useToast();
 	const {
@@ -19,7 +19,6 @@ export const BugReportModal: React.FC = () => {
 		isLoading,
 		errorMsg,
 		formData,
-		setIsVisible,
 		setIsLoading,
 		setErrorMsg,
 		updateFormData,
@@ -34,12 +33,12 @@ export const BugReportModal: React.FC = () => {
 
 	const handleClose = () => {
 		Alert.alert(
-			t('bugReport.modal.confirmClose.title'),
-			t('bugReport.modal.confirmClose.description'),
+			t('alert.titles.bugReport'),
+			t('alert.descriptions.bugReport'),
 			[
-				{ text: t('ui.buttons.cancel'), style: 'cancel' },
+				{ text: t('alert.choices.cancel'), style: 'cancel' },
 				{ 
-					text: t('ui.buttons.close'), 
+					text: t('alert.choices.leave'), 
 					style: 'destructive',
 					onPress: () => resetStore() 
 				},
@@ -95,6 +94,24 @@ export const BugReportModal: React.FC = () => {
 		}
 	};
 
+	const colorConfig = {
+		low: {
+			bg: 'bg-green-500',
+			border: 'border-green-500',
+			text: 'text-white'
+		},
+		medium: {
+			bg: 'bg-yellow-500',
+			border: 'border-yellow-500',
+			text: 'text-white'
+		},
+		high: {
+			bg: 'bg-red-500',
+			border: 'border-red-500',
+			text: 'text-white'
+		}
+	};
+
 	if (!isVisible) return null;
 
 	return (
@@ -106,7 +123,7 @@ export const BugReportModal: React.FC = () => {
 		>
 			<View className="flex-1 bg-white">
 				{/* Header */}
-				<View className="flex-row items-center justify-between px-6 pt-12 pb-4 border-b border-gray-200">
+				<View className="flex-row items-center justify-between p-4 border-b border-gray-200">
 					<BackButton onPressAction={handleClose} />
 					<Text className="text-xl font-bold text-gray-900">
 						{t('bugReport.modal.title')}
@@ -114,16 +131,32 @@ export const BugReportModal: React.FC = () => {
 					<View className="w-8" />
 				</View>
 
+				{/* Info Box */}
+				<View className="bg-blue-50 p-4 rounded-b-lg border border-blue-200">
+					<View className="flex-row items-start">
+						<Ionicons name="information-circle" size={20} color="#3B82F6" />
+						<Text className="ml-2 text-sm text-blue-700 flex-1">
+							{t('bugReport.modal.infoText')}
+						</Text>
+					</View>
+				</View>
+
 				{/* Form */}
-				<ScrollView className="flex-1 px-6 py-4">
-					<View className="space-y-4">
+				<KeyboardAwareScrollView
+					ref={scrollViewRef}
+					className='flex-1'
+					keyboardShouldPersistTaps="handled"
+					contentContainerStyle={{ flexGrow: 1, padding: 8 }}
+					bottomOffset={10}
+				>
+					<View className="flex flex-col gap-6 px-4">
 						{/* Title */}
 						<View>
 							<Text className="text-base font-medium text-gray-700 mb-2">
-								{t('bugReport.fields.title')} *
+								{t('bugReport.fields.title.label')}
 							</Text>
 							<TextInput
-								placeholder={t('bugReport.fields.titlePlaceholder')}
+								placeholder={t('bugReport.fields.title.placeholder')}
 								value={formData.title}
 								onChangeText={(text: string) => updateFormData({ title: text })}
 								maxLength={100}
@@ -135,10 +168,10 @@ export const BugReportModal: React.FC = () => {
 						{/* Description */}
 						<View>
 							<Text className="text-base font-medium text-gray-700 mb-2">
-								{t('bugReport.fields.description')} *
+								{t('bugReport.fields.description.label')}
 							</Text>
 							<TextInput
-								placeholder={t('bugReport.fields.descriptionPlaceholder')}
+								placeholder={t('bugReport.fields.description.placeholder')}
 								value={formData.description}
 								onChangeText={(text: string) => updateFormData({ description: text })}
 								multiline
@@ -154,10 +187,10 @@ export const BugReportModal: React.FC = () => {
 						{/* Steps to Reproduce */}
 						<View>
 							<Text className="text-base font-medium text-gray-700 mb-2">
-								{t('bugReport.fields.stepsToReproduce')} *
+								{t('bugReport.fields.stepsToReproduce.label')}
 							</Text>
 							<TextInput
-								placeholder={t('bugReport.fields.stepsPlaceholder')}
+								placeholder={t('bugReport.fields.stepsToReproduce.placeholder')}
 								value={formData.stepsToReproduce}
 								onChangeText={(text: string) => updateFormData({ stepsToReproduce: text })}
 								multiline
@@ -173,10 +206,10 @@ export const BugReportModal: React.FC = () => {
 						{/* Expected Behavior */}
 						<View>
 							<Text className="text-base font-medium text-gray-700 mb-2">
-								{t('bugReport.fields.expectedBehavior')}
+								{t('bugReport.fields.expectedBehavior.label')}
 							</Text>
 							<TextInput
-								placeholder={t('bugReport.fields.expectedPlaceholder')}
+								placeholder={t('bugReport.fields.expectedBehavior.placeholder')}
 								value={formData.expectedBehavior}
 								onChangeText={(text: string) => updateFormData({ expectedBehavior: text })}
 								multiline
@@ -192,10 +225,10 @@ export const BugReportModal: React.FC = () => {
 						{/* Actual Behavior */}
 						<View>
 							<Text className="text-base font-medium text-gray-700 mb-2">
-								{t('bugReport.fields.actualBehavior')}
+								{t('bugReport.fields.actualBehavior.label')}
 							</Text>
 							<TextInput
-								placeholder={t('bugReport.fields.actualPlaceholder')}
+								placeholder={t('bugReport.fields.actualBehavior.placeholder')}
 								value={formData.actualBehavior}
 								onChangeText={(text: string) => updateFormData({ actualBehavior: text })}
 								multiline
@@ -208,42 +241,37 @@ export const BugReportModal: React.FC = () => {
 							/>
 						</View>
 
-						{/* Priority */}
-						<View>
-							<Text className="text-base font-medium text-gray-700 mb-2">
-								{t('bugReport.fields.priority')}
+						{/* Priority Selection */}
+						<View className="mb-4">
+							<Text className="text-lg font-semibold mb-2 text-gray-800">
+								{t('bugReport.fields.priority.label')}
 							</Text>
-							<View className="flex-row space-x-2">
-								{priorityOptions.map((option) => (
-									<TouchableOpacity
-										key={option.value}
-										onPress={() => updateFormData({ priority: option.value as 'low' | 'medium' | 'high' })}
-										className={`px-4 py-2 rounded-md border ${
-											formData.priority === option.value
-												? 'bg-blue-500 border-blue-500'
-												: 'bg-white border-gray-300'
-										}`}
-										testID={`priority-${option.value}`}
-									>
-										<Text className={`text-base ${
-											formData.priority === option.value
-												? 'text-white'
-												: 'text-gray-700'
-										}`}>
-											{option.label}
-										</Text>
-									</TouchableOpacity>
-								))}
-							</View>
-						</View>
+							<View className="flex-row gap-4">
+								{priorityOptions.map((option) => {
+									const isSelected = formData.priority === option.value;
+									const colors = colorConfig[option.value as keyof typeof colorConfig];
+									
+									const buttonClasses = isSelected
+										? `${colors.bg} ${colors.border}`
+										: 'bg-white border-gray-300';
+									
+									const textClasses = isSelected
+										? colors.text
+										: 'text-gray-700';
 
-						{/* Info Box */}
-						<View className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-							<View className="flex-row items-start">
-								<Ionicons name="information-circle" size={20} color="#3B82F6" />
-								<Text className="ml-2 text-sm text-blue-700 flex-1">
-									{t('bugReport.modal.infoText')}
-								</Text>
+									return (
+										<TouchableOpacity
+											key={option.value}
+											onPress={() => updateFormData({ priority: option.value as 'low' | 'medium' | 'high' })}
+											className={`px-4 py-2 rounded-md border ${buttonClasses}`}
+											testID={`priority-${option.value}`}
+										>
+											<Text className={`text-base ${textClasses}`}>
+												{option.label}
+											</Text>
+										</TouchableOpacity>
+									);
+								})}
 							</View>
 						</View>
 
@@ -251,18 +279,17 @@ export const BugReportModal: React.FC = () => {
 						{errorMsg && (
 							<ErrorMsg content={errorMsg} display={true} />
 						)}
-					</View>
-				</ScrollView>
 
-				{/* Footer */}
-				<View className="px-6 py-4 border-t border-gray-200">
-					<MainButton
-						content={t('bugReport.modal.submitButton')}
-						onPressAction={handleSubmit}
-						isDisabled={isLoading}
-						backgroundColor="bg-blue-500"
-					/>
-				</View>
+						<View className="flex flex-row justify-center mb-6">
+							<MainButton
+								content={t('bugReport.modal.button')}
+								onPressAction={handleSubmit}
+								isDisabled={isLoading}
+								backgroundColor="bg-primary"
+							/>
+						</View>
+					</View>
+				</KeyboardAwareScrollView>
 			</View>
 		</Modal>
 	);

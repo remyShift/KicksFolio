@@ -2,7 +2,10 @@ import { BugReportFormData } from '@/store/useBugReportStore';
 import { Platform } from 'react-native';
 import * as Device from 'expo-device';
 import Application from 'expo-application';
-import { GITHUB_CONFIG, validateGitHubConfig } from '@/config/github.config';
+import {
+	GITHUB_CONFIG,
+	validateGitHubConfig,
+} from '@/config/github/github.config';
 
 export interface GitHubIssueData {
 	title: string;

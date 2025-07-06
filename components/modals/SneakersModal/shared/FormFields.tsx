@@ -15,11 +15,11 @@ interface FormFieldsProps {
     handleFieldFocus: (fieldName: keyof SneakerFormData) => void;
     validateFieldOnBlur: (fieldName: keyof SneakerFormData, value: string) => Promise<boolean>;
     getFieldError: (fieldName: string) => string | undefined;
-    modelInputRef: React.RefObject<TextInput>;
-    brandInputRef: React.RefObject<TextInput>;
-    sizeInputRef: React.RefObject<TextInput>;
-    pricePaidInputRef: React.RefObject<TextInput>;
-    descriptionInputRef: React.RefObject<TextInput>;
+    modelInputRef: React.RefObject<TextInput | null>;
+    brandInputRef: React.RefObject<TextInput | null>;
+    sizeInputRef: React.RefObject<TextInput | null>;
+    pricePaidInputRef: React.RefObject<TextInput | null>;
+    descriptionInputRef: React.RefObject<TextInput | null>;
     displayedError: string;
     sneakerId?: string;
 }

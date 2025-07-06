@@ -1,0 +1,48 @@
+{
+	"fields": {
+		"title": {
+			"label": "Titre*",
+			"placeholder": "Titre"
+		},
+		"description": {
+			"label": "Description*",
+			"placeholder": "Description"
+		},
+		"stepsToReproduce": {
+			"label": "Étapes pour reproduire*",
+			"placeholder": "Étapes pour reproduire"
+		},
+		"expectedBehavior": {
+			"label": "Comportement attendu*",
+			"placeholder": "Comportement attendu"
+		},
+		"actualBehavior": {
+			"label": "Comportement réel*",
+			"placeholder": "Comportement réel"
+		},
+		"priority": {
+			"label": "Priorité*",
+			"placeholder": "Priorité"
+		}
+	},
+	"priority": {
+		"low": "Faible",
+		"medium": "Moyenne",
+		"high": "Élevée"
+	},
+	"modal": {
+		"title": "Signaler un bug",
+		"button": "Envoyer",
+		"cancel": "Annuler",
+		"infoText": "Veuillez décrire le bug que vous avez rencontré en détail."
+	},
+	"error": {
+		"createFailed": "Échec de la création du rapport de bug",
+		"title": "Erreur",
+		"description": "Une erreur est survenue lors de la création du rapport de bug. Veuillez réessayer plus tard."
+	},
+	"success": {
+		"title": "Rapport de bug créé",
+		"description": "Votre rapport de bug a été créé avec succès."
+	}
+}

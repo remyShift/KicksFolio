@@ -7,7 +7,8 @@
 		"deleteSneaker": "Supprimer la sneaker",
 		"deletingSneaker": "🔍 Suppression de la sneaker...",
 		"sneakerDeleted": "🗑️ Sneaker supprimée",
-		"sneakerDeletionFailed": "❌ La sneaker n'a pas pu être supprimée."
+		"sneakerDeletionFailed": "❌ La sneaker n'a pas pu être supprimée.",
+		"bugReport": "Quitter le rapport de bug"
 	},
 	"descriptions": {
 		"deleteAccount": "Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.",
@@ -16,11 +17,13 @@
 		"deleteSneaker": "Êtes-vous sûr de vouloir supprimer cette sneaker ? Cette action est irréversible.",
 		"deletingSneaker": "Veuillez patienter...",
 		"sneakerDeleted": "La sneaker a été supprimée avec succès.",
-		"sneakerDeletionFailed": "La sneaker n'a pas pu être supprimée."
+		"sneakerDeletionFailed": "La sneaker n'a pas pu être supprimée.",
+		"bugReport": "Êtes-vous sûr de vouloir quitter le rapport de bug ?"
 	},
 	"buttons": {
 		"cancel": "Annuler",
 		"delete": "Supprimer",
-		"logout": "Se déconnecter"
+		"logout": "Se déconnecter",
+		"leave": "Quitter"
 	}
 }

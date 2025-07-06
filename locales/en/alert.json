@@ -7,7 +7,8 @@
 		"deleteSneaker": "Delete sneaker",
 		"deletingSneaker": "🔍 Deleting sneaker...",
 		"sneakerDeleted": "🗑️ Sneaker deleted",
-		"sneakerDeletionFailed": "❌ The sneaker could not be deleted."
+		"sneakerDeletionFailed": "❌ The sneaker could not be deleted.",
+		"bugReport": "Leaving the bug report"
 	},
 	"descriptions": {
 		"deleteAccount": "Are you sure you want to delete your account ? This action is irreversible.",
@@ -16,11 +17,13 @@
 		"deleteSneaker": "Are you sure you want to delete this sneaker ? This action is irreversible.",
 		"deletingSneaker": "Please wait...",
 		"sneakerDeleted": "The sneaker has been deleted successfully.",
-		"sneakerDeletionFailed": "The sneaker could not be deleted."
+		"sneakerDeletionFailed": "The sneaker could not be deleted.",
+		"bugReport": "Are you sure you want to leave the bug report ?"
 	},
 	"choices": {
 		"cancel": "Cancel",
 		"delete": "Delete",
-		"logout": "Logout"
+		"logout": "Logout",
+		"leave": "Leave"
 	}
 }

@@ -1,0 +1,48 @@
+{
+	"fields": {
+		"title": {
+			"label": "Title*",
+			"placeholder": "Title"
+		},
+		"description": {
+			"label": "Description*",
+			"placeholder": "Description"
+		},
+		"stepsToReproduce": {
+			"label": "Steps to reproduce*",
+			"placeholder": "Steps to reproduce"
+		},
+		"expectedBehavior": {
+			"label": "Expected behavior*",
+			"placeholder": "Expected behavior"
+		},
+		"actualBehavior": {
+			"label": "Actual behavior*",
+			"placeholder": "Actual behavior"
+		},
+		"priority": {
+			"label": "Priority*",
+			"placeholder": "Priority"
+		}
+	},
+	"priority": {
+		"low": "Low",
+		"medium": "Medium",
+		"high": "High"
+	},
+	"modal": {
+		"title": "Report a bug",
+		"button": "Report",
+		"cancel": "Cancel",
+		"infoText": "Please describe the bug you encountered in detail."
+	},
+	"error": {
+		"createFailed": "Failed to create bug report",
+		"title": "Error",
+		"description": "An error occurred while creating the bug report. Please try again later."
+	},
+	"success": {
+		"title": "Bug report created",
+		"description": "Your bug report has been created successfully."
+	}
+}

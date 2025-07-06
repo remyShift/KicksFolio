@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
 	SUPABASE_CONFIG,
 	validateSupabaseConfig,
-} from '../config/supabase/supabase';
+} from '@/config/supabase/supabase.config';
 
 validateSupabaseConfig();
 
