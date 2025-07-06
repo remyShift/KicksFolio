@@ -1,4 +1,4 @@
-import { ScrollView, TextInput, Alert } from "react-native";
+import { ScrollView, TextInput } from "react-native";
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import PageTitle from '@/components/ui/text/PageTitle';
 import { View } from 'react-native'
@@ -27,6 +27,7 @@ export default function LoginForm() {
     const { user, isLoading } = useSession();
     const params = useLocalSearchParams();
     const [resetPasswordSuccess, setResetPasswordSuccess] = useState(params.message as string);
+    const [resetPasswordError, setResetPasswordError] = useState(params.error as string);
     const [isLoggingIn, setIsLoggingIn] = useState(false);
 
     const {
@@ -65,15 +66,45 @@ export default function LoginForm() {
     });
 
     useEffect(() => {
-        if (resetPasswordSuccess) {
-            showSuccessToast(t('auth.forgotPassword.success'), t('auth.forgotPassword.successDescription'));
-            setResetPasswordSuccess('');
+        if (resetPasswordSuccess && resetPasswordSuccess.includes('reset successful')) {
+            showSuccessToast(
+                t('auth.resetPassword.success'), 
+                t('auth.resetPassword.loginWithNewPassword')
+            );
         }
+        setResetPasswordSuccess('');
 
         return () => {
             setResetPasswordSuccess('');
         };
     }, [resetPasswordSuccess]);
+
+    useEffect(() => {
+        if (resetPasswordError && params.message) {            
+            if (resetPasswordError === 'reset_link_expired') {
+                showErrorToast(
+                    t('auth.error.resetLinkExpired'),
+                    t('auth.error.resetLinkExpiredDescription')
+                );
+            } else if (resetPasswordError === 'reset_link_invalid') {
+                showErrorToast(
+                    t('auth.error.resetLinkInvalid'),
+                    t('auth.error.resetLinkInvalidDescription')
+                );
+            } else {
+                showErrorToast(
+                    t('auth.error.resetLinkError'),
+                    t('auth.error.resetLinkErrorDescription')
+                );
+            }
+            
+            setResetPasswordError('');
+        }
+
+        return () => {
+            setResetPasswordError('');
+        };
+    }, [resetPasswordError, params.message]);
 
     useEffect(() => {
         if (isLoggingIn && user && !isLoading) {

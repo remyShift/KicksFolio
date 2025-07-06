@@ -9,7 +9,8 @@ import { useTranslation } from 'react-i18next';
 
 export const useAuth = () => {
 	const [errorMsg, setErrorMsg] = useState('');
-	const { setUser, refreshUserSneakers, clearUserData } = useSession();
+	const { setUser, refreshUserData, clearUserData, resetTokens } =
+		useSession();
 	const { validateSignUpStep1Async } = useSignUpValidation();
 	const { t } = useTranslation();
 
@@ -78,8 +79,7 @@ export const useAuth = () => {
 				router.replace({
 					pathname: '/login',
 					params: {
-						message:
-							'Password reset instructions sent to your email.',
+						message: t('auth.forgotPassword.successDescription'),
 					},
 				});
 				return true;
@@ -99,26 +99,48 @@ export const useAuth = () => {
 		confirmNewPassword: string
 	) => {
 		if (newPassword !== confirmNewPassword) {
-			setErrorMsg('Passwords do not match');
+			setErrorMsg(t('auth.fields.confirmPassword.error.match'));
 			return;
 		}
 
-		return SupabaseAuthService.resetPassword(newPassword)
+		const resetPasswordPromise = resetTokens
+			? SupabaseAuthService.resetPasswordWithTokens(
+					resetTokens.access_token,
+					resetTokens.refresh_token,
+					newPassword
+			  )
+			: SupabaseAuthService.resetPassword(newPassword);
+
+		return resetPasswordPromise
 			.then(() => {
 				router.replace({
 					pathname: '/login',
 					params: {
-						message: 'Password reset successful.',
+						message: t('auth.resetPassword.successDescription'),
 					},
 				});
 				return true;
 			})
 			.catch((error) => {
-				setErrorMsg(
+				console.error('❌ Password reset failed:', error);
+				const errorMessage =
 					error instanceof Error
 						? error.message
-						: 'An error occurred during password reset'
-				);
+						: t('auth.error.resetPassword');
+
+				if (
+					errorMessage.includes(
+						'should be different from the old password'
+					)
+				) {
+					setErrorMsg(t('auth.fields.password.error.different'));
+				} else if (
+					errorMessage.includes('Password should be at least')
+				) {
+					setErrorMsg(t('auth.fields.password.error.size'));
+				} else {
+					setErrorMsg(errorMessage);
+				}
 				throw error;
 			});
 	};
@@ -258,7 +280,7 @@ export const useAuth = () => {
 	};
 
 	const getUserSneakers = async () => {
-		await refreshUserSneakers();
+		await refreshUserData();
 	};
 
 	const handleNextSignupPage = async (

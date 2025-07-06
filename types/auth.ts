@@ -12,6 +12,7 @@ export interface AuthContextType {
 	refreshUserSneakers: () => Promise<void>;
 	clearUserData: () => void;
 	wishlistSneakers: Sneaker[] | null;
+	resetTokens: { access_token: string; refresh_token: string } | null;
 }
 
 export interface UserData {

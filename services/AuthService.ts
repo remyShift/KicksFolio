@@ -135,19 +135,60 @@ export class SupabaseAuthService {
 	}
 
 	static async resetPassword(newPassword: string) {
-		console.log('🔄 Attempting to reset password...');
+		const {
+			data: { session },
+			error: sessionError,
+		} = await supabase.auth.getSession();
+
+		if (sessionError) {
+			throw sessionError;
+		}
+
+		if (!session) {
+			throw new Error(
+				'No active session found. Please use the reset link from your email.'
+			);
+		}
 
 		const { data, error } = await supabase.auth.updateUser({
 			password: newPassword,
 		});
 
 		if (error) {
-			console.error('❌ Reset password error:', error);
 			throw error;
 		}
 
-		console.log('✅ Password reset successful');
 		return data;
+	}
+
+	static async resetPasswordWithTokens(
+		accessToken: string,
+		refreshToken: string,
+		newPassword: string
+	) {
+		return import('@supabase/supabase-js').then(
+			async ({ createClient }) => {
+				const tempSupabase = createClient(
+					process.env.EXPO_PUBLIC_SUPABASE_URL!,
+					process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!
+				);
+
+				return tempSupabase.auth
+					.setSession({
+						access_token: accessToken,
+						refresh_token: refreshToken,
+					})
+					.then(() => {
+						return tempSupabase.auth.updateUser({
+							password: newPassword,
+						});
+					})
+					.then(() => {
+						return tempSupabase.auth.signOut();
+					})
+					.then(() => true);
+			}
+		);
 	}
 
 	static async cleanupOrphanedSessions() {

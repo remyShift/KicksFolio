@@ -9,6 +9,8 @@ import { SupabaseAuthService } from '@/services/AuthService';
 import { SupabaseSneakerService } from '@/services/SneakersService';
 import { SupabaseWishlistService } from '@/services/WishlistService';
 import { supabase } from '@/services/supabase';
+import * as Linking from 'expo-linking';
+import { router } from 'expo-router';
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
@@ -25,14 +27,92 @@ export function useSession() {
 export function SessionProvider({ children }: PropsWithChildren) {
     const appState = useAppState();
     const [isLoading, setIsLoading] = useState(true);
+    const [resetTokens, setResetTokens] = useState<{access_token: string, refresh_token: string} | null>(null);
 
     const [user, setUser] = useState<User | null>(null);
     const [userSneakers, setUserSneakers] = useState<Sneaker[] | null>(null);
     const [wishlistSneakers, setWishlistSneakers] = useState<Sneaker[] | null>(null);
 
     useEffect(() => {
+        const handleDeepLink = (url: string) => {
+            if (url.includes('reset-password')) {
+                const fragmentPart = url.split('#')[1];
+                
+                if (fragmentPart) {
+                    const params = new URLSearchParams(fragmentPart);
+
+                    const error = params.get('error');
+                    const errorCode = params.get('error_code');
+                    const errorDescription = params.get('error_description');
+                    
+                    if (error) {
+                        console.error('❌ Reset link error:', { error, errorCode, errorDescription });
+                        
+                        if (errorCode === 'otp_expired') {
+                            router.replace({
+                                pathname: '/login',
+                                params: {
+                                    error: 'reset_link_expired',
+                                    message: 'Le lien de reset a expiré. Veuillez en demander un nouveau.'
+                                }
+                            });
+                            
+                        } else {
+                            router.replace({
+                                pathname: '/login',
+                                params: {
+                                    error: 'reset_link_invalid',
+                                    message: 'Le lien de reset est invalide. Veuillez en demander un nouveau.'
+                                }
+                            });
+                        }
+                        return;
+                    }
+                    
+                    const accessToken = params.get('access_token');
+                    const refreshToken = params.get('refresh_token');
+
+                    if (accessToken && refreshToken) {
+                        setResetTokens({ access_token: accessToken, refresh_token: refreshToken });
+                    } else {
+                        router.replace({
+                            pathname: '/login',
+                            params: {
+                                error: 'reset_link_invalid',
+                                message: 'Le lien de reset est invalide. Veuillez en demander un nouveau.'
+                            }
+                        });
+                    }
+                } else {
+                    router.replace({
+                        pathname: '/login',
+                        params: {
+                            error: 'reset_link_invalid',
+                            message: 'Le lien de reset est invalide. Veuillez en demander un nouveau.'
+                        }
+                    });
+                }
+            }
+        };
+
+        Linking.getInitialURL().then((url) => {
+            if (url) {
+                handleDeepLink(url);
+            }
+        });
+
+        const linkingListener = Linking.addEventListener('url', (event) => {
+            handleDeepLink(event.url);
+        });
+
+        return () => {
+            linkingListener.remove();
+        };
+    }, []);
+
+    useEffect(() => {
         const { data: { subscription } } = supabase.auth.onAuthStateChange(
-            async (event, session) => {                
+            async (event, session) => {
                 if (session?.user) {
                     await initializeUserData(session.user.id);
                 } else {
@@ -200,6 +280,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
         setUser(null);
         setUserSneakers(null);
         setWishlistSneakers(null);
+        setResetTokens(null);
 
         storageService.clearSessionData();
     };
@@ -224,7 +305,8 @@ export function SessionProvider({ children }: PropsWithChildren) {
                 refreshUserData,
                 refreshUserSneakers,
                 clearUserData,
-                wishlistSneakers
+                wishlistSneakers,
+                resetTokens
             }}>
 			{children}
 		</AuthContext.Provider>

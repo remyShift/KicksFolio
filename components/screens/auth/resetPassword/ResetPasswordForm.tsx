@@ -10,6 +10,7 @@ import { createResetPasswordSchema, ResetPasswordFormData } from "@/validation/s
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useTranslation } from 'react-i18next';
 import useToast from "@/hooks/useToast";
+import { useSession } from "@/context/authContext";
 
 export default function ResetPasswordForm() {
     const { t } = useTranslation();
@@ -19,6 +20,8 @@ export default function ResetPasswordForm() {
     
     const { resetPassword, errorMsg: authErrorMsg } = useAuth();
     const { showSuccessToast, showErrorToast } = useToast();
+    const { resetTokens } = useSession();
+
     const {
         control,
         handleFormSubmit,
@@ -40,7 +43,7 @@ export default function ResetPasswordForm() {
             .then(() => {
                 showSuccessToast(
                     t('auth.resetPassword.success'), 
-                    t('auth.resetPassword.successDescription')
+                    t('auth.resetPassword.loginWithNewPassword')
                 );
             })
             .catch((error) => {
@@ -63,10 +66,7 @@ export default function ResetPasswordForm() {
             <View className="flex-1 items-center p-4 gap-12">
                 <PageTitle content={t('auth.titles.resetPassword')} />
                 <View className='flex-1 justify-center items-center gap-8 w-full px-12'>
-                    <View className='w-full absolute' style={{ top: 100 }}>   
-                        <ErrorMsg content={displayedError} display={displayedError !== ''} />
-                    </View>
-
+                    <ErrorMsg content={displayedError} display={displayedError !== ''} />
                     <FormPasswordInput
                         name="password"
                         control={control}

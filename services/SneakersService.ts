@@ -133,7 +133,6 @@ export class SupabaseSneakerService {
 			(sneakerData.gender as GenderType) || 'men'
 		);
 
-		// Extract all fields except 'size' and add size_eu, size_us
 		const { size, ...sneakerDataWithoutSize } = sneakerData;
 
 		const sneakerWithUser = {
@@ -181,7 +180,6 @@ export class SupabaseSneakerService {
 					(updates.gender as GenderType) || 'men'
 				);
 
-			// Remove 'size' and add size_eu, size_us
 			const { size, ...updatesWithoutSize } = updates;
 			updates = {
 				...updatesWithoutSize,
