@@ -20,7 +20,7 @@
 		"sneakerDeletionFailed": "La sneaker n'a pas pu être supprimée.",
 		"bugReport": "Êtes-vous sûr de vouloir quitter le rapport de bug ?"
 	},
-	"buttons": {
+	"choices": {
 		"cancel": "Annuler",
 		"delete": "Supprimer",
 		"logout": "Se déconnecter",
