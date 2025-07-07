@@ -10,7 +10,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { useFormController } from '@/hooks/useFormController';
 import { createBugReportSchema } from '@/validation/schemas';
-import { useBugReportValidation } from './hooks/useBugReportValidation';
 import useBugReport from './hooks/useBugReport';
 
 export const BugReportModal: React.FC = () => {
@@ -58,8 +57,6 @@ export const BugReportModal: React.FC = () => {
         getFieldErrorWrapper,
         setValue,
     } = formController;
-
-    useBugReportValidation(control, watch, reset, trigger, getFieldError);
 
 	const handleClose = () => {
 		Alert.alert(
@@ -116,6 +113,9 @@ export const BugReportModal: React.FC = () => {
 					bottomOffset={10}
 				>
 					<View className="flex flex-col gap-6 px-4">
+						{/* Error Message */}
+						<ErrorMsg content={displayedError} display={displayedError ? true : false} />
+
 						{/* Title */}
 						<FormTextInput
 							ref={titleInputRef}
@@ -124,7 +124,9 @@ export const BugReportModal: React.FC = () => {
 							label={t('settings.bugReport.fields.title.label')}
 							placeholder={t('settings.bugReport.fields.title.placeholder')}
 							onFocus={() => handleFieldFocus('title')}
-							onBlur={async (value) => { await validateFieldOnBlur('title', value); }}
+							onBlur={async (value) => { 
+								await validateFieldOnBlur('title', value); 
+							}}
 							error={getFieldErrorWrapper('title')}
 							getFieldError={getFieldErrorWrapper}
 							nextInputRef={descriptionInputRef}
@@ -140,7 +142,9 @@ export const BugReportModal: React.FC = () => {
 							label={t('settings.bugReport.fields.description.label')}
 							placeholder={t('settings.bugReport.fields.description.placeholder')}
 							onFocus={() => handleFieldFocus('description')}
-							onBlur={async (value) => { await validateFieldOnBlur('description', value); }}
+							onBlur={async (value) => { 
+								await validateFieldOnBlur('description', value); 
+							}}
 							error={getFieldErrorWrapper('description')}
 							getFieldError={getFieldErrorWrapper}
 							nextInputRef={stepsInputRef}
@@ -157,7 +161,9 @@ export const BugReportModal: React.FC = () => {
 							label={t('settings.bugReport.fields.stepsToReproduce.label')}
 							placeholder={t('settings.bugReport.fields.stepsToReproduce.placeholder')}
 							onFocus={() => handleFieldFocus('stepsToReproduce')}
-							onBlur={async (value) => { await validateFieldOnBlur('stepsToReproduce', value); }}
+							onBlur={async (value) => { 
+								await validateFieldOnBlur('stepsToReproduce', value); 
+							}}
 							error={getFieldErrorWrapper('stepsToReproduce')}
 							getFieldError={getFieldErrorWrapper}
 							nextInputRef={expectedInputRef}
@@ -174,7 +180,9 @@ export const BugReportModal: React.FC = () => {
 							label={t('settings.bugReport.fields.expectedBehavior.label')}
 							placeholder={t('settings.bugReport.fields.expectedBehavior.placeholder')}
 							onFocus={() => handleFieldFocus('expectedBehavior')}
-							onBlur={async (value) => { await validateFieldOnBlur('expectedBehavior', value); }}
+							onBlur={async (value) => { 
+								await validateFieldOnBlur('expectedBehavior', value); 
+							}}
 							error={getFieldErrorWrapper('expectedBehavior')}
 							getFieldError={getFieldErrorWrapper}
 							nextInputRef={actualInputRef}
@@ -191,7 +199,9 @@ export const BugReportModal: React.FC = () => {
 							label={t('settings.bugReport.fields.actualBehavior.label')}
 							placeholder={t('settings.bugReport.fields.actualBehavior.placeholder')}
 							onFocus={() => handleFieldFocus('actualBehavior')}
-							onBlur={async (value) => { await validateFieldOnBlur('actualBehavior', value); }}
+							onBlur={async (value) => { 
+								await validateFieldOnBlur('actualBehavior', value); 
+							}}
 							error={getFieldErrorWrapper('actualBehavior')}
 							getFieldError={getFieldErrorWrapper}
 							maxLength={300}
@@ -232,11 +242,6 @@ export const BugReportModal: React.FC = () => {
 								})}
 							</View>
 						</View>
-
-						{/* Error Message */}
-						{displayedError && (
-							<ErrorMsg content={displayedError} display={true} />
-						)}
 
 						<View className="flex flex-row justify-center mb-6">
 							<MainButton
