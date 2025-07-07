@@ -86,6 +86,7 @@
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "@react-native-community/cli": "latest",
+    "@testing-library/jest-native": "^5.4.3",
     "@testing-library/react": "^16.3.0",
     "@testing-library/react-native": "^12.4.0",
     "@types/expo": "^32.0.13",

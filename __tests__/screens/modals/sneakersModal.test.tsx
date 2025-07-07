@@ -1,5 +1,5 @@
 import { act, fireEvent, render, screen } from '@testing-library/react-native';
-import { SneakersModal } from '@/components/screens/app/modals/SneakersModal';
+import { SneakersModal } from '@/components/ui/modals/SneakersModal';
 import { mockSneaker } from './modalSetup'; 
 import { fillAndBlurInput } from '../../setup';
 
@@ -31,6 +31,9 @@ const setup = (overrides = {}) => {
         setClearFormErrors: jest.fn(),
         resetModalData: jest.fn(),
         estimatedValue: 0,
+        setEstimatedValue: jest.fn(),
+        setGender: jest.fn(),
+        setSku: jest.fn(),
         ...overrides,
     };
 
@@ -67,6 +70,9 @@ describe('SneakersModal', () => {
             setValidateForm: jest.fn(),
             setClearFormErrors: jest.fn(),
             resetModalData: jest.fn(),
+            setEstimatedValue: jest.fn(),
+            setGender: jest.fn(),
+            setSku: jest.fn(),
         };
 
         mockSetModalStep.mockImplementation((newStep) => {

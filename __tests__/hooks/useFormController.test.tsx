@@ -1,4 +1,5 @@
-import { renderHook, act } from '@testing-library/react-native';
+import { renderHook } from '@testing-library/react-native';
+import { act } from 'react';
 import { useFormController } from '../../hooks/useFormController';
 import { z } from 'zod';
 import { mockUseAuth } from '../screens/auth/authSetup';
@@ -206,7 +207,6 @@ describe('useFormController', () => {
 				})
 			);
 
-			// Set invalid values for multiple fields
 			await act(async () => {
 				result.current.setValue('username', 'u');
 				result.current.setValue('email', 'invalid');
@@ -215,7 +215,7 @@ describe('useFormController', () => {
 			});
 
 			expect(result.current.hasMultipleErrors).toBe(true);
-			expect(result.current.displayedError).toBe('ui.errors.global');
+			expect(result.current.displayedError).toBe('Please correct the errors in the form.');
 		});
 
 		it('should display specific error when only one field has error', async () => {

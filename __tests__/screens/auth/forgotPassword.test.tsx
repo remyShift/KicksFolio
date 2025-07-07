@@ -1,18 +1,21 @@
 import ForgotPasswordPage from "@/app/(auth)/forgot-password";
-import { act, fireEvent, render, screen, waitFor } from "@testing-library/react-native";
+import { fireEvent, render, screen } from "@testing-library/react-native";
+import { act } from "react";
 import { ReactTestInstance } from "react-test-renderer";
 import { fillAndBlurInput } from "../../setup";
-import { mockUseAuth } from "./authSetup";
+import { mockUseAuth, mockUseAsyncValidation } from "./authSetup";
 
 describe('Forgot Password Page', () => {
     let emailInput: ReactTestInstance;
-    let mainButton: ReactTestInstance;
 
     beforeEach(() => {
         jest.clearAllMocks();
+        
+        mockUseAsyncValidation.checkEmailExistsForReset.mockResolvedValue(null);
+        mockUseAuth.forgotPassword.mockResolvedValue(true);
+        
         render(<ForgotPasswordPage />);
         emailInput = screen.getByPlaceholderText('john@doe.com');
-        mainButton = screen.getByTestId('main-button');
     });
 
     it('should render the forgot password page', () => {
@@ -81,10 +84,20 @@ describe('Forgot Password Page', () => {
         it('should call the forgotPassword function if the email is provided with appropriate value', async () => {
             await fillAndBlurInput(emailInput, 'john@doe.com');
             
+            await act(async () => {
+                await new Promise(resolve => setTimeout(resolve, 100));
+            });
+            
             const currentMainButton = screen.getByTestId('main-button');
             
+            expect(currentMainButton.props.accessibilityState.disabled).toBe(false);
+            
             await act(async () => {
-                fireEvent.press(currentMainButton);
+                fireEvent(emailInput, 'submitEditing');
+            });
+            
+            await act(async () => {
+                await new Promise(resolve => setTimeout(resolve, 100));
             });
 
             expect(mockUseAuth.forgotPassword).toHaveBeenCalledWith('john@doe.com');

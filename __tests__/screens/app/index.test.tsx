@@ -40,7 +40,7 @@ describe('Index', () => {
 
 	it('should render the browse button if user havent friends', () => {
 		expect(mainButton).toBeTruthy();
-		expect(mainButton.props.children[0].props.children).toBe('ui.buttons.browse');
+		expect(screen.getByText('Browse')).toBeTruthy();
 	});
 
 	it('should navigate to user page when collection card is pressed', () => {

@@ -159,6 +159,7 @@ export default function EditProfileForm() {
                         keyboardType="numeric"
                         onFocus={() => handleFieldFocus('sneaker_size')}
                         onBlur={async (value) => { await validateFieldOnBlur('sneaker_size', value); }}
+                        onSubmitEditing={handleFormSubmit}
                         error={getFieldErrorWrapper('sneaker_size')}
                         getFieldError={getFieldErrorWrapper}
                         accessibilityLabel="Sneaker Size*"
