@@ -15,6 +15,14 @@ interface BugReportStore {
 	isLoading: boolean;
 	errorMsg: string;
 	formData: BugReportFormData;
+	validateForm:
+		| (() => Promise<{
+				isValid: boolean;
+				errorMsg: string;
+				data?: BugReportFormData;
+		  }>)
+		| null;
+	clearFormErrors: (() => void) | null;
 
 	setIsVisible: (isVisible: boolean) => void;
 	setIsLoading: (isLoading: boolean) => void;
@@ -22,6 +30,16 @@ interface BugReportStore {
 	updateFormData: (data: Partial<BugReportFormData>) => void;
 	resetFormData: () => void;
 	resetStore: () => void;
+	setValidateForm: (
+		validateFn:
+			| (() => Promise<{
+					isValid: boolean;
+					errorMsg: string;
+					data?: BugReportFormData;
+			  }>)
+			| null
+	) => void;
+	setClearFormErrors: (clearFn: (() => void) | null) => void;
 }
 
 const initialFormData: BugReportFormData = {
@@ -39,6 +57,8 @@ export const useBugReportStore = create<BugReportStore>((set, get) => ({
 	isLoading: false,
 	errorMsg: '',
 	formData: initialFormData,
+	validateForm: null,
+	clearFormErrors: null,
 
 	setIsVisible: (isVisible) => set({ isVisible }),
 	setIsLoading: (isLoading) => set({ isLoading }),
@@ -58,4 +78,7 @@ export const useBugReportStore = create<BugReportStore>((set, get) => ({
 			errorMsg: '',
 			formData: initialFormData,
 		}),
+
+	setValidateForm: (validateFn) => set({ validateForm: validateFn }),
+	setClearFormErrors: (clearFn) => set({ clearFormErrors: clearFn }),
 }));

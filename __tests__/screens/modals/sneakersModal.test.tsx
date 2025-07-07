@@ -1,5 +1,5 @@
 import { act, fireEvent, render, screen } from '@testing-library/react-native';
-import { SneakersModal } from '@/components/modals/SneakersModal';
+import { SneakersModal } from '@/components/screens/app/modals/SneakersModal';
 import { mockSneaker } from './modalSetup'; 
 import { fillAndBlurInput } from '../../setup';
 

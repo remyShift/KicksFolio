@@ -47,23 +47,43 @@
 		"fields": {
 			"title": {
 				"label": "Bug Title*",
-				"placeholder": "Briefly describe the problem."
+				"placeholder": "Briefly describe the problem.",
+				"error": {
+					"min": "Title must be at least 5 characters.",
+					"max": "Title cannot exceed 100 characters."
+				}
 			},
 			"description": {
 				"label": "Detailed Description*",
-				"placeholder": "Explain the problem in detail."
+				"placeholder": "Explain the problem in detail.",
+				"error": {
+					"min": "Description must be at least 10 characters.",
+					"max": "Description cannot exceed 500 characters."
+				}
 			},
 			"stepsToReproduce": {
 				"label": "Steps to Reproduce*",
-				"placeholder": "1. Open the app\n2. Tap on...\n3. The problem occurs."
+				"placeholder": "1. Open the app\n2. Tap on...\n3. The problem occurs.",
+				"error": {
+					"min": "Steps must be at least 10 characters.",
+					"max": "Steps cannot exceed 500 characters."
+				}
 			},
 			"expectedBehavior": {
 				"label": "Expected Behavior*",
-				"placeholder": "What should happen?"
+				"placeholder": "What should happen?",
+				"error": {
+					"min": "Expected behavior must be at least 10 characters.",
+					"max": "Expected behavior cannot exceed 300 characters."
+				}
 			},
 			"actualBehavior": {
 				"label": "Actual Behavior*",
-				"placeholder": "What actually happens ?"
+				"placeholder": "What actually happens?",
+				"error": {
+					"min": "Actual behavior must be at least 10 characters.",
+					"max": "Actual behavior cannot exceed 300 characters."
+				}
 			},
 			"priority": {
 				"label": "Priority*",

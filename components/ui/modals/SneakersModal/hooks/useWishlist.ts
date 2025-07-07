@@ -1,6 +1,6 @@
 import { useSession } from '@/context/authContext';
 import { SupabaseWishlistService } from '@/services/WishlistService';
-import useToast from '../../../../hooks/useToast';
+import useToast from '@/hooks/useToast';
 import { useTranslation } from 'react-i18next';
 
 const useWishlist = () => {

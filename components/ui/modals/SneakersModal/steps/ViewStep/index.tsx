@@ -5,7 +5,7 @@ import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import { useModalStore } from '@/store/useModalStore';
 import { PhotoCarousel } from '@/components/ui/images/photoCaroussel/PhotoCarousel';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import LoveButton from '@/components/modals/SneakersModal/steps/ViewStep/LoveButton';
+import LoveButton from '@/components/ui/modals/SneakersModal/steps/ViewStep/LoveButton';
 import SizeDisplay from '@/components/ui/text/SizeDisplay';
 import { useCurrencyStore } from '@/store/useCurrencyStore';
 

@@ -2,7 +2,7 @@ import { Pressable } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { useState, useEffect } from 'react';
 import { Sneaker } from '@/types/Sneaker';
-import useWishlist from '@/components/modals/SneakersModal/hooks/useWishlist';
+import useWishlist from '@/components/ui/modals/SneakersModal/hooks/useWishlist';
 
 export default function LoveButton({ sneaker }: { sneaker: Sneaker }) {
     const primary = '#F27329';

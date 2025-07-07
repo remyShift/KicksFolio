@@ -1,6 +1,6 @@
 import { Stack } from 'expo-router';
 import SneakersModalWrapper from '@/components/screens/app/SneakersModalWrapper';
-import { BugReportModal } from '@/components/modals/BugReportModal';
+import { BugReportModal } from '@/components/ui/modals/BugReportModal';
 
 export default function AppLayout() {
     return (

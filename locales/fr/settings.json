@@ -44,26 +44,52 @@
 			"submitButton": "Envoyer",
 			"infoText": "Les informations de votre appareil seront automatiquement incluses pour nous aider à résoudre le problème plus rapidement."
 		},
+
+		"validation": {
+			"titleRequired": "Le titre est requis.",
+			"descriptionRequired": "La description est requise.",
+			"stepsRequired": "Les étapes pour reproduire sont requises."
+		},
 		"fields": {
 			"title": {
 				"label": "Titre du bug*",
-				"placeholder": "Décrivez brièvement le problème."
+				"placeholder": "Décrivez brièvement le problème.",
+				"error": {
+					"min": "Le titre doit contenir au moins 5 caractères.",
+					"max": "Le titre ne peut pas dépasser 100 caractères."
+				}
 			},
 			"description": {
 				"label": "Description détaillée*",
-				"placeholder": "Expliquez le problème en détail."
+				"placeholder": "Expliquez le problème en détail.",
+				"error": {
+					"min": "La description doit contenir au moins 10 caractères.",
+					"max": "La description ne peut pas dépasser 500 caractères."
+				}
 			},
 			"stepsToReproduce": {
 				"label": "Étapes pour reproduire*",
-				"placeholder": "1. Ouvrez l'application\n2. Appuyez sur...\n3. Le problème se produit."
+				"placeholder": "1. Ouvrez l'application\n2. Appuyez sur...\n3. Le problème se produit.",
+				"error": {
+					"min": "Les étapes doivent contenir au moins 10 caractères.",
+					"max": "Les étapes ne peuvent pas dépasser 500 caractères."
+				}
 			},
 			"expectedBehavior": {
 				"label": "Comportement attendu*",
-				"placeholder": "Que devrait-il se passer ?"
+				"placeholder": "Que devrait-il se passer ?",
+				"error": {
+					"min": "Le comportement attendu doit contenir au moins 10 caractères.",
+					"max": "Le comportement attendu ne peut pas dépasser 300 caractères."
+				}
 			},
 			"actualBehavior": {
 				"label": "Comportement réel*",
-				"placeholder": "Que se passe-t-il réellement ?"
+				"placeholder": "Que se passe-t-il réellement ?",
+				"error": {
+					"min": "Le comportement réel doit contenir au moins 10 caractères.",
+					"max": "Le comportement réel ne peut pas dépasser 300 caractères."
+				}
 			},
 			"priority": {
 				"label": "Priorité*",
@@ -71,11 +97,6 @@
 				"medium": "Moyenne",
 				"high": "Élevée"
 			}
-		},
-		"validation": {
-			"titleRequired": "Le titre est requis.",
-			"descriptionRequired": "La description est requise.",
-			"stepsRequired": "Les étapes pour reproduire sont requises."
 		},
 		"success": {
 			"title": "📩 Rapport envoyé !",

@@ -1,6 +1,6 @@
 import { useEffect, useCallback } from 'react';
 import { Modal, Pressable, View, Dimensions } from 'react-native';
-import { SneakersModal } from '@/components/modals/SneakersModal';
+import { SneakersModal } from '@/components/ui/modals/SneakersModal';
 import { useModalStore } from '@/store/useModalStore';
 import { GestureHandlerRootView, Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';

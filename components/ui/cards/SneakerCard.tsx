@@ -2,7 +2,7 @@ import { View, Text, Pressable } from 'react-native';
 import { Image } from 'expo-image';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { Sneaker } from '@/types/Sneaker';
-import { ModalStep } from '@/components/modals/SneakersModal/types';
+import { ModalStep } from '@/components/screens/app/modals/SneakersModal/types';
 import { useSession } from '@/context/authContext';
 import SizeDisplay from '../text/SizeDisplay';
 
