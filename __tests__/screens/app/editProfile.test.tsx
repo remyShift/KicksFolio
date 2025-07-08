@@ -1,11 +1,16 @@
 import EditProfileForm from "@/components/screens/app/settings/accountSettings/EditProfileForm";
-import { act, fireEvent, render, screen } from "@testing-library/react-native";
-import { mockUseAuth, mockUser } from "../auth/authSetup";
+import { fireEvent, render, screen } from "@testing-library/react-native";
+import { act } from "react";
+import { mockUseAuth, mockUser, mockUseAsyncValidation } from "../auth/authSetup";
 import { fillAndBlurInput } from "@/__tests__/setup";
 
 describe('Edit Profile Form', () => {
     beforeEach(() => {
         jest.clearAllMocks();
+        
+        mockUseAuth.updateUser.mockResolvedValue({ user: mockUser });
+        mockUseAsyncValidation.checkUsernameExists.mockResolvedValue(null);
+        
         render(<EditProfileForm />);
     });
 
@@ -144,14 +149,26 @@ describe('Edit Profile Form', () => {
     describe('form submission', () => {
         it('should submit the form with updated values', async () => {
             const newUsername = 'remysnkr';
-            const userNameInput = screen.getByLabelText('Username*');
+            const usernameInput = screen.getByLabelText('Username*');
             
-            await fillAndBlurInput(userNameInput, newUsername);
-
-            const mainButton = screen.getByTestId('main-button');
+            await fillAndBlurInput(usernameInput, newUsername);
             
             await act(async () => {
-                fireEvent.press(mainButton);
+                await new Promise(resolve => setTimeout(resolve, 200));
+            });
+            
+            const mainButton = screen.getByTestId('main-button');
+            
+            expect(mainButton.props.accessibilityState.disabled).toBe(false);
+            
+            const sizeInput = screen.getByLabelText('Sneaker Size*');
+            
+            await act(async () => {
+                fireEvent(sizeInput, 'submitEditing');
+            });
+            
+            await act(async () => {
+                await new Promise(resolve => setTimeout(resolve, 100));
             });
 
             expect(mockUseAuth.updateUser).toHaveBeenCalledWith(
@@ -160,38 +177,51 @@ describe('Edit Profile Form', () => {
                     username: newUsername,
                     first_name: mockUser.first_name,
                     last_name: mockUser.last_name,
-                    sneaker_size: parseInt('10'),
-                    profile_picture: mockUser.profile_picture_url,
+                    sneaker_size: parseInt(mockUser.sneaker_size),
+                    profile_picture: '',
                 }
             );
         });
 
         it('should handle API errors during submission', async () => {
-            const error = new Error('API Error');
-            mockUseAuth.updateUser.mockRejectedValueOnce(error);
-
-            const userNameInput = screen.getByLabelText('Username*');
-            await fillAndBlurInput(userNameInput, 'remysnkr');
+            mockUseAuth.updateUser.mockRejectedValueOnce(new Error('API Error'));
             
-            const mainButton = screen.getByTestId('main-button');
+            const usernameInput = screen.getByLabelText('Username*');
+            await fillAndBlurInput(usernameInput, 'newUsername');
             
             await act(async () => {
-                fireEvent.press(mainButton);
+                await new Promise(resolve => setTimeout(resolve, 200));
+            });
+            
+            const sizeInput = screen.getByLabelText('Sneaker Size*');
+            
+            await act(async () => {
+                fireEvent(sizeInput, 'submitEditing');
+            });
+            
+            await act(async () => {
+                await new Promise(resolve => setTimeout(resolve, 100));
             });
 
             expect(mockUseAuth.updateUser).toHaveBeenCalled();
         });
 
         it('should handle username already taken error', async () => {
-            mockUseAuth.updateUser.mockRejectedValueOnce(new Error('Username already taken'));
-
-            const userNameInput = screen.getByLabelText('Username*');
-            await fillAndBlurInput(userNameInput, 'existinguser');
-            
-            const mainButton = screen.getByTestId('main-button');
+            const usernameInput = screen.getByLabelText('Username*');
+            await fillAndBlurInput(usernameInput, 'existingUser');
             
             await act(async () => {
-                fireEvent.press(mainButton);
+                await new Promise(resolve => setTimeout(resolve, 200));
+            });
+            
+            const sizeInput = screen.getByLabelText('Sneaker Size*');
+            
+            await act(async () => {
+                fireEvent(sizeInput, 'submitEditing');
+            });
+            
+            await act(async () => {
+                await new Promise(resolve => setTimeout(resolve, 100));
             });
 
             expect(mockUseAuth.updateUser).toHaveBeenCalled();

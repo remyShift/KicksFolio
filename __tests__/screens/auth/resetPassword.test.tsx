@@ -1,8 +1,9 @@
 import ResetPasswordPage from "@/app/(auth)/reset-password";
-import { act, fireEvent, render, screen } from "@testing-library/react-native";
+import { fireEvent, render, screen } from "@testing-library/react-native";
+import { act } from "react";
 import { ReactTestInstance } from "react-test-renderer";
 import { fillAndBlurInput } from "../../setup";
-import { mockUseAuth } from "./authSetup";
+import { mockUseAuth, mockUseAsyncValidation } from "./authSetup";
 
 describe('Reset Password Page', () => {
     let passwordInput: ReactTestInstance;
@@ -10,8 +11,12 @@ describe('Reset Password Page', () => {
     let mainButton: ReactTestInstance;
 
     beforeEach(() => {
+        jest.clearAllMocks();
+        
         jest.spyOn(require('expo-router'), 'useLocalSearchParams').mockReturnValue({ token: '1234567890' });
-
+        
+        mockUseAuth.resetPassword.mockResolvedValue(true);
+        
         render(<ResetPasswordPage />);
         passwordInput = screen.getAllByPlaceholderText('********')[0];
         confirmPasswordInput = screen.getAllByPlaceholderText('********')[1];
@@ -126,16 +131,23 @@ describe('Reset Password Page', () => {
             await fillAndBlurInput(passwordInput, 'Tititoto14');
             await fillAndBlurInput(confirmPasswordInput, 'Tititoto14');
 
-            const password = passwordInput.props.value;
-            const confirmPassword = confirmPasswordInput.props.value;
-
-            const currentMainButton = screen.getByTestId('main-button');
-
             await act(async () => {
-                fireEvent.press(currentMainButton);
+                await new Promise(resolve => setTimeout(resolve, 100));
             });
 
-            expect(mockUseAuth.resetPassword).toHaveBeenCalledWith(password, confirmPassword);
+            const currentMainButton = screen.getByTestId('main-button');
+            
+            expect(currentMainButton.props.accessibilityState.disabled).toBe(false);
+
+            await act(async () => {
+                fireEvent(confirmPasswordInput, 'submitEditing');
+            });
+            
+            await act(async () => {
+                await new Promise(resolve => setTimeout(resolve, 100));
+            });
+
+            expect(mockUseAuth.resetPassword).toHaveBeenCalledWith('Tititoto14', 'Tititoto14');
         });
     });
 });

@@ -18,6 +18,7 @@ export default function MainButton({content, onPressAction, backgroundColor, isD
             className={`${backgroundColor} py-3 px-4 rounded-md w-1/2`}
             style={animatedStyle}
             testID="main-button"
+            accessibilityState={{ disabled: isDisabled }}
         >
             <GestureDetector gesture={gesture}>
                 <Animated.View onTouchEnd={onPressAction}>

@@ -1,5 +1,6 @@
 import SignUpFirstPage from '@/app/(auth)/(signup)/sign-up';
-import { act, fireEvent, render, screen } from '@testing-library/react-native';
+import { fireEvent, render, screen } from '@testing-library/react-native';
+import { act } from 'react';
 import { mockAuthService, mockUseAuth } from './authSetup';
 import { fillAndBlurInput } from '../../setup';
 import { ReactTestInstance } from 'react-test-renderer';
@@ -23,6 +24,9 @@ describe('SignUpFirstPage', () => {
         mockUseAuth.clearError.mockReset();
         mockUseAuth.handleNextSignupPage.mockReset();
         mockUseAuth.errorMsg = '';
+
+        mockUseAsyncValidation.checkUsernameExists.mockResolvedValue(null);
+        mockUseAsyncValidation.checkEmailExists.mockResolvedValue(null);
 
         render(<SignUpFirstPage />);
 
@@ -173,16 +177,25 @@ describe('SignUpFirstPage', () => {
 
     describe('Sign up step 1 attempts', () => {
         it('should handle sign up attempt with valid values and redirect to step 2', async () => {
-            jest.spyOn(router, 'push');
-
             await fillAndBlurInput(userNameInput, 'validUsername');
             await fillAndBlurInput(emailInput, 'valid@email.com');
             await fillAndBlurInput(passwordInput, 'ValidPassword14*');
             await fillAndBlurInput(confirmPasswordInput, 'ValidPassword14*');
             
-            const currentMainButton = screen.getByTestId('main-button');
             await act(async () => {
-                fireEvent.press(currentMainButton);
+                await new Promise(resolve => setTimeout(resolve, 200));
+            });
+            
+            const currentMainButton = screen.getByTestId('main-button');
+            
+            expect(currentMainButton.props.accessibilityState.disabled).toBe(false);
+            
+            await act(async () => {
+                fireEvent(confirmPasswordInput, 'submitEditing');
+            });
+            
+            await act(async () => {
+                await new Promise(resolve => setTimeout(resolve, 100));
             });
 
             expect(mockUseAuth.handleNextSignupPage).toHaveBeenCalledWith({

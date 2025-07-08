@@ -1,9 +1,9 @@
 import SignUpSecondPage from '@/app/(auth)/(signup)/sign-up-second';
-import { act, fireEvent, render, screen } from '@testing-library/react-native';
+import { fireEvent, render, screen } from '@testing-library/react-native';
+import { act } from 'react';
 import { mockAuthService, mockUseAuth, mockUseSignUpProps } from './authSetup';
 import { fillAndBlurInput } from '../../setup';
 import { ReactTestInstance } from 'react-test-renderer';
-import { UserData } from '@/types/auth';
 
 describe('SignUpSecondPage', () => {
     let firstNameInput: ReactTestInstance;
@@ -37,7 +37,7 @@ describe('SignUpSecondPage', () => {
 
         firstNameInput = screen.getByPlaceholderText('John');
         lastNameInput = screen.getByPlaceholderText('Doe');
-        sneakerSizeInput = screen.getByPlaceholderText('10');
+        sneakerSizeInput = screen.getByPlaceholderText('9.5');
         mainButton = screen.getByTestId('main-button');
         errorMessage = screen.getByTestId('error-message');
     });
@@ -175,16 +175,24 @@ describe('SignUpSecondPage', () => {
                 profile_picture: ''
             };
 
-            mockUseAuth.signUp.mockResolvedValue(true);
-
             await fillAndBlurInput(firstNameInput, 'validFirstName');
             await fillAndBlurInput(lastNameInput, 'validLastName');
             await fillAndBlurInput(sneakerSizeInput, '10.5');
             
             await act(async () => {
-                const currentMainButton = screen.getByTestId('main-button');
-
-                fireEvent.press(currentMainButton);
+                await new Promise(resolve => setTimeout(resolve, 200));
+            });
+            
+            const currentMainButton = screen.getByTestId('main-button');
+            
+            expect(currentMainButton.props.accessibilityState.disabled).toBe(false);
+            
+            await act(async () => {
+                fireEvent(sneakerSizeInput, 'submitEditing');
+            });
+            
+            await act(async () => {
+                await new Promise(resolve => setTimeout(resolve, 100));
             });
 
             expect(mockUseAuth.signUp).toHaveBeenCalledWith({
@@ -194,9 +202,9 @@ describe('SignUpSecondPage', () => {
                 confirmPassword: 'ValidPassword14*',
                 first_name: 'ValidFirstName',
                 last_name: 'ValidLastName',
-                profile_picture: '',
-                sneaker_size: 10.5
-            } as UserData);
+                sneaker_size: 10.5,
+                profile_picture: ''
+            });
         });
         
         it('should not proceed if validation fails on step 2', async () => {
@@ -216,9 +224,19 @@ describe('SignUpSecondPage', () => {
             await fillAndBlurInput(sneakerSizeInput, '5');
             
             await act(async () => {
-                const currentMainButton = screen.getByTestId('main-button');
-
-                fireEvent.press(currentMainButton);
+                await new Promise(resolve => setTimeout(resolve, 200));
+            });
+            
+            const currentMainButton = screen.getByTestId('main-button');
+            
+            expect(currentMainButton.props.accessibilityState.disabled).toBe(true);
+            
+            await act(async () => {
+                fireEvent(sneakerSizeInput, 'submitEditing');
+            });
+            
+            await act(async () => {
+                await new Promise(resolve => setTimeout(resolve, 100));
             });
 
             expect(mockUseAuth.signUp).not.toHaveBeenCalled();

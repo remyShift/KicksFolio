@@ -6,23 +6,6 @@ import { useSession } from '@/context/authContext';
 import { useAuth } from '@/hooks/useAuth';
 import { router } from 'expo-router';
 
-// Mock react-native-gesture-handler
-jest.mock('react-native-gesture-handler', () => {
-    const View = require('react-native').View;
-    return {
-        GestureHandlerRootView: View,
-        PanGestureHandler: View,
-        State: {},
-        PinchGestureHandler: View,
-        RotationGestureHandler: View,
-        FlingGestureHandler: View,
-        LongPressGestureHandler: View,
-        TapGestureHandler: View,
-        createNativeWrapper: jest.fn(),
-        Directions: {},
-    };
-});
-
 jest.mock('@/store/useModalStore', () => ({
     useModalStore: () => ({
         modalStep: 'index',

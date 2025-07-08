@@ -1,4 +1,6 @@
-import { act, cleanup, fireEvent } from '@testing-library/react-native';
+import { cleanup, fireEvent } from '@testing-library/react-native';
+import { act } from 'react';
+import '@testing-library/react-native/extend-expect';
 import { ReactTestInstance } from 'react-test-renderer';
 import {
 	mockAuthService,
@@ -90,6 +92,11 @@ jest.mock('../hooks/useToast', () => ({
 		showErrorToast: jest.fn(),
 		showInfoToast: jest.fn(),
 	})),
+	useToast: () => ({
+		showSuccessToast: jest.fn(),
+		showErrorToast: jest.fn(),
+		showInfoToast: jest.fn(),
+	}),
 }));
 
 jest.mock('../context/authContext', () => ({
@@ -127,14 +134,31 @@ jest.mock('../store/useModalStore', () => ({
 		modalStep: 'index',
 		isVisible: false,
 		currentSneaker: null,
+		sneakerSKU: '',
+		fetchedSneaker: null,
+		sneakerToAdd: null,
+		errorMsg: '',
+		validateForm: null,
+		clearFormErrors: null,
+		estimatedValue: 0,
 		setModalStep: jest.fn(),
 		setIsVisible: jest.fn(),
 		setCurrentSneaker: jest.fn(),
+		setSneakerSKU: jest.fn(),
+		setFetchedSneaker: jest.fn(),
+		setSneakerToAdd: jest.fn(),
+		setErrorMsg: jest.fn(),
+		setValidateForm: jest.fn(),
+		setClearFormErrors: jest.fn(),
+		resetModalData: jest.fn(),
+		setEstimatedValue: jest.fn(),
+		setGender: jest.fn(),
+		setSku: jest.fn(),
 		resetModal: jest.fn(),
 	}),
 }));
 
-jest.mock('../config/supabase/supabase', () => ({
+jest.mock('../config/supabase/supabase.config', () => ({
 	SUPABASE_CONFIG: {
 		url: 'http://toto.com',
 		anonKey: 'test',
@@ -185,6 +209,28 @@ jest.mock('react-native-image-crop-picker', () => ({
 
 jest.mock('react-native-gesture-handler', () => {
 	const { View, ScrollView } = require('react-native');
+
+	const createMockGesture = () => ({
+		onBegin: jest.fn().mockReturnThis(),
+		onFinalize: jest.fn().mockReturnThis(),
+		onEnd: jest.fn().mockReturnThis(),
+		onStart: jest.fn().mockReturnThis(),
+		onUpdate: jest.fn().mockReturnThis(),
+		onCancel: jest.fn().mockReturnThis(),
+		onFail: jest.fn().mockReturnThis(),
+		onTouchesDown: jest.fn().mockReturnThis(),
+		onTouchesMove: jest.fn().mockReturnThis(),
+		onTouchesUp: jest.fn().mockReturnThis(),
+		onTouchesCancelled: jest.fn().mockReturnThis(),
+		enabled: jest.fn().mockReturnThis(),
+		shouldCancelWhenOutside: jest.fn().mockReturnThis(),
+		hitSlop: jest.fn().mockReturnThis(),
+		runOnJS: jest.fn().mockReturnThis(),
+		simultaneousWithExternalGesture: jest.fn().mockReturnThis(),
+		requireExternalGestureToFail: jest.fn().mockReturnThis(),
+		blocksExternalGesture: jest.fn().mockReturnThis(),
+	});
+
 	return {
 		GestureHandlerRootView: View,
 		PanGestureHandler: View,
@@ -217,13 +263,13 @@ jest.mock('react-native-gesture-handler', () => {
 			.fn()
 			.mockImplementation((component) => component),
 		Gesture: {
-			Tap: jest.fn().mockReturnThis(),
-			Pan: jest.fn().mockReturnThis(),
-			Pinch: jest.fn().mockReturnThis(),
-			Rotation: jest.fn().mockReturnThis(),
-			Fling: jest.fn().mockReturnThis(),
-			LongPress: jest.fn().mockReturnThis(),
-			ForceTouch: jest.fn().mockReturnThis(),
+			Tap: () => createMockGesture(),
+			Pan: () => createMockGesture(),
+			Pinch: () => createMockGesture(),
+			Rotation: () => createMockGesture(),
+			Fling: () => createMockGesture(),
+			LongPress: () => createMockGesture(),
+			ForceTouch: () => createMockGesture(),
 		},
 		GestureDetector: View,
 	};
@@ -314,6 +360,119 @@ jest.mock('../services/supabase', () => ({
 					.mockReturnValue({ data: { publicUrl: 'mocked-url' } }),
 			}),
 		},
+	},
+}));
+
+// Proper i18n setup for tests
+import i18n from '../locales/i18n';
+
+// Initialize i18n for tests
+beforeAll(async () => {
+	if (!i18n.isInitialized) {
+		await i18n.init();
+	}
+	await i18n.changeLanguage('en');
+});
+
+// Mock react-native-reanimated
+jest.mock('react-native-reanimated', () => {
+	const { View } = require('react-native');
+	return {
+		...jest.requireActual('react-native-reanimated/mock'),
+		useSharedValue: jest.fn().mockReturnValue({ value: 1 }),
+		useAnimatedStyle: jest.fn().mockReturnValue({}),
+		withSpring: jest.fn().mockImplementation((toValue) => toValue),
+		withTiming: jest.fn().mockImplementation((toValue) => toValue),
+		runOnJS: jest.fn().mockImplementation((fn) => fn),
+		runOnUI: jest.fn().mockImplementation((fn) => fn),
+		createAnimatedComponent: jest.fn().mockReturnValue(View),
+		makeMutable: jest.fn().mockReturnValue({ value: 0 }),
+		interpolate: jest.fn(),
+		Extrapolate: { CLAMP: 'clamp' },
+	};
+});
+
+// Mock expo-haptics
+jest.mock('expo-haptics', () => ({
+	impactAsync: jest.fn(),
+	notificationAsync: jest.fn(),
+	selectionAsync: jest.fn(),
+	ImpactFeedbackStyle: {
+		Light: 'light',
+		Medium: 'medium',
+		Heavy: 'heavy',
+	},
+	NotificationFeedbackType: {
+		Success: 'success',
+		Warning: 'warning',
+		Error: 'error',
+	},
+}));
+
+// Mock validation service with custom error messages
+jest.mock('../services/FormValidationService', () => ({
+	FormValidationService: {
+		validateUsername: jest.fn(),
+		validateFirstName: jest.fn(),
+		validateLastName: jest.fn(),
+		validateSneakerSize: jest.fn(),
+		validateModel: jest.fn(),
+		validateSize: jest.fn(),
+		validateCondition: jest.fn(),
+		validatePrice: jest.fn(),
+	},
+}));
+
+// Mock additional stores
+jest.mock('../store/useListViewStore', () => ({
+	useListViewStore: () => ({
+		isListView: false,
+		setIsListView: jest.fn(),
+		toggleView: jest.fn(),
+	}),
+}));
+
+jest.mock('../store/useCurrencyStore', () => ({
+	useCurrencyStore: () => ({
+		currency: 'EUR',
+		setCurrency: jest.fn(),
+		formattedPrice: jest.fn((price) => `€${price}`),
+	}),
+}));
+
+jest.mock('../store/useLanguageStore', () => ({
+	useLanguageStore: Object.assign(
+		() => ({
+			language: 'en',
+			setLanguage: jest.fn(),
+			currentLanguage: 'en',
+		}),
+		{
+			getState: () => ({
+				language: 'en',
+				setLanguage: jest.fn(),
+				currentLanguage: 'en',
+			}),
+			subscribe: jest.fn().mockReturnValue(() => {}),
+		}
+	),
+}));
+
+// Mock custom hooks
+jest.mock('../hooks/useSizeConversion', () => ({
+	useSizeConversion: () => ({
+		formattedSize: jest.fn((size) => `${size} US`),
+		convertSize: jest.fn(),
+	}),
+}));
+
+// Note: formattedPrice is mocked within useCurrencyStore
+
+// Mock additional service functions
+jest.mock('../services/SizeConversionService', () => ({
+	SizeConversionService: {
+		convertSize: jest.fn(),
+		formatSize: jest.fn((size) => `${size} US`),
 	},
 }));
 
