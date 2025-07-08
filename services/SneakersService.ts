@@ -274,13 +274,17 @@ export class SupabaseSneakerService {
 					throw error;
 				}
 
-				if (!response) {
+				if (
+					!response ||
+					!Array.isArray(response) ||
+					response.length === 0
+				) {
 					const errorMsg = 'No data found for this SKU';
 					console.error(errorMsg);
 					throw new Error(errorMsg);
 				}
 
-				const result = response.results[0];
+				const result = response[0];
 
 				const sneakerBrand = sneakerBrandOptions.find(
 					(brand) =>
@@ -288,15 +292,14 @@ export class SupabaseSneakerService {
 						result.brand.toLowerCase()
 				);
 
-				const sneakerModelWithoutBrandName = response.results[0].title
+				const sneakerModelWithoutBrandName = result.title
 					.replace(sneakerBrand?.label || '', '')
 					.trim();
 
 				const dataWithoutBrandName = {
-					...response,
 					results: [
 						{
-							...response.results[0],
+							...result,
 							title: sneakerModelWithoutBrandName,
 						},
 					],

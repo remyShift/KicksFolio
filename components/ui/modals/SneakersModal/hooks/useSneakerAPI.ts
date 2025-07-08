@@ -3,7 +3,11 @@ import {
 	SupabaseSneakerService,
 	SupabaseSneaker,
 } from '@/services/SneakersService';
-import { SneakerFormData, createSneakerSchema } from '@/validation/schemas';
+import {
+	SneakerFormData,
+	createSneakerSchema,
+	sneakerBrandOptions,
+} from '@/validation/schemas';
 import { ModalStep } from '../types';
 import { FetchedSneaker } from '@/store/useModalStore';
 import { useSession } from '@/context/authContext';
@@ -24,17 +28,9 @@ interface SkuSearchResponse {
 		title: string;
 		brand: string;
 		description: string;
-		market: {
-			statistics: {
-				last90Days: {
-					averagePrice: number;
-				};
-			};
-		};
 		gender: string;
-		media: {
-			smallImageUrl: string;
-		};
+		gallery: string[];
+		avg_price: number;
 	}>;
 }
 
@@ -97,17 +93,21 @@ export const useSneakerAPI = () => {
 				) {
 					const responseResult = response.results[0];
 
+					const sneakerBrand = sneakerBrandOptions.find(
+						(brand) =>
+							brand.value.toLowerCase() ===
+							responseResult.brand.toLowerCase()
+					);
+
 					const transformedSneaker: FetchedSneaker = {
 						model: responseResult.title || '',
-						brand: responseResult.brand.toLowerCase() as SneakerBrand,
+						brand: sneakerBrand?.value || SneakerBrand.Other,
 						sku: sku.toUpperCase(),
 						description: responseResult.description || '',
 						gender: responseResult.gender || '',
-						estimated_value:
-							responseResult.market.statistics.last90Days
-								.averagePrice || 0,
+						estimated_value: responseResult.avg_price || 0,
 						image: {
-							uri: responseResult.media.smallImageUrl || '',
+							uri: responseResult.gallery[0] || '',
 						},
 					};
 					callbacks.setFetchedSneaker?.(transformedSneaker);
