@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text } from 'react-native';
 import { Camera, CameraView } from 'expo-camera';
 import { useModalStore } from '@/store/useModalStore';
 import { useSneakerAPI } from '../../hooks/useSneakerAPI';
@@ -37,6 +37,7 @@ export const BarcodeStep = () => {
         
         setScanned(true);
         setSneakerSKU(data);
+        setErrorMsg('');
         
         handleBarcodeSearch(data, {
             setFetchedSneaker,

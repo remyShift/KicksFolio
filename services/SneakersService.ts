@@ -2,6 +2,7 @@ import { supabase } from './supabase';
 import { SneakerBrand } from '@/types/Sneaker';
 import { sneakerBrandOptions } from '@/validation/schemas';
 import { SizeConversionService, GenderType } from './SizeConversionService';
+import { t } from 'i18next';
 
 export interface SupabaseSneaker {
 	id: string;
@@ -320,7 +321,12 @@ export class SupabaseSneakerService {
 				body: { barcode },
 			})
 			.then(({ data, error }) => {
-				const response = data;
+				if (!data.data) {
+					throw t('collection.modal.barcode.noData');
+				}
+
+				const response = data.data;
+
 				if (error) {
 					console.error('Supabase function error:', error);
 					console.error('Error details:', {

@@ -34,7 +34,7 @@
 			"description": "The sneaker is being added to your collection."
 		},
 		"added": {
-			"title": "✅ Sneaker added!",
+			"title": "✅ Sneaker added !",
 			"description": "The sneaker has been added successfully to your collection."
 		},
 		"updating": {
@@ -42,7 +42,7 @@
 			"description": "The sneaker is being updated."
 		},
 		"updated": {
-			"title": "✅ Sneaker updated!",
+			"title": "✅ Sneaker updated !",
 			"description": "The sneaker has been updated successfully."
 		},
 		"deleting": {
@@ -50,11 +50,11 @@
 			"description": "Please wait..."
 		},
 		"deleted": {
-			"title": "🗑️ Sneaker deleted",
+			"title": "🗑️ Sneaker deleted !",
 			"description": "The sneaker has been deleted successfully."
 		},
 		"deletionFailed": {
-			"title": "❌ Sneaker deletion failed",
+			"title": "❌ Sneaker deletion failed !",
 			"description": "The sneaker could not be deleted."
 		}
 	},
@@ -66,15 +66,16 @@
 		},
 		"barcode": {
 			"requesting": "Requesting camera permission...",
-			"noPermission": "Camera access denied",
-			"enablePermission": "Please enable camera access in app settings",
-			"instruction": "Point the camera at your sneaker's barcode",
-			"description": "Make sure the barcode is clearly visible and well-lit"
+			"noPermission": "Camera access denied.",
+			"enablePermission": "Please enable camera access in app settings.",
+			"instruction": "Point the camera at your sneaker's barcode.",
+			"description": "Make sure the barcode is clearly visible and well-lit.",
+			"noData": "No data found for this barcode."
 		},
 		"descriptions": {
 			"howProceed": "How do you want to proceed?",
 			"bySearch": "Prefetch your sneaker information from a query (SKU, model...)",
-			"byBarcode": "Scan your sneaker's barcode to prefetch information",
+			"byBarcode": "Scan your sneaker's barcode to prefetch information. (Can be not really accurate.)",
 			"manually": "You provide the sneaker information manually in a form.",
 			"skuNote": "NB: For Nike's SKU, don't forget the '-' and the 3 numbers following it or it will not work."
 		},

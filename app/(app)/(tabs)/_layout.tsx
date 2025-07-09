@@ -12,7 +12,7 @@ export default function TabLayout() {
     const { setIsVisible, setModalStep } = useModalStore();
 
     const handleAddPress = () => {
-        setModalStep('index');
+        setModalStep('barcode');
         setIsVisible(true);
     };
 

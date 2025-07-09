@@ -69,12 +69,13 @@
 			"noPermission": "Accès à la caméra refusé",
 			"enablePermission": "Veuillez activer l'accès à la caméra dans les paramètres de l'application",
 			"instruction": "Pointez la caméra vers le code-barres de votre sneaker",
-			"description": "Assurez-vous que le code-barres est bien visible et éclairé"
+			"description": "Assurez-vous que le code-barres est bien visible et éclairé.",
+			"noData": "Aucune donnée trouvée pour ce code-barres."
 		},
 		"descriptions": {
 			"howProceed": "Comment veux-tu procéder ?",
 			"bySearch": "Précharge les informations de ta sneaker à partir d'une requête (SKU, modèle...)",
-			"byBarcode": "Scanner le code-barres de ta sneaker pour précharger les informations",
+			"byBarcode": "Scanner le code-barres de ta sneaker pour précharger les informations. (Pas forcément très précis.)",
 			"manually": "Tu fournis les informations de ta sneaker manuellement dans un formulaire.",
 			"skuNote": "NB : Pour les SKU de Nike, n'oublie pas le '-' et les 3 chiffres qui suivent."
 		},
