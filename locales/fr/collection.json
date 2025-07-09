@@ -69,7 +69,7 @@
 			"noPermission": "Accès à la caméra refusé",
 			"enablePermission": "Veuillez activer l'accès à la caméra dans les paramètres de l'application",
 			"instruction": "Pointez la caméra vers le code-barres de votre sneaker",
-			"description": "Assurez-vous que le code-barres est bien visible et éclairé.",
+			"description": "Assurez-vous que le code-barres est bien visible et éclairé",
 			"noData": "Aucune donnée trouvée pour ce code-barres."
 		},
 		"descriptions": {

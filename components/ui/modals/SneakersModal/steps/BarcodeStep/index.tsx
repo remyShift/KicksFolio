@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { Camera, CameraView } from 'expo-camera';
 import { useModalStore } from '@/store/useModalStore';
 import { useSneakerAPI } from '../../hooks/useSneakerAPI';
@@ -6,11 +6,13 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import useToast from '@/hooks/useToast';
 
 export const BarcodeStep = () => {
     const { t } = useTranslation();
     const [hasPermission, setHasPermission] = useState<boolean | null>(null);
     const [scanned, setScanned] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     
     const {
         setFetchedSneaker,
@@ -21,6 +23,7 @@ export const BarcodeStep = () => {
     } = useModalStore();
 
     const { handleBarcodeSearch } = useSneakerAPI();
+    const { showInfoToast, showSuccessToast } = useToast();
 
     useEffect(() => {
         const getCameraPermissions = async () => {
@@ -33,19 +36,34 @@ export const BarcodeStep = () => {
     }, [setErrorMsg]);
 
     const handleBarcodeScanned = ({ data }: { data: string }) => {
-        if (scanned) return;
+        if (scanned || isLoading) return;
         
         setScanned(true);
         setSneakerSKU(data);
         setErrorMsg('');
         
+        showInfoToast(
+            t('collection.messages.searching.title'),
+            t('collection.messages.searching.description')
+        );
+        
+        setIsLoading(true);
+        
         handleBarcodeSearch(data, {
             setFetchedSneaker,
             setModalStep,
             setErrorMsg
-        }).finally(() => {
-            setScanned(false);
-        });
+        })
+            .then(() => {
+                showSuccessToast(
+                    t('collection.messages.found.title'),
+                    t('collection.messages.found.description')
+                );
+            })
+            .finally(() => {
+                setIsLoading(false);
+                setScanned(false);
+            });
     };
 
     if (hasPermission === null) {
@@ -84,21 +102,36 @@ export const BarcodeStep = () => {
 
             <View className="flex items-center justify-center gap-2">
                 <ErrorMsg content={errorMsg} display={!!errorMsg} />
-                <CameraView
-                    style={{
-                        width: '80%',
-                        height: '40%',
-                    }}
-                    zoom={0.4}
-                    barcodeScannerSettings={{
-                        barcodeTypes: ['upc_a', 'upc_e', 'ean13', 'ean8', 'code128'],
-                    }}
-                    onBarcodeScanned={scanned ? undefined : handleBarcodeScanned}
-                />
+                
+                {isLoading ? (
+                    <View className="flex items-center justify-center" style={{ width: '80%', height: '40%' }}>
+                        <View className="bg-gray-200 rounded-lg flex-1 w-full items-center justify-center">
+                            <Ionicons name="search" size={40} color="#6B7280" />
+                            <Text className="font-spacemono-bold text-gray-600 mt-2 text-center">
+                                {t('collection.messages.searching.title')}
+                            </Text>
+                        </View>
+                    </View>
+                ) : (
+                    <CameraView
+                        style={{
+                            width: '80%',
+                            height: '40%',
+                        }}
+                        zoom={0.4}
+                        barcodeScannerSettings={{
+                            barcodeTypes: ['upc_a', 'upc_e', 'ean13', 'ean8', 'code128'],
+                        }}
+                        onBarcodeScanned={scanned ? undefined : handleBarcodeScanned}
+                    />
+                )}
                 
                 <View className="flex justify-center items-center">
                     <Text className="font-spacemono-bold text-center mt-4 px-6">
-                        {t('collection.modal.barcode.instruction')}
+                        {isLoading ? 
+                            t('collection.messages.searching.description') : 
+                            t('collection.modal.barcode.instruction')
+                        }
                     </Text>
                 </View>
             </View>

@@ -13,7 +13,7 @@ export default function TabAddButton({handleAddPress, isDisabled = false}: {hand
         >
             <GestureDetector gesture={gesture}>
                 <Animated.View onTouchEnd={handleAddPress}>
-                    <Ionicons name="barcode-outline" size={38} color="white" />
+                    <Ionicons name="barcode-outline" size={32} color="white" />
                 </Animated.View>
             </GestureDetector>
         </Animated.View>

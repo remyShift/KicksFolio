@@ -42,7 +42,7 @@ export const AnimatedDot = ({ index, scrollX, carouselWidth }: Props) => {
     const backgroundColor = interpolateColor(
       scrollX.value,
       inputRange,
-      ['rgba(255, 255, 255, 0.8)', '#FF6B35', 'rgba(255, 255, 255, 0.8)']
+      ['#FF6B3580', '#FF6B35', '#FF6B3580']
     );
 
     return {
