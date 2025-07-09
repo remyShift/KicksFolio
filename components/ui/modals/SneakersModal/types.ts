@@ -1,6 +1,12 @@
 import { Sneaker, SneakerBrand, Photo } from '@/types/Sneaker';
 
-export type ModalStep = 'index' | 'sku' | 'addForm' | 'editForm' | 'view';
+export type ModalStep =
+	| 'index'
+	| 'sku'
+	| 'barcode'
+	| 'addForm'
+	| 'editForm'
+	| 'view';
 
 export type InputType =
 	| 'name'

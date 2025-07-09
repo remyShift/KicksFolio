@@ -400,8 +400,66 @@ export const useSneakerAPI = () => {
 			});
 	};
 
+	const handleBarcodeSearch = async (
+		barcode: string,
+		callbacks: Callbacks
+	) => {
+		if (!user) {
+			callbacks.setErrorMsg('Session expired. Please login again.');
+			return Promise.resolve();
+		}
+
+		if (!barcode.trim()) {
+			callbacks.setErrorMsg(
+				t('collection.modal.form.errors.barcode.required')
+			);
+			return Promise.resolve();
+		}
+
+		callbacks.setErrorMsg('');
+
+		return SupabaseSneakerService.searchByBarcode(barcode.trim())
+			.then((response: SkuSearchResponse) => {
+				if (
+					response &&
+					response.results &&
+					response.results.length > 0
+				) {
+					const responseResult = response.results[0];
+
+					const sneakerBrand = sneakerBrandOptions.find(
+						(brand) =>
+							brand.value.toLowerCase() ===
+							responseResult.brand.toLowerCase()
+					);
+
+					const transformedSneaker: FetchedSneaker = {
+						model: responseResult.title || '',
+						brand: sneakerBrand?.value || SneakerBrand.Other,
+						sku: barcode.toUpperCase(),
+						description: responseResult.description || '',
+						gender: responseResult.gender || '',
+						estimated_value: responseResult.avg_price || 0,
+						image: {
+							uri: responseResult.gallery[0] || '',
+						},
+					};
+					callbacks.setFetchedSneaker?.(transformedSneaker);
+					callbacks.setModalStep('addForm');
+				}
+				return response;
+			})
+			.catch((error: Error) => {
+				callbacks.setErrorMsg(
+					error.message || 'An error occurred during barcode search'
+				);
+				throw error;
+			});
+	};
+
 	return {
 		handleSkuSearch,
+		handleBarcodeSearch,
 		handleAddSneaker,
 		handleFormUpdate,
 		handleNext,

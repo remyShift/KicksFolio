@@ -15,7 +15,7 @@ export const InitialStep = ({ userSneakersLength = 0 }: InitialStepProps) => {
         <View className="flex-1 justify-center items-center gap-8">
             <Text className="font-actonia text-primary text-4xl text-center">{indexTitle}</Text>
             <Text className="font-spacemono-bold text-xl text-center">{t('collection.modal.descriptions.howProceed')}</Text>
-            <View className="flex justify-center items-center gap-12">
+            <View className="flex justify-center items-center gap-8">
                 <View className="flex-col justify-center items-center gap-1 px-6">
                     <Pressable
                         onPress={() => setModalStep('sku')}
@@ -27,6 +27,19 @@ export const InitialStep = ({ userSneakersLength = 0 }: InitialStepProps) => {
                     </Pressable>
                     <Text className="font-spacemono-bold text-sm text-center">
                         {t('collection.modal.descriptions.bySearch')}
+                    </Text>
+                </View>
+                <View className="flex-col justify-center items-center gap-1 px-6">
+                    <Pressable
+                        onPress={() => setModalStep('barcode')}
+                        testID="scan-barcode-button"
+                    >
+                        <Text className="font-spacemono-bold text-lg text-center text-primary">
+                            {t('collection.modal.buttons.byBarcode')}
+                        </Text>
+                    </Pressable>
+                    <Text className="font-spacemono-bold text-sm text-center">
+                        {t('collection.modal.descriptions.byBarcode')}
                     </Text>
                 </View>
                 <View className="flex-col justify-center items-center gap-1 px-6">

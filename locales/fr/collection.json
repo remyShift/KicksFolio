@@ -64,14 +64,23 @@
 			"edit": "Modifier une sneaker",
 			"skuStep": "Entres le SKU ou le modèle de ta sneaker ci-dessous"
 		},
+		"barcode": {
+			"requesting": "Demande de permission pour la caméra...",
+			"noPermission": "Accès à la caméra refusé",
+			"enablePermission": "Veuillez activer l'accès à la caméra dans les paramètres de l'application",
+			"instruction": "Pointez la caméra vers le code-barres de votre sneaker",
+			"description": "Assurez-vous que le code-barres est bien visible et éclairé"
+		},
 		"descriptions": {
 			"howProceed": "Comment veux-tu procéder ?",
 			"bySearch": "Précharge les informations de ta sneaker à partir d'une requête (SKU, modèle...)",
+			"byBarcode": "Scanner le code-barres de ta sneaker pour précharger les informations",
 			"manually": "Tu fournis les informations de ta sneaker manuellement dans un formulaire.",
 			"skuNote": "NB : Pour les SKU de Nike, n'oublie pas le '-' et les 3 chiffres qui suivent."
 		},
 		"buttons": {
 			"bySearch": "Par recherche",
+			"byBarcode": "Par code-barres",
 			"manually": "Ajoutée manuellement",
 			"search": "Chercher"
 		},
@@ -110,6 +119,9 @@
 				},
 				"sku": {
 					"required": "Veuillez entrer un SKU."
+				},
+				"barcode": {
+					"required": "Veuillez scanner un code-barres."
 				},
 				"user": {
 					"required": "Aucun utilisateur authentifié"

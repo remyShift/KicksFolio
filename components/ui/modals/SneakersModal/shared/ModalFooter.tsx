@@ -60,6 +60,13 @@ export const ModalFooter = () => {
                     />
                 </View>
             )}
+            {modalStep === 'barcode' && (
+                <View className="flex-row justify-between w-full">
+                    <BackButton 
+                        onPressAction={handleBackAction}
+                    />
+                </View>
+            )}
             {modalStep === 'addForm' && (
                 <View className="flex-row justify-between w-full">
                     <BackButton 

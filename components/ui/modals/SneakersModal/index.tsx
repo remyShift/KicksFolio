@@ -2,6 +2,7 @@ import { View } from 'react-native';
 import { ModalFooter } from './shared/ModalFooter';
 import { InitialStep } from './steps/InitialStep';
 import { SkuStep } from './steps/SkuStep';
+import { BarcodeStep } from './steps/BarcodeStep';
 import { FormStep } from './steps/FormStep';
 import { EditFormStep } from './steps/EditFormStep';
 import { ViewStep } from './steps/ViewStep';
@@ -25,6 +26,10 @@ export const SneakersModal = () => {
 
                 {modalStep === 'sku' && (
                     <SkuStep />
+                )}
+
+                {modalStep === 'barcode' && (
+                    <BarcodeStep />
                 )}
 
                 {modalStep === 'addForm' && (

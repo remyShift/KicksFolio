@@ -140,6 +140,9 @@ export const useModalFooterActions = () => {
 						setIsLoading(false);
 					});
 				break;
+			case 'barcode':
+				// Les actions pour barcode sont gérées directement dans BarcodeStep
+				break;
 			case 'addForm':
 				if (isLoading) return;
 
@@ -238,6 +241,10 @@ export const useModalFooterActions = () => {
 	const handleBackAction = () => {
 		switch (modalStep) {
 			case 'sku':
+				setErrorMsg('');
+				setModalStep('index');
+				break;
+			case 'barcode':
 				setErrorMsg('');
 				setModalStep('index');
 				break;

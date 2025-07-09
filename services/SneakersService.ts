@@ -313,4 +313,62 @@ export class SupabaseSneakerService {
 				throw err;
 			});
 	}
+
+	static async searchByBarcode(barcode: string) {
+		return supabase.functions
+			.invoke('barcode-lookup', {
+				body: { barcode },
+			})
+			.then(({ data, error }) => {
+				const response = data;
+				if (error) {
+					console.error('Supabase function error:', error);
+					console.error('Error details:', {
+						message: error.message,
+						details: error.details,
+						hint: error.hint,
+						code: error.code,
+					});
+					throw error;
+				}
+
+				if (
+					!response ||
+					!Array.isArray(response) ||
+					response.length === 0
+				) {
+					const errorMsg = 'No data found for this barcode';
+					console.error(errorMsg);
+					throw new Error(errorMsg);
+				}
+
+				const result = response[0];
+
+				const sneakerBrand = sneakerBrandOptions.find(
+					(brand) =>
+						brand.value.toLocaleLowerCase() ===
+						result.brand.toLowerCase()
+				);
+
+				const sneakerModelWithoutBrandName = result.title
+					.replace(sneakerBrand?.label || '', '')
+					.trim();
+
+				const dataWithoutBrandName = {
+					results: [
+						{
+							...result,
+							title: sneakerModelWithoutBrandName,
+						},
+					],
+				};
+
+				console.log('Barcode search successful:', dataWithoutBrandName);
+				return dataWithoutBrandName;
+			})
+			.catch((err) => {
+				console.error('Barcode search failed:', err);
+				throw err;
+			});
+	}
 }
