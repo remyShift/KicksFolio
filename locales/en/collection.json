@@ -74,7 +74,7 @@
 		},
 		"descriptions": {
 			"howProceed": "How do you want to proceed?",
-			"bySearch": "Prefetch your sneaker information from a query (SKU, model...)",
+			"bySearch": "Prefetch your sneaker information from a query (SKU, model...).",
 			"byBarcode": "Scan your sneaker's barcode to prefetch information. (Can be not really accurate.)",
 			"manually": "You provide the sneaker information manually in a form.",
 			"skuNote": "NB: For Nike's SKU, don't forget the '-' and the 3 numbers following it or it will not work."

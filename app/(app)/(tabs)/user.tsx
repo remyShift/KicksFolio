@@ -59,18 +59,18 @@ export default function User() {
   }
 
   return (
-    <ScrollView 
-    className="flex-1 pt-16"
-    testID="scroll-view"
-    scrollEnabled={true}
-    refreshControl={
-      <RefreshControl 
-        refreshing={refreshing} 
-        onRefresh={onRefresh}
-        tintColor="#FF6B6B"
-        progressViewOffset={60}
-        testID="refresh-control"
-      />
+    <ScrollView
+      className="flex-1 mt-16"
+      testID="scroll-view"
+      scrollEnabled={true}
+      refreshControl={
+        <RefreshControl 
+          refreshing={refreshing} 
+          onRefresh={onRefresh}
+          tintColor="#FF6B6B"
+          progressViewOffset={60}
+          testID="refresh-control"
+        />
     }>
       <ProfileHeader user={user} userSneakers={userSneakers || []} viewMode={viewMode} setViewMode={setViewMode} onMenuPress={handleMenuPress} />
 
