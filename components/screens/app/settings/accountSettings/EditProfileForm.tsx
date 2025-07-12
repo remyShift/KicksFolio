@@ -1,6 +1,6 @@
 import { View, ScrollView, Pressable, TextInput } from 'react-native'
 import { useRef } from 'react'
-import { router } from 'expo-router'
+import { RelativePathString, router } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
 import PageTitle from '@/components/ui/text/PageTitle'
 import MainButton from '@/components/ui/buttons/MainButton'
@@ -16,6 +16,7 @@ import useToast from '@/hooks/useToast'
 import { useTranslation } from 'react-i18next'
 import { useSizeConversion } from '@/hooks/useSizeConversion'
 import { useSizeUnitStore } from '@/store/useSizeUnitStore'
+import AuthHeader from '@/components/screens/auth/AuthHeader'
 
 export default function EditProfileForm() {
     const { t } = useTranslation();
@@ -83,16 +84,14 @@ export default function EditProfileForm() {
             ref={scrollViewRef}
             className="flex-1 bg-background" 
             keyboardShouldPersistTaps="handled"
-            contentContainerStyle={{ flexGrow: 1, padding: 8 }}
+            contentContainerStyle={{ flexGrow: 1 }}
             bottomOffset={10}
         >
-            <View className="flex-1 p-4 gap-8">
-                <Pressable onPress={() => router.back()} className='absolute right-5 top-14'>
-                    <Ionicons name="close-outline" size={32} color="#666" />
-                </Pressable>
-                <View className="flex-row justify-center items-center">
-                    <PageTitle content={t('settings.titles.editProfile')} />
-                </View>
+            <View className="flex-1 px-4 gap-8 mt-20">
+                <AuthHeader page={{
+                    title: t('settings.titles.editProfile'),
+                    routerBack: '/(app)/settings' as RelativePathString,
+                }} />
 
                 <FormImageInput
                     name="profile_picture"
