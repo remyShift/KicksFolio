@@ -31,6 +31,7 @@ interface SkuSearchResponse {
 		gender: string;
 		gallery: string[];
 		avg_price: number;
+		sku: string;
 	}>;
 }
 
@@ -52,6 +53,8 @@ export const useSneakerAPI = () => {
 				condition: formData.condition.toString(),
 				price_paid: formData.price_paid || undefined,
 				description: formData.description || undefined,
+				og_box: formData.og_box || false,
+				ds: formData.ds || false,
 			};
 
 			const parseResult = createSneakerSchema().safeParse(validationData);
@@ -150,6 +153,8 @@ export const useSneakerAPI = () => {
 			}),
 			price_paid: supabaseSneaker.price_paid || 0,
 			description: supabaseSneaker.description || '',
+			og_box: supabaseSneaker.og_box || false,
+			ds: supabaseSneaker.ds || false,
 			created_at: supabaseSneaker.created_at,
 			updated_at: supabaseSneaker.updated_at,
 			user_id: supabaseSneaker.user_id,
@@ -205,6 +210,8 @@ export const useSneakerAPI = () => {
 					estimated_value: estimatedValue || 0,
 					gender: gender as 'men' | 'women' | undefined,
 					sku: sku || undefined,
+					og_box: formData.og_box || false,
+					ds: formData.ds || false,
 				};
 
 				return SupabaseSneakerService.createSneaker(sneakerToAdd);
@@ -314,6 +321,8 @@ export const useSneakerAPI = () => {
 						? parseFloat(formData.price_paid.toString())
 						: undefined,
 					description: formData.description,
+					og_box: formData.og_box || false,
+					ds: formData.ds || false,
 				};
 
 				return SupabaseSneakerService.updateSneaker(
@@ -436,7 +445,7 @@ export const useSneakerAPI = () => {
 					const transformedSneaker: FetchedSneaker = {
 						model: responseResult.title || '',
 						brand: sneakerBrand?.value || SneakerBrand.Other,
-						sku: barcode.toUpperCase(),
+						sku: responseResult.sku.toUpperCase(),
 						description: responseResult.description || '',
 						gender: responseResult.gender || '',
 						estimated_value: responseResult.avg_price || 0,

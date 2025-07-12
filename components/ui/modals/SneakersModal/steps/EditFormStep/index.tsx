@@ -32,6 +32,7 @@ export const EditFormStep = () => {
         watch,
         displayedError,
         getFieldErrorWrapper,
+        setValue,
     } = useFormController<SneakerFormData>({
         schema: createSneakerSchema(),
         fieldNames: ['model', 'brand', 'status', 'size', 'condition', 'price_paid', 'images'],
@@ -44,6 +45,8 @@ export const EditFormStep = () => {
             condition: currentSneaker?.condition ? String(currentSneaker.condition) : '',
             price_paid: currentSneaker?.price_paid ? String(currentSneaker.price_paid) : '',
             description: currentSneaker?.description || '',
+            og_box: currentSneaker?.og_box || false,
+            ds: currentSneaker?.ds || false,
             images: [],
         },
         onSubmit: async (data) => {
@@ -72,6 +75,8 @@ export const EditFormStep = () => {
                 condition: currentSneaker.condition.toString() || '',
                 price_paid: currentSneaker.price_paid?.toString() || '',
                 description: currentSneaker.description || '',
+                og_box: currentSneaker.og_box || false,
+                ds: currentSneaker.ds || false,
                 images: currentSneaker.images || [],
             });
             
@@ -84,6 +89,8 @@ export const EditFormStep = () => {
                 images: currentSneaker.images || [],
                 price_paid: currentSneaker.price_paid?.toString() || '',
                 description: currentSneaker.description || '',
+                og_box: currentSneaker.og_box || false,
+                ds: currentSneaker.ds || false,
             } as SneakerFormData);
         }
     }, [currentSneaker, displaySize]);
@@ -99,6 +106,8 @@ export const EditFormStep = () => {
                 condition: sneakerToAdd?.condition || currentSneaker.condition.toString() || '',
                 price_paid: sneakerToAdd?.price_paid || currentSneaker.price_paid?.toString() || '',
                 description: sneakerToAdd?.description || currentSneaker.description || '',
+                og_box: sneakerToAdd?.og_box || currentSneaker.og_box || false,
+                ds: sneakerToAdd?.ds || currentSneaker.ds || false,
                 images: currentSneaker.images,
             } as SneakerFormData);
         }
@@ -132,6 +141,7 @@ export const EditFormStep = () => {
                 descriptionInputRef={descriptionInputRef as React.RefObject<TextInput>}
                 displayedError={displayedError}
                 sneakerId={currentSneaker?.id}
+                setValue={setValue}
             />
         </KeyboardAwareScrollView>
     );

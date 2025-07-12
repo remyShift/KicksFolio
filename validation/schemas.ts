@@ -164,6 +164,8 @@ export const createSneakerSchema = () => {
 				t('collection.modal.form.errors.price_paid.min')
 			),
 		description: z.string().optional(),
+		og_box: z.boolean().optional(),
+		ds: z.boolean().optional(),
 	});
 };
 

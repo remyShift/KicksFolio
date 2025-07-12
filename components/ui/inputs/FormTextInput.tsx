@@ -24,6 +24,7 @@ interface FormTextInputProps<T extends FieldValues> {
     textAlignVertical?: 'top' | 'center' | 'bottom';
     accessibilityLabel?: string;
     testID?: string;
+    editable?: boolean;
 }
 
 const FormTextInput = forwardRef<TextInput, FormTextInputProps<any>>(
@@ -48,6 +49,7 @@ const FormTextInput = forwardRef<TextInput, FormTextInputProps<any>>(
         textAlignVertical = 'center',
         accessibilityLabel,
         testID,
+        editable = true,
     }, ref) => {
 
     const [isFocused, setIsFocused] = useState(false);
@@ -106,14 +108,17 @@ const FormTextInput = forwardRef<TextInput, FormTextInputProps<any>>(
                             textAlignVertical={textAlignVertical}
                             style={{ height: textInputHeight }}
                             accessibilityLabel={accessibilityLabel || label}
-                            className={`bg-white rounded-md py-3 px-2 w-full font-open-sans-bold ${
-                                error 
-                                ? 'border-2 border-red-500' 
-                                : isFocused 
-                                    ? 'border-2 border-orange-500' 
-                                    : ''
+                            className={`rounded-md p-2 w-full font-open-sans-semibold ${
+                                !editable 
+                                    ? 'bg-gray-100 border-2 border-gray-300 text-gray-500' 
+                                    : error 
+                                        ? 'bg-white border-2 border-red-500' 
+                                        : isFocused 
+                                            ? 'bg-white border-2 border-orange-500' 
+                                            : 'bg-white'
                             }`}
                             testID={`${testID}-input`}
+                            editable={editable}
                         />
                     );
                 }}

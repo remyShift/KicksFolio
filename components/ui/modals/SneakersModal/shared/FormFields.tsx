@@ -1,14 +1,15 @@
 import { View, Text } from 'react-native';
-import { Control, Controller } from 'react-hook-form';
+import { Control, Controller, useWatch } from 'react-hook-form';
 import FormTextInput from '@/components/ui/inputs/FormTextInput';
 import FormSelectInput from '@/components/ui/inputs/FormSelectInput';
 import { SneakerFormData } from '@/validation/schemas';
 import { sneakerStatusOptions, sneakerBrandOptions } from '@/validation/schemas';
 import { TextInput } from 'react-native';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
-import { PhotoCarousel } from '@/components/ui/images/photoCaroussel/PhotoCarousel';
 import { useTranslation } from 'react-i18next';
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';
+import CheckBoxInput from '@/components/ui/inputs/CheckBoxInput';
+import { useEffect } from 'react';
 
 interface FormFieldsProps {
     control: Control<SneakerFormData>;
@@ -22,6 +23,7 @@ interface FormFieldsProps {
     descriptionInputRef: React.RefObject<TextInput | null>;
     displayedError: string;
     sneakerId?: string;
+    setValue: (name: keyof SneakerFormData, value: any) => void;
 }
 
 export const FormFields = ({
@@ -36,6 +38,7 @@ export const FormFields = ({
     pricePaidInputRef,
     descriptionInputRef,
     sneakerId,
+    setValue,
 }: FormFieldsProps) => {
     const { t } = useTranslation();
     const { currentUnit } = useSizeUnitStore();
@@ -44,6 +47,17 @@ export const FormFields = ({
     };
     
     const imageError = getFieldErrorWrapper('images');
+    
+    const dsValue = useWatch({
+        control,
+        name: 'ds'
+    });
+    
+    useEffect(() => {
+        if (dsValue) {
+            setValue('condition', '10');
+        }
+    }, [dsValue, setValue]);
 
     return (
         <View className="flex-1 gap-4">
@@ -90,56 +104,89 @@ export const FormFields = ({
                 />
             </View>
 
-            <View className="flex-row items-center w-full border-t-2 border-gray-300">
-                <View className="flex-1 flex-col items-center px-2 gap-1 border-r-2 border-gray-300">
-                    <Text className="text-base font-open-sans mt-2">{t('collection.fields.size')}*</Text>
-                    <FormTextInput
-                        name="size"
-                        control={control}
-                        placeholder={currentUnit === 'EU' ? '43' : '9.5'}
-                        ref={sizeInputRef}
-                        nextInputRef={pricePaidInputRef}
-                        keyboardType="numeric"
-                        onFocus={() => handleFieldFocus('size')}
-                        onBlur={async (value) => { await validateFieldOnBlur('size', value); }}
-                        error={getFieldErrorWrapper('size')}
-                        getFieldError={getFieldErrorWrapper}
-                        testID="size"
-                    />
+            <View>
+                <View className="w-full flex-row items-center gap-2">
+                    <View className="flex-1 items-center p-2 border-r-2 border-gray-300">
+                        <Controller
+                            control={control}
+                            name="og_box"
+                            render={({ field }) => (
+                                <CheckBoxInput 
+                                    label="OG Box ?"
+                                    checked={field.value || false}
+                                    onToggle={(checked) => field.onChange(checked)}
+                                />
+                            )}
+                        />
+                    </View>
+                    <View className="flex-1 items-center p-2">
+                        <Controller
+                            control={control}
+                            name="ds"
+                            render={({ field }) => (
+                                <CheckBoxInput 
+                                    label="Deadstock ?"
+                                    checked={field.value || false}
+                                    onToggle={(checked) => field.onChange(checked)}
+                                />
+                            )}
+                        />
+                    </View>
                 </View>
 
-                <View className="flex-1 flex-col items-center px-4 gap-1 border-r-2 border-gray-300">
-                    <Text className="text-base font-open-sans mt-2">{t('collection.fields.condition')}*</Text>
-                    <FormTextInput
-                        name="condition"
-                        control={control}
-                        placeholder="9"
-                        keyboardType="numeric"
-                        onFocus={() => handleFieldFocus('condition')}
-                        onBlur={async (value) => { await validateFieldOnBlur('condition', value); }}
-                        error={getFieldErrorWrapper('condition')}
-                        getFieldError={getFieldErrorWrapper}
-                        testID="condition"
-                    />
-                </View>
+                <View className="flex-row items-center w-full border-t-2 border-gray-300">
+                    <View className="flex-1 flex-col items-center px-2 gap-1 border-r-2 border-gray-300">
+                        <Text className="text-base font-open-sans-semibold mt-2">{t('collection.fields.size')}*</Text>
+                        <FormTextInput
+                            name="size"
+                            control={control}
+                            placeholder={currentUnit === 'EU' ? '43' : '9.5'}
+                            ref={sizeInputRef}
+                            nextInputRef={pricePaidInputRef}
+                            keyboardType="numeric"
+                            onFocus={() => handleFieldFocus('size')}
+                            onBlur={async (value) => { await validateFieldOnBlur('size', value); }}
+                            error={getFieldErrorWrapper('size')}
+                            getFieldError={getFieldErrorWrapper}
+                            testID="size"
+                        />
+                    </View>
 
-                <View className="flex-1 flex-col items-center px-4 gap-1">
-                    <Text className="text-base font-open-sans mt-2">{t('collection.fields.price_paid')}</Text>
-                    <FormTextInput
-                        name="price_paid"
-                        control={control}
-                        placeholder="150€"
-                        ref={pricePaidInputRef}
-                        nextInputRef={descriptionInputRef}
-                        keyboardType="numeric"
-                        onFocus={() => handleFieldFocus('price_paid')}
-                        onBlur={async (value) => { await validateFieldOnBlur('price_paid', value); }}
-                        error={getFieldErrorWrapper('price_paid')}
-                        getFieldError={getFieldErrorWrapper}
-                        testID="price"
-                    />
+                    <View className="flex-1 flex-col items-center px-4 gap-1 border-r-2 border-gray-300">
+                        <Text className="text-base font-open-sans-semibold mt-2">{t('collection.fields.condition')}*</Text>
+                        <FormTextInput
+                            name="condition"
+                            control={control}
+                            placeholder="9"
+                            keyboardType="numeric"
+                            onFocus={() => handleFieldFocus('condition')}
+                            onBlur={async (value) => { await validateFieldOnBlur('condition', value); }}
+                            error={getFieldErrorWrapper('condition')}
+                            getFieldError={getFieldErrorWrapper}
+                            testID="condition"
+                            editable={!dsValue}
+                        />
+                    </View>
+
+                    <View className="flex-1 flex-col items-center px-4 gap-1">
+                        <Text className="text-base font-open-sans-semibold mt-2">{t('collection.fields.price_paid')}</Text>
+                        <FormTextInput
+                            name="price_paid"
+                            control={control}
+                            placeholder="150€"
+                            ref={pricePaidInputRef}
+                            nextInputRef={descriptionInputRef}
+                            keyboardType="numeric"
+                            onFocus={() => handleFieldFocus('price_paid')}
+                            onBlur={async (value) => { await validateFieldOnBlur('price_paid', value); }}
+                            error={getFieldErrorWrapper('price_paid')}
+                            getFieldError={getFieldErrorWrapper}
+                            testID="price"
+                        />
+                    </View>
                 </View>
             </View>
+
 
             <FormTextInput
                 name="description"

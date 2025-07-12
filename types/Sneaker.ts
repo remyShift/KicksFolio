@@ -51,6 +51,8 @@ export type Sneaker = {
 	wishlist_added_at?: string;
 	wishlist?: boolean | false;
 	gender?: string;
+	og_box?: boolean;
+	ds?: boolean;
 	created_at: string;
 	updated_at: string;
 };

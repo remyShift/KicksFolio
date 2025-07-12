@@ -365,6 +365,7 @@ export class SupabaseSneakerService {
 						{
 							...result,
 							title: sneakerModelWithoutBrandName,
+							sku: result.sku.toUpperCase(),
 						},
 					],
 				};

@@ -37,6 +37,7 @@ export const FormDetailsStep = () => {
         watch,
         displayedError,
         getFieldErrorWrapper,
+        setValue,
     } = useFormController<SneakerFormData>({
         schema: createSneakerSchema(),
         fieldNames: ['model', 'brand', 'status', 'size', 'condition', 'price_paid', 'description'],
@@ -115,8 +116,8 @@ export const FormDetailsStep = () => {
                             onPress={handleEditImages}
                             className="flex-row items-center gap-2 bg-gray-100 px-3 py-1 rounded-md"
                         >
-                            <MaterialIcons name="edit" size={16} color="#666" />
-                            <Text className="font-open-sans text-sm text-gray-600">
+                            <MaterialIcons name="edit" size={16} color="#F27329" />
+                            <Text className="font-open-sans-bold text-sm text-primary">
                                 {t('collection.modal.buttons.editImages')}
                             </Text>
                         </Pressable>
@@ -161,6 +162,7 @@ export const FormDetailsStep = () => {
                     sizeInputRef={sizeInputRef}
                     pricePaidInputRef={pricePaidInputRef}
                     descriptionInputRef={descriptionInputRef}
+                    setValue={setValue}
                 />
             </View>
         </KeyboardAwareScrollView>
