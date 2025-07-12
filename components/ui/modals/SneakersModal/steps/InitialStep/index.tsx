@@ -1,6 +1,7 @@
 import { View, Text, Pressable } from 'react-native';
 import { useModalStore } from '@/store/useModalStore';
 import { useTranslation } from 'react-i18next';
+import MainButton from '@/components/ui/buttons/MainButton';
 
 interface InitialStepProps {
     userSneakersLength?: number;
@@ -16,41 +17,32 @@ export const InitialStep = ({ userSneakersLength = 0 }: InitialStepProps) => {
             <Text className="font-actonia text-primary text-4xl text-center">{indexTitle}</Text>
             <Text className="font-spacemono-bold text-xl text-center">{t('collection.modal.descriptions.howProceed')}</Text>
             <View className="flex justify-center items-center gap-8">
-                <View className="flex-col justify-center items-center gap-1 px-6">
-                    <Pressable
-                        onPress={() => setModalStep('sku')}
-                        testID="search-by-sku-button"
-                    >
-                        <Text className="font-spacemono-bold text-lg text-center text-primary">
-                            {t('collection.modal.buttons.bySearch')}
-                        </Text>
-                    </Pressable>
+                <View className="flex-col justify-center items-center gap-2 px-6">
+                    <MainButton
+                        backgroundColor="bg-primary"
+                        onPressAction={() => setModalStep('sku')}
+                        content={t('collection.modal.buttons.bySearch')}
+                    />
                     <Text className="font-spacemono-bold text-sm text-center">
                         {t('collection.modal.descriptions.bySearch')}
                     </Text>
                 </View>
-                <View className="flex-col justify-center items-center gap-1 px-6">
-                    <Pressable
-                        onPress={() => setModalStep('barcode')}
-                        testID="scan-barcode-button"
-                    >
-                        <Text className="font-spacemono-bold text-lg text-center text-primary">
-                            {t('collection.modal.buttons.byBarcode')}
-                        </Text>
-                    </Pressable>
+                <View className="flex-col justify-center items-center gap-2 px-6">
+                    <MainButton
+                        backgroundColor="bg-primary"
+                        onPressAction={() => setModalStep('barcode')}
+                        content={t('collection.modal.buttons.byBarcode')}
+                    />
                     <Text className="font-spacemono-bold text-sm text-center">
                         {t('collection.modal.descriptions.byBarcode')}
                     </Text>
                 </View>
-                <View className="flex-col justify-center items-center gap-1 px-6">
-                    <Pressable
-                        onPress={() => setModalStep('addForm')}
-                        testID="add-manually-button"
-                    >
-                        <Text className="font-spacemono-bold text-lg text-center text-primary">
-                            {t('collection.modal.buttons.manually')}
-                        </Text>
-                    </Pressable>
+                <View className="flex-col justify-center items-center gap-2 px-6">
+                    <MainButton
+                        backgroundColor="bg-primary"
+                        onPressAction={() => setModalStep('addForm')}
+                        content={t('collection.modal.buttons.manually')}
+                    />
                     <Text className="font-spacemono-bold text-sm text-center">
                         {t('collection.modal.descriptions.manually')}
                     </Text>

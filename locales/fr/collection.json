@@ -75,15 +75,15 @@
 		"descriptions": {
 			"howProceed": "Comment veux-tu procéder ?",
 			"bySearch": "Précharge les informations de ta sneaker à partir d'une requête (SKU, modèle...).",
-			"byBarcode": "Scanner le code-barres de ta sneaker pour précharger les informations. (Pas forcément très précis.)",
+			"byBarcode": "Scanner le code-barres de ta sneaker pour précharger les informations.",
 			"manually": "Tu fournis les informations de ta sneaker manuellement dans un formulaire.",
 			"skuNote": "NB : Pour les SKU de Nike, n'oublie pas le '-' et les 3 chiffres qui suivent."
 		},
 		"buttons": {
-			"bySearch": "Par recherche",
-			"byBarcode": "Par code-barres",
+			"bySearch": "Recherche",
+			"byBarcode": "Code-barres",
 			"manually": "Ajoutée manuellement",
-			"search": "Chercher"
+			"search": "Recherche"
 		},
 		"form": {
 			"labels": {
