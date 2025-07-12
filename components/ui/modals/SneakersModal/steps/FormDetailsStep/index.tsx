@@ -1,5 +1,5 @@
 import { Image, Pressable, ScrollView, TextInput, View, Text } from 'react-native';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { useModalStore } from '@/store/useModalStore';
 import { useFormController } from '@/hooks/useFormController';
 import { createSneakerSchema, SneakerFormData } from '@/validation/schemas';
@@ -11,6 +11,7 @@ import { FormFields } from '../../shared/FormFields';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 export const FormDetailsStep = () => {
+    const [scrollEnabled, setScrollEnabled] = useState(false);
     const modelInputRef = useRef<TextInput>(null);
     const brandInputRef = useRef<TextInput>(null);
     const sizeInputRef = useRef<TextInput>(null);
@@ -18,7 +19,7 @@ export const FormDetailsStep = () => {
     const descriptionInputRef = useRef<TextInput>(null);
     const scrollViewRef = useRef<ScrollView>(null);
     const { t } = useTranslation();
-    
+
     const { 
         sneakerToAdd, 
         setSneakerToAdd, 
@@ -99,6 +100,7 @@ export const FormDetailsStep = () => {
         <KeyboardAwareScrollView
             ref={scrollViewRef}
             className='flex-1'
+            scrollEnabled={scrollEnabled}
             keyboardShouldPersistTaps="handled"
             contentContainerStyle={{ flexGrow: 1, padding: 8 }}
             bottomOffset={10}
@@ -145,8 +147,14 @@ export const FormDetailsStep = () => {
                 <FormFields
                     control={control}
                     displayedError={displayedError}
-                    handleFieldFocus={handleFieldFocus}
-                    validateFieldOnBlur={validateFieldOnBlur}
+                    handleFieldFocus={(fieldName) => {
+                        setScrollEnabled(true);
+                        handleFieldFocus(fieldName);
+                    }}
+                    validateFieldOnBlur={async (fieldName, value) => {
+                        setScrollEnabled(false);
+                        return await validateFieldOnBlur(fieldName, value);
+                    }}
                     getFieldError={getFieldErrorWrapper}
                     modelInputRef={modelInputRef}
                     brandInputRef={brandInputRef}
