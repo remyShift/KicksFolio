@@ -42,7 +42,7 @@ export default function FormSelectInput<T extends FieldValues>({
             opacity: withTiming(isOpen ? 1 : 0, { duration: 300 }),
             transform: [
                 {
-                    translateY: withTiming(isOpen ? 0 : -50, { duration: 300 })
+                    translateY: withTiming(isOpen ? 0 : -20, { duration: 300 })
                 }
             ]
         };
