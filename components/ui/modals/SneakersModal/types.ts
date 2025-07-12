@@ -4,7 +4,8 @@ export type ModalStep =
 	| 'index'
 	| 'sku'
 	| 'barcode'
-	| 'addForm'
+	| 'addFormImages'
+	| 'addFormDetails'
 	| 'editForm'
 	| 'view';
 

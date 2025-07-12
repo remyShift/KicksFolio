@@ -62,7 +62,9 @@
 		"titles": {
 			"add": "Ajouter une sneaker",
 			"edit": "Modifier une sneaker",
-			"skuStep": "Entres le SKU ou le modèle de ta sneaker ci-dessous"
+			"skuStep": "Entres le SKU ou le modèle de ta sneaker ci-dessous",
+			"addImages": "Ajouter des photos",
+			"selectedImages": "Photos sélectionnées"
 		},
 		"barcode": {
 			"requesting": "Demande de permission pour la caméra...",
@@ -77,18 +79,27 @@
 			"bySearch": "Précharge les informations de ta sneaker à partir d'une requête (SKU, modèle...).",
 			"byBarcode": "Scanner le code-barres de ta sneaker pour précharger les informations.",
 			"manually": "Tu fournis les informations de ta sneaker manuellement dans un formulaire.",
-			"skuNote": "NB : Pour les SKU de Nike, n'oublie pas le '-' et les 3 chiffres qui suivent."
+			"skuNote": "NB : Pour les SKU de Nike, n'oublie pas le '-' et les 3 chiffres qui suivent.",
+			"addImages": "Ajouter 1 à 3 photos de ta sneaker pour commencer",
+			"noImages": "Aucune image sélectionnée"
 		},
 		"buttons": {
 			"bySearch": "Recherche",
 			"byBarcode": "Code-barres",
 			"manually": "Manuellement",
-			"search": "Recherche"
+			"search": "Recherche",
+			"editImages": "Modifier"
 		},
 		"form": {
 			"labels": {
+				"size": "Taille",
+				"condition": "Condition",
+				"pricePaid": "Prix payé"
+			},
+			"placeholders": {
 				"status": "ROCKING",
-				"brand": "Nike"
+				"brand": "Nike",
+				"description": "Notes personnelles sur cette sneaker..."
 			},
 			"success": {
 				"added": "ajoutée !",
@@ -99,7 +110,8 @@
 			"errors": {
 				"images": {
 					"min": "Veuillez télécharger au moins une image.",
-					"max": "Vous ne pouvez télécharger qu'un maximum de 3 images."
+					"max": "Vous ne pouvez télécharger qu'un maximum de 3 images.",
+					"required": "Veuillez ajouter au moins une image avant de continuer."
 				},
 				"model": {
 					"min": "Le modèle de la sneaker doit contenir au moins 2 caractères.",

@@ -62,7 +62,9 @@
 		"titles": {
 			"add": "Add a sneaker",
 			"edit": "Edit a sneaker",
-			"skuStep": "Put your sneaker SKU or model below"
+			"skuStep": "Put your sneaker SKU or model below",
+			"addImages": "Add photos",
+			"selectedImages": "Selected photos"
 		},
 		"barcode": {
 			"requesting": "Requesting camera permission...",
@@ -77,18 +79,27 @@
 			"bySearch": "Prefetch your sneaker information from a query (SKU, model...).",
 			"byBarcode": "Scan your sneaker's barcode to prefetch information.",
 			"manually": "You provide the sneaker information manually in a form.",
-			"skuNote": "NB: For Nike's SKU, don't forget the '-' and the 3 numbers following it or it will not work."
+			"skuNote": "NB: For Nike's SKU, don't forget the '-' and the 3 numbers following it or it will not work.",
+			"addImages": "Add 1 to 3 photos of your sneaker to get started",
+			"noImages": "No images selected"
 		},
 		"buttons": {
 			"bySearch": "Search",
 			"byBarcode": "Barcode",
 			"manually": "Manually",
-			"search": "Search"
+			"search": "Search",
+			"editImages": "Edit"
 		},
 		"form": {
 			"labels": {
-				"status": "Select a status",
-				"brand": "Select a brand"
+				"size": "Size",
+				"condition": "Condition",
+				"pricePaid": "Price paid"
+			},
+			"placeholders": {
+				"status": "ROCKING",
+				"brand": "Nike",
+				"description": "Personal notes about this sneaker..."
 			},
 			"success": {
 				"added": "added!",
@@ -99,7 +110,8 @@
 			"errors": {
 				"images": {
 					"min": "Please upload at least one image.",
-					"max": "You can upload a maximum of 3 images."
+					"max": "You can upload a maximum of 3 images.",
+					"required": "Please add at least one image before continuing."
 				},
 				"model": {
 					"min": "Sneaker model must be at least 2 characters long.",

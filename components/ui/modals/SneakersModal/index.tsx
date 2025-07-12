@@ -3,7 +3,8 @@ import { ModalFooter } from './shared/ModalFooter';
 import { InitialStep } from './steps/InitialStep';
 import { SkuStep } from './steps/SkuStep';
 import { BarcodeStep } from './steps/BarcodeStep';
-import { FormStep } from './steps/FormStep';
+import { FormImageStep } from './steps/FormImageStep';
+import { FormDetailsStep } from './steps/FormDetailsStep';
 import { EditFormStep } from './steps/EditFormStep';
 import { ViewStep } from './steps/ViewStep';
 import { useModalStore } from '@/store/useModalStore';
@@ -32,8 +33,12 @@ export const SneakersModal = () => {
                     <BarcodeStep />
                 )}
 
-                {modalStep === 'addForm' && (
-                    <FormStep />
+                {modalStep === 'addFormImages' && (
+                    <FormImageStep />
+                )}
+
+                {modalStep === 'addFormDetails' && (
+                    <FormDetailsStep />
                 )}
 
                 {modalStep === 'editForm' && (

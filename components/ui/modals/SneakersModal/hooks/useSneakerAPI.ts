@@ -111,7 +111,7 @@ export const useSneakerAPI = () => {
 						},
 					};
 					callbacks.setFetchedSneaker?.(transformedSneaker);
-					callbacks.setModalStep('addForm');
+					callbacks.setModalStep('addFormImages');
 				}
 				return response;
 			})
@@ -445,7 +445,7 @@ export const useSneakerAPI = () => {
 						},
 					};
 					callbacks.setFetchedSneaker?.(transformedSneaker);
-					callbacks.setModalStep('addForm');
+					callbacks.setModalStep('addFormImages');
 				}
 				return response;
 			})

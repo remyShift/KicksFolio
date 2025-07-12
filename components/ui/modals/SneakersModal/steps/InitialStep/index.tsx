@@ -40,7 +40,7 @@ export const InitialStep = ({ userSneakersLength = 0 }: InitialStepProps) => {
                 <View className="flex-col justify-center items-center gap-2 px-6">
                     <MainButton
                         backgroundColor="bg-primary"
-                        onPressAction={() => setModalStep('addForm')}
+                        onPressAction={() => setModalStep('addFormImages')}
                         content={t('collection.modal.buttons.manually')}
                     />
                     <Text className="font-spacemono-bold text-sm text-center">

@@ -143,7 +143,19 @@ export const useModalFooterActions = () => {
 			case 'barcode':
 				// Les actions pour barcode sont gérées directement dans BarcodeStep
 				break;
-			case 'addForm':
+			case 'addFormImages':
+				// Vérifier qu'au moins une image est ajoutée avant de passer à l'étape suivante
+				const { sneakerToAdd } = useModalStore.getState();
+				if (!sneakerToAdd?.images || sneakerToAdd.images.length === 0) {
+					setErrorMsg(
+						t('collection.modal.form.errors.images.required')
+					);
+					return;
+				}
+				setErrorMsg('');
+				setModalStep('addFormDetails');
+				break;
+			case 'addFormDetails':
 				if (isLoading) return;
 
 				if (validateForm) {
@@ -248,9 +260,13 @@ export const useModalFooterActions = () => {
 				setErrorMsg('');
 				setModalStep('index');
 				break;
-			case 'addForm':
+			case 'addFormImages':
 				resetModalData();
 				setModalStep('index');
+				break;
+			case 'addFormDetails':
+				setErrorMsg('');
+				setModalStep('addFormImages');
 				break;
 			case 'editForm':
 				setErrorMsg('');

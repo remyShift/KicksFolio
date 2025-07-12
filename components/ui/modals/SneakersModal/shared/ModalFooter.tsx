@@ -67,7 +67,24 @@ export const ModalFooter = () => {
                     />
                 </View>
             )}
-            {modalStep === 'addForm' && (
+            {modalStep === 'addFormImages' && (
+                <View className="flex-row justify-between w-full">
+                    <BackButton 
+                        onPressAction={handleBackAction} 
+                    />
+                    <NextButton
+                        content={t('collection.actions.next')}
+                        onPressAction={() => {
+                            if (!isLoading) {
+                                handleNextAction();
+                            }
+                        }}
+                        disabled={isLoading}
+                        testID="next-to-details"
+                    />
+                </View>
+            )}
+            {modalStep === 'addFormDetails' && (
                 <View className="flex-row justify-between w-full">
                     <BackButton 
                         onPressAction={handleBackAction} 

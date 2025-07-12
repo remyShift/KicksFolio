@@ -47,23 +47,6 @@ export const FormFields = ({
 
     return (
         <View className="flex-1 gap-4">
-            <Controller
-                name="images"
-                control={control}
-                render={({ field: { onChange, value } }) => {
-                    return (
-                        <PhotoCarousel
-                            photos={value || []}
-                            height={190}
-                            mode="edit"
-                            onPhotosChange={onChange}
-                            maxImages={3}
-                            sneakerId={sneakerId}
-                        />
-                    );
-                }}
-            />
-
             {(imageError || displayedError) && (
                 <ErrorMsg 
                     content={imageError || displayedError} 
@@ -89,7 +72,7 @@ export const FormFields = ({
                 <FormSelectInput
                     name="brand"
                     control={control}
-                    placeholder={t('collection.modal.form.labels.brand')}
+                    placeholder={t('collection.modal.form.placeholders.brand')}
                     options={sneakerBrandOptions}
                     onFocus={() => handleFieldFocus('brand')}
                     error={getFieldErrorWrapper('brand')}
@@ -99,7 +82,7 @@ export const FormFields = ({
                 <FormSelectInput
                     name="status"
                     control={control}
-                    placeholder={t('collection.modal.form.labels.status')}
+                    placeholder={t('collection.modal.form.placeholders.status')}
                     options={sneakerStatusOptions}
                     onFocus={() => handleFieldFocus('status')}
                     error={getFieldErrorWrapper('status')}
@@ -161,7 +144,7 @@ export const FormFields = ({
             <FormTextInput
                 name="description"
                 control={control}
-                placeholder={t('collection.fields.description')}
+                placeholder={t('collection.modal.form.placeholders.description')}
                 ref={descriptionInputRef}
                 onFocus={() => handleFieldFocus('description')}
                 onBlur={async (value) => { await validateFieldOnBlur('description', value); }}
