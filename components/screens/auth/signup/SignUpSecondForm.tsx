@@ -5,16 +5,15 @@ import FormTextInput from '@/components/ui/inputs/FormTextInput';
 import FormImageInput from '@/components/ui/inputs/FormImageInput';
 import MainButton from '@/components/ui/buttons/MainButton';
 import { useAuth } from '@/hooks/useAuth';
-import PageTitle from '@/components/ui/text/PageTitle';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import { useFormController } from '@/hooks/useFormController';
 import { createSignUpStep2Schema, SignUpStep2FormData } from '@/validation/schemas';
-import PageLink from '@/components/ui/links/LoginPageLink';
-import { router } from 'expo-router';
+import { RelativePathString, router } from 'expo-router';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import useToast from '@/hooks/useToast';
 import { useTranslation } from 'react-i18next';
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';
+import AuthHeader from '../AuthHeader';
 
 export default function SignUpSecondForm() {
     const { t } = useTranslation();
@@ -73,8 +72,11 @@ export default function SignUpSecondForm() {
             contentContainerStyle={{ flexGrow: 1, padding: 8 }}
             bottomOffset={10}
         >
-            <View className="flex-1 items-center gap-12 p-4">
-                <PageTitle content={t('auth.titles.signup')} />
+            <View className="flex-1 items-center gap-12 p-4 mt-20">
+                <AuthHeader page={{
+                    title: t('auth.titles.signup'),
+                    routerBack: '/(auth)/(signup)/sign-up' as RelativePathString,
+                }} />
                 <View className='flex gap-6 justify-center items-center w-full mt-8 px-12'>
                 <View className='w-full absolute' style={{ top: -50 }}>   
                         <ErrorMsg content={displayedError} display={displayedError !== ''} />
@@ -119,7 +121,7 @@ export default function SignUpSecondForm() {
                     <FormTextInput
                         name="size"
                         control={control}
-                        label={t('auth.form.sneakerSize.label')}
+                        label={`${t('auth.form.sneakerSize.label')} (${currentUnit})`}
                         placeholder={currentUnit === 'EU' ? '42' : '9.5'}
                         ref={sizeInputRef}
                         keyboardType="numeric"
@@ -140,8 +142,6 @@ export default function SignUpSecondForm() {
                         }}
                         isDisabled={isSubmitDisabled}
                     />
-
-                    <PageLink href='/sign-up' linkText={t('auth.links.back')} />
                 </View>
             </View>
         </KeyboardAwareScrollView>

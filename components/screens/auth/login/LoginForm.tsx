@@ -132,7 +132,7 @@ export default function LoginForm() {
             contentContainerStyle={{ flexGrow: 1, padding: 8 }}
             bottomOffset={10}
         >
-            <View className="flex-1 justify-center items-center gap-12">
+            <View className="flex-1 justify-center items-center gap-12 mt-20">
                 <PageTitle content={t('auth.titles.login')} />
                 <View className='flex justify-center items-center gap-8 w-full px-12'>
                     <ErrorMsg content={displayedError} display={displayedError !== ''} />
@@ -180,7 +180,7 @@ export default function LoginForm() {
                     <View className='flex gap-3 justify-center items-center w-full'>
                         <PageLink 
                             href='/sign-up' 
-                            textBeforeLink={t('auth.links.alreadyHaveAccount')} 
+                            textBeforeLink={t('auth.links.dontHaveAccount')} 
                             linkText={t('auth.buttons.signUp')} 
                         />
                         <PageLink 

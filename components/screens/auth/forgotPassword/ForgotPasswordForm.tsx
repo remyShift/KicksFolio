@@ -1,6 +1,5 @@
 import { ScrollView, TextInput } from "react-native";
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
-import PageTitle from '@/components/ui/text/PageTitle';
 import { View } from 'react-native'
 import { useRef } from "react";
 import MainButton from "@/components/ui/buttons/MainButton";
@@ -8,11 +7,12 @@ import { useAuth } from "@/hooks/useAuth";
 import FormTextInput from "@/components/ui/inputs/FormTextInput";
 import { useFormController } from "@/hooks/useFormController";
 import { createForgotPasswordSchema, ForgotPasswordFormData } from "@/validation/schemas";
-import PageLink from "@/components/ui/links/LoginPageLink";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useTranslation } from 'react-i18next';
 import { useAsyncValidation } from '@/hooks/useAsyncValidation';
 import useToast from "@/hooks/useToast";
+import { RelativePathString } from "expo-router";
+import AuthHeader from "../AuthHeader";
 
 export default function ForgotPasswordForm() {
     const { t } = useTranslation();
@@ -60,8 +60,11 @@ export default function ForgotPasswordForm() {
             contentContainerStyle={{ flexGrow: 1, padding: 8 }}
             bottomOffset={10}
         >
-            <View className="flex-1 items-center p-4 gap-12">
-                <PageTitle content={t('auth.titles.forgotPassword')} />
+            <View className="flex-1 items-center p-4 gap-12 mt-20">
+                <AuthHeader page={{
+                    title: t('auth.titles.forgotPassword'),
+                    routerBack: '/(auth)/login' as RelativePathString,
+                }} />
                 <View className='flex-1 justify-center items-center gap-8 w-full px-12'>
                     <View className='w-full'>   
                         <ErrorMsg content={displayedError} display={displayedError !== ''} />
@@ -93,7 +96,6 @@ export default function ForgotPasswordForm() {
                             }}
                             isDisabled={isSubmitDisabled}
                         />
-                        <PageLink href='/login' linkText={t('auth.links.back')} />
                     </View>
                 </View>
             </View>

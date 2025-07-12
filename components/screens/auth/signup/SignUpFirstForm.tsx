@@ -1,5 +1,4 @@
 import ErrorMsg from "@/components/ui/text/ErrorMsg";
-import PageTitle from "@/components/ui/text/PageTitle";
 import { ScrollView, View, TextInput } from "react-native";
 import { useRef } from "react";
 import MainButton from "@/components/ui/buttons/MainButton";
@@ -13,6 +12,8 @@ import { createSignUpStep1Schema, SignUpStep1FormData } from "@/validation/schem
 import PageLink from "@/components/ui/links/LoginPageLink";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useTranslation } from "react-i18next";
+import AuthHeader from "../AuthHeader";
+import { RelativePathString } from "expo-router";
 
 export default function SignUpFirstForm() {
     const { t } = useTranslation();
@@ -75,8 +76,12 @@ export default function SignUpFirstForm() {
             contentContainerStyle={{ flexGrow: 1, padding: 8 }}
             bottomOffset={10}
         >
-            <View className="flex-1 items-center p-4 gap-12">
-                <PageTitle content={t('auth.titles.signup')} />
+            <View className="flex-1 items-center p-4 gap-12 mt-20">
+                <AuthHeader page={{
+                    title: t('auth.titles.signup'),
+                    routerBack: '/(auth)/(signup)/sign-up' as RelativePathString,
+                }} />
+
                 <View className='flex justify-center items-center gap-8 w-full mt-10 px-12'>
                     <View className='w-full absolute' style={{ top: -50 }}>   
                         <ErrorMsg content={displayedError} display={displayedError !== ''} />
@@ -150,7 +155,6 @@ export default function SignUpFirstForm() {
                             }}
                             isDisabled={isSubmitDisabled}
                         />
-                        <PageLink href='/login' textBeforeLink={t('auth.links.alreadyHaveAccount')} linkText={t('auth.buttons.login')} />
                     </View>
                 </View>
             </View>

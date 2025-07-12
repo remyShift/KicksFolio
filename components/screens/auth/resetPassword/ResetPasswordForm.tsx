@@ -1,5 +1,4 @@
 import { ScrollView, TextInput, View } from "react-native";
-import PageTitle from "@/components/ui/text/PageTitle"
 import ErrorMsg from "@/components/ui/text/ErrorMsg"
 import MainButton from "@/components/ui/buttons/MainButton"
 import { useRef } from "react"
@@ -10,7 +9,8 @@ import { createResetPasswordSchema, ResetPasswordFormData } from "@/validation/s
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useTranslation } from 'react-i18next';
 import useToast from "@/hooks/useToast";
-import { useSession } from "@/context/authContext";
+import { RelativePathString } from "expo-router";
+import AuthHeader from "../AuthHeader";
 
 export default function ResetPasswordForm() {
     const { t } = useTranslation();
@@ -20,7 +20,6 @@ export default function ResetPasswordForm() {
     
     const { resetPassword, errorMsg: authErrorMsg } = useAuth();
     const { showSuccessToast, showErrorToast } = useToast();
-    const { resetTokens } = useSession();
 
     const {
         control,
@@ -63,8 +62,11 @@ export default function ResetPasswordForm() {
             contentContainerStyle={{ flexGrow: 1, padding: 8 }}
             bottomOffset={10}
         >
-            <View className="flex-1 items-center p-4 gap-12">
-                <PageTitle content={t('auth.titles.resetPassword')} />
+            <View className="flex-1 items-center p-4 gap-12 mt-20">
+                <AuthHeader page={{
+                    title: t('auth.titles.resetPassword'),
+                    routerBack: '/(auth)/login' as RelativePathString,
+                }} />
                 <View className='flex-1 justify-center items-center gap-8 w-full px-12'>
                     <ErrorMsg content={displayedError} display={displayedError !== ''} />
                     <FormPasswordInput
