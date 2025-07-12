@@ -50,6 +50,8 @@ export const FormDetailsStep = () => {
             condition: sneakerToAdd?.condition || '',
             price_paid: sneakerToAdd?.price_paid || '',
             description: sneakerToAdd?.description || '',
+            og_box: sneakerToAdd?.og_box || false,
+            ds: sneakerToAdd?.ds || false,
             images: sneakerToAdd?.images || [],
         },
         onSubmit: async (data) => {
@@ -66,11 +68,12 @@ export const FormDetailsStep = () => {
         const subscription = watch((value) => {
             const currentSneakerToAdd = useModalStore.getState().sneakerToAdd;
             if (currentSneakerToAdd) {
-                setSneakerToAdd({
+                const updatedSneaker = {
                     ...currentSneakerToAdd,
                     ...value,
                     images: currentSneakerToAdd.images
-                });
+                };
+                setSneakerToAdd(updatedSneaker);
             }
         });
         
@@ -88,6 +91,8 @@ export const FormDetailsStep = () => {
                 condition: currentSneakerToAdd.condition || '',
                 price_paid: currentSneakerToAdd.price_paid || '',
                 description: currentSneakerToAdd.description || '',
+                og_box: currentSneakerToAdd.og_box || false,
+                ds: currentSneakerToAdd.ds || false,
                 images: currentSneakerToAdd.images || [],
             });
         }

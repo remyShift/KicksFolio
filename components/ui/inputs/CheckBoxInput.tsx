@@ -1,5 +1,5 @@
 import { View, Text, Pressable } from 'react-native';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface CheckBoxInputProps {
     label?: string;
@@ -15,6 +15,10 @@ export default function CheckBoxInput({
     disabled = false 
 }: CheckBoxInputProps) {
     const [isChecked, setIsChecked] = useState(checked);
+
+    useEffect(() => {
+        setIsChecked(checked);
+    }, [checked]);
 
     const handleCheck = () => {
         if (disabled) return;

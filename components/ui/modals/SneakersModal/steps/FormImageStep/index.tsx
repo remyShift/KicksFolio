@@ -42,6 +42,8 @@ export const FormImageStep = () => {
             condition: sneakerToAdd?.condition || '',
             price_paid: sneakerToAdd?.price_paid || '',
             description: sneakerToAdd?.description || '',
+            og_box: sneakerToAdd?.og_box || false,
+            ds: sneakerToAdd?.ds || false,
             images: sneakerToAdd?.images || [],
         },
         onSubmit: async (data) => {
@@ -65,6 +67,8 @@ export const FormImageStep = () => {
                 condition: '',
                 price_paid: '',
                 description: fetchedSneaker.description || '',
+                og_box: false,
+                ds: false,
                 images: imageData,
             };
             

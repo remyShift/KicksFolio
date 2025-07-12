@@ -58,6 +58,8 @@ export interface SneakerFormData {
 	images: Photo[];
 	price_paid?: string;
 	description?: string;
+	og_box?: boolean;
+	ds?: boolean;
 }
 
 export interface ValidationResult {

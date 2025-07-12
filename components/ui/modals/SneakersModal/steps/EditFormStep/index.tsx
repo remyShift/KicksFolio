@@ -58,6 +58,8 @@ export const EditFormStep = () => {
                 condition: data.condition,
                 price_paid: data.price_paid,
                 description: data.description || '',
+                og_box: data.og_box || false,
+                ds: data.ds || false,
                 images: currentSneaker?.images || [],
             } as SneakerFormData);
         },

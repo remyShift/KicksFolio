@@ -52,6 +52,8 @@ export const useFormValidation = (
 				condition: updatedFormValues.condition || '',
 				price_paid: updatedFormValues.price_paid || '',
 				description: updatedFormValues.description || '',
+				og_box: updatedFormValues.og_box || false,
+				ds: updatedFormValues.ds || false,
 				images: updatedFormValues.images,
 			} as SneakerFormData;
 

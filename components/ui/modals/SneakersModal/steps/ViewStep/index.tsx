@@ -37,9 +37,9 @@ export const ViewStep = () => {
                 </View>
             )}
 
-            <View className="flex-row justify-between items-center px-2">
+            <View className="flex-row justify-between items-center">
                 <View className="flex gap-0">
-                    <Text testID="sneaker-display-name" className="font-open-sans-bold text-lg">{currentSneaker.model}</Text>
+                    <Text testID="sneaker-display-name" className="font-open-sans-bold text-lg pr-1">{currentSneaker.model}</Text>
                     <View className="flex-row items-center gap-1">
                         <Text className="font-open-sans-bold-italic text-base">{currentSneaker.brand.toUpperCase()}</Text>
                         {currentSneaker.sku && (
@@ -52,7 +52,8 @@ export const ViewStep = () => {
                         )}
                     </View>
                 </View>
-                    <LoveButton sneaker={currentSneaker} />
+
+                <LoveButton sneaker={currentSneaker} />
             </View>
 
             <View className='flex gap-4'>
@@ -84,7 +85,7 @@ export const ViewStep = () => {
                     </View>
                 </View>
 
-                <ConditionBar condition={currentSneaker.condition} />
+                <ConditionBar sneaker={currentSneaker} />
 
                 <View style={{ height: 150 }} className="bg-white/60 rounded-md p-2 mt-2">
                     <Text className='font-open-sans-bold'>Description :</Text>
