@@ -67,7 +67,7 @@ export const SkuStep = () => {
         >
             <View className="w-full justify-center items-center gap-12 mt-10">
                 <View className="flex-row items-center">
-                    <Text className="font-spacemono-bold text-xl text-center px-6">
+                    <Text className="font-open-sans-bold text-xl text-center px-6">
                         {t('collection.modal.titles.skuStep')}
                     </Text>
                     <Link href="https://www.wikihow.com/Find-Model-Numbers-on-Nike-Shoes" 
@@ -87,7 +87,7 @@ export const SkuStep = () => {
                     />
                 </View>
 
-                <Text className="font-spacemono-bold text-sm text-center px-6">
+                <Text className="font-open-sans-bold text-sm text-center px-6">
                     {t('collection.modal.descriptions.skuNote')}
                 </Text>
             </View>

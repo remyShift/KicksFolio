@@ -106,7 +106,7 @@ export const FormDetailsStep = () => {
             <View className="flex-1 gap-4">
                 <View className="mb-4">
                     <View className="flex-row justify-between items-center mb-2">
-                        <Text className="font-spacemono-bold text-base">
+                        <Text className="font-open-sans-bold text-base">
                             {t('collection.modal.titles.selectedImages')}
                         </Text>
                         <Pressable
@@ -114,7 +114,7 @@ export const FormDetailsStep = () => {
                             className="flex-row items-center gap-2 bg-gray-100 px-3 py-1 rounded-md"
                         >
                             <MaterialIcons name="edit" size={16} color="#666" />
-                            <Text className="font-spacemono text-sm text-gray-600">
+                            <Text className="font-open-sans text-sm text-gray-600">
                                 {t('collection.modal.buttons.editImages')}
                             </Text>
                         </Pressable>

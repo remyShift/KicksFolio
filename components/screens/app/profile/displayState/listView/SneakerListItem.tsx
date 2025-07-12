@@ -76,10 +76,10 @@ export default function SneakerListItem({ sneaker, onPress, showOwnerInfo = fals
 
           {showOwnerInfo && sneaker.owner && (
             <View className="flex-row items-center mt-2 gap-1">
-              <Text className="font-spacemono text-xs text-gray-600 uppercase">
+              <Text className="font-open-sans text-xs text-gray-600 uppercase">
                 {t('collection.cards.ownedBy')}
               </Text>
-              <Text className="font-spacemono text-sm text-primary pb-1">
+              <Text className="font-open-sans text-sm text-primary pb-1">
                 {sneaker.owner.username === user!.username ? t('collection.cards.me') : `@${sneaker.owner.username}`}
               </Text>
             </View>

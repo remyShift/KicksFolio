@@ -37,8 +37,8 @@ const FormPasswordInput = forwardRef<TextInput, FormPasswordInputProps<any>>(
 
     return (
         <View className="w-full flex flex-col gap-2">
-            <Text className="font-spacemono-bold text-lg">{label}</Text>
-            {description && <Text className="font-spacemono text-sm text-gray-500">{description}</Text>}
+            <Text className="font-open-sans-bold text-lg">{label}</Text>
+            {description && <Text className="font-open-sans text-sm text-gray-500">{description}</Text>}
             <Controller
                 name={name}
                 control={control}
@@ -78,7 +78,7 @@ const FormPasswordInput = forwardRef<TextInput, FormPasswordInputProps<any>>(
                                 autoCapitalize="none"
                                 autoComplete="password"
                                 returnKeyType={onSubmitEditing ? 'done' : 'next'}
-                                className={`bg-white rounded-md p-3 w-full font-spacemono-bold ${
+                                className={`bg-white rounded-md p-3 w-full font-open-sans-bold ${
                                     error 
                                         ? 'border-2 border-red-500' 
                                         : isFocused 

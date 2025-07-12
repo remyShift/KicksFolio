@@ -22,7 +22,7 @@ export default function MainButton({content, onPressAction, backgroundColor, isD
         >
             <GestureDetector gesture={gesture}>
                 <Animated.View onTouchEnd={onPressAction}>
-                    <Text className="font-spacemono-bold text-lg text-center text-white">
+                    <Text className="font-open-sans-bold text-lg text-center text-white">
                         {content}
                     </Text>
                 </Animated.View>

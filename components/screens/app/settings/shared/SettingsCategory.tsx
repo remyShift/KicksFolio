@@ -9,7 +9,7 @@ export default function SettingsCategory({ children, title }: SettingsCategoryPr
     return (
 
         <View className="gap-1">
-            <Text className="text-base font-spacemono-bold">{title}</Text>
+            <Text className="text-base font-open-sans-bold">{title}</Text>
             <View className="justify-center items-center rounded-xl bg-background/100">
                 {children}
             </View>

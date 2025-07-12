@@ -39,13 +39,13 @@ export const ViewStep = () => {
 
             <View className="flex-row justify-between items-center px-2">
                 <View className="flex gap-0">
-                    <Text testID="sneaker-display-name" className="font-spacemono-bold text-lg">{currentSneaker.model}</Text>
+                    <Text testID="sneaker-display-name" className="font-open-sans-bold text-lg">{currentSneaker.model}</Text>
                     <View className="flex-row items-center gap-1">
-                        <Text className="font-spacemono-bold-italic text-base">{currentSneaker.brand.toUpperCase()}</Text>
+                        <Text className="font-open-sans-bold-italic text-base">{currentSneaker.brand.toUpperCase()}</Text>
                         {currentSneaker.sku && (
                             <View className="flex-row items-center gap-1">
-                                <Text className="font-spacemono-bold text-sm">|</Text>
-                                <Text className="font-spacemono-bold text-sm">
+                                <Text className="font-open-sans-bold text-sm">|</Text>
+                                <Text className="font-open-sans-bold text-sm">
                                     {currentSneaker.sku.toUpperCase()}
                                 </Text>
                             </View>
@@ -58,26 +58,26 @@ export const ViewStep = () => {
             <View className='flex gap-4'>
                 <View className="flex-row items-center w-full border-t-2 border-gray-300">
                     <View className='flex-col items-center p-2 gap-1 w-1/3 border-r-2 border-gray-300'>
-                        <Text className='font-spacemono text-center text-sm'>Size</Text>
+                        <Text className='font-open-sans text-center text-sm'>Size</Text>
                         <View className="w-4/5">
                             <SizeDisplay 
                                 sneaker={currentSneaker}
-                                className='font-spacemono-bold text-lg text-center' 
+                                className='font-open-sans-bold text-lg text-center' 
                             />
                         </View>
                     </View>
 
                     <View className='flex-col items-center p-2 gap-1 w-1/3 border-r-2 border-gray-300'>
-                        <Text className='font-spacemono text-center text-sm'>Status</Text>
+                        <Text className='font-open-sans text-center text-sm'>Status</Text>
                         <View className="w-4/5">
-                            <Text className="font-spacemono-bold text-lg text-center">{currentSneaker.status.toUpperCase()}</Text>
+                            <Text className="font-open-sans-bold text-lg text-center">{currentSneaker.status.toUpperCase()}</Text>
                         </View>
                     </View>
 
                     <View className='flex-col items-center p-2 gap-1 w-1/3'>
-                        <Text className='font-spacemono text-center text-sm'>Value</Text>
+                        <Text className='font-open-sans text-center text-sm'>Value</Text>
                         <View className="w-4/5">
-                            <Text className="font-spacemono-bold text-lg text-center">
+                            <Text className="font-open-sans-bold text-lg text-center">
                                 {currentSneaker.estimated_value ? formattedPrice(currentSneaker.estimated_value) : 'N/A'}
                             </Text>
                         </View>
@@ -87,13 +87,13 @@ export const ViewStep = () => {
                 <ConditionBar condition={currentSneaker.condition} />
 
                 <View style={{ height: 150 }} className="bg-white/60 rounded-md p-2 mt-2">
-                    <Text className='font-spacemono-bold'>Description :</Text>
+                    <Text className='font-open-sans-bold'>Description :</Text>
                     <ScrollView
                         style={{ flex: 1 }}
                         showsVerticalScrollIndicator={true}
                         indicatorStyle="black"
                     >
-                        <Text className='font-spacemono text-sm'>
+                        <Text className='font-open-sans text-sm'>
                             {currentSneaker.description || 'No description available'}
                         </Text>
                     </ScrollView>

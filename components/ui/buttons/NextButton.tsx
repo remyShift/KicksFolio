@@ -8,7 +8,7 @@ export default function NextButton({onPressAction, content, disabled = false, te
             disabled={disabled}
             testID={`${testID}-button`}
         >
-            <Text className="font-spacemono-bold text-base text-center text-white">
+            <Text className="font-open-sans-bold text-base text-center text-white">
                 {content}
             </Text>
             <Text className="font-bold text-base text-center text-white">

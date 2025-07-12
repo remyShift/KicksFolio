@@ -56,7 +56,7 @@ const FormTextInput = forwardRef<TextInput, FormTextInputProps<any>>(
 
     return (
         <View className="flex flex-col gap-2 w-full">
-            {label && <Text className="font-spacemono-bold text-lg">{label}</Text>}
+            {label && <Text className="font-open-sans-bold text-lg">{label}</Text>}
             <Controller
                 name={name}
                 control={control}
@@ -106,7 +106,7 @@ const FormTextInput = forwardRef<TextInput, FormTextInputProps<any>>(
                             textAlignVertical={textAlignVertical}
                             style={{ height: textInputHeight }}
                             accessibilityLabel={accessibilityLabel || label}
-                            className={`bg-white rounded-md py-3 px-2 w-full font-spacemono-bold ${
+                            className={`bg-white rounded-md py-3 px-2 w-full font-open-sans-bold ${
                                 error 
                                 ? 'border-2 border-red-500' 
                                 : isFocused 

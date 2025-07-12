@@ -125,10 +125,10 @@ export const FormImageStep = () => {
     return (
         <View className="flex-1 p-4">
             <View className="mb-6">
-                <Text className="font-spacemono-bold text-xl text-center mb-2">
+                <Text className="font-open-sans-bold text-xl text-center mb-2">
                     {t('collection.modal.titles.addImages')}
                 </Text>
-                <Text className="font-spacemono text-center text-gray-600">
+                <Text className="font-open-sans text-center text-gray-600">
                     {t('collection.modal.descriptions.addImages')}
                 </Text>
             </View>

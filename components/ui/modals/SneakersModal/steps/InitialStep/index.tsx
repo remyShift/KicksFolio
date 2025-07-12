@@ -15,7 +15,7 @@ export const InitialStep = ({ userSneakersLength = 0 }: InitialStepProps) => {
     return (
         <View className="flex-1 justify-center items-center gap-8">
             <Text className="font-actonia text-primary text-4xl text-center">{indexTitle}</Text>
-            <Text className="font-spacemono-bold text-xl text-center">{t('collection.modal.descriptions.howProceed')}</Text>
+            <Text className="font-open-sans-bold text-xl text-center">{t('collection.modal.descriptions.howProceed')}</Text>
             <View className="flex justify-center items-center gap-8">
                 <View className="flex-col justify-center items-center gap-2 px-6">
                     <MainButton
@@ -23,7 +23,7 @@ export const InitialStep = ({ userSneakersLength = 0 }: InitialStepProps) => {
                         onPressAction={() => setModalStep('sku')}
                         content={t('collection.modal.buttons.bySearch')}
                     />
-                    <Text className="font-spacemono-bold text-sm text-center">
+                    <Text className="font-open-sans-bold text-sm text-center">
                         {t('collection.modal.descriptions.bySearch')}
                     </Text>
                 </View>
@@ -33,7 +33,7 @@ export const InitialStep = ({ userSneakersLength = 0 }: InitialStepProps) => {
                         onPressAction={() => setModalStep('barcode')}
                         content={t('collection.modal.buttons.byBarcode')}
                     />
-                    <Text className="font-spacemono-bold text-sm text-center">
+                    <Text className="font-open-sans-bold text-sm text-center">
                         {t('collection.modal.descriptions.byBarcode')}
                     </Text>
                 </View>
@@ -43,7 +43,7 @@ export const InitialStep = ({ userSneakersLength = 0 }: InitialStepProps) => {
                         onPressAction={() => setModalStep('addFormImages')}
                         content={t('collection.modal.buttons.manually')}
                     />
-                    <Text className="font-spacemono-bold text-sm text-center">
+                    <Text className="font-open-sans-bold text-sm text-center">
                         {t('collection.modal.descriptions.manually')}
                     </Text>
                 </View>

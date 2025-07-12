@@ -19,29 +19,29 @@ export default function ProfileStats({ sneakersCount, friendsCount }: ProfileSta
         <View className="flex-col w-full gap-5 px-4">
             <View className="flex-row w-full justify-between">
                 <View className="bg-primary/20 p-6 rounded-lg w-48">
-                    <Text className="font-spacemono text-lg">
+                    <Text className="font-open-sans text-lg">
                         {t('collection.stats.sneakers')}
                     </Text>
-                    <Text className="font-spacemono-bold text-2xl" testID='sneakers-count'>
+                    <Text className="font-open-sans-bold text-2xl" testID='sneakers-count'>
                         {sneakersCount}
                     </Text>
                 </View>
 
                 <View className="bg-primary/20 p-6 rounded-lg w-48">
-                    <Text className="font-spacemono text-lg">
+                    <Text className="font-open-sans text-lg">
                         {t('social.friends.title')}
                     </Text>
-                    <Text className="font-spacemono-bold text-2xl">
+                    <Text className="font-open-sans-bold text-2xl">
                         {friendsCount}
                     </Text>
                 </View>
             </View>
 
             <View className="bg-primary/15 p-6 rounded-lg w-full">
-                <Text className="font-spacemono text-lg">
+                <Text className="font-open-sans text-lg">
                     {t('ui.labels.value')}
                 </Text>
-                <Text className="font-spacemono-bold text-2xl">
+                <Text className="font-open-sans-bold text-2xl">
                     {formattedPrice(totalValue)}
                 </Text>
             </View>

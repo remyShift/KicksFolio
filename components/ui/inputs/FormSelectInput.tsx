@@ -62,7 +62,7 @@ export default function FormSelectInput<T extends FieldValues>({
 
     return (
         <View className="w-[49.5%] relative" style={{ zIndex: isOpen ? 99999 : 1 }}>
-            {label && <Text className="font-spacemono-bold text-lg">{label}</Text>}
+            {label && <Text className="font-open-sans-bold text-lg">{label}</Text>}
             <Controller
                 name={name}
                 control={control}
@@ -73,13 +73,13 @@ export default function FormSelectInput<T extends FieldValues>({
                         <View className="w-full">
                             <Pressable
                                 onPress={toggleDropdown}
-                                className={`bg-white p-2 font-spacemono-bold flex-row justify-between items-center
+                                className={`bg-white p-2 font-open-sans-bold flex-row justify-between items-center
                                     ${isOpen ? 'border-2 border-primary rounded-t-md' : 'rounded-md border-2 border-gray-300'}
                                     ${error ? 'border-2 border-red-500' : ''}
                                 `}
                                 testID={`${testID}-input`}
                             >
-                                <Text className={`font-spacemono-bold-italic text-base ${selectedOption ? 'text-black' : 'text-gray-400'}`}
+                                <Text className={`font-open-sans-bold-italic text-base ${selectedOption ? 'text-black' : 'text-gray-400'}`}
                                     testID={`${testID}-input-value`}
                                 >
                                     {selectedOption ? selectedOption.label.toUpperCase() : (placeholder || label)}
@@ -111,7 +111,7 @@ export default function FormSelectInput<T extends FieldValues>({
                                             className="p-3 border-b border-gray-200"
                                             onPress={() => handleOptionSelect(onChange, option.value)}
                                         >
-                                            <Text className="font-spacemono-bold-italic">{option.label.toUpperCase()}</Text>
+                                            <Text className="font-open-sans-bold-italic">{option.label.toUpperCase()}</Text>
 
                                         </Pressable>
                                     ))}

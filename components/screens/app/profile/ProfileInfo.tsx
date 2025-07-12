@@ -20,10 +20,10 @@ export default function ProfileInfo({ user, userSneakers }: ProfileInfoProps) {
                 />
                 
                 <View className="flex-col items-center">
-                    <Text className="font-spacemono-bold text-xl text-center">
+                    <Text className="font-open-sans-bold text-xl text-center">
                         {user.first_name} {user.last_name}
                     </Text>
-                    <Text className="font-spacemono text-lg text-primary text-center">
+                    <Text className="font-open-sans text-lg text-primary text-center">
                         @{user.username}
                     </Text>
                 </View>

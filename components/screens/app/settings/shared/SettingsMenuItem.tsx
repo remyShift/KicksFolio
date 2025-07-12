@@ -31,7 +31,7 @@ export default function SettingsMenuItem({
             <View className="flex-row justify-between items-center">
                 <View className="flex-row items-center gap-4">
                     <Ionicons name={icon} size={24} color={color} />
-                    <Text className="font-spacemono-bold text-base" style={{ color: textColor }}>
+                    <Text className="font-open-sans-bold text-base" style={{ color: textColor }}>
                         {label}
                     </Text>
                 </View>

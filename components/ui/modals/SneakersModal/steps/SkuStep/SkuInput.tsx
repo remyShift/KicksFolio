@@ -55,7 +55,7 @@ const SkuInput = forwardRef<TextInput, SkuInputProps<any>>(
                         autoComplete="off"
                         returnKeyType="done"
                         style={{ height: 40 }}
-                        className={`bg-white rounded-md py-3 px-2 w-full font-spacemono-bold ${
+                        className={`bg-white rounded-md py-3 px-2 w-full font-open-sans-bold ${
                             error 
                                 ? 'border-2 border-red-500' 
                                 : isFocused 

@@ -71,7 +71,7 @@ export default function CollectionCard({ userSneakers }: { userSneakers: Sneaker
 
             <View className="flex flex-row justify-between items-center">
                 <Text></Text>
-                <Text className="text-primary font-spacemono-bold text-lg">{userSneakers?.length || 0} shoes</Text>
+                <Text className="text-primary font-open-sans-bold text-lg">{userSneakers?.length || 0} shoes</Text>
             </View>
         </Pressable>
     );

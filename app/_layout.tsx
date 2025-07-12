@@ -12,11 +12,11 @@ import "../global.css";
 
 const FONTS = {
     'Actonia': require('../assets/fonts/Actonia.ttf'),
-    'Spacemono': require('../assets/fonts/SpaceMono-Regular.ttf'),
     'Syne-ExtraBold': require('../assets/fonts/Syne-ExtraBold.ttf'),
     'Syne-SemiBold': require('../assets/fonts/Syne-SemiBold.ttf'),
-    'SpaceMono-Bold': require('../assets/fonts/SpaceMono-Bold.ttf'),
-    'SpaceMono-BoldItalic': require('../assets/fonts/SpaceMono-BoldItalic.ttf'),
+    'OpenSans': require('../assets/fonts/OpenSans-Regular.ttf'),
+    'OpenSans-Bold': require('../assets/fonts/OpenSans-Bold.ttf'),
+    'OpenSans-BoldItalic': require('../assets/fonts/OpenSans-BoldItalic.ttf'),
 } as const;
 
 function AppContent() {

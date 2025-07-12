@@ -136,7 +136,7 @@ export const PhotoCarousel = ({
 
       {photos.length > 0 && mode === 'edit' && (
         <View className="absolute top-2 right-2 bg-black/50 rounded-full px-2 py-1">
-          <Text className="text-white text-xs font-spacemono">
+          <Text className="text-white text-xs font-open-sans">
             {Math.min(currentIndex + 1, photos.length)}/{mode === 'edit' ? maxImages : photos.length}
           </Text>
         </View>

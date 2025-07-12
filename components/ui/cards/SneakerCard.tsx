@@ -55,21 +55,21 @@ export default function SneakerCard({
                 )}
 
                 <View className="flex flex-row justify-between items-center px-1">
-                    <Text className="font-spacemono-bold text-lg flex-1 mr-2 flex-shrink" numberOfLines={1} ellipsizeMode="tail">
+                    <Text className="font-open-sans-bold text-lg flex-1 mr-2 flex-shrink" numberOfLines={1} ellipsizeMode="tail">
                         {sneaker.model}
                     </Text>
                     <SizeDisplay 
                         sneaker={sneaker}
-                        className='text-primary font-spacemono-bold text-lg flex-shrink-0' 
+                        className='text-primary font-open-sans-bold text-lg flex-shrink-0' 
                     />
                 </View>
 
                 {showOwnerInfo && sneaker.owner && (
                     <View className="flex-row items-center mt-2 gap-1">
-                        <Text className="font-spacemono text-xs text-gray-600 uppercase">
+                        <Text className="font-open-sans text-xs text-gray-600 uppercase">
                             Owned by
                         </Text>
-                        <Text className="font-spacemono text-sm text-primary mb-1">
+                        <Text className="font-open-sans text-sm text-primary mb-1">
                             {sneaker.owner.username === user!.username ? 'me' : `@${sneaker.owner.username}`}
                         </Text>
                     </View>

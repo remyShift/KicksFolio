@@ -46,12 +46,12 @@ export default function Toggle({
                 onPress={handlePress}
             >
                 <Text 
-                    className={`text-xs font-spacemono-bold z-10 ${isLeftSelected ? 'text-white' : 'text-gray-600'}`}
+                    className={`text-xs font-open-sans-bold z-10 ${isLeftSelected ? 'text-white' : 'text-gray-600'}`}
                 >
                     {leftValue.toUpperCase()}
                 </Text>
                 <Text 
-                    className={`text-xs font-spacemono-bold z-10 ${!isLeftSelected ? 'text-white' : 'text-gray-600'}`}
+                    className={`text-xs font-open-sans-bold z-10 ${!isLeftSelected ? 'text-white' : 'text-gray-600'}`}
                 >
                     {rightValue.toUpperCase()}
                 </Text>

@@ -14,11 +14,11 @@ module.exports = {
 			},
 			fontFamily: {
 				actonia: ['Actonia', 'sans-serif'],
-				spacemono: ['Spacemono', 'monospace'],
+				'open-sans': ['OpenSans', 'sans-serif'],
 				'syne-extrabold': ['Syne-ExtraBold', 'sans-serif'],
 				'syne-semibold': ['Syne-SemiBold', 'sans-serif'],
-				'spacemono-bold': ['SpaceMono-Bold', 'monospace'],
-				'spacemono-bold-italic': ['SpaceMono-BoldItalic', 'monospace'],
+				'open-sans-bold': ['OpenSans-Bold', 'sans-serif'],
+				'open-sans-bold-italic': ['OpenSans-BoldItalic', 'sans-serif'],
 			},
 			backgroundImage: {
 				'condition-gradient':

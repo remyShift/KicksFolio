@@ -69,7 +69,7 @@ export const BarcodeStep = () => {
     if (hasPermission === null) {
         return (
             <View className="flex-1 justify-center items-center">
-                <Text className="font-spacemono-bold text-lg">
+                <Text className="font-open-sans-bold text-lg">
                     {t('collection.modal.barcode.requesting')}
                 </Text>
             </View>
@@ -79,10 +79,10 @@ export const BarcodeStep = () => {
     if (hasPermission === false) {
         return (
             <View className="flex-1 justify-center items-center gap-4">
-                <Text className="font-spacemono-bold text-lg text-center px-6">
+                <Text className="font-open-sans-bold text-lg text-center px-6">
                     {t('collection.modal.barcode.noPermission')}
                 </Text>
-                <Text className="font-spacemono-bold text-sm text-center px-6">
+                <Text className="font-open-sans-bold text-sm text-center px-6">
                     {t('collection.modal.barcode.enablePermission')}
                 </Text>
             </View>
@@ -94,7 +94,7 @@ export const BarcodeStep = () => {
             {isLoading ? (
                 <View className="flex-1 bg-gray-200 items-center justify-center">
                     <Ionicons name="search" size={40} color="#6B7280" />
-                    <Text className="font-spacemono-bold text-gray-600 mt-2 text-center">
+                    <Text className="font-open-sans-bold text-gray-600 mt-2 text-center">
                         {t('collection.messages.searching.title')}
                     </Text>
                 </View>
@@ -141,7 +141,7 @@ export const BarcodeStep = () => {
                     </View>
 
                     <View className="absolute -bottom-16 left-0 right-0">
-                        <Text className="font-spacemono-bold text-white text-center bg-black/50 px-4 py-2 rounded-lg">
+                        <Text className="font-open-sans-bold text-white text-center bg-black/50 px-4 py-2 rounded-lg">
                             {isLoading ? 
                                 t('collection.messages.searching.description') : 
                                 t('collection.modal.barcode.instruction')
