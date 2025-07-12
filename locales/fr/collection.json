@@ -82,7 +82,7 @@
 		"buttons": {
 			"bySearch": "Recherche",
 			"byBarcode": "Code-barres",
-			"manually": "Ajoutée manuellement",
+			"manually": "Manuellement",
 			"search": "Recherche"
 		},
 		"form": {

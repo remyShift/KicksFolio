@@ -38,14 +38,13 @@ export default function FormSelectInput<T extends FieldValues>({
     const [isOpen, setIsOpen] = useState(false);
     
     const animatedStyle = useAnimatedStyle(() => {
-        const targetHeight = isOpen ? 200 : 0;
         return {
-            maxHeight: withSpring(targetHeight, {
-                damping: 20,
-                stiffness: 150,
-            }),
-            opacity: withTiming(isOpen ? 1 : 0, { duration: 250 }),
-            overflow: 'hidden'
+            opacity: withTiming(isOpen ? 1 : 0, { duration: 300 }),
+            transform: [
+                {
+                    translateY: withTiming(isOpen ? 0 : -50, { duration: 300 })
+                }
+            ]
         };
     }, [isOpen]);
 
@@ -62,7 +61,7 @@ export default function FormSelectInput<T extends FieldValues>({
     };
 
     return (
-        <View className="w-[49.5%]">
+        <View className="w-[49.5%] relative" style={{ zIndex: isOpen ? 99999 : 1 }}>
             {label && <Text className="font-spacemono-bold text-lg">{label}</Text>}
             <Controller
                 name={name}
@@ -93,12 +92,18 @@ export default function FormSelectInput<T extends FieldValues>({
                             </Pressable>
 
                             <Animated.View 
-                                className={`bg-white rounded-b-md ${isOpen ? 'border-x-2 border-b-2 border-primary' : ''}`}
-                                style={animatedStyle}
+                                className="absolute top-full left-0 right-0 bg-white rounded-b-md border-x-2 border-b-2 border-primary shadow-2xl"
+                                style={[animatedStyle, { 
+                                    maxHeight: 200,
+                                    zIndex: 99999,
+                                    elevation: 20
+                                }]}
+                                pointerEvents={isOpen ? 'auto' : 'none'}
                             >
                                 <ScrollView 
                                     nestedScrollEnabled={true}
-                                    className="max-h-64"
+                                    className="max-h-48"
+                                    showsVerticalScrollIndicator={true}
                                 >
                                     {options.map((option) => (
                                         <Pressable

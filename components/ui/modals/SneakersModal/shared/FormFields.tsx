@@ -85,7 +85,7 @@ export const FormFields = ({
                 testID="model"
             />
 
-            <View className="flex flex-row gap-1">
+            <View className="flex flex-row gap-1" style={{ zIndex: 10 }}>
                 <FormSelectInput
                     name="brand"
                     control={control}
