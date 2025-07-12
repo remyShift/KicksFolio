@@ -32,13 +32,13 @@ export default function LoveButton({ sneaker }: { sneaker: Sneaker }) {
 
     return (
         <Pressable
-            className="bg-white p-3 rounded-md flex items-center justify-center"
+            className="bg-white p-2 rounded-md flex items-center justify-center"
             onPress={handlePress}
             disabled={isLoading}
         >
             {isWishlisted ? 
-                <AntDesign name="heart" size={20} color={primary} /> : 
-                <AntDesign name="hearto" size={20} color="black" />
+                <AntDesign name="heart" size={18} color={primary} /> : 
+                <AntDesign name="hearto" size={18} color="black" />
             }
         </Pressable>
     );

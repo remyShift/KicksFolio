@@ -64,6 +64,7 @@
 			"edit": "Edit a sneaker",
 			"skuStep": "Put your sneaker SKU or model below",
 			"addImages": "Add photos",
+			"editImages": "Edit photos",
 			"selectedImages": "Selected photos"
 		},
 		"barcode": {
@@ -81,6 +82,7 @@
 			"manually": "You provide the sneaker information manually in a form.",
 			"skuNote": "NB: For Nike's SKU, don't forget the '-' and the 3 numbers following it or it will not work.",
 			"addImages": "Add 1 to 3 photos of your sneaker to get started",
+			"editImages": "Edit or replace your sneaker photos",
 			"noImages": "No images selected"
 		},
 		"buttons": {

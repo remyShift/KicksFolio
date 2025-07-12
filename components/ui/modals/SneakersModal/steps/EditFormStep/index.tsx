@@ -1,4 +1,4 @@
-import { ScrollView, TextInput } from 'react-native';
+import { ScrollView, TextInput, View, Text, Pressable, Image } from 'react-native';
 import { useRef, useEffect } from 'react';
 import { useModalStore } from '@/store/useModalStore';
 import { useFormController } from '@/hooks/useFormController';
@@ -8,8 +8,12 @@ import { useFormValidation } from '../../hooks/useFormValidation';
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { SneakerStatus } from '@/types/Sneaker';
 import { useSizeConversion } from '@/hooks/useSizeConversion';
+import { useTranslation } from 'react-i18next';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { Photo } from '@/types/Sneaker';
 
 export const EditFormStep = () => {
+    const { t } = useTranslation();
     const scrollViewRef = useRef<ScrollView>(null);
     const modelInputRef = useRef<TextInput>(null);
     const brandInputRef = useRef<TextInput>(null);
@@ -17,10 +21,14 @@ export const EditFormStep = () => {
     const pricePaidInputRef = useRef<TextInput>(null);
     const descriptionInputRef = useRef<TextInput>(null);
     
-    const { currentSneaker, sneakerToAdd, setSneakerToAdd, errorMsg } = useModalStore();
+    const { currentSneaker, sneakerToAdd, setSneakerToAdd, errorMsg, setModalStep } = useModalStore();
     const { getSizeForCurrentUnit } = useSizeConversion();
     
     const displaySize = currentSneaker ? getSizeForCurrentUnit(currentSneaker) : 0;
+
+    const handleEditImages = () => {
+        setModalStep('addFormImages');
+    };
 
     const {
         control,
@@ -47,7 +55,7 @@ export const EditFormStep = () => {
             description: currentSneaker?.description || '',
             og_box: currentSneaker?.og_box || false,
             ds: currentSneaker?.ds || false,
-            images: [],
+            images: currentSneaker?.images || [],
         },
         onSubmit: async (data) => {
             setSneakerToAdd({
@@ -60,7 +68,7 @@ export const EditFormStep = () => {
                 description: data.description || '',
                 og_box: data.og_box || false,
                 ds: data.ds || false,
-                images: currentSneaker?.images || [],
+                images: sneakerToAdd?.images || currentSneaker?.images || [],
             } as SneakerFormData);
         },
     });
@@ -123,6 +131,9 @@ export const EditFormStep = () => {
 
     if (!currentSneaker) return null;
 
+    // Utiliser les images de sneakerToAdd s'il y en a, sinon celles de currentSneaker
+    const displayImages = sneakerToAdd?.images || currentSneaker.images || [];
+
     return (
         <KeyboardAwareScrollView
             ref={scrollViewRef}
@@ -131,20 +142,59 @@ export const EditFormStep = () => {
             contentContainerStyle={{ flexGrow: 1, padding: 8 }}
             bottomOffset={10}
         >
-            <FormFields
-                control={control}
-                handleFieldFocus={handleFieldFocus}
-                validateFieldOnBlur={validateFieldOnBlur}
-                getFieldError={getFieldErrorWrapper}
-                modelInputRef={modelInputRef as React.RefObject<TextInput>}
-                brandInputRef={brandInputRef as React.RefObject<TextInput>}
-                sizeInputRef={sizeInputRef as React.RefObject<TextInput>}
-                pricePaidInputRef={pricePaidInputRef as React.RefObject<TextInput>}
-                descriptionInputRef={descriptionInputRef as React.RefObject<TextInput>}
-                displayedError={displayedError}
-                sneakerId={currentSneaker?.id}
-                setValue={setValue}
-            />
+            <View className="flex-1 gap-4">
+                <View className="mb-4">
+                    <View className="flex-row justify-between items-center mb-2">
+                        <Text className="font-open-sans-bold text-base">
+                            {t('collection.modal.titles.selectedImages')}
+                        </Text>
+                        <Pressable
+                            onPress={handleEditImages}
+                            className="flex-row items-center gap-2 bg-gray-100 px-3 py-1 rounded-md"
+                        >
+                            <MaterialIcons name="edit" size={16} color="#F27329" />
+                            <Text className="font-open-sans-bold text-sm text-primary">
+                                {t('collection.modal.buttons.editImages')}
+                            </Text>
+                        </Pressable>
+                    </View>
+                    
+                    {displayImages.length > 0 ? (
+                        <View className="flex-row gap-2">
+                            {displayImages.map((image: Photo, index: number) => (
+                                <Image
+                                    key={index}
+                                    source={{ uri: image.uri }}
+                                    className="w-28 h-20 rounded-md"
+                                    resizeMode="cover"
+                                />
+                            ))}
+                        </View>
+                    ) : (
+                        <View className="h-20 bg-gray-100 rounded-md flex items-center justify-center">
+                            <MaterialIcons name="image" size={24} color="#9CA3AF" />
+                            <Text className="text-gray-400 text-sm mt-1">
+                                {t('collection.modal.descriptions.noImages')}
+                            </Text>
+                        </View>
+                    )}
+                </View>
+
+                <FormFields
+                    control={control}
+                    handleFieldFocus={handleFieldFocus}
+                    validateFieldOnBlur={validateFieldOnBlur}
+                    getFieldError={getFieldErrorWrapper}
+                    modelInputRef={modelInputRef as React.RefObject<TextInput>}
+                    brandInputRef={brandInputRef as React.RefObject<TextInput>}
+                    sizeInputRef={sizeInputRef as React.RefObject<TextInput>}
+                    pricePaidInputRef={pricePaidInputRef as React.RefObject<TextInput>}
+                    descriptionInputRef={descriptionInputRef as React.RefObject<TextInput>}
+                    displayedError={displayedError}
+                    sneakerId={currentSneaker?.id}
+                    setValue={setValue}
+                />
+            </View>
         </KeyboardAwareScrollView>
     );
 }; 

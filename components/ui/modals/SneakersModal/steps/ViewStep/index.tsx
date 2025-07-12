@@ -8,6 +8,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import LoveButton from '@/components/ui/modals/SneakersModal/steps/ViewStep/LoveButton';
 import SizeDisplay from '@/components/ui/text/SizeDisplay';
 import { useCurrencyStore } from '@/store/useCurrencyStore';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 
 export const ViewStep = () => {
     const { currentSneaker } = useModalStore();
@@ -40,8 +41,9 @@ export const ViewStep = () => {
             <View className="flex-row justify-between items-center">
                 <View className="flex gap-0">
                     <Text testID="sneaker-display-name" className="font-open-sans-bold text-lg pr-1">{currentSneaker.model}</Text>
-                    <View className="flex-row items-center gap-1">
+                    <View className="flex-row items-center gap-2">
                         <Text className="font-open-sans-bold-italic text-base">{currentSneaker.brand.toUpperCase()}</Text>
+
                         {currentSneaker.sku && (
                             <View className="flex-row items-center gap-1">
                                 <Text className="font-open-sans-bold text-sm">|</Text>
@@ -50,6 +52,8 @@ export const ViewStep = () => {
                                 </Text>
                             </View>
                         )}
+
+                        <FontAwesome6 name="box-archive" size={15} color={currentSneaker.og_box ? '#F27329' : 'gray'} />
                     </View>
                 </View>
 
