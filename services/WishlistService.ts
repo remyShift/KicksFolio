@@ -158,6 +158,8 @@ export class SupabaseWishlistService {
 				wishlist_added_at: String(item.created_at),
 				sku: String(sneaker.sku || ''),
 				gender: String(sneaker.gender || ''),
+				og_box: Boolean(sneaker.og_box || false),
+				ds: Boolean(sneaker.ds || false),
 			};
 
 			return transformedSneaker;
