@@ -44,10 +44,10 @@ describe('SignUpSecondPage', () => {
 
     it('should render the sign up second page', () => {
 		const pageTitle = screen.getByTestId('page-title');
-        const backLink = screen.getByText('Back');
+        const backButton = screen.getByTestId('back-button');
 
         expect(pageTitle.props.children).toBe('Sign Up');
-        expect(backLink).toBeTruthy();
+        expect(backButton).toBeTruthy();
     });
 
     it('should render the sign up second page form elements with empty values', () => {

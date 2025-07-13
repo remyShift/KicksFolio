@@ -31,12 +31,10 @@ export const FormDetailsStep = () => {
         currentSneaker 
     } = useModalStore();
 
-    // Mémoriser la taille pour éviter les recalculs
     const currentSneakerSize = useMemo(() => {
         return currentSneaker ? getSizeForCurrentUnit(currentSneaker).toString() : '';
     }, [currentSneaker, getSizeForCurrentUnit]);
 
-    // Helper pour créer les données du formulaire de manière cohérente
     const createFormData = useCallback((sneakerToAdd: SneakerFormData | null, currentSneaker: Sneaker | null, currentSneakerSize: string) => {
         return {
             model: sneakerToAdd?.model || '',
@@ -52,7 +50,6 @@ export const FormDetailsStep = () => {
         } as SneakerFormData;
     }, []);
 
-    // Mémoriser les données du formulaire pour éviter les recalculs
     const formData = useMemo(() => 
         createFormData(sneakerToAdd, currentSneaker, currentSneakerSize), 
         [sneakerToAdd, currentSneaker, currentSneakerSize, createFormData]
@@ -84,7 +81,6 @@ export const FormDetailsStep = () => {
     
     useFormValidation(control, watch, reset, trigger, getFieldError);
 
-    // Unique useEffect pour gérer les mises à jour du formulaire
     useEffect(() => {
         if (formData) {
             reset(formData);
@@ -142,7 +138,6 @@ export const FormDetailsStep = () => {
                     )}
                 </View>
 
-                {/* Formulaire */}
                 <FormFields
                     control={control}
                     displayedError={displayedError}

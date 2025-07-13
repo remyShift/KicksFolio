@@ -19,11 +19,11 @@ describe('Forgot Password Page', () => {
     });
 
     it('should render the forgot password page', () => {
-        const backToLoginLink = screen.getByText('Back');
+        const backButton = screen.getByTestId('back-button');
 		const pageTitle = screen.getByTestId('page-title');
 
 		expect(pageTitle.props.children).toBe('Forgot Password');
-        expect(backToLoginLink).toBeTruthy();
+        expect(backButton).toBeTruthy();
     });
 
     it('should render the mail input with empty value', () => {

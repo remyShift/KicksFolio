@@ -25,11 +25,13 @@ describe('Reset Password Page', () => {
 
     it('should render the reset password page', () => {
 		const pageTitle = screen.getByTestId('page-title');
+        const backButton = screen.getByTestId('back-button');
 
 		expect(pageTitle.props.children).toBe('Reset Password');
         expect(passwordInput).toBeTruthy();
         expect(confirmPasswordInput).toBeTruthy();
         expect(mainButton).toBeTruthy();
+        expect(backButton).toBeTruthy();
     });
 
     it('should render the password and confirm password inputs with empty value', () => {

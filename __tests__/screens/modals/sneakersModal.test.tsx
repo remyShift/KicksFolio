@@ -101,16 +101,20 @@ describe('SneakersModal', () => {
         });
 
         it('should render InitialStep with correct content', () => {
-            expect(screen.getByText(/add a sneaker/i)).toBeOnTheScreen();
+            expect(screen.getByText(/add/i)).toBeOnTheScreen();
             expect(screen.getByText(/how do you want to proceed/i)).toBeOnTheScreen();
         });
 
         it('should have SKU search button', () => {
-            expect(screen.getByTestId('search-by-sku-button')).toBeOnTheScreen();
+            expect(screen.getByText(/search/i)).toBeOnTheScreen();
+        });
+
+        it('should have barcode search button', () => {
+            expect(screen.getByText('Barcode')).toBeOnTheScreen();
         });
 
         it('should have manual add button', () => {
-            expect(screen.getByTestId('add-manually-button')).toBeOnTheScreen();
+            expect(screen.getByText('Manually')).toBeOnTheScreen();
         });
     });
 
@@ -133,7 +137,7 @@ describe('SneakersModal', () => {
         });
     });
 
-    describe('FormStep (addForm)', () => {
+    describe('FormDetailsStep (addFormDetails)', () => {
         let modelInput: any;
         let brandInput: any;
         let statusInput: any;
@@ -145,19 +149,19 @@ describe('SneakersModal', () => {
         let errorMessage: any;
 
         beforeEach(() => {
-            setup({ modalStep: 'addForm' });
+            setup({ modalStep: 'addFormDetails' });
             
-            modelInput = screen.getByPlaceholderText('Air Max 1 x Patta');
+            modelInput = screen.getByTestId('model-input');
             brandInput = screen.getByTestId('brand-input');
             statusInput = screen.getByTestId('status-input');
-            sizeInput = screen.getByPlaceholderText('9.5');
-            conditionInput = screen.getByPlaceholderText('9');
-            priceInput = screen.getByPlaceholderText('150€');
-            descriptionInput = screen.getByPlaceholderText('Description');
+            sizeInput = screen.getByTestId('size-input');
+            conditionInput = screen.getByTestId('condition-input');
+            priceInput = screen.getByTestId('price-input');
+            descriptionInput = screen.getByTestId('description-input');
             mainButton = screen.getByTestId('add-button');
         });
 
-        it('should render FormStep with all form fields', () => {
+        it('should render FormDetailsStep with all form fields', () => {
             expect(modelInput).toBeOnTheScreen();
             expect(brandInput).toBeOnTheScreen();
             expect(statusInput).toBeOnTheScreen();
@@ -169,8 +173,8 @@ describe('SneakersModal', () => {
 
         it('should render form fields with empty values initially', () => {
             expect(modelInput.props.value).toBe('');
-            expect(brandInput.props.value).toBe(undefined);
-            expect(statusInput.props.value).toBe(undefined);
+            expect(screen.getByTestId('brand-input-value').props.children).toBe('Nike');
+            expect(screen.getByTestId('status-input-value').props.children).toBe('ROCKING');
             expect(sizeInput.props.value).toBe('');
             expect(conditionInput.props.value).toBe('');
             expect(priceInput.props.value).toBe('');
@@ -334,8 +338,8 @@ describe('SneakersModal', () => {
             });
             
             modelInput = screen.getByTestId('model-input');
-            brandInput = screen.getByTestId('brand-input-value');
-            statusInput = screen.getByTestId('status-input-value');
+            brandInput = screen.getByTestId('brand-input');
+            statusInput = screen.getByTestId('status-input');
             sizeInput = screen.getByTestId('size-input');
             conditionInput = screen.getByTestId('condition-input');
             priceInput = screen.getByTestId('price-input');
@@ -345,7 +349,7 @@ describe('SneakersModal', () => {
 
         it('should render EditFormStep with pre-filled values', () => {
             expect(modelInput.props.value).toBe('Air Max 1');
-            expect(brandInput.props.children).toBe('NIKE');
+            expect(screen.getByTestId('brand-input-value').props.children).toBe('NIKE');
         });
 
         it('should have update button', () => {

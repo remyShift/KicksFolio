@@ -28,15 +28,12 @@ export const FormImageStep = () => {
         modalStep
     } = useModalStore();
     
-    // Déterminer si on est en mode édition
     const isEditMode = modalStep === 'editFormImages';
     
-    // Mémoriser la taille pour éviter les recalculs
     const currentSneakerSize = useMemo(() => {
         return currentSneaker ? getSizeForCurrentUnit(currentSneaker).toString() : '';
     }, [currentSneaker, getSizeForCurrentUnit]);
     
-    // Mémoriser les fonctions pour éviter les re-renders inutiles
     const handleSneakerToAddUpdate = useCallback((newData: SneakerFormData) => {
         const currentState = useModalStore.getState().sneakerToAdd;
         if (JSON.stringify(currentState) !== JSON.stringify(newData)) {

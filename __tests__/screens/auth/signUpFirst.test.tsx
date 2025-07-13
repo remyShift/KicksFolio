@@ -41,10 +41,10 @@ describe('SignUpFirstPage', () => {
 
     it('should render the sign up first page', () => {
 		const pageTitle = screen.getByTestId('page-title');
-        const loginLink = screen.getByText('Login');
+        const backButton = screen.getByTestId('back-button');
 
         expect(pageTitle.props.children).toBe('Sign Up');
-        expect(loginLink).toBeTruthy();
+        expect(backButton).toBeTruthy();
     });
 
     it('should render the sign up first page form elements with empty values', () => {
