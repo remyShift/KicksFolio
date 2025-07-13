@@ -1,14 +1,16 @@
 import { Image, Pressable, ScrollView, TextInput, View, Text } from 'react-native';
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, useMemo, useCallback } from 'react';
 import { useModalStore } from '@/store/useModalStore';
 import { useFormController } from '@/hooks/useFormController';
 import { createSneakerSchema, SneakerFormData } from '@/validation/schemas';
 import { useFormValidation } from '../../hooks/useFormValidation';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
-import { Photo, SneakerBrand, SneakerStatus } from '@/types/Sneaker';
+import { Photo, SneakerBrand, SneakerStatus, Sneaker } from '@/types/Sneaker';
 import { useTranslation } from 'react-i18next';
 import { FormFields } from '../../shared/FormFields';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { useSizeConversion } from '@/hooks/useSizeConversion';
+
 
 export const FormDetailsStep = () => {
     const [scrollEnabled, setScrollEnabled] = useState(false);
@@ -19,13 +21,42 @@ export const FormDetailsStep = () => {
     const descriptionInputRef = useRef<TextInput>(null);
     const scrollViewRef = useRef<ScrollView>(null);
     const { t } = useTranslation();
+    const { getSizeForCurrentUnit } = useSizeConversion();
 
     const { 
         sneakerToAdd, 
         setSneakerToAdd, 
         errorMsg, 
-        setModalStep 
+        setModalStep,
+        currentSneaker 
     } = useModalStore();
+
+    // Mémoriser la taille pour éviter les recalculs
+    const currentSneakerSize = useMemo(() => {
+        return currentSneaker ? getSizeForCurrentUnit(currentSneaker).toString() : '';
+    }, [currentSneaker, getSizeForCurrentUnit]);
+
+    // Helper pour créer les données du formulaire de manière cohérente
+    const createFormData = useCallback((sneakerToAdd: SneakerFormData | null, currentSneaker: Sneaker | null, currentSneakerSize: string) => {
+        return {
+            model: sneakerToAdd?.model || '',
+            brand: sneakerToAdd?.brand || SneakerBrand.null,
+            status: sneakerToAdd?.status || SneakerStatus.null,
+            size: sneakerToAdd?.size || currentSneakerSize,
+            condition: sneakerToAdd?.condition || '',
+            price_paid: sneakerToAdd?.price_paid || '',
+            description: sneakerToAdd?.description || '',
+            og_box: sneakerToAdd?.og_box || false,
+            ds: sneakerToAdd?.ds || false,
+            images: sneakerToAdd?.images || [],
+        } as SneakerFormData;
+    }, []);
+
+    // Mémoriser les données du formulaire pour éviter les recalculs
+    const formData = useMemo(() => 
+        createFormData(sneakerToAdd, currentSneaker, currentSneakerSize), 
+        [sneakerToAdd, currentSneaker, currentSneakerSize, createFormData]
+    );
     
     const {
         control,
@@ -42,18 +73,7 @@ export const FormDetailsStep = () => {
         schema: createSneakerSchema(),
         fieldNames: ['model', 'brand', 'status', 'size', 'condition', 'price_paid', 'description'],
         authErrorMsg: errorMsg,
-        defaultValues: {
-            model: sneakerToAdd?.model || '',
-            brand: sneakerToAdd?.brand || SneakerBrand.null,
-            status: sneakerToAdd?.status || SneakerStatus.null,
-            size: sneakerToAdd?.size || '',
-            condition: sneakerToAdd?.condition || '',
-            price_paid: sneakerToAdd?.price_paid || '',
-            description: sneakerToAdd?.description || '',
-            og_box: sneakerToAdd?.og_box || false,
-            ds: sneakerToAdd?.ds || false,
-            images: sneakerToAdd?.images || [],
-        },
+        defaultValues: formData,
         onSubmit: async (data) => {
             setSneakerToAdd({
                 ...data,
@@ -64,39 +84,12 @@ export const FormDetailsStep = () => {
     
     useFormValidation(control, watch, reset, trigger, getFieldError);
 
+    // Unique useEffect pour gérer les mises à jour du formulaire
     useEffect(() => {
-        const subscription = watch((value) => {
-            const currentSneakerToAdd = useModalStore.getState().sneakerToAdd;
-            if (currentSneakerToAdd) {
-                const updatedSneaker = {
-                    ...currentSneakerToAdd,
-                    ...value,
-                    images: currentSneakerToAdd.images
-                };
-                setSneakerToAdd(updatedSneaker);
-            }
-        });
-        
-        return () => subscription.unsubscribe();
-    }, [watch, setSneakerToAdd]);
-
-    useEffect(() => {
-        const currentSneakerToAdd = useModalStore.getState().sneakerToAdd;
-        if (currentSneakerToAdd) {
-            reset({
-                model: currentSneakerToAdd.model || '',
-                brand: currentSneakerToAdd.brand || SneakerBrand.null,
-                status: currentSneakerToAdd.status || SneakerStatus.null,
-                size: currentSneakerToAdd.size || '',
-                condition: currentSneakerToAdd.condition || '',
-                price_paid: currentSneakerToAdd.price_paid || '',
-                description: currentSneakerToAdd.description || '',
-                og_box: currentSneakerToAdd.og_box || false,
-                ds: currentSneakerToAdd.ds || false,
-                images: currentSneakerToAdd.images || [],
-            });
+        if (formData) {
+            reset(formData);
         }
-    }, [reset]);
+    }, [formData, reset]);
 
     const handleEditImages = () => {
         setModalStep('addFormImages');

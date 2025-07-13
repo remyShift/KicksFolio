@@ -1,5 +1,5 @@
 import { View, Text } from 'react-native';
-import { useEffect } from 'react';
+import { useEffect, useMemo, useCallback } from 'react';
 import { useModalStore } from '@/store/useModalStore';
 import { useFormController } from '@/hooks/useFormController';
 import { createSneakerSchema, SneakerFormData } from '@/validation/schemas';
@@ -9,9 +9,11 @@ import { SneakerBrand, SneakerStatus } from '@/types/Sneaker';
 import { useTranslation } from 'react-i18next';
 import { PhotoCarousel } from '@/components/ui/images/photoCaroussel/PhotoCarousel';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
+import { useSizeConversion } from '@/hooks/useSizeConversion';
 
 export const FormImageStep = () => {
     const { t } = useTranslation();
+    const { getSizeForCurrentUnit } = useSizeConversion();
     
     const { 
         fetchedSneaker, 
@@ -22,8 +24,25 @@ export const FormImageStep = () => {
         setEstimatedValue, 
         setGender, 
         setSku,
-        currentSneaker 
+        currentSneaker,
+        modalStep
     } = useModalStore();
+    
+    // Déterminer si on est en mode édition
+    const isEditMode = modalStep === 'editFormImages';
+    
+    // Mémoriser la taille pour éviter les recalculs
+    const currentSneakerSize = useMemo(() => {
+        return currentSneaker ? getSizeForCurrentUnit(currentSneaker).toString() : '';
+    }, [currentSneaker, getSizeForCurrentUnit]);
+    
+    // Mémoriser les fonctions pour éviter les re-renders inutiles
+    const handleSneakerToAddUpdate = useCallback((newData: SneakerFormData) => {
+        const currentState = useModalStore.getState().sneakerToAdd;
+        if (JSON.stringify(currentState) !== JSON.stringify(newData)) {
+            setSneakerToAdd(newData);
+        }
+    }, [setSneakerToAdd]);
     
     const {
         control,
@@ -39,7 +58,7 @@ export const FormImageStep = () => {
             model: sneakerToAdd?.model || currentSneaker?.model || '',
             brand: sneakerToAdd?.brand || currentSneaker?.brand || SneakerBrand.null,
             status: sneakerToAdd?.status || currentSneaker?.status || SneakerStatus.null,
-            size: sneakerToAdd?.size || (currentSneaker?.size_eu?.toString()) || '',
+            size: sneakerToAdd?.size || currentSneakerSize,
             condition: sneakerToAdd?.condition || (currentSneaker?.condition?.toString()) || '',
             price_paid: sneakerToAdd?.price_paid || (currentSneaker?.price_paid?.toString()) || '',
             description: sneakerToAdd?.description || currentSneaker?.description || '',
@@ -74,23 +93,22 @@ export const FormImageStep = () => {
             };
             
             reset(formData);
-            setSneakerToAdd(formData);
+            handleSneakerToAddUpdate(formData);
             setEstimatedValue(fetchedSneaker.estimated_value);
             setGender(fetchedSneaker.gender || null);
             setSku(fetchedSneaker.sku);
             
             setFetchedSneaker(null);
         }
-    }, [fetchedSneaker]);
+    }, [fetchedSneaker, reset, handleSneakerToAddUpdate, setEstimatedValue, setGender, setSku, setFetchedSneaker]);
 
-    // Gérer les images quand on vient d'EditFormStep avec currentSneaker
     useEffect(() => {
-        if (currentSneaker && !fetchedSneaker) {
-            const currentData = sneakerToAdd || {
+        if (currentSneaker && !fetchedSneaker && isEditMode && !sneakerToAdd) {
+            const currentData = {
                 model: currentSneaker.model || '',
                 brand: currentSneaker.brand || SneakerBrand.null,
                 status: currentSneaker.status || SneakerStatus.null,
-                size: currentSneaker.size_eu?.toString() || '',
+                size: currentSneakerSize,
                 condition: currentSneaker.condition?.toString() || '',
                 price_paid: currentSneaker.price_paid?.toString() || '',
                 description: currentSneaker.description || '',
@@ -99,18 +117,14 @@ export const FormImageStep = () => {
                 images: currentSneaker.images || [],
             };
             
-            // Mettre à jour le formulaire avec les images de currentSneaker
             reset({
                 ...currentData,
-                images: sneakerToAdd?.images || currentSneaker.images || [],
+                images: currentSneaker.images || [],
             });
             
-            // Mettre à jour sneakerToAdd seulement s'il n'existe pas déjà
-            if (!sneakerToAdd) {
-                setSneakerToAdd(currentData);
-            }
+            handleSneakerToAddUpdate(currentData);
         }
-    }, [currentSneaker, fetchedSneaker]);
+    }, [currentSneaker, fetchedSneaker, isEditMode, sneakerToAdd, currentSneakerSize, reset, handleSneakerToAddUpdate]);
 
     useEffect(() => {
         const subscription = watch((value) => {
@@ -120,7 +134,7 @@ export const FormImageStep = () => {
                     model: currentSneaker?.model || '',
                     brand: currentSneaker?.brand || SneakerBrand.null,
                     status: currentSneaker?.status || SneakerStatus.null,
-                    size: currentSneaker?.size_eu?.toString() || '',
+                    size: currentSneakerSize,
                     condition: currentSneaker?.condition?.toString() || '',
                     price_paid: currentSneaker?.price_paid?.toString() || '',
                     description: currentSneaker?.description || '',
@@ -129,7 +143,7 @@ export const FormImageStep = () => {
                     images: [],
                 };
                 
-                setSneakerToAdd({
+                handleSneakerToAddUpdate({
                     ...currentData,
                     images: value.images
                 });
@@ -137,26 +151,27 @@ export const FormImageStep = () => {
         });
         
         return () => subscription.unsubscribe();
-    }, [watch, setSneakerToAdd, currentSneaker]);
+    }, [watch, handleSneakerToAddUpdate, currentSneaker, currentSneakerSize]);
 
-    // Initialiser le formulaire avec les images existantes quand on revient à cette étape
     useEffect(() => {
         const currentSneakerToAdd = useModalStore.getState().sneakerToAdd;
-        if (currentSneakerToAdd && currentSneakerToAdd.images) {
-            reset({
+        if (currentSneakerToAdd && currentSneakerToAdd.images && currentSneakerToAdd.images.length > 0) {
+            const formData = {
                 model: currentSneakerToAdd.model || currentSneaker?.model || '',
                 brand: currentSneakerToAdd.brand || currentSneaker?.brand || SneakerBrand.null,
                 status: currentSneakerToAdd.status || currentSneaker?.status || SneakerStatus.null,
-                size: currentSneakerToAdd.size || currentSneaker?.size_eu?.toString() || '',
+                size: currentSneakerToAdd.size || currentSneakerSize,
                 condition: currentSneakerToAdd.condition || currentSneaker?.condition?.toString() || '',
                 price_paid: currentSneakerToAdd.price_paid || currentSneaker?.price_paid?.toString() || '',
                 description: currentSneakerToAdd.description || currentSneaker?.description || '',
                 og_box: currentSneakerToAdd.og_box || currentSneaker?.og_box || false,
                 ds: currentSneakerToAdd.ds || currentSneaker?.ds || false,
                 images: currentSneakerToAdd.images,
-            });
+            };
+            
+            reset(formData);
         }
-    }, [reset, currentSneaker]);
+    }, [reset, currentSneaker, currentSneakerSize]);
 
     const imageError = getFieldErrorWrapper('images');
 

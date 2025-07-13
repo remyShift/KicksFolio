@@ -77,12 +77,12 @@
 		},
 		"descriptions": {
 			"howProceed": "Comment veux-tu procéder ?",
-			"bySearch": "Précharge les informations de ta sneaker à partir d'une requête (SKU, modèle...).",
-			"byBarcode": "Scanner le code-barres de ta sneaker pour précharger les informations.",
+			"bySearch": "Précharges les informations de ta sneaker à partir d'une requête (SKU, modèle...).",
+			"byBarcode": "Scannes le code-barres de ta sneaker pour précharger les informations.",
 			"manually": "Tu fournis les informations de ta sneaker manuellement dans un formulaire.",
 			"skuNote": "NB : Pour les SKU de Nike, n'oublie pas le '-' et les 3 chiffres qui suivent.",
-			"addImages": "Ajouter 1 à 3 photos de ta sneaker pour commencer",
-			"editImages": "Modifier ou remplacer les photos de ta sneaker",
+			"addImages": "Ajoutes 1 à 3 photos de ta sneaker pour commencer.",
+			"editImages": "Modifies ou remplaces les photos de ta sneaker.",
 			"noImages": "Aucune image sélectionnée"
 		},
 		"buttons": {

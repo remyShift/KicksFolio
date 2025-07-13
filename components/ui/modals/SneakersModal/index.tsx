@@ -41,6 +41,10 @@ export const SneakersModal = () => {
                     <FormDetailsStep />
                 )}
 
+                {modalStep === 'editFormImages' && (
+                    <FormImageStep />
+                )}
+
                 {modalStep === 'editForm' && (
                     <EditFormStep />
                 )}

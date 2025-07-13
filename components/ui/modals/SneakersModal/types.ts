@@ -7,6 +7,7 @@ export type ModalStep =
 	| 'addFormImages'
 	| 'addFormDetails'
 	| 'editForm'
+	| 'editFormImages'
 	| 'view';
 
 export type InputType =

@@ -101,6 +101,23 @@ export const ModalFooter = () => {
                     />
                 </View>
             )}
+            {modalStep === 'editFormImages' && (
+                <View className="flex-row justify-between w-full">
+                    <BackButton 
+                        onPressAction={handleBackAction} 
+                    />
+                    <NextButton
+                        content={t('ui.buttons.save')}
+                        onPressAction={() => {
+                            if (!isLoading) {
+                                handleNextAction();
+                            }
+                        }}
+                        disabled={isLoading}
+                        testID="save-images"
+                    />
+                </View>
+            )}
             {modalStep === 'editForm' && (
                 <View className="flex-row justify-between w-full">
                     <View className="flex flex-row gap-3">

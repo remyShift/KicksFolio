@@ -27,8 +27,10 @@ export const EditFormStep = () => {
     const displaySize = currentSneaker ? getSizeForCurrentUnit(currentSneaker) : 0;
 
     const handleEditImages = () => {
-        setModalStep('addFormImages');
+        setModalStep('editFormImages');
     };
+
+
 
     const {
         control,
@@ -55,7 +57,7 @@ export const EditFormStep = () => {
             description: currentSneaker?.description || '',
             og_box: currentSneaker?.og_box || false,
             ds: currentSneaker?.ds || false,
-            images: currentSneaker?.images || [],
+            images: sneakerToAdd?.images || currentSneaker?.images || [],
         },
         onSubmit: async (data) => {
             setSneakerToAdd({
@@ -75,9 +77,10 @@ export const EditFormStep = () => {
 
     useFormValidation(control, watch, reset, trigger, getFieldError);
 
+    // Simple useEffect pour initialiser le formulaire
     useEffect(() => {
         if (currentSneaker) {
-            reset({
+            const initData = {
                 model: currentSneaker.model || '',
                 brand: currentSneaker.brand || '',
                 status: currentSneaker.status || '',
@@ -87,41 +90,18 @@ export const EditFormStep = () => {
                 description: currentSneaker.description || '',
                 og_box: currentSneaker.og_box || false,
                 ds: currentSneaker.ds || false,
-                images: currentSneaker.images || [],
-            });
+                images: sneakerToAdd?.images || currentSneaker.images || [],
+            };
             
-            setSneakerToAdd({
-                model: currentSneaker.model || '',
-                brand: currentSneaker.brand || '',
-                status: currentSneaker.status || '',
-                size: displaySize.toString(),
-                condition: currentSneaker.condition.toString() || '',
-                images: currentSneaker.images || [],
-                price_paid: currentSneaker.price_paid?.toString() || '',
-                description: currentSneaker.description || '',
-                og_box: currentSneaker.og_box || false,
-                ds: currentSneaker.ds || false,
-            } as SneakerFormData);
+            reset(initData);
+            
+            if (!sneakerToAdd) {
+                setSneakerToAdd(initData as SneakerFormData);
+            }
         }
-    }, [currentSneaker, displaySize]);
+    }, [currentSneaker, displaySize, reset]);
 
-    useEffect(() => {
-        if (currentSneaker?.images && currentSneaker.images.length > 0 && 
-            (!sneakerToAdd?.images || sneakerToAdd.images.length === 0)) {
-            setSneakerToAdd({
-                model: sneakerToAdd?.model || currentSneaker.model || '',
-                brand: sneakerToAdd?.brand || currentSneaker.brand || '',
-                status: sneakerToAdd?.status || currentSneaker.status || '',
-                size: sneakerToAdd?.size || displaySize.toString(),
-                condition: sneakerToAdd?.condition || currentSneaker.condition.toString() || '',
-                price_paid: sneakerToAdd?.price_paid || currentSneaker.price_paid?.toString() || '',
-                description: sneakerToAdd?.description || currentSneaker.description || '',
-                og_box: sneakerToAdd?.og_box || currentSneaker.og_box || false,
-                ds: sneakerToAdd?.ds || currentSneaker.ds || false,
-                images: currentSneaker.images,
-            } as SneakerFormData);
-        }
-    }, [currentSneaker?.images, sneakerToAdd, displaySize]);
+
 
     useEffect(() => {
         return () => {
@@ -131,7 +111,6 @@ export const EditFormStep = () => {
 
     if (!currentSneaker) return null;
 
-    // Utiliser les images de sneakerToAdd s'il y en a, sinon celles de currentSneaker
     const displayImages = sneakerToAdd?.images || currentSneaker.images || [];
 
     return (

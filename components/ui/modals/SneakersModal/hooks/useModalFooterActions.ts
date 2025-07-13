@@ -192,6 +192,21 @@ export const useModalFooterActions = () => {
 						.finally(() => setIsLoading(false));
 				}
 				break;
+			case 'editFormImages':
+				const { sneakerToAdd: currentSneakerToAdd } =
+					useModalStore.getState();
+				if (
+					!currentSneakerToAdd?.images ||
+					currentSneakerToAdd.images.length === 0
+				) {
+					setErrorMsg(
+						t('collection.modal.form.errors.images.required')
+					);
+					return;
+				}
+				setErrorMsg('');
+				setModalStep('editForm');
+				break;
 			case 'editForm':
 				if (isLoading) return;
 
@@ -267,6 +282,10 @@ export const useModalFooterActions = () => {
 			case 'addFormDetails':
 				setErrorMsg('');
 				setModalStep('addFormImages');
+				break;
+			case 'editFormImages':
+				setErrorMsg('');
+				setModalStep('editForm');
 				break;
 			case 'editForm':
 				setErrorMsg('');
