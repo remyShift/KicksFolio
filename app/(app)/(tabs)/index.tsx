@@ -27,7 +27,7 @@ export default function Index() {
         <ScrollView className="flex-1 pt-32">
                 <View className='flex-1 gap-32'>
                     <View className="flex-1 gap-4">
-                        <Title content={t('collection.pages.title')} />
+                        <Title content={t('collection.pages.titles.collection')} />
                         <View className="flex-1 px-4">
                             <CollectionCard userSneakers={userSneakers} />
                         </View>
