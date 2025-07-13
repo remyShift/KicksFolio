@@ -25,7 +25,7 @@ export default function ProfileHeader({ user, userSneakers, viewMode, setViewMod
             <ProfileInfo user={user} userSneakers={userSneakers} />
             {userSneakers && userSneakers.length > 0 && (
                 <View className="flex-row mb-8 items-center">
-                    <Title content={t('collection.pages.title')} />
+                    <Title content={t('collection.pages.titles.collection')} />
                     <ViewToggleButton 
                       currentMode={viewMode}
                       onToggle={setViewMode}

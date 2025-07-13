@@ -2,9 +2,10 @@ import { View, Text, Pressable } from 'react-native';
 import { Image } from 'expo-image';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { Sneaker } from '@/types/Sneaker';
-import { ModalStep } from '@/components/screens/app/modals/SneakersModal/types';
+import { ModalStep } from '@/components/ui/modals/SneakersModal/types';
 import { useSession } from '@/context/authContext';
 import SizeDisplay from '../text/SizeDisplay';
+import { useTranslation } from 'react-i18next';
 
 export default function SneakerCard({ 
     sneaker, 
@@ -20,6 +21,7 @@ export default function SneakerCard({
     showOwnerInfo?: boolean
 }) {
     const { user } = useSession();
+    const { t } = useTranslation();
 
     return (
         <Pressable 
@@ -67,7 +69,7 @@ export default function SneakerCard({
                 {showOwnerInfo && sneaker.owner && (
                     <View className="flex-row items-center mt-2 gap-1">
                         <Text className="font-open-sans text-xs text-gray-600 uppercase">
-                            Owned by
+                            {t('collection.cards.ownedBy')}
                         </Text>
                         <Text className="font-open-sans text-sm text-primary mb-1">
                             {sneaker.owner.username === user!.username ? 'me' : `@${sneaker.owner.username}`}

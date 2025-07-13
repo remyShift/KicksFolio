@@ -1,6 +1,9 @@
 {
 	"pages": {
-		"title": "My collection",
+		"titles": {
+			"collection": "My collection",
+			"wishlist": "My wishlist"
+		},
 		"empty": {
 			"title": "No sneakers yet",
 			"description": "Start building your collection by adding your first sneaker!"
