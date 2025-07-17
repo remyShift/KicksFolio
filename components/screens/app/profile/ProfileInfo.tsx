@@ -25,17 +25,21 @@ export default function ProfileInfo({ user, userSneakers }: ProfileInfoProps) {
                     profilePictureUrl={user.profile_picture_url} 
                 />
                 
-                <View className="flex-col items-center">
-                    <Text className="font-open-sans-bold text-xl text-center">
-                        {user.first_name} {user.last_name}
-                    </Text>
-                    <Text className="font-open-sans text-lg text-primary text-center">
-                        @{user.username}
-                    </Text>
+                <View className="flex-row gap-4 items-center">
+                    <View className="flex-col items-center">
+                        <Text className="font-open-sans-bold text-xl text-center">
+                            {user.first_name} {user.last_name}
+                        </Text>
+                        <Text className="font-open-sans text-lg text-primary text-center">
+                            @{user.username}
+                        </Text>
+                    </View>
+
+                    <SocialMediaLinks user={user} isOwnProfile={isOwnProfile} />
                 </View>
+
             </View>
 
-            <SocialMediaLinks user={user} isOwnProfile={isOwnProfile} />
                 
             <ProfileStats 
                 sneakersCount={userSneakers?.length || 0}

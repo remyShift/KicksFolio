@@ -21,15 +21,15 @@
 		"facebook": {
 			"label": "Facebook",
 			"error": {
-				"max": "The Facebook username cannot exceed 50 characters",
-				"format": "The Facebook username can only contain letters, numbers and dots"
+				"max": "The Facebook username cannot exceed 50 characters.",
+				"format": "The Facebook username can only contain letters, numbers and dots."
 			}
 		},
 		"instagram": {
 			"label": "Instagram",
 			"error": {
-				"max": "The Instagram username cannot exceed 30 characters",
-				"format": "The Instagram username can only contain letters, numbers, dots and underscores"
+				"max": "The Instagram username cannot exceed 30 characters.",
+				"format": "The Instagram username can only contain letters, numbers, dots and underscores."
 			}
 		}
 	},

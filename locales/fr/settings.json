@@ -21,15 +21,15 @@
 		"facebook": {
 			"label": "Facebook",
 			"error": {
-				"max": "Le nom d'utilisateur Facebook ne peut pas dépasser 50 caractères",
-				"format": "Le nom d'utilisateur Facebook ne peut contenir que des lettres, chiffres et points"
+				"max": "Le nom d'utilisateur Facebook ne peut pas dépasser 50 caractères.",
+				"format": "Le nom d'utilisateur Facebook ne peut contenir que des lettres, chiffres et points."
 			}
 		},
 		"instagram": {
 			"label": "Instagram",
 			"error": {
-				"max": "Le nom d'utilisateur Instagram ne peut pas dépasser 30 caractères",
-				"format": "Le nom d'utilisateur Instagram ne peut contenir que des lettres, chiffres, points et underscores"
+				"max": "Le nom d'utilisateur Instagram ne peut pas dépasser 30 caractères.",
+				"format": "Le nom d'utilisateur Instagram ne peut contenir que des lettres, chiffres, points et underscores."
 			}
 		}
 	},
