@@ -1,12 +1,14 @@
-const { getDefaultConfig } = require('expo/metro-config');
 const { withNativeWind } = require('nativewind/metro');
 const path = require('path');
-
 const {
 	wrapWithReanimatedMetroConfig,
 } = require('react-native-reanimated/metro-config');
 
-const config = getDefaultConfig(__dirname);
+const {
+    getSentryExpoConfig
+} = require("@sentry/react-native/metro");
+
+const config = getSentryExpoConfig(__dirname);
 
 config.resolver.alias = {
 	...config.resolver.alias,
