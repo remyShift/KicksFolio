@@ -14,4 +14,7 @@ export type User = {
 	sneakers: Sneaker[];
 	profile_picture: string;
 	profile_picture_url: string;
+	instagram_username?: string;
+	facebook_username?: string;
+	social_media_visibility?: boolean;
 };
