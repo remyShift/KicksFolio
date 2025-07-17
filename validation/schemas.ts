@@ -262,6 +262,30 @@ export const createBugReportSchema = () => {
 	});
 };
 
+export const createSocialMediaSchema = () => {
+	return z.object({
+		instagram_username: z
+			.string()
+			.max(30, t('settings.socialMedia.instagram.error.max'))
+			.regex(
+				/^[a-zA-Z0-9_.]+$/,
+				t('settings.socialMedia.instagram.error.format')
+			)
+			.optional()
+			.or(z.literal('')),
+		facebook_username: z
+			.string()
+			.max(50, t('settings.socialMedia.facebook.error.max'))
+			.regex(
+				/^[a-zA-Z0-9.]+$/,
+				t('settings.socialMedia.facebook.error.format')
+			)
+			.optional()
+			.or(z.literal('')),
+		social_media_visibility: z.boolean(),
+	});
+};
+
 export type SignUpStep1FormData = z.infer<
 	ReturnType<typeof createSignUpStep1Schema>
 >;
@@ -278,4 +302,8 @@ export type ResetPasswordFormData = z.infer<
 >;
 export type EditProfileFormData = z.infer<
 	ReturnType<typeof createEditProfileSchema>
+>;
+
+export type SocialMediaFormData = z.infer<
+	ReturnType<typeof createSocialMediaSchema>
 >;

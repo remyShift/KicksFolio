@@ -7,7 +7,6 @@ import { useAuth } from '@/hooks/useAuth'
 import useToast from '@/hooks/useToast'
 import { useSession } from '@/context/authContext'
 import Spacer from '../shared/Spacer'
-import SocialMediaSettings from './SocialMediaSettings';
 
 export default function AccountSettings() {
     const { t } = useTranslation()
@@ -78,10 +77,6 @@ export default function AccountSettings() {
 
     return (
         <SettingsCategory title={t('settings.titles.account')}>
-            <SocialMediaSettings />
-            
-            <Spacer />
-            
             <SettingsMenuItem 
                 icon="document-text-outline"
                 label={t('auth.data-privacy.privacyPolicy')}
@@ -90,11 +85,20 @@ export default function AccountSettings() {
 
             <Spacer />
 
+
             <SettingsMenuItem 
                 icon="person-outline"
                 label={t('settings.titles.editProfile')}
                 onPress={() => router.push('/edit-profile')}
                 testID="edit-profile"
+            />
+
+            <Spacer />
+
+            <SettingsMenuItem 
+                icon="share-social-outline"
+                label={t('settings.titles.socialMedia')}
+                onPress={() => router.push('/social-media')}
             />
 
             <Spacer />

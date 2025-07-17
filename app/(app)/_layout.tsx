@@ -12,6 +12,7 @@ export default function AppLayout() {
                 <Stack.Screen name="(tabs)" />
                 <Stack.Screen name="settings" options={{ animationTypeForReplace: 'push' }} />
                 <Stack.Screen name="edit-profile" options={{ animationTypeForReplace: 'push' }} />
+                <Stack.Screen name="social-media" options={{ animationTypeForReplace: 'push' }} />
             </Stack>
             <SneakersModalWrapper />
             <BugReportModal />

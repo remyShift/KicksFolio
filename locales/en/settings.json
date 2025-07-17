@@ -9,6 +9,30 @@
 		"profileUpdateFailed": "❌ Profile update failed.",
 		"profileUpdateFailedDescription": "An error occurred while updating your profile."
 	},
+	"socialMedia": {
+		"title": "Link Social Media",
+		"instagramPlaceholder": "Instagram Username",
+		"facebookPlaceholder": "Facebook Username",
+		"visibility": "Social media visibility",
+		"updated": "✅ Social media updated.",
+		"updatedDescription": "Your social media settings have been saved.",
+		"updateFailed": "❌ Social media update failed.",
+		"updateFailedDescription": "An error occurred while updating your social media settings.",
+		"facebook": {
+			"label": "Facebook",
+			"error": {
+				"max": "The Facebook username cannot exceed 50 characters",
+				"format": "The Facebook username can only contain letters, numbers and dots"
+			}
+		},
+		"instagram": {
+			"label": "Instagram",
+			"error": {
+				"max": "The Instagram username cannot exceed 30 characters",
+				"format": "The Instagram username can only contain letters, numbers, dots and underscores"
+			}
+		}
+	},
 	"deleteAccount": {
 		"accountDeleted": "🗑️ Account deleted.",
 		"accountDeletedDescription": "Your account has been deleted successfully.",
@@ -21,6 +45,7 @@
 	"titles": {
 		"editProfile": "Edit profile",
 		"account": "Account Settings",
+		"socialMedia": "Link Social Media",
 		"logout": "Logout",
 		"deleteAccount": "Delete account",
 		"settings": "Settings",
