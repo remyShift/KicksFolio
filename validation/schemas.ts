@@ -56,7 +56,7 @@ const validateSneakerSize = (val: string) => {
 	if (currentUnit === 'EU') {
 		return num >= 35 && num <= 48;
 	} else {
-		return num >= 7 && num <= 15;
+		return num >= 5 && num <= 15;
 	}
 };
 
