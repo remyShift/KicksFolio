@@ -54,7 +54,7 @@ describe('Edit Profile Form', () => {
                 {
                     field: 'sneaker size',
                     input: '0',
-                    error: 'Sneaker size must be between 6 and 15 (US).',
+                    error: 'Sneaker size must be between 3.5 and 15 (US).',
                     getInput: () => screen.getByLabelText('Sneaker Size*')
                 }
             ];
