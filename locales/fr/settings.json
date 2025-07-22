@@ -31,7 +31,8 @@
 				"max": "Le nom d'utilisateur Instagram ne peut pas dépasser 30 caractères.",
 				"format": "Le nom d'utilisateur Instagram ne peut contenir que des lettres, chiffres, points et underscores."
 			}
-		}
+		},
+		"visibilityDescription": "NB: Vous pouvez demander plus de comptes de réseaux sociaux en nous contactant."
 	},
 	"deleteAccount": {
 		"accountDeleted": "🗑️ Compte supprimé.",

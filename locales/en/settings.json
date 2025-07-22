@@ -31,7 +31,8 @@
 				"max": "The Instagram username cannot exceed 30 characters.",
 				"format": "The Instagram username can only contain letters, numbers, dots and underscores."
 			}
-		}
+		},
+		"visibilityDescription": "NB: You can ask for more social media accounts by contacting us."
 	},
 	"deleteAccount": {
 		"accountDeleted": "🗑️ Account deleted.",

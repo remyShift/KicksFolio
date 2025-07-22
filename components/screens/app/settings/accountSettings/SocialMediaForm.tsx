@@ -104,24 +104,6 @@ export default function SocialMediaForm() {
                         accessibilityLabel="Instagram Username"
                         testID="instagram-username"
                     />
-
-                    <FormTextInput
-                        name="facebook_username"
-                        control={control}
-                        label={t('settings.socialMedia.facebook.label')}
-                        placeholder={t('settings.socialMedia.facebookPlaceholder')}
-                        ref={facebookInputRef}
-                        autoCapitalize="none"
-                        autoComplete="off"
-                        maxLength={50}
-                        onFocus={() => handleFieldFocus('facebook_username')}
-                        onBlur={async (value) => { await validateFieldOnBlur('facebook_username', value); }}
-                        onSubmitEditing={handleFormSubmit}
-                        error={getFieldErrorWrapper('facebook_username')}
-                        getFieldError={getFieldErrorWrapper}
-                        accessibilityLabel="Facebook Username"
-                        testID="facebook-username"
-                    />
                     
                     <View className="flex-row items-center justify-between gap-4">
                         <Text className="font-open-sans text-base">
@@ -135,6 +117,10 @@ export default function SocialMediaForm() {
                             testID="social-media-visibility"
                         />
                     </View>
+
+                    <Text className="font-open-sans text-xs">
+                        {t('settings.socialMedia.visibilityDescription')}
+                    </Text>
 
                     <MainButton
                         content={t('settings.buttons.save')}
