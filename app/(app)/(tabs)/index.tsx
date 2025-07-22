@@ -7,7 +7,6 @@ import MainButton from '@/components/ui/buttons/MainButton';
 import { useModalStore } from '@/store/useModalStore';
 import useToast from '@/hooks/useToast';
 import { useTranslation } from 'react-i18next';
-import * as Sentry from '@sentry/react-native';
 
 export default function Index() {
     const { t } = useTranslation();
