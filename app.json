@@ -107,7 +107,8 @@
         {
           "url": "https://sentry.io/",
           "project": "react-native",
-          "organization": "kicksfolio"
+          "organization": "kicksfolio",
+          "uploadSourceMaps": false
         }
       ]
     ],
