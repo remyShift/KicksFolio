@@ -8,6 +8,7 @@ interface SizeMapping {
 }
 
 const SIZE_MAPPINGS: SizeMapping[] = [
+	{ usMen: 3, usWomen: 4.5, eu: 35 },
 	{ usMen: 3.5, usWomen: 5, eu: 35.5 },
 	{ usMen: 4, usWomen: 5.5, eu: 36 },
 	{ usMen: 4.5, usWomen: 6, eu: 36.5 },
@@ -57,7 +58,12 @@ export class SizeConversionService {
 			}
 		});
 
-		if (!mapping) return size;
+		if (!mapping) {
+			const errorMessage = `Taille ${size} ${fromUnit} ${
+				gender === 'women' ? 'femme' : 'homme'
+			} non supportée. Veuillez utiliser une taille valide.`;
+			throw new Error(errorMessage);
+		}
 
 		switch (toUnit) {
 			case 'US':
@@ -124,18 +130,22 @@ export class SizeConversionService {
 
 	static generateBothSizes(
 		inputSize: number,
-		gender: GenderType = 'men'
+		gender: GenderType = 'men',
+		inputUnit?: SizeUnit
 	): { size_eu: number; size_us: number } {
-		const detectedUnit = this.detectSizeUnit(inputSize);
+		// Si l'unité n'est pas spécifiée, utiliser la détection automatique comme fallback
+		const detectedUnit = inputUnit || this.detectSizeUnit(inputSize);
 
 		if (detectedUnit === 'EU') {
+			const convertedUs = this.convertSize(inputSize, 'EU', 'US', gender);
 			return {
 				size_eu: inputSize,
-				size_us: this.convertSize(inputSize, 'EU', 'US', gender),
+				size_us: convertedUs,
 			};
 		} else {
+			const convertedEu = this.convertSize(inputSize, 'US', 'EU', gender);
 			return {
-				size_eu: this.convertSize(inputSize, 'US', 'EU', gender),
+				size_eu: convertedEu,
 				size_us: inputSize,
 			};
 		}

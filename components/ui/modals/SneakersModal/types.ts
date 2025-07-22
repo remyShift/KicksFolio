@@ -61,6 +61,7 @@ export interface SneakerFormData {
 	description?: string;
 	og_box?: boolean;
 	ds?: boolean;
+	is_women?: boolean;
 }
 
 export interface ValidationResult {

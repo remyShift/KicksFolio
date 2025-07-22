@@ -233,11 +233,7 @@ export const useModalFooterActions = () => {
 							}
 						})
 						.catch((error) => {
-							setErrorMsg(
-								t(
-									'collection.modal.form.errors.sneaker.error'
-								) + error
-							);
+							setErrorMsg(error.message);
 						})
 						.finally(() => setIsLoading(false));
 				} else {

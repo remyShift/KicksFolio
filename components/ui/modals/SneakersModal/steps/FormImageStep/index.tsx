@@ -61,6 +61,7 @@ export const FormImageStep = () => {
             description: sneakerToAdd?.description || currentSneaker?.description || '',
             og_box: sneakerToAdd?.og_box || currentSneaker?.og_box || false,
             ds: sneakerToAdd?.ds || currentSneaker?.ds || false,
+            is_women: sneakerToAdd?.is_women || (currentSneaker?.gender === 'women') || false,
             images: sneakerToAdd?.images || currentSneaker?.images || [],
         },
         onSubmit: async (data) => {
@@ -163,6 +164,7 @@ export const FormImageStep = () => {
                 description: currentSneakerToAdd.description || currentSneaker?.description || '',
                 og_box: currentSneakerToAdd.og_box || currentSneaker?.og_box || false,
                 ds: currentSneakerToAdd.ds || currentSneaker?.ds || false,
+                is_women: currentSneakerToAdd.is_women || (currentSneaker?.gender === 'women') || false,
                 images: currentSneakerToAdd.images,
             };
             

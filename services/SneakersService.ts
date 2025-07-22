@@ -1,7 +1,11 @@
 import { supabase } from './supabase';
 import { SneakerBrand } from '@/types/Sneaker';
 import { sneakerBrandOptions } from '@/validation/schemas';
-import { SizeConversionService, GenderType } from './SizeConversionService';
+import {
+	SizeConversionService,
+	GenderType,
+	SizeUnit,
+} from './SizeConversionService';
 import { t } from 'i18next';
 
 export interface SupabaseSneaker {
@@ -111,28 +115,38 @@ export class SupabaseSneakerService {
 			| 'user_id'
 			| 'size_eu'
 			| 'size_us'
-		> & { size: number }
+		> & { size: number },
+		currentUnit?: SizeUnit
 	) {
-		console.log('🔄 Creating sneaker with data:', sneakerData);
-
 		const {
 			data: { user },
 			error: authError,
 		} = await supabase.auth.getUser();
 
 		if (authError) {
-			console.error('❌ Auth error:', authError);
 			throw authError;
 		}
 		if (!user) {
-			console.error('❌ No user found');
 			throw new Error('No user found');
 		}
 
-		const { size_eu, size_us } = SizeConversionService.generateBothSizes(
-			sneakerData.size,
-			(sneakerData.gender as GenderType) || 'men'
-		);
+		let size_eu: number, size_us: number;
+
+		try {
+			const result = SizeConversionService.generateBothSizes(
+				sneakerData.size,
+				(sneakerData.gender as GenderType) || 'men',
+				currentUnit
+			);
+			size_eu = result.size_eu;
+			size_us = result.size_us;
+		} catch (error) {
+			if (error instanceof Error) {
+				throw new Error(`Error converting size: ${error.message}`);
+			} else {
+				throw new Error('Error converting size');
+			}
+		}
 
 		const { size, ...sneakerDataWithoutSize } = sneakerData;
 
@@ -150,17 +164,8 @@ export class SupabaseSneakerService {
 			.single();
 
 		if (error) {
-			console.error('❌ Database error:', error);
-			console.error('Error details:', {
-				message: error.message,
-				details: error.details,
-				hint: error.hint,
-				code: error.code,
-			});
 			throw error;
 		}
-
-		console.log('✅ Sneaker created successfully:', data);
 
 		return data
 			? {
@@ -172,14 +177,30 @@ export class SupabaseSneakerService {
 
 	static async updateSneaker(
 		id: string,
-		updates: Partial<SupabaseSneaker & { size?: number }>
+		updates: Partial<SupabaseSneaker & { size?: number }>,
+		currentUnit?: SizeUnit
 	) {
 		if (updates.size) {
-			const { size_eu, size_us } =
-				SizeConversionService.generateBothSizes(
+			let size_eu: number, size_us: number;
+
+			try {
+				const result = SizeConversionService.generateBothSizes(
 					updates.size,
-					(updates.gender as GenderType) || 'men'
+					(updates.gender as GenderType) || 'men',
+					currentUnit
 				);
+				size_eu = result.size_eu;
+				size_us = result.size_us;
+			} catch (error) {
+				console.error('❌ Size conversion error:', error);
+				if (error instanceof Error) {
+					throw new Error(
+						`Erreur de conversion de taille: ${error.message}`
+					);
+				} else {
+					throw new Error('Erreur de conversion de taille inconnue');
+				}
+			}
 
 			const { size, ...updatesWithoutSize } = updates;
 			updates = {

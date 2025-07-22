@@ -57,6 +57,7 @@ export const EditFormStep = () => {
             description: currentSneaker?.description || '',
             og_box: currentSneaker?.og_box || false,
             ds: currentSneaker?.ds || false,
+            is_women: currentSneaker?.gender === 'women' || false,
             images: sneakerToAdd?.images || currentSneaker?.images || [],
         },
         onSubmit: async (data) => {
@@ -70,6 +71,7 @@ export const EditFormStep = () => {
                 description: data.description || '',
                 og_box: data.og_box || false,
                 ds: data.ds || false,
+                is_women: data.is_women || false,
                 images: sneakerToAdd?.images || currentSneaker?.images || [],
             } as SneakerFormData);
         },

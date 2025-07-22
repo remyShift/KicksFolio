@@ -15,6 +15,7 @@ import { ZodIssue } from 'zod';
 import SupabaseImageService from '@/services/SupabaseImageService';
 import useToast from '@/hooks/useToast';
 import { useTranslation } from 'react-i18next';
+import { useSizeUnitStore } from '@/store/useSizeUnitStore';
 
 interface Callbacks {
 	setCurrentSneaker?: (sneaker: Sneaker | null) => void;
@@ -39,6 +40,7 @@ export const useSneakerAPI = () => {
 	const { refreshUserSneakers, userSneakers, user } = useSession();
 	const { showSuccessToast, showErrorToast } = useToast();
 	const { t } = useTranslation();
+	const { currentUnit } = useSizeUnitStore();
 	const validateSneakerData = (formData: SneakerFormData) => {
 		return new Promise<{
 			isValid: boolean;
@@ -55,6 +57,7 @@ export const useSneakerAPI = () => {
 				description: formData.description || undefined,
 				og_box: formData.og_box || false,
 				ds: formData.ds || false,
+				is_women: formData.is_women || false,
 			};
 
 			const parseResult = createSneakerSchema().safeParse(validationData);
@@ -188,6 +191,21 @@ export const useSneakerAPI = () => {
 					return Promise.reject('Validation failed');
 				}
 
+				// Utiliser les données validées par Zod au lieu de formData
+				const validatedData = createSneakerSchema().parse({
+					images: formData.images,
+					model: formData.model,
+					brand: formData.brand,
+					status: formData.status,
+					size: formData.size.toString(),
+					condition: formData.condition.toString(),
+					price_paid: formData.price_paid || undefined,
+					description: formData.description || undefined,
+					og_box: formData.og_box || false,
+					ds: formData.ds || false,
+					is_women: formData.is_women || false,
+				});
+
 				const sneakerToAdd: Omit<
 					SupabaseSneaker,
 					| 'id'
@@ -197,24 +215,27 @@ export const useSneakerAPI = () => {
 					| 'size_eu'
 					| 'size_us'
 				> & { size: number } = {
-					model: formData.model,
-					brand: formData.brand,
-					status: formData.status,
-					size: parseInt(formData.size.toString()),
-					condition: parseInt(formData.condition.toString()),
+					model: validatedData.model,
+					brand: validatedData.brand,
+					status: validatedData.status,
+					size: parseFloat(validatedData.size),
+					condition: parseInt(validatedData.condition),
 					images: [],
-					price_paid: formData.price_paid
-						? parseFloat(formData.price_paid.toString())
+					price_paid: validatedData.price_paid
+						? parseFloat(validatedData.price_paid)
 						: undefined,
-					description: formData.description,
+					description: validatedData.description,
 					estimated_value: estimatedValue || 0,
-					gender: gender as 'men' | 'women' | undefined,
+					gender: formData.is_women ? 'women' : 'men',
 					sku: sku || undefined,
-					og_box: formData.og_box || false,
-					ds: formData.ds || false,
+					og_box: validatedData.og_box || false,
+					ds: validatedData.ds || false,
 				};
 
-				return SupabaseSneakerService.createSneaker(sneakerToAdd);
+				return SupabaseSneakerService.createSneaker(
+					sneakerToAdd,
+					currentUnit
+				);
 			})
 			.then(async (createdSneaker: SupabaseSneaker) => {
 				const processedImages =
@@ -262,12 +283,13 @@ export const useSneakerAPI = () => {
 				return response;
 			})
 			.catch((error: Error) => {
+				console.error('error', error);
 				showErrorToast(
 					t('collection.modal.form.errors.sneaker.error'),
 					t('collection.modal.form.errors.sneaker.errorDescription')
 				);
 				callbacks?.setErrorMsg(
-					`An error occurred while submitting the sneaker: ${error.message}`
+					`An error occurred while submitting the sneaker: ${error}`
 				);
 				throw error;
 			});
@@ -295,6 +317,21 @@ export const useSneakerAPI = () => {
 					return Promise.reject('Validation failed');
 				}
 
+				// Utiliser les données validées par Zod au lieu de formData
+				const validatedData = createSneakerSchema().parse({
+					images: formData.images,
+					model: formData.model,
+					brand: formData.brand,
+					status: formData.status,
+					size: formData.size.toString(),
+					condition: formData.condition.toString(),
+					price_paid: formData.price_paid || undefined,
+					description: formData.description || undefined,
+					og_box: formData.og_box || false,
+					ds: formData.ds || false,
+					is_women: formData.is_women || false,
+				});
+
 				const processedImages =
 					await SupabaseImageService.processAndUploadSneakerImages(
 						formData.images.map((img) => ({
@@ -308,26 +345,28 @@ export const useSneakerAPI = () => {
 				const sneakerUpdates: Partial<
 					SupabaseSneaker & { size?: number }
 				> = {
-					model: formData.model,
-					brand: formData.brand,
-					status: formData.status,
-					size: parseInt(formData.size.toString()),
-					condition: parseInt(formData.condition.toString()),
+					model: validatedData.model,
+					brand: validatedData.brand,
+					status: validatedData.status,
+					size: parseFloat(validatedData.size),
+					condition: parseInt(validatedData.condition),
 					images: processedImages.map((img) => ({
 						id: img.id,
 						uri: img.uri,
 					})),
-					price_paid: formData.price_paid
-						? parseFloat(formData.price_paid.toString())
+					price_paid: validatedData.price_paid
+						? parseFloat(validatedData.price_paid)
 						: undefined,
-					description: formData.description,
-					og_box: formData.og_box || false,
-					ds: formData.ds || false,
+					description: validatedData.description,
+					gender: formData.is_women ? 'women' : 'men',
+					og_box: validatedData.og_box || false,
+					ds: validatedData.ds || false,
 				};
 
 				return SupabaseSneakerService.updateSneaker(
 					sneakerId,
-					sneakerUpdates
+					sneakerUpdates,
+					currentUnit
 				);
 			})
 			.then((response: SupabaseSneaker) => {

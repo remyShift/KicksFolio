@@ -106,7 +106,7 @@ export const FormFields = ({
 
             <View>
                 <View className="w-full flex-row items-center gap-2">
-                    <View className="flex-1 items-center p-2 border-r-2 border-gray-300">
+                    <View className="flex-1 items-center p-2">
                         <Controller
                             control={control}
                             name="og_box"
@@ -126,6 +126,19 @@ export const FormFields = ({
                             render={({ field }) => (
                                 <CheckBoxInput 
                                     label="Deadstock ?"
+                                    checked={field.value || false}
+                                    onToggle={(checked) => field.onChange(checked)}
+                                />
+                            )}
+                        />
+                    </View>
+                    <View className="flex-1 items-center p-2">
+                        <Controller
+                            control={control}
+                            name="is_women"
+                            render={({ field }) => (
+                                <CheckBoxInput 
+                                    label="WMNS ?"
                                     checked={field.value || false}
                                     onToggle={(checked) => field.onChange(checked)}
                                 />

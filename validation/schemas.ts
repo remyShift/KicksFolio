@@ -1,7 +1,6 @@
 import { SneakerBrand, SneakerStatus } from '@/types/Sneaker';
 import { z } from 'zod';
 import { t } from 'i18next';
-import { useLanguageStore } from '@/store/useLanguageStore';
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';
 
 export const sneakerStatusOptions = [
@@ -54,15 +53,13 @@ const validateSneakerSize = (val: string) => {
 	if (isNaN(num)) return false;
 
 	if (currentUnit === 'EU') {
-		return num >= 35 && num <= 48;
+		return num >= 35 && num <= 50;
 	} else {
-		return num >= 3.5 && num <= 15;
+		return num >= 3 && num <= 15.5;
 	}
 };
 
 export const createSignUpStep2Schema = () => {
-	const currentLanguage = useLanguageStore.getState().currentLanguage;
-
 	return z.object({
 		firstName: z
 			.string()
@@ -166,6 +163,7 @@ export const createSneakerSchema = () => {
 		description: z.string().optional(),
 		og_box: z.boolean().optional(),
 		ds: z.boolean().optional(),
+		is_women: z.boolean().optional(),
 	});
 };
 

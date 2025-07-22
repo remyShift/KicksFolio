@@ -46,6 +46,7 @@ export const FormDetailsStep = () => {
             description: sneakerToAdd?.description || '',
             og_box: sneakerToAdd?.og_box || false,
             ds: sneakerToAdd?.ds || false,
+            is_women: sneakerToAdd?.is_women || false,
             images: sneakerToAdd?.images || [],
         } as SneakerFormData;
     }, []);
