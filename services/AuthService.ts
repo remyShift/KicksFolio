@@ -11,7 +11,6 @@ export interface SupabaseUser {
 	created_at: string;
 	updated_at: string;
 	instagram_username?: string;
-	facebook_username?: string;
 	social_media_visibility?: boolean;
 }
 

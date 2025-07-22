@@ -18,18 +18,11 @@ export default function SocialMediaLinks({ user, isOwnProfile = false }: SocialM
         }
     };
 
-    const handleFacebookPress = () => {
-        if (user.facebook_username) {
-            Linking.openURL(`https://messenger.com/${user.facebook_username}`)
-                .catch(err => console.error('Error opening Facebook:', err));
-        }
-    };
-
     if (!user.social_media_visibility && !isOwnProfile) {
         return null;
     }
 
-    const hasAnyLink = user.instagram_username || user.facebook_username;
+    const hasAnyLink = user.instagram_username;
 
     if (!hasAnyLink) {
         return isOwnProfile ? (
@@ -48,14 +41,6 @@ export default function SocialMediaLinks({ user, isOwnProfile = false }: SocialM
                     onPress={handleInstagramPress}
                 >
                     <Ionicons name="logo-instagram" size={28} color="#F27329" />
-                </Pressable>
-            )}
-            
-            {user.facebook_username && (
-                <Pressable
-                    onPress={handleFacebookPress}
-                >
-                    <Ionicons name="logo-facebook" size={28} color="#F27329" />
                 </Pressable>
             )}
         </View>

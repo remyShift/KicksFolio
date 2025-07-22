@@ -65,7 +65,7 @@
 		"titles": {
 			"add": "Add a sneaker",
 			"edit": "Edit a sneaker",
-			"skuStep": "Put your sneaker SKU or model below",
+			"skuStep": "Put your sneaker SKU below",
 			"addImages": "Add photos",
 			"editImages": "Edit photos",
 			"selectedImages": "Selected photos"
@@ -80,7 +80,7 @@
 		},
 		"descriptions": {
 			"howProceed": "How do you want to proceed?",
-			"bySearch": "Prefetch your sneaker information from a query (SKU, model...).",
+			"bySearch": "Prefetch your sneaker information from a SKU.",
 			"byBarcode": "Scan your sneaker's barcode to prefetch information.",
 			"manually": "You provide the sneaker information manually in a form.",
 			"skuNote": "NB: For Nike's SKU, don't forget the '-' and the 3 numbers following it or it will not work.",

@@ -20,7 +20,6 @@ export default function SocialMediaForm() {
     const { showSuccessToast, showErrorToast } = useToast();
     const scrollViewRef = useRef<ScrollView>(null);
     const instagramInputRef = useRef<TextInput>(null);
-    const facebookInputRef = useRef<TextInput>(null);
 
     const {
         control,
@@ -36,16 +35,14 @@ export default function SocialMediaForm() {
         schema: createSocialMediaSchema(),
         defaultValues: {
             instagram_username: user?.instagram_username || '',
-            facebook_username: user?.facebook_username || '',
             social_media_visibility: user?.social_media_visibility ?? true,
         },
-        fieldNames: ['instagram_username', 'facebook_username', 'social_media_visibility'],
+        fieldNames: ['instagram_username', 'social_media_visibility'],
         onSubmit: async (data) => {
             if (!user) return;
             
             return updateUser(user.id, {
                 instagram_username: data.instagram_username || undefined,
-                facebook_username: data.facebook_username || undefined,
                 social_media_visibility: data.social_media_visibility
             })
             .then((result) => {
@@ -84,7 +81,7 @@ export default function SocialMediaForm() {
                     routerBack: '/(app)/settings' as RelativePathString,
                 }} />
                 
-                <View className="flex flex-col gap-4 w-full justify-center items-center px-12">
+                <View className="flex flex-col gap-4 w-full h-1/2 justify-center items-center px-12">
                     <ErrorMsg content={displayedError} display={displayedError !== ''} />
 
                     <FormTextInput
@@ -93,7 +90,6 @@ export default function SocialMediaForm() {
                         label={t('settings.socialMedia.instagram.label')}
                         placeholder={t('settings.socialMedia.instagramPlaceholder')}
                         ref={instagramInputRef}
-                        nextInputRef={facebookInputRef}
                         autoCapitalize="none"
                         autoComplete="off"
                         maxLength={30}

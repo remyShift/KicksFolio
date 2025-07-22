@@ -34,6 +34,5 @@ export interface UpdateUserData {
 	profile_picture?: string;
 	email?: string;
 	instagram_username?: string;
-	facebook_username?: string;
 	social_media_visibility?: boolean;
 }

@@ -12,19 +12,11 @@
 	"socialMedia": {
 		"title": "Link Social Media",
 		"instagramPlaceholder": "Instagram Username",
-		"facebookPlaceholder": "Facebook Username",
 		"visibility": "Social media visibility",
 		"updated": "✅ Social media updated.",
 		"updatedDescription": "Your social media settings have been saved.",
 		"updateFailed": "❌ Social media update failed.",
 		"updateFailedDescription": "An error occurred while updating your social media settings.",
-		"facebook": {
-			"label": "Facebook",
-			"error": {
-				"max": "The Facebook username cannot exceed 50 characters.",
-				"format": "The Facebook username can only contain letters, numbers and dots."
-			}
-		},
 		"instagram": {
 			"label": "Instagram",
 			"error": {

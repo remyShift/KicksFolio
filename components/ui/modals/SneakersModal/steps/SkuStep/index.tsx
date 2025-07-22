@@ -82,7 +82,7 @@ export const SkuStep = () => {
                     <SkuInput
                         name="sku"
                         control={control}
-                        placeholder="CJ5482-100 | Air Force 1"
+                        placeholder="CJ5482-100"
                         onSubmitEditing={handleSubmit(onSubmit)}
                     />
                 </View>

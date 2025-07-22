@@ -273,15 +273,6 @@ export const createSocialMediaSchema = () => {
 			)
 			.optional()
 			.or(z.literal('')),
-		facebook_username: z
-			.string()
-			.max(50, t('settings.socialMedia.facebook.error.max'))
-			.regex(
-				/^[a-zA-Z0-9.]+$/,
-				t('settings.socialMedia.facebook.error.format')
-			)
-			.optional()
-			.or(z.literal('')),
 		social_media_visibility: z.boolean(),
 	});
 };
