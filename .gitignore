@@ -47,3 +47,6 @@ yarn-error.*
 dist/
 web-build/
 .env.local
+
+# Sentry
+sentry.properties
