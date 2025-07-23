@@ -6,16 +6,12 @@ import { useUserSearch } from "@/hooks/useUserSearch";
 
 export default function SearchHeader() {
     const { t } = useTranslation();
-    const { searchTerm, setSearchTerm } = useUserSearch();
 
     return (
         <View className="px-4 mb-4">
             <Title content={t('navigation.navbar.search')} />
             <View className="mt-4">
-                <SearchInput
-                    value={searchTerm}
-                    onChangeText={setSearchTerm}
-                />
+                <SearchInput />
             </View>
         </View>
     );
