@@ -1,9 +1,9 @@
 import { View, Text } from 'react-native';
 import { Image } from 'expo-image';
 
-export default function FriendTitle({ content }: { content: string }) {
+export default function FollowerTitle({ content, followersCount }: { content: string, followersCount: number }) {
     return (
-        <View className="w-full flex justify-center overflow-hidden px-6">
+        <View className="w-full flex justify-center overflow-hidden">
             <Text className="font-syne-extrabold w-[200%] text-4xl text-primary opacity-15 absolute">
                 {content.toUpperCase()}
             </Text>
@@ -13,9 +13,10 @@ export default function FriendTitle({ content }: { content: string }) {
                         @{content}
                     </Text>
                     <Text className="font-syne-semibold text-md leading-none">
-                        76 followers
+                        {followersCount} followers
                     </Text>
                 </View>
+                
                 <Image source={require('@/assets/images/adaptive-icon.png')}
                     style={{
                         width: 24,

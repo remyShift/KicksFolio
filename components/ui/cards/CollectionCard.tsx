@@ -3,13 +3,23 @@ import { Text, View, Pressable } from 'react-native';
 import { Sneaker } from '@/types/Sneaker';
 import { router } from 'expo-router';
 import { Image } from 'expo-image';
+import { useSession } from '@/context/authContext';
 
-export default function CollectionCard({ userSneakers }: { userSneakers: Sneaker[] | null | undefined }) {
+interface CollectionCardProps {
+    userSneakers: Sneaker[] | null | undefined;
+    isOwnCollection: boolean;
+    userId?: string;
+}
 
+export default function CollectionCard({ userSneakers, isOwnCollection = true, userId }: CollectionCardProps) {
     return (
         <Pressable className="flex-1 bg-white rounded-md gap-2 p-4 h-fit shadow-card"
             onPress={() => {
-                router.push(`/(app)/(tabs)/user`);
+                if (isOwnCollection) {
+                    router.push(`/(app)/(tabs)/profile`);
+                } else {
+                    router.push(`/(app)/(tabs)/search/${userId}`);
+                }
             }}
             testID="collection-card"
         >

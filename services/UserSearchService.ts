@@ -5,7 +5,7 @@ export interface SearchUser {
 	username: string;
 	first_name: string;
 	last_name: string;
-	profile_picture?: string;
+	profile_picture: string | null;
 	is_following: boolean;
 	followers_count: number;
 	following_count: number;
@@ -78,41 +78,41 @@ export class UserSearchService {
 		const enrichedUsers = await Promise.all(
 			actualUsers.map(async (user: any) => {
 				try {
-					const { count: followersCount, error: followersError } =
-						await supabase
+					const [
+						followersResult,
+						followingResult,
+						isFollowingResult,
+					] = await Promise.all([
+						supabase
 							.from('followers')
 							.select('*', { count: 'exact', head: true })
-							.eq('following_id', user.id);
-
-					const { count: followingCount, error: followingError } =
-						await supabase
+							.eq('following_id', user.id),
+						supabase
 							.from('followers')
 							.select('*', { count: 'exact', head: true })
-							.eq('follower_id', user.id);
-
-					const { data: isFollowingData, error: isFollowingError } =
-						await supabase
+							.eq('follower_id', user.id),
+						supabase
 							.from('followers')
 							.select('id')
 							.eq('follower_id', currentUserId)
 							.eq('following_id', user.id)
-							.single();
+							.single(),
+					]);
 
 					return {
 						...user,
-						followers_count: followersError
+						followers_count: followersResult.error
 							? 0
-							: Number(followersCount || 0),
-						following_count: followingError
+							: Number(followersResult.count || 0),
+						following_count: followingResult.error
 							? 0
-							: Number(followingCount || 0),
-						is_following: !isFollowingError && !!isFollowingData,
+							: Number(followingResult.count || 0),
+						is_following:
+							!isFollowingResult.error &&
+							!!isFollowingResult.data,
 					};
 				} catch (error) {
-					console.warn(
-						`⚠️ [UserSearchService] Error enriching user ${user.id}:`,
-						error
-					);
+					console.warn(`Error enriching user ${user.id}:`, error);
 					return {
 						...user,
 						followers_count: 0,
@@ -156,125 +156,65 @@ export class UserSearchService {
 				return null;
 			}
 
-			const { count: followersCount, error: followersError } =
-				await supabase
-					.from('followers')
-					.select('*', { count: 'exact', head: true })
-					.eq('following_id', userId);
+			const [followersResult, followingResult, isFollowingResult] =
+				await Promise.all([
+					supabase
+						.from('followers')
+						.select('*', { count: 'exact', head: true })
+						.eq('following_id', userId),
+					supabase
+						.from('followers')
+						.select('*', { count: 'exact', head: true })
+						.eq('follower_id', userId),
+					supabase
+						.from('followers')
+						.select('id')
+						.eq('follower_id', currentUserId)
+						.eq('following_id', userId)
+						.single(),
+				]);
 
-			const { count: followingCount, error: followingError } =
-				await supabase
-					.from('followers')
-					.select('*', { count: 'exact', head: true })
-					.eq('follower_id', userId);
-
-			const { data: isFollowingData, error: isFollowingError } =
-				await supabase
-					.from('followers')
-					.select('id')
-					.eq('follower_id', currentUserId)
-					.eq('following_id', userId)
-					.single();
-
-			const finalFollowersCount = followersError
+			const finalFollowersCount = followersResult.error
 				? 0
-				: followersCount || 0;
-			const finalFollowingCount = followingError
+				: followersResult.count || 0;
+			const finalFollowingCount = followingResult.error
 				? 0
-				: followingCount || 0;
-			const isFollowing = !isFollowingError && !!isFollowingData;
+				: followingResult.count || 0;
+			const isFollowing =
+				!isFollowingResult.error && !!isFollowingResult.data;
 
-			const result = {
+			return {
 				...user,
 				followers_count: finalFollowersCount,
 				following_count: finalFollowingCount,
 				is_following: isFollowing,
 			};
-
-			return result;
 		} catch (error) {
+			console.warn(`Error getting user profile ${userId}:`, error);
 			return null;
 		}
 	}
 
-	static async getUserSneakers(
-		userId: string,
-		page: number = 0
-	): Promise<any[]> {
-		const offset = page * this.PAGE_SIZE;
+	static async getUserSneakers(userId: string): Promise<any[]> {
+		try {
+			const { data: sneakers, error } = await supabase
+				.from('sneakers')
+				.select('*')
+				.eq('user_id', userId)
+				.order('created_at', { ascending: false });
 
-		const { data, error } = await supabase
-			.from('sneakers')
-			.select('*')
-			.eq('user_id', userId)
-			.eq('wishlist', false)
-			.order('created_at', { ascending: false })
-			.range(offset, offset + this.PAGE_SIZE - 1);
-
-		if (error) {
-			throw error;
-		}
-
-		const result = (data || []).map((sneaker) => ({
-			...sneaker,
-			images: this.parseImages(sneaker.images),
-		}));
-
-		return result;
-	}
-
-	private static parseImages(images: any): { id: string; uri: string }[] {
-		if (!images) return [];
-
-		if (
-			Array.isArray(images) &&
-			images.length > 0 &&
-			typeof images[0] === 'object' &&
-			(images[0].uri || images[0].url)
-		) {
-			return images.map((img: any) => ({
-				id: img.id || '',
-				uri: img.uri || img.url || '',
-			}));
-		}
-
-		if (Array.isArray(images)) {
-			return images.map((img) => {
-				if (typeof img === 'string') {
-					try {
-						const parsed = JSON.parse(img);
-						return {
-							id: parsed.id || '',
-							uri: parsed.uri || parsed.url || '',
-						};
-					} catch (error) {
-						return { id: '', uri: img };
-					}
-				}
-				return { id: img.id || '', uri: img.uri || img.url || '' };
-			});
-		}
-
-		if (typeof images === 'string') {
-			try {
-				const parsed = JSON.parse(images);
-				if (Array.isArray(parsed)) {
-					return parsed.map((img: any) => ({
-						id: img.id || '',
-						uri: img.uri || img.url || '',
-					}));
-				}
-				return [
-					{
-						id: parsed.id || '',
-						uri: parsed.uri || parsed.url || '',
-					},
-				];
-			} catch (error) {
-				return [{ id: '', uri: images }];
+			if (error) {
+				console.warn(
+					`Error fetching sneakers for user ${userId}:`,
+					error
+				);
+				return [];
 			}
-		}
 
-		return [];
+			return sneakers || [];
+		} catch (error) {
+			console.warn(`Error getting user sneakers ${userId}:`, error);
+			return [];
+		}
 	}
 }

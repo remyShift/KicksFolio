@@ -235,7 +235,7 @@ export const useAuth = () => {
 			})
 			.then((updatedUser) => {
 				setUser(updatedUser);
-				router.replace('/(app)/(tabs)/user');
+				router.replace('/(app)/(tabs)/profile');
 				return { user: updatedUser };
 			})
 			.catch((error) => {

@@ -1,59 +1,70 @@
-import { ScrollView, View, Button } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { useSession } from '@/context/authContext';
 import { useEffect, useState, useCallback } from 'react';
 import Title from '@/components/ui/text/Title';
 import CollectionCard from '@/components/ui/cards/CollectionCard';
-import FollowingCollectionCard from '@/components/ui/cards/FollowingCollectionCard';
-import MainButton from '@/components/ui/buttons/MainButton';
 import { useModalStore } from '@/store/useModalStore';
 import useToast from '@/hooks/useToast';
 import { useTranslation } from 'react-i18next';
 import { FollowerService, FollowingUser } from '@/services/FollowerService';
 import { UserSearchService } from '@/services/UserSearchService';
+import FollowerTitle from '@/components/ui/text/FollowerTitle';
+import { Sneaker } from '@/types/Sneaker';
 
 interface FollowingWithSneakers {
     user: FollowingUser;
-    sneakers: any[];
+    sneakers: Sneaker[];
 }
 
 export default function Index() {
     const { t } = useTranslation();
     const { user, userSneakers } = useSession();
     const { setModalStep, setIsVisible } = useModalStore();
-    const { showInfoToast, showErrorToast } = useToast();
+    const { showErrorToast } = useToast();
     
     const [followingCollections, setFollowingCollections] = useState<FollowingWithSneakers[]>([]);
-    const [isLoadingFollowing, setIsLoadingFollowing] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const loadFollowingCollections = useCallback(async () => {
-        if (!user?.id) return;
+        if (!user?.id || isLoading) return;
 
-        setIsLoadingFollowing(true);
+        setIsLoading(true);
         
         try {
             const followingUsers = await FollowerService.getFollowingUsers(user.id);
             
+            if (followingUsers.length === 0) {
+                setFollowingCollections([]);
+                return;
+            }
+
             const collectionsWithSneakers = await Promise.all(
                 followingUsers.map(async (followingUser) => {
-                    const sneakers = await UserSearchService.getUserSneakers(followingUser.id);
-                    return {
-                        user: followingUser,
-                        sneakers: sneakers || []
-                    };
+                    try {
+                        const sneakers = await UserSearchService.getUserSneakers(followingUser.id);
+                        return {
+                            user: followingUser,
+                            sneakers: sneakers || []
+                        };
+                    } catch (error) {
+                        // Si erreur pour un utilisateur, on retourne quand même quelque chose
+                        return {
+                            user: followingUser,
+                            sneakers: []
+                        };
+                    }
                 })
             );
 
             setFollowingCollections(collectionsWithSneakers);
+            
         } catch (error) {
             console.error('Error loading following collections:', error);
-            showErrorToast(
-                'Erreur de chargement',
-                'Impossible de charger les collections des utilisateurs suivis.'
-            );
+            // Garder les données existantes en cas d'erreur
         } finally {
-            setIsLoadingFollowing(false);
+            setIsLoading(false);
         }
-    }, [user?.id, showErrorToast]);
+    }, [user?.id, isLoading]);
 
     useEffect(() => {
         if (user && (!userSneakers || userSneakers.length === 0)) {
@@ -66,33 +77,38 @@ export default function Index() {
 
     useEffect(() => {
         loadFollowingCollections();
-    }, [loadFollowingCollections]);
+    }, [user?.id]);
 
     return (
         <ScrollView className="flex-1 pt-32">
-                <View className='flex-1 gap-8'>
-                    <View className="flex-1 gap-4">
-                        <Title content={t('collection.pages.titles.collection')} />
-                        <View className="flex-1 px-4">
-                            <CollectionCard userSneakers={userSneakers} />
-                        </View>
+            <View className='flex-1 gap-8'>
+                <View className="flex-1 gap-4">
+                    <Title content={t('collection.pages.titles.collection')} />
+                    <View className="flex-1 px-4">
+                        <CollectionCard userSneakers={userSneakers} isOwnCollection={true} />
                     </View>
-                    
-                    {followingCollections.length > 0 && (
-                        <View className="flex-1 gap-4">
-                            <Title content="Collections suivies" />
-                            <View className="flex-1 px-4">
-                                {followingCollections.map((collection) => (
-                                    <FollowingCollectionCard
-                                        key={collection.user.id}
-                                        followingUser={collection.user}
+                </View>
+                
+                {followingCollections.length > 0 && (
+                    <View className="flex-1 gap-4">
+                        <View className="flex-1 px-4">
+                            {followingCollections.map((collection) => (
+                                <View className="flex-1 gap-2" key={collection.user.id}>
+                                    <FollowerTitle 
+                                        content={collection.user.username} 
+                                        followersCount={collection.user.followers_count} 
+                                    />
+                                    <CollectionCard
+                                        isOwnCollection={false}
+                                        userId={collection.user.id}
                                         userSneakers={collection.sneakers}
                                     />
-                                ))}
-                            </View>
+                                </View>
+                            ))}
                         </View>
-                    )}
-                </View>
+                    </View>
+                )}
+            </View>
         </ScrollView>
     );
 }

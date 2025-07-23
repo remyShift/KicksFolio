@@ -80,37 +80,56 @@ export class FollowerService {
 			throw error;
 		}
 
-		if (!data) return [];
+		if (!data || data.length === 0) return [];
 
-		// Get additional stats for each user
+		// Version simple sans batch processing
 		const followingUsers = await Promise.all(
 			data.map(async (follow: any) => {
 				const user = follow.users;
 				if (!user) return null;
 
-				// Get counts using direct SQL queries instead of RPC
-				const [followersResult, followingResult] = await Promise.all([
-					supabase
-						.from('followers')
-						.select('*', { count: 'exact', head: true })
-						.eq('following_id', user.id),
-					supabase
-						.from('followers')
-						.select('*', { count: 'exact', head: true })
-						.eq('follower_id', user.id),
-				]);
+				try {
+					const [followersResult, followingResult] =
+						await Promise.all([
+							supabase
+								.from('followers')
+								.select('*', { count: 'exact', head: true })
+								.eq('following_id', user.id),
+							supabase
+								.from('followers')
+								.select('*', { count: 'exact', head: true })
+								.eq('follower_id', user.id),
+						]);
 
-				return {
-					id: user.id,
-					username: user.username,
-					first_name: user.first_name,
-					last_name: user.last_name,
-					profile_picture: user.profile_picture,
-					is_following: true, // Obviously true since we're getting followed users
-					followers_count: Number(followersResult.count || 0),
-					following_count: Number(followingResult.count || 0),
-					followed_at: follow.created_at,
-				};
+					return {
+						id: user.id,
+						username: user.username,
+						first_name: user.first_name,
+						last_name: user.last_name,
+						profile_picture: user.profile_picture,
+						is_following: true,
+						followers_count: Number(followersResult.count || 0),
+						following_count: Number(followingResult.count || 0),
+						followed_at: follow.created_at,
+					};
+				} catch (userError) {
+					console.warn(
+						`Error processing user ${user.id}:`,
+						userError
+					);
+					// Retourner un utilisateur avec des valeurs par défaut
+					return {
+						id: user.id,
+						username: user.username,
+						first_name: user.first_name,
+						last_name: user.last_name,
+						profile_picture: user.profile_picture,
+						is_following: true,
+						followers_count: 0,
+						following_count: 0,
+						followed_at: follow.created_at,
+					};
+				}
 			})
 		);
 
@@ -142,17 +161,19 @@ export class FollowerService {
 			throw error;
 		}
 
-		if (!data) return [];
+		if (!data || data.length === 0) return [];
 
-		// Get additional stats for each user
 		const followers = await Promise.all(
 			data.map(async (follow: any) => {
 				const user = follow.users;
 				if (!user) return null;
 
-				// Use direct SQL queries instead of RPC functions
-				const [followersResult, followingResult, isFollowingResult] =
-					await Promise.all([
+				try {
+					const [
+						followersResult,
+						followingResult,
+						isFollowingResult,
+					] = await Promise.all([
 						supabase
 							.from('followers')
 							.select('*', { count: 'exact', head: true })
@@ -169,17 +190,34 @@ export class FollowerService {
 							.single(),
 					]);
 
-				return {
-					id: user.id,
-					username: user.username,
-					first_name: user.first_name,
-					last_name: user.last_name,
-					profile_picture: user.profile_picture,
-					is_following:
-						!isFollowingResult.error && !!isFollowingResult.data,
-					followers_count: Number(followersResult.count || 0),
-					following_count: Number(followingResult.count || 0),
-				};
+					return {
+						id: user.id,
+						username: user.username,
+						first_name: user.first_name,
+						last_name: user.last_name,
+						profile_picture: user.profile_picture,
+						is_following:
+							!isFollowingResult.error &&
+							!!isFollowingResult.data,
+						followers_count: Number(followersResult.count || 0),
+						following_count: Number(followingResult.count || 0),
+					};
+				} catch (userError) {
+					console.warn(
+						`Error processing follower ${user.id}:`,
+						userError
+					);
+					return {
+						id: user.id,
+						username: user.username,
+						first_name: user.first_name,
+						last_name: user.last_name,
+						profile_picture: user.profile_picture,
+						is_following: false,
+						followers_count: 0,
+						following_count: 0,
+					};
+				}
 			})
 		);
 
