@@ -76,11 +76,7 @@ export default function UserProfileScreen() {
     const { userSearch, sneakers } = userProfile;
 
     const handleSwipeBack = () => {
-        if (router.canGoBack()) {
-            router.back();
-        } else {
-            router.push('/(app)/(tabs)/search');
-        }
+        router.push('/(app)/(tabs)/search');
     };
 
     const swipeGesture = Gesture.Pan()

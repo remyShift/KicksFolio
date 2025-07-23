@@ -3,7 +3,6 @@ import ProfileAvatar from './ProfileAvatar';
 import ProfileStats from './ProfileStats';
 import SocialMediaLinks from './SocialMediaLinks';
 import { User } from '@/types/User';
-import { Sneaker } from '@/types/Sneaker';
 import { useSession } from '@/context/authContext';
 import { SearchUser } from '@/services/UserSearchService';
 import MainButton from '@/components/ui/buttons/MainButton';
@@ -12,11 +11,10 @@ import { useUserProfile } from '@/hooks/useUserProfile';
 
 interface ProfileInfoProps {
     user: User | SearchUser;
-    userSneakers: Sneaker[] | null;
 }
 
-export default function ProfileInfo({ user, userSneakers }: ProfileInfoProps) {
-    const { user: currentUser } = useSession();
+export default function ProfileInfo({ user }: ProfileInfoProps) {
+    const { user: currentUser, userSneakers } = useSession();
     const { t } = useTranslation();
     
     const { userProfile, handleFollowToggle, isFollowLoading } = useUserProfile(user.id);
@@ -25,12 +23,16 @@ export default function ProfileInfo({ user, userSneakers }: ProfileInfoProps) {
 
     const isOwnProfile = currentUser?.id === user.id;
     
-    const displayUser = userProfile?.userSearch || user;
-    const displaySneakers = userProfile?.sneakers || userSneakers || [];
+    // Pour son propre profil, on utilise les données du contexte auth
+    // Pour les autres profils, on utilise les données du hook useUserProfile
+    const displayUser = isOwnProfile ? user : (userProfile?.userSearch || user);
+    const displaySneakers = isOwnProfile 
+        ? (userSneakers || [])
+        : (userProfile?.sneakers || []);
 
     const isFollowing = 'is_following' in displayUser ? displayUser.is_following : false;
     const buttonText = isFollowing ? t('social.unfollow') : t('social.follow');
-    const buttonColor = isFollowing ? 'bg-gray-500' : 'bg-primary';
+    const buttonColor = isFollowing ? 'bg-primary' : 'bg-gray-300';
 
     return (
         <View className="flex-col gap-8 items-center" testID='profile-info'>

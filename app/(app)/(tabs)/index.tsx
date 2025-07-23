@@ -96,7 +96,6 @@ export default function Index() {
                                 <View className="flex-1 gap-2" key={collection.user.id}>
                                     <FollowerTitle 
                                         content={collection.user.username} 
-                                        followersCount={collection.user.followers_count} 
                                     />
                                     <CollectionCard
                                         isOwnCollection={false}

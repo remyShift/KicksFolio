@@ -1,7 +1,7 @@
 import { View, Text } from 'react-native';
 import { Image } from 'expo-image';
 
-export default function FollowerTitle({ content, followersCount }: { content: string, followersCount: number }) {
+export default function FollowerTitle({ content }: { content: string }) {
     return (
         <View className="w-full flex justify-center overflow-hidden">
             <Text className="font-syne-extrabold w-[200%] text-4xl text-primary opacity-15 absolute">
@@ -11,9 +11,6 @@ export default function FollowerTitle({ content, followersCount }: { content: st
                 <View className="flex gap-0">
                     <Text className="font-syne-extrabold text-lg leading-none">
                         @{content}
-                    </Text>
-                    <Text className="font-syne-semibold text-md leading-none">
-                        {followersCount} followers
                     </Text>
                 </View>
                 

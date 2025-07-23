@@ -27,7 +27,7 @@ export default function ProfileHeader({ user, userSneakers, viewMode, setViewMod
         <View className="gap-8">
             {isOwnProfile && <SettingsButton />}
 
-            <ProfileInfo user={user} userSneakers={userSneakers} />
+            <ProfileInfo user={user} />
 
             {userSneakers && userSneakers.length > 0 && (
                 <View className="flex-row mb-8 items-center">
