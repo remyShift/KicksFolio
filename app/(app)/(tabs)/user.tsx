@@ -1,15 +1,13 @@
 import { RefreshControl, ScrollView, View } from 'react-native';
 import { useSession } from '@/context/authContext';
 import { useState, useMemo, useCallback } from 'react';
-import { Sneaker } from '@/types/Sneaker';
+import { Sneaker, ViewMode } from '@/types/Sneaker';
 import { router } from 'expo-router';
 import EmptySneakersState from '@/components/screens/app/profile/displayState/EmptySneakersState';
 import SneakersCardByBrand from '@/components/screens/app/profile/displayState/SneakersCardByBrand';
 import SneakersListView from '@/components/screens/app/profile/displayState/SneakersListView';
 import { useModalStore } from '@/store/useModalStore';
 import ProfileHeader from '@/components/screens/app/profile/ProfileHeader';
-
-type ViewMode = 'card' | 'list';
 
 export default function User() {
   const { user, userSneakers, refreshUserData } = useSession();

@@ -2,6 +2,7 @@
 	"placeholder": "Type at least 2 characters to search users",
 	"inputPlaceholder": "Search users by username or name...",
 	"noResults": "No users found",
+	"emptyState": "Search by username or name...",
 	"error": {
 		"title": "Search Error",
 		"message": "Unable to search users at the moment"

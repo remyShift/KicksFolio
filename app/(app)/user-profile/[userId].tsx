@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { View, Text, ScrollView, RefreshControl } from 'react-native';
+import { View, Text, ScrollView, Pressable, RefreshControl } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { Image } from 'expo-image';
@@ -10,7 +10,11 @@ import BackButton from '@/components/ui/buttons/BackButton';
 import MainButton from '@/components/ui/buttons/MainButton';
 import useToast from '@/hooks/useToast';
 import { useTranslation } from 'react-i18next';
-
+import { ViewMode } from '@/types/Sneaker';
+import SneakersListView from '@/components/screens/app/profile/displayState/SneakersListView';
+import SneakersCardByBrand from '@/components/screens/app/profile/displayState/SneakersCardByBrand';
+import EmptySneakersState from '@/components/screens/app/profile/displayState/EmptySneakersState';
+import ViewToggleButton from '@/components/ui/buttons/ViewToggleButton';
 
 interface UserProfileData {
     profile: SearchUser;
@@ -27,6 +31,7 @@ export default function UserProfileScreen() {
     const [isLoading, setIsLoading] = useState(true);
     const [isFollowLoading, setIsFollowLoading] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
+    const [viewMode, setViewMode] = useState<ViewMode>('card');
 
     const loadUserProfile = useCallback(async (showRefresh: boolean = false) => {
         if (!userId || !currentUser?.id) return;
@@ -47,22 +52,22 @@ export default function UserProfileScreen() {
                 });
             } else {
                 showErrorToast(
-                    'Utilisateur introuvable',
-                    'Cet utilisateur n\'existe pas ou n\'est plus disponible.'
+                    t('userProfile.error.notFound'),
+                    t('userProfile.error.notFoundDesc')
                 );
                 router.back();
             }
         } catch (error) {
             console.error('Error loading user profile:', error);
             showErrorToast(
-                'Erreur de chargement',
-                'Impossible de charger le profil utilisateur.'
+                t('userProfile.error.loadFailed'),
+                t('userProfile.error.loadFailedDesc')
             );
         } finally {
             setIsLoading(false);
             setRefreshing(false);
         }
-    }, [userId, currentUser?.id, showErrorToast]);
+    }, [userId, currentUser?.id, showErrorToast, t]);
 
     const handleFollowToggle = useCallback(async () => {
         if (!userProfile?.profile || !currentUser?.id || isFollowLoading) return;
@@ -73,14 +78,14 @@ export default function UserProfileScreen() {
             if (userProfile.profile.is_following) {
                 await FollowerService.unfollowUser(userProfile.profile.id);
                 showSuccessToast(
-                    'Désabonné',
-                    `Vous ne suivez plus @${userProfile.profile.username}`
+                    t('social.unfollowed'),
+                    t('social.unfollowedDesc', { username: userProfile.profile.username })
                 );
             } else {
                 await FollowerService.followUser(userProfile.profile.id);
                 showSuccessToast(
-                    'Abonné',
-                    `Vous suivez maintenant @${userProfile.profile.username}`
+                    t('social.followed'),
+                    t('social.followedDesc', { username: userProfile.profile.username })
                 );
             }
 
@@ -101,17 +106,31 @@ export default function UserProfileScreen() {
         } catch (error) {
             console.error('Error toggling follow:', error);
             showErrorToast(
-                'Erreur',
-                'Impossible de modifier le suivi pour le moment.'
+                t('social.error.followFailed'),
+                t('social.error.followFailedDesc')
             );
         } finally {
             setIsFollowLoading(false);
         }
-    }, [userProfile?.profile, currentUser?.id, isFollowLoading, showSuccessToast, showErrorToast]);
+    }, [userProfile?.profile, currentUser?.id, isFollowLoading, showSuccessToast, showErrorToast, t]);
 
     const onRefresh = useCallback(() => {
         loadUserProfile(true);
     }, [loadUserProfile]);
+
+    const sneakersByBrand = useMemo(() => {
+        if (!userProfile?.sneakers || userProfile.sneakers.length === 0) return {};
+        
+        return userProfile.sneakers.reduce((acc, sneaker) => {
+            const normalizedBrand = sneaker.brand.toLowerCase().trim();
+            
+            if (!acc[normalizedBrand]) {
+                acc[normalizedBrand] = [];
+            }
+            acc[normalizedBrand].push(sneaker);
+            return acc;
+        }, {} as Record<string, any[]>);
+    }, [userProfile?.sneakers]);
 
     useEffect(() => {
         loadUserProfile();
@@ -121,7 +140,7 @@ export default function UserProfileScreen() {
         return (
             <View className="flex-1 bg-background pt-16 items-center justify-center">
                 <Text className="font-open-sans text-gray-500">
-                    Chargement...
+                    {t('ui.loading')}
                 </Text>
             </View>
         );
@@ -131,7 +150,7 @@ export default function UserProfileScreen() {
         return (
             <View className="flex-1 bg-background pt-16 items-center justify-center">
                 <Text className="font-open-sans text-gray-500">
-                    Utilisateur introuvable
+                    {t('userProfile.error.notFound')}
                 </Text>
             </View>
         );
@@ -180,7 +199,7 @@ export default function UserProfileScreen() {
                                     {sneakers.length}
                                 </Text>
                                 <Text className="font-open-sans text-xs text-gray-500">
-                                    paires
+                                    {t('collection.shoes')}
                                 </Text>
                             </View>
                             <View className="items-center">
@@ -188,7 +207,7 @@ export default function UserProfileScreen() {
                                     {profile.followers_count}
                                 </Text>
                                 <Text className="font-open-sans text-xs text-gray-500">
-                                    followers
+                                    {t('social.followers')}
                                 </Text>
                             </View>
                             <View className="items-center">
@@ -196,7 +215,7 @@ export default function UserProfileScreen() {
                                     {profile.following_count}
                                 </Text>
                                 <Text className="font-open-sans text-xs text-gray-500">
-                                    suivi(e)s
+                                    {t('social.following')}
                                 </Text>
                             </View>
                         </View>
@@ -205,7 +224,7 @@ export default function UserProfileScreen() {
 
                 <View className="mt-4">
                     <MainButton
-                        content={profile.is_following ? 'Se désabonner' : 'Suivre'}
+                        content={profile.is_following ? t('social.unfollow') : t('social.follow')}
                         backgroundColor={profile.is_following ? "bg-gray-200" : "bg-primary"}
                         onPressAction={handleFollowToggle}
                     />
@@ -225,44 +244,34 @@ export default function UserProfileScreen() {
                 <View className="p-4">
                     {sneakers.length > 0 ? (
                         <>
-                            <Text className="font-open-sans-bold text-lg mb-4">
-                                Collection
-                            </Text>
-                            <View className="flex-row flex-wrap justify-between">
-                                {sneakers.map((sneaker, index) => (
-                                    <View key={sneaker.id || index} className="w-[48%] mb-4">
-                                        <View className="bg-white rounded-lg p-3 shadow-sm">
-                                            {sneaker.images && sneaker.images[0] && (
-                                                <Image
-                                                    source={{ uri: sneaker.images[0].uri }}
-                                                    style={{
-                                                        width: '100%',
-                                                        height: 120,
-                                                        borderRadius: 8,
-                                                        marginBottom: 8
-                                                    }}
-                                                    contentFit="cover"
-                                                    cachePolicy="memory-disk"
-                                                />
-                                            )}
-                                            <Text className="font-open-sans-bold text-sm text-gray-900" numberOfLines={2}>
-                                                {sneaker.brand} {sneaker.model}
-                                            </Text>
-                                            <Text className="font-open-sans text-xs text-gray-500 mt-1">
-                                                EU {sneaker.size_eu} • US {sneaker.size_us}
-                                            </Text>
-                                        </View>
-                                    </View>
-                                ))}
+                            <View className="flex-row items-center justify-between mb-4">
+                                <Text className="font-open-sans-bold text-lg">
+                                    {t('collection.pages.titles.collection')}
+                                </Text>
+                                <ViewToggleButton 
+                                    currentMode={viewMode}
+                                    onToggle={setViewMode}
+                                />
                             </View>
+
+                            {viewMode === 'list' ? (
+                                <SneakersListView 
+                                    sneakers={sneakers}
+                                    onSneakerPress={() => {}} // Read-only for other users
+                                />
+                            ) : (
+                                <SneakersCardByBrand 
+                                    sneakersByBrand={sneakersByBrand}
+                                    onSneakerPress={() => {}} // Read-only for other users
+                                />
+                            )}
                         </>
                     ) : (
-                        <View className="items-center justify-center mt-20">
-                            <Feather name="box" size={64} color="#ccc" />
-                            <Text className="font-open-sans text-lg text-gray-500 mt-4 text-center">
-                                @{profile.username} n'a pas encore ajouté de paires
-                            </Text>
-                        </View>
+                        <EmptySneakersState 
+                            username={profile.username}
+                            isOwnProfile={false}
+                            isReadOnly={true}
+                        />
                     )}
                 </View>
             </ScrollView>

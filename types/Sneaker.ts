@@ -1,3 +1,5 @@
+export type ViewMode = 'card' | 'list';
+
 export enum SneakerBrand {
 	Nike = 'Nike',
 	Adidas = 'Adidas',

@@ -11,3 +11,5 @@ export * from './useSneakersFiltering';
 export * from './useToast';
 export * from './useAppInitialization';
 export * from './useSizeConversion';
+export * from './useUserSearch';
+export * from './useUserProfile';
