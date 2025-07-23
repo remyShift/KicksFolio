@@ -2,16 +2,17 @@ import { View, Text } from 'react-native';
 import { useSession } from '@/context/authContext';
 import { useTranslation } from 'react-i18next';
 import { useCurrencyStore } from '@/store/useCurrencyStore';
+import { Sneaker } from '@/types/Sneaker';
 
 interface ProfileStatsProps {
     sneakersCount: number;
     friendsCount: number;
+    sneakers: Sneaker[];
 }
 
-export default function ProfileStats({ sneakersCount, friendsCount }: ProfileStatsProps) {
-    const { userSneakers } = useSession();
+export default function ProfileStats({ sneakersCount, friendsCount, sneakers }: ProfileStatsProps) {
     const { t } = useTranslation();
-    const totalValue = userSneakers?.reduce((acc, sneaker) => acc + (sneaker.estimated_value || 0), 0) || 0;
+    const totalValue = sneakers?.reduce((acc, sneaker) => acc + (sneaker.estimated_value || 0), 0) || 0;
 
     const { formattedPrice } = useCurrencyStore();
 

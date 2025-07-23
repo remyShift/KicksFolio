@@ -9,7 +9,7 @@ import SneakersListView from '@/components/screens/app/profile/displayState/Snea
 import { useModalStore } from '@/store/useModalStore';
 import ProfileHeader from '@/components/screens/app/profile/ProfileHeader';
 
-export default function User() {
+export default function Profile() {
   const { user, userSneakers, refreshUserData } = useSession();
   const { setModalStep, setIsVisible, setCurrentSneaker } = useModalStore();
   const [refreshing, setRefreshing] = useState(false);
@@ -48,10 +48,6 @@ export default function User() {
     setIsVisible(true);
   };
 
-  const handleMenuPress = useCallback(() => {
-    router.push('/settings');
-  }, []);
-
   if (!user) {
     return;
   }
@@ -70,7 +66,7 @@ export default function User() {
           testID="refresh-control"
         />
     }>
-      <ProfileHeader user={user} userSneakers={userSneakers || []} viewMode={viewMode} setViewMode={setViewMode} onMenuPress={handleMenuPress} />
+      <ProfileHeader user={user} userSneakers={userSneakers || []} viewMode={viewMode} setViewMode={setViewMode} />
 
       {!userSneakers || userSneakers.length === 0 ? (
           <EmptySneakersState onAddPress={handleAddSneaker} />

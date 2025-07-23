@@ -5,7 +5,7 @@ export interface SearchUser {
 	username: string;
 	first_name: string;
 	last_name: string;
-	profile_picture_url?: string;
+	profile_picture?: string;
 	is_following: boolean;
 	followers_count: number;
 	following_count: number;
@@ -54,7 +54,7 @@ export class UserSearchService {
 				username,
 				first_name,
 				last_name,
-				profile_picture_url,
+				profile_picture,
 				instagram_username,
 				social_media_visibility
 			`
@@ -143,7 +143,7 @@ export class UserSearchService {
 					username,
 					first_name,
 					last_name,
-					profile_picture_url,
+					profile_picture,
 					social_media_visibility,
 					instagram_username,
 					social_media_visibility

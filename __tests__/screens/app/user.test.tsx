@@ -1,4 +1,4 @@
-import UserPage from '@/app/(app)/(tabs)/user';
+import UserPage from '@/app/(app)/(tabs)/profile';
 import { render, screen, fireEvent, act } from '@testing-library/react-native';
 import { ReactTestInstance } from 'react-test-renderer';
 import { mockSneakers } from './appSetup';

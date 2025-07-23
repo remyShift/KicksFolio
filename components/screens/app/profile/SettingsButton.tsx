@@ -1,16 +1,18 @@
 import { View, Pressable } from 'react-native';
 import { SimpleLineIcons } from '@expo/vector-icons';
+import { router } from 'expo-router';
+import { useCallback } from 'react';
 
-interface ProfileUpperHeaderProps {
-    onMenuPress: () => void;
-}
+export default function SettingsButton() {
+    const handleMenuPress = useCallback(() => {
+        router.push('/settings');
+    }, []);
 
-export default function SettingsButton({ onMenuPress }: ProfileUpperHeaderProps) {
     return (
         <View className="flex-row justify-center items-center" testID="profile-header">
             <Pressable 
                 className="p-4 absolute right-0 -top-0  z-50"
-                onPress={onMenuPress}
+                onPress={handleMenuPress}
                 testID="menu-button"
             >
                 <SimpleLineIcons name="settings" size={24} color="black" />

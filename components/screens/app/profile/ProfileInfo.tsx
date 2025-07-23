@@ -23,7 +23,7 @@ export default function ProfileInfo({ user, userSneakers }: ProfileInfoProps) {
         <View className="flex-col gap-8 items-center" testID='profile-info'>
             <View className="flex-col gap-2 items-center">
                 <ProfileAvatar
-                    profilePictureUrl={user.profile_picture_url || null} 
+                    profilePictureUrl={user.profile_picture || null} 
                 />
                 
                 <View className="flex-row gap-4 items-center">
@@ -45,6 +45,7 @@ export default function ProfileInfo({ user, userSneakers }: ProfileInfoProps) {
             <ProfileStats 
                 sneakersCount={userSneakers?.length || 0}
                 friendsCount={0}
+                sneakers={userSneakers || []}
             />
         </View>
     );
