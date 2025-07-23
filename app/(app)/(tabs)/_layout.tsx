@@ -41,10 +41,10 @@ export default function TabLayout() {
                 }}
             />
             <Tabs.Screen
-                name="friends"
+                name="search"
                 options={{
-                    title: t('navigation.navbar.friends'),
-                    tabBarIcon: ({ color }) => <Feather name="users" size={25} color={color} />,
+                    title: t('navigation.navbar.search'),
+                    tabBarIcon: ({ color }) => <Feather name="search" size={25} color={color} />,
                 }}
             />
             <Tabs.Screen

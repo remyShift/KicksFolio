@@ -7,6 +7,18 @@
 		"addFriends": "Ajoutes des amis",
 		"noFriends": "Pas encore d'amis"
 	},
+	"followers": "followers",
+	"following": "suivi(e)s",
+	"follow": "Suivre",
+	"unfollow": "Se désabonner",
+	"followed": "Abonné",
+	"unfollowed": "Désabonné",
+	"followedDesc": "Vous suivez maintenant @{{username}}",
+	"unfollowedDesc": "Vous ne suivez plus @{{username}}",
+	"error": {
+		"followFailed": "Erreur de suivi",
+		"followFailedDesc": "Impossible de suivre/se désabonner de cet utilisateur pour le moment"
+	},
 	"wishlist": {
 		"title": "Wishlist",
 		"empty": {

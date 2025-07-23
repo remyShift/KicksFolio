@@ -1,0 +1,9 @@
+{
+	"placeholder": "Tapez au moins 2 caractères pour rechercher des utilisateurs",
+	"inputPlaceholder": "Rechercher des utilisateurs par nom d'utilisateur ou nom...",
+	"noResults": "Aucun utilisateur trouvé",
+	"error": {
+		"title": "Erreur de recherche",
+		"message": "Impossible de rechercher des utilisateurs pour le moment"
+	}
+}

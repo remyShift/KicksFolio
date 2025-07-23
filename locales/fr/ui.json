@@ -11,6 +11,7 @@
 		"confirm": "Confirmer",
 		"close": "Fermer"
 	},
+	"loading": "Chargement...",
 	"labels": {
 		"value": "Valeur estimée"
 	},
