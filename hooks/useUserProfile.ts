@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { UserSearchService, SearchUser } from '@/services/UserSearchService';
 import { FollowerService } from '@/services/FollowerService';
 import { useSession } from '@/context/authContext';
@@ -40,6 +40,7 @@ export const useUserProfile = (
 	const [isLoading, setIsLoading] = useState(true);
 	const [isFollowLoading, setIsFollowLoading] = useState(false);
 	const [refreshing, setRefreshing] = useState(false);
+	const isLoadingRef = useRef(false); // Protection contre les appels multiples
 
 	const loadUserProfile = useCallback(
 		async (showRefresh: boolean = false) => {
@@ -47,6 +48,7 @@ export const useUserProfile = (
 				userId,
 				currentUserId: currentUser?.id,
 				showRefresh,
+				isAlreadyLoading: isLoadingRef.current,
 			});
 
 			if (!userId || !currentUser?.id) {
@@ -59,6 +61,14 @@ export const useUserProfile = (
 				);
 				return;
 			}
+
+			// Éviter les appels multiples simultanés
+			if (isLoadingRef.current && !showRefresh) {
+				console.log('⚠️ [useUserProfile] Already loading, skipping...');
+				return;
+			}
+
+			isLoadingRef.current = true;
 
 			if (showRefresh) setRefreshing(true);
 			else setIsLoading(true);
@@ -107,11 +117,12 @@ export const useUserProfile = (
 				console.log(
 					'🏁 [useUserProfile] Loading finished, setting states to false'
 				);
+				isLoadingRef.current = false;
 				setIsLoading(false);
 				setRefreshing(false);
 			}
 		},
-		[userId, currentUser?.id, showErrorToast]
+		[userId, currentUser?.id] // Suppression de showErrorToast des dépendances
 	);
 
 	const handleFollowToggle = useCallback(async () => {
@@ -174,8 +185,10 @@ export const useUserProfile = (
 		console.log(
 			'🚀 [useUserProfile] useEffect triggered, calling loadUserProfile'
 		);
-		loadUserProfile();
-	}, [loadUserProfile]);
+		if (userId && currentUser?.id) {
+			loadUserProfile();
+		}
+	}, [userId, currentUser?.id]); // Dépendances simplifiées pour éviter la boucle infinie
 
 	return {
 		userProfile,
