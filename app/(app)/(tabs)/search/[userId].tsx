@@ -1,16 +1,13 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { View, Text, ScrollView, RefreshControl } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
-import { Feather } from '@expo/vector-icons';
-import { Image } from 'expo-image';
-import BackButton from '@/components/ui/buttons/BackButton';
-import MainButton from '@/components/ui/buttons/MainButton';
 import { useTranslation } from 'react-i18next';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import { runOnJS } from 'react-native-reanimated';
 import { Sneaker, ViewMode } from '@/types/Sneaker';
 import SneakersListView from '@/components/screens/app/profile/displayState/SneakersListView';
 import SneakersCardByBrand from '@/components/screens/app/profile/displayState/SneakersCardByBrand';
 import EmptySneakersState from '@/components/screens/app/profile/displayState/EmptySneakersState';
-import ViewToggleButton from '@/components/ui/buttons/ViewToggleButton';
 import { useUserProfile } from '@/hooks/useUserProfile';
 import ProfileHeader from '@/components/screens/app/profile/ProfileHeader';
 import { useModalStore } from '@/store/useModalStore';
@@ -44,7 +41,7 @@ export default function UserProfileScreen() {
 
     if (isLoading) {
         return (
-            <View className="flex-1 bg-background pt-16 items-center justify-center">
+            <View className="flex-1 bg-background pt-32 items-center justify-center">
                 <Text className="font-open-sans text-gray-500">
                     {t('ui.loading')}
                 </Text>
@@ -54,7 +51,7 @@ export default function UserProfileScreen() {
 
     if (!userProfile) {
         return (
-            <View className="flex-1 bg-background pt-16 items-center justify-center">
+            <View className="flex-1 bg-background pt-32 items-center justify-center">
                 <Text className="font-open-sans text-gray-500">
                     {t('userProfile.error.notFound')}
                 </Text>
@@ -73,26 +70,43 @@ export default function UserProfileScreen() {
         if (userProfile) {
             await refreshUserProfile();
         }
-            setRefreshing(false);
-        };
+        setRefreshing(false);
+    };
 
     const { userSearch, sneakers } = userProfile;
 
+    // Fonction pour naviguer vers la page précédente
+    const handleSwipeBack = () => {
+        if (router.canGoBack()) {
+            router.back();
+        } else {
+            router.push('/(app)/(tabs)/search');
+        }
+    };
+
+    const swipeGesture = Gesture.Pan()
+        .onEnd((event) => {
+            if (event.velocityX > 500 && Math.abs(event.velocityY) < Math.abs(event.velocityX)) {
+                runOnJS(handleSwipeBack)();
+            }
+        });
+
     return (
-        <ScrollView
-            className="flex-1 mt-16"
-            testID="scroll-view"
-            scrollEnabled={true}
-            refreshControl={
-                <RefreshControl 
-                refreshing={refreshing} 
-                onRefresh={onRefresh}
-                tintColor="#FF6B6B"
-                progressViewOffset={60}
-                testID="refresh-control"
-                />
-            }>
-            <ProfileHeader user={userSearch} userSneakers={sneakers || []} viewMode={viewMode} setViewMode={setViewMode} onMenuPress={() => {}} />
+        <GestureDetector gesture={swipeGesture}>
+            <ScrollView
+                className="flex-1 pt-24"
+                testID="scroll-view"
+                scrollEnabled={true}
+                refreshControl={
+                    <RefreshControl 
+                    refreshing={refreshing} 
+                    onRefresh={onRefresh}
+                    tintColor="#FF6B6B"
+                    progressViewOffset={60}
+                    testID="refresh-control"
+                    />
+                }>
+            <ProfileHeader user={userSearch} userSneakers={sneakers || []} viewMode={viewMode} setViewMode={setViewMode} />
         
             {!sneakers || sneakers.length === 0 ? (
                 <EmptySneakersState onAddPress={() => {}} />
@@ -115,5 +129,6 @@ export default function UserProfileScreen() {
                 </View>
             )}
             </ScrollView>
-        );
-}
+        </GestureDetector>
+    );
+} 

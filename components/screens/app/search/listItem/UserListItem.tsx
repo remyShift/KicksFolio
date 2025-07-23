@@ -12,7 +12,7 @@ interface UserListItemProps {
 }
 export default function UserListItem({ searchUser, testID }: UserListItemProps) {
     const handlePress = useCallback(() => {
-        router.push(`/(app)/user-profile/${searchUser.id}`);
+        router.push(`/(app)/(tabs)/search/${searchUser.id}`);
     }, [searchUser.id]);
 
     return (

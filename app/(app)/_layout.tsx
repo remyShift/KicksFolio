@@ -10,7 +10,6 @@ export default function AppLayout() {
                 screenOptions={{ headerShown: false }}
             >
                 <Stack.Screen name="(tabs)" />
-                <Stack.Screen name="user-profile/[userId]" options={{ animationTypeForReplace: 'push' }} />
                 <Stack.Screen name="settings" options={{ animationTypeForReplace: 'push' }} />
                 <Stack.Screen name="edit-profile" options={{ animationTypeForReplace: 'push' }} />
                 <Stack.Screen name="social-media" options={{ animationTypeForReplace: 'push' }} />

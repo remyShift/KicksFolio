@@ -8,8 +8,6 @@ import Title from "@/components/ui/text/Title";
 import { useTranslation } from "react-i18next";
 import { SearchUser } from "@/services/UserSearchService";
 import { useSession } from "@/context/authContext";
-import BackButton from "@/components/ui/buttons/BackButton";
-import { router } from "expo-router";
 
 type ViewMode = 'card' | 'list';
 
@@ -27,13 +25,7 @@ export default function ProfileHeader({ user, userSneakers, viewMode, setViewMod
 
   return (
         <View className="gap-8">
-            {isOwnProfile ? (
-                <SettingsButton />
-            ) : (
-              <View className="flex-row justify-start items-center">
-                <BackButton onPressAction={() => router.canGoBack() ? router.back() : router.push('/(app)/(tabs)/search')} />
-              </View>
-            )}
+            {isOwnProfile && <SettingsButton />}
 
             <ProfileInfo user={user} userSneakers={userSneakers} />
 
