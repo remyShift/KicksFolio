@@ -28,6 +28,12 @@ export const useUserProfile = (
 	const { user: currentUser } = useSession();
 	const { showSuccessToast, showErrorToast } = useToast();
 
+	console.log('🔑 [useUserProfile] Hook initialized', {
+		userId,
+		hasCurrentUser: !!currentUser,
+		currentUserId: currentUser?.id,
+	});
+
 	const [userProfile, setUserProfile] = useState<UserProfileData | null>(
 		null
 	);
@@ -37,23 +43,51 @@ export const useUserProfile = (
 
 	const loadUserProfile = useCallback(
 		async (showRefresh: boolean = false) => {
-			if (!userId || !currentUser?.id) return;
+			console.log('🔄 [useUserProfile] loadUserProfile started', {
+				userId,
+				currentUserId: currentUser?.id,
+				showRefresh,
+			});
+
+			if (!userId || !currentUser?.id) {
+				console.log(
+					'❌ [useUserProfile] Missing userId or currentUser',
+					{
+						userId,
+						currentUserId: currentUser?.id,
+					}
+				);
+				return;
+			}
 
 			if (showRefresh) setRefreshing(true);
 			else setIsLoading(true);
 
 			try {
+				console.log('📡 [useUserProfile] Calling UserSearchService...');
+
 				const [profile, sneakers] = await Promise.all([
 					UserSearchService.getUserProfile(userId, currentUser.id),
 					UserSearchService.getUserSneakers(userId),
 				]);
+
+				console.log('✅ [useUserProfile] API calls completed', {
+					profile: profile ? 'Found' : 'Not found',
+					sneakersCount: sneakers?.length || 0,
+				});
 
 				if (profile) {
 					setUserProfile({
 						profile,
 						sneakers: sneakers || [],
 					});
+					console.log(
+						'✅ [useUserProfile] User profile set successfully'
+					);
 				} else {
+					console.log(
+						'❌ [useUserProfile] Profile is null, showing error'
+					);
 					showErrorToast(
 						'Utilisateur introuvable',
 						"Cet utilisateur n'existe pas ou n'est plus disponible."
@@ -61,12 +95,18 @@ export const useUserProfile = (
 					router.back();
 				}
 			} catch (error) {
-				console.error('Error loading user profile:', error);
+				console.error(
+					'❌ [useUserProfile] Error loading user profile:',
+					error
+				);
 				showErrorToast(
 					'Erreur de chargement',
 					'Impossible de charger le profil utilisateur.'
 				);
 			} finally {
+				console.log(
+					'🏁 [useUserProfile] Loading finished, setting states to false'
+				);
 				setIsLoading(false);
 				setRefreshing(false);
 			}
@@ -131,6 +171,9 @@ export const useUserProfile = (
 	}, [loadUserProfile]);
 
 	useEffect(() => {
+		console.log(
+			'🚀 [useUserProfile] useEffect triggered, calling loadUserProfile'
+		);
 		loadUserProfile();
 	}, [loadUserProfile]);
 

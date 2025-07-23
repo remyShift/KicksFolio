@@ -5,7 +5,6 @@ import UserListItem from "./listItem/UserListItem";
 import SearchEmptyState from "./SearchEmptyState";
 import SearchLoadingFooter from "./SearchLoadingFooter";
 import { useCallback } from "react";
-import { router } from "expo-router";
 
 export default function SearchResultsList() {
     const { searchResults, isLoading, refreshing, onRefresh, loadMore } = useUserSearch();
@@ -28,7 +27,6 @@ export default function SearchResultsList() {
             hasResults={searchResults.length > 0}
         />
     ), [isLoading, searchResults.length]);
-
 
     return (
         <FlatList

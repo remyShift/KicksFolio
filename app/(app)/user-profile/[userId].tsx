@@ -1,122 +1,48 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { View, Text, ScrollView, Pressable, RefreshControl } from 'react-native';
+import React, { useState, useMemo } from 'react';
+import { View, Text, ScrollView, RefreshControl } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { Image } from 'expo-image';
-import { useSession } from '@/context/authContext';
-import { UserSearchService, SearchUser } from '@/services/UserSearchService';
-import { FollowerService } from '@/services/FollowerService';
 import BackButton from '@/components/ui/buttons/BackButton';
 import MainButton from '@/components/ui/buttons/MainButton';
-import useToast from '@/hooks/useToast';
 import { useTranslation } from 'react-i18next';
 import { ViewMode } from '@/types/Sneaker';
 import SneakersListView from '@/components/screens/app/profile/displayState/SneakersListView';
 import SneakersCardByBrand from '@/components/screens/app/profile/displayState/SneakersCardByBrand';
 import EmptySneakersState from '@/components/screens/app/profile/displayState/EmptySneakersState';
 import ViewToggleButton from '@/components/ui/buttons/ViewToggleButton';
-
-interface UserProfileData {
-    profile: SearchUser;
-    sneakers: any[];
-}
+import { useUserProfile } from '@/hooks/useUserProfile';
 
 export default function UserProfileScreen() {
     const { userId } = useLocalSearchParams<{ userId: string }>();
-    const { user: currentUser } = useSession();
-    const { showSuccessToast, showErrorToast } = useToast();
     const { t } = useTranslation();
-
-    const [userProfile, setUserProfile] = useState<UserProfileData | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [isFollowLoading, setIsFollowLoading] = useState(false);
-    const [refreshing, setRefreshing] = useState(false);
     const [viewMode, setViewMode] = useState<ViewMode>('card');
 
-    const loadUserProfile = useCallback(async (showRefresh: boolean = false) => {
-        if (!userId || !currentUser?.id) return;
+    console.log('🏠 [UserProfileScreen] Component rendered', {
+        userId,
+        hasUserId: !!userId,
+    });
 
-        if (showRefresh) setRefreshing(true);
-        else setIsLoading(true);
+    // Utiliser le hook personnalisé pour gérer le profil utilisateur
+    const {
+        userProfile,
+        isLoading,
+        isFollowLoading,
+        refreshing,
+        handleFollowToggle,
+        onRefresh,
+    } = useUserProfile(userId);
 
-        try {
-            const [profile, sneakers] = await Promise.all([
-                UserSearchService.getUserProfile(userId, currentUser.id),
-                UserSearchService.getUserSneakers(userId)
-            ]);
-
-            if (profile) {
-                setUserProfile({
-                    profile,
-                    sneakers: sneakers || []
-                });
-            } else {
-                showErrorToast(
-                    t('userProfile.error.notFound'),
-                    t('userProfile.error.notFoundDesc')
-                );
-                router.back();
-            }
-        } catch (error) {
-            console.error('Error loading user profile:', error);
-            showErrorToast(
-                t('userProfile.error.loadFailed'),
-                t('userProfile.error.loadFailedDesc')
-            );
-        } finally {
-            setIsLoading(false);
-            setRefreshing(false);
-        }
-    }, [userId, currentUser?.id, showErrorToast, t]);
-
-    const handleFollowToggle = useCallback(async () => {
-        if (!userProfile?.profile || !currentUser?.id || isFollowLoading) return;
-
-        setIsFollowLoading(true);
-
-        try {
-            if (userProfile.profile.is_following) {
-                await FollowerService.unfollowUser(userProfile.profile.id);
-                showSuccessToast(
-                    t('social.unfollowed'),
-                    t('social.unfollowedDesc', { username: userProfile.profile.username })
-                );
-            } else {
-                await FollowerService.followUser(userProfile.profile.id);
-                showSuccessToast(
-                    t('social.followed'),
-                    t('social.followedDesc', { username: userProfile.profile.username })
-                );
-            }
-
-            // Update local state
-            setUserProfile(prev => {
-                if (!prev) return prev;
-                return {
-                    ...prev,
-                    profile: {
-                        ...prev.profile,
-                        is_following: !prev.profile.is_following,
-                        followers_count: prev.profile.is_following 
-                            ? prev.profile.followers_count - 1 
-                            : prev.profile.followers_count + 1
-                    }
-                };
-            });
-        } catch (error) {
-            console.error('Error toggling follow:', error);
-            showErrorToast(
-                t('social.error.followFailed'),
-                t('social.error.followFailedDesc')
-            );
-        } finally {
-            setIsFollowLoading(false);
-        }
-    }, [userProfile?.profile, currentUser?.id, isFollowLoading, showSuccessToast, showErrorToast, t]);
-
-    const onRefresh = useCallback(() => {
-        loadUserProfile(true);
-    }, [loadUserProfile]);
+    console.log('📊 [UserProfileScreen] Hook states:', {
+        hasUserProfile: !!userProfile,
+        isLoading,
+        isFollowLoading,
+        refreshing,
+        profileData: userProfile ? {
+            username: userProfile.profile.username,
+            sneakersCount: userProfile.sneakers.length,
+        } : null,
+    });
 
     const sneakersByBrand = useMemo(() => {
         if (!userProfile?.sneakers || userProfile.sneakers.length === 0) return {};
@@ -132,11 +58,10 @@ export default function UserProfileScreen() {
         }, {} as Record<string, any[]>);
     }, [userProfile?.sneakers]);
 
-    useEffect(() => {
-        loadUserProfile();
-    }, [loadUserProfile]);
+
 
     if (isLoading) {
+        console.log('⏳ [UserProfileScreen] Showing loading screen');
         return (
             <View className="flex-1 bg-background pt-16 items-center justify-center">
                 <Text className="font-open-sans text-gray-500">
@@ -147,6 +72,7 @@ export default function UserProfileScreen() {
     }
 
     if (!userProfile) {
+        console.log('❌ [UserProfileScreen] Showing not found screen');
         return (
             <View className="flex-1 bg-background pt-16 items-center justify-center">
                 <Text className="font-open-sans text-gray-500">
@@ -155,6 +81,8 @@ export default function UserProfileScreen() {
             </View>
         );
     }
+
+    console.log('✅ [UserProfileScreen] Rendering profile content');
 
     const { profile, sneakers } = userProfile;
 
@@ -268,9 +196,7 @@ export default function UserProfileScreen() {
                         </>
                     ) : (
                         <EmptySneakersState 
-                            username={profile.username}
-                            isOwnProfile={false}
-                            isReadOnly={true}
+                            onAddPress={() => {}} 
                         />
                     )}
                 </View>

@@ -2,7 +2,6 @@ import Title from "@/components/ui/text/Title";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import SearchInput from "./SearchInput";
-import { useUserSearch } from "@/hooks/useUserSearch";
 
 export default function SearchHeader() {
     const { t } = useTranslation();

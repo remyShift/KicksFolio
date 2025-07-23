@@ -88,9 +88,16 @@ export class FollowerService {
 				const user = follow.users;
 				if (!user) return null;
 
+				// Get counts using direct SQL queries instead of RPC
 				const [followersResult, followingResult] = await Promise.all([
-					supabase.rpc('get_followers_count', { user_uuid: user.id }),
-					supabase.rpc('get_following_count', { user_uuid: user.id }),
+					supabase
+						.from('followers')
+						.select('*', { count: 'exact', head: true })
+						.eq('following_id', user.id),
+					supabase
+						.from('followers')
+						.select('*', { count: 'exact', head: true })
+						.eq('follower_id', user.id),
 				]);
 
 				return {
@@ -100,8 +107,8 @@ export class FollowerService {
 					last_name: user.last_name,
 					profile_picture: user.profile_picture,
 					is_following: true, // Obviously true since we're getting followed users
-					followers_count: Number(followersResult.data || 0),
-					following_count: Number(followingResult.data || 0),
+					followers_count: Number(followersResult.count || 0),
+					following_count: Number(followingResult.count || 0),
 					followed_at: follow.created_at,
 				};
 			})
@@ -143,18 +150,23 @@ export class FollowerService {
 				const user = follow.users;
 				if (!user) return null;
 
+				// Use direct SQL queries instead of RPC functions
 				const [followersResult, followingResult, isFollowingResult] =
 					await Promise.all([
-						supabase.rpc('get_followers_count', {
-							user_uuid: user.id,
-						}),
-						supabase.rpc('get_following_count', {
-							user_uuid: user.id,
-						}),
-						supabase.rpc('is_following', {
-							follower_uuid: userId,
-							following_uuid: user.id,
-						}),
+						supabase
+							.from('followers')
+							.select('*', { count: 'exact', head: true })
+							.eq('following_id', user.id),
+						supabase
+							.from('followers')
+							.select('*', { count: 'exact', head: true })
+							.eq('follower_id', user.id),
+						supabase
+							.from('followers')
+							.select('id')
+							.eq('follower_id', userId)
+							.eq('following_id', user.id)
+							.single(),
 					]);
 
 				return {
@@ -163,9 +175,10 @@ export class FollowerService {
 					first_name: user.first_name,
 					last_name: user.last_name,
 					profile_picture: user.profile_picture,
-					is_following: Boolean(isFollowingResult.data || false),
-					followers_count: Number(followersResult.data || 0),
-					following_count: Number(followingResult.data || 0),
+					is_following:
+						!isFollowingResult.error && !!isFollowingResult.data,
+					followers_count: Number(followersResult.count || 0),
+					following_count: Number(followingResult.count || 0),
 				};
 			})
 		);
@@ -177,30 +190,37 @@ export class FollowerService {
 		followerId: string,
 		followingId: string
 	): Promise<boolean> {
-		const { data, error } = await supabase.rpc('is_following', {
-			follower_uuid: followerId,
-			following_uuid: followingId,
-		});
+		const { data, error } = await supabase
+			.from('followers')
+			.select('id')
+			.eq('follower_id', followerId)
+			.eq('following_id', followingId)
+			.single();
 
 		if (error) {
-			console.error('Error checking follow status:', error);
 			return false;
 		}
 
-		return Boolean(data);
+		return !!data;
 	}
 
 	static async getFollowCounts(
 		userId: string
 	): Promise<{ followers: number; following: number }> {
 		const [followersResult, followingResult] = await Promise.all([
-			supabase.rpc('get_followers_count', { user_uuid: userId }),
-			supabase.rpc('get_following_count', { user_uuid: userId }),
+			supabase
+				.from('followers')
+				.select('*', { count: 'exact', head: true })
+				.eq('following_id', userId),
+			supabase
+				.from('followers')
+				.select('*', { count: 'exact', head: true })
+				.eq('follower_id', userId),
 		]);
 
 		return {
-			followers: Number(followersResult.data || 0),
-			following: Number(followingResult.data || 0),
+			followers: Number(followersResult.count || 0),
+			following: Number(followingResult.count || 0),
 		};
 	}
 }

@@ -3,6 +3,7 @@ import { SearchUser } from '@/services/UserSearchService';
 import UserActions from './UserActions';
 import UserAvatar from './UserAvatar';
 import UserInfo from './UserInfo';
+import { useCallback } from 'react';
 import { router } from 'expo-router';
 
 interface UserListItemProps {
@@ -10,9 +11,9 @@ interface UserListItemProps {
     testID?: string;
 }
 export default function UserListItem({ searchUser, testID }: UserListItemProps) {
-    const handlePress = () => {
+    const handlePress = useCallback(() => {
         router.push(`/(app)/user-profile/${searchUser.id}`);
-    };
+    }, [searchUser.id]);
 
     return (
         <Pressable
