@@ -5,9 +5,10 @@ import SocialMediaLinks from './SocialMediaLinks';
 import { User } from '@/types/User';
 import { Sneaker } from '@/types/Sneaker';
 import { useSession } from '@/context/authContext';
+import { SearchUser } from '@/services/UserSearchService';
 
 interface ProfileInfoProps {
-    user: User | null;
+    user: User | SearchUser;
     userSneakers: Sneaker[] | null;
 }
 
@@ -21,8 +22,8 @@ export default function ProfileInfo({ user, userSneakers }: ProfileInfoProps) {
     return (
         <View className="flex-col gap-8 items-center" testID='profile-info'>
             <View className="flex-col gap-2 items-center">
-                <ProfileAvatar 
-                    profilePictureUrl={user.profile_picture_url} 
+                <ProfileAvatar
+                    profilePictureUrl={user.profile_picture_url || null} 
                 />
                 
                 <View className="flex-row gap-4 items-center">

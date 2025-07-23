@@ -6,11 +6,12 @@ import { User } from "@/types/User";
 import SettingsButton from "./SettingsButton";
 import Title from "@/components/ui/text/Title";
 import { useTranslation } from "react-i18next";
+import { SearchUser } from "@/services/UserSearchService";
 
 type ViewMode = 'card' | 'list';
 
 interface ProfileHeaderProps {
-  user: User;
+  user: User | SearchUser;
   userSneakers: Sneaker[];
   viewMode: ViewMode;
   setViewMode: (mode: ViewMode) => void;

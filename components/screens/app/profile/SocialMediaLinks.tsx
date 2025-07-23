@@ -2,9 +2,10 @@ import { View, Text, TouchableOpacity, Linking, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { User } from '@/types/User';
 import { useTranslation } from 'react-i18next';
+import { SearchUser } from '@/services/UserSearchService';
 
 interface SocialMediaLinksProps {
-    user: User;
+    user: User | SearchUser;
     isOwnProfile?: boolean;
 }
 

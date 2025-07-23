@@ -4,27 +4,24 @@ import { FollowerService } from '@/services/FollowerService';
 import { useSession } from '@/context/authContext';
 import useToast from '@/hooks/useToast';
 import { router } from 'expo-router';
+import { Sneaker } from '@/types/Sneaker';
 
-interface UseUserProfileReturn {
-	// State
+interface UseUserProfile {
 	userProfile: UserProfileData | null;
 	isLoading: boolean;
 	isFollowLoading: boolean;
 	refreshing: boolean;
 
-	// Actions
 	handleFollowToggle: () => Promise<void>;
-	onRefresh: () => void;
+	refreshUserProfile: () => void;
 }
 
 interface UserProfileData {
-	profile: SearchUser;
-	sneakers: any[];
+	userSearch: SearchUser;
+	sneakers: Sneaker[];
 }
 
-export const useUserProfile = (
-	userId: string | undefined
-): UseUserProfileReturn => {
+export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 	const { user: currentUser } = useSession();
 	const { showSuccessToast, showErrorToast } = useToast();
 
@@ -52,14 +49,14 @@ export const useUserProfile = (
 			else setIsLoading(true);
 
 			try {
-				const [profile, sneakers] = await Promise.all([
+				const [userSearch, sneakers] = await Promise.all([
 					UserSearchService.getUserProfile(userId, currentUser.id),
 					UserSearchService.getUserSneakers(userId),
 				]);
 
-				if (profile) {
+				if (userSearch) {
 					setUserProfile({
-						profile,
+						userSearch,
 						sneakers: sneakers || [],
 					});
 				} else {
@@ -71,7 +68,7 @@ export const useUserProfile = (
 				}
 			} catch (error) {
 				console.error(
-					'❌ [useUserProfile] Error loading user profile:',
+					'❌ [useUserProfile] Error loading user userSearch:',
 					error
 				);
 				showErrorToast(
@@ -88,37 +85,36 @@ export const useUserProfile = (
 	);
 
 	const handleFollowToggle = useCallback(async () => {
-		if (!userProfile?.profile || !currentUser?.id || isFollowLoading)
+		if (!userProfile?.userSearch || !currentUser?.id || isFollowLoading)
 			return;
 
 		setIsFollowLoading(true);
 
 		try {
-			if (userProfile.profile.is_following) {
-				await FollowerService.unfollowUser(userProfile.profile.id);
+			if (userProfile.userSearch.is_following) {
+				await FollowerService.unfollowUser(userProfile.userSearch.id);
 				showSuccessToast(
 					'Désabonné',
-					`Vous ne suivez plus @${userProfile.profile.username}`
+					`Vous ne suivez plus @${userProfile.userSearch.username}`
 				);
 			} else {
-				await FollowerService.followUser(userProfile.profile.id);
+				await FollowerService.followUser(userProfile.userSearch.id);
 				showSuccessToast(
 					'Abonné',
-					`Vous suivez maintenant @${userProfile.profile.username}`
+					`Vous suivez maintenant @${userProfile.userSearch.username}`
 				);
 			}
 
-			// Update local state optimistically
 			setUserProfile((prev) => {
 				if (!prev) return prev;
 				return {
 					...prev,
-					profile: {
-						...prev.profile,
-						is_following: !prev.profile.is_following,
-						followers_count: prev.profile.is_following
-							? prev.profile.followers_count - 1
-							: prev.profile.followers_count + 1,
+					userSearch: {
+						...prev.userSearch,
+						is_following: !prev.userSearch.is_following,
+						followers_count: prev.userSearch.is_following
+							? prev.userSearch.followers_count - 1
+							: prev.userSearch.followers_count + 1,
 					},
 				};
 			});
@@ -132,14 +128,14 @@ export const useUserProfile = (
 			setIsFollowLoading(false);
 		}
 	}, [
-		userProfile?.profile,
+		userProfile?.userSearch,
 		currentUser?.id,
 		isFollowLoading,
 		showSuccessToast,
 		showErrorToast,
 	]);
 
-	const onRefresh = useCallback(() => {
+	const refreshUserProfile = useCallback(() => {
 		loadUserProfile(true);
 	}, [loadUserProfile]);
 
@@ -155,6 +151,6 @@ export const useUserProfile = (
 		isFollowLoading,
 		refreshing,
 		handleFollowToggle,
-		onRefresh,
+		refreshUserProfile,
 	};
 };

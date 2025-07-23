@@ -5,10 +5,12 @@ export interface SearchUser {
 	username: string;
 	first_name: string;
 	last_name: string;
-	profile_picture?: string;
+	profile_picture_url?: string;
 	is_following: boolean;
 	followers_count: number;
 	following_count: number;
+	instagram_username?: string;
+	social_media_visibility?: boolean;
 }
 
 export interface SearchUsersResponse {
@@ -52,7 +54,9 @@ export class UserSearchService {
 				username,
 				first_name,
 				last_name,
-				profile_picture
+				profile_picture_url,
+				instagram_username,
+				social_media_visibility
 			`
 			)
 			.or(
@@ -139,9 +143,10 @@ export class UserSearchService {
 					username,
 					first_name,
 					last_name,
-					profile_picture,
+					profile_picture_url,
 					social_media_visibility,
-					instagram_username
+					instagram_username,
+					social_media_visibility
 				`
 				)
 				.eq('id', userId)

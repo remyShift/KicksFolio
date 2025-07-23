@@ -2,7 +2,6 @@ import { create } from 'zustand';
 import { UserSearchService, SearchUser } from '@/services/UserSearchService';
 
 interface UserSearchState {
-	// State
 	searchTerm: string;
 	searchResults: SearchUser[];
 	isLoading: boolean;
@@ -10,7 +9,6 @@ interface UserSearchState {
 	refreshing: boolean;
 	page: number;
 
-	// Actions
 	setSearchTerm: (term: string) => void;
 	setSearchResults: (results: SearchUser[]) => void;
 	addSearchResults: (results: SearchUser[]) => void;

@@ -1,19 +1,17 @@
 import { useCallback, useRef, useEffect } from 'react';
-import { UserSearchService } from '@/services/UserSearchService';
+import { UserSearchService, SearchUser } from '@/services/UserSearchService';
 import { useSession } from '@/context/authContext';
 import useToast from '@/hooks/useToast';
 import { useTranslation } from 'react-i18next';
 import { useUserSearchStore } from '@/store/useUserSearchStore';
 
 interface UseUserSearchReturn {
-	// State from store
 	searchTerm: string;
-	searchResults: any[];
+	searchResults: SearchUser[];
 	isLoading: boolean;
 	hasMore: boolean;
 	refreshing: boolean;
 
-	// Actions
 	handleSearchChange: (term: string) => void;
 	loadMore: () => void;
 	onRefresh: () => void;
@@ -25,7 +23,6 @@ export const useUserSearch = (): UseUserSearchReturn => {
 	const { showErrorToast } = useToast();
 	const { t } = useTranslation();
 
-	// Store state and actions
 	const {
 		searchTerm,
 		searchResults,
@@ -104,7 +101,6 @@ export const useUserSearch = (): UseUserSearchReturn => {
 		(term: string) => {
 			setSearchTerm(term);
 
-			// Clear previous debounce
 			if (debounceRef.current) {
 				clearTimeout(debounceRef.current);
 			}
@@ -133,7 +129,6 @@ export const useUserSearch = (): UseUserSearchReturn => {
 		}
 	}, [searchTerm, performSearch, setRefreshing]);
 
-	// Cleanup debounce on unmount
 	useEffect(() => {
 		return () => {
 			if (debounceRef.current) {
