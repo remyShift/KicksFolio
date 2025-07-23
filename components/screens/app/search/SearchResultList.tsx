@@ -1,27 +1,42 @@
 import { useUserSearch } from "@/hooks/useUserSearch";
 import { SearchUser } from "@/services/UserSearchService";
 import { FlatList, RefreshControl } from "react-native";
+import UserListItem from "./listItem/UserListItem";
+import SearchEmptyState from "./SearchEmptyState";
+import SearchLoadingFooter from "./SearchLoadingFooter";
+import { useCallback } from "react";
+import { router } from "expo-router";
 
-interface SearchResultsListProps {
-    renderItem: ({ item }: { item: SearchUser }) => React.JSX.Element;
-    ListEmptyComponent: () => React.JSX.Element;
-    ListFooterComponent: () => React.JSX.Element | null;
-}
+export default function SearchResultsList() {
+    const { searchResults, isLoading, refreshing, onRefresh, loadMore } = useUserSearch();
 
-export default function SearchResultsList({
-    renderItem,
-    ListEmptyComponent,
-    ListFooterComponent,
-}: SearchResultsListProps) {
-    const { searchResults, refreshing, onRefresh, loadMore } = useUserSearch();
+    const renderUserItem = useCallback(({ item }: { item: SearchUser }) => (
+        <UserListItem 
+            searchUser={item}
+        />
+    ), []);
+
+    const renderEmptyComponent = useCallback(() => (
+        <SearchEmptyState 
+            isInitialState={searchResults.length === 0 && !isLoading}
+        />
+    ), [searchResults.length, isLoading]);
+
+    const renderFooterComponent = useCallback(() => (
+        <SearchLoadingFooter 
+            isLoading={isLoading}
+            hasResults={searchResults.length > 0}
+        />
+    ), [isLoading, searchResults.length]);
+
 
     return (
         <FlatList
             data={searchResults}
-            renderItem={renderItem}
+            renderItem={renderUserItem}
             keyExtractor={(item) => item.id}
-            ListEmptyComponent={ListEmptyComponent}
-            ListFooterComponent={ListFooterComponent}
+            ListEmptyComponent={renderEmptyComponent}
+            ListFooterComponent={renderFooterComponent}
             onEndReached={loadMore}
             onEndReachedThreshold={0.5}
             refreshControl={

@@ -21,39 +21,11 @@ export default function SearchScreen() {
         onRefresh
     } = useUserSearch();
 
-    const navigateToUserProfile = useCallback((userId: string) => {
-        router.push(`/(app)/user-profile/${userId}`);
-    }, []);
-
-    const renderUserItem = useCallback(({ item }: { item: SearchUser }) => (
-        <UserListItem 
-            user={item}
-            onPress={navigateToUserProfile}
-        />
-    ), [navigateToUserProfile]);
-
-    const renderEmptyComponent = useCallback(() => (
-        <SearchEmptyState 
-            isInitialState={searchResults.length === 0 && !isLoading}
-        />
-    ), [searchResults.length, isLoading]);
-
-    const renderFooterComponent = useCallback(() => (
-        <SearchLoadingFooter 
-            isLoading={isLoading}
-            hasResults={searchResults.length > 0}
-        />
-    ), [isLoading, searchResults.length]);
-
     return (
         <View className="flex-1 bg-background pt-32">
             <SearchHeader />
             
-            <SearchResultsList
-                renderItem={renderUserItem}
-                ListEmptyComponent={renderEmptyComponent}
-                ListFooterComponent={renderFooterComponent}
-            />
+            <SearchResultsList />
         </View>
     );
 }

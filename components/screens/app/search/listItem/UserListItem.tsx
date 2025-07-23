@@ -1,21 +1,17 @@
 import { Pressable } from 'react-native';
-import { useTranslation } from 'react-i18next';
 import { SearchUser } from '@/services/UserSearchService';
 import UserActions from './UserActions';
 import UserAvatar from './UserAvatar';
 import UserInfo from './UserInfo';
+import { router } from 'expo-router';
 
 interface UserListItemProps {
     searchUser: SearchUser;
-    onPress: (userId: string) => void;
     testID?: string;
 }
-
-export default function UserListItem({ searchUser, onPress, testID }: UserListItemProps) {
-    const { t } = useTranslation();
-
+export default function UserListItem({ searchUser, testID }: UserListItemProps) {
     const handlePress = () => {
-        onPress(searchUser.id);
+        router.push(`/(app)/user-profile/${searchUser.id}`);
     };
 
     return (
