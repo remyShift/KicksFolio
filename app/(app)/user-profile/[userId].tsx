@@ -18,12 +18,6 @@ export default function UserProfileScreen() {
     const { t } = useTranslation();
     const [viewMode, setViewMode] = useState<ViewMode>('card');
 
-    console.log('🏠 [UserProfileScreen] Component rendered', {
-        userId,
-        hasUserId: !!userId,
-    });
-
-    // Utiliser le hook personnalisé pour gérer le profil utilisateur
     const {
         userProfile,
         isLoading,
@@ -32,17 +26,6 @@ export default function UserProfileScreen() {
         handleFollowToggle,
         onRefresh,
     } = useUserProfile(userId);
-
-    console.log('📊 [UserProfileScreen] Hook states:', {
-        hasUserProfile: !!userProfile,
-        isLoading,
-        isFollowLoading,
-        refreshing,
-        profileData: userProfile ? {
-            username: userProfile.profile.username,
-            sneakersCount: userProfile.sneakers.length,
-        } : null,
-    });
 
     const sneakersByBrand = useMemo(() => {
         if (!userProfile?.sneakers || userProfile.sneakers.length === 0) return {};
@@ -61,7 +44,6 @@ export default function UserProfileScreen() {
 
 
     if (isLoading) {
-        console.log('⏳ [UserProfileScreen] Showing loading screen');
         return (
             <View className="flex-1 bg-background pt-16 items-center justify-center">
                 <Text className="font-open-sans text-gray-500">
@@ -72,7 +54,6 @@ export default function UserProfileScreen() {
     }
 
     if (!userProfile) {
-        console.log('❌ [UserProfileScreen] Showing not found screen');
         return (
             <View className="flex-1 bg-background pt-16 items-center justify-center">
                 <Text className="font-open-sans text-gray-500">
@@ -81,8 +62,6 @@ export default function UserProfileScreen() {
             </View>
         );
     }
-
-    console.log('✅ [UserProfileScreen] Rendering profile content');
 
     const { profile, sneakers } = userProfile;
 

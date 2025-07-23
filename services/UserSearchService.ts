@@ -25,16 +25,7 @@ export class UserSearchService {
 		currentUserId: string,
 		page: number = 0
 	): Promise<SearchUsersResponse> {
-		console.log('🔍 [UserSearchService] searchUsers started (Direct SQL)', {
-			searchTerm,
-			currentUserId,
-			page,
-		});
-
 		if (searchTerm.trim().length < 2) {
-			console.log(
-				'⚠️ [UserSearchService] Search term too short, returning empty'
-			);
 			return {
 				users: [],
 				hasMore: false,
@@ -50,13 +41,9 @@ export class UserSearchService {
 		currentUserId: string,
 		page: number = 0
 	): Promise<SearchUsersResponse> {
-		console.log('🔧 [UserSearchService] Using direct SQL search fallback');
-
 		const offset = page * this.PAGE_SIZE;
 		const searchPattern = `%${searchTerm.trim().toLowerCase()}%`;
 
-		// Search users by username, first_name, or last_name
-		console.log('📡 [UserSearchService] Executing SQL search query...');
 		const { data: users, error } = await supabase
 			.from('users')
 			.select(
@@ -71,20 +58,10 @@ export class UserSearchService {
 			.or(
 				`username.ilike.${searchPattern},first_name.ilike.${searchPattern},last_name.ilike.${searchPattern}`
 			)
-			.neq('id', currentUserId) // Exclude current user
-			.range(offset, offset + this.PAGE_SIZE); // Get one extra to check if there are more
-
-		console.log('📊 [UserSearchService] SQL query result:', {
-			found: !!users,
-			count: users?.length || 0,
-			error: error?.message,
-		});
+			.neq('id', currentUserId)
+			.range(offset, offset + this.PAGE_SIZE);
 
 		if (error) {
-			console.error(
-				'❌ [UserSearchService] Direct SQL search failed:',
-				error
-			);
 			throw error;
 		}
 
@@ -94,28 +71,21 @@ export class UserSearchService {
 			? usersList.slice(0, this.PAGE_SIZE)
 			: usersList;
 
-		// Get additional data for each user (followers count, etc.)
-		console.log(
-			'📊 [UserSearchService] Enriching users with follower data...'
-		);
 		const enrichedUsers = await Promise.all(
 			actualUsers.map(async (user: any) => {
 				try {
-					// Get followers count
 					const { count: followersCount, error: followersError } =
 						await supabase
 							.from('followers')
 							.select('*', { count: 'exact', head: true })
 							.eq('following_id', user.id);
 
-					// Get following count
 					const { count: followingCount, error: followingError } =
 						await supabase
 							.from('followers')
 							.select('*', { count: 'exact', head: true })
 							.eq('follower_id', user.id);
 
-					// Check if current user is following this user
 					const { data: isFollowingData, error: isFollowingError } =
 						await supabase
 							.from('followers')
@@ -139,7 +109,6 @@ export class UserSearchService {
 						`⚠️ [UserSearchService] Error enriching user ${user.id}:`,
 						error
 					);
-					// Return user with default values if enrichment fails
 					return {
 						...user,
 						followers_count: 0,
@@ -149,8 +118,6 @@ export class UserSearchService {
 				}
 			})
 		);
-
-		console.log('✅ [UserSearchService] Direct SQL search completed');
 
 		return {
 			users: enrichedUsers,
@@ -163,13 +130,7 @@ export class UserSearchService {
 		userId: string,
 		currentUserId: string
 	): Promise<SearchUser | null> {
-		console.log('🔍 [UserSearchService] getUserProfile started', {
-			userId,
-			currentUserId,
-		});
-
 		try {
-			console.log('📡 [UserSearchService] Fetching user data...');
 			const { data: user, error } = await supabase
 				.from('users')
 				.select(
@@ -186,52 +147,22 @@ export class UserSearchService {
 				.eq('id', userId)
 				.single();
 
-			console.log('👤 [UserSearchService] User data result:', {
-				found: !!user,
-				error: error?.message,
-				userData: user
-					? { id: user.id, username: user.username }
-					: null,
-			});
-
 			if (error || !user) {
-				console.error(
-					'❌ [UserSearchService] Error fetching user profile:',
-					error
-				);
 				return null;
 			}
 
-			console.log('📊 [UserSearchService] Fetching followers count...');
-			// Get followers count using direct SQL query
 			const { count: followersCount, error: followersError } =
 				await supabase
 					.from('followers')
 					.select('*', { count: 'exact', head: true })
 					.eq('following_id', userId);
 
-			console.log('👥 [UserSearchService] Followers count result:', {
-				count: followersCount,
-				error: followersError?.message,
-			});
-
-			console.log('📊 [UserSearchService] Fetching following count...');
-			// Get following count using direct SQL query
 			const { count: followingCount, error: followingError } =
 				await supabase
 					.from('followers')
 					.select('*', { count: 'exact', head: true })
 					.eq('follower_id', userId);
 
-			console.log('👤 [UserSearchService] Following count result:', {
-				count: followingCount,
-				error: followingError?.message,
-			});
-
-			console.log(
-				'🔗 [UserSearchService] Checking if current user is following...'
-			);
-			// Check if current user is following this user
 			const { data: isFollowingData, error: isFollowingError } =
 				await supabase
 					.from('followers')
@@ -240,12 +171,6 @@ export class UserSearchService {
 					.eq('following_id', userId)
 					.single();
 
-			console.log('❤️ [UserSearchService] Is following result:', {
-				found: !!isFollowingData,
-				error: isFollowingError?.message,
-			});
-
-			// Handle errors gracefully - if counts fail, default to 0
 			const finalFollowersCount = followersError
 				? 0
 				: followersCount || 0;
@@ -254,12 +179,6 @@ export class UserSearchService {
 				: followingCount || 0;
 			const isFollowing = !isFollowingError && !!isFollowingData;
 
-			console.log('📋 [UserSearchService] Final counts calculated:', {
-				followersCount: finalFollowersCount,
-				followingCount: finalFollowingCount,
-				isFollowing,
-			});
-
 			const result = {
 				...user,
 				followers_count: finalFollowersCount,
@@ -267,15 +186,8 @@ export class UserSearchService {
 				is_following: isFollowing,
 			};
 
-			console.log(
-				'✅ [UserSearchService] getUserProfile completed successfully'
-			);
 			return result;
 		} catch (error) {
-			console.error(
-				'❌ [UserSearchService] Error in getUserProfile:',
-				error
-			);
 			return null;
 		}
 	}
@@ -284,14 +196,8 @@ export class UserSearchService {
 		userId: string,
 		page: number = 0
 	): Promise<any[]> {
-		console.log('👟 [UserSearchService] getUserSneakers started', {
-			userId,
-			page,
-		});
-
 		const offset = page * this.PAGE_SIZE;
 
-		console.log('📡 [UserSearchService] Fetching sneakers data...');
 		const { data, error } = await supabase
 			.from('sneakers')
 			.select('*')
@@ -300,17 +206,7 @@ export class UserSearchService {
 			.order('created_at', { ascending: false })
 			.range(offset, offset + this.PAGE_SIZE - 1);
 
-		console.log('👟 [UserSearchService] Sneakers data result:', {
-			found: !!data,
-			count: data?.length || 0,
-			error: error?.message,
-		});
-
 		if (error) {
-			console.error(
-				'❌ [UserSearchService] Error fetching user sneakers:',
-				error
-			);
 			throw error;
 		}
 
@@ -319,9 +215,6 @@ export class UserSearchService {
 			images: this.parseImages(sneaker.images),
 		}));
 
-		console.log(
-			'✅ [UserSearchService] getUserSneakers completed successfully'
-		);
 		return result;
 	}
 

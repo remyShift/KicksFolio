@@ -77,7 +77,6 @@ export class GitHubService {
 		}
 
 		const result = deviceInfo.join('\n');
-		console.log('✅ [GitHubService] Device info generated:', result);
 
 		return result;
 	}
