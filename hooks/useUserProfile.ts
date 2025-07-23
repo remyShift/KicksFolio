@@ -13,7 +13,7 @@ interface UseUserProfile {
 	refreshing: boolean;
 
 	handleFollowToggle: () => Promise<void>;
-	refreshUserProfile: () => void;
+	refreshUserProfile: () => Promise<void>;
 }
 
 interface UserProfileData {
@@ -135,9 +135,9 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 		showErrorToast,
 	]);
 
-	const refreshUserProfile = useCallback(() => {
-		loadUserProfile(true);
-	}, [loadUserProfile]);
+	const refreshUserProfile = async () => {
+		await loadUserProfile(true);
+	};
 
 	useEffect(() => {
 		if (userId && currentUser?.id) {

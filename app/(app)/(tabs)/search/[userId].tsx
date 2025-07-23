@@ -75,7 +75,6 @@ export default function UserProfileScreen() {
 
     const { userSearch, sneakers } = userProfile;
 
-    // Fonction pour naviguer vers la page précédente
     const handleSwipeBack = () => {
         if (router.canGoBack()) {
             router.back();

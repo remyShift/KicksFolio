@@ -1,12 +1,7 @@
 {
 	"noLinksConfigured": "No links configured",
 	"instagram": "Instagram",
-	"friends": {
-		"title": "Friends",
-		"addFriends": "Add some friends",
-		"noFriends": "No friends yet"
-	},
-	"followers": "followers",
+	"followers": "Followers",
 	"following": "following",
 	"follow": "Follow",
 	"unfollow": "Unfollow",

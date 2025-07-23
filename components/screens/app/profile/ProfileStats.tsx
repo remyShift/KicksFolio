@@ -30,7 +30,7 @@ export default function ProfileStats({ sneakersCount, friendsCount, sneakers }: 
 
                 <View className="bg-primary/20 p-6 rounded-lg w-48">
                     <Text className="font-open-sans text-lg">
-                        {t('social.friends.title')}
+                        {t('social.followers')}
                     </Text>
                     <Text className="font-open-sans-bold text-2xl">
                         {friendsCount}
