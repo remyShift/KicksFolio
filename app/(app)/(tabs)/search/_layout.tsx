@@ -5,6 +5,9 @@ export default function SearchLayout() {
         <Stack
             screenOptions={{
                 headerShown: false,
+                contentStyle: {
+                    backgroundColor: '#ECECEC',
+                },
             }}
         >
             <Stack.Screen 

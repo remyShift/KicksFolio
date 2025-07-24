@@ -8,17 +8,19 @@ export default function SearchInput() {
     const { searchTerm, handleSearchChange } = useUserSearch();
 
     return (
-        <View className="relative">
+        <View className="px-4">
             <TextInput
-                className="bg-white border border-gray-200 rounded-lg px-4 py-3 pr-12 font-open-sans text-base"
+                className="bg-white border border-gray-200 rounded-lg p-3 font-open-sans text-base placeholder:text-gray-300"
                 placeholder={t('search.inputPlaceholder')}
                 value={searchTerm}
+                returnKeyType="search"
+                onSubmitEditing={() => handleSearchChange(searchTerm)}
                 onChangeText={handleSearchChange}
                 autoCapitalize="none"
                 autoCorrect={false}
                 testID="search-input"
             />
-            <View className="absolute right-3 top-3">
+            <View className="absolute right-7 top-3">
                 <Feather name="search" size={20} color="#666" />
             </View>
         </View>

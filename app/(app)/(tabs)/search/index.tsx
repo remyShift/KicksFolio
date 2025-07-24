@@ -6,7 +6,7 @@ export default function SearchScreen() {
     return (
         <View className="flex-1 bg-background pt-32">
             <SearchHeader />
-            
+
             <SearchResultsList />
         </View>
     );

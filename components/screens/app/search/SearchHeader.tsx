@@ -7,11 +7,9 @@ export default function SearchHeader() {
     const { t } = useTranslation();
 
     return (
-        <View className="px-4 mb-4">
+        <View className="flex-1 gap-4">
             <Title content={t('navigation.navbar.search')} />
-            <View className="mt-4">
-                <SearchInput />
-            </View>
+            <SearchInput />
         </View>
     );
 }
