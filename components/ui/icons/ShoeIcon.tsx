@@ -12,6 +12,7 @@ export const ShoeIcon = ({ name, size, color }: ShoeIconProps) => {
             name={name}
             size={size}
             color={color}
+            style={{ transform: [{ scaleX: -1 }] }}
         />
     );
 }; 

@@ -1,5 +1,5 @@
 import { View } from 'react-native';
-import { ShoeIcon } from './ShoeIcon';
+import { ShoeIcon } from '../../ui/icons/ShoeIcon';
 import { AppTitle } from './AppTitle';
 
 export default function SplashScreen() {
