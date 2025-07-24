@@ -5,10 +5,10 @@
 	"following": "Following",
 	"follow": "Follow",
 	"unfollow": "Unfollow",
-	"followed": "Followed",
-	"unfollowed": "Unfollowed",
-	"followedDesc": "You are now following @{{username}}",
-	"unfollowedDesc": "You unfollowed @{{username}}",
+	"followed": "💫 Followed !",
+	"unfollowed": "🔓 Unfollowed !",
+	"followedDesc": "You are now following @{{username}}.",
+	"unfollowedDesc": "You unfollowed @{{username}}.",
 	"error": {
 		"followFailed": "Follow Error",
 		"followFailedDesc": "Unable to follow/unfollow user at the moment"

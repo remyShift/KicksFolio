@@ -5,6 +5,7 @@ import { useSession } from '@/context/authContext';
 import useToast from '@/hooks/useToast';
 import { router } from 'expo-router';
 import { Sneaker } from '@/types/Sneaker';
+import { useTranslation } from 'react-i18next';
 
 interface UseUserProfile {
 	userProfile: UserProfileData | null;
@@ -24,6 +25,7 @@ interface UserProfileData {
 export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 	const { user: currentUser, refreshFollowingUsers } = useSession();
 	const { showSuccessToast, showErrorToast } = useToast();
+	const { t } = useTranslation();
 
 	const [userProfile, setUserProfile] = useState<UserProfileData | null>(
 		null
@@ -91,14 +93,18 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 			if (userProfile.userSearch.is_following) {
 				await FollowerService.unfollowUser(userProfile.userSearch.id);
 				showSuccessToast(
-					'Désabonné',
-					`Vous ne suivez plus @${userProfile.userSearch.username}`
+					t('social.unfollowed'),
+					t('social.unfollowedDesc', {
+						username: userProfile.userSearch.username,
+					})
 				);
 			} else {
 				await FollowerService.followUser(userProfile.userSearch.id);
 				showSuccessToast(
-					'Abonné',
-					`Vous suivez maintenant @${userProfile.userSearch.username}`
+					t('social.followed'),
+					t('social.followedDesc', {
+						username: userProfile.userSearch.username,
+					})
 				);
 			}
 

@@ -20,7 +20,7 @@ export default function ProfileStats({ sneakersCount, followersCount, sneakers, 
     return (
         <View className="flex gap-2 justify-center">
             <View className="flex-row gap-2">
-                <View className="bg-primary/20 p-3 rounded-lg">
+                <View className="bg-primary/15 p-3 rounded-lg">
                     <Text className="font-open-sans text-base">
                         {t('collection.stats.sneakers')}
                     </Text>
@@ -29,7 +29,7 @@ export default function ProfileStats({ sneakersCount, followersCount, sneakers, 
                     </Text>
                 </View>
 
-                <View className="bg-primary/20 p-3 rounded-lg">
+                <View className="bg-primary/15 p-3 rounded-lg">
                     <Text className="font-open-sans text-base">
                         {t('social.followers')}
                     </Text>
@@ -38,7 +38,7 @@ export default function ProfileStats({ sneakersCount, followersCount, sneakers, 
                     </Text>
                 </View>
 
-                <View className="bg-primary/20 p-3 rounded-lg">
+                <View className="bg-primary/15 p-3 rounded-lg">
                     <Text className="font-open-sans text-base">
                         {t('social.following')}
                     </Text>
