@@ -25,20 +25,7 @@ export default function UserProfileScreen() {
         refreshUserProfile,
     } = useUserProfile(userId);
 
-    // Debug logs
-    useEffect(() => {
-        console.log('🔍 [UserProfileScreen] Component state:', {
-            userId,
-            userProfile: userProfile ? {
-                userSearch: {
-                    id: userProfile.userSearch.id,
-                    username: userProfile.userSearch.username
-                },
-                sneakersCount: userProfile.sneakers?.length || 0
-            } : null,
-            isLoading
-        });
-    }, [userId, userProfile, isLoading]);
+
 
     const sneakersByBrand = useMemo(() => {
         if (!userProfile?.sneakers || userProfile.sneakers.length === 0) return {};

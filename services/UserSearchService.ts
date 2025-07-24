@@ -200,111 +200,90 @@ export class UserSearchService {
 
 	static async getUserSneakers(userId: string): Promise<any[]> {
 		try {
-			console.log(
-				'🔍 [UserSearchService] Fetching sneakers for user:',
-				userId
-			);
-
-			const { data: userExists, error: userError } = await supabase
-				.from('users')
-				.select('id, username')
-				.eq('id', userId)
-				.single();
-
-			console.log('👤 [UserSearchService] User check:', {
-				userId,
-				userExists: !!userExists,
-				username: userExists?.username,
-				userError: userError?.message,
-			});
-
-			console.log(
-				'📋 [UserSearchService] Executing query: SELECT * FROM sneakers WHERE user_id =',
-				userId
-			);
-
-			const {
-				data: sneakers,
-				error,
-				count,
-				status,
-				statusText,
-			} = await supabase
+			const { data: sneakers, error } = await supabase
 				.from('sneakers')
-				.select('*', { count: 'exact' })
+				.select('*')
 				.eq('user_id', userId)
 				.order('created_at', { ascending: false });
 
-			console.log('📊 [UserSearchService] Raw query result:', {
-				userId,
-				status,
-				statusText,
-				count,
-				dataLength: sneakers?.length || 0,
-				error: error
-					? {
-							message: error.message,
-							details: error.details,
-							hint: error.hint,
-							code: error.code,
-					  }
-					: null,
-				rawDataSample: sneakers?.slice(0, 1) || [],
-			});
-
 			if (error) {
 				console.error(
-					`❌ [UserSearchService] Error fetching sneakers for user ${userId}:`,
-					{
-						error,
-						status,
-						statusText,
-						userId,
-					}
+					`Error fetching sneakers for user ${userId}:`,
+					error
 				);
 				return [];
 			}
 
-			console.log('🔄 [UserSearchService] Testing alternative query...');
-			const { data: allSneakers, error: allError } = await supabase
-				.from('sneakers')
-				.select('id, user_id, model, brand')
-				.limit(5);
-
-			console.log(
-				'🗂️ [UserSearchService] Sample of all sneakers in DB:',
-				{
-					totalSample: allSneakers?.length || 0,
-					sample: allSneakers || [],
-					error: allError?.message,
-					targetUserId: userId,
-				}
+			// Parser les images comme dans SupabaseSneakerService
+			return (
+				sneakers?.map((sneaker) => ({
+					...sneaker,
+					images: this.parseImages(sneaker.images),
+				})) || []
 			);
-
-			console.log(
-				'✅ [UserSearchService] Sneakers fetched successfully:',
-				{
-					userId,
-					count: sneakers?.length || 0,
-					totalFromCount: count,
-					preview:
-						sneakers?.slice(0, 2).map((s) => ({
-							id: s.id,
-							model: s.model,
-							brand: s.brand,
-							user_id: s.user_id,
-							created_at: s.created_at,
-						})) || [],
-				}
-			);
-
-			return sneakers || [];
 		} catch (error) {
 			console.error(
-				`❌ [UserSearchService] Exception getting user sneakers for ${userId}:`,
+				`Exception getting user sneakers for ${userId}:`,
 				error
 			);
 			return [];
 		}
+	}
+
+	private static parseImages(images: any): { id: string; uri: string }[] {
+		if (!images) return [];
+
+		if (
+			Array.isArray(images) &&
+			images.length > 0 &&
+			typeof images[0] === 'object' &&
+			(images[0].uri || images[0].url)
+		) {
+			return images.map((img: any) => ({
+				id: img.id || '',
+				uri: img.uri || img.url || '',
+			}));
+		}
+
+		if (Array.isArray(images)) {
+			return images.map((img) => {
+				if (typeof img === 'string') {
+					try {
+						const parsed = JSON.parse(img);
+						return {
+							id: parsed.id || '',
+							uri: parsed.uri || parsed.url || '',
+						};
+					} catch (error) {
+						console.warn('Error parsing image JSON:', error);
+						return { id: '', uri: img };
+					}
+				}
+				return { id: img.id || '', uri: img.uri || img.url || '' };
+			});
+		}
+
+		if (typeof images === 'string') {
+			try {
+				const parsed = JSON.parse(images);
+				if (Array.isArray(parsed)) {
+					return parsed.map((img: any) => ({
+						id: img.id || '',
+						uri: img.uri || img.url || '',
+					}));
+				}
+				return [
+					{
+						id: parsed.id || '',
+						uri: parsed.uri || parsed.url || '',
+					},
+				];
+			} catch (error) {
+				console.warn('Error parsing images JSON string:', error);
+				return [{ id: '', uri: images }];
+			}
+		}
+
+		return [];
 	}
 }

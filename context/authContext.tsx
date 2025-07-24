@@ -169,12 +169,8 @@ export function SessionProvider({ children }: PropsWithChildren) {
     };
 
     const loadFollowingUsers = async (userId: string) => {
-        console.log('🔄 [AuthContext] Loading following users for:', userId);
-        
         return FollowerService.getFollowingUsers(userId)
             .then(async (followingUsersData) => {
-                console.log('✅ [AuthContext] Following users loaded:', followingUsersData.length);
-                
                 // Enrichir avec les sneakers de chaque utilisateur suivi
                 const followingWithSneakers = await Promise.all(
                     followingUsersData.map(async (followingUser) => {
@@ -185,7 +181,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
                                 sneakers: sneakers || []
                             };
                         } catch (error) {
-                            console.warn(`⚠️ [AuthContext] Error loading sneakers for user ${followingUser.id}:`, error);
+                            console.warn(`Error loading sneakers for user ${followingUser.id}:`, error);
                             return {
                                 ...followingUser,
                                 sneakers: []
@@ -200,7 +196,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
                 return followingWithSneakers;
             })
             .catch((error) => {
-                console.error('❌ [AuthContext] Error loading following users:', error);
+                console.error('Error loading following users:', error);
                 setFollowingUsers([]);
                 storageService.setItem('followingUsers', []);
                 return [];
@@ -321,13 +317,11 @@ export function SessionProvider({ children }: PropsWithChildren) {
 
     const refreshFollowingUsers = async () => {
         if (!user?.id) {
-            console.log('ℹ️ [AuthContext] No user ID, clearing following users');
             setFollowingUsers([]);
             storageService.setItem('followingUsers', []);
             return;
         }
         
-        console.log('🔄 [AuthContext] Refreshing following users for:', user.id);
         return loadFollowingUsers(user.id);
     };
 
