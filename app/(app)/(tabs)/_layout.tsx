@@ -2,7 +2,6 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import Feather from '@expo/vector-icons/Feather';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { Tabs } from 'expo-router';
-import { Pressable } from 'react-native';
 import { useModalStore } from '@/store/useModalStore';
 import TabAddButton from '@/components/ui/buttons/TabAddButton';
 import { useTranslation } from 'react-i18next';
