@@ -25,7 +25,7 @@ export default function SneakerCard({
 
     return (
         <Pressable 
-            className="bg-white rounded-md p-3 gap-2 shadow-card w-96"
+            className="bg-white rounded-md p-3 gap-2 shadow-card w-80"
             onPress={() => {
                 setSneaker(sneaker);
                 setModalStep('view');
@@ -40,7 +40,7 @@ export default function SneakerCard({
                     <Image source={{ uri: sneaker.images[0].uri }}
                         style={{
                             width: '100%',
-                            minHeight: 180,
+                            minHeight: 150,
                             flex: 1,
                             borderRadius: 8
                         }}
@@ -50,7 +50,7 @@ export default function SneakerCard({
                         transition={200}
                     />
                 ) : (
-                    <View className="w-full h-45 bg-gray-200 rounded-lg flex items-center justify-center" style={{ minHeight: 180 }}>
+                    <View className="w-full h-45 bg-gray-200 rounded-lg flex items-center justify-center" style={{ minHeight: 150 }}>
                         <MaterialCommunityIcons name="shoe-sneaker" size={48} color="#9CA3AF" />
                         <Text className="text-gray-500 mt-2 text-sm">No image</Text>
                     </View>

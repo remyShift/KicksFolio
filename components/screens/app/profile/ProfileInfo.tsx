@@ -61,23 +61,24 @@ export default function ProfileInfo({ user }: ProfileInfoProps) {
                     </View>
                 </View>
 
-                {/* {!isOwnProfile && (
-                    <MainButton 
-                    content={buttonText}
-                    onPressAction={handleFollowToggle}
-                    backgroundColor={buttonColor}
-                    isDisabled={isFollowLoading}
-                    />
-                )} */}
             </View>
 
-            <View className="flex items-center justify-center">
+            <View className="flex items-center justify-center gap-2">
                 <ProfileStats 
                     sneakersCount={displaySneakers.length}
                     followersCount={displayUser.followers_count || 0}
                     sneakers={displaySneakers}
                     followingCount={displayUser.following_count || 0}
                 />
+                {!isOwnProfile && (
+                    <MainButton 
+                        content={buttonText}
+                        onPressAction={handleFollowToggle}
+                        backgroundColor={buttonColor}
+                        isDisabled={isFollowLoading}
+                        width='full'
+                    />
+                )}
             </View>
         </View>
     );

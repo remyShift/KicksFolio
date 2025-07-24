@@ -8,14 +8,15 @@ type MainButtonProps = {
     onPressAction: () => void;
     backgroundColor: string;
     isDisabled?: boolean;
+    width?: 'full' | 'half';
 }
 
-export default function MainButton({content, onPressAction, backgroundColor, isDisabled = false}: MainButtonProps) {
+export default function MainButton({content, onPressAction, backgroundColor, isDisabled = false, width = 'half'}: MainButtonProps) {
     const { animatedStyle, gesture } = useAnimatedButtons(isDisabled);
 
     return (
         <Animated.View
-            className={`${backgroundColor} py-3 px-4 rounded-md w-1/2`}
+            className={`${backgroundColor} p-2 rounded-md ${width === 'full' ? 'w-full' : 'w-1/2'}`}
             style={animatedStyle}
             testID="main-button"
             accessibilityState={{ disabled: isDisabled }}
