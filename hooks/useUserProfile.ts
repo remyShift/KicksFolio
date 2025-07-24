@@ -22,7 +22,7 @@ interface UserProfileData {
 }
 
 export const useUserProfile = (userId: string | undefined): UseUserProfile => {
-	const { user: currentUser } = useSession();
+	const { user: currentUser, refreshFollowingUsers } = useSession();
 	const { showSuccessToast, showErrorToast } = useToast();
 
 	const [userProfile, setUserProfile] = useState<UserProfileData | null>(
@@ -115,6 +115,12 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 					},
 				};
 			});
+
+			// Mettre à jour le contexte global des following users
+			// pour que la page index.tsx se mette à jour automatiquement
+			refreshFollowingUsers().catch((error) => {
+				console.warn('Failed to refresh following users:', error);
+			});
 		} catch (error) {
 			console.error('Error toggling follow:', error);
 			showErrorToast(
@@ -130,6 +136,7 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 		isFollowLoading,
 		showSuccessToast,
 		showErrorToast,
+		refreshFollowingUsers,
 	]);
 
 	const refreshUserProfile = async () => {

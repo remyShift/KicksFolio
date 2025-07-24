@@ -122,6 +122,12 @@
 					"min": "Sneaker model must be at least 2 characters long.",
 					"brandInModel": "The model cannot contain the brand."
 				},
+				"brand": {
+					"required": "Please select a brand."
+				},
+				"status": {
+					"required": "Please select a status."
+				},
 				"size": {
 					"min": "Please enter the size.",
 					"multiple": "Size must be a multiple of 0.5 (e.g., 7, 7.5, 8, 8.5).",

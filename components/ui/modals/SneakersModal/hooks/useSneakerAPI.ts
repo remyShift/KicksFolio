@@ -1,4 +1,4 @@
-import { Sneaker, Photo, SneakerBrand, SneakerStatus } from '@/types/Sneaker';
+import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/Sneaker';
 import {
 	SupabaseSneakerService,
 	SupabaseSneaker,

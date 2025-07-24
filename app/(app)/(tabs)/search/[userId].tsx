@@ -91,7 +91,7 @@ export default function UserProfileScreen() {
     return (
         <GestureDetector gesture={swipeGesture}>
             <ScrollView
-                className="flex-1 pt-24"
+                className="flex-1 mt-24"
                 testID="scroll-view"
                 scrollEnabled={true}
                 refreshControl={

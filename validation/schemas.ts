@@ -125,10 +125,16 @@ export const createSneakerSchema = () => {
 			),
 		brand: z
 			.enum(Object.values(SneakerBrand) as [string, ...string[]])
-			.transform((val) => val as SneakerBrand),
+			.transform((val) => val as SneakerBrand)
+			.refine((val) => val !== SneakerBrand.null, {
+				message: t('collection.modal.form.errors.brand.required'),
+			}),
 		status: z
 			.enum(Object.values(SneakerStatus) as [string, ...string[]])
-			.transform((val) => val as SneakerStatus),
+			.transform((val) => val as SneakerStatus)
+			.refine((val) => val !== SneakerStatus.null, {
+				message: t('collection.modal.form.errors.status.required'),
+			}),
 		size: z
 			.string()
 			.min(1, t('collection.modal.form.errors.size.min'))
