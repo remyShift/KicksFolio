@@ -25,6 +25,8 @@ export const ViewStep = () => {
         alt: `${currentSneaker.model} image ${index + 1}`
     })) || [];
 
+    const sneakerModel = currentSneaker.gender === 'women' ? `${currentSneaker.model} - WMNS` : currentSneaker.model;
+
     return (
         <View className="flex-1 gap-4">
             <ErrorMsg content={errorMsg} display={errorMsg !== ''}/>
@@ -40,15 +42,10 @@ export const ViewStep = () => {
 
             <View className="flex-row justify-between items-center">
                 <View className="flex gap-0">
-                    <View testID="sneaker-display-name" className="flex-row items-center gap-1">
+                    <View testID="sneaker-display-name" className="flex-row items-center gap-1 text-wrap w-[95%]">
                         <Text className="font-open-sans-bold text-lg">
-                            {currentSneaker.model}
+                            {sneakerModel}
                         </Text>
-                        {currentSneaker.gender === 'women' && (
-                            <Text className="font-open-sans-bold text-base">
-                                - WMNS
-                            </Text>
-                        )}
                     </View>
                     <View className="flex-row items-center gap-2">
                         <Text className="font-open-sans-bold-italic text-base">{currentSneaker.brand.toUpperCase()}</Text>
@@ -69,7 +66,7 @@ export const ViewStep = () => {
                 <LoveButton sneaker={currentSneaker} />
             </View>
 
-            <View className='flex gap-4'>
+            <View className='flex gap-2'>
                 <View className="flex-row items-center w-full border-t-2 border-gray-300">
                     <View className='flex-col items-center p-2 gap-1 w-1/3 border-r-2 border-gray-300'>
                         <Text className='font-open-sans text-center text-sm'>Size</Text>
