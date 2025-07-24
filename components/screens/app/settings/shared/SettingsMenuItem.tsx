@@ -1,4 +1,4 @@
-import { Pressable, View, Text } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { Entypo, Ionicons } from '@expo/vector-icons';
 import { ReactNode } from 'react';
 
@@ -22,7 +22,7 @@ export default function SettingsMenuItem({
     rightElement
 }: SettingsMenuItemProps) {
     return (
-        <Pressable 
+        <TouchableOpacity 
             className='w-full p-5' 
             onPress={onPress} 
             testID={`drawer-button-${testID}`}
@@ -41,6 +41,6 @@ export default function SettingsMenuItem({
                     <Entypo name="chevron-small-right" size={24} color="black" />
                 ) : null}
             </View>
-        </Pressable>
+        </TouchableOpacity>
     );
 } 

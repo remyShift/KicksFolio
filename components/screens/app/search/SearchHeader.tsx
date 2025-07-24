@@ -7,7 +7,7 @@ export default function SearchHeader() {
     const { t } = useTranslation();
 
     return (
-        <View className="flex-1 gap-4">
+        <View className="flex gap-4">
             <Title content={t('navigation.navbar.search')} />
             <SearchInput />
         </View>

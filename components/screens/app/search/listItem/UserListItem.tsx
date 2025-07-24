@@ -1,4 +1,4 @@
-import { Pressable } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 import { SearchUser } from '@/services/UserSearchService';
 import UserActions from './UserActions';
 import UserAvatar from './UserAvatar';
@@ -16,14 +16,14 @@ export default function UserListItem({ searchUser, testID }: UserListItemProps) 
     }, [searchUser.id]);
 
     return (
-        <Pressable
-            className="flex-row items-center p-4 bg-white mx-4 mb-3 rounded-lg shadow-sm"
+        <TouchableOpacity
+            className="flex-row items-center p-4 bg-white"
             onPress={handlePress}
             testID={testID || `user-item-${searchUser.id}`}
         >
             <UserAvatar searchUser={searchUser} />
             <UserInfo searchUser={searchUser} />
             <UserActions searchUser={searchUser} />
-        </Pressable>
+        </TouchableOpacity>
     );
 }
