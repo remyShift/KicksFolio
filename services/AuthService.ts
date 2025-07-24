@@ -111,7 +111,30 @@ export class SupabaseAuthService {
 			.single();
 
 		if (userError) throw userError;
-		return userData;
+
+		const [followersResult, followingResult] = await Promise.all([
+			supabase
+				.from('followers')
+				.select('*', { count: 'exact', head: true })
+				.eq('following_id', user.id),
+			supabase
+				.from('followers')
+				.select('*', { count: 'exact', head: true })
+				.eq('follower_id', user.id),
+		]);
+
+		const followersCount = followersResult.error
+			? 0
+			: followersResult.count || 0;
+		const followingCount = followingResult.error
+			? 0
+			: followingResult.count || 0;
+
+		return {
+			...userData,
+			followers_count: followersCount,
+			following_count: followingCount,
+		};
 	}
 
 	static async updateProfile(

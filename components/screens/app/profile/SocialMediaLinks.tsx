@@ -41,7 +41,7 @@ export default function SocialMediaLinks({ user, isOwnProfile = false }: SocialM
                 <Pressable 
                     onPress={handleInstagramPress}
                 >
-                    <Ionicons name="logo-instagram" size={28} color="#F27329" />
+                    <Ionicons name="logo-instagram" size={26} color="#F27329" />
                 </Pressable>
             )}
         </View>

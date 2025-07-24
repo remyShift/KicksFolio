@@ -15,4 +15,6 @@ export type User = {
 	profile_picture: string;
 	instagram_username?: string;
 	social_media_visibility?: boolean;
+	followers_count?: number;
+	following_count?: number;
 };

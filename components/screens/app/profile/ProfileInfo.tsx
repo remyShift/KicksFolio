@@ -17,59 +17,68 @@ export default function ProfileInfo({ user }: ProfileInfoProps) {
     const { user: currentUser, userSneakers } = useSession();
     const { t } = useTranslation();
     
-    const { userProfile, handleFollowToggle, isFollowLoading } = useUserProfile(user.id);
+    const { userProfile, isLoading, handleFollowToggle, isFollowLoading } = useUserProfile(user.id);
 
     if (!user) return null;
 
     const isOwnProfile = currentUser?.id === user.id;
-    
-    // Pour son propre profil, on utilise les données du contexte auth
-    // Pour les autres profils, on utilise les données du hook useUserProfile
-    const displayUser = isOwnProfile ? user : (userProfile?.userSearch || user);
+
+    if (!isOwnProfile && !userProfile) {
+        return null;
+    }
+
+    const displayUser = isOwnProfile ? user : userProfile?.userSearch;
     const displaySneakers = isOwnProfile 
         ? (userSneakers || [])
         : (userProfile?.sneakers || []);
+
+    if (!displayUser) {
+        return null;
+    }
 
     const isFollowing = 'is_following' in displayUser ? displayUser.is_following : false;
     const buttonText = isFollowing ? t('social.unfollow') : t('social.follow');
     const buttonColor = isFollowing ? 'bg-primary' : 'bg-gray-300';
 
     return (
-        <View className="flex-col gap-8 items-center" testID='profile-info'>
-            <View className="flex-col gap-2 items-center">
+        <View className="flex-1 flex-row gap-4 items-center justify-center" testID='profile-info'>
+            <View className="flex-col gap-2 items-center justify-center">
                 <ProfileAvatar
                     profilePictureUrl={displayUser.profile_picture || null} 
                 />
                 
-                <View className="flex-row gap-4 items-center">
+                <View>
                     <View className="flex-col items-center">
-                        <Text className="font-open-sans-bold text-xl text-center">
+                        <Text className="font-open-sans-bold text-lg text-center">
                             {displayUser.first_name} {displayUser.last_name}
                         </Text>
-                        <Text className="font-open-sans text-lg text-primary text-center">
-                            @{displayUser.username}
-                        </Text>
+                        <View className="flex gap-2">
+                            <Text className="font-open-sans text-base text-primary text-center">
+                                @{displayUser.username}
+                            </Text>
+                            <SocialMediaLinks user={displayUser} isOwnProfile={isOwnProfile} />
+                        </View>
                     </View>
-
-                    <SocialMediaLinks user={displayUser} isOwnProfile={isOwnProfile} />
                 </View>
 
-                {!isOwnProfile && (
+                {/* {!isOwnProfile && (
                     <MainButton 
-                        content={buttonText}
-                        onPressAction={handleFollowToggle}
-                        backgroundColor={buttonColor}
-                        isDisabled={isFollowLoading}
+                    content={buttonText}
+                    onPressAction={handleFollowToggle}
+                    backgroundColor={buttonColor}
+                    isDisabled={isFollowLoading}
                     />
-                )}
+                )} */}
             </View>
 
-                
-            <ProfileStats 
-                sneakersCount={displaySneakers.length}
-                followersCount={'followers_count' in displayUser ? displayUser.followers_count : 0}
-                sneakers={displaySneakers}
-            />
+            <View className="flex items-center justify-center">
+                <ProfileStats 
+                    sneakersCount={displaySneakers.length}
+                    followersCount={displayUser.followers_count || 0}
+                    sneakers={displaySneakers}
+                    followingCount={displayUser.following_count || 0}
+                />
+            </View>
         </View>
     );
 } 
