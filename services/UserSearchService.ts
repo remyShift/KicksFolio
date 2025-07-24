@@ -1,3 +1,4 @@
+import { Sneaker } from '@/types/Sneaker';
 import { supabase } from './supabase';
 
 export interface SearchUser {
@@ -11,6 +12,7 @@ export interface SearchUser {
 	following_count: number;
 	instagram_username?: string;
 	social_media_visibility?: boolean;
+	sneakers: Sneaker[];
 }
 
 export interface SearchUsersResponse {
@@ -188,6 +190,7 @@ export class UserSearchService {
 				followers_count: finalFollowersCount,
 				following_count: finalFollowingCount,
 				is_following: isFollowing,
+				sneakers: [],
 			};
 		} catch (error) {
 			console.warn(`Error getting user profile ${userId}:`, error);
@@ -197,23 +200,110 @@ export class UserSearchService {
 
 	static async getUserSneakers(userId: string): Promise<any[]> {
 		try {
-			const { data: sneakers, error } = await supabase
+			console.log(
+				'🔍 [UserSearchService] Fetching sneakers for user:',
+				userId
+			);
+
+			const { data: userExists, error: userError } = await supabase
+				.from('users')
+				.select('id, username')
+				.eq('id', userId)
+				.single();
+
+			console.log('👤 [UserSearchService] User check:', {
+				userId,
+				userExists: !!userExists,
+				username: userExists?.username,
+				userError: userError?.message,
+			});
+
+			console.log(
+				'📋 [UserSearchService] Executing query: SELECT * FROM sneakers WHERE user_id =',
+				userId
+			);
+
+			const {
+				data: sneakers,
+				error,
+				count,
+				status,
+				statusText,
+			} = await supabase
 				.from('sneakers')
-				.select('*')
+				.select('*', { count: 'exact' })
 				.eq('user_id', userId)
 				.order('created_at', { ascending: false });
 
+			console.log('📊 [UserSearchService] Raw query result:', {
+				userId,
+				status,
+				statusText,
+				count,
+				dataLength: sneakers?.length || 0,
+				error: error
+					? {
+							message: error.message,
+							details: error.details,
+							hint: error.hint,
+							code: error.code,
+					  }
+					: null,
+				rawDataSample: sneakers?.slice(0, 1) || [],
+			});
+
 			if (error) {
-				console.warn(
-					`Error fetching sneakers for user ${userId}:`,
-					error
+				console.error(
+					`❌ [UserSearchService] Error fetching sneakers for user ${userId}:`,
+					{
+						error,
+						status,
+						statusText,
+						userId,
+					}
 				);
 				return [];
 			}
 
+			console.log('🔄 [UserSearchService] Testing alternative query...');
+			const { data: allSneakers, error: allError } = await supabase
+				.from('sneakers')
+				.select('id, user_id, model, brand')
+				.limit(5);
+
+			console.log(
+				'🗂️ [UserSearchService] Sample of all sneakers in DB:',
+				{
+					totalSample: allSneakers?.length || 0,
+					sample: allSneakers || [],
+					error: allError?.message,
+					targetUserId: userId,
+				}
+			);
+
+			console.log(
+				'✅ [UserSearchService] Sneakers fetched successfully:',
+				{
+					userId,
+					count: sneakers?.length || 0,
+					totalFromCount: count,
+					preview:
+						sneakers?.slice(0, 2).map((s) => ({
+							id: s.id,
+							model: s.model,
+							brand: s.brand,
+							user_id: s.user_id,
+							created_at: s.created_at,
+						})) || [],
+				}
+			);
+
 			return sneakers || [];
 		} catch (error) {
-			console.warn(`Error getting user sneakers ${userId}:`, error);
+			console.error(
+				`❌ [UserSearchService] Exception getting user sneakers for ${userId}:`,
+				error
+			);
 			return [];
 		}
 	}

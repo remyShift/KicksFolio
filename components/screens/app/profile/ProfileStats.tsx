@@ -6,11 +6,11 @@ import { Sneaker } from '@/types/Sneaker';
 
 interface ProfileStatsProps {
     sneakersCount: number;
-    friendsCount: number;
+    followersCount: number;
     sneakers: Sneaker[];
 }
 
-export default function ProfileStats({ sneakersCount, friendsCount, sneakers }: ProfileStatsProps) {
+export default function ProfileStats({ sneakersCount, followersCount, sneakers }: ProfileStatsProps) {
     const { t } = useTranslation();
     const totalValue = sneakers?.reduce((acc, sneaker) => acc + (sneaker.estimated_value || 0), 0) || 0;
 
@@ -33,7 +33,7 @@ export default function ProfileStats({ sneakersCount, friendsCount, sneakers }: 
                         {t('social.followers')}
                     </Text>
                     <Text className="font-open-sans-bold text-2xl">
-                        {friendsCount}
+                        {followersCount}
                     </Text>
                 </View>
             </View>

@@ -1,5 +1,5 @@
 import { createContext, useContext, type PropsWithChildren, useState, useEffect } from 'react';
-import { AuthContextType } from '@/types/auth';
+import { AuthContextType, FollowingUserWithSneakers } from '@/types/auth';
 import { storageService } from '@/services/StorageService';
 import { useAppState } from '@react-native-community/hooks';
 import { User } from '@/types/User';
@@ -8,6 +8,8 @@ import { SupabaseAuthService } from '@/services/AuthService';
 
 import { SupabaseSneakerService } from '@/services/SneakersService';
 import { SupabaseWishlistService } from '@/services/WishlistService';
+import { FollowerService, FollowingUser } from '@/services/FollowerService';
+import { UserSearchService } from '@/services/UserSearchService';
 import { supabase } from '@/services/supabase';
 import * as Linking from 'expo-linking';
 import { router } from 'expo-router';
@@ -32,6 +34,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
     const [user, setUser] = useState<User | null>(null);
     const [userSneakers, setUserSneakers] = useState<Sneaker[] | null>(null);
     const [wishlistSneakers, setWishlistSneakers] = useState<Sneaker[] | null>(null);
+    const [followingUsers, setFollowingUsers] = useState<FollowingUserWithSneakers[] | null>(null);
 
     useEffect(() => {
         const handleDeepLink = (url: string) => {
@@ -165,6 +168,45 @@ export function SessionProvider({ children }: PropsWithChildren) {
             });
     };
 
+    const loadFollowingUsers = async (userId: string) => {
+        console.log('🔄 [AuthContext] Loading following users for:', userId);
+        
+        return FollowerService.getFollowingUsers(userId)
+            .then(async (followingUsersData) => {
+                console.log('✅ [AuthContext] Following users loaded:', followingUsersData.length);
+                
+                // Enrichir avec les sneakers de chaque utilisateur suivi
+                const followingWithSneakers = await Promise.all(
+                    followingUsersData.map(async (followingUser) => {
+                        try {
+                            const sneakers = await UserSearchService.getUserSneakers(followingUser.id);
+                            return {
+                                ...followingUser,
+                                sneakers: sneakers || []
+                            };
+                        } catch (error) {
+                            console.warn(`⚠️ [AuthContext] Error loading sneakers for user ${followingUser.id}:`, error);
+                            return {
+                                ...followingUser,
+                                sneakers: []
+                            };
+                        }
+                    })
+                );
+
+                setFollowingUsers(followingWithSneakers);
+                storageService.setItem('followingUsers', followingWithSneakers);
+                
+                return followingWithSneakers;
+            })
+            .catch((error) => {
+                console.error('❌ [AuthContext] Error loading following users:', error);
+                setFollowingUsers([]);
+                storageService.setItem('followingUsers', []);
+                return [];
+            });
+    };
+
     const initializeUserData = async (userId: string) => {
         const maxRetries = 3;
         const retryDelay = 1000;
@@ -177,7 +219,11 @@ export function SessionProvider({ children }: PropsWithChildren) {
                         setUser(userWithUrl as User);
                         storageService.setItem('user', userWithUrl);
                         
-                        return loadUserSneakers(userWithUrl);
+                        // Charger les sneakers et les following users en parallèle
+                        return Promise.all([
+                            loadUserSneakers(userWithUrl),
+                            loadFollowingUsers(userWithUrl.id)
+                        ]);
                     } else if (attempt < maxRetries) {
                         return new Promise((resolve) => {
                             setTimeout(() => {
@@ -229,7 +275,11 @@ export function SessionProvider({ children }: PropsWithChildren) {
 
                 const userWithUrl = { ...freshUserData, profile_picture_url: freshUserData.profile_picture };
                 
-                return loadUserSneakers(userWithUrl);
+                // Rafraîchir les sneakers et les following users en parallèle
+                return Promise.all([
+                    loadUserSneakers(userWithUrl),
+                    loadFollowingUsers(userWithUrl.id)
+                ]);
             })
             .catch((error) => {
                 console.error('❌ refreshUserData: Error refreshing user data:', error);
@@ -269,10 +319,23 @@ export function SessionProvider({ children }: PropsWithChildren) {
             });
     };
 
+    const refreshFollowingUsers = async () => {
+        if (!user?.id) {
+            console.log('ℹ️ [AuthContext] No user ID, clearing following users');
+            setFollowingUsers([]);
+            storageService.setItem('followingUsers', []);
+            return;
+        }
+        
+        console.log('🔄 [AuthContext] Refreshing following users for:', user.id);
+        return loadFollowingUsers(user.id);
+    };
+
     const clearUserData = () => {
         setUser(null);
         setUserSneakers(null);
         setWishlistSneakers(null);
+        setFollowingUsers(null);
         setResetTokens(null);
 
         storageService.clearSessionData();
@@ -299,7 +362,10 @@ export function SessionProvider({ children }: PropsWithChildren) {
                 refreshUserSneakers,
                 clearUserData,
                 wishlistSneakers,
-                resetTokens
+                resetTokens,
+                followingUsers,
+                setFollowingUsers,
+                refreshFollowingUsers
             }}>
 			{children}
 		</AuthContext.Provider>

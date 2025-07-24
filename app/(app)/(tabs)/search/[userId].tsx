@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { View, Text, ScrollView, RefreshControl } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -24,6 +24,21 @@ export default function UserProfileScreen() {
         isLoading,
         refreshUserProfile,
     } = useUserProfile(userId);
+
+    // Debug logs
+    useEffect(() => {
+        console.log('🔍 [UserProfileScreen] Component state:', {
+            userId,
+            userProfile: userProfile ? {
+                userSearch: {
+                    id: userProfile.userSearch.id,
+                    username: userProfile.userSearch.username
+                },
+                sneakersCount: userProfile.sneakers?.length || 0
+            } : null,
+            isLoading
+        });
+    }, [userId, userProfile, isLoading]);
 
     const sneakersByBrand = useMemo(() => {
         if (!userProfile?.sneakers || userProfile.sneakers.length === 0) return {};

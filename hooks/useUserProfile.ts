@@ -36,30 +36,78 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 	const loadUserProfile = useCallback(
 		async (showRefresh: boolean = false) => {
 			if (!userId || !currentUser?.id) {
+				console.log(
+					'🚫 [useUserProfile] Missing userId or currentUser.id:',
+					{ userId, currentUserId: currentUser?.id }
+				);
 				return;
 			}
 
 			if (isLoadingRef.current && !showRefresh) {
+				console.log('⏸️ [useUserProfile] Already loading, skipping');
 				return;
 			}
 
 			isLoadingRef.current = true;
+			console.log(
+				'🔄 [useUserProfile] Loading user profile for:',
+				userId
+			);
 
 			if (showRefresh) setRefreshing(true);
 			else setIsLoading(true);
 
 			try {
+				console.log(
+					'📡 [useUserProfile] Fetching user profile and sneakers...'
+				);
 				const [userSearch, sneakers] = await Promise.all([
 					UserSearchService.getUserProfile(userId, currentUser.id),
 					UserSearchService.getUserSneakers(userId),
 				]);
 
+				console.log('📊 [useUserProfile] Data received:', {
+					userProfile: !!userSearch,
+					sneakersCount: sneakers?.length || 0,
+					userId,
+					userSearch: userSearch
+						? {
+								id: userSearch.id,
+								username: userSearch.username,
+								followers_count: userSearch.followers_count,
+								following_count: userSearch.following_count,
+						  }
+						: null,
+				});
+
 				if (userSearch) {
-					setUserProfile({
+					const profileData = {
 						userSearch,
 						sneakers: sneakers || [],
-					});
+					};
+
+					console.log(
+						'✅ [useUserProfile] Setting user profile data:',
+						{
+							userId: userSearch.id,
+							username: userSearch.username,
+							sneakersCount: profileData.sneakers.length,
+							sneakersPreview: profileData.sneakers
+								.slice(0, 3)
+								.map((s) => ({
+									id: s.id,
+									model: s.model,
+									brand: s.brand,
+								})),
+						}
+					);
+
+					setUserProfile(profileData);
 				} else {
+					console.warn(
+						'⚠️ [useUserProfile] User profile not found for userId:',
+						userId
+					);
 					showErrorToast(
 						'Utilisateur introuvable',
 						"Cet utilisateur n'existe pas ou n'est plus disponible."
@@ -68,7 +116,7 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 				}
 			} catch (error) {
 				console.error(
-					'❌ [useUserProfile] Error loading user userSearch:',
+					'❌ [useUserProfile] Error loading user profile:',
 					error
 				);
 				showErrorToast(
@@ -79,6 +127,7 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 				isLoadingRef.current = false;
 				setIsLoading(false);
 				setRefreshing(false);
+				console.log('🏁 [useUserProfile] Loading completed');
 			}
 		},
 		[userId, currentUser?.id]

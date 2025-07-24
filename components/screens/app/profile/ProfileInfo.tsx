@@ -67,7 +67,7 @@ export default function ProfileInfo({ user }: ProfileInfoProps) {
                 
             <ProfileStats 
                 sneakersCount={displaySneakers.length}
-                friendsCount={'followers_count' in displayUser ? displayUser.followers_count : 0}
+                followersCount={'followers_count' in displayUser ? displayUser.followers_count : 0}
                 sneakers={displaySneakers}
             />
         </View>

@@ -1,6 +1,12 @@
 import { User } from './User';
 import { Sneaker } from './Sneaker';
 import { Dispatch, SetStateAction } from 'react';
+import { FollowingUser } from '@/services/FollowerService';
+
+// Extension du type FollowingUser pour inclure les sneakers dans le contexte
+export interface FollowingUserWithSneakers extends FollowingUser {
+	sneakers: Sneaker[];
+}
 
 export interface AuthContextType {
 	isLoading: boolean;
@@ -13,6 +19,12 @@ export interface AuthContextType {
 	clearUserData: () => void;
 	wishlistSneakers: Sneaker[] | null;
 	resetTokens: { access_token: string; refresh_token: string } | null;
+	// Followers data
+	followingUsers: FollowingUserWithSneakers[] | null;
+	setFollowingUsers: Dispatch<
+		SetStateAction<FollowingUserWithSneakers[] | null>
+	>;
+	refreshFollowingUsers: () => Promise<void>;
 }
 
 export interface UserData {

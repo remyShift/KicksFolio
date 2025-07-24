@@ -10,7 +10,7 @@ export type User = {
 	sneaker_size: number;
 	created_at: string;
 	updated_at: string;
-	friends: User[];
+	followers: User[];
 	sneakers: Sneaker[];
 	profile_picture: string;
 	instagram_username?: string;

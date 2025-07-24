@@ -3,8 +3,12 @@
 	"inputPlaceholder": "Search users by username or name...",
 	"noResults": "No users found",
 	"emptyState": "Search by username or name...",
+	"noFollowingUsers": "No following users",
 	"error": {
 		"title": "Search Error",
 		"message": "Unable to search users at the moment"
+	},
+	"buttons": {
+		"browse": "Browse"
 	}
 }
