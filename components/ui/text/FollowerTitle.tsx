@@ -1,7 +1,9 @@
 import { View, Text } from 'react-native';
 import { Image } from 'expo-image';
+import Feather from '@expo/vector-icons/Feather';
 
-export default function FollowerTitle({ content }: { content: string }) {
+export default function FollowerTitle({ content, userAvatar }: { content: string, userAvatar: string | null }) {
+
     return (
         <View className="w-full flex justify-center overflow-hidden">
             <Text className="font-syne-extrabold w-[200%] text-4xl text-primary opacity-15 absolute">
@@ -14,17 +16,23 @@ export default function FollowerTitle({ content }: { content: string }) {
                     </Text>
                 </View>
                 
-                <Image source={require('@/assets/images/adaptive-icon.png')}
-                    style={{
-                        width: 24,
-                        height: 24,
-                        borderRadius: 3
-                    }}
-                    contentFit="contain"
-                    contentPosition="center"
-                    cachePolicy="memory-disk"
-                    transition={200}
-                />
+                {userAvatar ? (
+                    <Image source={userAvatar}
+                        style={{
+                            width: 24,
+                            height: 24,
+                            borderRadius: 3
+                        }}
+                        contentFit="contain"
+                        contentPosition="center"
+                        cachePolicy="memory-disk"
+                        transition={200}
+                    />
+                ) : (
+                    <View className="w-8 h-8 bg-primary rounded-full items-center justify-center">
+                        <Feather name="user" size={14} color="white" />
+                    </View>
+                )}
             </View>
         </View>
     );

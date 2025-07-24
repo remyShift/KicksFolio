@@ -39,7 +39,8 @@ export default function Index() {
                             {followingUsers.map((followingUser) => (
                                 <View className="flex-1 gap-2" key={followingUser.id}>
                                     <FollowerTitle 
-                                        content={followingUser.username} 
+                                        content={followingUser.username}
+                                        userAvatar={followingUser.profile_picture}
                                     />
                                     <CollectionCard
                                         isOwnCollection={false}
