@@ -52,42 +52,63 @@ export default function Profile() {
     return;
   }
 
-  return (
-    <ScrollView
-      className="flex-1 mt-16"
-      testID="scroll-view"
-      scrollEnabled={true}
-      refreshControl={
-        <RefreshControl 
-          refreshing={refreshing} 
-          onRefresh={onRefresh}
-          tintColor="#FF6B6B"
-          progressViewOffset={60}
-          testID="refresh-control"
-        />
-    }>
-      <ProfileHeader user={user} userSneakers={userSneakers || []} viewMode={viewMode} setViewMode={setViewMode} />
-
-      {!userSneakers || userSneakers.length === 0 ? (
-          <EmptySneakersState onAddPress={handleAddSneaker} />
-      ) : viewMode === 'card' ? (
-          <View className="flex-1 gap-8">
-            <SneakersCardByBrand 
-              sneakersByBrand={sneakersByBrand}
-              onSneakerPress={handleSneakerPress}
-            />
-          </View>
-      ) : (
-        <View className="flex-1">
-          <SneakersListView 
-            sneakers={userSneakers}
-            onSneakerPress={handleSneakerPress}
-            refreshing={refreshing}
+  if (!userSneakers || userSneakers.length === 0) {
+    return (
+      <ScrollView
+        className="flex-1 mt-16"
+        testID="scroll-view"
+        refreshControl={
+          <RefreshControl 
+            refreshing={refreshing} 
             onRefresh={onRefresh}
-            scrollEnabled={false}
+            tintColor="#FF6B6B"
+            progressViewOffset={60}
+            testID="refresh-control"
+          />
+        }
+      >
+        <ProfileHeader user={user} userSneakers={[]} viewMode={viewMode} setViewMode={setViewMode} />
+        <EmptySneakersState onAddPress={handleAddSneaker} />
+      </ScrollView>
+    );
+  }
+
+  if (viewMode === 'card') {
+    return (
+      <ScrollView
+        className="flex-1 mt-16"
+        testID="scroll-view"
+        refreshControl={
+          <RefreshControl 
+            refreshing={refreshing} 
+            onRefresh={onRefresh}
+            tintColor="#FF6B6B"
+            progressViewOffset={60}
+            testID="refresh-control"
+          />
+        }
+      >
+        <ProfileHeader user={user} userSneakers={userSneakers} viewMode={viewMode} setViewMode={setViewMode} />
+        <View className="flex-1 gap-8">
+          <SneakersCardByBrand 
+            sneakersByBrand={sneakersByBrand}
+            onSneakerPress={handleSneakerPress}
           />
         </View>
-      )}
-    </ScrollView>
+      </ScrollView>
+    );
+  }
+
+  return (
+    <View className="flex-1 mt-16">
+      <SneakersListView 
+        sneakers={userSneakers}
+        onSneakerPress={handleSneakerPress}
+        header={<ProfileHeader user={user} userSneakers={userSneakers} viewMode={viewMode} setViewMode={setViewMode} />}
+        refreshing={refreshing}
+        onRefresh={onRefresh}
+        scrollEnabled={true}
+      />
+    </View>
   );
 }

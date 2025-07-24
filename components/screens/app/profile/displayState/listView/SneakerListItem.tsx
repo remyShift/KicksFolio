@@ -1,11 +1,11 @@
 import { TouchableOpacity, View, Text } from 'react-native';
 import { Image } from 'expo-image';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { Sneaker } from '@/types/Sneaker';
 import { useSession } from '@/context/authContext';
 import SizeDisplay from '@/components/ui/text/SizeDisplay';
 import { useTranslation } from 'react-i18next';
 import { useCurrencyStore } from '@/store/useCurrencyStore';
+import EmptySneakerImage from '@/components/ui/placeholders/EmptySneakerImage';
 
 interface SneakerListItemProps {
   sneaker: Sneaker;
@@ -33,17 +33,16 @@ export default function SneakerListItem({ sneaker, onPress, showOwnerInfo = fals
               width: 80,
               height: 80,
               borderRadius: 8,
-              backgroundColor: '#f3f4f6'
+              backgroundColor: 'transparent'
             }}
             contentFit="contain"
             cachePolicy="memory-disk"
             testID="sneaker-image"
           />
         ) : (
-          <View className="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center">
-            <MaterialCommunityIcons name="shoe-sneaker" size={32} color="#9CA3AF" />
-          </View>
+          <EmptySneakerImage />
         )}
+
         <View className="flex-1">
           <View className="flex-row items-center gap-1">
             <Text className="text-sm text-gray-600 mt-1">{sneaker.brand || ''}</Text>
@@ -64,7 +63,7 @@ export default function SneakerListItem({ sneaker, onPress, showOwnerInfo = fals
             {sneaker.model || ''}
           </Text>
                     
-          <View className="flex-row items-center mt-2 gap-4">
+          <View className="flex-row items-center gap-4">
             <SizeDisplay sneaker={sneaker} className="text-sm text-gray-500" />
             <Text className="text-sm text-gray-500">{t('collection.fields.condition')} : {sneaker.condition ? `${sneaker.condition}/10` : 'N/A'}</Text>
             {sneaker.price_paid > 0 && (

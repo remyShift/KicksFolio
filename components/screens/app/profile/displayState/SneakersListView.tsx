@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { FlatList, View, RefreshControl } from 'react-native';
 import { Sneaker } from '@/types/Sneaker';
 import { useListViewStore } from '@/store/useListViewStore';
@@ -30,16 +30,16 @@ export default function SneakersListView({
     initializeData(sneakers);
   }, [sneakers, initializeData]);
 
-  const renderSneakerItem = ({ item }: { item: Sneaker }) => (
+  const renderSneakerItem = useCallback(({ item }: { item: Sneaker }) => (
     <SneakerListItem sneaker={item} onPress={onSneakerPress} showOwnerInfo={showOwnerInfo} />
-  );
+  ), [onSneakerPress, showOwnerInfo]);
 
-  const renderListHeader = () => (
-    <View className="gap-8">
+  const renderListHeader = useCallback(() => (
+    <>
       {header}
       <ListControls />
-    </View>
-  );
+    </>
+  ), [header]);
 
   return (
     <FlatList

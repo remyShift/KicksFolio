@@ -42,32 +42,53 @@ export default function Wishlist() {
     setIsVisible(true);
   };
 
-  return (
-    <ScrollView 
-      className="flex-1"
-      testID="wishlist-scroll-view"
-      scrollEnabled={true}
-      refreshControl={
-        <RefreshControl 
-          refreshing={refreshing} 
-          onRefresh={onRefresh}
-          tintColor="#FF6B6B"
-          progressViewOffset={60}
-          testID="refresh-control"
+  if (!wishlistSneakers || wishlistSneakers.length === 0) {
+    return (
+      <ScrollView 
+        className="flex-1"
+        testID="wishlist-scroll-view"
+        refreshControl={
+          <RefreshControl 
+            refreshing={refreshing} 
+            onRefresh={onRefresh}
+            tintColor="#FF6B6B"
+            progressViewOffset={60}
+            testID="refresh-control"
+          />
+        }
+      >
+        <WishlistHeader 
+          wishlistSneakers={[]} 
+          viewMode={viewMode} 
+          setViewMode={setViewMode} 
         />
-      }
-    >
-      <WishlistHeader 
-        wishlistSneakers={wishlistSneakers || []} 
-        viewMode={viewMode} 
-        setViewMode={setViewMode} 
-      />
-
-      {!wishlistSneakers || wishlistSneakers.length === 0 ? (
         <View testID="empty-wishlist-container">
           <EmptyWishlistState />
         </View>
-      ) : viewMode === 'card' ? (
+      </ScrollView>
+    );
+  }
+
+  if (viewMode === 'card') {
+    return (
+      <ScrollView 
+        className="flex-1"
+        testID="wishlist-scroll-view"
+        refreshControl={
+          <RefreshControl 
+            refreshing={refreshing} 
+            onRefresh={onRefresh}
+            tintColor="#FF6B6B"
+            progressViewOffset={60}
+            testID="refresh-control"
+          />
+        }
+      >
+        <WishlistHeader 
+          wishlistSneakers={wishlistSneakers} 
+          viewMode={viewMode} 
+          setViewMode={setViewMode} 
+        />
         <View className="flex-1 gap-8" testID="card-view-container">
           <SneakersCardByBrand 
             sneakersByBrand={sneakersByBrand}
@@ -75,18 +96,21 @@ export default function Wishlist() {
             showOwnerInfo={true}
           />
         </View>
-      ) : (
-        <View className="flex-1" testID="list-view-container">
-          <SneakersListView 
-            sneakers={wishlistSneakers}
-            onSneakerPress={handleSneakerPress}
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            scrollEnabled={false}
-            showOwnerInfo={true}
-          />
-        </View>
-      )}
-    </ScrollView>
+      </ScrollView>
+    );
+  }
+
+  return (
+    <View className="flex-1">
+      <SneakersListView 
+        sneakers={wishlistSneakers}
+        onSneakerPress={handleSneakerPress}
+        header={<WishlistHeader wishlistSneakers={wishlistSneakers} viewMode={viewMode} setViewMode={setViewMode} />}
+        refreshing={refreshing}
+        onRefresh={onRefresh}
+        scrollEnabled={true}
+        showOwnerInfo={true}
+      />
+    </View>
   );
 }
