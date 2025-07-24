@@ -160,7 +160,10 @@ export const createSneakerSchema = () => {
 				(val) => !val || (!isNaN(Number(val)) && Number(val) >= 0),
 				t('collection.modal.form.errors.price_paid.min')
 			),
-		description: z.string().optional(),
+		description: z
+			.string()
+			.optional()
+			.transform((val) => (val ? val.replace(/<[^>]*>/g, '') : val)),
 		og_box: z.boolean().optional(),
 		ds: z.boolean().optional(),
 		is_women: z.boolean().optional(),
