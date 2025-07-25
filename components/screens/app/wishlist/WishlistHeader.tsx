@@ -4,15 +4,11 @@ import { Sneaker } from "@/types/Sneaker";
 import Title from "@/components/ui/text/Title";
 import { useTranslation } from "react-i18next";
 
-type ViewMode = 'card' | 'list';
-
 interface WishlistHeaderProps {
     wishlistSneakers: Sneaker[];
-    viewMode: ViewMode;
-    setViewMode: (mode: ViewMode) => void;
 }
 
-export default function WishlistHeader({ wishlistSneakers, viewMode, setViewMode }: WishlistHeaderProps) {
+export default function WishlistHeader({ wishlistSneakers }: WishlistHeaderProps) {
     const { t } = useTranslation();
 
     return (
@@ -20,10 +16,7 @@ export default function WishlistHeader({ wishlistSneakers, viewMode, setViewMode
         {wishlistSneakers && wishlistSneakers.length > 0 && (
             <View className="flex-row mb-8 items-center">
             <Title content={t('collection.pages.titles.wishlist')} />
-            <ViewToggleButton 
-                currentMode={viewMode}
-                onToggle={setViewMode}
-            />
+            <ViewToggleButton />
             </View>
         )}
         </View>
