@@ -30,7 +30,7 @@ export default function SneakersCardByBrand({
     const { setModalStep } = useModalStore();
 
     return (
-        <View className="flex-1 gap-4">
+        <View className="flex-1 gap-4 pb-4">
             {Object.entries(sneakersByBrand).map(([normalizedBrand, sneakers]) => {
                 const originalBrandName = sneakers[0]?.brand || normalizedBrand;
                 

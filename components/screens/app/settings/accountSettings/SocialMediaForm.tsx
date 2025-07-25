@@ -41,8 +41,11 @@ export default function SocialMediaForm() {
         onSubmit: async (data) => {
             if (!user) return;
             
+            // Si l'input Instagram est vide (ou seulement des espaces), on passe null pour supprimer la valeur en DB
+            const instagramValue = data.instagram_username?.trim();
+            
             return updateUser(user.id, {
-                instagram_username: data.instagram_username || undefined,
+                instagram_username: instagramValue && instagramValue.length > 0 ? instagramValue : null,
                 social_media_visibility: data.social_media_visibility
             })
             .then((result) => {

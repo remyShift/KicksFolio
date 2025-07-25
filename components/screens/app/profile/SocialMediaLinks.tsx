@@ -1,7 +1,6 @@
 import { View, Text, Linking, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { User } from '@/types/User';
-import { useTranslation } from 'react-i18next';
 import { SearchUser } from '@/services/UserSearchService';
 
 interface SocialMediaLinksProps {
@@ -10,7 +9,6 @@ interface SocialMediaLinksProps {
 }
 
 export default function SocialMediaLinks({ user, isOwnProfile = false }: SocialMediaLinksProps) {
-    const { t } = useTranslation();
 
     const handleInstagramPress = () => {
         if (user.instagram_username) {
@@ -19,18 +17,8 @@ export default function SocialMediaLinks({ user, isOwnProfile = false }: SocialM
         }
     };
 
-    if (!user.social_media_visibility && !isOwnProfile) {
+    if(!user.social_media_visibility) {
         return null;
-    }
-
-    if (!user.instagram_username) {
-        return isOwnProfile ? (
-            <View className="bg-gray-100 p-4 rounded-lg">
-                <Text className="text-gray-600 text-center">
-                    {t('social.noLinksConfigured')}
-                </Text>
-            </View>
-        ) : null;
     }
 
     return (
