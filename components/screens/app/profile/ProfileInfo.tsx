@@ -5,19 +5,16 @@ import SocialMediaLinks from './SocialMediaLinks';
 import { User } from '@/types/User';
 import { useSession } from '@/context/authContext';
 import { SearchUser } from '@/services/UserSearchService';
-import MainButton from '@/components/ui/buttons/MainButton';
-import { useTranslation } from 'react-i18next';
 import { useUserProfile } from '@/hooks/useUserProfile';
 
-interface ProfileInfoProps {
+export interface ProfileInfoProps {
     user: User | SearchUser;
 }
 
 export default function ProfileInfo({ user }: ProfileInfoProps) {
     const { user: currentUser, userSneakers } = useSession();
-    const { t } = useTranslation();
     
-    const { userProfile, isLoading, handleFollowToggle, isFollowLoading } = useUserProfile(user.id);
+    const { userProfile, handleFollowToggle, isFollowLoading } = useUserProfile(user.id);
 
     if (!user) return null;
 
@@ -36,10 +33,6 @@ export default function ProfileInfo({ user }: ProfileInfoProps) {
         return null;
     }
 
-    const isFollowing = 'is_following' in displayUser ? displayUser.is_following : false;
-    const buttonText = isFollowing ? t('social.unfollow') : t('social.follow');
-    const buttonColor = isFollowing ? 'bg-primary' : 'bg-gray-300';
-
     return (
         <View className="flex-1 flex-row gap-4 items-center justify-center" testID='profile-info'>
             <View className="flex-col items-center justify-center">
@@ -56,23 +49,14 @@ export default function ProfileInfo({ user }: ProfileInfoProps) {
 
             </View>
 
-            <View className="flex items-center justify-center gap-2">
-                <ProfileStats 
-                    sneakersCount={displaySneakers.length}
-                    followersCount={displayUser.followers_count || 0}
-                    sneakers={displaySneakers}
-                    followingCount={displayUser.following_count || 0}
-                />
-                {/* {!isOwnProfile && (
-                    <MainButton 
-                        content={buttonText}
-                        onPressAction={handleFollowToggle}
-                        backgroundColor={buttonColor}
-                        isDisabled={isFollowLoading}
-                        width='full'
-                    />
-                )} */}
-            </View>
+            <ProfileStats 
+                sneakersCount={displaySneakers.length}
+                sneakers={displaySneakers}
+                user={displayUser}
+                isOwnProfile={isOwnProfile}
+                handleFollowToggle={handleFollowToggle}
+                isFollowLoading={isFollowLoading}
+            />
         </View>
     );
 } 

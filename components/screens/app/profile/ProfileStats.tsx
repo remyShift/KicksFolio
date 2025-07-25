@@ -1,21 +1,35 @@
 import { View, Text } from 'react-native';
-import { useSession } from '@/context/authContext';
 import { useTranslation } from 'react-i18next';
 import { useCurrencyStore } from '@/store/useCurrencyStore';
 import { Sneaker } from '@/types/Sneaker';
+import FollowButton from '@/components/ui/buttons/FollowButton';
+import { User } from '@/types/User';
+import { SearchUser } from '@/services/UserSearchService';
 
 interface ProfileStatsProps {
     sneakersCount: number;
-    followersCount: number;
     sneakers: Sneaker[];
-    followingCount: number;
+    user: User | SearchUser;
+    isOwnProfile: boolean;
+    handleFollowToggle: () => Promise<void>;
+    isFollowLoading: boolean;
 }
 
-export default function ProfileStats({ sneakersCount, followersCount, sneakers, followingCount }: ProfileStatsProps) {
+export default function ProfileStats({ 
+    sneakersCount, 
+    sneakers, 
+    user, 
+    isOwnProfile, 
+    handleFollowToggle, 
+    isFollowLoading 
+}: ProfileStatsProps) {
     const { t } = useTranslation();
+    const { formattedPrice } = useCurrencyStore();
+
     const totalValue = sneakers?.reduce((acc, sneaker) => acc + (sneaker.estimated_value || 0), 0) || 0;
 
-    const { formattedPrice } = useCurrencyStore();
+    const isFollowing = isOwnProfile ? false : ('is_following' in user ? user.is_following : false);
+    const buttonColor = isFollowing ? 'bg-gray-300' : 'bg-primary';
 
     return (
         <View className="flex justify-center">
@@ -31,7 +45,7 @@ export default function ProfileStats({ sneakersCount, followersCount, sneakers, 
 
                 <View className="p-3 rounded-lg">
                     <Text className="font-open-sans-bold text-xl">
-                        {followersCount}
+                        {user.followers_count}
                     </Text>
                     <Text className="font-open-sans text-base">
                         {t('social.followers')}
@@ -40,7 +54,7 @@ export default function ProfileStats({ sneakersCount, followersCount, sneakers, 
 
                 <View className="p-3 rounded-lg">
                     <Text className="font-open-sans-bold text-xl">
-                        {followingCount}
+                        {user.following_count}
                     </Text>
                     <Text className="font-open-sans text-base">
                         {t('social.following')}
@@ -56,6 +70,16 @@ export default function ProfileStats({ sneakersCount, followersCount, sneakers, 
                     {t('ui.labels.value')}
                 </Text>
             </View>
+
+            {!isOwnProfile && (
+                <FollowButton 
+                    onPressAction={handleFollowToggle}
+                    backgroundColor={buttonColor}
+                    isDisabled={isFollowLoading}
+                    testID='follow-button'
+                    isFollowing={isFollowing}
+                />
+            )}
 
         </View>
     );

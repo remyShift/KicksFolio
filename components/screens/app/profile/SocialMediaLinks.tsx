@@ -23,9 +23,7 @@ export default function SocialMediaLinks({ user, isOwnProfile = false }: SocialM
         return null;
     }
 
-    const hasAnyLink = user.instagram_username;
-
-    if (!hasAnyLink) {
+    if (!user.instagram_username) {
         return isOwnProfile ? (
             <View className="bg-gray-100 p-4 rounded-lg">
                 <Text className="text-gray-600 text-center">
