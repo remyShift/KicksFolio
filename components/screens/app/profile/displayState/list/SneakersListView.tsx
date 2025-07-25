@@ -18,11 +18,14 @@ export default function SneakersListView({
   scrollEnabled = true,
   showOwnerInfo = false
 }: SneakersListViewProps) {
-  const { filteredAndSortedSneakers, initializeData } = useListViewStore();
+  const { filteredAndSortedSneakers, initializeData, clearFilters } = useListViewStore();
 
   useEffect(() => {
+    // Réinitialiser complètement le store avec de nouvelles données
+    // Cela évite le mélange de données entre différents utilisateurs
+    clearFilters();
     initializeData(sneakers);
-  }, [sneakers, initializeData]);
+  }, [sneakers, initializeData, clearFilters]);
 
   const renderSneakerItem = useCallback(({ item }: { item: Sneaker }) => (
     <SneakerListItem sneaker={item} onPress={onSneakerPress} showOwnerInfo={showOwnerInfo} />
