@@ -42,23 +42,16 @@ export default function ProfileInfo({ user }: ProfileInfoProps) {
 
     return (
         <View className="flex-1 flex-row gap-4 items-center justify-center" testID='profile-info'>
-            <View className="flex-col gap-2 items-center justify-center">
+            <View className="flex-col items-center justify-center">
                 <ProfileAvatar
                     profilePictureUrl={displayUser.profile_picture || null} 
                 />
                 
-                <View>
-                    <View className="flex-col items-center">
-                        <Text className="font-open-sans-bold text-lg text-center">
-                            {displayUser.first_name} {displayUser.last_name}
-                        </Text>
-                        <View className="flex gap-2">
-                            <Text className="font-open-sans text-base text-primary text-center">
-                                @{displayUser.username}
-                            </Text>
-                            <SocialMediaLinks user={displayUser} isOwnProfile={isOwnProfile} />
-                        </View>
-                    </View>
+                <View className="flex gap-1">
+                    <Text className="font-open-sans text-base text-primary text-center">
+                        @{displayUser.username}
+                    </Text>
+                    <SocialMediaLinks user={displayUser} isOwnProfile={isOwnProfile} />
                 </View>
 
             </View>
@@ -70,7 +63,7 @@ export default function ProfileInfo({ user }: ProfileInfoProps) {
                     sneakers={displaySneakers}
                     followingCount={displayUser.following_count || 0}
                 />
-                {!isOwnProfile && (
+                {/* {!isOwnProfile && (
                     <MainButton 
                         content={buttonText}
                         onPressAction={handleFollowToggle}
@@ -78,7 +71,7 @@ export default function ProfileInfo({ user }: ProfileInfoProps) {
                         isDisabled={isFollowLoading}
                         width='full'
                     />
-                )}
+                )} */}
             </View>
         </View>
     );

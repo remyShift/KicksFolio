@@ -18,42 +18,42 @@ export default function ProfileStats({ sneakersCount, followersCount, sneakers, 
     const { formattedPrice } = useCurrencyStore();
 
     return (
-        <View className="flex gap-2 justify-center">
+        <View className="flex justify-center">
             <View className="flex-row gap-2">
-                <View className="bg-primary/15 p-3 rounded-lg">
-                    <Text className="font-open-sans text-base">
-                        {t('collection.stats.sneakers')}
-                    </Text>
+                <View className="p-3 rounded-lg">
                     <Text className="font-open-sans-bold text-xl" testID='sneakers-count'>
                         {sneakersCount}
                     </Text>
+                    <Text className="font-open-sans text-base">
+                        {t('collection.stats.sneakers')}
+                    </Text>
                 </View>
 
-                <View className="bg-primary/15 p-3 rounded-lg">
-                    <Text className="font-open-sans text-base">
-                        {t('social.followers')}
-                    </Text>
+                <View className="p-3 rounded-lg">
                     <Text className="font-open-sans-bold text-xl">
                         {followersCount}
                     </Text>
+                    <Text className="font-open-sans text-base">
+                        {t('social.followers')}
+                    </Text>
                 </View>
 
-                <View className="bg-primary/15 p-3 rounded-lg">
-                    <Text className="font-open-sans text-base">
-                        {t('social.following')}
-                    </Text>
+                <View className="p-3 rounded-lg">
                     <Text className="font-open-sans-bold text-xl">
                         {followingCount}
+                    </Text>
+                    <Text className="font-open-sans text-base">
+                        {t('social.following')}
                     </Text>
                 </View>
             </View>
 
-            <View className="bg-primary/15 p-3 rounded-lg">
-                <Text className="font-open-sans text-base">
-                    {t('ui.labels.value')}
-                </Text>
+            <View className="p-3 rounded-lg">
                 <Text className="font-open-sans-bold text-xl">
                     {formattedPrice(totalValue)}
+                </Text>
+                <Text className="font-open-sans text-base">
+                    {t('ui.labels.value')}
                 </Text>
             </View>
 

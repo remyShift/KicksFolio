@@ -6,14 +6,14 @@ import Feather from '@expo/vector-icons/Feather';
 export default function ProfileAvatar({ profilePictureUrl }: { profilePictureUrl: string | null }) {
     return (
         profilePictureUrl ? (
-                <View className='w-28 h-28 rounded-full'>
+                <View className='w-24 h-24 rounded-full'>
                     <Image 
                         source={{ uri: profilePictureUrl }} 
                         style={{
                             width: '100%',
                             height: '100%',
                             borderRadius: 100,
-                            borderWidth: 4,
+                            borderWidth: 2,
                             borderColor: '#F27329',
                         }}
                         contentFit="cover"
@@ -22,7 +22,7 @@ export default function ProfileAvatar({ profilePictureUrl }: { profilePictureUrl
                     />
                 </View>
             ) : (
-                <View className='w-28 h-28 bg-primary rounded-full items-center justify-center'>
+                <View className='w-24 h-24 bg-primary rounded-full items-center justify-center'>
                     <Feather name="user" size={40} color="white" />
                 </View>
             )
