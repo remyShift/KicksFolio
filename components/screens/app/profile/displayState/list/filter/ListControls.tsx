@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useListViewStore } from '@/store/useListViewStore';
-import SortButtons from './SortButtons';
+import SortButtons from '../SortButtons';
 import FilterSection from './FilterSection';
 import { useTranslation } from 'react-i18next';
 

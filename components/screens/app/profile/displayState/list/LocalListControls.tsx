@@ -1,8 +1,8 @@
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
-import LocalSortButtons from './LocalSortButtons';
-import LocalFilterSection from './LocalFilterSection';
+import LocalSortButtons from './filter/LocalSortButtons';
+import LocalFilterSection from './filter/LocalFilterSection';
 
 interface LocalListControlsProps {
   listState: ReturnType<typeof import('@/hooks/useLocalListState').useLocalListState>;

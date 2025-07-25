@@ -1,5 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
-import { RefreshControl, ScrollView, View } from 'react-native';
+import { RefreshControl, ScrollView } from 'react-native';
 import { Sneaker } from '@/types/Sneaker';
 import { User } from '@/types/User';
 import { SearchUser } from '@/services/UserSearchService';
@@ -27,7 +26,6 @@ export default function ProfileDisplayContainer({
   showBackButton = false,
 }: ProfileDisplayContainerProps) {
 
-  // Si pas de sneakers, afficher l'état vide
   if (!userSneakers || userSneakers.length === 0) {
     return (
       <ScrollView

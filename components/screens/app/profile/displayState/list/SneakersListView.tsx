@@ -3,7 +3,7 @@ import { FlatList } from 'react-native';
 import { Sneaker } from '@/types/Sneaker';
 import { useListViewStore } from '@/store/useListViewStore';
 import SneakerListItem from './SneakerListItem';
-import ListControls from './ListControls';
+import ListControls from './filter/ListControls';
 
 interface SneakersListViewProps {
   sneakers: Sneaker[];
@@ -21,8 +21,6 @@ export default function SneakersListView({
   const { filteredAndSortedSneakers, initializeData, clearFilters } = useListViewStore();
 
   useEffect(() => {
-    // Réinitialiser complètement le store avec de nouvelles données
-    // Cela évite le mélange de données entre différents utilisateurs
     clearFilters();
     initializeData(sneakers);
   }, [sneakers, initializeData, clearFilters]);

@@ -26,7 +26,6 @@ export default function DualViewContainer({
 }: DualViewContainerProps) {
   const { viewDisplayState } = useViewDisplayStateStore();
   
-  // Calculer sneakersByBrand une seule fois
   const sneakersByBrand = useMemo(() => {
     if (!userSneakers || userSneakers.length === 0) return {};
     
@@ -45,7 +44,6 @@ export default function DualViewContainer({
 
   return (
     <View className="flex-1">
-      {/* Vue Card - toujours montée */}
       <View 
         style={{ 
           display: isCardView ? 'flex' : 'none',
@@ -63,7 +61,6 @@ export default function DualViewContainer({
         />
       </View>
 
-      {/* Vue List - toujours montée */}
       <View 
         style={{ 
           display: !isCardView ? 'flex' : 'none',
