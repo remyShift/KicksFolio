@@ -35,18 +35,20 @@ export default function Index() {
                 
                 {followingUsers && followingUsers.length > 0 ? (
                     <View className="flex-1 gap-4">
-                        <View className="flex-1 px-4">
+                        <View className="flex-1 gap-8">
                             {followingUsers.map((followingUser) => (
                                 <View className="flex-1 gap-2" key={followingUser.id}>
                                     <FollowerTitle 
                                         content={followingUser.username}
                                         userAvatar={followingUser.profile_picture}
                                     />
-                                    <CollectionCard
-                                        isOwnCollection={false}
-                                        userId={followingUser.id}
-                                        userSneakers={followingUser.sneakers || []}
-                                    />
+                                    <View className="flex-1 px-4">
+                                        <CollectionCard
+                                            isOwnCollection={false}
+                                            userId={followingUser.id}
+                                            userSneakers={followingUser.sneakers || []}
+                                        />
+                                    </View>
                                 </View>
                             ))}
                         </View>

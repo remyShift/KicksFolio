@@ -1,8 +1,6 @@
-import { View, ScrollView, Pressable, TextInput } from 'react-native'
+import { View, ScrollView, TextInput } from 'react-native'
 import { useRef } from 'react'
-import { RelativePathString, router } from 'expo-router'
-import { Ionicons } from '@expo/vector-icons'
-import PageTitle from '@/components/ui/text/PageTitle'
+import { RelativePathString } from 'expo-router'
 import MainButton from '@/components/ui/buttons/MainButton'
 import ErrorMsg from '@/components/ui/text/ErrorMsg'
 import { useSession } from '@/context/authContext'
@@ -48,7 +46,7 @@ export default function EditProfileForm() {
             first_name: user!.first_name,
             last_name: user!.last_name,
             sneaker_size: convertedSneakerSize!.toString(),
-            profile_picture: user!.profile_picture_url,
+            profile_picture: user!.profile_picture,
         },
         isEditForm: true,
         onSubmit: async (data) => {
@@ -76,8 +74,6 @@ export default function EditProfileForm() {
             });
         },
     })
-
-
 
     return (
         <KeyboardAwareScrollView 

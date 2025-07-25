@@ -23,7 +23,7 @@ export default function SettingsMenuItem({
 }: SettingsMenuItemProps) {
     return (
         <TouchableOpacity 
-            className='w-full p-5' 
+            className='w-full p-5 bg-background/100 rounded-xl' 
             onPress={onPress} 
             testID={`drawer-button-${testID}`}
             disabled={!onPress}

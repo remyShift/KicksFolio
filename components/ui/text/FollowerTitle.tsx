@@ -9,7 +9,7 @@ export default function FollowerTitle({ content, userAvatar }: { content: string
             <Text className="font-syne-extrabold w-[200%] text-4xl text-primary opacity-15 absolute">
                 {content.toUpperCase()}
             </Text>
-            <View className="flex flex-row justify-between items-center">
+            <View className="flex flex-row justify-between items-center px-6">
                 <View className="flex gap-0">
                     <Text className="font-syne-extrabold text-lg leading-none">
                         @{content}

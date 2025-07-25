@@ -57,6 +57,7 @@ export default function AppSettings() {
             />
 
             <Spacer />
+
             <SettingsMenuItem 
                 icon="language-outline"
                 label={t('settings.titles.language')}
@@ -95,6 +96,14 @@ export default function AppSettings() {
                     />
                 }
                 testID="currency"
+            />
+
+            <Spacer />
+
+            <SettingsMenuItem 
+                icon="document-text-outline"
+                label={t('auth.data-privacy.privacyPolicy')}
+                onPress={() => Linking.openURL('https://remyshift.github.io/KicksFolio/')}
             />
         </SettingsCategory>
     );
