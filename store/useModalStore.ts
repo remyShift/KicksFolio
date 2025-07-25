@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import {
 	ModalStep,
 	SneakerFormData,
-} from '@/components/screens/app/modals/SneakersModal/types';
+} from '@/components/ui/modals/SneakersModal/types';
 import { Sneaker, SneakerBrand } from '@/types/Sneaker';
 
 export interface FetchedSneaker {

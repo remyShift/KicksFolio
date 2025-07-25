@@ -8,38 +8,28 @@ import Title from "@/components/ui/text/Title";
 import { useTranslation } from "react-i18next";
 import { SearchUser } from "@/services/UserSearchService";
 import { useSession } from "@/context/authContext";
-import BackButton from "@/components/ui/buttons/BackButton";
-
-type ViewMode = 'card' | 'list';
+import BackToSearchButton from "../search/BackToSearchButton";
 
 interface ProfileHeaderProps {
   user: User | SearchUser;
   userSneakers: Sneaker[];
-  viewMode: ViewMode;
-  setViewMode: (mode: ViewMode) => void;
   showBackButton?: boolean;
-  onBackPress?: () => void;
 }
 
 export default function ProfileHeader({ 
   user, 
   userSneakers, 
-  viewMode, 
-  setViewMode, 
   showBackButton = false, 
-  onBackPress 
 }: ProfileHeaderProps) {
   const { t } = useTranslation();
   const { user: currentUser } = useSession();
   const isOwnProfile = user.id === currentUser?.id;
 
   return (
-        <View className="gap-16">
-          <View className="gap-8">
-            {showBackButton && onBackPress && (
-              <View className="flex-row items-center">
-                <BackButton onPressAction={onBackPress} backgroundColor='transparent' />
-              </View>
+        <View className="flex gap-16 mb-8">
+          <View className="flex gap-8">
+            {showBackButton && (
+              <BackToSearchButton />
             )}
             
             {isOwnProfile && <SettingsButton />}
@@ -50,10 +40,7 @@ export default function ProfileHeader({
           {userSneakers && userSneakers.length > 0 && (
               <View className="flex-row items-center">
                   <Title content={t('collection.pages.titles.collection')} />
-                  <ViewToggleButton 
-                    currentMode={viewMode}
-                    onToggle={setViewMode}
-                  />
+                  <ViewToggleButton />
               </View>
             )}
         </View>

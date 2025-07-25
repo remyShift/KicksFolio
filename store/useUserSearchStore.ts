@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { UserSearchService, SearchUser } from '@/services/UserSearchService';
+import { SearchUser } from '@/services/UserSearchService';
 
 interface UserSearchState {
 	searchTerm: string;

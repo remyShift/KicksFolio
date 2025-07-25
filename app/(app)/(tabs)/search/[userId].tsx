@@ -2,20 +2,21 @@ import { useState, useMemo } from 'react';
 import { View, Text, ScrollView, RefreshControl } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Sneaker, ViewMode } from '@/types/Sneaker';
+import { Sneaker } from '@/types/Sneaker';
 import EmptySneakersState from '@/components/screens/app/profile/displayState/EmptySneakersState';
 import { useUserProfile } from '@/hooks/useUserProfile';
 import ProfileHeader from '@/components/screens/app/profile/ProfileHeader';
 import { useModalStore } from '@/store/useModalStore';
 import CardDisplay from '@/components/screens/app/profile/displayState/card/CardDisplay';
 import ListDisplay from '@/components/screens/app/profile/displayState/list/ListDisplay';
+import { useViewDisplayStateStore, ViewDisplayState } from '@/store/useViewDisplayStateStore';
 
 export default function UserProfileScreen() {
     const { userId } = useLocalSearchParams<{ userId: string }>();
     const { t } = useTranslation();
     const { setModalStep, setIsVisible, setCurrentSneaker } = useModalStore();
     const [refreshing, setRefreshing] = useState(false);
-    const [viewMode, setViewMode] = useState<ViewMode>('card');
+    const { viewDisplayState } = useViewDisplayStateStore();
 
     const {
         userProfile,
@@ -71,7 +72,7 @@ export default function UserProfileScreen() {
         setRefreshing(false);
     };
 
-    const handleBackPress = () => {
+    const handleBackSwipe = () => {
         router.dismissTo('/(app)/(tabs)/search');
     };
 
@@ -95,44 +96,35 @@ export default function UserProfileScreen() {
                 <ProfileHeader 
                     user={userSearch} 
                     userSneakers={[]} 
-                    viewMode={viewMode} 
-                    setViewMode={setViewMode}
                     showBackButton={true}
-                    onBackPress={handleBackPress}
                 />
                 <EmptySneakersState onAddPress={() => {}} showAddButton={false} />
             </ScrollView>
         );
     }
 
-    if (viewMode === 'card') {
+    if (viewDisplayState === ViewDisplayState.Card) {
         return (
             <CardDisplay
-                user={userSearch}
                 sneakersByBrand={sneakersByBrand}
-                userSneakers={sneakers}
-                viewMode={viewMode}
-                setViewMode={setViewMode}
                 handleSneakerPress={handleSneakerPress}
                 refreshing={refreshing}
                 onRefresh={onRefresh}
+                user={userSearch}
+                userSneakers={sneakers}
                 showBackButton={true}
-                onBackPress={handleBackPress}
             />
         );
     }
 
     return (
         <ListDisplay
-            user={userSearch}
             userSneakers={sneakers}
-            viewMode={viewMode}
-            setViewMode={setViewMode}
             handleSneakerPress={handleSneakerPress}
             refreshing={refreshing}
             onRefresh={onRefresh}
+            user={userSearch}
             showBackButton={true}
-            onBackPress={handleBackPress}
         />
     );
 } 

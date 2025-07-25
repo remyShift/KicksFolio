@@ -9,7 +9,7 @@ export default function SettingsButton() {
     }, []);
 
     return (
-        <View className="flex-row justify-center items-center" testID="profile-header">
+        <View testID="profile-header">
             <Pressable 
                 className="p-4 absolute right-0 -top-0  z-50"
                 onPress={handleMenuPress}

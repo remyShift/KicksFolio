@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/Sneaker';
 import { useSizeUnitStore } from './useSizeUnitStore';
-import { useEffect } from 'react';
 
 export type SortOption = 'name' | 'brand' | 'size' | 'condition' | 'value';
 

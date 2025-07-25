@@ -1,36 +1,28 @@
-import React from 'react'
-import { RefreshControl, ScrollView, View } from 'react-native'
-import ProfileHeader from '../../ProfileHeader'
+import { RefreshControl, ScrollView } from 'react-native'
 import SneakersCardByBrand from './SneakersCardByBrand'
-import { ViewMode } from '@/types/Sneaker';
 import { Sneaker } from '@/types/Sneaker';
 import { User } from '@/types/User';
 import { SearchUser } from '@/services/UserSearchService';
+import ProfileHeader from '../../ProfileHeader';
 
 interface CardDisplayProps {
-    user: User | SearchUser;
-    userSneakers: Sneaker[];
-    viewMode: ViewMode;
-    setViewMode: (mode: ViewMode) => void;
     sneakersByBrand: Record<string, Sneaker[]>;
     handleSneakerPress: (sneaker: Sneaker) => void;
     refreshing: boolean;
     onRefresh: () => Promise<void>;
+    user: User | SearchUser;
+    userSneakers: Sneaker[];
     showBackButton?: boolean;
-    onBackPress?: () => void;
 }
 
 export default function CardDisplay({ 
-    user, 
-    userSneakers, 
-    viewMode, 
-    setViewMode, 
     sneakersByBrand, 
     handleSneakerPress, 
     refreshing, 
     onRefresh,
-    showBackButton = false,
-    onBackPress
+    user,
+    userSneakers,
+    showBackButton,
 }: CardDisplayProps) {
     return (
         <ScrollView
@@ -46,20 +38,11 @@ export default function CardDisplay({
             />
             }
         >
-            <View className="gap-10">
-                <ProfileHeader 
-                    user={user} 
-                    userSneakers={userSneakers} 
-                    viewMode={viewMode} 
-                    setViewMode={setViewMode}
-                    showBackButton={showBackButton}
-                    onBackPress={onBackPress}
-                />
-                <SneakersCardByBrand
-                    sneakersByBrand={sneakersByBrand}
-                    onSneakerPress={handleSneakerPress}
-                />
-            </View>
+            <ProfileHeader user={user} userSneakers={userSneakers} showBackButton={showBackButton} />
+            <SneakersCardByBrand
+                sneakersByBrand={sneakersByBrand}
+                onSneakerPress={handleSneakerPress}
+            />
         </ScrollView>
     )
 }

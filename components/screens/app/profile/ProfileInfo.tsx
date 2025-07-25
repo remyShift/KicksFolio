@@ -34,7 +34,7 @@ export default function ProfileInfo({ user }: ProfileInfoProps) {
     }
 
     return (
-        <View className="flex-1 flex-row gap-4 items-center justify-center" testID='profile-info'>
+        <View className="flex flex-row gap-4 items-center justify-center" testID='profile-info'>
             <View className="flex-col items-center justify-center">
                 <ProfileAvatar
                     profilePictureUrl={displayUser.profile_picture || null} 

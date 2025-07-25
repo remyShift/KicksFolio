@@ -1,18 +1,19 @@
-import { RefreshControl, ScrollView } from 'react-native';
+import { RefreshControl, ScrollView, View } from 'react-native';
 import { useSession } from '@/context/authContext';
 import { useState, useMemo } from 'react';
-import { Sneaker, ViewMode } from '@/types/Sneaker';
+import { Sneaker } from '@/types/Sneaker';
 import EmptySneakersState from '@/components/screens/app/profile/displayState/EmptySneakersState';
 import { useModalStore } from '@/store/useModalStore';
 import ProfileHeader from '@/components/screens/app/profile/ProfileHeader';
 import CardDisplay from '@/components/screens/app/profile/displayState/card/CardDisplay';
 import ListDisplay from '@/components/screens/app/profile/displayState/list/ListDisplay';
+import { useViewDisplayStateStore, ViewDisplayState } from '@/store/useViewDisplayStateStore';
 
 export default function Profile() {
   const { user, userSneakers, refreshUserData } = useSession();
   const { setModalStep, setIsVisible, setCurrentSneaker } = useModalStore();
   const [refreshing, setRefreshing] = useState(false);
-  const [viewMode, setViewMode] = useState<ViewMode>('card');
+  const { viewDisplayState } = useViewDisplayStateStore();
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -66,36 +67,32 @@ export default function Profile() {
           />
         }
       >
-        <ProfileHeader user={user} userSneakers={[]} viewMode={viewMode} setViewMode={setViewMode} />
+        <ProfileHeader user={user} userSneakers={[]} />
         <EmptySneakersState onAddPress={handleAddSneaker} />
       </ScrollView>
     );
   }
 
-  if (viewMode === 'card') {
+  if (viewDisplayState === ViewDisplayState.Card) {
     return (
       <CardDisplay
-        user={user}
-        userSneakers={userSneakers}
-        viewMode={viewMode}
-        setViewMode={setViewMode}
         sneakersByBrand={sneakersByBrand}
         handleSneakerPress={handleSneakerPress}
         refreshing={refreshing}
         onRefresh={onRefresh}
+        user={user}
+        userSneakers={userSneakers}
       />
     );
   }
 
   return (
     <ListDisplay
-      user={user}
       userSneakers={userSneakers}
-      viewMode={viewMode}
-      setViewMode={setViewMode}
       handleSneakerPress={handleSneakerPress}
       refreshing={refreshing}
       onRefresh={onRefresh}
+      user={user}
     />
   );
 }

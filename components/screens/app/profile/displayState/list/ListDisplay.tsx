@@ -1,33 +1,26 @@
 import { RefreshControl, ScrollView, View } from 'react-native';
 import SneakersListView from './SneakersListView'
-import { User } from '@/types/User'
 import { Sneaker } from '@/types/Sneaker'
-import { ViewMode } from '@/types/Sneaker'
-import ProfileHeader from '../../ProfileHeader'
-import { SearchUser } from '@/services/UserSearchService'
+import { User } from '@/types/User';
+import { SearchUser } from '@/services/UserSearchService';
+import ProfileHeader from '../../ProfileHeader';
 
 interface ListDisplayProps {
-    user: User | SearchUser ;
     userSneakers: Sneaker[];
-    viewMode: ViewMode;
-    setViewMode: (mode: ViewMode) => void;
     handleSneakerPress: (sneaker: Sneaker) => void;
     refreshing: boolean;
     onRefresh: () => Promise<void>;
+    user: User | SearchUser;
     showBackButton?: boolean;
-    onBackPress?: () => void;
 }
 
 export default function ListDisplay({ 
-    user, 
     userSneakers, 
-    viewMode, 
-    setViewMode, 
     handleSneakerPress, 
     refreshing, 
     onRefresh,
-    showBackButton = false,
-    onBackPress
+    user,
+    showBackButton,
 }: ListDisplayProps) {
     return (
         <ScrollView
@@ -43,21 +36,12 @@ export default function ListDisplay({
                 />
             }
         >
-            <View className="gap-8">
-                <ProfileHeader 
-                    user={user} 
-                    userSneakers={userSneakers} 
-                    viewMode={viewMode} 
-                    setViewMode={setViewMode}
-                    showBackButton={showBackButton}
-                    onBackPress={onBackPress}
-                />
-                <SneakersListView 
-                    sneakers={userSneakers}
-                    onSneakerPress={handleSneakerPress}
-                    scrollEnabled={false}
-                />
-            </View>
+            <ProfileHeader user={user} userSneakers={userSneakers} showBackButton={showBackButton} />
+            <SneakersListView 
+                sneakers={userSneakers}
+                onSneakerPress={handleSneakerPress}
+                scrollEnabled={false}
+            />
         </ScrollView>
     )
 }
