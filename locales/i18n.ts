@@ -2,7 +2,6 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { getLocales } from 'expo-localization';
 
-// Import des traductions anglaises
 import enAuth from './en/auth.json';
 import enSettings from './en/settings.json';
 import enAlert from './en/alert.json';

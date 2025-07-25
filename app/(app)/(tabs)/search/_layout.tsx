@@ -3,6 +3,7 @@ import { Stack } from 'expo-router';
 export default function SearchLayout() {
     return (
         <Stack
+            initialRouteName="index"
             screenOptions={{
                 headerShown: false,
                 contentStyle: {
@@ -11,7 +12,7 @@ export default function SearchLayout() {
             }}
         >
             <Stack.Screen 
-                name="index" 
+                name="index"
                 options={{
                     headerShown: false,
                 }}

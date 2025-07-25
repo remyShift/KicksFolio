@@ -123,8 +123,6 @@ export class SupabaseImageService {
 				return false;
 			}
 
-			// Vérification optionnelle que le fichier a bien été supprimé
-			// On attend un peu pour que Supabase traite la suppression
 			await new Promise((resolve) => setTimeout(resolve, 1000));
 
 			const folderPath = filePath.split('/').slice(0, -1).join('/');
@@ -255,7 +253,6 @@ export class SupabaseImageService {
 		return {
 			exists: info.exists,
 			size: fileSize,
-			// Note: width et height nécessitent expo-image-manipulator pour être obtenus
 		};
 	}
 

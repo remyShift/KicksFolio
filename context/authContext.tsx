@@ -171,7 +171,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
     const loadFollowingUsers = async (userId: string) => {
         return FollowerService.getFollowingUsers(userId)
             .then(async (followingUsersData) => {
-                // Enrichir avec les sneakers de chaque utilisateur suivi
                 const followingWithSneakers = await Promise.all(
                     followingUsersData.map(async (followingUser) => {
                         try {
@@ -215,7 +214,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
                         setUser(userWithUrl as User);
                         storageService.setItem('user', userWithUrl);
                         
-                        // Charger les sneakers et les following users en parallèle
                         return Promise.all([
                             loadUserSneakers(userWithUrl),
                             loadFollowingUsers(userWithUrl.id)
@@ -264,18 +262,15 @@ export function SessionProvider({ children }: PropsWithChildren) {
         }
 
         return SupabaseAuthService.getCurrentUser()
-            .then((freshUserData) => {
+            .then(async (freshUserData) => {
                 if (!freshUserData) {
                     return;
                 }
 
                 const userWithUrl = { ...freshUserData, profile_picture_url: freshUserData.profile_picture };
                 
-                // Rafraîchir les sneakers et les following users en parallèle
-                return Promise.all([
-                    loadUserSneakers(userWithUrl),
-                    loadFollowingUsers(userWithUrl.id)
-                ]);
+                await loadUserSneakers(userWithUrl);
+                await loadFollowingUsers(userWithUrl.id);
             })
             .catch((error) => {
                 console.error('❌ refreshUserData: Error refreshing user data:', error);
@@ -322,7 +317,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
             return;
         }
         
-        return loadFollowingUsers(user.id);
+        await loadFollowingUsers(user.id);
     };
 
     const clearUserData = () => {
@@ -339,7 +334,8 @@ export function SessionProvider({ children }: PropsWithChildren) {
         if (appState === 'background') {
             await storageService.saveAppState({
                 user,
-                sneakers: userSneakers
+                sneakers: userSneakers,
+                followingUsers: followingUsers
             });
         }
     };

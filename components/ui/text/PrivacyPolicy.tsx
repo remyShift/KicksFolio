@@ -8,10 +8,8 @@ export default function PrivacyPolicy() {
     return (
         <View className='flex justify-center items-center bg-background pb-10'>
             <Text className='font-open-sans-bold text-xs'>{t('auth.data-privacy.title')}</Text>
-            <Link href='https://remyshift.github.io/KicksFolio'>
-                <LinkText className='text-primary font-open-sans-bold text-xs'>
-                    {t('auth.data-privacy.privacyPolicy')}
-                </LinkText>
+            <Link href='https://remyshift.github.io/KicksFolio' className='text-primary font-open-sans-bold text-xs'>
+                {t('auth.data-privacy.privacyPolicy')}
             </Link>
         </View>
     );

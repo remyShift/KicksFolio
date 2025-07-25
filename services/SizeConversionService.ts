@@ -133,7 +133,6 @@ export class SizeConversionService {
 		gender: GenderType = 'men',
 		inputUnit?: SizeUnit
 	): { size_eu: number; size_us: number } {
-		// Si l'unité n'est pas spécifiée, utiliser la détection automatique comme fallback
 		const detectedUnit = inputUnit || this.detectSizeUnit(inputSize);
 
 		if (detectedUnit === 'EU') {

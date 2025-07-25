@@ -6,7 +6,7 @@ import { createSneakerSchema, SneakerFormData } from '@/validation/schemas';
 import { FormFields } from '../../shared/FormFields';
 import { useFormValidation } from '../../hooks/useFormValidation';
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
-import { SneakerStatus } from '@/types/Sneaker';
+import { SneakerBrand, SneakerStatus } from '@/types/Sneaker';
 import { useSizeConversion } from '@/hooks/useSizeConversion';
 import { useTranslation } from 'react-i18next';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
@@ -49,8 +49,8 @@ export const EditFormStep = () => {
         authErrorMsg: errorMsg,
         defaultValues: {
             model: currentSneaker?.model || '',
-            brand: currentSneaker?.brand,
-            status: currentSneaker?.status || SneakerStatus.null,
+            brand: currentSneaker?.brand !== SneakerBrand.null ? currentSneaker?.brand : undefined,
+            status: currentSneaker?.status !== SneakerStatus.null ? currentSneaker?.status : undefined,
             size: displaySize.toString(),
             condition: currentSneaker?.condition ? String(currentSneaker.condition) : '',
             price_paid: currentSneaker?.price_paid ? String(currentSneaker.price_paid) : '',
@@ -79,7 +79,6 @@ export const EditFormStep = () => {
 
     useFormValidation(control, watch, reset, trigger, getFieldError);
 
-    // Simple useEffect pour initialiser le formulaire
     useEffect(() => {
         if (currentSneaker) {
             const initData = {
@@ -95,7 +94,7 @@ export const EditFormStep = () => {
                 images: sneakerToAdd?.images || currentSneaker.images || [],
             };
             
-            reset(initData);
+            reset(initData as SneakerFormData);
             
             if (!sneakerToAdd) {
                 setSneakerToAdd(initData as SneakerFormData);

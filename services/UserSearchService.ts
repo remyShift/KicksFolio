@@ -214,7 +214,6 @@ export class UserSearchService {
 				return [];
 			}
 
-			// Parser les images comme dans SupabaseSneakerService
 			return (
 				sneakers?.map((sneaker) => ({
 					...sneaker,

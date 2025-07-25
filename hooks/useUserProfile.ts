@@ -126,13 +126,10 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 				};
 			});
 
-			// Mettre à jour le contexte global des following users
-			// pour que la page index.tsx se mette à jour automatiquement
 			refreshFollowingUsers().catch((error) => {
 				console.warn('Failed to refresh following users:', error);
 			});
 
-			// Mettre à jour les compteurs de l'utilisateur courant
 			refreshUserData().catch((error) => {
 				console.warn('Failed to refresh current user data:', error);
 			});

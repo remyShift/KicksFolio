@@ -141,10 +141,8 @@ export const useModalFooterActions = () => {
 					});
 				break;
 			case 'barcode':
-				// Les actions pour barcode sont gérées directement dans BarcodeStep
 				break;
 			case 'addFormImages':
-				// Vérifier qu'au moins une image est ajoutée avant de passer à l'étape suivante
 				const { sneakerToAdd } = useModalStore.getState();
 				if (!sneakerToAdd?.images || sneakerToAdd.images.length === 0) {
 					setErrorMsg(

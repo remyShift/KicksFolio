@@ -363,10 +363,8 @@ jest.mock('../services/supabase', () => ({
 	},
 }));
 
-// Proper i18n setup for tests
 import i18n from '../locales/i18n';
 
-// Initialize i18n for tests
 beforeAll(async () => {
 	if (!i18n.isInitialized) {
 		await i18n.init();
@@ -374,7 +372,6 @@ beforeAll(async () => {
 	await i18n.changeLanguage('en');
 });
 
-// Mock react-native-reanimated
 jest.mock('react-native-reanimated', () => {
 	const { View } = require('react-native');
 	return {
@@ -392,7 +389,6 @@ jest.mock('react-native-reanimated', () => {
 	};
 });
 
-// Mock expo-haptics
 jest.mock('expo-haptics', () => ({
 	impactAsync: jest.fn(),
 	notificationAsync: jest.fn(),
@@ -409,7 +405,6 @@ jest.mock('expo-haptics', () => ({
 	},
 }));
 
-// Mock validation service with custom error messages
 jest.mock('../services/FormValidationService', () => ({
 	FormValidationService: {
 		validateUsername: jest.fn(),
@@ -423,7 +418,6 @@ jest.mock('../services/FormValidationService', () => ({
 	},
 }));
 
-// Mock additional stores
 jest.mock('../store/useListViewStore', () => ({
 	useListViewStore: () => ({
 		isListView: false,
@@ -458,7 +452,6 @@ jest.mock('../store/useLanguageStore', () => ({
 	),
 }));
 
-// Mock custom hooks
 jest.mock('../hooks/useSizeConversion', () => ({
 	useSizeConversion: () => ({
 		formattedSize: jest.fn((size) => `${size} US`),
@@ -466,9 +459,6 @@ jest.mock('../hooks/useSizeConversion', () => ({
 	}),
 }));
 
-// Note: formattedPrice is mocked within useCurrencyStore
-
-// Mock additional service functions
 jest.mock('../services/SizeConversionService', () => ({
 	SizeConversionService: {
 		convertSize: jest.fn(),

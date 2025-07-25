@@ -191,7 +191,6 @@ export const useSneakerAPI = () => {
 					return Promise.reject('Validation failed');
 				}
 
-				// Utiliser les données validées par Zod au lieu de formData
 				const validatedData = createSneakerSchema().parse({
 					images: formData.images,
 					model: formData.model,
@@ -317,7 +316,6 @@ export const useSneakerAPI = () => {
 					return Promise.reject('Validation failed');
 				}
 
-				// Utiliser les données validées par Zod au lieu de formData
 				const validatedData = createSneakerSchema().parse({
 					images: formData.images,
 					model: formData.model,

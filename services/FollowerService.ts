@@ -82,7 +82,6 @@ export class FollowerService {
 
 		if (!data || data.length === 0) return [];
 
-		// Version simple sans batch processing
 		const followingUsers = await Promise.all(
 			data.map(async (follow: any) => {
 				const user = follow.users;
@@ -117,7 +116,6 @@ export class FollowerService {
 						`Error processing user ${user.id}:`,
 						userError
 					);
-					// Retourner un utilisateur avec des valeurs par défaut
 					return {
 						id: user.id,
 						username: user.username,
