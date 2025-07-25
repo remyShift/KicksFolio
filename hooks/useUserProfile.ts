@@ -23,7 +23,11 @@ interface UserProfileData {
 }
 
 export const useUserProfile = (userId: string | undefined): UseUserProfile => {
-	const { user: currentUser, refreshFollowingUsers } = useSession();
+	const {
+		user: currentUser,
+		refreshFollowingUsers,
+		refreshUserData,
+	} = useSession();
 	const { showSuccessToast, showErrorToast } = useToast();
 	const { t } = useTranslation();
 
@@ -127,6 +131,11 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 			refreshFollowingUsers().catch((error) => {
 				console.warn('Failed to refresh following users:', error);
 			});
+
+			// Mettre à jour les compteurs de l'utilisateur courant
+			refreshUserData().catch((error) => {
+				console.warn('Failed to refresh current user data:', error);
+			});
 		} catch (error) {
 			console.error('Error toggling follow:', error);
 			showErrorToast(
@@ -143,10 +152,16 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 		showSuccessToast,
 		showErrorToast,
 		refreshFollowingUsers,
+		refreshUserData,
 	]);
 
 	const refreshUserProfile = async () => {
-		await loadUserProfile(true);
+		try {
+			await loadUserProfile(true);
+		} catch (error) {
+			console.error('Error refreshing user profile:', error);
+			setRefreshing(false);
+		}
 	};
 
 	useEffect(() => {

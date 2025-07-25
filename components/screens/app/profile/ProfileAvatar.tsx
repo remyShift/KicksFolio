@@ -22,7 +22,7 @@ export default function ProfileAvatar({ profilePictureUrl }: { profilePictureUrl
                     />
                 </View>
             ) : (
-                <View className='w-24 h-24 bg-primary rounded-full items-center justify-center'>
+                <View className='w-24 h-24 bg-gray-300 border-2 border-gray-400 rounded-full items-center justify-center'>
                     <Feather name="user" size={40} color="white" />
                 </View>
             )
