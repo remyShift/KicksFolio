@@ -5,9 +5,7 @@ import { User } from '@/types/User';
 import { SearchUser } from '@/services/UserSearchService';
 import EmptySneakersState from './displayState/EmptySneakersState';
 import ProfileHeader from './ProfileHeader';
-import CardDisplay from './displayState/card/CardDisplay';
-import ListDisplay from './displayState/list/ListDisplay';
-import { useViewDisplayStateStore, ViewDisplayState } from '@/store/useViewDisplayStateStore';
+import DualViewContainer from './DualViewContainer';
 
 interface ProfileDisplayContainerProps {
   user: User | SearchUser;
@@ -28,22 +26,6 @@ export default function ProfileDisplayContainer({
   onAddSneaker,
   showBackButton = false,
 }: ProfileDisplayContainerProps) {
-  const { viewDisplayState } = useViewDisplayStateStore();
-  
-  // Calculer sneakersByBrand seulement quand userSneakers change
-  const sneakersByBrand = useMemo(() => {
-    if (!userSneakers || userSneakers.length === 0) return {};
-    
-    return userSneakers.reduce((acc, sneaker) => {
-      const normalizedBrand = sneaker.brand.toLowerCase().trim();
-      
-      if (!acc[normalizedBrand]) {
-        acc[normalizedBrand] = [];
-      }
-      acc[normalizedBrand].push(sneaker);
-      return acc;
-    }, {} as Record<string, Sneaker[]>);
-  }, [userSneakers]);
 
   // Si pas de sneakers, afficher l'état vide
   if (!userSneakers || userSneakers.length === 0) {
@@ -74,29 +56,14 @@ export default function ProfileDisplayContainer({
     );
   }
 
-  // Rendu conditionnel pour éviter la récréation des composants
   return (
-    <View className="flex-1">
-      {viewDisplayState === ViewDisplayState.Card ? (
-        <CardDisplay
-          sneakersByBrand={sneakersByBrand}
-          handleSneakerPress={onSneakerPress}
-          refreshing={refreshing}
-          onRefresh={onRefresh}
-          user={user}
-          userSneakers={userSneakers}
-          showBackButton={showBackButton}
-        />
-      ) : (
-        <ListDisplay
-          userSneakers={userSneakers}
-          handleSneakerPress={onSneakerPress}
-          refreshing={refreshing}
-          onRefresh={onRefresh}
-          user={user}
-          showBackButton={showBackButton}
-        />
-      )}
-    </View>
+    <DualViewContainer
+      user={user}
+      userSneakers={userSneakers}
+      refreshing={refreshing}
+      onRefresh={onRefresh}
+      onSneakerPress={onSneakerPress}
+      showBackButton={showBackButton}
+    />
   );
 } 
