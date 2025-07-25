@@ -8,6 +8,7 @@ import Title from "@/components/ui/text/Title";
 import { useTranslation } from "react-i18next";
 import { SearchUser } from "@/services/UserSearchService";
 import { useSession } from "@/context/authContext";
+import BackButton from "@/components/ui/buttons/BackButton";
 
 type ViewMode = 'card' | 'list';
 
@@ -16,28 +17,45 @@ interface ProfileHeaderProps {
   userSneakers: Sneaker[];
   viewMode: ViewMode;
   setViewMode: (mode: ViewMode) => void;
+  showBackButton?: boolean;
+  onBackPress?: () => void;
 }
 
-export default function ProfileHeader({ user, userSneakers, viewMode, setViewMode }: ProfileHeaderProps) {
+export default function ProfileHeader({ 
+  user, 
+  userSneakers, 
+  viewMode, 
+  setViewMode, 
+  showBackButton = false, 
+  onBackPress 
+}: ProfileHeaderProps) {
   const { t } = useTranslation();
   const { user: currentUser } = useSession();
   const isOwnProfile = user.id === currentUser?.id;
 
   return (
-        <View className="gap-8">
+        <View className="gap-16">
+          <View className="gap-8">
+            {showBackButton && onBackPress && (
+              <View className="flex-row items-center">
+                <BackButton onPressAction={onBackPress} backgroundColor='transparent' />
+              </View>
+            )}
+            
             {isOwnProfile && <SettingsButton />}
 
             <ProfileInfo user={user} />
+          </View>
 
-            {userSneakers && userSneakers.length > 0 && (
-                <View className="flex-row mb-8 items-center">
-                    <Title content={t('collection.pages.titles.collection')} />
-                    <ViewToggleButton 
-                      currentMode={viewMode}
-                      onToggle={setViewMode}
-                    />
-                </View>
-              )}
+          {userSneakers && userSneakers.length > 0 && (
+              <View className="flex-row items-center">
+                  <Title content={t('collection.pages.titles.collection')} />
+                  <ViewToggleButton 
+                    currentMode={viewMode}
+                    onToggle={setViewMode}
+                  />
+              </View>
+            )}
         </View>
     );
 }

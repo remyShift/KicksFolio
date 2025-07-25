@@ -1,17 +1,14 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { View, Text, ScrollView, RefreshControl } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import { runOnJS } from 'react-native-reanimated';
 import { Sneaker, ViewMode } from '@/types/Sneaker';
-import SneakersListView from '@/components/screens/app/profile/displayState/SneakersListView';
-import SneakersCardByBrand from '@/components/screens/app/profile/displayState/SneakersCardByBrand';
 import EmptySneakersState from '@/components/screens/app/profile/displayState/EmptySneakersState';
 import { useUserProfile } from '@/hooks/useUserProfile';
 import ProfileHeader from '@/components/screens/app/profile/ProfileHeader';
 import { useModalStore } from '@/store/useModalStore';
-import BackButton from '@/components/ui/buttons/BackButton';
+import CardDisplay from '@/components/screens/app/profile/displayState/card/CardDisplay';
+import ListDisplay from '@/components/screens/app/profile/displayState/list/ListDisplay';
 
 export default function UserProfileScreen() {
     const { userId } = useLocalSearchParams<{ userId: string }>();
@@ -25,8 +22,6 @@ export default function UserProfileScreen() {
         isLoading,
         refreshUserProfile,
     } = useUserProfile(userId);
-
-
 
     const sneakersByBrand = useMemo(() => {
         if (!userProfile?.sneakers || userProfile.sneakers.length === 0) return {};
@@ -76,95 +71,68 @@ export default function UserProfileScreen() {
         setRefreshing(false);
     };
 
-    const { userSearch, sneakers } = userProfile;
-
-    const handleSwipeBack = () => {
+    const handleBackPress = () => {
         router.dismissTo('/(app)/(tabs)/search');
     };
 
-    const swipeGesture = Gesture.Pan()
-        .onEnd((event) => {
-            if (event.velocityX > 500 && Math.abs(event.velocityY) < Math.abs(event.velocityX)) {
-                runOnJS(handleSwipeBack)();
-            }
-        });
-
-    const backButtonSection = (
-        <View className="flex-row items-center">
-            <BackButton onPressAction={handleSwipeBack} backgroundColor='transparent' />
-        </View>
-    );
+    const { userSearch, sneakers } = userProfile;
 
     if (!sneakers || sneakers.length === 0) {
         return (
-            <GestureDetector gesture={swipeGesture}>
-                <ScrollView
-                    className="flex-1 mt-12"
-                    testID="scroll-view"
-                    refreshControl={
-                        <RefreshControl 
-                            refreshing={refreshing} 
-                            onRefresh={onRefresh}
-                            tintColor="#FF6B6B"
-                            progressViewOffset={60}
-                            testID="refresh-control"
-                        />
-                    }
-                >
-                    {backButtonSection}
-                    <ProfileHeader user={userSearch} userSneakers={[]} viewMode={viewMode} setViewMode={setViewMode} />
-                    <EmptySneakersState onAddPress={() => {}} />
-                </ScrollView>
-            </GestureDetector>
+            <ScrollView
+                className="flex-1 mt-16"
+                testID="scroll-view"
+                refreshControl={
+                    <RefreshControl 
+                        refreshing={refreshing} 
+                        onRefresh={onRefresh}
+                        tintColor="#FF6B6B"
+                        progressViewOffset={60}
+                        testID="refresh-control"
+                    />
+                }
+            >
+                <ProfileHeader 
+                    user={userSearch} 
+                    userSneakers={[]} 
+                    viewMode={viewMode} 
+                    setViewMode={setViewMode}
+                    showBackButton={true}
+                    onBackPress={handleBackPress}
+                />
+                <EmptySneakersState onAddPress={() => {}} showAddButton={false} />
+            </ScrollView>
         );
     }
 
     if (viewMode === 'card') {
         return (
-            <GestureDetector gesture={swipeGesture}>
-                <ScrollView
-                    className="flex-1 mt-12"
-                    testID="scroll-view"
-                    refreshControl={
-                        <RefreshControl 
-                            refreshing={refreshing} 
-                            onRefresh={onRefresh}
-                            tintColor="#FF6B6B"
-                            progressViewOffset={60}
-                            testID="refresh-control"
-                        />
-                    }
-                >
-                    {backButtonSection}
-                    <ProfileHeader user={userSearch} userSneakers={sneakers} viewMode={viewMode} setViewMode={setViewMode} />
-                    <View className="flex-1 gap-8">
-                        <SneakersCardByBrand
-                            sneakersByBrand={sneakersByBrand}
-                            onSneakerPress={handleSneakerPress}
-                        />
-                    </View>
-                </ScrollView>
-            </GestureDetector>
+            <CardDisplay
+                user={userSearch}
+                sneakersByBrand={sneakersByBrand}
+                userSneakers={sneakers}
+                viewMode={viewMode}
+                setViewMode={setViewMode}
+                handleSneakerPress={handleSneakerPress}
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                showBackButton={true}
+                onBackPress={handleBackPress}
+            />
         );
     }
 
     return (
-        <GestureDetector gesture={swipeGesture}>
-            <View className="flex-1 mt-12">
-                <SneakersListView 
-                    sneakers={sneakers}
-                    onSneakerPress={handleSneakerPress}
-                    header={
-                        <View>
-                            {backButtonSection}
-                            <ProfileHeader user={userSearch} userSneakers={sneakers} viewMode={viewMode} setViewMode={setViewMode} />
-                        </View>
-                    }
-                    refreshing={refreshing}
-                    onRefresh={onRefresh}
-                    scrollEnabled={true}
-                />
-            </View>
-        </GestureDetector>
+        <ListDisplay
+            user={userSearch}
+            userSneakers={sneakers}
+            viewMode={viewMode}
+            setViewMode={setViewMode}
+            handleSneakerPress={handleSneakerPress}
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            showBackButton={true}
+            onBackPress={handleBackPress}
+        />
     );
 } 

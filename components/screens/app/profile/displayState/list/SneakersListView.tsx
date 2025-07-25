@@ -1,16 +1,13 @@
-import React, { useCallback, useEffect } from 'react';
-import { FlatList, View, RefreshControl } from 'react-native';
+import { useCallback, useEffect } from 'react';
+import { FlatList } from 'react-native';
 import { Sneaker } from '@/types/Sneaker';
 import { useListViewStore } from '@/store/useListViewStore';
-import SneakerListItem from './listView/SneakerListItem';
-import ListControls from './listView/ListControls';
+import SneakerListItem from './SneakerListItem';
+import ListControls from './ListControls';
 
 interface SneakersListViewProps {
   sneakers: Sneaker[];
   onSneakerPress: (sneaker: Sneaker) => void;
-  header?: React.ReactElement;
-  refreshing?: boolean;
-  onRefresh?: () => Promise<void>;
   scrollEnabled?: boolean;
   showOwnerInfo?: boolean;
 }
@@ -18,9 +15,6 @@ interface SneakersListViewProps {
 export default function SneakersListView({ 
   sneakers, 
   onSneakerPress, 
-  header,
-  refreshing = false,
-  onRefresh,
   scrollEnabled = true,
   showOwnerInfo = false
 }: SneakersListViewProps) {
@@ -35,11 +29,8 @@ export default function SneakersListView({
   ), [onSneakerPress, showOwnerInfo]);
 
   const renderListHeader = useCallback(() => (
-    <>
-      {header}
-      <ListControls />
-    </>
-  ), [header]);
+    <ListControls />
+  ), []);
 
   return (
     <FlatList
@@ -53,16 +44,6 @@ export default function SneakersListView({
       nestedScrollEnabled={!scrollEnabled}
       keyboardShouldPersistTaps="handled"
       removeClippedSubviews={false}
-      refreshControl={
-        (onRefresh && scrollEnabled) ? (
-          <RefreshControl 
-            refreshing={refreshing} 
-            onRefresh={onRefresh}
-            tintColor="#FF6B6B"
-            progressViewOffset={60}
-          />
-        ) : undefined
-      }
     />
   );
 } 

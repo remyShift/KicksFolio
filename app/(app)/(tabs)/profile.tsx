@@ -1,13 +1,12 @@
-import { RefreshControl, ScrollView, View } from 'react-native';
+import { RefreshControl, ScrollView } from 'react-native';
 import { useSession } from '@/context/authContext';
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo } from 'react';
 import { Sneaker, ViewMode } from '@/types/Sneaker';
-import { router } from 'expo-router';
 import EmptySneakersState from '@/components/screens/app/profile/displayState/EmptySneakersState';
-import SneakersCardByBrand from '@/components/screens/app/profile/displayState/SneakersCardByBrand';
-import SneakersListView from '@/components/screens/app/profile/displayState/SneakersListView';
 import { useModalStore } from '@/store/useModalStore';
 import ProfileHeader from '@/components/screens/app/profile/ProfileHeader';
+import CardDisplay from '@/components/screens/app/profile/displayState/card/CardDisplay';
+import ListDisplay from '@/components/screens/app/profile/displayState/list/ListDisplay';
 
 export default function Profile() {
   const { user, userSneakers, refreshUserData } = useSession();
@@ -75,40 +74,28 @@ export default function Profile() {
 
   if (viewMode === 'card') {
     return (
-      <ScrollView
-        className="flex-1 mt-16"
-        testID="scroll-view"
-        refreshControl={
-          <RefreshControl 
-            refreshing={refreshing} 
-            onRefresh={onRefresh}
-            tintColor="#FF6B6B"
-            progressViewOffset={60}
-            testID="refresh-control"
-          />
-        }
-      >
-        <ProfileHeader user={user} userSneakers={userSneakers} viewMode={viewMode} setViewMode={setViewMode} />
-        <View className="flex-1 gap-8">
-          <SneakersCardByBrand 
-            sneakersByBrand={sneakersByBrand}
-            onSneakerPress={handleSneakerPress}
-          />
-        </View>
-      </ScrollView>
+      <CardDisplay
+        user={user}
+        userSneakers={userSneakers}
+        viewMode={viewMode}
+        setViewMode={setViewMode}
+        sneakersByBrand={sneakersByBrand}
+        handleSneakerPress={handleSneakerPress}
+        refreshing={refreshing}
+        onRefresh={onRefresh}
+      />
     );
   }
 
   return (
-    <View className="flex-1 mt-16">
-      <SneakersListView 
-        sneakers={userSneakers}
-        onSneakerPress={handleSneakerPress}
-        header={<ProfileHeader user={user} userSneakers={userSneakers} viewMode={viewMode} setViewMode={setViewMode} />}
-        refreshing={refreshing}
-        onRefresh={onRefresh}
-        scrollEnabled={true}
-      />
-    </View>
+    <ListDisplay
+      user={user}
+      userSneakers={userSneakers}
+      viewMode={viewMode}
+      setViewMode={setViewMode}
+      handleSneakerPress={handleSneakerPress}
+      refreshing={refreshing}
+      onRefresh={onRefresh}
+    />
   );
 }

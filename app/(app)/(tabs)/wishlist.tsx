@@ -4,8 +4,8 @@ import { useState, useMemo, useCallback } from 'react';
 import { Sneaker } from '@/types/Sneaker';
 import EmptyWishlistState from '@/components/screens/app/wishlist/EmptyWishlistState';
 import WishlistHeader from '@/components/screens/app/wishlist/WishlistHeader';
-import SneakersCardByBrand from '@/components/screens/app/profile/displayState/SneakersCardByBrand';
-import SneakersListView from '@/components/screens/app/profile/displayState/SneakersListView';
+import SneakersCardByBrand from '@/components/screens/app/profile/displayState/card/SneakersCardByBrand';
+import SneakersListView from '@/components/screens/app/profile/displayState/list/SneakersListView';
 import { useModalStore } from '@/store/useModalStore';
 
 type ViewMode = 'card' | 'list';
@@ -101,16 +101,28 @@ export default function Wishlist() {
   }
 
   return (
-    <View className="flex-1">
-      <SneakersListView 
-        sneakers={wishlistSneakers}
-        onSneakerPress={handleSneakerPress}
-        header={<WishlistHeader wishlistSneakers={wishlistSneakers} viewMode={viewMode} setViewMode={setViewMode} />}
-        refreshing={refreshing}
-        onRefresh={onRefresh}
-        scrollEnabled={true}
-        showOwnerInfo={true}
-      />
-    </View>
+    <ScrollView 
+      className="flex-1"
+      testID="wishlist-scroll-view"
+      refreshControl={
+        <RefreshControl 
+          refreshing={refreshing} 
+          onRefresh={onRefresh}
+          tintColor="#FF6B6B"
+          progressViewOffset={60}
+          testID="refresh-control"
+        />
+      }
+    >
+      <View className="gap-8">
+        <WishlistHeader wishlistSneakers={wishlistSneakers} viewMode={viewMode} setViewMode={setViewMode} />
+        <SneakersListView 
+          sneakers={wishlistSneakers}
+          onSneakerPress={handleSneakerPress}
+          scrollEnabled={false}
+          showOwnerInfo={true}
+        />
+      </View>
+    </ScrollView>
   );
 }
