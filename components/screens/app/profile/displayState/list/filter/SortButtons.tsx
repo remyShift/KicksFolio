@@ -11,11 +11,11 @@ const SORT_OPTIONS: { key: SortOption; label: string }[] = [
   { key: 'value', label: 'collection.fields.value' }
 ];
 
-interface LocalSortButtonsProps {
+interface SortButtonsProps {
   listState: ReturnType<typeof import('@/hooks/useLocalListState').useLocalListState>;
 }
 
-export default function LocalSortButtons({ listState }: LocalSortButtonsProps) {
+export default function SortButtons({ listState }: SortButtonsProps) {
   const { sortBy, sortOrder, toggleSort } = listState;
   const { t } = useTranslation();
   

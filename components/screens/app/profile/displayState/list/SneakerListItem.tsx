@@ -20,7 +20,7 @@ export default function SneakerListItem({ sneaker, onPress, showOwnerInfo = fals
 
   return (
     <TouchableOpacity
-      className="bg-white p-4 border border-gray-100 mb-1"
+      className="bg-white py-2 px-4 border border-gray-100 mb-1"
       onPress={() => onPress(sneaker)}
       activeOpacity={0.7}
       hitSlop={{ top: 5, bottom: 5, left: 5, right: 5 }}

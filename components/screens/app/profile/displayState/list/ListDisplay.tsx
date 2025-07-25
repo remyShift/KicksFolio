@@ -1,5 +1,5 @@
 import { RefreshControl, ScrollView, View } from 'react-native';
-import LocalSneakersListView from './LocalSneakersListView'
+import SneakersListView from './SneakersListView'
 import { Sneaker } from '@/types/Sneaker'
 import { User } from '@/types/User';
 import { SearchUser } from '@/services/UserSearchService';
@@ -37,7 +37,7 @@ export default function ListDisplay({
             }
         >
             <ProfileHeader user={user} userSneakers={userSneakers} showBackButton={showBackButton} />
-            <LocalSneakersListView 
+            <SneakersListView 
                 sneakers={userSneakers}
                 onSneakerPress={handleSneakerPress}
                 scrollEnabled={false}

@@ -1,14 +1,14 @@
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
-import LocalSortButtons from './filter/LocalSortButtons';
-import LocalFilterSection from './filter/LocalFilterSection';
+import SortButtons from './filter/SortButtons';
+import FilterSection from './filter/FilterSection';
 
-interface LocalListControlsProps {
+interface ListControlsProps {
   listState: ReturnType<typeof import('@/hooks/useLocalListState').useLocalListState>;
 }
 
-export default function LocalListControls({ listState }: LocalListControlsProps) {
+export default function ListControls({ listState }: ListControlsProps) {
   const { t } = useTranslation();
   const { filteredAndSortedSneakers, toggleFilters } = listState;
 
@@ -27,9 +27,9 @@ export default function LocalListControls({ listState }: LocalListControlsProps)
         </TouchableOpacity>
       </View>
 
-      <LocalSortButtons listState={listState} />
+      <SortButtons listState={listState} />
 
-      <LocalFilterSection listState={listState} />
+      <FilterSection listState={listState} />
     </View>
   );
 } 

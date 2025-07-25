@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { View } from 'react-native';
 import { Sneaker } from '@/types/Sneaker';
 import SneakersCardByBrand from '@/components/screens/app/profile/displayState/card/SneakersCardByBrand';
-import LocalSneakersListView from '@/components/screens/app/profile/displayState/list/LocalSneakersListView';
+import SneakersListView from '@/components/screens/app/profile/displayState/list/SneakersListView';
 import { useViewDisplayStateStore, ViewDisplayState } from '@/store/useViewDisplayStateStore';
 
 interface WishlistDualViewContainerProps {
@@ -53,7 +53,7 @@ export default function WishlistDualViewContainer({
           flex: 1 
         }}
       >
-        <LocalSneakersListView 
+        <SneakersListView 
           sneakers={wishlistSneakers}
           onSneakerPress={onSneakerPress}
           scrollEnabled={false}

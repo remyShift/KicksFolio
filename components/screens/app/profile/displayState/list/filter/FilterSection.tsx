@@ -1,9 +1,12 @@
 import { View, Text, TouchableOpacity } from 'react-native';
-import { useListViewStore } from '@/store/useListViewStore';
-import FilterGroup from './FilterGroup';
 import { useTranslation } from 'react-i18next';
+import FilterGroup from './FilterGroup';
 
-export default function FilterSection() {
+interface FilterSectionProps {
+  listState: ReturnType<typeof import('@/hooks/useLocalListState').useLocalListState>;
+}
+
+export default function FilterSection({ listState }: FilterSectionProps) {
   const { t } = useTranslation();
   const { 
     showFilters, 
@@ -11,9 +14,10 @@ export default function FilterSection() {
     uniqueValues, 
     updateFilter, 
     clearFilters 
-  } = useListViewStore();
+  } = listState;
   
   if (!showFilters) return null;
+
   const brandOptions = uniqueValues.brands.map(brand => ({
     label: brand,
     value: brand
@@ -35,7 +39,18 @@ export default function FilterSection() {
   }));
 
   return (
-    <View className="py-3 border-t bg-white border-gray-200 px-4">
+    <View className="px-4 py-2 bg-gray-50 border border-gray-200 rounded mx-4 mb-2">
+      <View className="flex-row justify-between items-center mb-3">
+        <Text className="text-base font-semibold text-gray-800">
+          {t('collection.filters.title')}
+        </Text>
+        <TouchableOpacity onPress={clearFilters}>
+          <Text className="text-primary text-sm font-medium">
+            {t('collection.filters.clear')}
+          </Text>
+        </TouchableOpacity>
+      </View>
+
       <FilterGroup
         title={t('collection.fields.brand')}
         filterKey="brand"
@@ -67,13 +82,6 @@ export default function FilterSection() {
         activeValue={filters.status}
         onFilter={updateFilter}
       />
-
-      <TouchableOpacity
-        className="bg-red-500 px-4 py-2 rounded-lg self-start"
-        onPress={clearFilters}
-      >
-        <Text className="text-white text-sm">{t('collection.filters.clearAll')}</Text>
-      </TouchableOpacity>
     </View>
   );
 } 
