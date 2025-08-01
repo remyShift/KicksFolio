@@ -1,11 +1,34 @@
 import { useState } from 'react';
-import { SupabaseAuthService } from '@/services/AuthService';
+import { AuthProvider } from '@/domain/AuthService';
 import { router } from 'expo-router';
 import { UserData, UpdateUserData } from '@/types/auth';
 import { useSession } from '@/context/authContext';
 import { useSignUpValidation } from './useSignUpValidation';
-import SupabaseImageService from '@/services/SupabaseImageService';
+import SupabaseImageService from '@/domain/SupabaseImageService';
 import { useTranslation } from 'react-i18next';
+import { Session, User, WeakPassword } from '@supabase/supabase-js';
+
+const toto = async (
+	email: string,
+	password: string,
+	loginFunction: (
+		email: string,
+		password: string
+	) => Promise<{
+		user: User;
+		session: Session;
+		weakPassword?: WeakPassword;
+	}>
+) => {
+	return loginFunction(email, password)
+		.then((response) => {
+			return response.user;
+		})
+		.catch((error) => {
+			console.error('❌ useAuth.login: Error occurred:', error);
+			throw error;
+		});
+};
 
 export const useAuth = () => {
 	const [errorMsg, setErrorMsg] = useState('');
@@ -15,22 +38,16 @@ export const useAuth = () => {
 	const { t } = useTranslation();
 
 	const login = async (email: string, password: string) => {
-		return SupabaseAuthService.signIn(email, password)
-			.then((response) => {
-				if (response.user) {
-					return response.user;
-				}
-			})
-			.catch((error) => {
-				setErrorMsg(`${t('auth.error.login')} : ${error.message}`);
-			});
+		return toto(email, password, AuthProvider.signIn).catch((error) => {
+			setErrorMsg(`${t('auth.error.login')} : ${error.message}`);
+		});
 	};
 
 	const signUp = async (userData: UserData) => {
 		const { profile_picture: profilePictureUri, ...restOfUserData } =
 			userData;
 
-		return SupabaseAuthService.signUp(
+		return AuthProvider.signUp(
 			restOfUserData.email,
 			restOfUserData.password,
 			restOfUserData
@@ -42,7 +59,7 @@ export const useAuth = () => {
 						response.user.id
 					).then((uploadResult) => {
 						if (uploadResult.success && uploadResult.url) {
-							return SupabaseAuthService.updateProfile(
+							return AuthProvider.updateProfile(
 								response.user.id,
 								{ profile_picture: uploadResult.url }
 							).then((updatedUser) => {
@@ -74,7 +91,7 @@ export const useAuth = () => {
 	};
 
 	const forgotPassword = async (email: string) => {
-		return SupabaseAuthService.forgotPassword(email)
+		return AuthProvider.forgotPassword(email)
 			.then(() => {
 				router.replace({
 					pathname: '/login',
@@ -104,12 +121,12 @@ export const useAuth = () => {
 		}
 
 		const resetPasswordPromise = resetTokens
-			? SupabaseAuthService.resetPasswordWithTokens(
+			? AuthProvider.resetPasswordWithTokens(
 					resetTokens.access_token,
 					resetTokens.refresh_token,
 					newPassword
 			  )
-			: SupabaseAuthService.resetPassword(newPassword);
+			: AuthProvider.resetPassword(newPassword);
 
 		return resetPasswordPromise
 			.then(() => {
@@ -145,7 +162,7 @@ export const useAuth = () => {
 	};
 
 	const logout = async () => {
-		return SupabaseAuthService.signOut()
+		return AuthProvider.signOut()
 			.then(() => {
 				router.replace('/login');
 				return true;
@@ -179,7 +196,7 @@ export const useAuth = () => {
 						) ||
 						!newProfileData.profile_picture.startsWith('http'))
 				) {
-					return SupabaseAuthService.getCurrentUser()
+					return AuthProvider.getCurrentUser()
 						.then((currentUser) => {
 							if (currentUser?.profile_picture) {
 								const oldFilePath =
@@ -228,10 +245,7 @@ export const useAuth = () => {
 				}
 			})
 			.then(() => {
-				return SupabaseAuthService.updateProfile(
-					userId,
-					newProfileData
-				);
+				return AuthProvider.updateProfile(userId, newProfileData);
 			})
 			.then((updatedUser) => {
 				setUser(updatedUser);
@@ -254,7 +268,7 @@ export const useAuth = () => {
 					);
 				}
 
-				return SupabaseAuthService.deleteUser(userId);
+				return AuthProvider.deleteUser(userId);
 			})
 			.then(() => {
 				clearUserData();
@@ -268,7 +282,7 @@ export const useAuth = () => {
 	};
 
 	const getUser = async () => {
-		return SupabaseAuthService.getCurrentUser()
+		return AuthProvider.getCurrentUser()
 			.then((user) => {
 				return user;
 			})

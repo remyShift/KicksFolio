@@ -1,4 +1,4 @@
-import { SearchUser } from "@/services/UserSearchService";
+import { SearchUser } from "@/domain/UserSearchService";
 import { useTranslation } from "react-i18next";
 import { View, Text } from "react-native";
 

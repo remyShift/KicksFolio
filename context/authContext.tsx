@@ -1,16 +1,16 @@
 import { createContext, useContext, type PropsWithChildren, useState, useEffect } from 'react';
 import { AuthContextType, FollowingUserWithSneakers } from '@/types/auth';
-import { storageService } from '@/services/StorageService';
+import { storageService } from '@/domain/StorageService';
 import { useAppState } from '@react-native-community/hooks';
 import { User } from '@/types/User';
 import { Sneaker } from '@/types/Sneaker';
-import { SupabaseAuthService } from '@/services/AuthService';
+import { AuthProvider } from '@/domain/AuthService';
 
-import { SupabaseSneakerService } from '@/services/SneakersService';
-import { SupabaseWishlistService } from '@/services/WishlistService';
-import { FollowerService, FollowingUser } from '@/services/FollowerService';
-import { UserSearchService } from '@/services/UserSearchService';
-import { supabase } from '@/services/supabase';
+import { SupabaseSneakerService } from '@/domain/SneakersService';
+import { SupabaseWishlistService } from '@/domain/WishlistService';
+import { FollowerService, FollowingUser } from '@/domain/FollowerService';
+import { UserSearchService } from '@/domain/UserSearchService';
+import { supabase } from '@/domain/supabase';
 import * as Linking from 'expo-linking';
 import { router } from 'expo-router';
 
@@ -123,7 +123,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
             const { data: { session } } = await supabase.auth.getSession();
             if (session?.user) {
                 try {
-                    await SupabaseAuthService.getCurrentUser();
+                    await AuthProvider.getCurrentUser();
                 } catch (error: any) {
                     if (error.code === 'PGRST116') {
                         await supabase.auth.signOut();
@@ -207,7 +207,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
         const retryDelay = 1000;
 
         const getUserWithRetries = async (attempt: number): Promise<any> => {
-            return SupabaseAuthService.getCurrentUser()
+            return AuthProvider.getCurrentUser()
                 .then((userData) => {
                     if (userData) {
                         const userWithUrl = { ...userData, profile_picture_url: userData.profile_picture };
@@ -261,7 +261,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
             return;
         }
 
-        return SupabaseAuthService.getCurrentUser()
+        return AuthProvider.getCurrentUser()
             .then(async (freshUserData) => {
                 if (!freshUserData) {
                     return;

@@ -1,5 +1,5 @@
 import { useCallback, useRef, useEffect } from 'react';
-import { UserSearchService, SearchUser } from '@/services/UserSearchService';
+import { UserSearchService, SearchUser } from '@/domain/UserSearchService';
 import { useSession } from '@/context/authContext';
 import useToast from '@/hooks/useToast';
 import { useTranslation } from 'react-i18next';

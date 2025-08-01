@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { UserSearchService, SearchUser } from '@/services/UserSearchService';
-import { FollowerService } from '@/services/FollowerService';
+import { UserSearchService, SearchUser } from '@/domain/UserSearchService';
+import { FollowerService } from '@/domain/FollowerService';
 import { useSession } from '@/context/authContext';
 import useToast from '@/hooks/useToast';
 import { router } from 'expo-router';

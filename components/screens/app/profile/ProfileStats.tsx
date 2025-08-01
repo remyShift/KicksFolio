@@ -4,7 +4,7 @@ import { useCurrencyStore } from '@/store/useCurrencyStore';
 import { Sneaker } from '@/types/Sneaker';
 import FollowButton from '@/components/ui/buttons/FollowButton';
 import { User } from '@/types/User';
-import { SearchUser } from '@/services/UserSearchService';
+import { SearchUser } from '@/domain/UserSearchService';
 
 interface ProfileStatsProps {
     sneakersCount: number;

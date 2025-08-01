@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { GitHubService } from '@/services/GitHubService';
+import { GitHubService } from '@/domain/GitHubService';
 import useToast from '@/hooks/useToast';
 import { useBugReportStore } from '@/store/useBugReportStore';
 

@@ -1,4 +1,4 @@
-import { ImageService } from '@/services/ImageService';
+import { ImageService } from '@/domain/ImageService';
 import * as ImagePicker from 'expo-image-picker';
 
 export function useImagePicker() {

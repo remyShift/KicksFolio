@@ -6,7 +6,7 @@ import { User } from "@/types/User";
 import SettingsButton from "./SettingsButton";
 import Title from "@/components/ui/text/Title";
 import { useTranslation } from "react-i18next";
-import { SearchUser } from "@/services/UserSearchService";
+import { SearchUser } from "@/domain/UserSearchService";
 import { useSession } from "@/context/authContext";
 import BackToSearchButton from "../search/BackToSearchButton";
 
@@ -27,7 +27,7 @@ export default function ProfileHeader({
 
   return (
         <View className="flex gap-16 mb-8">
-          <View className="flex gap-8">
+          <View className="flex gap-12">
             {showBackButton && (
               <BackToSearchButton />
             )}

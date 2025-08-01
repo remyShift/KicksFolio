@@ -1,7 +1,7 @@
 import { Alert } from 'react-native';
 import { Photo } from '@/types/Sneaker';
-import { ImageService } from '@/services/ImageService';
-import SupabaseImageService from '@/services/SupabaseImageService';
+import { ImageService } from '@/domain/ImageService';
+import SupabaseImageService from '@/domain/SupabaseImageService';
 import { useSession } from '@/context/authContext';
 
 export const usePhotoEditor = (

@@ -3,7 +3,7 @@ import {
 	SizeConversionService,
 	SizeUnit,
 	GenderType,
-} from '@/services/SizeConversionService';
+} from '@/domain/SizeConversionService';
 import { Sneaker } from '@/types/Sneaker';
 
 export const useSizeConversion = () => {

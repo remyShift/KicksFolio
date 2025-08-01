@@ -1,4 +1,4 @@
-import { AuthValidationService } from '@/services/AuthValidationService';
+import { AuthValidationService } from '@/domain/AuthValidationService';
 import { useTranslation } from 'react-i18next';
 
 type ValidationValue = string | number | boolean | null | undefined;

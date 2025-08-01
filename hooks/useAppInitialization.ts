@@ -4,7 +4,7 @@ import { useLanguageStore } from '@/store/useLanguageStore';
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';
 import { useCurrencyStore } from '@/store/useCurrencyStore';
 import { useSplashScreenStore } from '@/store/useSplashScreenStore';
-import { storageService } from '@/services/StorageService';
+import { storageService } from '@/domain/StorageService';
 import { deviceLanguage } from '@/locales/i18n';
 import { User } from '@/types/User';
 import { Sneaker } from '@/types/Sneaker';

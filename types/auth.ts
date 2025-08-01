@@ -1,7 +1,7 @@
 import { User } from './User';
 import { Sneaker } from './Sneaker';
 import { Dispatch, SetStateAction } from 'react';
-import { FollowingUser } from '@/services/FollowerService';
+import { FollowingUser } from '@/domain/FollowerService';
 
 export interface FollowingUserWithSneakers extends FollowingUser {
 	sneakers: Sneaker[];

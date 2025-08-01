@@ -2,7 +2,7 @@ import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/Sneaker';
 import {
 	SupabaseSneakerService,
 	SupabaseSneaker,
-} from '@/services/SneakersService';
+} from '@/domain/SneakersService';
 import {
 	SneakerFormData,
 	createSneakerSchema,
@@ -12,7 +12,7 @@ import { ModalStep } from '../types';
 import { FetchedSneaker } from '@/store/useModalStore';
 import { useSession } from '@/context/authContext';
 import { ZodIssue } from 'zod';
-import SupabaseImageService from '@/services/SupabaseImageService';
+import SupabaseImageService from '@/domain/SupabaseImageService';
 import useToast from '@/hooks/useToast';
 import { useTranslation } from 'react-i18next';
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';

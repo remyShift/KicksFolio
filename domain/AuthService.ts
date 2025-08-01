@@ -1,4 +1,4 @@
-import { supabase } from '@/services/supabase';
+import { supabase } from '@/domain/supabase';
 
 export interface SupabaseUser {
 	id: string;
@@ -14,7 +14,7 @@ export interface SupabaseUser {
 	social_media_visibility?: boolean;
 }
 
-export class SupabaseAuthService {
+export class AuthProvider {
 	static async signUp(
 		email: string,
 		password: string,

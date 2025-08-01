@@ -1,5 +1,5 @@
 import { useSession } from '@/context/authContext';
-import { storageService } from '@/services/StorageService';
+import { storageService } from '@/domain/StorageService';
 import { User } from '@/types/User';
 import { Sneaker } from '@/types/Sneaker';
 
