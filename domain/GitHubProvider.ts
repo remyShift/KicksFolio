@@ -13,7 +13,7 @@ export interface GitHubIssueData {
 	labels: string[];
 }
 
-export class GitHubService {
+export class GitHubProvider {
 	private static readonly GITHUB_API_URL = GITHUB_CONFIG.API_URL;
 	private static readonly REPO_OWNER = GITHUB_CONFIG.REPO_OWNER;
 	private static readonly REPO_NAME = GITHUB_CONFIG.REPO_NAME;
@@ -173,3 +173,5 @@ export class GitHubService {
 			});
 	}
 }
+
+export const gitHubProvider = new GitHubProvider();

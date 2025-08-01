@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { GitHubService } from '@/domain/GitHubService';
+import { GitHubProvider } from '@/domain/GitHubProvider';
 import useToast from '@/hooks/useToast';
 import { useBugReportStore } from '@/store/useBugReportStore';
 
@@ -34,7 +34,7 @@ const useBugReport = () => {
 		setIsLoading(true);
 		setErrorMsg('');
 
-		GitHubService.createIssue(formData)
+		GitHubProvider.createIssue(formData)
 			.then((result) => {
 				showSuccessToast(
 					t('settings.bugReport.success.title'),
