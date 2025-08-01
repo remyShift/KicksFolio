@@ -2,10 +2,10 @@ import { supabase } from './supabase';
 import { SneakerBrand } from '@/types/Sneaker';
 import { sneakerBrandOptions } from '@/validation/schemas';
 import {
-	SizeConversionService,
+	SneakerSizeConverter,
 	GenderType,
 	SizeUnit,
-} from './SizeConversionService';
+} from './SneakerSizeConverter';
 import { t } from 'i18next';
 
 export interface SupabaseSneaker {
@@ -31,7 +31,7 @@ export interface SupabaseSneaker {
 	sku?: string;
 }
 
-export class SupabaseSneakerService {
+export class SneakerProvider {
 	static async getSneakersByUser(userId: string) {
 		const { data, error } = await supabase
 			.from('sneakers')
@@ -133,7 +133,7 @@ export class SupabaseSneakerService {
 		let size_eu: number, size_us: number;
 
 		try {
-			const result = SizeConversionService.generateBothSizes(
+			const result = SneakerSizeConverter.generateBothSizes(
 				sneakerData.size,
 				(sneakerData.gender as GenderType) || 'men',
 				currentUnit
@@ -184,7 +184,7 @@ export class SupabaseSneakerService {
 			let size_eu: number, size_us: number;
 
 			try {
-				const result = SizeConversionService.generateBothSizes(
+				const result = SneakerSizeConverter.generateBothSizes(
 					updates.size,
 					(updates.gender as GenderType) || 'men',
 					currentUnit
@@ -400,3 +400,5 @@ export class SupabaseSneakerService {
 			});
 	}
 }
+
+export const sneakerProvider = new SneakerProvider();

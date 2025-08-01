@@ -459,8 +459,8 @@ jest.mock('../hooks/useSizeConversion', () => ({
 	}),
 }));
 
-jest.mock('../services/SizeConversionService', () => ({
-	SizeConversionService: {
+jest.mock('../services/SneakerSizeConverter', () => ({
+	SneakerSizeConverter: {
 		convertSize: jest.fn(),
 		formatSize: jest.fn((size) => `${size} US`),
 	},

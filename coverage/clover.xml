@@ -1774,7 +1774,7 @@
         <line num="43" count="0" type="stmt"/>
         <line num="47" count="0" type="stmt"/>
       </file>
-      <file name="SneakersService.ts" path="/Users/remy_mac/Desktop/everything/Code/KicksFolio/KicksFolio/services/SneakersService.ts">
+      <file name="SneakerProvider.ts" path="/Users/remy_mac/Desktop/everything/Code/KicksFolio/KicksFolio/services/SneakerProvider.ts">
         <metrics statements="53" coveredstatements="0" conditionals="26" coveredconditionals="0" methods="8" coveredmethods="0"/>
         <line num="23" count="0" type="stmt"/>
         <line num="24" count="0" type="stmt"/>

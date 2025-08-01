@@ -36,7 +36,7 @@ const SIZE_MAPPINGS: SizeMapping[] = [
 	{ usMen: 15.5, usWomen: 17, eu: 50 },
 ];
 
-export class SizeConversionService {
+export class SneakerSizeConverter {
 	static convertSize(
 		size: number,
 		fromUnit: SizeUnit,
@@ -150,3 +150,5 @@ export class SizeConversionService {
 		}
 	}
 }
+
+export const sneakerSizeConverter = new SneakerSizeConverter();

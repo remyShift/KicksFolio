@@ -6,7 +6,7 @@ import { User } from '@/types/User';
 import { Sneaker } from '@/types/Sneaker';
 import { AuthProvider } from '@/domain/AuthProvider';
 
-import { SupabaseSneakerService } from '@/domain/SneakersService';
+import { SupabaseSneakerService } from '@/domain/SneakerProvider';
 import { SupabaseWishlistService } from '@/domain/WishlistService';
 import { FollowerProvider, FollowingUser } from '@/domain/FollowerProvider';
 import { UserSearchService } from '@/domain/UserSearchService';

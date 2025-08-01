@@ -65,7 +65,7 @@ export const mockUseSizeConversion = {
 	isValidSizeInCurrentUnit: jest.fn(),
 	formatCurrentUnitSize: jest.fn(),
 	getOriginalUnit: jest.fn().mockReturnValue('US'),
-	SizeConversionService: {
+	SneakerSizeConverter: {
 		convertSize: jest.fn(),
 		formatSize: jest.fn(),
 		convertAndFormat: jest.fn(),

@@ -2,7 +2,7 @@ import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/Sneaker';
 import {
 	SupabaseSneakerService,
 	SupabaseSneaker,
-} from '@/domain/SneakersService';
+} from '@/domain/SneakerProvider';
 import {
 	SneakerFormData,
 	createSneakerSchema,

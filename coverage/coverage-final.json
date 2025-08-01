@@ -23067,8 +23067,8 @@
 		"f": { "0": 0, "1": 0 },
 		"b": { "0": [0, 0], "1": [0, 0], "2": [0, 0], "3": [0, 0] }
 	},
-	"/Users/remy_mac/Desktop/everything/Code/KicksFolio/KicksFolio/services/SneakersService.ts": {
-		"path": "/Users/remy_mac/Desktop/everything/Code/KicksFolio/KicksFolio/services/SneakersService.ts",
+	"/Users/remy_mac/Desktop/everything/Code/KicksFolio/KicksFolio/services/SneakerProvider.ts": {
+		"path": "/Users/remy_mac/Desktop/everything/Code/KicksFolio/KicksFolio/services/SneakerProvider.ts",
 		"statementMap": {
 			"0": {
 				"start": { "line": 23, "column": 2 },

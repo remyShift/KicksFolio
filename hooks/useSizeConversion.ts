@@ -1,9 +1,9 @@
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';
 import {
-	SizeConversionService,
+	SneakerSizeConverter,
 	SizeUnit,
 	GenderType,
-} from '@/domain/SizeConversionService';
+} from '@/domain/SneakerSizeConverter';
 import { Sneaker } from '@/types/Sneaker';
 
 export const useSizeConversion = () => {
@@ -15,14 +15,14 @@ export const useSizeConversion = () => {
 
 	const formatSizeForDisplay = (sneaker: Sneaker): string => {
 		const size = getSizeForCurrentUnit(sneaker);
-		return SizeConversionService.formatSize(size, currentUnit);
+		return SneakerSizeConverter.formatSize(size, currentUnit);
 	};
 
 	const generateBothSizes = (
 		inputSize: number,
 		gender: GenderType = 'men'
 	): { size_eu: number; size_us: number } => {
-		return SizeConversionService.generateBothSizes(inputSize, gender);
+		return SneakerSizeConverter.generateBothSizes(inputSize, gender);
 	};
 
 	const convertToCurrentUnit = (
@@ -30,7 +30,7 @@ export const useSizeConversion = () => {
 		originalUnit: SizeUnit,
 		gender: GenderType = 'men'
 	): number => {
-		return SizeConversionService.convertSize(
+		return SneakerSizeConverter.convertSize(
 			size,
 			originalUnit,
 			currentUnit,
@@ -41,22 +41,22 @@ export const useSizeConversion = () => {
 	const getAvailableSizesForCurrentUnit = (
 		gender: GenderType = 'men'
 	): number[] => {
-		return SizeConversionService.getAvailableSizes(currentUnit, gender);
+		return SneakerSizeConverter.getAvailableSizes(currentUnit, gender);
 	};
 
 	const isValidSizeInCurrentUnit = (
 		size: number,
 		gender: GenderType = 'men'
 	): boolean => {
-		return SizeConversionService.isValidSize(size, currentUnit, gender);
+		return SneakerSizeConverter.isValidSize(size, currentUnit, gender);
 	};
 
 	const formatCurrentUnitSize = (size: number): string => {
-		return SizeConversionService.formatSize(size, currentUnit);
+		return SneakerSizeConverter.formatSize(size, currentUnit);
 	};
 
 	const getOriginalUnit = (size: number): SizeUnit => {
-		return SizeConversionService.detectSizeUnit(size);
+		return SneakerSizeConverter.detectSizeUnit(size);
 	};
 
 	return {
@@ -69,6 +69,6 @@ export const useSizeConversion = () => {
 		isValidSizeInCurrentUnit,
 		formatCurrentUnitSize,
 		getOriginalUnit,
-		SizeConversionService,
+		SneakerSizeConverter,
 	};
 };

@@ -4228,7 +4228,7 @@ BRF:8
 BRH:0
 end_of_record
 TN:
-SF:services/SneakersService.ts
+SF:services/SneakerProvider.ts
 FN:22,(anonymous_0)
 FN:28,(anonymous_1)
 FN:65,(anonymous_2)

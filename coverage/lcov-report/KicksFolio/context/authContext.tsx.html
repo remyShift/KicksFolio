@@ -408,7 +408,7 @@ import { Collection } from '@/types/Collection';
 import { Sneaker } from '@/types/Sneaker';
 import { AuthProvider } from '@/services/AuthProvider';
 import { collectionService } from '@/services/CollectionService';
-import { SneakersService } from '@/services/SneakersService';
+import { SneakerProvider } from '@/services/SneakerProvider';
 &nbsp;
 const AuthContext = createContext&lt;AuthContextType&gt;({} as AuthContextType);
 &nbsp;
@@ -468,7 +468,7 @@ export function <span class="fstat-no" title="function not covered" >SessionProv
 <span class="cstat-no" title="statement not covered" >                storageService.setItem('collection', collection);</span>
                 
 <span class="cstat-no" title="statement not covered" >                if (collection &amp;&amp; collection.id) {</span>
-<span class="cstat-no" title="statement not covered" >                    new SneakersService(userData.id, sessionTokenToUse)</span>
+<span class="cstat-no" title="statement not covered" >                    new SneakerProvider(userData.id, sessionTokenToUse)</span>
                         .getUserSneakers()
                         .then(<span class="fstat-no" title="function not covered" >(s</span>neakersData) =&gt; {
                             const sneakers = <span class="cstat-no" title="statement not covered" >sneakersData.sneakers || [];</span>
@@ -506,8 +506,8 @@ export function <span class="fstat-no" title="function not covered" >SessionProv
 <span class="cstat-no" title="statement not covered" >            return;</span>
         }
         
-        const sneakersService = <span class="cstat-no" title="statement not covered" >new SneakersService(user.id, sessionToken);</span>
-<span class="cstat-no" title="statement not covered" >        sneakersService.getUserSneakers()</span>
+        const SneakerProvider = <span class="cstat-no" title="statement not covered" >new SneakerProvider(user.id, sessionToken);</span>
+<span class="cstat-no" title="statement not covered" >        SneakerProvider.getUserSneakers()</span>
             .then(<span class="fstat-no" title="function not covered" >(d</span>ata) =&gt; {
 <span class="cstat-no" title="statement not covered" >                setUserSneakers(data.sneakers || []);</span>
 <span class="cstat-no" title="statement not covered" >                storageService.setItem('sneakers', data.sneakers || []);</span>
