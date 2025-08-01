@@ -29,6 +29,7 @@ export default function Wishlist() {
       <ScrollView 
         className="flex-1"
         testID="wishlist-scroll-view"
+        scrollEnabled={true}
         refreshControl={
           <RefreshControl 
             refreshing={refreshing} 
@@ -51,6 +52,7 @@ export default function Wishlist() {
     <ScrollView 
       className="flex-1"
       testID="wishlist-scroll-view"
+      scrollEnabled={true}
       refreshControl={
         <RefreshControl 
           refreshing={refreshing} 

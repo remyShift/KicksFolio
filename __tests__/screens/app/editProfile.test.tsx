@@ -4,6 +4,10 @@ import { act } from "react";
 import { mockUseAuth, mockUser, mockUseAsyncValidation, resetMocks } from "../auth/authSetup";
 import { fillAndBlurInput } from "@/__tests__/setup";
 
+jest.mock('@/hooks/useAuth', () => ({
+    useAuth: () => mockUseAuth,
+}));
+
 describe('Edit Profile Form', () => {
     beforeEach(() => {
         jest.clearAllMocks();
@@ -179,7 +183,7 @@ describe('Edit Profile Form', () => {
                     first_name: mockUser.first_name,
                     last_name: mockUser.last_name,
                     sneaker_size: parseInt(mockUser.sneaker_size),
-                    profile_picture: '',
+                    profile_picture: undefined,
                 }
             );
         });

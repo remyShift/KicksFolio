@@ -35,6 +35,7 @@ export default function WishlistDualViewContainer({
   return (
     <View className="flex-1 gap-8">
       <View 
+        testID="card-view-container"
         style={{ 
           display: isCardView ? 'flex' : 'none',
           flex: 1 

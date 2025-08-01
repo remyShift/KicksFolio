@@ -1,4 +1,12 @@
-import { router } from 'expo-router';
+export const mockUser = {
+	id: '1',
+	username: 'testuser',
+	first_name: 'John',
+	last_name: 'Doe',
+	sneaker_size: '10',
+	email: 'test@example.com',
+	profile_picture_url: '',
+};
 
 export const mockUseAuth = {
 	login: jest.fn(),
@@ -11,6 +19,10 @@ export const mockUseAuth = {
 		return Promise.resolve(true);
 	}),
 	forgotPassword: jest.fn().mockResolvedValue(true),
+	logout: jest.fn().mockResolvedValue(true),
+	deleteAccount: jest.fn().mockResolvedValue(true),
+	getUser: jest.fn().mockResolvedValue(mockUser),
+	getUserSneakers: jest.fn().mockResolvedValue(undefined),
 };
 
 export const mockAuthService = {
@@ -32,16 +44,6 @@ export const mockUseSignUpProps = {
 		confirmPassword: '',
 	},
 	setSignUpProps: jest.fn(),
-};
-
-export const mockUser = {
-	id: '1',
-	username: 'testuser',
-	first_name: 'John',
-	last_name: 'Doe',
-	sneaker_size: '10',
-	email: 'test@example.com',
-	profile_picture_url: '',
 };
 
 export const newMockUser = {

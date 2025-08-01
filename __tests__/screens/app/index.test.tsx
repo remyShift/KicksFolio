@@ -45,7 +45,7 @@ describe('Index', () => {
 
 	it('should navigate to user page when collection card is pressed', () => {
 		fireEvent.press(collectionCard);
-		expect(router.push).toHaveBeenCalledWith('/(app)/(tabs)/user');
+		expect(router.push).toHaveBeenCalledWith('/(app)/(tabs)/profile');
 	});
 
 	describe('CollectionCard display', () => {

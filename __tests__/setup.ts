@@ -300,7 +300,7 @@ jest.mock('@supabase/supabase-js', () => ({
 			eq: jest.fn().mockReturnThis(),
 			order: jest.fn().mockReturnThis(),
 			limit: jest.fn().mockReturnThis(),
-			single: jest.fn(),
+			single: jest.fn().mockResolvedValue({ data: null, error: null }),
 		}),
 		storage: {
 			from: jest.fn().mockReturnValue({
@@ -344,7 +344,7 @@ jest.mock('../config/supabase/supabase', () => ({
 			eq: jest.fn().mockReturnThis(),
 			order: jest.fn().mockReturnThis(),
 			limit: jest.fn().mockReturnThis(),
-			single: jest.fn(),
+			single: jest.fn().mockResolvedValue({ data: null, error: null }),
 		}),
 		storage: {
 			from: jest.fn().mockReturnValue({

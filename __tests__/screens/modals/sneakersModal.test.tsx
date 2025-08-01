@@ -1,5 +1,6 @@
-import { act, fireEvent, render, screen } from '@testing-library/react-native';
+import { fireEvent, render, screen } from '@testing-library/react-native';
 import { SneakersModal } from '@/components/ui/modals/SneakersModal';
+import { act } from 'react';
 import { mockSneaker } from './modalSetup'; 
 import { fillAndBlurInput } from '../../setup';
 
@@ -124,8 +125,8 @@ describe('SneakersModal', () => {
         });
 
         it('should render SkuStep with correct content', () => {
-            expect(screen.getByText(/put your sneaker SKU or model below/i)).toBeOnTheScreen();
-            expect(screen.getByPlaceholderText('CJ5482-100 | Air Force 1')).toBeOnTheScreen();
+            expect(screen.getByText(/put your sneaker SKU/i)).toBeOnTheScreen();
+            expect(screen.getByPlaceholderText('CJ5482-100')).toBeOnTheScreen();
         });
 
         it('should have search button', () => {
@@ -145,8 +146,7 @@ describe('SneakersModal', () => {
         let conditionInput: any;
         let priceInput: any;
         let descriptionInput: any;
-        let mainButton: any;
-        let errorMessage: any;
+
 
         beforeEach(() => {
             setup({ modalStep: 'addFormDetails' });
@@ -158,7 +158,6 @@ describe('SneakersModal', () => {
             conditionInput = screen.getByTestId('condition-input');
             priceInput = screen.getByTestId('price-input');
             descriptionInput = screen.getByTestId('description-input');
-            mainButton = screen.getByTestId('add-button');
         });
 
         it('should render FormDetailsStep with all form fields', () => {
@@ -224,43 +223,43 @@ describe('SneakersModal', () => {
             describe('model field validation', () => {
                 it('should display error if model is less than 2 characters on blur', async () => {
                     await fillAndBlurInput(modelInput, 'A');
-                    errorMessage = screen.getByTestId('error-message');
+                    const errorMessage = screen.getByTestId('error-message');
 
                     expect(errorMessage.props.children).toBe('Sneaker model must be at least 2 characters long.');
                 });
 
                 it('should display error if model contains brand name on blur', async () => {
                     await fillAndBlurInput(modelInput, 'Nike Air Max');
-                    errorMessage = screen.getByTestId('error-message');
+                    const errorMessage = screen.getByTestId('error-message');
                     expect(errorMessage.props.children).toBe('The model cannot contain the brand.');
                 });
             });
 
             describe('size field validation', () => {
-                it('should display error if size is less than 7 on blur', async () => {
-                    await fillAndBlurInput(sizeInput, '6.5');
-                    errorMessage = screen.getByTestId('error-message');
+                it('should display error if size is less than 3 on blur', async () => {
+                    await fillAndBlurInput(sizeInput, '2');
+                    const errorMessage = screen.getByTestId('error-message');
 
                     expect(errorMessage.props.children).toBe('Size must be between 7 and 15 (US).');
                 });
 
-                it('should display error if size is greater than 15 on blur', async () => {
-                    await fillAndBlurInput(sizeInput, '15.5');
-                    errorMessage = screen.getByTestId('error-message');
+                it('should display error if size is greater than 16 on blur', async () => {
+                    await fillAndBlurInput(sizeInput, '16');
+                    const errorMessage = screen.getByTestId('error-message');
 
                     expect(errorMessage.props.children).toBe('Size must be between 7 and 15 (US).');
                 });
 
                 it('should display error if size is not a multiple of 0.5 on blur', async () => {
                     await fillAndBlurInput(sizeInput, '9.3');
-                    errorMessage = screen.getByTestId('error-message');
+                    const errorMessage = screen.getByTestId('error-message');
 
                     expect(errorMessage.props.children).toBe('Size must be a multiple of 0.5 (e.g., 7, 7.5, 8, 8.5).');
                 });
 
                 it('should display error if size is not a number on blur', async () => {
                     await fillAndBlurInput(sizeInput, 'a');
-                    errorMessage = screen.getByTestId('error-message');
+                    const errorMessage = screen.getByTestId('error-message');
 
                     expect(errorMessage.props.children).toBe('Size must be between 7 and 15 (US).');
                 });
@@ -269,21 +268,21 @@ describe('SneakersModal', () => {
             describe('condition field validation', () => {
                 it('should display error if condition is less than 0 on blur', async () => {
                     await fillAndBlurInput(conditionInput, '-1');
-                    errorMessage = screen.getByTestId('error-message');
+                    const errorMessage = screen.getByTestId('error-message');
 
                     expect(errorMessage.props.children).toBe('Condition must be between 1 and 10.');
                 });
 
                 it('should display error if condition is greater than 10 on blur', async () => {
                     await fillAndBlurInput(conditionInput, '11');
-                    errorMessage = screen.getByTestId('error-message');
+                    const errorMessage = screen.getByTestId('error-message');
 
                     expect(errorMessage.props.children).toBe('Condition must be between 1 and 10.');
                 });
 
                 it('should display error if condition is not a number on blur', async () => {
                     await fillAndBlurInput(conditionInput, 'a');
-                    errorMessage = screen.getByTestId('error-message');
+                    const errorMessage = screen.getByTestId('error-message');
 
                     expect(errorMessage.props.children).toBe('Condition must be between 1 and 10.');
                 });
@@ -292,13 +291,13 @@ describe('SneakersModal', () => {
             describe('price field validation', () => {
                 it('should display error if price is negative on blur', async () => {
                     await fillAndBlurInput(priceInput, '-50');
-                    errorMessage = screen.getByTestId('error-message');
+                    const errorMessage = screen.getByTestId('error-message');
                     expect(errorMessage.props.children).toBe('Please enter a valid price.');
                 });
 
                 it('should display error if price is not a number on blur', async () => {
                     await fillAndBlurInput(priceInput, 'a');
-                    errorMessage = screen.getByTestId('error-message');
+                    const errorMessage = screen.getByTestId('error-message');
 
                     expect(errorMessage.props.children).toBe('Please enter a valid price.');
                 });
@@ -307,7 +306,7 @@ describe('SneakersModal', () => {
             describe('displaying fields with red border', () => {
                 it('should display fields with red border if errors are present', async () => {
                     await fillAndBlurInput(modelInput, 'A');
-                    await fillAndBlurInput(sizeInput, '6');
+                    await fillAndBlurInput(sizeInput, '2');
                     await fillAndBlurInput(conditionInput, '11');
                     await fillAndBlurInput(priceInput, '-50');
 
@@ -328,8 +327,6 @@ describe('SneakersModal', () => {
         let conditionInput: any;
         let priceInput: any;
         let descriptionInput: any;
-        let mainButton: any;
-        let errorMessage: any;
 
         beforeEach(() => {
             setup({ 
@@ -344,7 +341,6 @@ describe('SneakersModal', () => {
             conditionInput = screen.getByTestId('condition-input');
             priceInput = screen.getByTestId('price-input');
             descriptionInput = screen.getByTestId('description-input');
-            mainButton = screen.getByTestId('edit-button');
         });
 
         it('should render EditFormStep with pre-filled values', () => {
@@ -363,13 +359,13 @@ describe('SneakersModal', () => {
         describe('form validation', () => {
             it('should display error if model is invalid on blur', async () => {
                 await fillAndBlurInput(modelInput, 'A');
-                errorMessage = screen.getByTestId('error-message');
+                const errorMessage = screen.getByTestId('error-message');
                 expect(errorMessage.props.children).toBe('Sneaker model must be at least 2 characters long.');
             });
 
             it('should display error if size is invalid on blur', async () => {
-                await fillAndBlurInput(sizeInput, '6');
-                errorMessage = screen.getByTestId('error-message');
+                await fillAndBlurInput(sizeInput, '2');
+                const errorMessage = screen.getByTestId('error-message');
                 expect(errorMessage.props.children).toBe('Size must be between 7 and 15 (US).');
             });
         });

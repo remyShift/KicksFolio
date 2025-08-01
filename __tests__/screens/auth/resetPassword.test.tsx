@@ -5,6 +5,10 @@ import { ReactTestInstance } from "react-test-renderer";
 import { fillAndBlurInput } from "../../setup";
 import { mockUseAuth, resetMocks } from "./authSetup";
 
+jest.mock('@/hooks/useAuth', () => ({
+    useAuth: () => mockUseAuth,
+}));
+
 describe('Reset Password Page', () => {
     let passwordInput: ReactTestInstance;
     let confirmPasswordInput: ReactTestInstance;

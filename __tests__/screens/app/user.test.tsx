@@ -3,8 +3,12 @@ import { render, screen, fireEvent, act } from '@testing-library/react-native';
 import { ReactTestInstance } from 'react-test-renderer';
 import { mockSneakers } from './appSetup';
 import { useSession } from '@/context/authContext';
-import { useAuth } from '@/hooks/useAuth';
+import { mockUseAuth } from '../auth/authSetup';
 import { router } from 'expo-router';
+
+jest.mock('@/hooks/useAuth', () => ({
+    useAuth: () => mockUseAuth,
+}));
 
 jest.mock('@/store/useModalStore', () => ({
     useModalStore: () => ({
@@ -102,10 +106,6 @@ describe('User', () => {
 
         beforeEach(() => {
             jest.clearAllMocks();
-            (useAuth as jest.Mock).mockReturnValue({
-                logout: jest.fn(),
-                deleteAccount: jest.fn(),
-            });
             
             render(<UserPage />);
             menuButton = screen.getByTestId('menu-button');

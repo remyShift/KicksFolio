@@ -5,12 +5,14 @@ import { mockAuthService, mockUseAuth, resetMocks } from './authSetup';
 import { fillAndBlurInput } from '../../setup';
 import { ReactTestInstance } from 'react-test-renderer';
 import { mockUseAsyncValidation } from './authSetup';
-import { router } from 'expo-router';
+
+jest.mock('@/hooks/useAuth', () => ({
+    useAuth: () => mockUseAuth,
+}));
 
 describe('SignUpFirstPage', () => {
     let userNameInput: ReactTestInstance;
     let emailInput: ReactTestInstance;
-    let errorMessage: ReactTestInstance;
     let passwordInput: ReactTestInstance;
     let confirmPasswordInput: ReactTestInstance;
     let passwordInputs: ReactTestInstance[];
@@ -33,7 +35,6 @@ describe('SignUpFirstPage', () => {
 
         userNameInput = screen.getByPlaceholderText('johnSneakers');
         emailInput = screen.getByPlaceholderText('john@doe.com');
-        errorMessage = screen.getByTestId('error-message');
         passwordInputs = screen.getAllByPlaceholderText('********');
         passwordInput = passwordInputs[0];
         confirmPasswordInput = passwordInputs[1];
@@ -86,49 +87,67 @@ describe('SignUpFirstPage', () => {
         describe('displaying errors', () => {
             it('should display an appropriate error if the username is not 4 characters long on blur', async () => {
                 await fillAndBlurInput(userNameInput, 'r');
+
+                const errorMessage = screen.getByTestId('error-message');
                 expect(errorMessage.props.children).toBe('Username must be between 4 and 16 characters.');
             });
     
             it('should display an appropriate error if the username contains special characters on blur', async () => {
                 await fillAndBlurInput(userNameInput, 'rea@');
+
+                const errorMessage = screen.getByTestId('error-message');
                 expect(errorMessage.props.children).toBe('Username must not contain special characters.');
             });
     
             it('should display an appropriate error if the username is already taken on blur', async () => {
                 mockUseAsyncValidation.checkUsernameExists.mockResolvedValue('This username is already taken.');
                 await fillAndBlurInput(userNameInput, 'johnSneakers');
+
+                const errorMessage = screen.getByTestId('error-message');
                 expect(errorMessage.props.children).toBe('This username is already taken.');
             });
     
             it('should display an appropriate error if the email is not a valid email on blur', async () => {
                 await fillAndBlurInput(emailInput, 'test@test');
+
+                const errorMessage = screen.getByTestId('error-message');
                 expect(errorMessage.props.children).toBe('Please enter a valid email address.');
             });
     
             it('should display an appropriate error if the password is not 8 characters long on blur', async () => {
                 await fillAndBlurInput(passwordInput, '1234567');
+
+                const errorMessage = screen.getByTestId('error-message');
                 expect(errorMessage.props.children).toBe('Password must be at least 8 characters long.');
             });
     
             it('should display an appropriate error if the password does not contain at least one uppercase letter on blur', async () => {
                 await fillAndBlurInput(passwordInput, 'totototo14');
+
+                const errorMessage = screen.getByTestId('error-message');
                 expect(errorMessage.props.children).toBe('Password must contain at least 1 uppercase letter and 1 number.');
             });
     
             it('should display an appropriate error if the password does not contain at least one number on blur', async () => {
                 await fillAndBlurInput(passwordInput, 'Totototo');
+
+                const errorMessage = screen.getByTestId('error-message');
                 expect(errorMessage.props.children).toBe('Password must contain at least 1 uppercase letter and 1 number.');
             });
     
             it('should display an appropriate error if the password does not match the confirm password on blur', async () => {
                 await fillAndBlurInput(passwordInput, 'Totototo14');
                 await fillAndBlurInput(confirmPasswordInput, 'Totototo14*');
+
+                const errorMessage = screen.getByTestId('error-message');
                 expect(errorMessage.props.children).toBe('Passwords don\'t match.');
             });
     
             it('should display a global error message if multiple errors are present', async () => {
                 await fillAndBlurInput(userNameInput, 're');
                 await fillAndBlurInput(emailInput, 'test@test');
+
+                const errorMessage = screen.getByTestId('error-message');
                 expect(errorMessage.props.children).toBe('Please correct the errors in the form.');
             });
         });

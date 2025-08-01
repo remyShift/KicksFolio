@@ -5,12 +5,15 @@ import { mockAuthService, mockUseAuth, mockUseSignUpProps, resetMocks } from './
 import { fillAndBlurInput } from '../../setup';
 import { ReactTestInstance } from 'react-test-renderer';
 
+jest.mock('@/hooks/useAuth', () => ({
+    useAuth: () => mockUseAuth,
+}));
+
 describe('SignUpSecondPage', () => {
     let firstNameInput: ReactTestInstance;
     let lastNameInput: ReactTestInstance;
     let sneakerSizeInput: ReactTestInstance;
     let mainButton: ReactTestInstance;
-    let errorMessage: ReactTestInstance;
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -40,7 +43,6 @@ describe('SignUpSecondPage', () => {
         lastNameInput = screen.getByPlaceholderText('Doe');
         sneakerSizeInput = screen.getByPlaceholderText('9.5');
         mainButton = screen.getByTestId('main-button');
-        errorMessage = screen.getByTestId('error-message');
     });
 
     it('should render the sign up second page', () => {
@@ -83,36 +85,50 @@ describe('SignUpSecondPage', () => {
         describe('displaying errors', () => {
             it('should display an appropriate error if the first name is not 2 characters long on blur', async () => {
                 await fillAndBlurInput(firstNameInput, 'r');
+                const errorMessage = screen.getByTestId('error-message');
+
                 expect(errorMessage.props.children).toBe('First name must be at least 2 characters long.');
             });
             
             it('should display an appropriate error if the first name contains special characters on blur', async () => {
                 await fillAndBlurInput(firstNameInput, 'rea@');
+                const errorMessage = screen.getByTestId('error-message');
+
                 expect(errorMessage.props.children).toBe('First name must not contain special characters or numbers.');
             });
     
             it('should display an appropriate error if the last name is not 2 characters long on blur', async () => {
                 await fillAndBlurInput(lastNameInput, 'r');
+                const errorMessage = screen.getByTestId('error-message');
+
                 expect(errorMessage.props.children).toBe('Last name must be at least 2 characters long.');
             });
     
             it('should display an appropriate error if the last name contains special characters on blur', async () => {
                 await fillAndBlurInput(lastNameInput, 'rea@');
+                const errorMessage = screen.getByTestId('error-message');
+
                 expect(errorMessage.props.children).toBe('Last name must not contain special characters or numbers.');
             });
     
             it('should display an appropriate error if the sneaker size is not a number on blur', async () => {
                 await fillAndBlurInput(sneakerSizeInput, 'totototo14');
+                const errorMessage = screen.getByTestId('error-message');
+
                 expect(errorMessage.props.children).toBe('Sneaker size must be between 3.5 and 15 (US).');
             });
     
             it('should display an appropriate error if the sneaker size is not a number between 7 and 15 on blur', async () => {
                 await fillAndBlurInput(sneakerSizeInput, '16');
+                const errorMessage = screen.getByTestId('error-message');
+
                 expect(errorMessage.props.children).toBe('Sneaker size must be between 3.5 and 15 (US).');
             });
     
             it('should display an appropriate error if the sneaker size is not a multiple of 0.5 on blur', async () => {
                 await fillAndBlurInput(sneakerSizeInput, '10.6');
+                const errorMessage = screen.getByTestId('error-message');
+
                 expect(errorMessage.props.children).toBe('Sneaker size must be a multiple of 0.5 (e.g., 7, 7.5, 8, 8.5).');
             });
     
@@ -120,6 +136,8 @@ describe('SignUpSecondPage', () => {
                 await fillAndBlurInput(firstNameInput, 're');
                 await fillAndBlurInput(lastNameInput, 'test@test');
                 await fillAndBlurInput(sneakerSizeInput, '10.6');
+                const errorMessage = screen.getByTestId('error-message');
+
                 expect(errorMessage.props.children).toBe('Please correct the errors in the form.');
             });
         });
@@ -128,7 +146,7 @@ describe('SignUpSecondPage', () => {
             it('should display fields with a red border if an error is present', async () => {
                 await fillAndBlurInput(firstNameInput, 'r');
                 await fillAndBlurInput(lastNameInput, 'test@test');
-                await fillAndBlurInput(sneakerSizeInput, '5');
+                await fillAndBlurInput(sneakerSizeInput, '2');
     
                 expect(firstNameInput.props.className).toContain('border-2 border-red-500');
                 expect(lastNameInput.props.className).toContain('border-2 border-red-500');

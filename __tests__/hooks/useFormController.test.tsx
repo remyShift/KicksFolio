@@ -4,6 +4,16 @@ import { useFormController } from '../../hooks/useFormController';
 import { z } from 'zod';
 import { mockUseAuth } from '../screens/auth/authSetup';
 
+jest.mock('@/hooks/useAuth', () => ({
+	useAuth: () => mockUseAuth,
+}));
+
+jest.mock('@/context/authContext', () => ({
+	useSession: () => ({
+		refreshUserData: jest.fn(),
+	}),
+}));
+
 const testSchema = z.object({
 	username: z.string().min(2, 'Username must be at least 2 characters'),
 	email: z.string().email('Invalid email'),
