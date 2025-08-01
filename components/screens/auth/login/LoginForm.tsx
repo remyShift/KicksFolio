@@ -15,6 +15,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import useToast from "@/hooks/useToast";
 import { useTranslation } from 'react-i18next';
 import { useSession } from '@/context/authContext';
+
 export default function LoginForm() {
     const scrollViewRef = useRef<ScrollView>(null);
     const emailInputRef = useRef<TextInput>(null);

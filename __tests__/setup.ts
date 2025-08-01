@@ -73,14 +73,6 @@ jest.mock('../domain/AuthProviderImpl', () => ({
 	authProvider: mockAuthProviderImpl,
 }));
 
-jest.mock('../hooks/useAuth', () => ({
-	useAuth: jest.fn().mockReturnValue(mockUseAuth),
-}));
-
-jest.mock('../interfaces/AuthInterface', () => ({
-	AuthInterface: mockAuthInterface,
-}));
-
 jest.mock('../context/signUpPropsContext', () => ({
 	useSignUpProps: () => mockUseSignUpProps,
 }));
