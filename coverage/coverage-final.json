@@ -20847,8 +20847,8 @@
 		"_coverageSchema": "1a1c01bbd47fc00a2c39e90264f33305004495a9",
 		"hash": "a5ab00307c5bdfb1d4e536f05f7f060bac8f3b2a"
 	},
-	"/Users/remy_mac/Desktop/everything/Code/KicksFolio/KicksFolio/services/AuthValidationService.ts": {
-		"path": "/Users/remy_mac/Desktop/everything/Code/KicksFolio/KicksFolio/services/AuthValidationService.ts",
+	"/Users/remy_mac/Desktop/everything/Code/KicksFolio/KicksFolio/services/AuthValidator.ts": {
+		"path": "/Users/remy_mac/Desktop/everything/Code/KicksFolio/KicksFolio/services/AuthValidator.ts",
 		"statementMap": {
 			"0": {
 				"start": { "line": 5, "column": 19 },

@@ -1,6 +1,6 @@
 import { supabase } from './supabase';
 
-export class AuthValidationService {
+export class AuthValidator {
 	async checkUsernameExists(username: string): Promise<boolean> {
 		return Promise.resolve(
 			supabase.rpc('check_username_availability', {
@@ -38,4 +38,4 @@ export class AuthValidationService {
 	}
 }
 
-export const validationService = new AuthValidationService();
+export const validationService = new AuthValidator();

@@ -1,10 +1,10 @@
-import { AuthValidationService } from '@/domain/AuthValidationService';
+import { AuthValidator } from '@/domain/AuthValidator';
 import { useTranslation } from 'react-i18next';
 
 type ValidationValue = string | number | boolean | null | undefined;
 
 export function useAsyncValidation() {
-	const validationService = new AuthValidationService();
+	const validationService = new AuthValidator();
 	const { t } = useTranslation();
 
 	const checkUsernameExists = async (

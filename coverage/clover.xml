@@ -1609,7 +1609,7 @@
         <line num="221" count="0" type="stmt"/>
         <line num="225" count="1" type="stmt"/>
       </file>
-      <file name="AuthValidationService.ts" path="/Users/remy_mac/Desktop/everything/Code/KicksFolio/KicksFolio/services/AuthValidationService.ts">
+      <file name="AuthValidator.ts" path="/Users/remy_mac/Desktop/everything/Code/KicksFolio/KicksFolio/services/AuthValidator.ts">
         <metrics statements="11" coveredstatements="1" conditionals="4" coveredconditionals="0" methods="4" coveredmethods="0"/>
         <line num="5" count="0" type="stmt"/>
         <line num="12" count="0" type="cond" truecount="0" falsecount="2"/>
