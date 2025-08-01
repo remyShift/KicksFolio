@@ -1,7 +1,7 @@
 import SignUpSecondPage from '@/app/(auth)/(signup)/sign-up-second';
 import { fireEvent, render, screen } from '@testing-library/react-native';
 import { act } from 'react';
-import { mockAuthService, mockUseAuth, mockUseSignUpProps } from './authSetup';
+import { mockAuthService, mockUseAuth, mockUseSignUpProps, resetMocks } from './authSetup';
 import { fillAndBlurInput } from '../../setup';
 import { ReactTestInstance } from 'react-test-renderer';
 
@@ -14,6 +14,7 @@ describe('SignUpSecondPage', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+        resetMocks();
         mockAuthService.handleSignUp.mockReset();
         mockAuthService.signUp.mockReset();
         mockUseAuth.signUp.mockReset();

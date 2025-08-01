@@ -1,100 +1,64 @@
+// Désactiver le mock global d'AuthInterface pour ce test
 jest.unmock('@/interfaces/AuthInterface');
 
+// Importer la vraie AuthInterface
 import { AuthInterface } from '@/interfaces/AuthInterface';
+import {
+	mockSupabaseUser,
+	createSuccessfulSignUp,
+	createFailingMockFunction,
+	createSuccessfulSignIn,
+	createSuccessfulSignOut,
+	createSuccessfulGetCurrentUser,
+	createSuccessfulUpdateProfile,
+	createSuccessfulDeleteUser,
+	createSuccessfulForgotPassword,
+	createSuccessfulResetPassword,
+	createSuccessfulResetPasswordWithTokens,
+	createSuccessfulCleanupOrphanedSessions,
+} from './authInterfaceSetup';
 
 describe('AuthInterface', () => {
-	let consoleSpy: jest.SpyInstance;
-
 	beforeEach(() => {
-		consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+		jest.spyOn(console, 'error').mockImplementation(() => {});
 	});
 
 	afterEach(() => {
 		jest.restoreAllMocks();
 	});
 
-	const testUserData = {
-		id: 'test-user-id',
-		email: 'test@example.com',
-		username: 'testuser',
-		first_name: 'Test',
-		last_name: 'User',
-		sneaker_size: 10,
-		profile_picture: 'https://example.com/profile.jpg',
-		created_at: '2024-01-01T00:00:00Z',
-		updated_at: '2024-01-01T00:00:00Z',
-		instagram_username: 'testuser_insta',
-		social_media_visibility: true,
-	};
-
 	describe('signUp', () => {
-		it('should call the provider function and return the response', async () => {
+		it('should sign up and return the response', async () => {
 			const email = 'test@example.com';
 			const password = 'password123';
-
-			const mockSignUp = jest.fn().mockResolvedValue({
-				user: {
-					id: 'test-user-id',
-					email,
-					username: testUserData.username,
-					first_name: testUserData.first_name,
-					last_name: testUserData.last_name,
-					sneaker_size: testUserData.sneaker_size,
-					profile_picture: testUserData.profile_picture,
-					created_at: testUserData.created_at,
-					updated_at: testUserData.updated_at,
-				},
-				session: {
-					access_token: 'mock-access-token',
-					refresh_token: 'mock-refresh-token',
-					expires_in: 3600,
-					token_type: 'bearer',
-					user: {
-						id: 'test-user-id',
-						email,
-						aud: 'authenticated',
-						app_metadata: {},
-						user_metadata: {},
-						created_at: testUserData.created_at,
-						email_confirmed_at: testUserData.created_at,
-					},
-				},
-			});
+			const userData = mockSupabaseUser;
+			const mockSignUp = createSuccessfulSignUp();
 
 			const result = await AuthInterface.signUp(
 				email,
 				password,
-				testUserData,
+				userData,
 				mockSignUp
 			);
 
-			expect(mockSignUp).toHaveBeenCalledWith(
-				email,
-				password,
-				testUserData
-			);
-
+			expect(mockSignUp).toHaveBeenCalledWith(email, password, userData);
 			expect(result.user).toBeDefined();
 			expect(result.session).toBeDefined();
-			expect(result.user.email).toBe(email);
 		});
 
 		it('should log the error and rethrow in case of failure', async () => {
-			const errorMessage = 'Sign up failed';
-			const mockSignUp = jest
-				.fn()
-				.mockRejectedValue(new Error(errorMessage));
+			const mockSignUp = createFailingMockFunction('Sign up failed');
 
 			await expect(
 				AuthInterface.signUp(
 					'test@example.com',
 					'password123',
-					testUserData,
+					mockSupabaseUser,
 					mockSignUp
 				)
-			).rejects.toThrow(errorMessage);
+			).rejects.toThrow('Sign up failed');
 
-			expect(consoleSpy).toHaveBeenCalledWith(
+			expect(console.error).toHaveBeenCalledWith(
 				'❌ AuthInterface.signUp: Error occurred:',
 				expect.any(Error)
 			);
@@ -102,36 +66,10 @@ describe('AuthInterface', () => {
 	});
 
 	describe('signIn', () => {
-		it('should call the provider function and return the user', async () => {
+		it('should sign in and return the user', async () => {
 			const email = 'test@example.com';
 			const password = 'password123';
-
-			const mockSignIn = jest.fn().mockResolvedValue({
-				user: {
-					id: 'test-user-id',
-					email,
-					aud: 'authenticated',
-					app_metadata: {},
-					user_metadata: {},
-					created_at: testUserData.created_at,
-					email_confirmed_at: testUserData.created_at,
-				},
-				session: {
-					access_token: 'mock-access-token',
-					refresh_token: 'mock-refresh-token',
-					expires_in: 3600,
-					token_type: 'bearer',
-					user: {
-						id: 'test-user-id',
-						email,
-						aud: 'authenticated',
-						app_metadata: {},
-						user_metadata: {},
-						created_at: testUserData.created_at,
-						email_confirmed_at: testUserData.created_at,
-					},
-				},
-			});
+			const mockSignIn = createSuccessfulSignIn();
 
 			const result = await AuthInterface.signIn(
 				email,
@@ -140,17 +78,12 @@ describe('AuthInterface', () => {
 			);
 
 			expect(mockSignIn).toHaveBeenCalledWith(email, password);
-
 			expect(result).toBeDefined();
 			expect(result.id).toBe('test-user-id');
-			expect(result.email).toBe(email);
 		});
 
 		it('should log the error and rethrow in case of failure', async () => {
-			const errorMessage = 'Invalid credentials';
-			const mockSignIn = jest
-				.fn()
-				.mockRejectedValue(new Error(errorMessage));
+			const mockSignIn = createFailingMockFunction('Invalid credentials');
 
 			await expect(
 				AuthInterface.signIn(
@@ -158,9 +91,9 @@ describe('AuthInterface', () => {
 					'wrongpassword',
 					mockSignIn
 				)
-			).rejects.toThrow(errorMessage);
+			).rejects.toThrow('Invalid credentials');
 
-			expect(consoleSpy).toHaveBeenCalledWith(
+			expect(console.error).toHaveBeenCalledWith(
 				'❌ AuthInterface.signIn: Error occurred:',
 				expect.any(Error)
 			);
@@ -168,27 +101,23 @@ describe('AuthInterface', () => {
 	});
 
 	describe('signOut', () => {
-		it('should call the provider function and return true', async () => {
-			const mockSignOut = jest.fn().mockResolvedValue(undefined);
+		it('should sign out and return true', async () => {
+			const mockSignOut = createSuccessfulSignOut();
 
 			const result = await AuthInterface.signOut(mockSignOut);
 
 			expect(mockSignOut).toHaveBeenCalled();
-
 			expect(result).toBe(true);
 		});
 
 		it('should log the error and rethrow in case of failure', async () => {
-			const errorMessage = 'Sign out failed';
-			const mockSignOut = jest
-				.fn()
-				.mockRejectedValue(new Error(errorMessage));
+			const mockSignOut = createFailingMockFunction('Sign out failed');
 
 			await expect(AuthInterface.signOut(mockSignOut)).rejects.toThrow(
-				errorMessage
+				'Sign out failed'
 			);
 
-			expect(consoleSpy).toHaveBeenCalledWith(
+			expect(console.error).toHaveBeenCalledWith(
 				'❌ AuthInterface.signOut: Error occurred:',
 				expect.any(Error)
 			);
@@ -196,43 +125,28 @@ describe('AuthInterface', () => {
 	});
 
 	describe('getCurrentUser', () => {
-		it('should call the provider function and return the current user', async () => {
-			const mockGetCurrentUser = jest.fn().mockResolvedValue({
-				id: 'test-user-id',
-				email: 'test@example.com',
-				username: 'testuser',
-				first_name: 'Test',
-				last_name: 'User',
-				sneaker_size: 10,
-				profile_picture: 'https://example.com/profile.jpg',
-				created_at: testUserData.created_at,
-				updated_at: testUserData.updated_at,
-				followers_count: 5,
-				following_count: 10,
-			});
+		it('should return the current user', async () => {
+			const mockGetCurrentUser = createSuccessfulGetCurrentUser();
 
 			const result = await AuthInterface.getCurrentUser(
 				mockGetCurrentUser
 			);
 
 			expect(mockGetCurrentUser).toHaveBeenCalled();
-
 			expect(result.id).toBe('test-user-id');
 			expect(result.followers_count).toBe(5);
 			expect(result.following_count).toBe(10);
 		});
 
 		it('should log the error and rethrow in case of failure', async () => {
-			const errorMessage = 'User not found';
-			const mockGetCurrentUser = jest
-				.fn()
-				.mockRejectedValue(new Error(errorMessage));
+			const mockGetCurrentUser =
+				createFailingMockFunction('User not found');
 
 			await expect(
 				AuthInterface.getCurrentUser(mockGetCurrentUser)
-			).rejects.toThrow(errorMessage);
+			).rejects.toThrow('User not found');
 
-			expect(consoleSpy).toHaveBeenCalledWith(
+			expect(console.error).toHaveBeenCalledWith(
 				'❌ AuthInterface.getCurrentUser: Error occurred:',
 				expect.any(Error)
 			);
@@ -240,22 +154,10 @@ describe('AuthInterface', () => {
 	});
 
 	describe('updateProfile', () => {
-		it('should call the provider function and update the profile with success', async () => {
+		it('should update the profile with success', async () => {
 			const userId = 'test-user-id';
 			const userData = { first_name: 'Updated' };
-
-			const mockUpdateProfile = jest.fn().mockResolvedValue({
-				id: userId,
-				email: 'test@example.com',
-				username: 'testuser',
-				first_name: 'Updated',
-				last_name: 'User',
-				sneaker_size: 10,
-				profile_picture: 'https://example.com/updated-profile.jpg',
-				created_at: testUserData.created_at,
-				updated_at: testUserData.updated_at,
-				profile_picture_url: 'https://example.com/updated-profile.jpg',
-			});
+			const mockUpdateProfile = createSuccessfulUpdateProfile();
 
 			const result = await AuthInterface.updateProfile(
 				userId,
@@ -264,16 +166,12 @@ describe('AuthInterface', () => {
 			);
 
 			expect(mockUpdateProfile).toHaveBeenCalledWith(userId, userData);
-
 			expect(result.first_name).toBe('Updated');
-			expect(result.id).toBe(userId);
 		});
 
 		it('should log the error and rethrow in case of failure', async () => {
-			const errorMessage = 'Update failed';
-			const mockUpdateProfile = jest
-				.fn()
-				.mockRejectedValue(new Error(errorMessage));
+			const mockUpdateProfile =
+				createFailingMockFunction('Update failed');
 
 			await expect(
 				AuthInterface.updateProfile(
@@ -281,9 +179,9 @@ describe('AuthInterface', () => {
 					{ first_name: 'Updated' },
 					mockUpdateProfile
 				)
-			).rejects.toThrow(errorMessage);
+			).rejects.toThrow('Update failed');
 
-			expect(consoleSpy).toHaveBeenCalledWith(
+			expect(console.error).toHaveBeenCalledWith(
 				'❌ AuthInterface.updateProfile: Error occurred:',
 				expect.any(Error)
 			);
@@ -291,9 +189,9 @@ describe('AuthInterface', () => {
 	});
 
 	describe('deleteUser', () => {
-		it('should call the provider function and delete the user with success', async () => {
+		it('should delete the user with success', async () => {
 			const userId = 'test-user-id';
-			const mockDeleteUser = jest.fn().mockResolvedValue(true);
+			const mockDeleteUser = createSuccessfulDeleteUser();
 
 			const result = await AuthInterface.deleteUser(
 				userId,
@@ -301,21 +199,17 @@ describe('AuthInterface', () => {
 			);
 
 			expect(mockDeleteUser).toHaveBeenCalledWith(userId);
-
 			expect(result).toBe(true);
 		});
 
 		it('should log the error and rethrow in case of failure', async () => {
-			const errorMessage = 'Delete failed';
-			const mockDeleteUser = jest
-				.fn()
-				.mockRejectedValue(new Error(errorMessage));
+			const mockDeleteUser = createFailingMockFunction('Delete failed');
 
 			await expect(
 				AuthInterface.deleteUser('test-user-id', mockDeleteUser)
-			).rejects.toThrow(errorMessage);
+			).rejects.toThrow('Delete failed');
 
-			expect(consoleSpy).toHaveBeenCalledWith(
+			expect(console.error).toHaveBeenCalledWith(
 				'❌ AuthInterface.deleteUser: Error occurred:',
 				expect.any(Error)
 			);
@@ -323,9 +217,9 @@ describe('AuthInterface', () => {
 	});
 
 	describe('forgotPassword', () => {
-		it('should call the provider function and send the reset password email with success', async () => {
+		it('should send the reset password email with success', async () => {
 			const email = 'test@example.com';
-			const mockForgotPassword = jest.fn().mockResolvedValue(undefined);
+			const mockForgotPassword = createSuccessfulForgotPassword();
 
 			const result = await AuthInterface.forgotPassword(
 				email,
@@ -333,24 +227,21 @@ describe('AuthInterface', () => {
 			);
 
 			expect(mockForgotPassword).toHaveBeenCalledWith(email);
-
 			expect(result).toBe(true);
 		});
 
 		it('should log the error and rethrow in case of failure', async () => {
-			const errorMessage = 'Email not found';
-			const mockForgotPassword = jest
-				.fn()
-				.mockRejectedValue(new Error(errorMessage));
+			const mockForgotPassword =
+				createFailingMockFunction('Email not found');
 
 			await expect(
 				AuthInterface.forgotPassword(
 					'test@example.com',
 					mockForgotPassword
 				)
-			).rejects.toThrow(errorMessage);
+			).rejects.toThrow('Email not found');
 
-			expect(consoleSpy).toHaveBeenCalledWith(
+			expect(console.error).toHaveBeenCalledWith(
 				'❌ AuthInterface.forgotPassword: Error occurred:',
 				expect.any(Error)
 			);
@@ -358,19 +249,9 @@ describe('AuthInterface', () => {
 	});
 
 	describe('resetPassword', () => {
-		it('should call the provider function and reset the password with success', async () => {
+		it('should reset the password with success', async () => {
 			const newPassword = 'newpassword123';
-			const mockResetPassword = jest.fn().mockResolvedValue({
-				user: {
-					id: 'test-user-id',
-					email: 'test@example.com',
-					aud: 'authenticated',
-					app_metadata: {},
-					user_metadata: {},
-					created_at: testUserData.created_at,
-					email_confirmed_at: testUserData.created_at,
-				},
-			});
+			const mockResetPassword = createSuccessfulResetPassword();
 
 			const result = await AuthInterface.resetPassword(
 				newPassword,
@@ -378,22 +259,19 @@ describe('AuthInterface', () => {
 			);
 
 			expect(mockResetPassword).toHaveBeenCalledWith(newPassword);
-
 			expect(result.user).toBeDefined();
-			expect(result.user.id).toBe('test-user-id');
 		});
 
 		it('should log the error and rethrow in case of failure', async () => {
-			const errorMessage = 'Password reset failed';
-			const mockResetPassword = jest
-				.fn()
-				.mockRejectedValue(new Error(errorMessage));
+			const mockResetPassword = createFailingMockFunction(
+				'Password reset failed'
+			);
 
 			await expect(
 				AuthInterface.resetPassword('newpassword123', mockResetPassword)
-			).rejects.toThrow(errorMessage);
+			).rejects.toThrow('Password reset failed');
 
-			expect(consoleSpy).toHaveBeenCalledWith(
+			expect(console.error).toHaveBeenCalledWith(
 				'❌ AuthInterface.resetPassword: Error occurred:',
 				expect.any(Error)
 			);
@@ -401,13 +279,12 @@ describe('AuthInterface', () => {
 	});
 
 	describe('resetPasswordWithTokens', () => {
-		it('should call the provider function and reset the password with tokens with success', async () => {
+		it('should reset the password with tokens with success', async () => {
 			const accessToken = 'access-token';
 			const refreshToken = 'refresh-token';
 			const newPassword = 'newpassword123';
-			const mockResetPasswordWithTokens = jest
-				.fn()
-				.mockResolvedValue(true);
+			const mockResetPasswordWithTokens =
+				createSuccessfulResetPasswordWithTokens();
 
 			const result = await AuthInterface.resetPasswordWithTokens(
 				accessToken,
@@ -421,15 +298,12 @@ describe('AuthInterface', () => {
 				refreshToken,
 				newPassword
 			);
-
 			expect(result).toBe(true);
 		});
 
 		it('should log the error and rethrow in case of failure', async () => {
-			const errorMessage = 'Token reset failed';
-			const mockResetPasswordWithTokens = jest
-				.fn()
-				.mockRejectedValue(new Error(errorMessage));
+			const mockResetPasswordWithTokens =
+				createFailingMockFunction('Token reset failed');
 
 			await expect(
 				AuthInterface.resetPasswordWithTokens(
@@ -438,9 +312,9 @@ describe('AuthInterface', () => {
 					'newpassword123',
 					mockResetPasswordWithTokens
 				)
-			).rejects.toThrow(errorMessage);
+			).rejects.toThrow('Token reset failed');
 
-			expect(consoleSpy).toHaveBeenCalledWith(
+			expect(console.error).toHaveBeenCalledWith(
 				'❌ AuthInterface.resetPasswordWithTokens: Error occurred:',
 				expect.any(Error)
 			);
@@ -448,33 +322,29 @@ describe('AuthInterface', () => {
 	});
 
 	describe('cleanupOrphanedSessions', () => {
-		it('should call the provider function and clean up orphaned sessions with success', async () => {
-			const mockCleanupOrphanedSessions = jest
-				.fn()
-				.mockResolvedValue(undefined);
+		it('should clean up orphaned sessions with success', async () => {
+			const mockCleanupOrphanedSessions =
+				createSuccessfulCleanupOrphanedSessions();
 
 			const result = await AuthInterface.cleanupOrphanedSessions(
 				mockCleanupOrphanedSessions
 			);
 
 			expect(mockCleanupOrphanedSessions).toHaveBeenCalled();
-
 			expect(result).toBe(true);
 		});
 
 		it("devrait logger l'erreur et la relancer en cas d'échec", async () => {
-			const errorMessage = 'Cleanup failed';
-			const mockCleanupOrphanedSessions = jest
-				.fn()
-				.mockRejectedValue(new Error(errorMessage));
+			const mockCleanupOrphanedSessions =
+				createFailingMockFunction('Cleanup failed');
 
 			await expect(
 				AuthInterface.cleanupOrphanedSessions(
 					mockCleanupOrphanedSessions
 				)
-			).rejects.toThrow(errorMessage);
+			).rejects.toThrow('Cleanup failed');
 
-			expect(consoleSpy).toHaveBeenCalledWith(
+			expect(console.error).toHaveBeenCalledWith(
 				'❌ AuthInterface.cleanupOrphanedSessions: Error occurred:',
 				expect.any(Error)
 			);

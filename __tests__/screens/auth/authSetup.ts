@@ -117,10 +117,6 @@ export const mockAuthProviderImpl = {
 	cleanupOrphanedSessions: jest.fn().mockResolvedValue(undefined),
 };
 
-jest.mock('@/interfaces/AuthInterface', () => ({
-	AuthInterface: mockAuthInterface,
-}));
-
 jest.mock('@/domain/AuthProviderImpl', () => ({
 	authProvider: mockAuthProviderImpl,
 }));

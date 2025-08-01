@@ -61,12 +61,10 @@ export const FormFields = ({
 
     return (
         <View className="flex-1 gap-4">
-            {(imageError || displayedError) && (
-                <ErrorMsg 
-                    content={imageError || displayedError} 
-                    display={true} 
-                />
-            )}
+            <ErrorMsg 
+                content={imageError || displayedError} 
+                display={!!(imageError || displayedError)} 
+            />
 
             <FormTextInput
                 name="model"

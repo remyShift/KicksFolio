@@ -1,13 +1,13 @@
 import EditProfileForm from "@/components/screens/app/settings/accountSettings/EditProfileForm";
 import { fireEvent, render, screen } from "@testing-library/react-native";
 import { act } from "react";
-import { mockUseAuth, mockUser, mockUseAsyncValidation, resetNewArchMocks } from "../auth/authSetup";
+import { mockUseAuth, mockUser, mockUseAsyncValidation, resetMocks } from "../auth/authSetup";
 import { fillAndBlurInput } from "@/__tests__/setup";
 
 describe('Edit Profile Form', () => {
     beforeEach(() => {
         jest.clearAllMocks();
-        resetNewArchMocks();
+        resetMocks();
         
         mockUseAuth.updateUser.mockResolvedValue({ user: mockUser });
         mockUseAsyncValidation.checkUsernameExists.mockResolvedValue(null);
@@ -179,7 +179,7 @@ describe('Edit Profile Form', () => {
                     first_name: mockUser.first_name,
                     last_name: mockUser.last_name,
                     sneaker_size: parseInt(mockUser.sneaker_size),
-                    profile_picture: undefined,
+                    profile_picture: '',
                 }
             );
         });
