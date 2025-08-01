@@ -524,5 +524,3 @@ export class ImageProvider {
 			});
 	}
 }
-
-export const imageProvider = new ImageProvider();

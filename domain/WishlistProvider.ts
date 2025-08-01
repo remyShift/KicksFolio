@@ -8,7 +8,7 @@ export interface WishlistItem {
 	created_at: string;
 }
 
-export class SupabaseWishlistService {
+export class WishlistProvider {
 	static async addToWishlist(sneakerId: string) {
 		const {
 			data: { user },
@@ -89,7 +89,7 @@ export class SupabaseWishlistService {
 		if (!data) return [];
 
 		return data
-			.map(SupabaseWishlistService.transformToSneaker)
+			.map(WishlistProvider.transformToSneaker)
 			.filter((sneaker): sneaker is Sneaker => sneaker !== null);
 	}
 
@@ -129,9 +129,7 @@ export class SupabaseWishlistService {
 				return null;
 			}
 
-			const parsedImages = SupabaseWishlistService.parseImages(
-				sneaker.images
-			);
+			const parsedImages = WishlistProvider.parseImages(sneaker.images);
 
 			const transformedSneaker = {
 				id: String(sneaker.id),

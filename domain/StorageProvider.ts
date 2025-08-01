@@ -115,5 +115,3 @@ export class StorageProvider {
 		);
 	}
 }
-
-export const storageProvider = new StorageProvider();

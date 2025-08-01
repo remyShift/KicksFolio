@@ -150,5 +150,3 @@ export class SneakerSizeConverter {
 		}
 	}
 }
-
-export const sneakerSizeConverter = new SneakerSizeConverter();

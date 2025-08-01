@@ -173,5 +173,3 @@ export class GitHubProvider {
 			});
 	}
 }
-
-export const gitHubProvider = new GitHubProvider();

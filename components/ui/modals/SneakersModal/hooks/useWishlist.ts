@@ -1,5 +1,5 @@
 import { useSession } from '@/context/authContext';
-import { SupabaseWishlistService } from '@/domain/WishlistService';
+import { WishlistProvider } from '@/domain/WishlistProvider';
 import useToast from '@/hooks/useToast';
 import { useTranslation } from 'react-i18next';
 
@@ -12,7 +12,7 @@ const useWishlist = () => {
 		setIsWishlisted: (isWishlisted: boolean) => void,
 		setIsLoading: (isLoading: boolean) => void
 	) => {
-		SupabaseWishlistService.addToWishlist(sneakerId)
+		WishlistProvider.addToWishlist(sneakerId)
 			.then(() => {
 				showSuccessToast(
 					t('social.wishlist.messages.added.title'),
@@ -38,7 +38,7 @@ const useWishlist = () => {
 		setIsWishlisted: (isWishlisted: boolean) => void,
 		setIsLoading: (isLoading: boolean) => void
 	) => {
-		SupabaseWishlistService.removeFromWishlist(sneakerId)
+		WishlistProvider.removeFromWishlist(sneakerId)
 			.then(() => {
 				showSuccessToast(
 					t('social.wishlist.messages.removed.title'),
@@ -63,7 +63,7 @@ const useWishlist = () => {
 		sneakerId: string,
 		setIsWishlisted: (isWishlisted: boolean) => void
 	) => {
-		SupabaseWishlistService.isInWishlist(sneakerId)
+		WishlistProvider.isInWishlist(sneakerId)
 			.then((isInWishlist) => {
 				setIsWishlisted(isInWishlist);
 			})

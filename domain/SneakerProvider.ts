@@ -400,5 +400,3 @@ export class SneakerProvider {
 			});
 	}
 }
-
-export const sneakerProvider = new SneakerProvider();

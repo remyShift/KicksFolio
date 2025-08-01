@@ -260,5 +260,3 @@ export class FollowerProvider {
 		};
 	}
 }
-
-export const followerProvider = new FollowerProvider();

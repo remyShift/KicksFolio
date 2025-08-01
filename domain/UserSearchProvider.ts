@@ -286,5 +286,3 @@ export class UserSearchProvider {
 		return [];
 	}
 }
-
-export const userSearchProvider = new UserSearchProvider();
