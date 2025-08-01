@@ -233,20 +233,24 @@ export const useModalFooterActions = () => {
 						.catch((error) => {
 							setErrorMsg(error.message);
 						})
-						.finally(() => setIsLoading(false));
+						.finally(() => {
+							setIsLoading(false);
+						});
 				} else {
-					if (!validateForm)
+					if (!validateForm) {
 						setErrorMsg(
 							t(
 								'collection.modal.form.errors.validateForm.missing'
 							)
 						);
-					if (!currentSneaker)
+					}
+					if (!currentSneaker) {
 						setErrorMsg(
 							t(
 								'collection.modal.form.errors.currentSneaker.missing'
 							)
 						);
+					}
 				}
 				break;
 			case 'view':

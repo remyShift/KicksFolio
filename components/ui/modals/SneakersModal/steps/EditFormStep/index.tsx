@@ -40,6 +40,7 @@ export const EditFormStep = () => {
         reset,
         trigger,
         watch,
+        getValues,
         displayedError,
         getFieldErrorWrapper,
         setValue,
@@ -60,8 +61,8 @@ export const EditFormStep = () => {
             is_women: currentSneaker?.gender === 'women' || false,
             images: sneakerToAdd?.images || currentSneaker?.images || [],
         },
-        onSubmit: async (data) => {
-            setSneakerToAdd({
+        onSubmit: async (data) => {            
+            const updatedSneaker = {
                 model: data.model,
                 brand: data.brand,
                 status: data.status,
@@ -73,11 +74,13 @@ export const EditFormStep = () => {
                 ds: data.ds || false,
                 is_women: data.is_women || false,
                 images: sneakerToAdd?.images || currentSneaker?.images || [],
-            } as SneakerFormData);
+            } as SneakerFormData;
+
+            setSneakerToAdd(updatedSneaker);
         },
     });
 
-    useFormValidation(control, watch, reset, trigger, getFieldError);
+    useFormValidation(watch, reset, trigger, getFieldError, getValues);
 
     useEffect(() => {
         if (currentSneaker) {
@@ -170,7 +173,7 @@ export const EditFormStep = () => {
                     sizeInputRef={sizeInputRef as React.RefObject<TextInput>}
                     pricePaidInputRef={pricePaidInputRef as React.RefObject<TextInput>}
                     descriptionInputRef={descriptionInputRef as React.RefObject<TextInput>}
-                    displayedError={displayedError}
+                    displayedError={typeof displayedError === 'string' ? displayedError : ''}
                     sneakerId={currentSneaker?.id}
                     setValue={setValue}
                 />

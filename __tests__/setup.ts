@@ -3,7 +3,6 @@ import { act } from 'react';
 import '@testing-library/react-native/extend-expect';
 import { ReactTestInstance } from 'react-test-renderer';
 import {
-	mockAuthService,
 	mockUseAuth,
 	mockUseSignUpProps,
 	mockUser,
@@ -463,8 +462,6 @@ jest.mock('../hooks/useSizeConversion', () => ({
 		convertSize: jest.fn(),
 	}),
 }));
-
-// Mock supprimé car SneakerSizeConverter n'existe plus dans services
 
 const originalConsoleError = console.error;
 

@@ -6,7 +6,7 @@ import {
 	DefaultValues,
 } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useAuth } from './useAuth';
 import { useSession } from '@/context/authContext';
 import { useTranslation } from 'react-i18next';
@@ -170,7 +170,9 @@ export function useFormController<T extends FieldValues>({
 	};
 
 	const handleFormSubmit = handleSubmit(async (data) => {
-		if (!onSubmit || isSubmitting) return;
+		if (!onSubmit || isSubmitting) {
+			return;
+		}
 
 		setIsSubmitting(true);
 
@@ -183,7 +185,6 @@ export function useFormController<T extends FieldValues>({
 				refreshUserData();
 			})
 			.catch((error) => {
-				console.error('Form submission error:', error);
 				setIsSubmitting(false);
 			});
 	});
@@ -240,9 +241,14 @@ export function useFormController<T extends FieldValues>({
 		return '';
 	};
 
-	const globalErrorMsg = t('ui.errors.global');
+	const globalErrorMsg = useMemo(() => {
+		const translation = t('ui.errors.global');
+		return typeof translation === 'string'
+			? translation
+			: 'Multiple errors occurred';
+	}, [t]);
 
-	const displayedError = (() => {
+	const displayedError = useMemo(() => {
 		const errorCount = getErrorCount();
 
 		if (errorCount === 0) {
@@ -254,8 +260,10 @@ export function useFormController<T extends FieldValues>({
 		}
 
 		const firstError = getFirstFieldError();
-		return firstError || authErrorMsg || '';
-	})();
+		const result = firstError || authErrorMsg || '';
+
+		return typeof result === 'string' ? result : '';
+	}, [authErrorMsg, errors, asyncErrors, fieldNames, globalErrorMsg]);
 
 	const getFieldErrorWrapper = (fieldName: string) => {
 		return getFieldError(fieldName as keyof T);

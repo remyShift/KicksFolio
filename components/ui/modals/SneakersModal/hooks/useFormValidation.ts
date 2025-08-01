@@ -1,13 +1,20 @@
 import { useEffect, useCallback, useRef } from 'react';
+import {
+	UseFormWatch,
+	UseFormReset,
+	UseFormTrigger,
+	UseFormGetValues,
+	Path,
+} from 'react-hook-form';
 import { useModalStore } from '@/store/useModalStore';
-import { SneakerFormData } from '../types';
+import { SneakerFormData } from '@/validation/schemas';
 
 export const useFormValidation = (
-	control: any,
-	watch: () => any,
-	reset: (values: any) => void,
-	trigger: () => Promise<boolean>,
-	getFieldError: (fieldName: any) => string | undefined
+	watch: UseFormWatch<SneakerFormData>,
+	reset: UseFormReset<SneakerFormData>,
+	trigger: UseFormTrigger<SneakerFormData>,
+	getFieldError: (fieldName: Path<SneakerFormData>) => string | undefined,
+	getValues: UseFormGetValues<SneakerFormData>
 ) => {
 	const {
 		setValidateForm,
@@ -20,19 +27,42 @@ export const useFormValidation = (
 	const resetRef = useRef(reset);
 	const triggerRef = useRef(trigger);
 	const getFieldErrorRef = useRef(getFieldError);
+	const getValuesRef = useRef(getValues);
 
 	watchRef.current = watch;
 	resetRef.current = reset;
 	triggerRef.current = trigger;
 	getFieldErrorRef.current = getFieldError;
+	getValuesRef.current = getValues;
 
 	const handleValidateAndSubmit = useCallback(async () => {
 		setErrorMsg('');
 
-		const isFormValid = await triggerRef.current();
+		const currentFormData = getValuesRef.current();
+		let isFormValid = false;
+
+		const trigger = triggerRef.current;
+
+		if (!trigger || typeof trigger !== 'function') {
+			isFormValid = true;
+		} else {
+			const result = await trigger();
+
+			if (result === undefined) {
+				isFormValid = !!(
+					currentFormData?.model &&
+					currentFormData?.brand &&
+					currentFormData?.status &&
+					currentFormData?.size &&
+					currentFormData?.images?.length > 0
+				);
+			} else {
+				isFormValid = result === true;
+			}
+		}
 
 		if (isFormValid) {
-			const updatedFormValues = watchRef.current();
+			const updatedFormValues = getValuesRef.current();
 
 			if (
 				!updatedFormValues.images ||
@@ -61,22 +91,31 @@ export const useFormValidation = (
 			setSneakerToAdd(finalData);
 			return { isValid: true, errorMsg: '', data: finalData };
 		} else {
+			const getErrorSafe = (fieldName: Path<SneakerFormData>) => {
+				const error = getFieldErrorRef.current(fieldName);
+				return typeof error === 'string' ? error : null;
+			};
+
 			const firstError =
-				getFieldErrorRef.current('model') ||
-				getFieldErrorRef.current('brand') ||
-				getFieldErrorRef.current('status') ||
-				getFieldErrorRef.current('size') ||
-				getFieldErrorRef.current('condition') ||
-				getFieldErrorRef.current('price_paid') ||
-				getFieldErrorRef.current('images') ||
+				getErrorSafe('model') ||
+				getErrorSafe('brand') ||
+				getErrorSafe('status') ||
+				getErrorSafe('size') ||
+				getErrorSafe('condition') ||
+				getErrorSafe('price_paid') ||
+				getErrorSafe('images') ||
 				'Please correct the errors in the form';
 
-			return { isValid: false, errorMsg: firstError };
+			const errorMsg =
+				typeof firstError === 'string'
+					? firstError
+					: 'Please correct the errors in the form';
+			return { isValid: false, errorMsg };
 		}
 	}, [setErrorMsg, setSneakerToAdd]);
 
 	const clearFormErrors = useCallback(() => {
-		resetRef.current({});
+		resetRef.current();
 		setErrorMsg('');
 	}, [setErrorMsg]);
 

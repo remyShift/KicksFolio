@@ -9,7 +9,7 @@ import { ModalStep } from '../types';
 import { FetchedSneaker } from '@/store/useModalStore';
 import { useSession } from '@/context/authContext';
 import { ZodIssue } from 'zod';
-import ImageProvider from '@/domain/ImageProvider';
+import { ImageProvider } from '@/domain/ImageProvider';
 import useToast from '@/hooks/useToast';
 import { useTranslation } from 'react-i18next';
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';
