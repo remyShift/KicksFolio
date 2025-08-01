@@ -38,4 +38,4 @@ export class AuthValidator {
 	}
 }
 
-export const validationService = new AuthValidator();
+export const authValidator = new AuthValidator();

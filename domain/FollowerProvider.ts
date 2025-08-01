@@ -5,7 +5,7 @@ export interface FollowingUser extends SearchUser {
 	followed_at: string;
 }
 
-export class FollowerService {
+export class FollowerProvider {
 	static async followUser(followingId: string): Promise<boolean> {
 		const {
 			data: { user },
@@ -260,3 +260,5 @@ export class FollowerService {
 		};
 	}
 }
+
+export const followerProvider = new FollowerProvider();

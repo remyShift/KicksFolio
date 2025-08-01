@@ -8,7 +8,7 @@ import { AuthProvider } from '@/domain/AuthProvider';
 
 import { SupabaseSneakerService } from '@/domain/SneakersService';
 import { SupabaseWishlistService } from '@/domain/WishlistService';
-import { FollowerService, FollowingUser } from '@/domain/FollowerService';
+import { FollowerProvider, FollowingUser } from '@/domain/FollowerProvider';
 import { UserSearchService } from '@/domain/UserSearchService';
 import { supabase } from '@/domain/supabase';
 import * as Linking from 'expo-linking';
@@ -169,7 +169,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
     };
 
     const loadFollowingUsers = async (userId: string) => {
-        return FollowerService.getFollowingUsers(userId)
+        return FollowerProvider.getFollowingUsers(userId)
             .then(async (followingUsersData) => {
                 const followingWithSneakers = await Promise.all(
                     followingUsersData.map(async (followingUser) => {

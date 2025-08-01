@@ -161,7 +161,7 @@
 import { useSession } from '@/context/authContext';
 &nbsp;
 export function useAsyncValidation() {
-	const validationService = new AuthValidator();
+	const authValidator = new AuthValidator();
 	const { userSneakers } = useSession();
 &nbsp;
 	const checkUsernameExists = <span class="fstat-no" title="function not covered" >as</span>ync (
@@ -169,7 +169,7 @@ export function useAsyncValidation() {
 	): Promise&lt;string | null&gt; =&gt; {
 <span class="cstat-no" title="statement not covered" >		if (!username || username.length &lt; 4) <span class="cstat-no" title="statement not covered" >return null;</span></span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >		return validationService</span>
+<span class="cstat-no" title="statement not covered" >		return authValidator</span>
 			.checkUsernameExists(username)
 			.then(<span class="fstat-no" title="function not covered" >(e</span>xists) =&gt; {
 <span class="cstat-no" title="statement not covered" >				return exists ? 'This username is already taken.' : null;</span>
@@ -184,7 +184,7 @@ export function useAsyncValidation() {
 		const emailRegex = <span class="cstat-no" title="statement not covered" >/^[^\s@]+@[^\s@]+\.[^\s@]+$/;</span>
 <span class="cstat-no" title="statement not covered" >		if (!email || !emailRegex.test(email)) <span class="cstat-no" title="statement not covered" >return null;</span></span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >		return validationService</span>
+<span class="cstat-no" title="statement not covered" >		return authValidator</span>
 			.checkEmailExists(email)
 			.then(<span class="fstat-no" title="function not covered" >(e</span>xists) =&gt; {
 <span class="cstat-no" title="statement not covered" >				return exists</span>

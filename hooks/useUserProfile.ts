@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { UserSearchService, SearchUser } from '@/domain/UserSearchService';
-import { FollowerService } from '@/domain/FollowerService';
+import { FollowerProvider } from '@/domain/FollowerProvider';
 import { useSession } from '@/context/authContext';
 import useToast from '@/hooks/useToast';
 import { router } from 'expo-router';
@@ -95,7 +95,7 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 
 		try {
 			if (userProfile.userSearch.is_following) {
-				await FollowerService.unfollowUser(userProfile.userSearch.id);
+				await FollowerProvider.unfollowUser(userProfile.userSearch.id);
 				showSuccessToast(
 					t('social.unfollowed'),
 					t('social.unfollowedDesc', {
@@ -103,7 +103,7 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 					})
 				);
 			} else {
-				await FollowerService.followUser(userProfile.userSearch.id);
+				await FollowerProvider.followUser(userProfile.userSearch.id);
 				showSuccessToast(
 					t('social.followed'),
 					t('social.followedDesc', {

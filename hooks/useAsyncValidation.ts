@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 type ValidationValue = string | number | boolean | null | undefined;
 
 export function useAsyncValidation() {
-	const validationService = new AuthValidator();
+	const authValidator = new AuthValidator();
 	const { t } = useTranslation();
 
 	const checkUsernameExists = async (
@@ -12,7 +12,7 @@ export function useAsyncValidation() {
 	): Promise<string | null> => {
 		if (!username || username.length < 4) return null;
 
-		return validationService
+		return authValidator
 			.checkUsernameExists(username)
 			.then((exists) => {
 				if (exists) {
@@ -32,7 +32,7 @@ export function useAsyncValidation() {
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 		if (!value || !emailRegex.test(value.toString())) return null;
 
-		return validationService
+		return authValidator
 			.checkEmailExists(value.toString())
 			.then((exists) => {
 				return exists ? t('auth.form.email.error.exists') : null;
@@ -49,7 +49,7 @@ export function useAsyncValidation() {
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 		if (!value || !emailRegex.test(value.toString())) return null;
 
-		return validationService
+		return authValidator
 			.checkEmailExists(value.toString())
 			.then((exists) => {
 				return !exists ? t('auth.form.email.error.notExists') : null;

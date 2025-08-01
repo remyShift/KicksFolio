@@ -10,6 +10,9 @@ type FieldName =
 	| 'size'
 	| 'sku';
 
+// Todo later : use AuthValidator pour checkUsernameExists et checkEmailExists
+// check pas de dépendance au domain
+
 export class FormValidationService {
 	public async validateField(
 		value: string,

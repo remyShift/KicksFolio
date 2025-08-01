@@ -231,3 +231,5 @@ export class AuthProvider {
 		if (error) throw error;
 	}
 }
+
+export const authProvider = new AuthProvider();
