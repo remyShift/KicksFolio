@@ -6,7 +6,7 @@ import { User } from '@/types/User';
 import { Sneaker } from '@/types/Sneaker';
 import { AuthProvider } from '@/domain/AuthProvider';
 
-import { SupabaseSneakerService } from '@/domain/SneakerProvider';
+import { SneakerProvider } from '@/domain/SneakerProvider';
 import { SupabaseWishlistService } from '@/domain/WishlistService';
 import { FollowerProvider, FollowingUser } from '@/domain/FollowerProvider';
 import { UserSearchService } from '@/domain/UserSearchService';
@@ -144,7 +144,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
     }, [appState]);
 
     const loadUserSneakers = async (userWithUrl: User) => {
-        const sneakersPromise = SupabaseSneakerService.getSneakersByUser(userWithUrl.id);
+        const sneakersPromise = SneakerProvider.getSneakersByUser(userWithUrl.id);
         const wishlistPromise = SupabaseWishlistService.getUserWishlistSneakers(userWithUrl.id);
         
         return Promise.all([sneakersPromise, wishlistPromise])
@@ -290,7 +290,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
             return;
         }
         
-        const sneakersPromise = SupabaseSneakerService.getSneakersByUser(user.id);
+        const sneakersPromise = SneakerProvider.getSneakersByUser(user.id);
         const wishlistPromise = SupabaseWishlistService.getUserWishlistSneakers(user.id);
         
         return Promise.all([sneakersPromise, wishlistPromise])

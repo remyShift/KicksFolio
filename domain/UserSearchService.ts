@@ -1,5 +1,5 @@
 import { Sneaker } from '@/types/Sneaker';
-import { supabase } from '../config/supabase/supabase';
+import { supabase } from '@/config/supabase/supabase';
 
 export interface SearchUser {
 	id: string;

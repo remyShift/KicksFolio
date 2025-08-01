@@ -1,8 +1,5 @@
 import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/Sneaker';
-import {
-	SupabaseSneakerService,
-	SupabaseSneaker,
-} from '@/domain/SneakerProvider';
+import { SneakerProvider, SupabaseSneaker } from '@/domain/SneakerProvider';
 import {
 	SneakerFormData,
 	createSneakerSchema,
@@ -12,7 +9,7 @@ import { ModalStep } from '../types';
 import { FetchedSneaker } from '@/store/useModalStore';
 import { useSession } from '@/context/authContext';
 import { ZodIssue } from 'zod';
-import SupabaseImageService from '@/domain/SupabaseImageService';
+import ImageProvider from '@/domain/ImageProvider';
 import useToast from '@/hooks/useToast';
 import { useTranslation } from 'react-i18next';
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';
@@ -90,7 +87,7 @@ export const useSneakerAPI = () => {
 
 		callbacks.setErrorMsg('');
 
-		return SupabaseSneakerService.searchBySku(sku.trim())
+		return SneakerProvider.searchBySku(sku.trim())
 			.then((response: SkuSearchResponse) => {
 				if (
 					response &&
@@ -143,11 +140,10 @@ export const useSneakerAPI = () => {
 			condition: supabaseSneaker.condition,
 			status: supabaseSneaker.status as SneakerStatus,
 			images: supabaseSneaker.images.map((img, index) => {
-				const fileNameFromUrl =
-					SupabaseImageService.extractFilePathFromUrl(
-						img.uri,
-						'sneakers'
-					);
+				const fileNameFromUrl = ImageProvider.extractFilePathFromUrl(
+					img.uri,
+					'sneakers'
+				);
 				return {
 					id: img.id || fileNameFromUrl || '',
 					uri: img.uri || '',
@@ -231,14 +227,11 @@ export const useSneakerAPI = () => {
 					ds: validatedData.ds || false,
 				};
 
-				return SupabaseSneakerService.createSneaker(
-					sneakerToAdd,
-					currentUnit
-				);
+				return SneakerProvider.createSneaker(sneakerToAdd, currentUnit);
 			})
 			.then(async (createdSneaker: SupabaseSneaker) => {
 				const processedImages =
-					await SupabaseImageService.processAndUploadSneakerImages(
+					await ImageProvider.processAndUploadSneakerImages(
 						formData.images.map((img) => ({
 							uri: img.uri,
 							id: img.id,
@@ -248,16 +241,15 @@ export const useSneakerAPI = () => {
 					);
 
 				if (processedImages.length > 0) {
-					const updatedSneaker =
-						await SupabaseSneakerService.updateSneaker(
-							createdSneaker.id,
-							{
-								images: processedImages.map((img) => ({
-									id: img.id,
-									uri: img.uri,
-								})),
-							}
-						);
+					const updatedSneaker = await SneakerProvider.updateSneaker(
+						createdSneaker.id,
+						{
+							images: processedImages.map((img) => ({
+								id: img.id,
+								uri: img.uri,
+							})),
+						}
+					);
 					return updatedSneaker;
 				}
 
@@ -331,7 +323,7 @@ export const useSneakerAPI = () => {
 				});
 
 				const processedImages =
-					await SupabaseImageService.processAndUploadSneakerImages(
+					await ImageProvider.processAndUploadSneakerImages(
 						formData.images.map((img) => ({
 							uri: img.uri,
 							id: img.id,
@@ -361,7 +353,7 @@ export const useSneakerAPI = () => {
 					ds: validatedData.ds || false,
 				};
 
-				return SupabaseSneakerService.updateSneaker(
+				return SneakerProvider.updateSneaker(
 					sneakerId,
 					sneakerUpdates,
 					currentUnit
@@ -429,12 +421,9 @@ export const useSneakerAPI = () => {
 			return Promise.reject('No session token');
 		}
 
-		return SupabaseSneakerService.deleteSneaker(sneakerId)
+		return SneakerProvider.deleteSneaker(sneakerId)
 			.then(async () => {
-				await SupabaseImageService.deleteSneakerImages(
-					user.id,
-					sneakerId
-				);
+				await ImageProvider.deleteSneakerImages(user.id, sneakerId);
 
 				return refreshUserSneakers();
 			})
@@ -464,7 +453,7 @@ export const useSneakerAPI = () => {
 
 		callbacks.setErrorMsg('');
 
-		return SupabaseSneakerService.searchByBarcode(barcode.trim())
+		return SneakerProvider.searchByBarcode(barcode.trim())
 			.then((response: SkuSearchResponse) => {
 				if (
 					response &&

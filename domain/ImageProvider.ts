@@ -1,4 +1,4 @@
-import { supabase } from '../config/supabase/supabase';
+import { supabase } from '@/config/supabase/supabase';
 import * as FileSystem from 'expo-file-system';
 
 interface UploadResult {
@@ -15,7 +15,7 @@ interface ImageUploadOptions {
 	quality?: number;
 }
 
-export class SupabaseImageService {
+export class ImageProvider {
 	static async uploadImage(
 		imageUri: string,
 		options: ImageUploadOptions
@@ -525,4 +525,4 @@ export class SupabaseImageService {
 	}
 }
 
-export default SupabaseImageService;
+export const imageProvider = new ImageProvider();

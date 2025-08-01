@@ -1,4 +1,4 @@
-import { supabase } from '../config/supabase/supabase';
+import { supabase } from '@/config/supabase/supabase';
 import { SearchUser } from './UserSearchService';
 
 export interface FollowingUser extends SearchUser {

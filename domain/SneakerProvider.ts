@@ -1,4 +1,4 @@
-import { supabase } from '../config/supabase/supabase';
+import { supabase } from '@/config/supabase/supabase';
 import { SneakerBrand } from '@/types/Sneaker';
 import { sneakerBrandOptions } from '@/validation/schemas';
 import {

@@ -1,4 +1,4 @@
-import { supabase } from '../config/supabase/supabase';
+import { supabase } from '@/config/supabase/supabase';
 
 export class AuthValidator {
 	async checkUsernameExists(username: string): Promise<boolean> {

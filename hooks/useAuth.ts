@@ -4,7 +4,7 @@ import { router } from 'expo-router';
 import { UserData, UpdateUserData } from '@/types/auth';
 import { useSession } from '@/context/authContext';
 import { useSignUpValidation } from './useSignUpValidation';
-import SupabaseImageService from '@/domain/SupabaseImageService';
+import ImageProvider from '@/domain/ImageProvider';
 import { useTranslation } from 'react-i18next';
 import { Session, User, WeakPassword } from '@supabase/supabase-js';
 
@@ -54,7 +54,7 @@ export const useAuth = () => {
 		)
 			.then((response) => {
 				if (response.user && profilePictureUri) {
-					return SupabaseImageService.uploadProfileImage(
+					return ImageProvider.uploadProfileImage(
 						profilePictureUri,
 						response.user.id
 					).then((uploadResult) => {
@@ -200,13 +200,13 @@ export const useAuth = () => {
 						.then((currentUser) => {
 							if (currentUser?.profile_picture) {
 								const oldFilePath =
-									SupabaseImageService.extractFilePathFromUrl(
+									ImageProvider.extractFilePathFromUrl(
 										currentUser.profile_picture,
 										'profiles'
 									);
 
 								if (oldFilePath) {
-									return SupabaseImageService.deleteImage(
+									return ImageProvider.deleteImage(
 										'profiles',
 										oldFilePath
 									).then((deleted) => {
@@ -222,7 +222,7 @@ export const useAuth = () => {
 							return Promise.resolve(true);
 						})
 						.then(() => {
-							return SupabaseImageService.uploadProfileImage(
+							return ImageProvider.uploadProfileImage(
 								newProfileData.profile_picture!,
 								userId
 							);
@@ -260,7 +260,7 @@ export const useAuth = () => {
 	};
 
 	const deleteAccount = async (userId: string) => {
-		return SupabaseImageService.deleteAllUserFiles(userId)
+		return ImageProvider.deleteAllUserFiles(userId)
 			.then((filesDeleted) => {
 				if (!filesDeleted) {
 					console.warn(

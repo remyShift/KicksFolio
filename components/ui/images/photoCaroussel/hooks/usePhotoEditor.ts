@@ -1,7 +1,7 @@
 import { Alert } from 'react-native';
 import { Photo } from '@/types/Sneaker';
 import { ImageService } from '@/services/ImageService';
-import SupabaseImageService from '@/domain/SupabaseImageService';
+import ImageProvider from '@/domain/ImageProvider';
 import { useSession } from '@/context/authContext';
 
 export const usePhotoEditor = (
@@ -33,7 +33,7 @@ export const usePhotoEditor = (
 					oldPhoto.uri.includes('supabase')
 				) {
 					try {
-						await SupabaseImageService.deleteSpecificSneakerImage(
+						await ImageProvider.deleteSpecificSneakerImage(
 							user.id,
 							sneakerId,
 							oldPhoto.id
@@ -104,7 +104,7 @@ export const usePhotoEditor = (
 						oldPhoto.uri.includes('supabase')
 					) {
 						try {
-							await SupabaseImageService.deleteSpecificSneakerImage(
+							await ImageProvider.deleteSpecificSneakerImage(
 								user.id,
 								sneakerId,
 								oldPhoto.id
@@ -147,7 +147,7 @@ export const usePhotoEditor = (
 			sneakerId &&
 			photoToRemove.uri.includes('supabase')
 		) {
-			SupabaseImageService.deleteSpecificSneakerImage(
+			ImageProvider.deleteSpecificSneakerImage(
 				user.id,
 				sneakerId,
 				photoToRemove.id
