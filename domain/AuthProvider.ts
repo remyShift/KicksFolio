@@ -1,4 +1,4 @@
-import { supabase } from '@/domain/supabase';
+import { supabase } from '@/config/supabase/supabase';
 
 export interface SupabaseUser {
 	id: string;

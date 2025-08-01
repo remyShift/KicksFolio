@@ -1,6 +1,6 @@
 import { createContext, useContext, type PropsWithChildren, useState, useEffect } from 'react';
 import { AuthContextType, FollowingUserWithSneakers } from '@/types/auth';
-import { storageService } from '@/domain/StorageService';
+import { storageProvider } from '@/domain/StorageProvider';
 import { useAppState } from '@react-native-community/hooks';
 import { User } from '@/types/User';
 import { Sneaker } from '@/types/Sneaker';
@@ -10,7 +10,7 @@ import { SupabaseSneakerService } from '@/domain/SneakerProvider';
 import { SupabaseWishlistService } from '@/domain/WishlistService';
 import { FollowerProvider, FollowingUser } from '@/domain/FollowerProvider';
 import { UserSearchService } from '@/domain/UserSearchService';
-import { supabase } from '@/domain/supabase';
+import { supabase } from '@/config/supabase/supabase';
 import * as Linking from 'expo-linking';
 import { router } from 'expo-router';
 
@@ -152,19 +152,19 @@ export function SessionProvider({ children }: PropsWithChildren) {
                 setUserSneakers(sneakers || []);
                 setWishlistSneakers(wishlistSneakers || []);
                 
-                storageService.setItem('sneakers', sneakers || []);
-                storageService.setItem('wishlistSneakers', wishlistSneakers || []);
+                storageProvider.setItem('sneakers', sneakers || []);
+                storageProvider.setItem('wishlistSneakers', wishlistSneakers || []);
                 
                 userWithUrl.sneakers = sneakers;
                 setUser(userWithUrl);
-                storageService.setItem('user', userWithUrl);
+                storageProvider.setItem('user', userWithUrl);
             })
             .catch((error) => {
                 console.error('Error loading user sneakers:', error);
                 setUserSneakers([]);
                 setWishlistSneakers([]);
-                storageService.setItem('sneakers', []);
-                storageService.setItem('wishlistSneakers', []);
+                storageProvider.setItem('sneakers', []);
+                storageProvider.setItem('wishlistSneakers', []);
             });
     };
 
@@ -190,14 +190,14 @@ export function SessionProvider({ children }: PropsWithChildren) {
                 );
 
                 setFollowingUsers(followingWithSneakers);
-                storageService.setItem('followingUsers', followingWithSneakers);
+                storageProvider.setItem('followingUsers', followingWithSneakers);
                 
                 return followingWithSneakers;
             })
             .catch((error) => {
                 console.error('Error loading following users:', error);
                 setFollowingUsers([]);
-                storageService.setItem('followingUsers', []);
+                storageProvider.setItem('followingUsers', []);
                 return [];
             });
     };
@@ -212,7 +212,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
                     if (userData) {
                         const userWithUrl = { ...userData, profile_picture_url: userData.profile_picture };
                         setUser(userWithUrl as User);
-                        storageService.setItem('user', userWithUrl);
+                        storageProvider.setItem('user', userWithUrl);
                         
                         return Promise.all([
                             loadUserSneakers(userWithUrl),
@@ -276,8 +276,8 @@ export function SessionProvider({ children }: PropsWithChildren) {
                 console.error('❌ refreshUserData: Error refreshing user data:', error);
                 setUserSneakers([]);
                 setWishlistSneakers([]);
-                storageService.setItem('sneakers', []);
-                storageService.setItem('wishlistSneakers', []);
+                storageProvider.setItem('sneakers', []);
+                storageProvider.setItem('wishlistSneakers', []);
             });
     };
 
@@ -285,8 +285,8 @@ export function SessionProvider({ children }: PropsWithChildren) {
         if (!user?.id) {
             setUserSneakers([]);
             setWishlistSneakers([]);
-            storageService.setItem('sneakers', []);
-            storageService.setItem('wishlistSneakers', []);
+            storageProvider.setItem('sneakers', []);
+            storageProvider.setItem('wishlistSneakers', []);
             return;
         }
         
@@ -298,22 +298,22 @@ export function SessionProvider({ children }: PropsWithChildren) {
                 setUserSneakers(sneakers || []);
                 setWishlistSneakers(wishlistSneakers || []);
                 
-                storageService.setItem('sneakers', sneakers || []);
-                storageService.setItem('wishlistSneakers', wishlistSneakers || []);
+                storageProvider.setItem('sneakers', sneakers || []);
+                storageProvider.setItem('wishlistSneakers', wishlistSneakers || []);
             })
             .catch((error) => {
                 console.error('Error refreshing sneakers:', error);
                 setUserSneakers([]);
                 setWishlistSneakers([]);
-                storageService.setItem('sneakers', []);
-                storageService.setItem('wishlistSneakers', []);
+                storageProvider.setItem('sneakers', []);
+                storageProvider.setItem('wishlistSneakers', []);
             });
     };
 
     const refreshFollowingUsers = async () => {
         if (!user?.id) {
             setFollowingUsers([]);
-            storageService.setItem('followingUsers', []);
+            storageProvider.setItem('followingUsers', []);
             return;
         }
         
@@ -327,12 +327,12 @@ export function SessionProvider({ children }: PropsWithChildren) {
         setFollowingUsers(null);
         setResetTokens(null);
 
-        storageService.clearSessionData();
+        storageProvider.clearSessionData();
     };
 
     const handleAppStateChange = async () => {
         if (appState === 'background') {
-            await storageService.saveAppState({
+            await storageProvider.saveAppState({
                 user,
                 sneakers: userSneakers,
                 followingUsers: followingUsers

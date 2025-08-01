@@ -23670,8 +23670,8 @@
 		"_coverageSchema": "1a1c01bbd47fc00a2c39e90264f33305004495a9",
 		"hash": "6d160312fd32082232fa5eb7f28dbd4be0dc62a0"
 	},
-	"/Users/remy_mac/Desktop/everything/Code/KicksFolio/KicksFolio/services/StorageService.ts": {
-		"path": "/Users/remy_mac/Desktop/everything/Code/KicksFolio/KicksFolio/services/StorageService.ts",
+	"/Users/remy_mac/Desktop/everything/Code/KicksFolio/KicksFolio/services/StorageProvider.ts": {
+		"path": "/Users/remy_mac/Desktop/everything/Code/KicksFolio/KicksFolio/services/StorageProvider.ts",
 		"statementMap": {
 			"0": {
 				"start": { "line": 18, "column": 8 },

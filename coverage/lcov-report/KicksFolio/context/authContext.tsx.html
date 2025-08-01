@@ -400,7 +400,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { createContext, useContext, type PropsWithChildren, useState, useEffect } from 'react';
 import { AuthContextType } from '@/types/auth';
-import { storageService } from '@/services/StorageService';
+import { storageProvider } from '@/services/StorageProvider';
 import { useAppState } from '@react-native-community/hooks';
 import { useStorageState } from '@/hooks/useStorageState';
 import { User } from '@/types/User';
@@ -442,7 +442,7 @@ export function <span class="fstat-no" title="function not covered" >SessionProv
 <span class="cstat-no" title="statement not covered" >            AuthProvider.getUser(sessionToken)</span>
                 .then(<span class="fstat-no" title="function not covered" >({</span> user: userData }) =&gt; {
 <span class="cstat-no" title="statement not covered" >                    setUser(userData);</span>
-<span class="cstat-no" title="statement not covered" >                    storageService.setItem('user', userData);</span>
+<span class="cstat-no" title="statement not covered" >                    storageProvider.setItem('user', userData);</span>
 <span class="cstat-no" title="statement not covered" >                    return refreshUserData(userData, sessionToken);</span>
                 })
                 .catch(<span class="fstat-no" title="function not covered" >(e</span>rror) =&gt; {
@@ -465,7 +465,7 @@ export function <span class="fstat-no" title="function not covered" >SessionProv
                 const collection = <span class="cstat-no" title="statement not covered" >collectionResponse.collection;</span>
                 
 <span class="cstat-no" title="statement not covered" >                setUserCollection(collection);</span>
-<span class="cstat-no" title="statement not covered" >                storageService.setItem('collection', collection);</span>
+<span class="cstat-no" title="statement not covered" >                storageProvider.setItem('collection', collection);</span>
                 
 <span class="cstat-no" title="statement not covered" >                if (collection &amp;&amp; collection.id) {</span>
 <span class="cstat-no" title="statement not covered" >                    new SneakerProvider(userData.id, sessionTokenToUse)</span>
@@ -473,16 +473,16 @@ export function <span class="fstat-no" title="function not covered" >SessionProv
                         .then(<span class="fstat-no" title="function not covered" >(s</span>neakersData) =&gt; {
                             const sneakers = <span class="cstat-no" title="statement not covered" >sneakersData.sneakers || [];</span>
 <span class="cstat-no" title="statement not covered" >                            setUserSneakers(sneakers);</span>
-<span class="cstat-no" title="statement not covered" >                            storageService.setItem('sneakers', sneakers);</span>
+<span class="cstat-no" title="statement not covered" >                            storageProvider.setItem('sneakers', sneakers);</span>
                         })
                         .catch(<span class="fstat-no" title="function not covered" >(s</span>neakersError) =&gt; {
 <span class="cstat-no" title="statement not covered" >                            console.error('Error fetching sneakers:', sneakersError);</span>
 <span class="cstat-no" title="statement not covered" >                            setUserSneakers([]);</span>
-<span class="cstat-no" title="statement not covered" >                            storageService.setItem('sneakers', []);</span>
+<span class="cstat-no" title="statement not covered" >                            storageProvider.setItem('sneakers', []);</span>
                         });
                 } else {
 <span class="cstat-no" title="statement not covered" >                    setUserSneakers([]);</span>
-<span class="cstat-no" title="statement not covered" >                    storageService.setItem('sneakers', []);</span>
+<span class="cstat-no" title="statement not covered" >                    storageProvider.setItem('sneakers', []);</span>
                 }
             })
             .catch(<span class="fstat-no" title="function not covered" >(e</span>rror) =&gt; {
@@ -490,8 +490,8 @@ export function <span class="fstat-no" title="function not covered" >SessionProv
 <span class="cstat-no" title="statement not covered" >                if (error.message?.includes('Collection not found') || error.message?.includes('404')) {</span>
 <span class="cstat-no" title="statement not covered" >                    setUserCollection(null);</span>
 <span class="cstat-no" title="statement not covered" >                    setUserSneakers([]);</span>
-<span class="cstat-no" title="statement not covered" >                    storageService.removeItem('collection');</span>
-<span class="cstat-no" title="statement not covered" >                    storageService.setItem('sneakers', []);</span>
+<span class="cstat-no" title="statement not covered" >                    storageProvider.removeItem('collection');</span>
+<span class="cstat-no" title="statement not covered" >                    storageProvider.setItem('sneakers', []);</span>
                 }
             });
     };
@@ -502,7 +502,7 @@ export function <span class="fstat-no" title="function not covered" >SessionProv
 <span class="cstat-no" title="statement not covered" >        if (!userCollection || !userCollection.id) {</span>
 <span class="cstat-no" title="statement not covered" >            console.log('No collection found, setting empty sneakers array');</span>
 <span class="cstat-no" title="statement not covered" >            setUserSneakers([]);</span>
-<span class="cstat-no" title="statement not covered" >            storageService.setItem('sneakers', []);</span>
+<span class="cstat-no" title="statement not covered" >            storageProvider.setItem('sneakers', []);</span>
 <span class="cstat-no" title="statement not covered" >            return;</span>
         }
         
@@ -510,12 +510,12 @@ export function <span class="fstat-no" title="function not covered" >SessionProv
 <span class="cstat-no" title="statement not covered" >        SneakerProvider.getUserSneakers()</span>
             .then(<span class="fstat-no" title="function not covered" >(d</span>ata) =&gt; {
 <span class="cstat-no" title="statement not covered" >                setUserSneakers(data.sneakers || []);</span>
-<span class="cstat-no" title="statement not covered" >                storageService.setItem('sneakers', data.sneakers || []);</span>
+<span class="cstat-no" title="statement not covered" >                storageProvider.setItem('sneakers', data.sneakers || []);</span>
             })
             .catch(<span class="fstat-no" title="function not covered" >(e</span>rror) =&gt; {
 <span class="cstat-no" title="statement not covered" >                console.error('Error refreshing sneakers:', error);</span>
 <span class="cstat-no" title="statement not covered" >                setUserSneakers([]);</span>
-<span class="cstat-no" title="statement not covered" >                storageService.setItem('sneakers', []);</span>
+<span class="cstat-no" title="statement not covered" >                storageProvider.setItem('sneakers', []);</span>
             });
     };
 &nbsp;
@@ -524,14 +524,14 @@ export function <span class="fstat-no" title="function not covered" >SessionProv
 <span class="cstat-no" title="statement not covered" >        setUserCollection(null);</span>
 <span class="cstat-no" title="statement not covered" >        setUserSneakers(null);</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >        storageService.removeItem('user');</span>
-<span class="cstat-no" title="statement not covered" >        storageService.removeItem('collection');</span>
-<span class="cstat-no" title="statement not covered" >        storageService.removeItem('sneakers');</span>
+<span class="cstat-no" title="statement not covered" >        storageProvider.removeItem('user');</span>
+<span class="cstat-no" title="statement not covered" >        storageProvider.removeItem('collection');</span>
+<span class="cstat-no" title="statement not covered" >        storageProvider.removeItem('sneakers');</span>
     };
 &nbsp;
     const handleAppStateChange = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >as</span>ync () =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >        if (appState === 'background') {</span>
-<span class="cstat-no" title="statement not covered" >            await storageService.saveAppState({</span>
+<span class="cstat-no" title="statement not covered" >            await storageProvider.saveAppState({</span>
                 user,
                 collection: userCollection,
                 sneakers: userSneakers

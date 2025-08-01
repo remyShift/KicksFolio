@@ -1,5 +1,5 @@
 import { useSession } from '@/context/authContext';
-import { storageService } from '@/domain/StorageService';
+import { storageProvider } from '@/domain/StorageProvider';
 import { User } from '@/types/User';
 import { Sneaker } from '@/types/Sneaker';
 
@@ -7,9 +7,9 @@ export function useInitialData() {
 	const { setUser, setUserSneakers } = useSession();
 
 	const loadAndSetInitialData = async () => {
-		const storedUser = await storageService.getItem<User>('user');
+		const storedUser = await storageProvider.getItem<User>('user');
 		if (storedUser) setUser(storedUser);
-		const storedSneakers = await storageService.getItem<Sneaker[]>(
+		const storedSneakers = await storageProvider.getItem<Sneaker[]>(
 			'sneakers'
 		);
 		if (storedSneakers) setUserSneakers(storedSneakers);

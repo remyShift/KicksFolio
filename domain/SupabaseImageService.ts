@@ -1,4 +1,4 @@
-import { supabase } from './supabase';
+import { supabase } from '../config/supabase/supabase';
 import * as FileSystem from 'expo-file-system';
 
 interface UploadResult {

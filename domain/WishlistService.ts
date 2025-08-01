@@ -1,4 +1,4 @@
-import { supabase } from './supabase';
+import { supabase } from '../config/supabase/supabase';
 import { Sneaker, SneakerBrand, SneakerStatus, Photo } from '@/types/Sneaker';
 
 export interface WishlistItem {

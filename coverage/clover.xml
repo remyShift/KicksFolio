@@ -1830,7 +1830,7 @@
         <line num="161" count="0" type="stmt"/>
         <line num="164" count="0" type="stmt"/>
       </file>
-      <file name="StorageService.ts" path="/Users/remy_mac/Desktop/everything/Code/KicksFolio/KicksFolio/services/StorageService.ts">
+      <file name="StorageProvider.ts" path="/Users/remy_mac/Desktop/everything/Code/KicksFolio/KicksFolio/services/StorageProvider.ts">
         <metrics statements="31" coveredstatements="1" conditionals="10" coveredconditionals="0" methods="22" coveredmethods="0"/>
         <line num="18" count="0" type="stmt"/>
         <line num="20" count="0" type="stmt"/>

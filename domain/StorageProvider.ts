@@ -9,7 +9,7 @@ interface AppState {
 	followingUsers: FollowingUserWithSneakers[] | null;
 }
 
-export class StorageService {
+export class StorageProvider {
 	private async handleStorageOperation<T>(
 		operation: Promise<T>,
 		errorMessage: string
@@ -116,4 +116,4 @@ export class StorageService {
 	}
 }
 
-export const storageService = new StorageService();
+export const storageProvider = new StorageProvider();
