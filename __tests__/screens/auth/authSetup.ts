@@ -79,3 +79,62 @@ export const mockUseSizeConversion = {
 jest.mock('@/hooks/useSizeConversion', () => ({
 	useSizeConversion: () => mockUseSizeConversion,
 }));
+
+export const mockAuthInterface = {
+	signIn: jest.fn().mockResolvedValue({
+		id: 'test-user-id',
+		email: 'test@example.com',
+	}),
+	signUp: jest.fn().mockResolvedValue({
+		user: { id: 'test-user-id' },
+		session: {},
+	}),
+	signOut: jest.fn().mockResolvedValue(true),
+	getCurrentUser: jest.fn().mockResolvedValue(mockUser),
+	updateProfile: jest.fn().mockResolvedValue(mockUser),
+	deleteUser: jest.fn().mockResolvedValue(true),
+	forgotPassword: jest.fn().mockResolvedValue(true),
+	resetPassword: jest.fn().mockResolvedValue({ user: mockUser }),
+	resetPasswordWithTokens: jest.fn().mockResolvedValue(true),
+};
+
+export const mockAuthProviderImpl = {
+	signUp: jest.fn().mockResolvedValue({
+		user: mockUser,
+		session: { access_token: 'mock-token' },
+	}),
+	signIn: jest.fn().mockResolvedValue({
+		user: mockUser,
+		session: { access_token: 'mock-token' },
+	}),
+	signOut: jest.fn().mockResolvedValue(undefined),
+	getCurrentUser: jest.fn().mockResolvedValue(mockUser),
+	updateProfile: jest.fn().mockResolvedValue(mockUser),
+	deleteUser: jest.fn().mockResolvedValue(true),
+	forgotPassword: jest.fn().mockResolvedValue(undefined),
+	resetPassword: jest.fn().mockResolvedValue({ user: mockUser }),
+	resetPasswordWithTokens: jest.fn().mockResolvedValue(true),
+	cleanupOrphanedSessions: jest.fn().mockResolvedValue(undefined),
+};
+
+jest.mock('@/interfaces/AuthInterface', () => ({
+	AuthInterface: mockAuthInterface,
+}));
+
+jest.mock('@/domain/AuthProviderImpl', () => ({
+	authProvider: mockAuthProviderImpl,
+}));
+
+export const resetMocks = () => {
+	Object.values(mockAuthInterface).forEach((mock) => {
+		if (jest.isMockFunction(mock)) {
+			mock.mockClear();
+		}
+	});
+
+	Object.values(mockAuthProviderImpl).forEach((mock) => {
+		if (jest.isMockFunction(mock)) {
+			mock.mockClear();
+		}
+	});
+};

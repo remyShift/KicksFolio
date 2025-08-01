@@ -3,7 +3,7 @@ import { fireEvent, render, screen } from "@testing-library/react-native";
 import { act } from "react";
 import { ReactTestInstance } from "react-test-renderer";
 import { fillAndBlurInput } from "../../setup";
-import { mockUseAuth, mockUseAsyncValidation } from "./authSetup";
+import { mockUseAuth, resetMocks } from "./authSetup";
 
 describe('Reset Password Page', () => {
     let passwordInput: ReactTestInstance;
@@ -12,6 +12,7 @@ describe('Reset Password Page', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+        resetMocks();
         
         jest.spyOn(require('expo-router'), 'useLocalSearchParams').mockReturnValue({ token: '1234567890' });
         

@@ -3,13 +3,14 @@ import { fireEvent, render, screen } from "@testing-library/react-native";
 import { act } from "react";
 import { ReactTestInstance } from "react-test-renderer";
 import { fillAndBlurInput } from "../../setup";
-import { mockUseAuth, mockUseAsyncValidation } from "./authSetup";
+import { mockUseAuth, mockUseAsyncValidation, resetNewArchMocks } from "./authSetup";
 
 describe('Forgot Password Page', () => {
     let emailInput: ReactTestInstance;
 
     beforeEach(() => {
         jest.clearAllMocks();
+        resetNewArchMocks();
         
         mockUseAsyncValidation.checkEmailExistsForReset.mockResolvedValue(null);
         mockUseAuth.forgotPassword.mockResolvedValue(true);

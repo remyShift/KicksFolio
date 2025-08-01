@@ -3,7 +3,7 @@ import LoginPage from '@/app/(auth)/login';
 import { fillAndBlurInput } from '../../setup';
 import { act } from 'react';
 import { ReactTestInstance } from 'react-test-renderer';
-import { mockAuthService, mockUseAuth } from './authSetup';
+import { mockAuthService, mockUseAuth, resetMocks } from './authSetup';
 
 
 describe('LoginPage', () => {
@@ -14,6 +14,7 @@ describe('LoginPage', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+        resetMocks();
         mockAuthService.handleLogin.mockReset();
         mockAuthService.login.mockReset();
         mockUseAuth.login.mockReset();
