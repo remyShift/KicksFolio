@@ -8,8 +8,9 @@ import {
 	mockUseSignUpProps,
 	mockUser,
 	mockUseAsyncValidation,
+	mockAuthInterface,
+	mockAuthProviderImpl,
 } from './screens/auth/authSetup';
-import { mockSneakers } from './screens/app/appSetup';
 
 jest.mock('@react-native-async-storage/async-storage', () => ({
 	__esModule: true,
@@ -69,12 +70,16 @@ jest.mock('@expo/vector-icons', () => {
 	};
 });
 
-jest.mock('../services/AuthProvider', () => ({
-	AuthProvider: jest.fn().mockImplementation(() => mockAuthService),
+jest.mock('../domain/AuthProviderImpl', () => ({
+	authProvider: mockAuthProviderImpl,
 }));
 
 jest.mock('../hooks/useAuth', () => ({
 	useAuth: jest.fn().mockReturnValue(mockUseAuth),
+}));
+
+jest.mock('../interfaces/AuthInterface', () => ({
+	AuthInterface: mockAuthInterface,
 }));
 
 jest.mock('../context/signUpPropsContext', () => ({
@@ -319,7 +324,7 @@ jest.mock('@supabase/supabase-js', () => ({
 	}),
 }));
 
-jest.mock('../services/supabase', () => ({
+jest.mock('../config/supabase/supabase', () => ({
 	supabase: {
 		auth: {
 			signUp: jest.fn().mockResolvedValue({ data: null, error: null }),
@@ -405,7 +410,7 @@ jest.mock('expo-haptics', () => ({
 	},
 }));
 
-jest.mock('../services/FormValidationService', () => ({
+jest.mock('../services/TODO/FormValidationService', () => ({
 	FormValidationService: {
 		validateUsername: jest.fn(),
 		validateFirstName: jest.fn(),
@@ -459,12 +464,7 @@ jest.mock('../hooks/useSizeConversion', () => ({
 	}),
 }));
 
-jest.mock('../services/SneakerSizeConverter', () => ({
-	SneakerSizeConverter: {
-		convertSize: jest.fn(),
-		formatSize: jest.fn((size) => `${size} US`),
-	},
-}));
+// Mock supprimé car SneakerSizeConverter n'existe plus dans services
 
 const originalConsoleError = console.error;
 
