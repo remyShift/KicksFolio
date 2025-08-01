@@ -1,34 +1,12 @@
 import { useState } from 'react';
-import { AuthProvider } from '@/domain/AuthProvider';
 import { router } from 'expo-router';
 import { UserData, UpdateUserData } from '@/types/auth';
 import { useSession } from '@/context/authContext';
 import { useSignUpValidation } from './useSignUpValidation';
-import ImageProvider from '@/domain/ImageProvider';
+import { ImageProvider } from '@/domain/ImageProvider';
 import { useTranslation } from 'react-i18next';
-import { Session, User, WeakPassword } from '@supabase/supabase-js';
-
-const toto = async (
-	email: string,
-	password: string,
-	loginFunction: (
-		email: string,
-		password: string
-	) => Promise<{
-		user: User;
-		session: Session;
-		weakPassword?: WeakPassword;
-	}>
-) => {
-	return loginFunction(email, password)
-		.then((response) => {
-			return response.user;
-		})
-		.catch((error) => {
-			console.error('❌ useAuth.login: Error occurred:', error);
-			throw error;
-		});
-};
+import { AuthInterface } from '@/interfaces/AuthInterface';
+import { authProvider } from '@/domain/AuthProviderImpl';
 
 export const useAuth = () => {
 	const [errorMsg, setErrorMsg] = useState('');
@@ -38,32 +16,36 @@ export const useAuth = () => {
 	const { t } = useTranslation();
 
 	const login = async (email: string, password: string) => {
-		return toto(email, password, AuthProvider.signIn).catch((error) => {
-			setErrorMsg(`${t('auth.error.login')} : ${error.message}`);
-		});
+		return AuthInterface.signIn(email, password, authProvider.signIn).catch(
+			(error) => {
+				setErrorMsg(`${t('auth.error.login')} : ${error.message}`);
+			}
+		);
 	};
 
 	const signUp = async (userData: UserData) => {
 		const { profile_picture: profilePictureUri, ...restOfUserData } =
 			userData;
 
-		return AuthProvider.signUp(
+		return AuthInterface.signUp(
 			restOfUserData.email,
 			restOfUserData.password,
-			restOfUserData
+			restOfUserData,
+			authProvider.signUp
 		)
 			.then((response) => {
 				if (response.user && profilePictureUri) {
 					return ImageProvider.uploadProfileImage(
 						profilePictureUri,
 						response.user.id
-					).then((uploadResult) => {
+					).then((uploadResult: any) => {
 						if (uploadResult.success && uploadResult.url) {
-							return AuthProvider.updateProfile(
+							return AuthInterface.updateProfile(
 								response.user.id,
-								{ profile_picture: uploadResult.url }
+								{ profile_picture: uploadResult.url },
+								authProvider.updateProfile
 							).then((updatedUser) => {
-								setUser(updatedUser);
+								setUser(updatedUser as any);
 								return response;
 							});
 						} else {
@@ -91,7 +73,7 @@ export const useAuth = () => {
 	};
 
 	const forgotPassword = async (email: string) => {
-		return AuthProvider.forgotPassword(email)
+		return AuthInterface.forgotPassword(email, authProvider.forgotPassword)
 			.then(() => {
 				router.replace({
 					pathname: '/login',
@@ -121,12 +103,16 @@ export const useAuth = () => {
 		}
 
 		const resetPasswordPromise = resetTokens
-			? AuthProvider.resetPasswordWithTokens(
+			? AuthInterface.resetPasswordWithTokens(
 					resetTokens.access_token,
 					resetTokens.refresh_token,
-					newPassword
+					newPassword,
+					authProvider.resetPasswordWithTokens
 			  )
-			: AuthProvider.resetPassword(newPassword);
+			: AuthInterface.resetPassword(
+					newPassword,
+					authProvider.resetPassword
+			  );
 
 		return resetPasswordPromise
 			.then(() => {
@@ -162,7 +148,7 @@ export const useAuth = () => {
 	};
 
 	const logout = async () => {
-		return AuthProvider.signOut()
+		return AuthInterface.signOut(authProvider.signOut)
 			.then(() => {
 				router.replace('/login');
 				return true;
@@ -196,7 +182,9 @@ export const useAuth = () => {
 						) ||
 						!newProfileData.profile_picture.startsWith('http'))
 				) {
-					return AuthProvider.getCurrentUser()
+					return AuthInterface.getCurrentUser(
+						authProvider.getCurrentUser
+					)
 						.then((currentUser) => {
 							if (currentUser?.profile_picture) {
 								const oldFilePath =
@@ -209,7 +197,7 @@ export const useAuth = () => {
 									return ImageProvider.deleteImage(
 										'profiles',
 										oldFilePath
-									).then((deleted) => {
+									).then((deleted: any) => {
 										if (!deleted) {
 											console.warn(
 												'Could not delete old profile picture'
@@ -245,10 +233,14 @@ export const useAuth = () => {
 				}
 			})
 			.then(() => {
-				return AuthProvider.updateProfile(userId, newProfileData);
+				return AuthInterface.updateProfile(
+					userId,
+					newProfileData,
+					authProvider.updateProfile
+				);
 			})
 			.then((updatedUser) => {
-				setUser(updatedUser);
+				setUser(updatedUser as any);
 				router.replace('/(app)/(tabs)/profile');
 				return { user: updatedUser };
 			})
@@ -261,28 +253,31 @@ export const useAuth = () => {
 
 	const deleteAccount = async (userId: string) => {
 		return ImageProvider.deleteAllUserFiles(userId)
-			.then((filesDeleted) => {
+			.then((filesDeleted: any) => {
 				if (!filesDeleted) {
 					console.warn(
 						'[useAuth] Some files could not be deleted, but continuing with account deletion'
 					);
 				}
 
-				return AuthProvider.deleteUser(userId);
+				return AuthInterface.deleteUser(
+					userId,
+					authProvider.deleteUser
+				);
 			})
 			.then(() => {
 				clearUserData();
 				router.replace('/login');
 				return true;
 			})
-			.catch((error) => {
+			.catch((error: any) => {
 				console.error('❌ Error deleting account:', error);
 				throw error;
 			});
 	};
 
 	const getUser = async () => {
-		return AuthProvider.getCurrentUser()
+		return AuthInterface.getCurrentUser(authProvider.getCurrentUser)
 			.then((user) => {
 				return user;
 			})
