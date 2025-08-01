@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { AuthProvider } from '@/domain/AuthService';
+import { AuthProvider } from '@/domain/AuthProvider';
 import { router } from 'expo-router';
 import { UserData, UpdateUserData } from '@/types/auth';
 import { useSession } from '@/context/authContext';

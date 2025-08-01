@@ -1,68 +1,69 @@
-
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
+	<head>
+		<title>Code coverage report for KicksFolio/hooks/useAuth.ts</title>
+		<meta charset="utf-8" />
+		<link rel="stylesheet" href="../../prettify.css" />
+		<link rel="stylesheet" href="../../base.css" />
+		<link
+			rel="shortcut icon"
+			type="image/x-icon"
+			href="../../favicon.png"
+		/>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<style type="text/css">
+			.coverage-summary .sorter {
+				background-image: url(../../sort-arrow-sprite.png);
+			}
+		</style>
+	</head>
 
-<head>
-    <title>Code coverage report for KicksFolio/hooks/useAuth.ts</title>
-    <meta charset="utf-8" />
-    <link rel="stylesheet" href="../../prettify.css" />
-    <link rel="stylesheet" href="../../base.css" />
-    <link rel="shortcut icon" type="image/x-icon" href="../../favicon.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <style type='text/css'>
-        .coverage-summary .sorter {
-            background-image: url(../../sort-arrow-sprite.png);
-        }
-    </style>
-</head>
-    
-<body>
-<div class='wrapper'>
-    <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">KicksFolio/hooks</a> useAuth.ts</h1>
-        <div class='clearfix'>
-            
-            <div class='fl pad1y space-right2'>
-                <span class="strong">23.17% </span>
-                <span class="quiet">Statements</span>
-                <span class='fraction'>19/82</span>
-            </div>
-        
-            
-            <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
-                <span class="quiet">Branches</span>
-                <span class='fraction'>0/22</span>
-            </div>
-        
-            
-            <div class='fl pad1y space-right2'>
-                <span class="strong">2.77% </span>
-                <span class="quiet">Functions</span>
-                <span class='fraction'>1/36</span>
-            </div>
-        
-            
-            <div class='fl pad1y space-right2'>
-                <span class="strong">23.17% </span>
-                <span class="quiet">Lines</span>
-                <span class='fraction'>19/82</span>
-            </div>
-        
-            
-        </div>
-        <p class="quiet">
-            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
-        </p>
-        <template id="filterTemplate">
-            <div class="quiet">
-                Filter:
-                <input type="search" id="fileSearch">
-            </div>
-        </template>
-    </div>
-    <div class='status-line low'></div>
-    <pre><table class="coverage">
+	<body>
+		<div class="wrapper">
+			<div class="pad1">
+				<h1>
+					<a href="../../index.html">All files</a> /
+					<a href="index.html">KicksFolio/hooks</a> useAuth.ts
+				</h1>
+				<div class="clearfix">
+					<div class="fl pad1y space-right2">
+						<span class="strong">23.17% </span>
+						<span class="quiet">Statements</span>
+						<span class="fraction">19/82</span>
+					</div>
+
+					<div class="fl pad1y space-right2">
+						<span class="strong">0% </span>
+						<span class="quiet">Branches</span>
+						<span class="fraction">0/22</span>
+					</div>
+
+					<div class="fl pad1y space-right2">
+						<span class="strong">2.77% </span>
+						<span class="quiet">Functions</span>
+						<span class="fraction">1/36</span>
+					</div>
+
+					<div class="fl pad1y space-right2">
+						<span class="strong">23.17% </span>
+						<span class="quiet">Lines</span>
+						<span class="fraction">19/82</span>
+					</div>
+				</div>
+				<p class="quiet">
+					Press <em>n</em> or <em>j</em> to go to the next uncovered
+					block, <em>b</em>, <em>p</em> or <em>k</em> for the previous
+					block.
+				</p>
+				<template id="filterTemplate">
+					<div class="quiet">
+						Filter:
+						<input type="search" id="fileSearch" />
+					</div>
+				</template>
+			</div>
+			<div class="status-line low"></div>
+			<pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
 <a name='L3'></a><a href='#L3'>3</a>
@@ -526,7 +527,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { useState } from 'react';
-import { AuthService } from '@/services/AuthService';
+import { AuthProvider } from '@/services/AuthProvider';
 import { router } from 'expo-router';
 import { UserData } from '@/types/auth';
 import { User } from '@/types/User';
@@ -535,13 +536,13 @@ import { useSignUpValidation } from './useSignUpValidation';
 &nbsp;
 export const useAuth = () =&gt; {
 	const [errorMsg, setErrorMsg] = useState('');
-	const authService = new AuthService();
+	const AuthProvider = new AuthProvider();
 	const { setSessionToken, refreshUserData, refreshUserSneakers, setUser } =
 		useSession();
 	const { validateSignUpStep1 } = useSignUpValidation();
 &nbsp;
 	const login = <span class="fstat-no" title="function not covered" >as</span>ync (email: string, password: string) =&gt; {
-<span class="cstat-no" title="statement not covered" >		return authService</span>
+<span class="cstat-no" title="statement not covered" >		return AuthProvider</span>
 			.handleLogin(email, password)
 			.then(<span class="fstat-no" title="function not covered" >(t</span>oken) =&gt; {
 <span class="cstat-no" title="statement not covered" >				if (token) {</span>
@@ -561,11 +562,11 @@ export const useAuth = () =&gt; {
 	};
 &nbsp;
 	const signUp = <span class="fstat-no" title="function not covered" >as</span>ync (userData: UserData) =&gt; {
-<span class="cstat-no" title="statement not covered" >		return authService</span>
+<span class="cstat-no" title="statement not covered" >		return AuthProvider</span>
 			.signUp(userData)
 			.then(<span class="fstat-no" title="function not covered" >({</span> user }) =&gt; {
 <span class="cstat-no" title="statement not covered" >				if (user) {</span>
-<span class="cstat-no" title="statement not covered" >					return authService</span>
+<span class="cstat-no" title="statement not covered" >					return AuthProvider</span>
 						.handleLogin(userData.email, userData.password)
 						.then(<span class="fstat-no" title="function not covered" >(t</span>oken) =&gt; {
 <span class="cstat-no" title="statement not covered" >							if (token) {</span>
@@ -592,7 +593,7 @@ export const useAuth = () =&gt; {
 	};
 &nbsp;
 	const forgotPassword = <span class="fstat-no" title="function not covered" >as</span>ync (email: string) =&gt; {
-<span class="cstat-no" title="statement not covered" >		return authService</span>
+<span class="cstat-no" title="statement not covered" >		return AuthProvider</span>
 			.handleForgotPassword(email)
 			.then(<span class="fstat-no" title="function not covered" >(s</span>uccess) =&gt; {
 <span class="cstat-no" title="statement not covered" >				if (success) {</span>
@@ -619,7 +620,7 @@ export const useAuth = () =&gt; {
 		newPassword: string,
 		confirmNewPassword: string
 	) =&gt; {
-<span class="cstat-no" title="statement not covered" >		return authService</span>
+<span class="cstat-no" title="statement not covered" >		return AuthProvider</span>
 			.handleResetPassword(token, newPassword, confirmNewPassword)
 			.then(<span class="fstat-no" title="function not covered" >(s</span>uccess) =&gt; {
 <span class="cstat-no" title="statement not covered" >				if (success) {</span>
@@ -641,7 +642,7 @@ export const useAuth = () =&gt; {
 	};
 &nbsp;
 	const logout = <span class="fstat-no" title="function not covered" >as</span>ync (token: string) =&gt; {
-<span class="cstat-no" title="statement not covered" >		return authService</span>
+<span class="cstat-no" title="statement not covered" >		return AuthProvider</span>
 			.logout(token)
 			.then(<span class="fstat-no" title="function not covered" >(o</span>k) =&gt; {
 <span class="cstat-no" title="statement not covered" >				if (ok) {</span>
@@ -661,7 +662,7 @@ export const useAuth = () =&gt; {
 	};
 &nbsp;
 	const verifyToken = <span class="fstat-no" title="function not covered" >as</span>ync (token: string) =&gt; {
-<span class="cstat-no" title="statement not covered" >		return authService</span>
+<span class="cstat-no" title="statement not covered" >		return AuthProvider</span>
 			.verifyToken(token)
 			.then(<span class="fstat-no" title="function not covered" >(r</span>esult) =&gt; {
 <span class="cstat-no" title="statement not covered" >				return result;</span>
@@ -677,7 +678,7 @@ export const useAuth = () =&gt; {
 		profileData: Partial&lt;UserData&gt;,
 		token: string
 	) =&gt; {
-<span class="cstat-no" title="statement not covered" >		return authService</span>
+<span class="cstat-no" title="statement not covered" >		return AuthProvider</span>
 			.updateUser(userId, profileData, token)
 			.then(<span class="fstat-no" title="function not covered" >(d</span>ata) =&gt; {
 <span class="cstat-no" title="statement not covered" >				setUser(data.user);</span>
@@ -691,7 +692,7 @@ export const useAuth = () =&gt; {
 	};
 &nbsp;
 	const deleteAccount = <span class="fstat-no" title="function not covered" >as</span>ync (userId: string, token: string) =&gt; {
-<span class="cstat-no" title="statement not covered" >		return authService</span>
+<span class="cstat-no" title="statement not covered" >		return AuthProvider</span>
 			.deleteAccount(userId, token)
 			.then(<span class="fstat-no" title="function not covered" >()</span> =&gt; {
 <span class="cstat-no" title="statement not covered" >				setSessionToken(null);</span>
@@ -705,7 +706,7 @@ export const useAuth = () =&gt; {
 	};
 &nbsp;
 	const getUser = <span class="fstat-no" title="function not covered" >as</span>ync (token: string) =&gt; {
-<span class="cstat-no" title="statement not covered" >		return authService</span>
+<span class="cstat-no" title="statement not covered" >		return AuthProvider</span>
 			.getUser(token)
 			.then(<span class="fstat-no" title="function not covered" >(u</span>ser) =&gt; {
 <span class="cstat-no" title="statement not covered" >				return user;</span>
@@ -758,21 +759,27 @@ export const useAuth = () =&gt; {
 };
 &nbsp;</pre></td></tr></table></pre>
 
-                <div class='push'></div><!-- for sticky footer -->
-            </div><!-- /wrapper -->
-            <div class='footer quiet pad2 space-top1 center small'>
-                Code coverage generated by
-                <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-06-13T13:49:41.321Z
-            </div>
-        <script src="../../prettify.js"></script>
-        <script>
-            window.onload = function () {
-                prettyPrint();
-            };
-        </script>
-        <script src="../../sorter.js"></script>
-        <script src="../../block-navigation.js"></script>
-    </body>
+			<div class="push"></div>
+			<!-- for sticky footer -->
+		</div>
+		<!-- /wrapper -->
+		<div class="footer quiet pad2 space-top1 center small">
+			Code coverage generated by
+			<a
+				href="https://istanbul.js.org/"
+				target="_blank"
+				rel="noopener noreferrer"
+				>istanbul</a
+			>
+			at 2025-06-13T13:49:41.321Z
+		</div>
+		<script src="../../prettify.js"></script>
+		<script>
+			window.onload = function () {
+				prettyPrint();
+			};
+		</script>
+		<script src="../../sorter.js"></script>
+		<script src="../../block-navigation.js"></script>
+	</body>
 </html>
-    

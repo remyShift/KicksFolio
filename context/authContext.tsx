@@ -4,7 +4,7 @@ import { storageService } from '@/domain/StorageService';
 import { useAppState } from '@react-native-community/hooks';
 import { User } from '@/types/User';
 import { Sneaker } from '@/types/Sneaker';
-import { AuthProvider } from '@/domain/AuthService';
+import { AuthProvider } from '@/domain/AuthProvider';
 
 import { SupabaseSneakerService } from '@/domain/SneakersService';
 import { SupabaseWishlistService } from '@/domain/WishlistService';

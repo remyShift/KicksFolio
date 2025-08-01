@@ -69,8 +69,8 @@ jest.mock('@expo/vector-icons', () => {
 	};
 });
 
-jest.mock('../services/AuthService', () => ({
-	AuthService: jest.fn().mockImplementation(() => mockAuthService),
+jest.mock('../services/AuthProvider', () => ({
+	AuthProvider: jest.fn().mockImplementation(() => mockAuthService),
 }));
 
 jest.mock('../hooks/useAuth', () => ({

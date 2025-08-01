@@ -1543,7 +1543,7 @@
     </package>
     <package name="KicksFolio.services">
       <metrics statements="297" coveredstatements="5" conditionals="173" coveredconditionals="0" methods="88" coveredmethods="1"/>
-      <file name="AuthService.ts" path="/Users/remy_mac/Desktop/everything/Code/KicksFolio/KicksFolio/services/AuthService.ts">
+      <file name="AuthProvider.ts" path="/Users/remy_mac/Desktop/everything/Code/KicksFolio/KicksFolio/services/AuthProvider.ts">
         <metrics statements="63" coveredstatements="1" conditionals="26" coveredconditionals="0" methods="19" coveredmethods="0"/>
         <line num="12" count="0" type="cond" truecount="0" falsecount="4"/>
         <line num="13" count="0" type="stmt"/>
