@@ -1,7 +1,7 @@
 import { View, Text, Linking, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { User } from '@/types/User';
-import { SearchUser } from '@/domain/UserSearchService';
+import { SearchUser } from '@/domain/UserSearchProvider';
 
 interface SocialMediaLinksProps {
     user: User | SearchUser;

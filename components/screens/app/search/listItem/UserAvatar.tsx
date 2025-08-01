@@ -1,6 +1,6 @@
 import { Image } from "expo-image";
 import { View } from "react-native";
-import { SearchUser } from "@/domain/UserSearchService";
+import { SearchUser } from "@/domain/UserSearchProvider";
 import { Feather } from "@expo/vector-icons";
 
 interface UserAvatarProps {

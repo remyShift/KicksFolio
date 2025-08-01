@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { View } from 'react-native';
 import { Sneaker } from '@/types/Sneaker';
 import { User } from '@/types/User';
-import { SearchUser } from '@/domain/UserSearchService';
+import { SearchUser } from '@/domain/UserSearchProvider';
 import CardDisplay from './displayState/card/CardDisplay';
 import ListDisplay from './displayState/list/ListDisplay';
 import { useViewDisplayStateStore, ViewDisplayState } from '@/store/useViewDisplayStateStore';

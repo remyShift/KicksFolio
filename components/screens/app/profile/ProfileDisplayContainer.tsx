@@ -1,7 +1,7 @@
 import { RefreshControl, ScrollView } from 'react-native';
 import { Sneaker } from '@/types/Sneaker';
 import { User } from '@/types/User';
-import { SearchUser } from '@/domain/UserSearchService';
+import { SearchUser } from '@/domain/UserSearchProvider';
 import EmptySneakersState from './displayState/EmptySneakersState';
 import ProfileHeader from './ProfileHeader';
 import DualViewContainer from './DualViewContainer';

@@ -6,7 +6,7 @@ import { User } from "@/types/User";
 import SettingsButton from "./SettingsButton";
 import Title from "@/components/ui/text/Title";
 import { useTranslation } from "react-i18next";
-import { SearchUser } from "@/domain/UserSearchService";
+import { SearchUser } from "@/domain/UserSearchProvider";
 import { useSession } from "@/context/authContext";
 import BackToSearchButton from "../search/BackToSearchButton";
 

@@ -1,5 +1,5 @@
 import { TouchableOpacity } from 'react-native';
-import { SearchUser } from '@/domain/UserSearchService';
+import { SearchUser } from '@/domain/UserSearchProvider';
 import UserActions from './UserActions';
 import UserAvatar from './UserAvatar';
 import UserInfo from './UserInfo';

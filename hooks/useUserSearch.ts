@@ -1,5 +1,5 @@
 import { useCallback, useRef, useEffect } from 'react';
-import { UserSearchService, SearchUser } from '@/domain/UserSearchService';
+import { UserSearchProvider, SearchUser } from '@/domain/UserSearchProvider';
 import { useSession } from '@/context/authContext';
 import useToast from '@/hooks/useToast';
 import { useTranslation } from 'react-i18next';
@@ -58,7 +58,7 @@ export const useUserSearch = (): UseUserSearchReturn => {
 			setIsLoading(true);
 
 			try {
-				const result = await UserSearchService.searchUsers(
+				const result = await UserSearchProvider.searchUsers(
 					term.trim(),
 					user.id,
 					pageNum

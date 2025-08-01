@@ -1,5 +1,5 @@
 import { useUserSearch } from "@/hooks/useUserSearch";
-import { SearchUser } from "@/domain/UserSearchService";
+import { SearchUser } from "@/domain/UserSearchProvider";
 import { FlatList, RefreshControl } from "react-native";
 import UserListItem from "./listItem/UserListItem";
 import SearchEmptyState from "./SearchEmptyState";

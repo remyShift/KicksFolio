@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { UserSearchService, SearchUser } from '@/domain/UserSearchService';
+import { UserSearchProvider, SearchUser } from '@/domain/UserSearchProvider';
 import { FollowerProvider } from '@/domain/FollowerProvider';
 import { useSession } from '@/context/authContext';
 import useToast from '@/hooks/useToast';
@@ -56,8 +56,8 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 
 			try {
 				const [userSearch, sneakers] = await Promise.all([
-					UserSearchService.getUserProfile(userId, currentUser.id),
-					UserSearchService.getUserSneakers(userId),
+					UserSearchProvider.getUserProfile(userId, currentUser.id),
+					UserSearchProvider.getUserSneakers(userId),
 				]);
 
 				if (userSearch) {

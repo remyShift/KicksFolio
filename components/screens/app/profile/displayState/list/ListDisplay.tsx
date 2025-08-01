@@ -2,7 +2,7 @@ import { RefreshControl, ScrollView, View } from 'react-native';
 import SneakersListView from './SneakersListView'
 import { Sneaker } from '@/types/Sneaker'
 import { User } from '@/types/User';
-import { SearchUser } from '@/domain/UserSearchService';
+import { SearchUser } from '@/domain/UserSearchProvider';
 import ProfileHeader from '../../ProfileHeader';
 
 interface ListDisplayProps {

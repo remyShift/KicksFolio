@@ -21,7 +21,7 @@ export interface SearchUsersResponse {
 	totalCount: number;
 }
 
-export class UserSearchService {
+export class UserSearchProvider {
 	private static readonly PAGE_SIZE = 20;
 
 	static async searchUsers(
@@ -286,3 +286,5 @@ export class UserSearchService {
 		return [];
 	}
 }
+
+export const userSearchProvider = new UserSearchProvider();
