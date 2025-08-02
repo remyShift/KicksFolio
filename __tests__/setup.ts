@@ -482,8 +482,4 @@ export const fillAndBlurInput = async (
 	await act(async () => {
 		await new Promise((resolve) => setTimeout(resolve, 300));
 	});
-
-	await act(async () => {
-		await new Promise(setImmediate);
-	});
 };

@@ -152,7 +152,7 @@ describe('SignUpSecondPage', () => {
                 expect(lastNameInput.props.className).toContain('border-2 border-red-500');
                 expect(sneakerSizeInput.props.className).toContain('border-2 border-red-500');
             });
-        });
+        }); 
 
         describe('main button', () => {
             it('should display main button disabled if fields are not filled', async () => {
@@ -198,10 +198,6 @@ describe('SignUpSecondPage', () => {
             await fillAndBlurInput(lastNameInput, 'validLastName');
             await fillAndBlurInput(sneakerSizeInput, '10.5');
             
-            await act(async () => {
-                await new Promise(resolve => setTimeout(resolve, 200));
-            });
-            
             const currentMainButton = screen.getByTestId('main-button');
             
             expect(currentMainButton.props.accessibilityState.disabled).toBe(false);
@@ -210,10 +206,6 @@ describe('SignUpSecondPage', () => {
                 fireEvent(sneakerSizeInput, 'submitEditing');
             });
             
-            await act(async () => {
-                await new Promise(resolve => setTimeout(resolve, 100));
-            });
-
             expect(mockUseAuth.signUp).toHaveBeenCalledWith({
                 username: 'validUsername',
                 email: 'valid@email.com',
@@ -242,10 +234,6 @@ describe('SignUpSecondPage', () => {
             await fillAndBlurInput(lastNameInput, 'test@test');
             await fillAndBlurInput(sneakerSizeInput, '5');
             
-            await act(async () => {
-                await new Promise(resolve => setTimeout(resolve, 200));
-            });
-            
             const currentMainButton = screen.getByTestId('main-button');
             
             expect(currentMainButton.props.accessibilityState.disabled).toBe(true);
@@ -254,10 +242,6 @@ describe('SignUpSecondPage', () => {
                 fireEvent(sneakerSizeInput, 'submitEditing');
             });
             
-            await act(async () => {
-                await new Promise(resolve => setTimeout(resolve, 100));
-            });
-
             expect(mockUseAuth.signUp).not.toHaveBeenCalled();
         });
     });

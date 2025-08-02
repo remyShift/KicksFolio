@@ -158,10 +158,6 @@ describe('Edit Profile Form', () => {
             
             await fillAndBlurInput(usernameInput, newUsername);
             
-            await act(async () => {
-                await new Promise(resolve => setTimeout(resolve, 200));
-            });
-            
             const mainButton = screen.getByTestId('main-button');
             
             expect(mainButton.props.accessibilityState.disabled).toBe(false);
@@ -170,10 +166,6 @@ describe('Edit Profile Form', () => {
             
             await act(async () => {
                 fireEvent(sizeInput, 'submitEditing');
-            });
-            
-            await act(async () => {
-                await new Promise(resolve => setTimeout(resolve, 100));
             });
 
             expect(mockUseAuth.updateUser).toHaveBeenCalledWith(
@@ -194,20 +186,12 @@ describe('Edit Profile Form', () => {
             const usernameInput = screen.getByLabelText('Username*');
             await fillAndBlurInput(usernameInput, 'newUsername');
             
-            await act(async () => {
-                await new Promise(resolve => setTimeout(resolve, 200));
-            });
-            
             const sizeInput = screen.getByLabelText('Sneaker Size*');
             
             await act(async () => {
                 fireEvent(sizeInput, 'submitEditing');
             });
             
-            await act(async () => {
-                await new Promise(resolve => setTimeout(resolve, 100));
-            });
-
             expect(mockUseAuth.updateUser).toHaveBeenCalled();
         });
 
@@ -215,20 +199,12 @@ describe('Edit Profile Form', () => {
             const usernameInput = screen.getByLabelText('Username*');
             await fillAndBlurInput(usernameInput, 'existingUser');
             
-            await act(async () => {
-                await new Promise(resolve => setTimeout(resolve, 200));
-            });
-            
             const sizeInput = screen.getByLabelText('Sneaker Size*');
             
             await act(async () => {
                 fireEvent(sizeInput, 'submitEditing');
             });
             
-            await act(async () => {
-                await new Promise(resolve => setTimeout(resolve, 100));
-            });
-
             expect(mockUseAuth.updateUser).toHaveBeenCalled();
         });
     });

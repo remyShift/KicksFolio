@@ -1,16 +1,27 @@
-import { renderHook } from '@testing-library/react-native';
+import { vi } from 'vitest';
+import { renderHook } from '@testing-library/react';
 import { act } from 'react';
 import { useFormController } from '../../hooks/useFormController';
 import { z } from 'zod';
-import { mockUseAuth } from '../screens/auth/authSetup';
+const mockUseAuth = {
+	login: vi.fn(),
+	signUp: vi.fn(),
+	errorMsg: '',
+	clearError: vi.fn(),
+	updateProfile: vi.fn(),
+	deleteAccount: vi.fn(),
+	forgotPassword: vi.fn(),
+	resetPassword: vi.fn(),
+	isLoading: false,
+};
 
-jest.mock('@/hooks/useAuth', () => ({
+vi.mock('@/hooks/useAuth', () => ({
 	useAuth: () => mockUseAuth,
 }));
 
-jest.mock('@/context/authContext', () => ({
+vi.mock('@/context/authContext', () => ({
 	useSession: () => ({
-		refreshUserData: jest.fn(),
+		refreshUserData: vi.fn(),
 	}),
 }));
 
@@ -22,15 +33,15 @@ const testSchema = z.object({
 type TestFormData = z.infer<typeof testSchema>;
 
 const mockAsyncValidation = {
-	username: jest.fn(),
-	email: jest.fn(),
+	username: vi.fn(),
+	email: vi.fn(),
 };
 
-const mockOnSubmit = jest.fn();
+const mockOnSubmit = vi.fn();
 
 describe('useFormController', () => {
 	beforeEach(() => {
-		jest.clearAllMocks();
+		vi.clearAllMocks();
 		mockAsyncValidation.username.mockResolvedValue(null);
 		mockAsyncValidation.email.mockResolvedValue(null);
 	});

@@ -1,7 +1,7 @@
-// Désactiver le mock global d'AuthInterface pour ce test
-jest.unmock('@/interfaces/AuthInterface');
+import { vi } from 'vitest';
 
-// Importer la vraie AuthInterface
+vi.unmock('@/interfaces/AuthInterface');
+
 import { AuthInterface } from '@/interfaces/AuthInterface';
 import {
 	mockSupabaseUser,
@@ -20,11 +20,11 @@ import {
 
 describe('AuthInterface', () => {
 	beforeEach(() => {
-		jest.spyOn(console, 'error').mockImplementation(() => {});
+		vi.spyOn(console, 'error').mockImplementation(() => {});
 	});
 
 	afterEach(() => {
-		jest.restoreAllMocks();
+		vi.restoreAllMocks();
 	});
 
 	describe('signUp', () => {

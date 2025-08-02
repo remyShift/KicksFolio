@@ -89,10 +89,6 @@ describe('Forgot Password Page', () => {
         it('should call the forgotPassword function if the email is provided with appropriate value', async () => {
             await fillAndBlurInput(emailInput, 'john@doe.com');
             
-            await act(async () => {
-                await new Promise(resolve => setTimeout(resolve, 100));
-            });
-            
             const currentMainButton = screen.getByTestId('main-button');
             
             expect(currentMainButton.props.accessibilityState.disabled).toBe(false);
@@ -101,10 +97,6 @@ describe('Forgot Password Page', () => {
                 fireEvent(emailInput, 'submitEditing');
             });
             
-            await act(async () => {
-                await new Promise(resolve => setTimeout(resolve, 100));
-            });
-
             expect(mockUseAuth.forgotPassword).toHaveBeenCalledWith('john@doe.com');
         });
     });

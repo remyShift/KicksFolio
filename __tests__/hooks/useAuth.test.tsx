@@ -1,4 +1,5 @@
-import { renderHook } from '@testing-library/react-native';
+import { vi } from 'vitest';
+import { renderHook } from '@testing-library/react';
 import { useAuth } from '@/hooks/useAuth';
 import { act } from 'react';
 import { router } from 'expo-router';
@@ -7,59 +8,72 @@ import {
 	createMockError 
 } from '../interfaces/authInterfaceSetup';
 
-jest.mock('@/context/authContext', () => ({
+vi.mock('@/context/authContext', () => ({
 	useSession: () => ({
-		setUser: jest.fn(),
-		refreshUserData: jest.fn(),
-		clearUserData: jest.fn(),
+		setUser: vi.fn(),
+		refreshUserData: vi.fn(),
+		clearUserData: vi.fn(),
 		resetTokens: null,
 	}),
 }));
 
-jest.mock('@/hooks/useSignUpValidation', () => ({
+vi.mock('@/hooks/useSignUpValidation', () => ({
 	useSignUpValidation: () => ({
-		validateSignUpStep1Async: jest.fn().mockResolvedValue({
+		validateSignUpStep1Async: vi.fn().mockResolvedValue({
 			isValid: true,
 			errorMsg: '',
 		}),
 	}),
 }));
 
-jest.mock('@/domain/ImageProvider', () => ({
+vi.mock('@/domain/ImageProvider', () => ({
 	ImageProvider: {
-		uploadProfileImage: jest.fn().mockResolvedValue({
+		uploadProfileImage: vi.fn().mockResolvedValue({
 			success: true,
 			url: 'https://example.com/uploaded-image.jpg',
 		}),
-		extractFilePathFromUrl: jest.fn().mockReturnValue('old-file-path'),
-		deleteImage: jest.fn().mockResolvedValue(true),
-		deleteAllUserFiles: jest.fn().mockResolvedValue(true),
+		extractFilePathFromUrl: vi.fn().mockReturnValue('old-file-path'),
+		deleteImage: vi.fn().mockResolvedValue(true),
+		deleteAllUserFiles: vi.fn().mockResolvedValue(true),
 	},
 }));
 
-jest.mock('@/domain/AuthProviderImpl', () => ({
+vi.mock('@/domain/AuthProviderImpl', () => ({
 	authProvider: {
-		signIn: jest.fn(),
-		signUp: jest.fn(),
-		signOut: jest.fn(),
-		getCurrentUser: jest.fn(),
-		updateProfile: jest.fn(),
-		deleteUser: jest.fn(),
-		forgotPassword: jest.fn(),
-		resetPassword: jest.fn(),
-		resetPasswordWithTokens: jest.fn(),
-		cleanupOrphanedSessions: jest.fn(),
+		signIn: vi.fn(),
+		signUp: vi.fn(),
+		signOut: vi.fn(),
+		getCurrentUser: vi.fn(),
+		updateProfile: vi.fn(),
+		deleteUser: vi.fn(),
+		forgotPassword: vi.fn(),
+		resetPassword: vi.fn(),
+		resetPasswordWithTokens: vi.fn(),
+		cleanupOrphanedSessions: vi.fn(),
 	},
 }));
 
-const { authProvider: MockedAuthProvider } = require('@/domain/AuthProviderImpl');
+const { authProvider: MockedAuthProvider } = await vi.importMock('@/domain/AuthProviderImpl') as {
+	authProvider: {
+		signIn: ReturnType<typeof vi.fn>;
+		signUp: ReturnType<typeof vi.fn>;
+		signOut: ReturnType<typeof vi.fn>;
+		getCurrentUser: ReturnType<typeof vi.fn>;
+		updateProfile: ReturnType<typeof vi.fn>;
+		deleteUser: ReturnType<typeof vi.fn>;
+		forgotPassword: ReturnType<typeof vi.fn>;
+		resetPassword: ReturnType<typeof vi.fn>;
+		resetPasswordWithTokens: ReturnType<typeof vi.fn>;
+		cleanupOrphanedSessions: ReturnType<typeof vi.fn>;
+	};
+};
 
 describe('useAuth', () => {
 	beforeEach(() => {
-		jest.clearAllMocks();
+		vi.clearAllMocks();
 
         Object.values(MockedAuthProvider).forEach(mock => {
-			if (jest.isMockFunction(mock)) {
+			if (vi.isMockFunction(mock)) {
 				mock.mockClear();
 			}
 		});
@@ -184,9 +198,14 @@ describe('useAuth', () => {
 				return result.current.signUp(userData);
 			});
 
-			expect(success).toBe(true);
-			expect(require('@/domain/ImageProvider').ImageProvider.uploadProfileImage)
-				.toHaveBeenCalledWith('file://local-image.jpg', 'test-user-id');
+					expect(success).toBe(true);
+		const { ImageProvider } = await vi.importMock('@/domain/ImageProvider') as {
+			ImageProvider: {
+				uploadProfileImage: ReturnType<typeof vi.fn>;
+			};
+		};
+		expect(ImageProvider.uploadProfileImage)
+			.toHaveBeenCalledWith('file://local-image.jpg', 'test-user-id');
 		});
 
 		it('should handle sign up errors', async () => {

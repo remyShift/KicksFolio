@@ -1,6 +1,7 @@
 import UserPage from '@/app/(app)/(tabs)/profile';
-import { render, screen, fireEvent, act } from '@testing-library/react-native';
+import { render, screen, fireEvent } from '@testing-library/react-native';
 import { ReactTestInstance } from 'react-test-renderer';
+import { act } from 'react';
 import { mockSneakers } from './appSetup';
 import { useSession } from '@/context/authContext';
 import { mockUseAuth } from '../auth/authSetup';
@@ -176,10 +177,6 @@ describe('User', () => {
             }
             
             rerender(<UserPage />);
-            
-            await act(async () => {
-                await new Promise(resolve => setTimeout(resolve, 150));
-            });
             
             rerender(<UserPage />);
             

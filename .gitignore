@@ -47,3 +47,5 @@ yarn-error.*
 dist/
 web-build/
 .env.local
+
+.jest-cache/

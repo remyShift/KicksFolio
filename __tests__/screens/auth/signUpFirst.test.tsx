@@ -202,10 +202,6 @@ describe('SignUpFirstPage', () => {
             await fillAndBlurInput(passwordInput, 'ValidPassword14*');
             await fillAndBlurInput(confirmPasswordInput, 'ValidPassword14*');
             
-            await act(async () => {
-                await new Promise(resolve => setTimeout(resolve, 200));
-            });
-            
             const currentMainButton = screen.getByTestId('main-button');
             
             expect(currentMainButton.props.accessibilityState.disabled).toBe(false);
@@ -214,10 +210,6 @@ describe('SignUpFirstPage', () => {
                 fireEvent(confirmPasswordInput, 'submitEditing');
             });
             
-            await act(async () => {
-                await new Promise(resolve => setTimeout(resolve, 100));
-            });
-
             expect(mockUseAuth.handleNextSignupPage).toHaveBeenCalledWith({
                 username: 'validUsername',
                 email: 'valid@email.com',

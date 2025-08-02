@@ -138,10 +138,6 @@ describe('Reset Password Page', () => {
             await fillAndBlurInput(passwordInput, 'Tititoto14');
             await fillAndBlurInput(confirmPasswordInput, 'Tititoto14');
 
-            await act(async () => {
-                await new Promise(resolve => setTimeout(resolve, 100));
-            });
-
             const currentMainButton = screen.getByTestId('main-button');
             
             expect(currentMainButton.props.accessibilityState.disabled).toBe(false);
@@ -150,10 +146,6 @@ describe('Reset Password Page', () => {
                 fireEvent(confirmPasswordInput, 'submitEditing');
             });
             
-            await act(async () => {
-                await new Promise(resolve => setTimeout(resolve, 100));
-            });
-
             expect(mockUseAuth.resetPassword).toHaveBeenCalledWith('Tititoto14', 'Tititoto14');
         });
     });

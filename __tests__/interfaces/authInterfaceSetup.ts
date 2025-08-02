@@ -1,5 +1,5 @@
+import { vi } from 'vitest';
 import { SupabaseUser } from '@/domain/AuthProvider';
-import { AuthProviderInterface } from '@/interfaces/AuthInterface';
 
 export const mockSupabaseUser: SupabaseUser = {
 	id: 'test-user-id',
@@ -46,40 +46,39 @@ export const mockSuccessfulResetPasswordResponse = {
 // Factory functions pour créer des mocks propres
 
 export const createSuccessfulSignUp = () =>
-	jest.fn().mockResolvedValue(mockSuccessfulSignUpResponse);
+	vi.fn().mockResolvedValue(mockSuccessfulSignUpResponse);
 
 export const createSuccessfulSignIn = () =>
-	jest.fn().mockResolvedValue(mockSuccessfulSignInResponse);
+	vi.fn().mockResolvedValue(mockSuccessfulSignInResponse);
 
 export const createSuccessfulSignOut = () =>
-	jest.fn().mockResolvedValue(undefined);
+	vi.fn().mockResolvedValue(undefined);
 
 export const createSuccessfulGetCurrentUser = () =>
-	jest.fn().mockResolvedValue(mockUserWithStats);
+	vi.fn().mockResolvedValue(mockUserWithStats);
 
 export const createSuccessfulUpdateProfile = () =>
-	jest.fn().mockResolvedValue({
+	vi.fn().mockResolvedValue({
 		...mockSupabaseUser,
 		first_name: 'Updated',
 	});
 
-export const createSuccessfulDeleteUser = () =>
-	jest.fn().mockResolvedValue(true);
+export const createSuccessfulDeleteUser = () => vi.fn().mockResolvedValue(true);
 
 export const createSuccessfulForgotPassword = () =>
-	jest.fn().mockResolvedValue(undefined);
+	vi.fn().mockResolvedValue(undefined);
 
 export const createSuccessfulResetPassword = () =>
-	jest.fn().mockResolvedValue(mockSuccessfulResetPasswordResponse);
+	vi.fn().mockResolvedValue(mockSuccessfulResetPasswordResponse);
 
 export const createSuccessfulResetPasswordWithTokens = () =>
-	jest.fn().mockResolvedValue(true);
+	vi.fn().mockResolvedValue(true);
 
 export const createSuccessfulCleanupOrphanedSessions = () =>
-	jest.fn().mockResolvedValue(undefined);
+	vi.fn().mockResolvedValue(undefined);
 
 export const createFailingMockFunction = (errorMessage: string) =>
-	jest.fn().mockRejectedValue(new Error(errorMessage));
+	vi.fn().mockRejectedValue(new Error(errorMessage));
 
 export const createMockError = (message: string) => {
 	return new Error(message);
