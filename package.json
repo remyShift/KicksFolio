@@ -11,13 +11,8 @@
 		"build:all:dev": "eas build --platform all --profile development --clear-cache",
 		"build:ios:dev": "eas build --platform ios --profile development --clear-cache",
 		"build:android:dev": "eas build --platform android --profile development --clear-cache",
-		"reset-project": "node ./scripts/reset-project.js",
-		"android": "expo run:android",
-		"ios": "expo run:ios",
-		"web": "expo start --web",
 		"test": "npm run test:jest && npm run test:vitest",
 		"test:jest": "jest --verbose",
-		"test:jest:fast": "jest --verbose --maxWorkers=100% --cache",
 		"test:vitest": "vitest run",
 		"test:interfaces": "vitest run __tests__/interfaces",
 		"test:hooks": "vitest run __tests__/hooks",
@@ -121,7 +116,6 @@
 	"jest": {
 		"preset": "jest-expo",
 		"maxWorkers": "75%",
-		"cacheDirectory": ".jest-cache",
 		"testTimeout": 15000,
 		"setupFilesAfterEnv": [
 			"./__tests__/setup.ts"
