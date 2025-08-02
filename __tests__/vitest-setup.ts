@@ -1,4 +1,4 @@
-import { vi, beforeAll, afterAll, afterEach } from 'vitest';
+import { vi, beforeAll, afterEach } from 'vitest';
 
 vi.mock('react-native', () => ({
 	Platform: {

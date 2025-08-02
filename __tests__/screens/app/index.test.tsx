@@ -4,21 +4,6 @@ import { ReactTestInstance } from 'react-test-renderer';
 import { router } from 'expo-router';
 import { useSession } from '@/context/authContext';
 
-jest.mock('@/context/authContext', () => ({
-	useSession: jest.fn()
-}));
-
-
-jest.mock('@/store/useModalStore', () => ({
-	useModalStore: () => ({
-		modalStep: 'index',
-		isVisible: false,
-		setModalStep: jest.fn(),
-		setIsVisible: jest.fn(),
-		resetModal: jest.fn(),
-	})
-}));
-
 describe('Index', () => {
 	let collectionCard: ReactTestInstance;
 	let mainButton: ReactTestInstance;

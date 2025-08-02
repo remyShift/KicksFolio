@@ -3,7 +3,6 @@ import { render, screen } from '@testing-library/react-native';
 import { useSession } from '@/context/authContext';
 import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/Sneaker';
 
-jest.mock('@/context/authContext');
 
 describe('Wishlist', () => {
     const mockWishlistSneakers: Sneaker[] = [

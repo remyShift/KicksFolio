@@ -5,6 +5,7 @@ import { mockSneaker } from './modalSetup';
 import { fillAndBlurInput } from '../../setup';
 
 const mockUseModalStoreFn = jest.fn();
+
 jest.mock('@/store/useModalStore', () => ({
     useModalStore: () => mockUseModalStoreFn(),
 }));

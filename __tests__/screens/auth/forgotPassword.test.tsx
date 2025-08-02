@@ -3,7 +3,8 @@ import { fireEvent, render, screen } from "@testing-library/react-native";
 import { act } from "react";
 import { ReactTestInstance } from "react-test-renderer";
 import { fillAndBlurInput } from "../../setup";
-import { mockUseAuth, mockUseAsyncValidation, resetMocks } from "./authSetup";
+
+import { mockUseAuth, mockUseAsyncValidation, resetMocks } from "../../setup/auth";
 
 jest.mock('@/hooks/useAuth', () => ({
     useAuth: () => mockUseAuth,

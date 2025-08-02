@@ -4,24 +4,13 @@ import { ReactTestInstance } from 'react-test-renderer';
 import { act } from 'react';
 import { mockSneakers } from './appSetup';
 import { useSession } from '@/context/authContext';
-import { mockUseAuth } from '../auth/authSetup';
+import { mockUseAuth } from '../../setup/auth';
 import { router } from 'expo-router';
 
 jest.mock('@/hooks/useAuth', () => ({
     useAuth: () => mockUseAuth,
 }));
 
-jest.mock('@/store/useModalStore', () => ({
-    useModalStore: () => ({
-        modalStep: 'index',
-        isVisible: false,
-        currentSneaker: null,
-        setModalStep: jest.fn(),
-        setIsVisible: jest.fn(),
-        setCurrentSneaker: jest.fn(),
-        resetModalData: jest.fn(),
-    })
-}));
 
 describe('User', () => {
 

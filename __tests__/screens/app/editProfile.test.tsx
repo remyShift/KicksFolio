@@ -1,7 +1,7 @@
 import EditProfileForm from "@/components/screens/app/settings/accountSettings/EditProfileForm";
 import { fireEvent, render, screen } from "@testing-library/react-native";
 import { act } from "react";
-import { mockUseAuth, mockUser, mockUseAsyncValidation, resetMocks } from "../auth/authSetup";
+import { mockUseAuth, mockUser, mockUseAsyncValidation, resetMocks } from "../../setup/auth";
 import { fillAndBlurInput } from "@/__tests__/setup";
 
 jest.mock('@/hooks/useAuth', () => ({

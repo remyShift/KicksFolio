@@ -78,10 +78,6 @@ export const mockUseSizeConversion = {
 	},
 };
 
-jest.mock('@/hooks/useSizeConversion', () => ({
-	useSizeConversion: () => mockUseSizeConversion,
-}));
-
 export const mockAuthInterface = {
 	signIn: jest.fn().mockResolvedValue({
 		id: 'test-user-id',
@@ -119,10 +115,6 @@ export const mockAuthProviderImpl = {
 	cleanupOrphanedSessions: jest.fn().mockResolvedValue(undefined),
 };
 
-jest.mock('@/domain/AuthProviderImpl', () => ({
-	authProvider: mockAuthProviderImpl,
-}));
-
 export const resetMocks = () => {
 	Object.values(mockAuthInterface).forEach((mock) => {
 		if (jest.isMockFunction(mock)) {
@@ -136,3 +128,58 @@ export const resetMocks = () => {
 		}
 	});
 };
+
+jest.mock('@/domain/AuthProviderImpl', () => ({
+	authProvider: mockAuthProviderImpl,
+}));
+
+jest.mock('@/context/signUpPropsContext', () => ({
+	useSignUpProps: () => mockUseSignUpProps,
+}));
+
+jest.mock('@/hooks/useAsyncValidation', () => ({
+	useAsyncValidation: () => mockUseAsyncValidation,
+}));
+
+jest.mock('@/hooks/useToast', () => ({
+	__esModule: true,
+	default: jest.fn(() => ({
+		showSuccessToast: jest.fn(),
+		showErrorToast: jest.fn(),
+		showInfoToast: jest.fn(),
+	})),
+	useToast: () => ({
+		showSuccessToast: jest.fn(),
+		showErrorToast: jest.fn(),
+		showInfoToast: jest.fn(),
+	}),
+}));
+
+jest.mock('@/context/authContext', () => ({
+	useSession: jest.fn().mockReturnValue({
+		user: mockUser,
+		isLoading: false,
+		userSneakers: [],
+		setUserSneakers: jest.fn(),
+		setUser: jest.fn(),
+		refreshUserData: jest.fn(),
+		refreshUserSneakers: jest.fn(),
+	}),
+}));
+
+jest.mock('@/hooks/useSizeConversion', () => ({
+	useSizeConversion: () => mockUseSizeConversion,
+}));
+
+jest.mock('@/services/TODO/FormValidationService', () => ({
+	FormValidationService: {
+		validateUsername: jest.fn(),
+		validateFirstName: jest.fn(),
+		validateLastName: jest.fn(),
+		validateSneakerSize: jest.fn(),
+		validateModel: jest.fn(),
+		validateSize: jest.fn(),
+		validateCondition: jest.fn(),
+		validatePrice: jest.fn(),
+	},
+}));

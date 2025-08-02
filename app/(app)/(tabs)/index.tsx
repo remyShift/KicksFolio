@@ -16,10 +16,12 @@ export default function Index() {
 
     useEffect(() => {
         if (user && (!userSneakers || userSneakers.length === 0)) {
-            setTimeout(() => {
+            const timeoutId = setTimeout(() => {
                 setModalStep('index');
                 setIsVisible(true);
             }, 1000);
+
+            return () => clearTimeout(timeoutId);
         }
     }, [user, userSneakers, setModalStep, setIsVisible]);
 

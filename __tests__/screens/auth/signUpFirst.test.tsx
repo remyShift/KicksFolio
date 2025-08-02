@@ -1,10 +1,9 @@
 import SignUpFirstPage from '@/app/(auth)/(signup)/sign-up';
 import { fireEvent, render, screen } from '@testing-library/react-native';
 import { act } from 'react';
-import { mockAuthService, mockUseAuth, resetMocks } from './authSetup';
+import { mockAuthService, mockUseAuth, resetMocks, mockUseAsyncValidation } from '../../setup/auth';
 import { fillAndBlurInput } from '../../setup';
 import { ReactTestInstance } from 'react-test-renderer';
-import { mockUseAsyncValidation } from './authSetup';
 
 jest.mock('@/hooks/useAuth', () => ({
     useAuth: () => mockUseAuth,
