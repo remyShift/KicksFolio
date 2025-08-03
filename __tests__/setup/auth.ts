@@ -139,8 +139,8 @@ jest.mock('@/context/signUpPropsContext', () => ({
 	useSignUpProps: () => mockUseSignUpProps,
 }));
 
-jest.mock('@/hooks/useValidation', () => ({
-	useValidation: () => mockUseValidation,
+jest.mock('@/hooks/useAuthValidation', () => ({
+	useAuthValidation: () => mockUseValidation,
 }));
 
 jest.mock('@/hooks/ui/useToast', () => ({

@@ -17,8 +17,8 @@ vi.mock('@/context/authContext', () => ({
 	}),
 }));
 
-vi.mock('@/hooks/useValidation', () => ({
-	useValidation: () => ({
+vi.mock('@/hooks/useAuthValidation', () => ({
+	useAuthValidation: () => ({
 		validateSignUpStep1Async: vi.fn().mockResolvedValue({
 			isValid: true,
 			errorMsg: '',

@@ -1,6 +1,6 @@
 import { vi } from 'vitest';
 import { renderHook } from '@testing-library/react';
-import { useValidation } from '@/hooks/useValidation';
+import { useAuthValidation } from '@/hooks/useAuthValidation';
 import { act } from 'react';
 import { UserData } from '@/types/auth';
 
@@ -31,7 +31,7 @@ vi.mock('react-i18next', () => ({
 	}),
 }));
 
-describe('useValidation', () => {
+describe('useAuthValidation', () => {
 	let AuthValidatorInterface: any;
 
 	beforeEach(async () => {
@@ -41,7 +41,7 @@ describe('useValidation', () => {
 
 	describe('checkUsernameExists', () => {
 		it('should return null for usernames shorter than 4 characters', async () => {
-			const { result } = renderHook(() => useValidation());
+			const { result } = renderHook(() => useAuthValidation());
 
 			const validationResult = await act(async () => {
 				return await result.current.checkUsernameExists('abc');
@@ -54,7 +54,7 @@ describe('useValidation', () => {
 		it('should return username exists error when username exists', async () => {
 			AuthValidatorInterface.checkUsernameExists.mockResolvedValue(true);
 			
-			const { result } = renderHook(() => useValidation());
+			const { result } = renderHook(() => useAuthValidation());
 
 			const validationResult = await act(async () => {
 				return await result.current.checkUsernameExists('testuser');
@@ -70,7 +70,7 @@ describe('useValidation', () => {
 		it('should return null when username is available', async () => {
 			AuthValidatorInterface.checkUsernameExists.mockResolvedValue(false);
 			
-			const { result } = renderHook(() => useValidation());
+			const { result } = renderHook(() => useAuthValidation());
 
 			const validationResult = await act(async () => {
 				return await result.current.checkUsernameExists('testuser');
@@ -83,7 +83,7 @@ describe('useValidation', () => {
 			AuthValidatorInterface.checkUsernameExists.mockRejectedValue(new Error('Network error'));
 			const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 			
-			const { result } = renderHook(() => useValidation());
+			const { result } = renderHook(() => useAuthValidation());
 
 			const validationResult = await act(async () => {
 				return await result.current.checkUsernameExists('testuser');
@@ -98,7 +98,7 @@ describe('useValidation', () => {
 
 	describe('checkEmailExists', () => {
 		it('should return null for invalid email format', async () => {
-			const { result } = renderHook(() => useValidation());
+			const { result } = renderHook(() => useAuthValidation());
 
 			const validationResult = await act(async () => {
 				return await result.current.checkEmailExists('invalid-email');
@@ -111,7 +111,7 @@ describe('useValidation', () => {
 		it('should return email exists error when email exists', async () => {
 			AuthValidatorInterface.checkEmailExists.mockResolvedValue(true);
 			
-			const { result } = renderHook(() => useValidation());
+			const { result } = renderHook(() => useAuthValidation());
 
 			const validationResult = await act(async () => {
 				return await result.current.checkEmailExists('test@example.com');
@@ -127,7 +127,7 @@ describe('useValidation', () => {
 		it('should return null when email is available', async () => {
 			AuthValidatorInterface.checkEmailExists.mockResolvedValue(false);
 			
-			const { result } = renderHook(() => useValidation());
+			const { result } = renderHook(() => useAuthValidation());
 
 			const validationResult = await act(async () => {
 				return await result.current.checkEmailExists('test@example.com');
@@ -141,7 +141,7 @@ describe('useValidation', () => {
 		it('should return email not found error when email does not exist', async () => {
 			AuthValidatorInterface.checkEmailExists.mockResolvedValue(false);
 			
-			const { result } = renderHook(() => useValidation());
+			const { result } = renderHook(() => useAuthValidation());
 
 			const validationResult = await act(async () => {
 				return await result.current.checkEmailExistsForReset('test@example.com');
@@ -153,7 +153,7 @@ describe('useValidation', () => {
 		it('should return null when email exists', async () => {
 			AuthValidatorInterface.checkEmailExists.mockResolvedValue(true);
 			
-			const { result } = renderHook(() => useValidation());
+			const { result } = renderHook(() => useAuthValidation());
 
 			const validationResult = await act(async () => {
 				return await result.current.checkEmailExistsForReset('test@example.com');
@@ -168,7 +168,7 @@ describe('useValidation', () => {
 			AuthValidatorInterface.checkUsernameExists.mockResolvedValue(false);
 			AuthValidatorInterface.checkEmailExists.mockResolvedValue(false);
 			
-			const { result } = renderHook(() => useValidation());
+			const { result } = renderHook(() => useAuthValidation());
 
 			const userData: UserData = {
 				username: 'testuser',
@@ -194,7 +194,7 @@ describe('useValidation', () => {
 		it('should return error when username exists', async () => {
 			AuthValidatorInterface.checkUsernameExists.mockResolvedValue(true);
 			
-			const { result } = renderHook(() => useValidation());
+			const { result } = renderHook(() => useAuthValidation());
 
 			const userData: UserData = {
 				username: 'testuser',
@@ -221,7 +221,7 @@ describe('useValidation', () => {
 			AuthValidatorInterface.checkUsernameExists.mockResolvedValue(false);
 			AuthValidatorInterface.checkEmailExists.mockResolvedValue(true);
 			
-			const { result } = renderHook(() => useValidation());
+			const { result } = renderHook(() => useAuthValidation());
 
 			const userData: UserData = {
 				username: 'testuser',
@@ -248,7 +248,7 @@ describe('useValidation', () => {
 			AuthValidatorInterface.checkUsernameExists.mockRejectedValue(new Error('Network error'));
 			AuthValidatorInterface.checkEmailExists.mockRejectedValue(new Error('Network error'));
 			
-			const { result } = renderHook(() => useValidation());
+			const { result } = renderHook(() => useAuthValidation());
 
 			const userData: UserData = {
 				username: 'testuser',
@@ -274,7 +274,7 @@ describe('useValidation', () => {
 
 	describe('errorMsg state management', () => {
 		it('should allow setting error message', () => {
-			const { result } = renderHook(() => useValidation());
+			const { result } = renderHook(() => useAuthValidation());
 
 			act(() => {
 				result.current.setErrorMsg('Test error');

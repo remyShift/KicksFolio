@@ -3,7 +3,7 @@ export * from './useFormController';
 export * from './useImagePicker';
 export * from './useInitialData';
 export * from './useInputSubmit';
-export * from './useValidation';
+export * from './useAuthValidation';
 export * from './useStorageState';
 export * from './ui/useAnimatedButtons';
 export * from './useSneakersFiltering';

@@ -6,7 +6,7 @@ import { authValidator } from '@/domain/AuthValidator';
 
 type ValidationValue = string | number | boolean | null | undefined;
 
-export function useValidation() {
+export function useAuthValidation() {
 	const [errorMsg, setErrorMsg] = useState('');
 	const { t } = useTranslation();
 

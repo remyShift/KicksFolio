@@ -9,7 +9,7 @@ import { useFormController } from "@/hooks/useFormController";
 import { createForgotPasswordSchema, ForgotPasswordFormData } from "@/validation/schemas";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useTranslation } from 'react-i18next';
-import { useValidation } from '@/hooks/useValidation';
+import { useAuthValidation } from '@/hooks/useAuthValidation';
 import useToast from "@/hooks/ui/useToast";
 import { RelativePathString } from "expo-router";
 import AuthHeader from "../AuthHeader";
@@ -21,7 +21,7 @@ export default function ForgotPasswordForm() {
     const { showErrorToast } = useToast();
 
     const { forgotPassword, errorMsg: authErrorMsg } = useAuth();
-    const { checkEmailExistsForReset } = useValidation();
+    const { checkEmailExistsForReset } = useAuthValidation();
 
     const {
         control,

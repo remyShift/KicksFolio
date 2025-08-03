@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { router } from 'expo-router';
 import { UserData, UpdateUserData } from '@/types/auth';
 import { useSession } from '@/context/authContext';
-import { useValidation } from './useValidation';
+import { useAuthValidation } from './useAuthValidation';
 import { ImageProvider } from '@/domain/ImageProvider';
 import { useTranslation } from 'react-i18next';
 import { AuthInterface } from '@/interfaces/AuthInterface';
@@ -12,7 +12,7 @@ export const useAuth = () => {
 	const [errorMsg, setErrorMsg] = useState('');
 	const { setUser, refreshUserData, clearUserData, resetTokens } =
 		useSession();
-	const { validateSignUpStep1Async } = useValidation();
+	const { validateSignUpStep1Async } = useAuthValidation();
 	const { t } = useTranslation();
 
 	const login = async (email: string, password: string) => {
