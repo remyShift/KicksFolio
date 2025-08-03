@@ -12,6 +12,8 @@ export enum SneakerBrand {
 	null = 'null',
 }
 
+export type SizeUnit = 'US' | 'EU';
+
 export enum SneakerStatus {
 	Stocking = 'Stocking',
 	Rocking = 'Rocking',

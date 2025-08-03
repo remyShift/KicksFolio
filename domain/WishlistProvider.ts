@@ -1,5 +1,6 @@
 import { supabase } from '@/config/supabase/supabase';
 import { Sneaker, SneakerBrand, SneakerStatus, Photo } from '@/types/Sneaker';
+import { WishlistProviderInterface } from '@/interfaces/WishlistProviderInterface';
 
 export interface WishlistItem {
 	id: string;
@@ -8,8 +9,8 @@ export interface WishlistItem {
 	created_at: string;
 }
 
-export class WishlistProvider {
-	static async addToWishlist(sneakerId: string) {
+export class WishlistProvider implements WishlistProviderInterface {
+	async addToWishlist(sneakerId: string) {
 		const {
 			data: { user },
 			error: authError,
@@ -27,7 +28,7 @@ export class WishlistProvider {
 		return data;
 	}
 
-	static async removeFromWishlist(sneakerId: string) {
+	async removeFromWishlist(sneakerId: string) {
 		const {
 			data: { user },
 			error: authError,
@@ -44,7 +45,7 @@ export class WishlistProvider {
 		if (error) throw error;
 	}
 
-	static async isInWishlist(sneakerId: string): Promise<boolean> {
+	async isInWishlist(sneakerId: string): Promise<boolean> {
 		const {
 			data: { user },
 			error: authError,
@@ -63,7 +64,7 @@ export class WishlistProvider {
 		return !!data;
 	}
 
-	static async getUserWishlistSneakers(userId: string): Promise<Sneaker[]> {
+	async getUserWishlistSneakers(userId: string): Promise<Sneaker[]> {
 		const { data, error } = await supabase
 			.from('wishlists')
 			.select(
@@ -93,7 +94,7 @@ export class WishlistProvider {
 			.filter((sneaker): sneaker is Sneaker => sneaker !== null);
 	}
 
-	static async getWishlistsForSneaker(sneakerId: string) {
+	async getWishlistsForSneaker(sneakerId: string) {
 		const { data, error } = await supabase
 			.from('wishlists')
 			.select(
@@ -245,3 +246,5 @@ export class WishlistProvider {
 		return [];
 	}
 }
+
+export const wishlistProvider = new WishlistProvider();

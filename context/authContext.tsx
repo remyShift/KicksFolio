@@ -4,10 +4,12 @@ import { storageProvider } from '@/domain/StorageProvider';
 import { useAppState } from '@react-native-community/hooks';
 import { User } from '@/types/User';
 import { Sneaker } from '@/types/Sneaker';
-import { AuthProvider } from '@/domain/AuthProvider';
-
-import { SneakerProvider } from '@/domain/SneakerProvider';
-import { WishlistProvider } from '@/domain/WishlistProvider';
+import { AuthInterface } from '@/interfaces/AuthInterface';
+import { authProvider } from '@/domain/AuthProvider';
+import { SneakerProviderInterface } from '@/interfaces/SneakerProviderInterface';
+import { sneakerProvider } from '@/domain/SneakerProvider';
+import { WishlistProviderInterface } from '@/interfaces/WishlistProviderInterface';
+import { wishlistProvider } from '@/domain/WishlistProvider';
 import { FollowerInterface } from '@/interfaces/FollowerInterface';
 import { followerProvider } from '@/domain/FollowerProvider';
 import { UserSearchInterface } from '@/interfaces/UserSearchInterface';
@@ -124,14 +126,16 @@ export function SessionProvider({ children }: PropsWithChildren) {
         const checkInitialSession = async () => {
             const { data: { session } } = await supabase.auth.getSession();
             if (session?.user) {
-                try {
-                    await AuthProvider.getCurrentUser();
-                } catch (error: any) {
-                    if (error.code === 'PGRST116') {
-                        await supabase.auth.signOut();
-                        clearUserData();
-                    }
-                }
+                return AuthInterface.getCurrentUser(authProvider.getCurrentUser)
+                    .catch((error: any) => {
+                        if (error.code === 'PGRST116') {
+                            return supabase.auth.signOut()
+                                .then(() => {
+                                    clearUserData();
+                                });
+                        }
+                        throw error;
+                    });
             }
         };
         checkInitialSession();
@@ -146,8 +150,14 @@ export function SessionProvider({ children }: PropsWithChildren) {
     }, [appState]);
 
     const loadUserSneakers = async (userWithUrl: User) => {
-        const sneakersPromise = SneakerProvider.getSneakersByUser(userWithUrl.id);
-        const wishlistPromise = WishlistProvider.getUserWishlistSneakers(userWithUrl.id);
+        const sneakersPromise = SneakerProviderInterface.getSneakersByUser(
+            userWithUrl.id,
+            sneakerProvider.getSneakersByUser
+        );
+        const wishlistPromise = WishlistProviderInterface.getUserWishlistSneakers(
+            userWithUrl.id,
+            wishlistProvider.getUserWishlistSneakers
+        );
         
         return Promise.all([sneakersPromise, wishlistPromise])
             .then(([sneakers, wishlistSneakers]) => {
@@ -215,8 +225,8 @@ export function SessionProvider({ children }: PropsWithChildren) {
         const retryDelay = 1000;
 
         const getUserWithRetries = async (attempt: number): Promise<any> => {
-            return AuthProvider.getCurrentUser()
-                .then((userData) => {
+            return AuthInterface.getCurrentUser(authProvider.getCurrentUser)
+                .then((userData: any) => {
                     if (userData) {
                         const userWithUrl = { ...userData, profile_picture_url: userData.profile_picture };
                         setUser(userWithUrl as User);
@@ -236,7 +246,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
                         throw new Error('User not found after multiple attempts');
                     }
                 })
-                .catch((error) => {
+                .catch((error: any) => {
                     if (attempt < maxRetries && error.code === 'PGRST116') {
                         return new Promise((resolve) => {
                             setTimeout(() => {
@@ -269,8 +279,8 @@ export function SessionProvider({ children }: PropsWithChildren) {
             return;
         }
 
-        return AuthProvider.getCurrentUser()
-            .then(async (freshUserData) => {
+        return AuthInterface.getCurrentUser(authProvider.getCurrentUser)
+            .then(async (freshUserData: any) => {
                 if (!freshUserData) {
                     return;
                 }
@@ -298,8 +308,14 @@ export function SessionProvider({ children }: PropsWithChildren) {
             return;
         }
         
-        const sneakersPromise = SneakerProvider.getSneakersByUser(user.id);
-        const wishlistPromise = WishlistProvider.getUserWishlistSneakers(user.id);
+        const sneakersPromise = SneakerProviderInterface.getSneakersByUser(
+            user.id,
+            sneakerProvider.getSneakersByUser
+        );
+        const wishlistPromise = WishlistProviderInterface.getUserWishlistSneakers(
+            user.id,
+            wishlistProvider.getUserWishlistSneakers
+        );
         
         return Promise.all([sneakersPromise, wishlistPromise])
             .then(([sneakers, wishlistSneakers]) => {

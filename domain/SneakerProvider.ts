@@ -7,6 +7,7 @@ import {
 	SizeUnit,
 } from './SneakerSizeConverter';
 import { t } from 'i18next';
+import { SneakerProviderInterface } from '@/interfaces/SneakerProviderInterface';
 
 export interface SupabaseSneaker {
 	id: string;
@@ -31,8 +32,8 @@ export interface SupabaseSneaker {
 	sku?: string;
 }
 
-export class SneakerProvider {
-	static async getSneakersByUser(userId: string) {
+export class SneakerProvider implements SneakerProviderInterface {
+	async getSneakersByUser(userId: string) {
 		const { data, error } = await supabase
 			.from('sneakers')
 			.select('*')
@@ -44,7 +45,7 @@ export class SneakerProvider {
 		return (
 			data?.map((sneaker) => ({
 				...sneaker,
-				images: this.parseImages(sneaker.images),
+				images: SneakerProvider.parseImages(sneaker.images),
 			})) || []
 		);
 	}
@@ -106,7 +107,7 @@ export class SneakerProvider {
 		return [];
 	}
 
-	static async createSneaker(
+	async createSneaker(
 		sneakerData: Omit<
 			SupabaseSneaker,
 			| 'id'
@@ -170,12 +171,12 @@ export class SneakerProvider {
 		return data
 			? {
 					...data,
-					images: this.parseImages(data.images),
+					images: SneakerProvider.parseImages(data.images),
 			  }
 			: data;
 	}
 
-	static async updateSneaker(
+	async updateSneaker(
 		id: string,
 		updates: Partial<SupabaseSneaker & { size?: number }>,
 		currentUnit?: SizeUnit
@@ -222,12 +223,12 @@ export class SneakerProvider {
 		return data
 			? {
 					...data,
-					images: this.parseImages(data.images),
+					images: SneakerProvider.parseImages(data.images),
 			  }
 			: data;
 	}
 
-	static async deleteSneaker(id: string) {
+	async deleteSneaker(id: string) {
 		const { error } = await supabase.from('sneakers').delete().eq('id', id);
 
 		if (error) throw error;
@@ -246,7 +247,7 @@ export class SneakerProvider {
 		return data
 			? {
 					...data,
-					images: this.parseImages(data.images),
+					images: SneakerProvider.parseImages(data.images),
 			  }
 			: data;
 	}
@@ -400,3 +401,5 @@ export class SneakerProvider {
 			});
 	}
 }
+
+export const sneakerProvider = new SneakerProvider();

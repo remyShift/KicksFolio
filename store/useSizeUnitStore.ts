@@ -1,8 +1,7 @@
 import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useLanguageStore } from './useLanguageStore';
-
-export type SizeUnit = 'US' | 'EU';
+import { SizeUnit } from '@/types/Sneaker';
 
 interface SizeUnitStore {
 	currentUnit: SizeUnit;

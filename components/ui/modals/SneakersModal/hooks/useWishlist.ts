@@ -1,5 +1,6 @@
 import { useSession } from '@/context/authContext';
-import { WishlistProvider } from '@/domain/WishlistProvider';
+import { WishlistProviderInterface } from '@/interfaces/WishlistProviderInterface';
+import { wishlistProvider } from '@/domain/WishlistProvider';
 import useToast from '@/hooks/ui/useToast';
 import { useTranslation } from 'react-i18next';
 
@@ -7,12 +8,16 @@ const useWishlist = () => {
 	const { showSuccessToast, showErrorToast } = useToast();
 	const { refreshUserData } = useSession();
 	const { t } = useTranslation();
+
 	const addToWishList = async (
 		sneakerId: string,
 		setIsWishlisted: (isWishlisted: boolean) => void,
 		setIsLoading: (isLoading: boolean) => void
 	) => {
-		WishlistProvider.addToWishlist(sneakerId)
+		WishlistProviderInterface.addToWishlist(
+			sneakerId,
+			wishlistProvider.addToWishlist
+		)
 			.then(() => {
 				showSuccessToast(
 					t('social.wishlist.messages.added.title'),
@@ -38,7 +43,10 @@ const useWishlist = () => {
 		setIsWishlisted: (isWishlisted: boolean) => void,
 		setIsLoading: (isLoading: boolean) => void
 	) => {
-		WishlistProvider.removeFromWishlist(sneakerId)
+		WishlistProviderInterface.removeFromWishlist(
+			sneakerId,
+			wishlistProvider.removeFromWishlist
+		)
 			.then(() => {
 				showSuccessToast(
 					t('social.wishlist.messages.removed.title'),
@@ -63,7 +71,10 @@ const useWishlist = () => {
 		sneakerId: string,
 		setIsWishlisted: (isWishlisted: boolean) => void
 	) => {
-		WishlistProvider.isInWishlist(sneakerId)
+		WishlistProviderInterface.isInWishlist(
+			sneakerId,
+			wishlistProvider.isInWishlist
+		)
 			.then((isInWishlist) => {
 				setIsWishlisted(isInWishlist);
 			})
