@@ -9,7 +9,7 @@ import { Photo, SneakerBrand, SneakerStatus, Sneaker } from '@/types/Sneaker';
 import { useTranslation } from 'react-i18next';
 import { FormFields } from '../../shared/FormFields';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { useSizeConversion } from '@/hooks/TODO/useSizeConversion';
+import { useSizeConversion } from '@/hooks/useSizeConversion';
 
 
 export const FormDetailsStep = () => {

@@ -1,11 +1,8 @@
 import { supabase } from '@/config/supabase/supabase';
 import { SneakerBrand } from '@/types/Sneaker';
 import { sneakerBrandOptions } from '@/validation/schemas';
-import {
-	SneakerSizeConverter,
-	GenderType,
-	SizeUnit,
-} from './SneakerSizeConverter';
+import { sneakerSizeConverter, GenderType } from './SneakerSizeConverter';
+import { SizeUnit } from '@/types/Sneaker';
 import { t } from 'i18next';
 import { SneakerProviderInterface } from '@/interfaces/SneakerProviderInterface';
 
@@ -134,7 +131,7 @@ export class SneakerProvider implements SneakerProviderInterface {
 		let size_eu: number, size_us: number;
 
 		try {
-			const result = SneakerSizeConverter.generateBothSizes(
+			const result = sneakerSizeConverter.generateBothSizes(
 				sneakerData.size,
 				(sneakerData.gender as GenderType) || 'men',
 				currentUnit
@@ -185,7 +182,7 @@ export class SneakerProvider implements SneakerProviderInterface {
 			let size_eu: number, size_us: number;
 
 			try {
-				const result = SneakerSizeConverter.generateBothSizes(
+				const result = sneakerSizeConverter.generateBothSizes(
 					updates.size,
 					(updates.gender as GenderType) || 'men',
 					currentUnit

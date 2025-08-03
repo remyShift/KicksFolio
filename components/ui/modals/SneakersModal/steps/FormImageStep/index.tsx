@@ -9,7 +9,7 @@ import { SneakerBrand, SneakerStatus } from '@/types/Sneaker';
 import { useTranslation } from 'react-i18next';
 import { PhotoCarousel } from '@/components/ui/images/photoCaroussel/PhotoCarousel';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
-import { useSizeConversion } from '@/hooks/TODO/useSizeConversion';
+import { useSizeConversion } from '@/hooks/useSizeConversion';
 
 export const FormImageStep = () => {
     const { t } = useTranslation();

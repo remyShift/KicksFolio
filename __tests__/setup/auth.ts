@@ -66,22 +66,18 @@ export const mockUseValidation = {
 export const mockUseSizeConversion = {
 	currentUnit: 'US',
 	getSizeForCurrentUnit: jest.fn().mockReturnValue(10.5),
-	formatSizeForDisplay: jest.fn().mockReturnValue('10.5'),
-	generateBothSizes: jest.fn(),
+	formatSizeForDisplay: jest.fn().mockReturnValue('10.5 US'),
+	generateBothSizes: jest
+		.fn()
+		.mockReturnValue({ size_eu: 44, size_us: 10.5 }),
 	convertToCurrentUnit: jest.fn().mockReturnValue(10),
-	getAvailableSizesForCurrentUnit: jest.fn(),
-	isValidSizeInCurrentUnit: jest.fn(),
-	formatCurrentUnitSize: jest.fn(),
+	getAvailableSizesForCurrentUnit: jest
+		.fn()
+		.mockReturnValue([7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11]),
+	isValidSizeInCurrentUnit: jest.fn().mockReturnValue(true),
+	formatCurrentUnitSize: jest.fn().mockReturnValue('10.5 US'),
 	getOriginalUnit: jest.fn().mockReturnValue('US'),
-	SneakerSizeConverter: {
-		convertSize: jest.fn(),
-		formatSize: jest.fn(),
-		convertAndFormat: jest.fn(),
-		getAvailableSizes: jest.fn(),
-		isValidSize: jest.fn(),
-		detectSizeUnit: jest.fn(),
-		generateBothSizes: jest.fn(),
-	},
+	convertAndFormat: jest.fn().mockReturnValue('44 EU'),
 };
 
 export const mockAuthInterface = {
@@ -169,7 +165,7 @@ jest.mock('@/context/authContext', () => ({
 	}),
 }));
 
-jest.mock('@/hooks/TODO/useSizeConversion', () => ({
+jest.mock('@/hooks/useSizeConversion', () => ({
 	useSizeConversion: () => mockUseSizeConversion,
 }));
 

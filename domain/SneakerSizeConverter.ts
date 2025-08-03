@@ -1,4 +1,6 @@
-export type SizeUnit = 'US' | 'EU';
+import { SneakerSizeConverterInterface } from '@/interfaces/SneakerSizeConverterInterface';
+import { SizeUnit } from '@/types/Sneaker';
+
 export type GenderType = 'men' | 'women';
 
 interface SizeMapping {
@@ -36,8 +38,8 @@ const SIZE_MAPPINGS: SizeMapping[] = [
 	{ usMen: 15.5, usWomen: 17, eu: 50 },
 ];
 
-export class SneakerSizeConverter {
-	static convertSize(
+export class SneakerSizeConverter implements SneakerSizeConverterInterface {
+	convertSize(
 		size: number,
 		fromUnit: SizeUnit,
 		toUnit: SizeUnit,
@@ -75,11 +77,11 @@ export class SneakerSizeConverter {
 		}
 	}
 
-	static formatSize(size: number, unit: SizeUnit): string {
+	formatSize(size: number, unit: SizeUnit): string {
 		return `${String(size)} ${unit}`;
 	}
 
-	static convertAndFormat(
+	convertAndFormat(
 		originalSize: number,
 		originalUnit: SizeUnit,
 		displayUnit: SizeUnit,
@@ -99,10 +101,7 @@ export class SneakerSizeConverter {
 		return this.formatSize(convertedSize, displayUnit);
 	}
 
-	static getAvailableSizes(
-		unit: SizeUnit,
-		gender: GenderType = 'men'
-	): number[] {
+	getAvailableSizes(unit: SizeUnit, gender: GenderType = 'men'): number[] {
 		return SIZE_MAPPINGS.map((mapping) => {
 			switch (unit) {
 				case 'US':
@@ -115,7 +114,7 @@ export class SneakerSizeConverter {
 		}).filter((size) => size > 0);
 	}
 
-	static isValidSize(
+	isValidSize(
 		size: number,
 		unit: SizeUnit,
 		gender: GenderType = 'men'
@@ -124,11 +123,11 @@ export class SneakerSizeConverter {
 		return availableSizes.includes(size);
 	}
 
-	static detectSizeUnit(size: number): SizeUnit {
+	detectSizeUnit(size: number): SizeUnit {
 		return size >= 3.5 && size <= 17 ? 'US' : 'EU';
 	}
 
-	static generateBothSizes(
+	generateBothSizes(
 		inputSize: number,
 		gender: GenderType = 'men',
 		inputUnit?: SizeUnit
@@ -150,3 +149,5 @@ export class SneakerSizeConverter {
 		}
 	}
 }
+
+export const sneakerSizeConverter = new SneakerSizeConverter();
