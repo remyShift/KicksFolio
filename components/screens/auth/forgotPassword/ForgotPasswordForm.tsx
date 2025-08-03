@@ -10,7 +10,7 @@ import { createForgotPasswordSchema, ForgotPasswordFormData } from "@/validation
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useTranslation } from 'react-i18next';
 import { useAsyncValidation } from '@/hooks/useAsyncValidation';
-import useToast from "@/hooks/useToast";
+import useToast from "@/hooks/ui/useToast";
 import { RelativePathString } from "expo-router";
 import AuthHeader from "../AuthHeader";
 

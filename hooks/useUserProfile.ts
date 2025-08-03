@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { UserSearchProvider, SearchUser } from '@/domain/UserSearchProvider';
 import { FollowerProvider } from '@/domain/FollowerProvider';
 import { useSession } from '@/context/authContext';
-import useToast from '@/hooks/useToast';
+import useToast from '@/hooks/ui/useToast';
 import { router } from 'expo-router';
 import { Sneaker } from '@/types/Sneaker';
 import { useTranslation } from 'react-i18next';

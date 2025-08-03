@@ -6,7 +6,7 @@ import LanguageToggle from "./LanguageToggle";
 import SizeUnitToggle from "./SizeUnitToggle";
 import { useLanguageStore } from "@/store/useLanguageStore";
 import { useSizeUnitStore } from "@/store/useSizeUnitStore";
-import useToast from "@/hooks/useToast";
+import useToast from "@/hooks/ui/useToast";
 import Spacer from "../shared/Spacer";
 import CurrencyToggle from "./CurrencyToggle";
 import { useCurrencyStore } from "@/store/useCurrencyStore";

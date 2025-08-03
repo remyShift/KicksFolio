@@ -10,7 +10,7 @@ import { useFormController } from '@/hooks/useFormController';
 import { createSignUpStep2Schema, SignUpStep2FormData } from '@/validation/schemas';
 import { RelativePathString, router } from 'expo-router';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
-import useToast from '@/hooks/useToast';
+import useToast from '@/hooks/ui/useToast';
 import { useTranslation } from 'react-i18next';
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';
 import AuthHeader from '../AuthHeader';

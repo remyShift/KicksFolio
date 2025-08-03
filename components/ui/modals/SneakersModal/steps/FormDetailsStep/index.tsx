@@ -64,6 +64,7 @@ export const FormDetailsStep = () => {
         reset,
         trigger,
         watch,
+        getValues,
         displayedError,
         getFieldErrorWrapper,
         setValue,
@@ -80,7 +81,7 @@ export const FormDetailsStep = () => {
         },
     });
     
-    useFormValidation(control, watch, reset, trigger, getFieldError);
+    useFormValidation(watch, reset, trigger, (fieldName: any) => getFieldError(fieldName), getValues);
 
     useEffect(() => {
         if (formData) {

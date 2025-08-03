@@ -29,26 +29,72 @@ vi.mock('expo-asset', () => ({
 }));
 
 vi.mock('@/config/supabase/supabase.config', () => ({
-	supabase: {
-		auth: {
-			signUp: vi.fn(),
-			signInWithPassword: vi.fn(),
-			signOut: vi.fn(),
-			getUser: vi.fn(),
-			updateUser: vi.fn(),
-			resetPasswordForEmail: vi.fn(),
-			updatePassword: vi.fn(),
-			setSession: vi.fn(),
-			getSession: vi.fn(),
+	SUPABASE_CONFIG: {
+		url: 'http://test.supabase.co',
+		anonKey: 'test-anon-key',
+		options: {
+			auth: {
+				autoRefreshToken: true,
+				persistSession: true,
+				detectSessionInUrl: false,
+			},
+			realtime: {
+				enabled: true,
+			},
 		},
-		from: vi.fn(() => ({
-			select: vi.fn().mockReturnThis(),
-			eq: vi.fn().mockReturnThis(),
-			single: vi.fn(),
-			update: vi.fn().mockReturnThis(),
-			delete: vi.fn().mockReturnThis(),
-		})),
 	},
+	validateSupabaseConfig: vi.fn().mockReturnValue(true),
+}));
+
+const createSupabaseMock = () => ({
+	auth: {
+		signUp: vi.fn().mockResolvedValue({
+			data: { user: { id: 'test-user-id' }, session: null },
+			error: null,
+		}),
+		signInWithPassword: vi.fn().mockResolvedValue({
+			data: { user: { id: 'test-user-id' }, session: null },
+			error: null,
+		}),
+		signOut: vi.fn().mockResolvedValue({ error: null }),
+		getUser: vi.fn().mockResolvedValue({
+			data: { user: { id: 'test-user-id' } },
+			error: null,
+		}),
+		updateUser: vi.fn().mockResolvedValue({
+			data: { user: { id: 'test-user-id' } },
+			error: null,
+		}),
+		resetPasswordForEmail: vi.fn().mockResolvedValue({
+			data: {},
+			error: null,
+		}),
+		getSession: vi.fn().mockResolvedValue({
+			data: { session: null },
+			error: null,
+		}),
+		setSession: vi.fn().mockResolvedValue({
+			data: { session: null },
+			error: null,
+		}),
+	},
+	from: vi.fn(() => ({
+		select: vi.fn().mockReturnThis(),
+		insert: vi.fn().mockReturnThis(),
+		update: vi.fn().mockReturnThis(),
+		delete: vi.fn().mockReturnThis(),
+		eq: vi.fn().mockReturnThis(),
+		single: vi.fn().mockResolvedValue({ data: null, error: null }),
+	})),
+	rpc: vi.fn().mockResolvedValue({ data: null, error: null }),
+});
+
+vi.mock('@/config/supabase/supabase', () => ({
+	supabase: createSupabaseMock(),
+}));
+
+vi.mock('@supabase/supabase-js', () => ({
+	createClient: vi.fn(() => createSupabaseMock()),
 }));
 
 vi.mock('expo-router', () => ({
@@ -72,18 +118,32 @@ vi.mock('@/store/useModalStore', () => ({
 	useModalStore: vi.fn(),
 }));
 
-vi.mock('@/domain/AuthProviderImpl', () => ({
+vi.mock('@/domain/AuthProvider', () => ({
 	authProvider: {
-		signIn: vi.fn(),
-		signUp: vi.fn(),
-		signOut: vi.fn(),
-		getCurrentUser: vi.fn(),
-		updateProfile: vi.fn(),
-		deleteUser: vi.fn(),
-		forgotPassword: vi.fn(),
-		resetPassword: vi.fn(),
-		resetPasswordWithTokens: vi.fn(),
-		cleanupOrphanedSessions: vi.fn(),
+		signIn: vi
+			.fn()
+			.mockResolvedValue({ user: { id: 'test-user-id' }, session: null }),
+		signUp: vi.fn().mockResolvedValue({
+			data: { user: { id: 'test-user-id' }, session: null },
+		}),
+		signOut: vi.fn().mockResolvedValue(undefined),
+		getCurrentUser: vi.fn().mockResolvedValue({
+			id: 'test-user-id',
+			email: 'test@example.com',
+			followers_count: 0,
+			following_count: 0,
+		}),
+		updateProfile: vi.fn().mockResolvedValue({
+			id: 'test-user-id',
+			email: 'test@example.com',
+		}),
+		deleteUser: vi.fn().mockResolvedValue(true),
+		forgotPassword: vi.fn().mockResolvedValue(undefined),
+		resetPassword: vi
+			.fn()
+			.mockResolvedValue({ user: { id: 'test-user-id' } }),
+		resetPasswordWithTokens: vi.fn().mockResolvedValue(true),
+		cleanupOrphanedSessions: vi.fn().mockResolvedValue(undefined),
 	},
 }));
 

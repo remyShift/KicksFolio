@@ -3,7 +3,7 @@ import { useRef } from 'react';
 import { useSession } from '@/context/authContext';
 import { useAuth } from '@/hooks/useAuth';
 import MainButton from '@/components/ui/buttons/MainButton';
-import useToast from '@/hooks/useToast';
+import useToast from '@/hooks/ui/useToast';
 import { useTranslation } from 'react-i18next';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import AuthHeader from '@/components/screens/auth/AuthHeader';

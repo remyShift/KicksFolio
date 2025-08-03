@@ -5,7 +5,7 @@ import AppSettings from '@/components/screens/app/settings/appSettings/AppSettin
 import SettingsMenuItem from '@/components/screens/app/settings/shared/SettingsMenuItem';
 import { useTranslation } from 'react-i18next';
 import { useSession } from '@/context/authContext';
-import useToast from '@/hooks/useToast';
+import useToast from '@/hooks/ui/useToast';
 import { useAuth } from '@/hooks/useAuth';
 
 export default function Settings() {

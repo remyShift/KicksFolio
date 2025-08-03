@@ -38,7 +38,7 @@ vi.mock('@/domain/ImageProvider', () => ({
 	},
 }));
 
-vi.mock('@/domain/AuthProviderImpl', () => ({
+vi.mock('@/domain/AuthProvider', () => ({
 	authProvider: {
 		signIn: vi.fn(),
 		signUp: vi.fn(),
@@ -53,7 +53,7 @@ vi.mock('@/domain/AuthProviderImpl', () => ({
 	},
 }));
 
-const { authProvider: MockedAuthProvider } = await vi.importMock('@/domain/AuthProviderImpl') as {
+const { authProvider: MockedAuthProvider } = await vi.importMock('@/domain/AuthProvider') as {
 	authProvider: {
 		signIn: ReturnType<typeof vi.fn>;
 		signUp: ReturnType<typeof vi.fn>;

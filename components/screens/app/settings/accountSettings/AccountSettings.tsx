@@ -4,7 +4,7 @@ import SettingsMenuItem from '../shared/SettingsMenuItem'
 import { useTranslation } from 'react-i18next'
 import { Alert, Linking } from 'react-native'
 import { useAuth } from '@/hooks/useAuth'
-import useToast from '@/hooks/useToast'
+import useToast from '@/hooks/ui/useToast'
 import Spacer from '../shared/Spacer'
 
 export default function AccountSettings() {

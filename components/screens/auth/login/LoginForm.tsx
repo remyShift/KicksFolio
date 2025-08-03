@@ -12,7 +12,7 @@ import { useFormController } from "@/hooks/useFormController";
 import { createLoginSchema, LoginFormData } from "@/validation/schemas";
 import PageLink from "@/components/ui/links/LoginPageLink"; 
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
-import useToast from "@/hooks/useToast";
+import useToast from "@/hooks/ui/useToast";
 import { useTranslation } from 'react-i18next';
 import { useSession } from '@/context/authContext';
 

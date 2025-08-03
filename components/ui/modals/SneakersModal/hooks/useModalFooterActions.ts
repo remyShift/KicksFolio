@@ -5,7 +5,7 @@ import { Sneaker } from '@/types/Sneaker';
 import { useState } from 'react';
 import { Alert } from 'react-native';
 import { SneakerFormData } from '@/validation/schemas';
-import useToast from '@/hooks/useToast';
+import useToast from '@/hooks/ui/useToast';
 import { useTranslation } from 'react-i18next';
 
 export const useModalFooterActions = () => {

@@ -129,10 +129,6 @@ export const resetMocks = () => {
 	});
 };
 
-jest.mock('@/domain/AuthProviderImpl', () => ({
-	authProvider: mockAuthProviderImpl,
-}));
-
 jest.mock('@/context/signUpPropsContext', () => ({
 	useSignUpProps: () => mockUseSignUpProps,
 }));
@@ -141,7 +137,7 @@ jest.mock('@/hooks/useAsyncValidation', () => ({
 	useAsyncValidation: () => mockUseAsyncValidation,
 }));
 
-jest.mock('@/hooks/useToast', () => ({
+jest.mock('@/hooks/ui/useToast', () => ({
 	__esModule: true,
 	default: jest.fn(() => ({
 		showSuccessToast: jest.fn(),

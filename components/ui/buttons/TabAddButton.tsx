@@ -1,4 +1,4 @@
-import useAnimatedButtons from "@/hooks/useAnimatedButtons";
+import useAnimatedButtons from "@/hooks/ui/useAnimatedButtons";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { GestureDetector } from "react-native-gesture-handler";
 import Animated from 'react-native-reanimated';

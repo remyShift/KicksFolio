@@ -1,5 +1,5 @@
 import { Text } from 'react-native';
-import useAnimatedButtons from '@/hooks/useAnimatedButtons';
+import useAnimatedButtons from '@/hooks/ui/useAnimatedButtons';
 import { GestureDetector } from 'react-native-gesture-handler';
 import Animated from 'react-native-reanimated';
 

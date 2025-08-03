@@ -15,7 +15,7 @@ export interface SupabaseUser {
 }
 
 export class AuthProvider {
-	static async signUp(
+	async signUp(
 		email: string,
 		password: string,
 		userData: Partial<SupabaseUser>
@@ -63,7 +63,7 @@ export class AuthProvider {
 		return { ...result.data, user };
 	}
 
-	static async signIn(email: string, password: string) {
+	async signIn(email: string, password: string) {
 		const { data, error } = await supabase.auth.signInWithPassword({
 			email,
 			password,
@@ -73,7 +73,7 @@ export class AuthProvider {
 		return data;
 	}
 
-	static async deleteUser(userId: string) {
+	async deleteUser(userId: string) {
 		const { error } = await supabase
 			.from('users')
 			.delete()
@@ -90,12 +90,12 @@ export class AuthProvider {
 		return true;
 	}
 
-	static async signOut() {
+	async signOut() {
 		const { error } = await supabase.auth.signOut();
 		if (error) throw error;
 	}
 
-	static async getCurrentUser() {
+	async getCurrentUser() {
 		const {
 			data: { user },
 			error,
@@ -137,10 +137,7 @@ export class AuthProvider {
 		};
 	}
 
-	static async updateProfile(
-		userId: string,
-		userData: Partial<SupabaseUser>
-	) {
+	async updateProfile(userId: string, userData: Partial<SupabaseUser>) {
 		const { data, error } = await supabase
 			.from('users')
 			.update(userData)
@@ -152,14 +149,14 @@ export class AuthProvider {
 		return { ...data, profile_picture_url: data.profile_picture };
 	}
 
-	static async forgotPassword(email: string) {
+	async forgotPassword(email: string) {
 		const { error } = await supabase.auth.resetPasswordForEmail(email, {
 			redirectTo: 'kicksfolio://reset-password',
 		});
 		if (error) throw error;
 	}
 
-	static async resetPassword(newPassword: string) {
+	async resetPassword(newPassword: string) {
 		const {
 			data: { session },
 			error: sessionError,
@@ -186,7 +183,7 @@ export class AuthProvider {
 		return data;
 	}
 
-	static async resetPasswordWithTokens(
+	async resetPasswordWithTokens(
 		accessToken: string,
 		refreshToken: string,
 		newPassword: string
@@ -226,8 +223,10 @@ export class AuthProvider {
 		);
 	}
 
-	static async cleanupOrphanedSessions() {
+	async cleanupOrphanedSessions() {
 		const { error } = await supabase.auth.signOut();
 		if (error) throw error;
 	}
 }
+
+export const authProvider = new AuthProvider();

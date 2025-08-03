@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import useToast from '@/hooks/useToast';
+import useToast from '@/hooks/ui/useToast';
 
 export const BarcodeStep = () => {
     const { t } = useTranslation();

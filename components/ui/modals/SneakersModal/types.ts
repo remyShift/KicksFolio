@@ -1,4 +1,4 @@
-import { Sneaker, SneakerBrand, Photo } from '@/types/Sneaker';
+import { Sneaker, SneakerBrand, SneakerStatus, Photo } from '@/types/Sneaker';
 
 export type ModalStep =
 	| 'index'
@@ -52,8 +52,21 @@ export interface ValidationError {
 
 export interface SneakerFormData {
 	model: string;
-	brand: SneakerBrand;
-	status: string;
+	brand:
+		| SneakerBrand.Nike
+		| SneakerBrand.Adidas
+		| SneakerBrand.Converse
+		| SneakerBrand.NewBalance
+		| SneakerBrand.Puma
+		| SneakerBrand.Jordan
+		| SneakerBrand.Asics
+		| SneakerBrand.Reebok
+		| SneakerBrand.Vans
+		| SneakerBrand.Other;
+	status:
+		| SneakerStatus.Stocking
+		| SneakerStatus.Rocking
+		| SneakerStatus.Selling;
 	size: string;
 	condition: string;
 	images: Photo[];

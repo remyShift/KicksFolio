@@ -8,7 +8,7 @@ import { useFormController } from "@/hooks/useFormController";
 import { createResetPasswordSchema, ResetPasswordFormData } from "@/validation/schemas";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useTranslation } from 'react-i18next';
-import useToast from "@/hooks/useToast";
+import useToast from "@/hooks/ui/useToast";
 import { RelativePathString } from "expo-router";
 import AuthHeader from "../AuthHeader";
 

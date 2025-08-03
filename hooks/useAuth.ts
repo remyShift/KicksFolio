@@ -6,7 +6,7 @@ import { useSignUpValidation } from './useSignUpValidation';
 import { ImageProvider } from '@/domain/ImageProvider';
 import { useTranslation } from 'react-i18next';
 import { AuthInterface } from '@/interfaces/AuthInterface';
-import { authProvider } from '@/domain/AuthProviderImpl';
+import { authProvider } from '@/domain/AuthProvider';
 
 export const useAuth = () => {
 	const [errorMsg, setErrorMsg] = useState('');

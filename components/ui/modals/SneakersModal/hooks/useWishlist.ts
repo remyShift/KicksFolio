@@ -1,6 +1,6 @@
 import { useSession } from '@/context/authContext';
 import { WishlistProvider } from '@/domain/WishlistProvider';
-import useToast from '@/hooks/useToast';
+import useToast from '@/hooks/ui/useToast';
 import { useTranslation } from 'react-i18next';
 
 const useWishlist = () => {
