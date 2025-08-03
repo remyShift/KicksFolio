@@ -5,7 +5,7 @@ import MainButton from "@/components/ui/buttons/MainButton";
 import FormTextInput from "@/components/ui/inputs/FormTextInput";
 import FormPasswordInput from "@/components/ui/inputs/FormPasswordInput";
 import { useSignUpProps } from "@/context/signUpPropsContext";
-import { useFormController } from "@/hooks/useFormController";
+import { useFormController } from "@/hooks/TODO/useFormController";
 import { useAuthValidation } from "@/hooks/useAuthValidation";
 import { useAuth } from "@/hooks/useAuth";
 import { createSignUpStep1Schema, SignUpStep1FormData } from "@/validation/schemas";

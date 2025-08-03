@@ -34,7 +34,6 @@ export function useImagePicker() {
 
 			return result;
 		}
-		return null;
 	};
 
 	return { handleImageSelection };

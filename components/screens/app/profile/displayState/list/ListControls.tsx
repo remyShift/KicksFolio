@@ -5,7 +5,7 @@ import SortButtons from './filter/SortButtons';
 import FilterSection from './filter/FilterSection';
 
 interface ListControlsProps {
-  listState: ReturnType<typeof import('@/hooks/useLocalListState').useLocalListState>;
+  listState: ReturnType<typeof import('@/hooks/TODO/useLocalListState').useLocalListState>;
 }
 
 export default function ListControls({ listState }: ListControlsProps) {

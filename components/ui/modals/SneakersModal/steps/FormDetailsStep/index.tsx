@@ -1,7 +1,7 @@
 import { Image, Pressable, ScrollView, TextInput, View, Text } from 'react-native';
 import { useRef, useEffect, useState, useMemo, useCallback } from 'react';
 import { useModalStore } from '@/store/useModalStore';
-import { useFormController } from '@/hooks/useFormController';
+import { useFormController } from '@/hooks/TODO/useFormController';
 import { createSneakerSchema, SneakerFormData } from '@/validation/schemas';
 import { useFormValidation } from '../../hooks/useFormValidation';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
@@ -9,7 +9,7 @@ import { Photo, SneakerBrand, SneakerStatus, Sneaker } from '@/types/Sneaker';
 import { useTranslation } from 'react-i18next';
 import { FormFields } from '../../shared/FormFields';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { useSizeConversion } from '@/hooks/useSizeConversion';
+import { useSizeConversion } from '@/hooks/TODO/useSizeConversion';
 
 
 export const FormDetailsStep = () => {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, TextProps } from 'react-native';
-import { useSizeConversion } from '@/hooks/useSizeConversion';
+import { useSizeConversion } from '@/hooks/TODO/useSizeConversion';
 import { Sneaker } from '@/types/Sneaker';
 
 interface SizeDisplayProps extends TextProps {

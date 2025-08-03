@@ -6,7 +6,7 @@ import FormImageInput from '@/components/ui/inputs/FormImageInput';
 import MainButton from '@/components/ui/buttons/MainButton';
 import { useAuth } from '@/hooks/useAuth';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
-import { useFormController } from '@/hooks/useFormController';
+import { useFormController } from '@/hooks/TODO/useFormController';
 import { createSignUpStep2Schema, SignUpStep2FormData } from '@/validation/schemas';
 import { RelativePathString, router } from 'expo-router';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';

@@ -5,7 +5,7 @@ import SocialMediaLinks from './SocialMediaLinks';
 import { User } from '@/types/User';
 import { useSession } from '@/context/authContext';
 import { SearchUser } from '@/domain/UserSearchProvider';
-import { useUserProfile } from '@/hooks/useUserProfile';
+import { useUserProfile } from '@/hooks/TODO/useUserProfile';
 
 export interface ProfileInfoProps {
     user: User | SearchUser;

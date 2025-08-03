@@ -9,7 +9,8 @@ import { AuthProvider } from '@/domain/AuthProvider';
 import { SneakerProvider } from '@/domain/SneakerProvider';
 import { WishlistProvider } from '@/domain/WishlistProvider';
 import { FollowerProvider } from '@/domain/FollowerProvider';
-import { UserSearchProvider } from '@/domain/UserSearchProvider';
+import { UserSearchInterface } from '@/interfaces/UserSearchInterface';
+import { userSearchProvider } from '@/domain/UserSearchProvider';
 import { supabase } from '@/config/supabase/supabase';
 import * as Linking from 'expo-linking';
 import { router } from 'expo-router';
@@ -174,7 +175,10 @@ export function SessionProvider({ children }: PropsWithChildren) {
                 const followingWithSneakers = await Promise.all(
                     followingUsersData.map(async (followingUser) => {
                         try {
-                            const sneakers = await UserSearchProvider.getUserSneakers(followingUser.id);
+                            const sneakers = await UserSearchInterface.getUserSneakers(
+                                followingUser.id,
+                                userSearchProvider.getUserSneakers
+                            );
                             return {
                                 ...followingUser,
                                 sneakers: sneakers || []

@@ -5,7 +5,7 @@ import SplashScreen from '@/components/screens/SplashScreen/SplashScreen'
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import Toast from 'react-native-toast-message';
-import { useAppInitialization } from '@/hooks/useAppInitialization';
+import { useAppInitialization } from '@/hooks/TODO/useAppInitialization';
 import { useSplashScreenStore } from '@/store/useSplashScreenStore';
 import '@/locales/i18n';
 import "../global.css";

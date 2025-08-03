@@ -4,7 +4,7 @@ import MainButton from "@/components/ui/buttons/MainButton"
 import { useRef } from "react"
 import { useAuth } from "@/hooks/useAuth";
 import FormPasswordInput from "@/components/ui/inputs/FormPasswordInput";
-import { useFormController } from "@/hooks/useFormController";
+import { useFormController } from "@/hooks/TODO/useFormController";
 import { createResetPasswordSchema, ResetPasswordFormData } from "@/validation/schemas";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useTranslation } from 'react-i18next';

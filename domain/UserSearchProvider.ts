@@ -1,5 +1,6 @@
 import { Sneaker } from '@/types/Sneaker';
 import { supabase } from '@/config/supabase/supabase';
+import { UserSearchInterface } from '@/interfaces/UserSearchInterface';
 
 export interface SearchUser {
 	id: string;
@@ -21,31 +22,33 @@ export interface SearchUsersResponse {
 	totalCount: number;
 }
 
-export class UserSearchProvider {
+export class UserSearchProvider implements UserSearchInterface {
 	private static readonly PAGE_SIZE = 20;
 
-	static async searchUsers(
+	async searchUsers(
 		searchTerm: string,
 		currentUserId: string,
 		page: number = 0
 	): Promise<SearchUsersResponse> {
-		if (searchTerm.trim().length < 2) {
-			return {
-				users: [],
-				hasMore: false,
-				totalCount: 0,
-			};
-		}
+		return Promise.resolve().then(() => {
+			if (searchTerm.trim().length < 2) {
+				return {
+					users: [],
+					hasMore: false,
+					totalCount: 0,
+				};
+			}
 
-		return this.searchUsersDirectSQL(searchTerm, currentUserId, page);
+			return this.searchUsersDirectSQL(searchTerm, currentUserId, page);
+		});
 	}
 
-	private static async searchUsersDirectSQL(
+	private async searchUsersDirectSQL(
 		searchTerm: string,
 		currentUserId: string,
 		page: number = 0
 	): Promise<SearchUsersResponse> {
-		const offset = page * this.PAGE_SIZE;
+		const offset = page * UserSearchProvider.PAGE_SIZE;
 		const searchPattern = `%${searchTerm.trim().toLowerCase()}%`;
 
 		const { data: users, error } = await supabase
@@ -65,63 +68,65 @@ export class UserSearchProvider {
 				`username.ilike.${searchPattern},first_name.ilike.${searchPattern},last_name.ilike.${searchPattern}`
 			)
 			.neq('id', currentUserId)
-			.range(offset, offset + this.PAGE_SIZE);
+			.range(offset, offset + UserSearchProvider.PAGE_SIZE);
 
 		if (error) {
 			throw error;
 		}
 
 		const usersList = users || [];
-		const hasMore = usersList.length > this.PAGE_SIZE;
+		const hasMore = usersList.length > UserSearchProvider.PAGE_SIZE;
 		const actualUsers = hasMore
-			? usersList.slice(0, this.PAGE_SIZE)
+			? usersList.slice(0, UserSearchProvider.PAGE_SIZE)
 			: usersList;
 
 		const enrichedUsers = await Promise.all(
 			actualUsers.map(async (user: any) => {
-				try {
-					const [
-						followersResult,
-						followingResult,
-						isFollowingResult,
-					] = await Promise.all([
-						supabase
-							.from('followers')
-							.select('*', { count: 'exact', head: true })
-							.eq('following_id', user.id),
-						supabase
-							.from('followers')
-							.select('*', { count: 'exact', head: true })
-							.eq('follower_id', user.id),
-						supabase
-							.from('followers')
-							.select('id')
-							.eq('follower_id', currentUserId)
-							.eq('following_id', user.id)
-							.single(),
-					]);
-
-					return {
-						...user,
-						followers_count: followersResult.error
-							? 0
-							: Number(followersResult.count || 0),
-						following_count: followingResult.error
-							? 0
-							: Number(followingResult.count || 0),
-						is_following:
-							!isFollowingResult.error &&
-							!!isFollowingResult.data,
-					};
-				} catch (error) {
-					console.warn(`Error enriching user ${user.id}:`, error);
-					return {
-						...user,
-						followers_count: 0,
-						following_count: 0,
-						is_following: false,
-					};
-				}
+				return Promise.all([
+					supabase
+						.from('followers')
+						.select('*', { count: 'exact', head: true })
+						.eq('following_id', user.id),
+					supabase
+						.from('followers')
+						.select('*', { count: 'exact', head: true })
+						.eq('follower_id', user.id),
+					supabase
+						.from('followers')
+						.select('id')
+						.eq('follower_id', currentUserId)
+						.eq('following_id', user.id)
+						.single(),
+				])
+					.then(
+						([
+							followersResult,
+							followingResult,
+							isFollowingResult,
+						]) => {
+							return {
+								...user,
+								followers_count: followersResult.error
+									? 0
+									: Number(followersResult.count || 0),
+								following_count: followingResult.error
+									? 0
+									: Number(followingResult.count || 0),
+								is_following:
+									!isFollowingResult.error &&
+									!!isFollowingResult.data,
+							};
+						}
+					)
+					.catch((error) => {
+						console.warn(`Error enriching user ${user.id}:`, error);
+						return {
+							...user,
+							followers_count: 0,
+							following_count: 0,
+							is_following: false,
+						};
+					});
 			})
 		);
 
@@ -132,7 +137,7 @@ export class UserSearchProvider {
 		};
 	}
 
-	static async getUserProfile(
+	async getUserProfile(
 		userId: string,
 		currentUserId: string
 	): Promise<SearchUser | null> {
@@ -198,7 +203,7 @@ export class UserSearchProvider {
 		}
 	}
 
-	static async getUserSneakers(userId: string): Promise<any[]> {
+	async getUserSneakers(userId: string): Promise<any[]> {
 		try {
 			const { data: sneakers, error } = await supabase
 				.from('sneakers')
@@ -217,7 +222,7 @@ export class UserSearchProvider {
 			return (
 				sneakers?.map((sneaker) => ({
 					...sneaker,
-					images: this.parseImages(sneaker.images),
+					images: UserSearchProvider.parseImages(sneaker.images),
 				})) || []
 			);
 		} catch (error) {
@@ -286,3 +291,5 @@ export class UserSearchProvider {
 		return [];
 	}
 }
+
+export const userSearchProvider = new UserSearchProvider();

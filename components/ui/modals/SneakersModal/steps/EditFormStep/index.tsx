@@ -1,13 +1,13 @@
 import { ScrollView, TextInput, View, Text, Pressable, Image } from 'react-native';
 import { useRef, useEffect } from 'react';
 import { useModalStore } from '@/store/useModalStore';
-import { useFormController } from '@/hooks/useFormController';
+import { useFormController } from '@/hooks/TODO/useFormController';
 import { createSneakerSchema, SneakerFormData } from '@/validation/schemas';
 import { FormFields } from '../../shared/FormFields';
 import { useFormValidation } from '../../hooks/useFormValidation';
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { SneakerBrand, SneakerStatus } from '@/types/Sneaker';
-import { useSizeConversion } from '@/hooks/useSizeConversion';
+import { useSizeConversion } from '@/hooks/TODO/useSizeConversion';
 import { useTranslation } from 'react-i18next';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Photo } from '@/types/Sneaker';
@@ -50,8 +50,8 @@ export const EditFormStep = () => {
         authErrorMsg: errorMsg,
         defaultValues: {
             model: currentSneaker?.model || '',
-            brand: currentSneaker?.brand !== SneakerBrand.null ? currentSneaker?.brand : undefined,
-            status: currentSneaker?.status !== SneakerStatus.null ? currentSneaker?.status : undefined,
+            brand: sneakerToAdd?.brand || currentSneaker?.brand || SneakerBrand.null,
+            status: sneakerToAdd?.status || currentSneaker?.status || SneakerStatus.null,
             size: displaySize.toString(),
             condition: currentSneaker?.condition ? String(currentSneaker.condition) : '',
             price_paid: currentSneaker?.price_paid ? String(currentSneaker.price_paid) : '',
@@ -80,7 +80,7 @@ export const EditFormStep = () => {
         },
     });
 
-    useFormValidation(watch, reset, trigger, getFieldError, getValues);
+    useFormValidation(watch, reset, trigger, getFieldErrorWrapper, getValues);
 
     useEffect(() => {
         if (currentSneaker) {

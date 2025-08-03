@@ -1,7 +1,7 @@
 import { View, Text } from 'react-native';
 import { useEffect, useMemo, useCallback } from 'react';
 import { useModalStore } from '@/store/useModalStore';
-import { useFormController } from '@/hooks/useFormController';
+import { useFormController } from '@/hooks/TODO/useFormController';
 import { createSneakerSchema, SneakerFormData } from '@/validation/schemas';
 import { Controller } from 'react-hook-form';
 import { Photo } from '@/types/Sneaker';
@@ -9,7 +9,7 @@ import { SneakerBrand, SneakerStatus } from '@/types/Sneaker';
 import { useTranslation } from 'react-i18next';
 import { PhotoCarousel } from '@/components/ui/images/photoCaroussel/PhotoCarousel';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
-import { useSizeConversion } from '@/hooks/useSizeConversion';
+import { useSizeConversion } from '@/hooks/TODO/useSizeConversion';
 
 export const FormImageStep = () => {
     const { t } = useTranslation();
@@ -53,8 +53,8 @@ export const FormImageStep = () => {
         authErrorMsg: errorMsg,
         defaultValues: {
             model: sneakerToAdd?.model || currentSneaker?.model || '',
-            brand: sneakerToAdd?.brand || currentSneaker?.brand || SneakerBrand.null,
-            status: sneakerToAdd?.status || currentSneaker?.status || SneakerStatus.null,
+            brand: sneakerToAdd?.brand || currentSneaker?.brand || SneakerBrand.Nike,
+            status: sneakerToAdd?.status || currentSneaker?.status || SneakerStatus.Stocking,
             size: sneakerToAdd?.size || currentSneakerSize,
             condition: sneakerToAdd?.condition || (currentSneaker?.condition?.toString()) || '',
             price_paid: sneakerToAdd?.price_paid || (currentSneaker?.price_paid?.toString()) || '',
@@ -77,10 +77,10 @@ export const FormImageStep = () => {
                 alt: `${fetchedSneaker.model} from SKU search`
             }] : [];
             
-            const formData: SneakerFormData = {
+            const formData = {
                 model: fetchedSneaker.model || '',
-                brand: fetchedSneaker.brand as SneakerBrand,
-                status: SneakerStatus.null,
+                brand: fetchedSneaker.brand,
+                status: SneakerStatus.Stocking,
                 size: '',
                 condition: '',
                 price_paid: '',
@@ -104,8 +104,8 @@ export const FormImageStep = () => {
         if (currentSneaker && !fetchedSneaker && isEditMode && !sneakerToAdd) {
             const currentData = {
                 model: currentSneaker.model || '',
-                brand: currentSneaker.brand || SneakerBrand.null,
-                status: currentSneaker.status || SneakerStatus.null,
+                brand: currentSneaker.brand || SneakerBrand.Nike,
+                status: currentSneaker.status || SneakerStatus.Stocking,
                 size: currentSneakerSize,
                 condition: currentSneaker.condition?.toString() || '',
                 price_paid: currentSneaker.price_paid?.toString() || '',
@@ -130,8 +130,8 @@ export const FormImageStep = () => {
                 const currentSneakerToAdd = useModalStore.getState().sneakerToAdd;
                 const currentData = currentSneakerToAdd || {
                     model: currentSneaker?.model || '',
-                    brand: currentSneaker?.brand || SneakerBrand.null,
-                    status: currentSneaker?.status || SneakerStatus.null,
+                    brand: currentSneaker?.brand || SneakerBrand.Nike,
+                    status: currentSneaker?.status || SneakerStatus.Stocking,
                     size: currentSneakerSize,
                     condition: currentSneaker?.condition?.toString() || '',
                     price_paid: currentSneaker?.price_paid?.toString() || '',
@@ -143,7 +143,7 @@ export const FormImageStep = () => {
                 
                 handleSneakerToAddUpdate({
                     ...currentData,
-                    images: value.images
+                    images: (value.images || []).filter((img): img is Photo => img != null && img.uri != null)
                 });
             }
         });
@@ -156,8 +156,8 @@ export const FormImageStep = () => {
         if (currentSneakerToAdd && currentSneakerToAdd.images && currentSneakerToAdd.images.length > 0) {
             const formData = {
                 model: currentSneakerToAdd.model || currentSneaker?.model || '',
-                brand: currentSneakerToAdd.brand || currentSneaker?.brand || SneakerBrand.null,
-                status: currentSneakerToAdd.status || currentSneaker?.status || SneakerStatus.null,
+                brand: currentSneakerToAdd.brand || currentSneaker?.brand || SneakerBrand.Nike,
+                status: currentSneakerToAdd.status || currentSneaker?.status || SneakerStatus.Stocking,
                 size: currentSneakerToAdd.size || currentSneakerSize,
                 condition: currentSneakerToAdd.condition || currentSneaker?.condition?.toString() || '',
                 price_paid: currentSneakerToAdd.price_paid || currentSneaker?.price_paid?.toString() || '',

@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { FlatList } from 'react-native';
 import { Sneaker } from '@/types/Sneaker';
-import { useLocalListState } from '@/hooks/useLocalListState';
+import { useLocalListState } from '@/hooks/TODO/useLocalListState';
 import SneakerListItem from './SneakerListItem';
 import ListControls from './ListControls';
 

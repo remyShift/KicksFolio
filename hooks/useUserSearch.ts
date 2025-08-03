@@ -1,9 +1,11 @@
 import { useCallback, useRef, useEffect } from 'react';
-import { UserSearchProvider, SearchUser } from '@/domain/UserSearchProvider';
+import { SearchUser } from '@/domain/UserSearchProvider';
 import { useSession } from '@/context/authContext';
 import useToast from '@/hooks/ui/useToast';
 import { useTranslation } from 'react-i18next';
 import { useUserSearchStore } from '@/store/useUserSearchStore';
+import { UserSearchInterface } from '@/interfaces/UserSearchInterface';
+import { userSearchProvider } from '@/domain/UserSearchProvider';
 
 interface UseUserSearchReturn {
 	searchTerm: string;
@@ -57,31 +59,33 @@ export const useUserSearch = (): UseUserSearchReturn => {
 
 			setIsLoading(true);
 
-			try {
-				const result = await UserSearchProvider.searchUsers(
-					term.trim(),
-					user.id,
-					pageNum
-				);
+			return UserSearchInterface.searchUsers(
+				term.trim(),
+				user.id,
+				pageNum,
+				userSearchProvider.searchUsers
+			)
+				.then((result) => {
+					if (pageNum === 0 || isRefresh) {
+						setSearchResults(result.users);
+					} else {
+						addSearchResults(result.users);
+					}
 
-				if (pageNum === 0 || isRefresh) {
-					setSearchResults(result.users);
-				} else {
-					addSearchResults(result.users);
-				}
-
-				setHasMore(result.hasMore);
-				setPage(pageNum);
-			} catch (error) {
-				console.error('Search error:', error);
-				showErrorToast(
-					t('search.error.title'),
-					t('search.error.message')
-				);
-			} finally {
-				setIsLoading(false);
-				setRefreshing(false);
-			}
+					setHasMore(result.hasMore);
+					setPage(pageNum);
+				})
+				.catch((error) => {
+					console.error('Search error:', error);
+					showErrorToast(
+						t('search.error.title'),
+						t('search.error.message')
+					);
+				})
+				.finally(() => {
+					setIsLoading(false);
+					setRefreshing(false);
+				});
 		},
 		[
 			user?.id,

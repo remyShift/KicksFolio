@@ -10,16 +10,16 @@ export const sneakerStatusOptions = [
 ];
 
 export const sneakerBrandOptions: { label: string; value: SneakerBrand }[] = [
-	{ label: 'Nike', value: SneakerBrand.Nike },
-	{ label: 'Adidas', value: SneakerBrand.Adidas },
-	{ label: 'Puma', value: SneakerBrand.Puma },
-	{ label: 'Vans', value: SneakerBrand.Vans },
-	{ label: 'Converse', value: SneakerBrand.Converse },
-	{ label: 'Jordan', value: SneakerBrand.Jordan },
-	{ label: 'New Balance', value: SneakerBrand.NewBalance },
-	{ label: 'Asics', value: SneakerBrand.Asics },
-	{ label: 'Reebok', value: SneakerBrand.Reebok },
-	{ label: 'Other', value: SneakerBrand.Other },
+	{ label: 'NIKE', value: SneakerBrand.Nike },
+	{ label: 'ADIDAS', value: SneakerBrand.Adidas },
+	{ label: 'PUMA', value: SneakerBrand.Puma },
+	{ label: 'VANS', value: SneakerBrand.Vans },
+	{ label: 'CONVERSE', value: SneakerBrand.Converse },
+	{ label: 'JORDAN', value: SneakerBrand.Jordan },
+	{ label: 'NEW BALANCE', value: SneakerBrand.NewBalance },
+	{ label: 'ASICS', value: SneakerBrand.Asics },
+	{ label: 'REEBOK', value: SneakerBrand.Reebok },
+	{ label: 'OTHER', value: SneakerBrand.Other },
 ];
 
 export const createSignUpStep1Schema = () => {
@@ -125,16 +125,10 @@ export const createSneakerSchema = () => {
 			),
 		brand: z
 			.enum(Object.values(SneakerBrand) as [string, ...string[]])
-			.transform((val) => val as SneakerBrand)
-			.refine((val) => val !== SneakerBrand.null, {
-				message: t('collection.modal.form.errors.brand.required'),
-			}),
+			.transform((val) => val as SneakerBrand),
 		status: z
 			.enum(Object.values(SneakerStatus) as [string, ...string[]])
-			.transform((val) => val as SneakerStatus)
-			.refine((val) => val !== SneakerStatus.null, {
-				message: t('collection.modal.form.errors.status.required'),
-			}),
+			.transform((val) => val as SneakerStatus),
 		size: z
 			.string()
 			.min(1, t('collection.modal.form.errors.size.min'))

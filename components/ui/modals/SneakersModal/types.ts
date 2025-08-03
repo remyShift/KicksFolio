@@ -62,11 +62,13 @@ export interface SneakerFormData {
 		| SneakerBrand.Asics
 		| SneakerBrand.Reebok
 		| SneakerBrand.Vans
-		| SneakerBrand.Other;
+		| SneakerBrand.Other
+		| SneakerBrand.null;
 	status:
 		| SneakerStatus.Stocking
 		| SneakerStatus.Rocking
-		| SneakerStatus.Selling;
+		| SneakerStatus.Selling
+		| SneakerStatus.null;
 	size: string;
 	condition: string;
 	images: Photo[];

@@ -174,7 +174,7 @@ describe('SneakersModal', () => {
         it('should render form fields with empty values initially', () => {
             expect(modelInput.props.value).toBe('');
             expect(screen.getByTestId('brand-input-value').props.children).toBe('Nike');
-            expect(screen.getByTestId('status-input-value').props.children).toBe('ROCKING');
+            expect(screen.getByTestId('status-input-value').props.children).toBe('Rocking');
             expect(sizeInput.props.value).toBe('');
             expect(conditionInput.props.value).toBe('');
             expect(priceInput.props.value).toBe('');
