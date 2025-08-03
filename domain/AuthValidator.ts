@@ -1,6 +1,7 @@
 import { supabase } from '@/config/supabase/supabase';
+import { AuthValidatorInterface } from '@/interfaces/AuthValidatorInterface';
 
-export class AuthValidator {
+export class AuthValidator implements AuthValidatorInterface {
 	async checkUsernameExists(username: string): Promise<boolean> {
 		return Promise.resolve(
 			supabase.rpc('check_username_availability', {
@@ -37,3 +38,5 @@ export class AuthValidator {
 			});
 	}
 }
+
+export const authValidator = new AuthValidator();

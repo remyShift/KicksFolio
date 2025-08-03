@@ -1,7 +1,7 @@
 import EditProfileForm from "@/components/screens/app/settings/accountSettings/EditProfileForm";
 import { fireEvent, render, screen } from "@testing-library/react-native";
 import { act } from "react";
-import { mockUseAuth, mockUser, mockUseAsyncValidation, resetMocks } from "../../setup/auth";
+import { mockUseAuth, mockUser, mockUseValidation, resetMocks } from "../../setup/auth";
 import { fillAndBlurInput } from "@/__tests__/setup";
 
 jest.mock('@/hooks/useAuth', () => ({
@@ -14,7 +14,7 @@ describe('Edit Profile Form', () => {
         resetMocks();
         
         mockUseAuth.updateUser.mockResolvedValue({ user: mockUser });
-        mockUseAsyncValidation.checkUsernameExists.mockResolvedValue(null);
+        mockUseValidation.checkUsernameExists.mockResolvedValue(null);
         
         render(<EditProfileForm />);
     });

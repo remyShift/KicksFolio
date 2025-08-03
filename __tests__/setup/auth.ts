@@ -51,10 +51,16 @@ export const newMockUser = {
 	username: 'remysnkr',
 };
 
-export const mockUseAsyncValidation = {
+export const mockUseValidation = {
 	checkUsernameExists: jest.fn(),
 	checkEmailExists: jest.fn(),
 	checkEmailExistsForReset: jest.fn().mockResolvedValue(null),
+	validateSignUpStep1Async: jest.fn().mockResolvedValue({
+		isValid: true,
+		errorMsg: '',
+	}),
+	errorMsg: '',
+	setErrorMsg: jest.fn(),
 };
 
 export const mockUseSizeConversion = {
@@ -133,8 +139,8 @@ jest.mock('@/context/signUpPropsContext', () => ({
 	useSignUpProps: () => mockUseSignUpProps,
 }));
 
-jest.mock('@/hooks/useAsyncValidation', () => ({
-	useAsyncValidation: () => mockUseAsyncValidation,
+jest.mock('@/hooks/useValidation', () => ({
+	useValidation: () => mockUseValidation,
 }));
 
 jest.mock('@/hooks/ui/useToast', () => ({

@@ -1,7 +1,7 @@
 import SignUpFirstPage from '@/app/(auth)/(signup)/sign-up';
 import { fireEvent, render, screen } from '@testing-library/react-native';
 import { act } from 'react';
-import { mockAuthService, mockUseAuth, resetMocks, mockUseAsyncValidation } from '../../setup/auth';
+import { mockAuthService, mockUseAuth, resetMocks, mockUseValidation } from '../../setup/auth';
 import { fillAndBlurInput } from '../../setup';
 import { ReactTestInstance } from 'react-test-renderer';
 
@@ -27,8 +27,8 @@ describe('SignUpFirstPage', () => {
         mockUseAuth.handleNextSignupPage.mockReset();
         mockUseAuth.errorMsg = '';
 
-        mockUseAsyncValidation.checkUsernameExists.mockResolvedValue(null);
-        mockUseAsyncValidation.checkEmailExists.mockResolvedValue(null);
+        mockUseValidation.checkUsernameExists.mockResolvedValue(null);
+        mockUseValidation.checkEmailExists.mockResolvedValue(null);
 
         render(<SignUpFirstPage />);
 
@@ -99,7 +99,7 @@ describe('SignUpFirstPage', () => {
             });
     
             it('should display an appropriate error if the username is already taken on blur', async () => {
-                mockUseAsyncValidation.checkUsernameExists.mockResolvedValue('This username is already taken.');
+                mockUseValidation.checkUsernameExists.mockResolvedValue('This username is already taken.');
                 await fillAndBlurInput(userNameInput, 'johnSneakers');
 
                 const errorMessage = screen.getByTestId('error-message');
@@ -171,8 +171,8 @@ describe('SignUpFirstPage', () => {
             });
 
             it('should display main button enabled if fields are filled with valid values', async () => {
-                mockUseAsyncValidation.checkUsernameExists.mockResolvedValue(null);
-                mockUseAsyncValidation.checkEmailExists.mockResolvedValue(null);
+                        mockUseValidation.checkUsernameExists.mockResolvedValue(null);
+        mockUseValidation.checkEmailExists.mockResolvedValue(null);
                 await fillAndBlurInput(userNameInput, 'validUsername');
                 await fillAndBlurInput(emailInput, 'valid@email.com');
                 await fillAndBlurInput(passwordInput, 'ValidPassword14*');

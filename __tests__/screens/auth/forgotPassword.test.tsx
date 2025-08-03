@@ -4,7 +4,7 @@ import { act } from "react";
 import { ReactTestInstance } from "react-test-renderer";
 import { fillAndBlurInput } from "../../setup";
 
-import { mockUseAuth, mockUseAsyncValidation, resetMocks } from "../../setup/auth";
+import { mockUseAuth, mockUseValidation, resetMocks } from "../../setup/auth";
 
 jest.mock('@/hooks/useAuth', () => ({
     useAuth: () => mockUseAuth,
@@ -17,7 +17,7 @@ describe('Forgot Password Page', () => {
         jest.clearAllMocks();
         resetMocks();
         
-        mockUseAsyncValidation.checkEmailExistsForReset.mockResolvedValue(null);
+        mockUseValidation.checkEmailExistsForReset.mockResolvedValue(null);
         mockUseAuth.forgotPassword.mockResolvedValue(true);
         
         render(<ForgotPasswordPage />);

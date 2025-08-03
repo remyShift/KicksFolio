@@ -6,7 +6,7 @@ import FormTextInput from "@/components/ui/inputs/FormTextInput";
 import FormPasswordInput from "@/components/ui/inputs/FormPasswordInput";
 import { useSignUpProps } from "@/context/signUpPropsContext";
 import { useFormController } from "@/hooks/useFormController";
-import { useAsyncValidation } from "@/hooks/useAsyncValidation";
+import { useValidation } from "@/hooks/useValidation";
 import { useAuth } from "@/hooks/useAuth";
 import { createSignUpStep1Schema, SignUpStep1FormData } from "@/validation/schemas";
 import PageLink from "@/components/ui/links/LoginPageLink";
@@ -25,7 +25,7 @@ export default function SignUpFirstForm() {
 
     const { signUpProps, setSignUpProps } = useSignUpProps();
     const { handleNextSignupPage } = useAuth();
-    const { checkUsernameExists, checkEmailExists } = useAsyncValidation();
+    	const { checkUsernameExists, checkEmailExists } = useValidation();
 
     const {
         control,
