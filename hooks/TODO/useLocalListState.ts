@@ -25,7 +25,6 @@ export function useLocalListState(sneakers: Sneaker[]) {
 	const [filters, setFilters] = useState<Filter>({});
 	const { currentUnit } = useSizeUnitStore();
 
-	// Calculer les valeurs uniques pour les filtres
 	const uniqueValues = useMemo((): UniqueValues => {
 		if (!sneakers.length) {
 			return { brands: [], sizes: [], conditions: [], statuses: [] };
@@ -47,7 +46,6 @@ export function useLocalListState(sneakers: Sneaker[]) {
 		};
 	}, [sneakers, currentUnit]);
 
-	// Filtrer les sneakers
 	const filteredSneakers = useMemo(() => {
 		let result = [...sneakers];
 
@@ -71,7 +69,6 @@ export function useLocalListState(sneakers: Sneaker[]) {
 		return result;
 	}, [sneakers, filters, currentUnit]);
 
-	// Trier les sneakers filtrés
 	const filteredAndSortedSneakers = useMemo(() => {
 		return [...filteredSneakers].sort((a, b) => {
 			let aVal: any;
@@ -109,7 +106,6 @@ export function useLocalListState(sneakers: Sneaker[]) {
 		});
 	}, [filteredSneakers, sortBy, sortOrder, currentUnit]);
 
-	// Actions
 	const toggleFilters = useCallback(() => {
 		setShowFilters((prev) => !prev);
 	}, []);
@@ -143,7 +139,6 @@ export function useLocalListState(sneakers: Sneaker[]) {
 	}, []);
 
 	return {
-		// État
 		showFilters,
 		sortBy,
 		sortOrder,
@@ -151,7 +146,6 @@ export function useLocalListState(sneakers: Sneaker[]) {
 		uniqueValues,
 		filteredAndSortedSneakers,
 
-		// Actions
 		toggleFilters,
 		toggleSort,
 		updateFilter,

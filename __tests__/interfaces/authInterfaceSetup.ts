@@ -43,8 +43,6 @@ export const mockSuccessfulResetPasswordResponse = {
 	},
 };
 
-// Factory functions pour créer des mocks propres
-
 export const createSuccessfulSignUp = () =>
 	vi.fn().mockResolvedValue(mockSuccessfulSignUpResponse);
 

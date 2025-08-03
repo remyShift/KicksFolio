@@ -137,7 +137,6 @@ describe('User', () => {
             expect(refreshControl).toBeTruthy();
             expect(typeof refreshControl.props.onRefresh).toBe('function');
             
-            // Verify refresh function exists and can be called
             expect(refreshUserData).toBeDefined();
         }, 10000);
     

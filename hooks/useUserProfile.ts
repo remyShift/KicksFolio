@@ -16,7 +16,7 @@ interface UseUserProfile {
 	isFollowLoading: boolean;
 	refreshing: boolean;
 
-	handleFollowToggle: () => Promise<void>;
+	handleFollowToggle: () => Promise<void | [void, void]>;
 	refreshUserProfile: () => Promise<void>;
 }
 
@@ -152,9 +152,6 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 					refreshFollowingUsers(),
 					refreshUserData(),
 				]);
-			})
-			.then(() => {
-				// Success - no additional action needed
 			})
 			.catch((error) => {
 				console.error('Error toggling follow:', error);

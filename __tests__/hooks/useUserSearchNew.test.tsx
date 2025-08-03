@@ -171,7 +171,6 @@ describe('useUserSearch', () => {
 
 			UserSearchInterface.searchUsers.mockResolvedValue(mockSearchResponse);
 
-			// Setup store state
 			mockStore.hasMore = true;
 			mockStore.isLoading = false;
 			mockStore.searchTerm = 'test';
@@ -302,7 +301,6 @@ describe('useUserSearch', () => {
 
 			unmount();
 
-			// Test passes if no errors are thrown during cleanup
 			expect(true).toBe(true);
 		});
 	});

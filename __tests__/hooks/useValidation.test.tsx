@@ -244,11 +244,13 @@ describe('useAuthValidation', () => {
 			expect(result.current.errorMsg).toBe('Email already exists');
 		});
 
-		it('should handle validation errors gracefully', async () => {
-			AuthValidatorInterface.checkUsernameExists.mockRejectedValue(new Error('Network error'));
-			AuthValidatorInterface.checkEmailExists.mockRejectedValue(new Error('Network error'));
-			
-			const { result } = renderHook(() => useAuthValidation());
+			it('should handle validation errors gracefully', async () => {
+		const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+		
+		AuthValidatorInterface.checkUsernameExists.mockRejectedValue(new Error('Network error'));
+		AuthValidatorInterface.checkEmailExists.mockRejectedValue(new Error('Network error'));
+		
+		const { result } = renderHook(() => useAuthValidation());
 
 			const userData: UserData = {
 				username: 'testuser',
@@ -267,10 +269,12 @@ describe('useAuthValidation', () => {
 			expect(validationResult).toEqual({
 				isValid: true,
 				errorMsg: '',
-			});
-			expect(result.current.errorMsg).toBe('');
-		});
+					});
+		expect(result.current.errorMsg).toBe('');
+		
+		consoleSpy.mockRestore();
 	});
+});
 
 	describe('errorMsg state management', () => {
 		it('should allow setting error message', () => {

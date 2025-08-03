@@ -7,9 +7,9 @@ import useToast from '@/hooks/ui/useToast';
 import { useTranslation } from 'react-i18next';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import AuthHeader from '@/components/screens/auth/AuthHeader';
-import { RelativePathString } from '@/.expo/types/router';
+import { RelativePathString } from 'expo-router';
 import FormTextInput from '@/components/ui/inputs/FormTextInput';
-import { useFormController } from '@/hooks/useFormController';
+import { useFormController } from '@/hooks/TODO/useFormController';
 import { createSocialMediaSchema, SocialMediaFormData } from '@/validation/schemas';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 
@@ -41,11 +41,10 @@ export default function SocialMediaForm() {
         onSubmit: async (data) => {
             if (!user) return;
             
-            // Si l'input Instagram est vide (ou seulement des espaces), on passe null pour supprimer la valeur en DB
             const instagramValue = data.instagram_username?.trim();
             
             return updateUser(user.id, {
-                instagram_username: instagramValue && instagramValue.length > 0 ? instagramValue : null,
+                instagram_username: instagramValue && instagramValue.length > 0 ? instagramValue : undefined,
                 social_media_visibility: data.social_media_visibility
             })
             .then((result) => {
