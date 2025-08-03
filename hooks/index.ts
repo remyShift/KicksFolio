@@ -11,4 +11,4 @@ export * from './ui/useToast';
 export * from './TODO/useAppInitialization';
 export * from './TODO/useSizeConversion';
 export * from './useUserSearch';
-export * from './TODO/useUserProfile';
+export * from './useUserProfile';
