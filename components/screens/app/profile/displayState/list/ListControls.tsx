@@ -5,7 +5,7 @@ import SortButtons from './filter/SortButtons';
 import FilterSection from './filter/FilterSection';
 
 interface ListControlsProps {
-  	listState: ReturnType<typeof import('@/hooks/useFilterState').useFilterState>;
+  	listState: ReturnType<typeof import('@/hooks/useSneakerFiltering').useSneakerFiltering>;
 }
 
 export default function ListControls({ listState }: ListControlsProps) {

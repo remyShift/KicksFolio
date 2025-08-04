@@ -1,4 +1,4 @@
-import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
+import { Sneaker } from '@/types/sneaker';
 import { SizeUnit } from '@/types/sneaker';
 import {
 	SneakerFilterInterface,
@@ -6,7 +6,7 @@ import {
 } from '@/interfaces/SneakerFilterInterface';
 import { Filter, SortOption } from '@/types/filter';
 
-export class SneakerFilterProvider implements SneakerFilterInterface {
+export class SneakerFiltering implements SneakerFilterInterface {
 	filterSneakers(
 		sneakers: Sneaker[],
 		filters: Filter,
@@ -101,4 +101,4 @@ export class SneakerFilterProvider implements SneakerFilterInterface {
 	}
 }
 
-export const sneakerFilterProvider = new SneakerFilterProvider();
+export const sneakerFiltering = new SneakerFiltering();

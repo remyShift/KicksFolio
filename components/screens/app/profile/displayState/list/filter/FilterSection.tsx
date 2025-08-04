@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import FilterGroup from './FilterGroup';
 
 interface FilterSectionProps {
-  	listState: ReturnType<typeof import('@/hooks/useFilterState').useFilterState>;
+  	listState: ReturnType<typeof import('@/hooks/useSneakerFiltering').useSneakerFiltering>;
 }
 
 export default function FilterSection({ listState }: FilterSectionProps) {

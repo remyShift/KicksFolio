@@ -2,7 +2,7 @@ import { useState, useMemo, useCallback } from 'react';
 import { Sneaker } from '@/types/sneaker';
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';
 import { UniqueValues } from '@/interfaces/SneakerFilterInterface';
-import { sneakerFilterProvider } from '@/domain/SneakerFilterProvider';
+import { sneakerFilterProvider } from '@/domain/SneakerFiltering';
 import { Filter, SortOption } from '@/types/filter';
 
 export function useLocalListState(sneakers: Sneaker[]) {

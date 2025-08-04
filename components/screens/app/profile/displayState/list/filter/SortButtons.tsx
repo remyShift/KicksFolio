@@ -12,7 +12,7 @@ const SORT_OPTIONS: { key: SortOption; label: string }[] = [
 ];
 
 interface SortButtonsProps {
-  	listState: ReturnType<typeof import('@/hooks/useFilterState').useFilterState>;
+  	listState: ReturnType<typeof import('@/hooks/useSneakerFiltering').useSneakerFiltering>;
 }
 
 export default function SortButtons({ listState }: SortButtonsProps) {

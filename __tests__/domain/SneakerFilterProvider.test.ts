@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { SneakerFilterProvider } from '@/domain/SneakerFilterProvider';
+import { SneakerFiltering } from '@/domain/SneakerFiltering';
 import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
 import { Filter } from '@/types/filter';
 
@@ -55,10 +55,10 @@ const mockSneakers: Sneaker[] = [
 ];
 
 describe('SneakerFilterProvider', () => {
-	let provider: SneakerFilterProvider;
+	let provider: SneakerFiltering;
 
 	beforeEach(() => {
-		provider = new SneakerFilterProvider();
+		provider = new SneakerFiltering();
 	});
 
 	describe('getSizeForUnit', () => {

@@ -2,10 +2,10 @@ import { useState, useMemo, useCallback } from 'react';
 import { Sneaker } from '@/types/sneaker';
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';
 import { UniqueValues } from '@/interfaces/SneakerFilterInterface';
-import { sneakerFilterProvider } from '@/domain/SneakerFilterProvider';
+import { sneakerFiltering } from '@/domain/SneakerFiltering';
 import { Filter, SortOption } from '@/types/filter';
 
-export function useFilterState(sneakers: Sneaker[]) {
+export function useSneakerFiltering(sneakers: Sneaker[]) {
 	const [showFilters, setShowFilters] = useState(false);
 	const [sortBy, setSortBy] = useState<SortOption>('name');
 	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
@@ -14,7 +14,7 @@ export function useFilterState(sneakers: Sneaker[]) {
 
 	const uniqueValues = useMemo((): UniqueValues => {
 		try {
-			return sneakerFilterProvider.getUniqueValues(sneakers, currentUnit);
+			return sneakerFiltering.getUniqueValues(sneakers, currentUnit);
 		} catch (error) {
 			console.error('❌ Error getting unique values:', error);
 			return { brands: [], sizes: [], conditions: [], statuses: [] };
@@ -23,7 +23,7 @@ export function useFilterState(sneakers: Sneaker[]) {
 
 	const filteredSneakers = useMemo(() => {
 		try {
-			return sneakerFilterProvider.filterSneakers(
+			return sneakerFiltering.filterSneakers(
 				sneakers,
 				filters,
 				currentUnit
@@ -36,7 +36,7 @@ export function useFilterState(sneakers: Sneaker[]) {
 
 	const filteredAndSortedSneakers = useMemo(() => {
 		try {
-			return sneakerFilterProvider.sortSneakers(
+			return sneakerFiltering.sortSneakers(
 				filteredSneakers,
 				sortBy,
 				sortOrder,

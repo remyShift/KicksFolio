@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { useFilterState } from '@/hooks/useFilterState';
+import { useSneakerFiltering } from '@/hooks/useSneakerFiltering';
 import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';
 
@@ -8,14 +8,14 @@ vi.mock('@/store/useSizeUnitStore', () => ({
 	useSizeUnitStore: vi.fn(),
 }));
 
-const mockSneakerFilterProvider = vi.hoisted(() => ({
+const mockSneakerFiltering = vi.hoisted(() => ({
 	getUniqueValues: vi.fn(),
 	filterSneakers: vi.fn(),
 	sortSneakers: vi.fn(),
 }));
 
-vi.mock('@/domain/SneakerFilterProvider', () => ({
-	sneakerFilterProvider: mockSneakerFilterProvider,
+vi.mock('@/domain/SneakerFiltering', () => ({
+	sneakerFiltering: mockSneakerFiltering,
 }));
 
 const mockSneakers: Sneaker[] = [
@@ -53,7 +53,7 @@ const mockSneakers: Sneaker[] = [
 	},
 ];
 
-describe('useFilterState', () => {
+describe('useSneakerFiltering', () => {
 	const mockSizeUnitStore = {
 		currentUnit: 'EU' as const,
 	};
@@ -61,21 +61,21 @@ describe('useFilterState', () => {
 	beforeEach(() => {
 		vi.mocked(useSizeUnitStore).mockReturnValue(mockSizeUnitStore);
 		
-		mockSneakerFilterProvider.getUniqueValues.mockReturnValue({
+		mockSneakerFiltering.getUniqueValues.mockReturnValue({
 			brands: ['nike', 'adidas'],
 			sizes: [42, 43],
 			conditions: [8, 9],
 			statuses: ['owned', 'wishlist'],
 		});
-		mockSneakerFilterProvider.filterSneakers.mockReturnValue(mockSneakers);
-		mockSneakerFilterProvider.sortSneakers.mockReturnValue(mockSneakers);
+		mockSneakerFiltering.filterSneakers.mockReturnValue(mockSneakers);
+		mockSneakerFiltering.sortSneakers.mockReturnValue(mockSneakers);
 
 		vi.clearAllMocks();
 	});
 
 	describe('initial state', () => {
 		it('should have correct initial state', () => {
-			const { result } = renderHook(() => useFilterState(mockSneakers));
+			const { result } = renderHook(() => useSneakerFiltering(mockSneakers));
 
 			expect(result.current.showFilters).toBe(false);
 			expect(result.current.sortBy).toBe('name');
@@ -84,27 +84,27 @@ describe('useFilterState', () => {
 		});
 
 		it('should compute unique values using provider', () => {
-			renderHook(() => useFilterState(mockSneakers));
+			renderHook(() => useSneakerFiltering(mockSneakers));
 
-			expect(mockSneakerFilterProvider.getUniqueValues).toHaveBeenCalledWith(mockSneakers, 'EU');
+			expect(mockSneakerFiltering.getUniqueValues).toHaveBeenCalledWith(mockSneakers, 'EU');
 		});
 
 		it('should compute filtered sneakers using provider', () => {
-			renderHook(() => useFilterState(mockSneakers));
+			renderHook(() => useSneakerFiltering(mockSneakers));
 
-			expect(mockSneakerFilterProvider.filterSneakers).toHaveBeenCalledWith(mockSneakers, {}, 'EU');
+			expect(mockSneakerFiltering.filterSneakers).toHaveBeenCalledWith(mockSneakers, {}, 'EU');
 		});
 
 		it('should compute sorted sneakers using provider', () => {
-			renderHook(() => useFilterState(mockSneakers));
+			renderHook(() => useSneakerFiltering(mockSneakers));
 
-			expect(mockSneakerFilterProvider.sortSneakers).toHaveBeenCalledWith(mockSneakers, 'name', 'asc', 'EU');
+			expect(mockSneakerFiltering.sortSneakers).toHaveBeenCalledWith(mockSneakers, 'name', 'asc', 'EU');
 		});
 	});
 
 	describe('toggleFilters', () => {
 		it('should toggle filter visibility', () => {
-			const { result } = renderHook(() => useFilterState(mockSneakers));
+			const { result } = renderHook(() => useSneakerFiltering(mockSneakers));
 
 			expect(result.current.showFilters).toBe(false);
 
@@ -124,7 +124,7 @@ describe('useFilterState', () => {
 
 	describe('toggleSort', () => {
 		it('should change sort option and reset to asc', () => {
-			const { result } = renderHook(() => useFilterState(mockSneakers));
+			const { result } = renderHook(() => useSneakerFiltering(mockSneakers));
 
 			act(() => {
 				result.current.toggleSort('brand');
@@ -135,7 +135,7 @@ describe('useFilterState', () => {
 		});
 
 		it('should toggle sort order for same option', () => {
-			const { result } = renderHook(() => useFilterState(mockSneakers));
+			const { result } = renderHook(() => useSneakerFiltering(mockSneakers));
 
 			act(() => {
 				result.current.toggleSort('name');
@@ -154,7 +154,7 @@ describe('useFilterState', () => {
 
 	describe('updateFilter', () => {
 		it('should add filter', () => {
-			const { result } = renderHook(() => useFilterState(mockSneakers));
+			const { result } = renderHook(() => useSneakerFiltering(mockSneakers));
 
 			act(() => {
 				result.current.updateFilter('brand', 'nike');
@@ -164,7 +164,7 @@ describe('useFilterState', () => {
 		});
 
 		it('should remove filter when value is undefined', () => {
-			const { result } = renderHook(() => useFilterState(mockSneakers));
+			const { result } = renderHook(() => useSneakerFiltering(mockSneakers));
 
 			act(() => {
 				result.current.updateFilter('brand', 'nike');
@@ -180,7 +180,7 @@ describe('useFilterState', () => {
 		});
 
 		it('should update multiple filters', () => {
-			const { result } = renderHook(() => useFilterState(mockSneakers));
+			const { result } = renderHook(() => useSneakerFiltering(mockSneakers));
 
 			act(() => {
 				result.current.updateFilter('brand', 'nike');
@@ -193,7 +193,7 @@ describe('useFilterState', () => {
 
 	describe('clearFilters', () => {
 		it('should clear all filters', () => {
-			const { result } = renderHook(() => useFilterState(mockSneakers));
+			const { result } = renderHook(() => useSneakerFiltering(mockSneakers));
 
 			act(() => {
 				result.current.updateFilter('brand', 'nike');
@@ -212,13 +212,13 @@ describe('useFilterState', () => {
 
 	describe('error handling', () => {
 		it('should handle getUniqueValues error gracefully', () => {
-			mockSneakerFilterProvider.getUniqueValues.mockImplementation(() => {
+			mockSneakerFiltering.getUniqueValues.mockImplementation(() => {
 				throw new Error('Provider error');
 			});
 
 			const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
-			const { result } = renderHook(() => useFilterState(mockSneakers));
+			const { result } = renderHook(() => useSneakerFiltering(mockSneakers));
 
 			expect(result.current.uniqueValues).toEqual({
 				brands: [],
@@ -232,13 +232,13 @@ describe('useFilterState', () => {
 		});
 
 		it('should handle filterSneakers error gracefully', () => {
-			mockSneakerFilterProvider.filterSneakers.mockImplementation(() => {
+			mockSneakerFiltering.filterSneakers.mockImplementation(() => {
 				throw new Error('Filter error');
 			});
 
 			const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
-			const { result } = renderHook(() => useFilterState(mockSneakers));
+			const { result } = renderHook(() => useSneakerFiltering(mockSneakers));
 
 			expect(result.current.filteredAndSortedSneakers).toBe(mockSneakers);
 			expect(consoleSpy).toHaveBeenCalledWith('❌ Error filtering sneakers:', expect.any(Error));
@@ -247,13 +247,13 @@ describe('useFilterState', () => {
 		});
 
 		it('should handle sortSneakers error gracefully', () => {
-			mockSneakerFilterProvider.sortSneakers.mockImplementation(() => {
+			mockSneakerFiltering.sortSneakers.mockImplementation(() => {
 				throw new Error('Sort error');
 			});
 
 			const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
-			const { result } = renderHook(() => useFilterState(mockSneakers));
+			const { result } = renderHook(() => useSneakerFiltering(mockSneakers));
 
 			expect(consoleSpy).toHaveBeenCalledWith('❌ Error sorting sneakers:', expect.any(Error));
 
