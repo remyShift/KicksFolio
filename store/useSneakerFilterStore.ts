@@ -1,17 +1,17 @@
 import { create } from 'zustand';
-import { Sneaker } from '@/types/Sneaker';
+import { SizeUnit, Sneaker } from '@/types/sneaker';
 import { SortOption, SortOrder, FilterState } from '@/types/filter';
-import { sneakerFilterProvider } from '@/domain/SneakerFiltering';
+import { SneakerFilterInterface } from '@/interfaces/SneakerFilterInterface';
+import { sneakerFilteringProvider } from '@/domain/SneakerFiltering';
+import { useSizeUnitStore } from './useSizeUnitStore';
 
 interface SneakerFilterStore {
-	// État
 	sneakers: Sneaker[];
 	sortBy: SortOption;
 	sortOrder: SortOrder;
 	showFilters: boolean;
 	filters: FilterState;
 
-	// Données dérivées
 	filteredAndSortedSneakers: Sneaker[];
 	uniqueValues: {
 		brands: string[];
@@ -19,19 +19,17 @@ interface SneakerFilterStore {
 		conditions: string[];
 	};
 
-	// Actions
 	setSneakers: (sneakers: Sneaker[]) => void;
 	toggleSort: (option: SortOption) => void;
 	toggleFilters: () => void;
 	updateFilter: (filterType: keyof FilterState, values: string[]) => void;
 	clearFilters: () => void;
 
-	// Actions internes
 	_updateDerivedData: () => void;
+	currentUnit: SizeUnit;
 }
 
 export const useSneakerFilterStore = create<SneakerFilterStore>((set, get) => ({
-	// État initial
 	sneakers: [],
 	sortBy: 'name',
 	sortOrder: 'asc',
@@ -42,7 +40,8 @@ export const useSneakerFilterStore = create<SneakerFilterStore>((set, get) => ({
 		conditions: [],
 	},
 
-	// Données dérivées initiales
+	currentUnit: useSizeUnitStore.getState().currentUnit,
+
 	filteredAndSortedSneakers: [],
 	uniqueValues: {
 		brands: [],
@@ -50,7 +49,6 @@ export const useSneakerFilterStore = create<SneakerFilterStore>((set, get) => ({
 		conditions: [],
 	},
 
-	// Actions
 	setSneakers: (sneakers: Sneaker[]) => {
 		set({ sneakers });
 		get()._updateDerivedData();
@@ -95,21 +93,28 @@ export const useSneakerFilterStore = create<SneakerFilterStore>((set, get) => ({
 		get()._updateDerivedData();
 	},
 
-	// Action interne pour mettre à jour les données dérivées
 	_updateDerivedData: () => {
 		const state = get();
 
-		// Utilisation du domain layer pour la logique métier
-		const filteredAndSortedSneakers =
-			sneakerFilterProvider.filterAndSortSneakers(
-				state.sneakers,
-				state.filters,
-				state.sortBy,
-				state.sortOrder
-			);
+		const filteredSneakers = SneakerFilterInterface.filterSneakers(
+			state.sneakers,
+			state.filters,
+			state.currentUnit,
+			sneakerFilteringProvider.filterSneakers
+		);
 
-		const uniqueValues = sneakerFilterProvider.getUniqueValues(
-			state.sneakers
+		const filteredAndSortedSneakers = SneakerFilterInterface.sortSneakers(
+			filteredSneakers,
+			state.sortBy,
+			state.sortOrder,
+			state.currentUnit,
+			sneakerFilteringProvider.sortSneakers
+		);
+
+		const uniqueValues = SneakerFilterInterface.getUniqueValues(
+			state.sneakers,
+			state.currentUnit,
+			sneakerFilteringProvider.getUniqueValues
 		);
 
 		set({

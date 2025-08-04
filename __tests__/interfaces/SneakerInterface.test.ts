@@ -4,8 +4,8 @@ import {
 	SneakerProviderInterface,
 } from '@/interfaces/SneakerProviderInterface';
 import { SupabaseSneaker } from '@/domain/SneakerProvider';
-import { SneakerBrand } from '@/types/Sneaker';
-import { SizeUnit } from '@/types/Sneaker';
+import { SneakerBrand } from '@/types/sneaker';
+import { SizeUnit } from '@/types/sneaker';
 
 const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 

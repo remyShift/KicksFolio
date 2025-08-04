@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { SneakerProviderInterface } from '@/interfaces/SneakerProviderInterface';
-import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/Sneaker';
+import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
 
 describe('SneakerProviderInterface', () => {
 	describe('getSneakersByUser', () => {

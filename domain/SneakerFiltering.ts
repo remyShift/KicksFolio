@@ -1,15 +1,18 @@
-import { Sneaker } from '@/types/Sneaker';
-import { SortOption, SortOrder, FilterState } from '@/types/filter';
-import { SneakerFilterInterface } from '@/interfaces/SneakerFilterInterface';
+import { Sneaker } from '@/types/sneaker';
+import {
+	SortOption,
+	SortOrder,
+	FilterState,
+	UniqueValues,
+} from '@/types/filter';
+import { SneakerFilterProviderInterface } from '@/interfaces/SneakerFilterInterface';
 
-export class SneakerFiltering implements SneakerFilterInterface {
-	filterAndSortSneakers(
+class SneakerFiltering implements SneakerFilterProviderInterface {
+	filterSneakers(
 		sneakers: Sneaker[],
 		filters: FilterState,
-		sortBy: SortOption,
-		sortOrder: SortOrder
+		currentUnit: 'US' | 'EU'
 	): Sneaker[] {
-		// Filtrage
 		let filteredSneakers = [...sneakers];
 
 		if (filters.brands.length > 0) {
@@ -19,11 +22,11 @@ export class SneakerFiltering implements SneakerFilterInterface {
 		}
 
 		if (filters.sizes.length > 0) {
-			filteredSneakers = filteredSneakers.filter(
-				(sneaker) =>
-					sneaker.size &&
-					filters.sizes.includes(sneaker.size.toString())
-			);
+			filteredSneakers = filteredSneakers.filter((sneaker) => {
+				const size =
+					currentUnit === 'US' ? sneaker.size_us : sneaker.size_eu;
+				return size && filters.sizes.includes(size.toString());
+			});
 		}
 
 		if (filters.conditions.length > 0) {
@@ -34,8 +37,24 @@ export class SneakerFiltering implements SneakerFilterInterface {
 			);
 		}
 
-		// Tri
-		filteredSneakers.sort((a, b) => {
+		if (filters.statuses && filters.statuses.length > 0) {
+			filteredSneakers = filteredSneakers.filter((sneaker) =>
+				filters.statuses!.includes(sneaker.status)
+			);
+		}
+
+		return filteredSneakers;
+	}
+
+	sortSneakers(
+		sneakers: Sneaker[],
+		sortBy: SortOption,
+		sortOrder: SortOrder,
+		currentUnit: 'US' | 'EU'
+	): Sneaker[] {
+		const sortedSneakers = [...sneakers];
+
+		sortedSneakers.sort((a, b) => {
 			let comparison = 0;
 
 			switch (sortBy) {
@@ -46,14 +65,15 @@ export class SneakerFiltering implements SneakerFilterInterface {
 					comparison = a.brand.localeCompare(b.brand);
 					break;
 				case 'size':
-					comparison = (a.size || 0) - (b.size || 0);
+					const sizeA = currentUnit === 'US' ? a.size_us : a.size_eu;
+					const sizeB = currentUnit === 'US' ? b.size_us : b.size_eu;
+					comparison = (sizeA || 0) - (sizeB || 0);
 					break;
 				case 'condition':
 					comparison = (a.condition || 0) - (b.condition || 0);
 					break;
 				case 'value':
-					comparison =
-						(a.purchase_price || 0) - (b.purchase_price || 0);
+					comparison = (a.price_paid || 0) - (b.price_paid || 0);
 					break;
 				default:
 					comparison = 0;
@@ -62,26 +82,33 @@ export class SneakerFiltering implements SneakerFilterInterface {
 			return sortOrder === 'desc' ? -comparison : comparison;
 		});
 
-		return filteredSneakers;
+		return sortedSneakers;
 	}
 
-	getUniqueValues(sneakers: Sneaker[]): {
-		brands: string[];
-		sizes: string[];
-		conditions: string[];
-	} {
+	getUniqueValues(
+		sneakers: Sneaker[],
+		currentUnit: 'US' | 'EU'
+	): UniqueValues {
 		const brands = [
 			...new Set(
 				sneakers.map((sneaker) => sneaker.brand).filter(Boolean)
 			),
 		].sort();
+
 		const sizes = [
 			...new Set(
 				sneakers
-					.map((sneaker) => sneaker.size?.toString())
+					.map((sneaker) => {
+						const size =
+							currentUnit === 'US'
+								? sneaker.size_us
+								: sneaker.size_eu;
+						return size?.toString();
+					})
 					.filter(Boolean)
 			),
 		].sort((a, b) => Number(a) - Number(b));
+
 		const conditions = [
 			...new Set(
 				sneakers
@@ -90,12 +117,19 @@ export class SneakerFiltering implements SneakerFilterInterface {
 			),
 		].sort((a, b) => Number(b) - Number(a));
 
+		const statuses = [
+			...new Set(
+				sneakers.map((sneaker) => sneaker.status).filter(Boolean)
+			),
+		].sort();
+
 		return {
 			brands,
 			sizes,
 			conditions,
+			statuses,
 		};
 	}
 }
 
-export const sneakerFilterProvider = new SneakerFiltering();
+export const sneakerFilteringProvider = new SneakerFiltering();

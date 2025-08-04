@@ -1,5 +1,5 @@
 import { SupabaseSneaker } from '@/domain/SneakerProvider';
-import { SizeUnit } from '@/types/Sneaker';
+import { SizeUnit } from '@/types/sneaker';
 
 interface SkuSearchResponse {
 	results: Array<{

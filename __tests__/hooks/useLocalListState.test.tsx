@@ -15,7 +15,15 @@ const mockSneakerFiltering = vi.hoisted(() => ({
 }));
 
 vi.mock('@/domain/SneakerFiltering', () => ({
-	sneakerFiltering: mockSneakerFiltering,
+	sneakerFilteringProvider: mockSneakerFiltering,
+}));
+
+vi.mock('@/interfaces/SneakerFilterInterface', () => ({
+	SneakerFilterInterface: {
+		getUniqueValues: vi.fn((sneakers, currentUnit, fn) => fn(sneakers, currentUnit)),
+		filterSneakers: vi.fn((sneakers, filters, currentUnit, fn) => fn(sneakers, filters, currentUnit)),
+		sortSneakers: vi.fn((sneakers, sortBy, sortOrder, currentUnit, fn) => fn(sneakers, sortBy, sortOrder, currentUnit)),
+	},
 }));
 
 const mockSneakers: Sneaker[] = [
@@ -92,7 +100,12 @@ describe('useSneakerFiltering', () => {
 		it('should compute filtered sneakers using provider', () => {
 			renderHook(() => useSneakerFiltering(mockSneakers));
 
-			expect(mockSneakerFiltering.filterSneakers).toHaveBeenCalledWith(mockSneakers, {}, 'EU');
+			expect(mockSneakerFiltering.filterSneakers).toHaveBeenCalledWith(mockSneakers, {
+			brands: [],
+			sizes: [],
+			conditions: [],
+			statuses: [],
+		}, 'EU');
 		});
 
 		it('should compute sorted sneakers using provider', () => {

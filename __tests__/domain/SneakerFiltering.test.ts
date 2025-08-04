@@ -1,292 +1,433 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { SneakerFiltering } from '@/domain/SneakerFiltering';
-import { Sneaker } from '@/types/Sneaker';
-import { SortOption, SortOrder, FilterState } from '@/types/filter';
+import { sneakerFilteringProvider } from '@/domain/SneakerFiltering';
+import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
+import { FilterState } from '@/types/filter';
 
 describe('SneakerFiltering', () => {
-	let provider: SneakerFiltering;
-
 	const mockSneakers: Sneaker[] = [
 		{
 			id: '1',
-			model: 'Air Force 1',
-			brand: 'Nike',
-			size: 42,
-			condition: 8,
-			purchase_price: 100,
-			images: [],
-			created_at: '2024-01-01',
 			user_id: 'user1',
+			model: 'Air Jordan 1',
+			brand: SneakerBrand.Jordan,
+			size_eu: 42,
+			size_us: 8.5,
+			condition: 9,
+			status: SneakerStatus.Stocking,
+			price_paid: 200,
+			description: 'Great condition',
+			images: [],
+			created_at: '2023-01-01',
+			updated_at: '2023-01-01',
+			estimated_value: 250,
+			sku: 'AJ1-001',
+			gender: 'unisex',
+			og_box: true,
+			ds: false,
+			owner: {
+				id: 'user1',
+				username: 'sneakerhead',
+				first_name: 'John',
+				last_name: 'Doe',
+			},
+			wishlist_added_at: '2023-01-01',
 		},
 		{
 			id: '2',
-			model: 'Stan Smith',
-			brand: 'Adidas',
-			size: 43,
-			condition: 9,
-			purchase_price: 80,
+			user_id: 'user2',
+			model: 'Air Max 90',
+			brand: SneakerBrand.Nike,
+			size_eu: 43,
+			size_us: 9,
+			condition: 8,
+			status: SneakerStatus.Rocking,
+			price_paid: 150,
+			description: 'Good condition',
 			images: [],
-			created_at: '2024-01-02',
-			user_id: 'user1',
+			created_at: '2023-01-02',
+			updated_at: '2023-01-02',
+			estimated_value: 180,
+			sku: 'AM90-001',
+			gender: 'men',
+			og_box: false,
+			ds: false,
+			owner: {
+				id: 'user2',
+				username: 'runner',
+				first_name: 'Jane',
+				last_name: 'Smith',
+			},
+			wishlist_added_at: '2023-01-02',
 		},
 		{
 			id: '3',
-			model: 'Chuck Taylor',
-			brand: 'Converse',
-			size: 42,
+			user_id: 'user3',
+			model: 'Stan Smith',
+			brand: SneakerBrand.Adidas,
+			size_eu: 41,
+			size_us: 8,
 			condition: 7,
-			purchase_price: 60,
+			status: SneakerStatus.Selling,
+			price_paid: 80,
+			description: 'Used condition',
 			images: [],
-			created_at: '2024-01-03',
-			user_id: 'user1',
+			created_at: '2023-01-03',
+			updated_at: '2023-01-03',
+			estimated_value: 90,
+			sku: 'SS-001',
+			gender: 'unisex',
+			og_box: true,
+			ds: false,
+			owner: {
+				id: 'user3',
+				username: 'collector',
+				first_name: 'Bob',
+				last_name: 'Wilson',
+			},
+			wishlist_added_at: '2023-01-03',
 		},
 	];
 
-	beforeEach(() => {
-		provider = new SneakerFiltering();
-	});
-
-	describe('filterAndSortSneakers', () => {
-		it('should return all sneakers when no filters applied', () => {
+	describe('filterSneakers', () => {
+		it('should return all sneakers when no filters are applied', () => {
 			const filters: FilterState = {
 				brands: [],
 				sizes: [],
 				conditions: [],
+				statuses: [],
 			};
-			const result = provider.filterAndSortSneakers(
+
+			const result = sneakerFilteringProvider.filterSneakers(
 				mockSneakers,
 				filters,
-				'name',
-				'asc'
+				'EU'
 			);
 
 			expect(result).toHaveLength(3);
+			expect(result).toEqual(mockSneakers);
 		});
 
-		it('should filter by brand', () => {
+		it('should filter sneakers by brand', () => {
 			const filters: FilterState = {
-				brands: ['Nike'],
+				brands: ['JORDAN'],
 				sizes: [],
 				conditions: [],
 			};
-			const result = provider.filterAndSortSneakers(
+
+			const result = sneakerFilteringProvider.filterSneakers(
 				mockSneakers,
 				filters,
-				'name',
-				'asc'
+				'EU'
 			);
 
 			expect(result).toHaveLength(1);
-			expect(result[0].brand).toBe('Nike');
+			expect(result[0].brand).toBe(SneakerBrand.Jordan);
 		});
 
-		it('should filter by size', () => {
+		it('should filter sneakers by size (EU)', () => {
 			const filters: FilterState = {
 				brands: [],
 				sizes: ['42'],
 				conditions: [],
 			};
-			const result = provider.filterAndSortSneakers(
+
+			const result = sneakerFilteringProvider.filterSneakers(
 				mockSneakers,
 				filters,
-				'name',
-				'asc'
-			);
-
-			expect(result).toHaveLength(2);
-			expect(result.every((s) => s.size === 42)).toBe(true);
-		});
-
-		it('should filter by condition', () => {
-			const filters: FilterState = {
-				brands: [],
-				sizes: [],
-				conditions: ['8'],
-			};
-			const result = provider.filterAndSortSneakers(
-				mockSneakers,
-				filters,
-				'name',
-				'asc'
+				'EU'
 			);
 
 			expect(result).toHaveLength(1);
-			expect(result[0].condition).toBe(8);
+			expect(result[0].size_eu).toBe(42);
+		});
+
+		it('should filter sneakers by size (US)', () => {
+			const filters: FilterState = {
+				brands: [],
+				sizes: ['8.5'],
+				conditions: [],
+			};
+
+			const result = sneakerFilteringProvider.filterSneakers(
+				mockSneakers,
+				filters,
+				'US'
+			);
+
+			expect(result).toHaveLength(1);
+			expect(result[0].size_us).toBe(8.5);
+		});
+
+		it('should filter sneakers by condition', () => {
+			const filters: FilterState = {
+				brands: [],
+				sizes: [],
+				conditions: ['9'],
+			};
+
+			const result = sneakerFilteringProvider.filterSneakers(
+				mockSneakers,
+				filters,
+				'EU'
+			);
+
+			expect(result).toHaveLength(1);
+			expect(result[0].condition).toBe(9);
+		});
+
+		it('should filter sneakers by status', () => {
+			const filters: FilterState = {
+				brands: [],
+				sizes: [],
+				conditions: [],
+				statuses: ['Rocking'],
+			};
+
+			const result = sneakerFilteringProvider.filterSneakers(
+				mockSneakers,
+				filters,
+				'EU'
+			);
+
+			expect(result).toHaveLength(1);
+			expect(result[0].status).toBe(SneakerStatus.Rocking);
 		});
 
 		it('should apply multiple filters', () => {
 			const filters: FilterState = {
-				brands: ['Nike'],
-				sizes: ['42'],
-				conditions: [],
+				brands: ['NIKE', 'JORDAN'],
+				sizes: ['42', '43'],
+				conditions: ['8', '9'],
 			};
-			const result = provider.filterAndSortSneakers(
+
+			const result = sneakerFilteringProvider.filterSneakers(
 				mockSneakers,
 				filters,
-				'name',
-				'asc'
+				'EU'
 			);
 
-			expect(result).toHaveLength(1);
-			expect(result[0].brand).toBe('Nike');
-			expect(result[0].size).toBe(42);
+			expect(result).toHaveLength(2);
+			expect(
+				result.every((s) => ['NIKE', 'JORDAN'].includes(s.brand))
+			).toBe(true);
+			expect(result.every((s) => [42, 43].includes(s.size_eu))).toBe(
+				true
+			);
+			expect(result.every((s) => [8, 9].includes(s.condition))).toBe(
+				true
+			);
 		});
 
-		it('should sort by name ascending', () => {
+		it('should return empty array when no sneakers match filters', () => {
 			const filters: FilterState = {
-				brands: [],
+				brands: ['nonexistent'],
 				sizes: [],
 				conditions: [],
 			};
-			const result = provider.filterAndSortSneakers(
+
+			const result = sneakerFilteringProvider.filterSneakers(
 				mockSneakers,
 				filters,
-				'name',
-				'asc'
+				'EU'
 			);
 
-			expect(result[0].model).toBe('Air Force 1');
-			expect(result[1].model).toBe('Chuck Taylor');
+			expect(result).toHaveLength(0);
+		});
+	});
+
+	describe('sortSneakers', () => {
+		it('should sort sneakers by name (ascending)', () => {
+			const result = sneakerFilteringProvider.sortSneakers(
+				mockSneakers,
+				'name',
+				'asc',
+				'EU'
+			);
+
+			expect(result).toHaveLength(3);
+			expect(result[0].model).toBe('Air Jordan 1');
+			expect(result[1].model).toBe('Air Max 90');
 			expect(result[2].model).toBe('Stan Smith');
 		});
 
-		it('should sort by name descending', () => {
-			const filters: FilterState = {
-				brands: [],
-				sizes: [],
-				conditions: [],
-			};
-			const result = provider.filterAndSortSneakers(
+		it('should sort sneakers by name (descending)', () => {
+			const result = sneakerFilteringProvider.sortSneakers(
 				mockSneakers,
-				filters,
 				'name',
-				'desc'
+				'desc',
+				'EU'
 			);
 
+			expect(result).toHaveLength(3);
 			expect(result[0].model).toBe('Stan Smith');
-			expect(result[1].model).toBe('Chuck Taylor');
-			expect(result[2].model).toBe('Air Force 1');
+			expect(result[1].model).toBe('Air Max 90');
+			expect(result[2].model).toBe('Air Jordan 1');
 		});
 
-		it('should sort by brand ascending', () => {
-			const filters: FilterState = {
-				brands: [],
-				sizes: [],
-				conditions: [],
-			};
-			const result = provider.filterAndSortSneakers(
+		it('should sort sneakers by brand (ascending)', () => {
+			const result = sneakerFilteringProvider.sortSneakers(
 				mockSneakers,
-				filters,
 				'brand',
-				'asc'
+				'asc',
+				'EU'
 			);
 
-			expect(result[0].brand).toBe('Adidas');
-			expect(result[1].brand).toBe('Converse');
-			expect(result[2].brand).toBe('Nike');
+			expect(result).toHaveLength(3);
+			expect(result[0].brand).toBe(SneakerBrand.Adidas);
+			expect(result[1].brand).toBe(SneakerBrand.Jordan);
+			expect(result[2].brand).toBe(SneakerBrand.Nike);
 		});
 
-		it('should sort by size ascending', () => {
-			const filters: FilterState = {
-				brands: [],
-				sizes: [],
-				conditions: [],
-			};
-			const result = provider.filterAndSortSneakers(
+		it('should sort sneakers by size EU (ascending)', () => {
+			const result = sneakerFilteringProvider.sortSneakers(
 				mockSneakers,
-				filters,
 				'size',
-				'asc'
+				'asc',
+				'EU'
 			);
 
-			expect(result[0].size).toBe(42);
-			expect(result[2].size).toBe(43);
+			expect(result).toHaveLength(3);
+			expect(result[0].size_eu).toBe(41);
+			expect(result[1].size_eu).toBe(42);
+			expect(result[2].size_eu).toBe(43);
 		});
 
-		it('should sort by condition descending', () => {
-			const filters: FilterState = {
-				brands: [],
-				sizes: [],
-				conditions: [],
-			};
-			const result = provider.filterAndSortSneakers(
+		it('should sort sneakers by size US (ascending)', () => {
+			const result = sneakerFilteringProvider.sortSneakers(
 				mockSneakers,
-				filters,
+				'size',
+				'asc',
+				'US'
+			);
+
+			expect(result).toHaveLength(3);
+			expect(result[0].size_us).toBe(8);
+			expect(result[1].size_us).toBe(8.5);
+			expect(result[2].size_us).toBe(9);
+		});
+
+		it('should sort sneakers by condition (ascending)', () => {
+			const result = sneakerFilteringProvider.sortSneakers(
+				mockSneakers,
 				'condition',
-				'desc'
+				'asc',
+				'EU'
 			);
 
-			expect(result[0].condition).toBe(9);
+			expect(result).toHaveLength(3);
+			expect(result[0].condition).toBe(7);
 			expect(result[1].condition).toBe(8);
-			expect(result[2].condition).toBe(7);
+			expect(result[2].condition).toBe(9);
 		});
 
-		it('should sort by value ascending', () => {
-			const filters: FilterState = {
-				brands: [],
-				sizes: [],
-				conditions: [],
-			};
-			const result = provider.filterAndSortSneakers(
+		it('should sort sneakers by value (price_paid) (ascending)', () => {
+			const result = sneakerFilteringProvider.sortSneakers(
 				mockSneakers,
-				filters,
 				'value',
-				'asc'
+				'asc',
+				'EU'
 			);
 
-			expect(result[0].purchase_price).toBe(60);
-			expect(result[1].purchase_price).toBe(80);
-			expect(result[2].purchase_price).toBe(100);
+			expect(result).toHaveLength(3);
+			expect(result[0].price_paid).toBe(80);
+			expect(result[1].price_paid).toBe(150);
+			expect(result[2].price_paid).toBe(200);
+		});
+
+		it('should not modify original array', () => {
+			const originalLength = mockSneakers.length;
+			const originalFirst = mockSneakers[0].model;
+
+			sneakerFilteringProvider.sortSneakers(
+				mockSneakers,
+				'name',
+				'desc',
+				'EU'
+			);
+
+			expect(mockSneakers).toHaveLength(originalLength);
+			expect(mockSneakers[0].model).toBe(originalFirst);
 		});
 	});
 
 	describe('getUniqueValues', () => {
-		it('should return empty values for empty array', () => {
-			const result = provider.getUniqueValues([]);
-
-			expect(result).toEqual({
-				brands: [],
-				sizes: [],
-				conditions: [],
-			});
-		});
-
-		it('should return unique values', () => {
-			const result = provider.getUniqueValues(mockSneakers);
-
-			expect(result.brands).toEqual(
-				expect.arrayContaining(['Nike', 'Adidas', 'Converse'])
+		it('should return unique brands sorted alphabetically', () => {
+			const result = sneakerFilteringProvider.getUniqueValues(
+				mockSneakers,
+				'EU'
 			);
-			expect(result.sizes).toEqual(['42', '43']);
+
+			expect(result.brands).toEqual(['ADIDAS', 'JORDAN', 'NIKE']);
+		});
+
+		it('should return unique sizes (EU) sorted numerically', () => {
+			const result = sneakerFilteringProvider.getUniqueValues(
+				mockSneakers,
+				'EU'
+			);
+
+			expect(result.sizes).toEqual(['41', '42', '43']);
+		});
+
+		it('should return unique sizes (US) sorted numerically', () => {
+			const result = sneakerFilteringProvider.getUniqueValues(
+				mockSneakers,
+				'US'
+			);
+
+			expect(result.sizes).toEqual(['8', '8.5', '9']);
+		});
+
+		it('should return unique conditions sorted by highest first', () => {
+			const result = sneakerFilteringProvider.getUniqueValues(
+				mockSneakers,
+				'EU'
+			);
+
 			expect(result.conditions).toEqual(['9', '8', '7']);
 		});
 
-		it('should sort sizes ascending and conditions descending', () => {
-			const result = provider.getUniqueValues(mockSneakers);
+		it('should return unique statuses sorted alphabetically', () => {
+			const result = sneakerFilteringProvider.getUniqueValues(
+				mockSneakers,
+				'EU'
+			);
 
-			expect(result.sizes).toEqual(['42', '43']);
-			expect(result.conditions).toEqual(['9', '8', '7']);
+			expect(result.statuses).toEqual(['Rocking', 'Selling', 'Stocking']);
 		});
 
-		it('should handle sneakers with undefined values', () => {
-			const sneakersWithUndefined: Sneaker[] = [
+		it('should handle empty sneakers array', () => {
+			const result = sneakerFilteringProvider.getUniqueValues([], 'EU');
+
+			expect(result.brands).toEqual([]);
+			expect(result.sizes).toEqual([]);
+			expect(result.conditions).toEqual([]);
+			expect(result.statuses).toEqual([]);
+		});
+
+		it('should filter out null/undefined values', () => {
+			const sneakersWithNulls = [
+				...mockSneakers,
 				{
-					id: '1',
-					model: 'Test',
-					brand: 'Test',
-					size: undefined as any,
-					condition: undefined as any,
-					purchase_price: 100,
-					images: [],
-					created_at: '2024-01-01',
-					user_id: 'user1',
+					...mockSneakers[0],
+					id: '4',
+					brand: null as any,
+					size_eu: null as any,
+					size_us: null as any,
+					condition: null as any,
+					status: null as any,
 				},
 			];
 
-			const result = provider.getUniqueValues(sneakersWithUndefined);
+			const result = sneakerFilteringProvider.getUniqueValues(
+				sneakersWithNulls,
+				'EU'
+			);
 
-			expect(result.sizes).toEqual([]);
-			expect(result.conditions).toEqual([]);
+			expect(result.brands).toEqual(['ADIDAS', 'JORDAN', 'NIKE']);
+			expect(result.sizes).toEqual(['41', '42', '43']);
+			expect(result.conditions).toEqual(['9', '8', '7']);
+			expect(result.statuses).toEqual(['Rocking', 'Selling', 'Stocking']);
 		});
 	});
 });

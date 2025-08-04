@@ -1,8 +1,9 @@
 import { useState, useMemo, useCallback } from 'react';
 import { Sneaker } from '@/types/sneaker';
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';
-import { UniqueValues } from '@/interfaces/SneakerFilterInterface';
-import { sneakerFiltering } from '@/domain/SneakerFiltering';
+import { UniqueValues } from '@/types/filter';
+import { SneakerFilterInterface } from '@/interfaces/SneakerFilterInterface';
+import { sneakerFilteringProvider } from '@/domain/SneakerFiltering';
 import { Filter, SortOption } from '@/types/filter';
 
 export function useSneakerFiltering(sneakers: Sneaker[]) {
@@ -14,7 +15,11 @@ export function useSneakerFiltering(sneakers: Sneaker[]) {
 
 	const uniqueValues = useMemo((): UniqueValues => {
 		try {
-			return sneakerFiltering.getUniqueValues(sneakers, currentUnit);
+			return SneakerFilterInterface.getUniqueValues(
+				sneakers,
+				currentUnit,
+				sneakerFilteringProvider.getUniqueValues
+			);
 		} catch (error) {
 			console.error('❌ Error getting unique values:', error);
 			return { brands: [], sizes: [], conditions: [], statuses: [] };
@@ -23,10 +28,21 @@ export function useSneakerFiltering(sneakers: Sneaker[]) {
 
 	const filteredSneakers = useMemo(() => {
 		try {
-			return sneakerFiltering.filterSneakers(
+			// Convert Filter to FilterState for compatibility
+			const filterState = {
+				brands: filters.brand ? [filters.brand] : [],
+				sizes: filters.size ? [filters.size.toString()] : [],
+				conditions: filters.condition
+					? [filters.condition.toString()]
+					: [],
+				statuses: filters.status ? [filters.status] : [],
+			};
+
+			return SneakerFilterInterface.filterSneakers(
 				sneakers,
-				filters,
-				currentUnit
+				filterState,
+				currentUnit,
+				sneakerFilteringProvider.filterSneakers
 			);
 		} catch (error) {
 			console.error('❌ Error filtering sneakers:', error);
@@ -36,11 +52,12 @@ export function useSneakerFiltering(sneakers: Sneaker[]) {
 
 	const filteredAndSortedSneakers = useMemo(() => {
 		try {
-			return sneakerFiltering.sortSneakers(
+			return SneakerFilterInterface.sortSneakers(
 				filteredSneakers,
 				sortBy,
 				sortOrder,
-				currentUnit
+				currentUnit,
+				sneakerFilteringProvider.sortSneakers
 			);
 		} catch (error) {
 			console.error('❌ Error sorting sneakers:', error);

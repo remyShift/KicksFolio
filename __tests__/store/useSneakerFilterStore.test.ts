@@ -1,20 +1,22 @@
 import { renderHook, act } from '@testing-library/react';
 import { useSneakerFilterStore } from '@/store/useSneakerFilterStore';
-import { Sneaker } from '@/types/Sneaker';
+import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
+import { vi } from 'vitest';
 
-// Mock du domain provider
 vi.mock('@/domain/SneakerFiltering', () => ({
-	sneakerFilterProvider: {
-		filterAndSortSneakers: vi.fn((sneakers, filters, sortBy, sortOrder) => {
-			// Logique simplifiée pour les tests
+	sneakerFilteringProvider: {
+		filterSneakers: vi.fn((sneakers, filters, currentUnit) => {
 			let result = [...sneakers];
 
-			// Filtrage
-			if (filters.brands.length > 0) {
+			if (filters.brands && filters.brands.length > 0) {
 				result = result.filter((s) => filters.brands.includes(s.brand));
 			}
 
-			// Tri
+			return result;
+		}),
+		sortSneakers: vi.fn((sneakers, sortBy, sortOrder, currentUnit) => {
+			let result = [...sneakers];
+
 			result.sort((a, b) => {
 				let comparison = 0;
 				if (sortBy === 'name') {
@@ -27,19 +29,50 @@ vi.mock('@/domain/SneakerFiltering', () => ({
 
 			return result;
 		}),
-		getUniqueValues: vi.fn((sneakers) => ({
+		getUniqueValues: vi.fn((sneakers, currentUnit) => ({
 			brands: [...new Set(sneakers.map((s) => s.brand))],
 			sizes: [
 				...new Set(
-					sneakers.map((s) => s.size?.toString()).filter(Boolean)
+					sneakers
+						.map((s: Sneaker) => {
+							const size =
+								currentUnit === 'US' ? s.size_us : s.size_eu;
+							return size?.toString();
+						})
+						.filter(Boolean)
 				),
 			],
 			conditions: [
 				...new Set(
-					sneakers.map((s) => s.condition?.toString()).filter(Boolean)
+					sneakers
+						.map((s: Sneaker) => s.condition?.toString())
+						.filter(Boolean)
+				),
+			],
+			statuses: [
+				...new Set(
+					sneakers.map((s: Sneaker) => s.status).filter(Boolean)
 				),
 			],
 		})),
+	},
+}));
+
+vi.mock('@/interfaces/SneakerFilterInterface', () => ({
+	SneakerFilterInterface: {
+		filterSneakers: vi.fn(
+			(sneakers, filters, currentUnit, filterFunction) => {
+				return filterFunction(sneakers, filters, currentUnit);
+			}
+		),
+		sortSneakers: vi.fn(
+			(sneakers, sortBy, sortOrder, currentUnit, sortFunction) => {
+				return sortFunction(sneakers, sortBy, sortOrder, currentUnit);
+			}
+		),
+		getUniqueValues: vi.fn((sneakers, currentUnit, getUniqueFunction) => {
+			return getUniqueFunction(sneakers, currentUnit);
+		}),
 	},
 }));
 
@@ -48,29 +81,36 @@ describe('useSneakerFilterStore', () => {
 		{
 			id: '1',
 			model: 'Air Force 1',
-			brand: 'Nike',
-			size: 42,
+			brand: SneakerBrand.Nike,
+			size_eu: 42,
+			size_us: 8.5,
 			condition: 8,
-			purchase_price: 100,
+			status: SneakerStatus.Stocking,
+			description: 'Great condition',
+			updated_at: '2024-01-01',
 			images: [],
 			created_at: '2024-01-01',
 			user_id: 'user1',
+			estimated_value: 150,
 		},
 		{
 			id: '2',
 			model: 'Stan Smith',
-			brand: 'Adidas',
-			size: 43,
+			brand: SneakerBrand.Adidas,
+			size_eu: 43,
+			size_us: 8.5,
 			condition: 9,
-			purchase_price: 80,
+			status: SneakerStatus.Stocking,
+			description: 'Great condition',
+			updated_at: '2024-01-01',
 			images: [],
 			created_at: '2024-01-02',
 			user_id: 'user1',
+			estimated_value: 150,
 		},
 	];
 
 	beforeEach(() => {
-		// Reset store state
 		const { result } = renderHook(() => useSneakerFilterStore());
 		act(() => {
 			result.current.setSneakers([]);
@@ -123,11 +163,9 @@ describe('useSneakerFilterStore', () => {
 		it('should toggle sort order when same option selected', () => {
 			const { result } = renderHook(() => useSneakerFilterStore());
 
-			// Par défaut: name, asc
 			expect(result.current.sortBy).toBe('name');
 			expect(result.current.sortOrder).toBe('asc');
 
-			// Premier toggle: même option -> change juste l'ordre
 			act(() => {
 				result.current.toggleSort('name');
 			});
@@ -184,7 +222,6 @@ describe('useSneakerFilterStore', () => {
 			});
 
 			expect(result.current.filters.brands).toEqual(['Nike']);
-			// Vérifier que les données filtrées ont été mises à jour
 			expect(result.current.filteredAndSortedSneakers.length).toBe(1);
 			expect(result.current.filteredAndSortedSneakers[0].brand).toBe(
 				'Nike'
@@ -201,7 +238,6 @@ describe('useSneakerFilterStore', () => {
 				result.current.updateFilter('brands', ['Nike']);
 			});
 
-			// Vérifier que le filtre est appliqué
 			expect(result.current.filters.brands).toEqual(['Nike']);
 
 			act(() => {
@@ -221,7 +257,7 @@ describe('useSneakerFilterStore', () => {
 
 	describe('Integration with domain layer', () => {
 		it('should call domain methods when updating derived data', async () => {
-			const { sneakerFilterProvider } = await import(
+			const { sneakerFilteringProvider } = await import(
 				'@/domain/SneakerFiltering'
 			);
 			const { result } = renderHook(() => useSneakerFilterStore());
@@ -230,12 +266,11 @@ describe('useSneakerFilterStore', () => {
 				result.current.setSneakers(mockSneakers);
 			});
 
+			expect(sneakerFilteringProvider.filterSneakers).toHaveBeenCalled();
+			expect(sneakerFilteringProvider.sortSneakers).toHaveBeenCalled();
 			expect(
-				sneakerFilterProvider.filterAndSortSneakers
-			).toHaveBeenCalled();
-			expect(sneakerFilterProvider.getUniqueValues).toHaveBeenCalledWith(
-				mockSneakers
-			);
+				sneakerFilteringProvider.getUniqueValues
+			).toHaveBeenCalledWith(mockSneakers, 'EU');
 		});
 	});
 });
