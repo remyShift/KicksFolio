@@ -17,6 +17,7 @@ interface SneakerFilterStore {
 		brands: string[];
 		sizes: string[];
 		conditions: string[];
+		statuses: string[];
 	};
 
 	setSneakers: (sneakers: Sneaker[]) => void;
@@ -47,6 +48,7 @@ export const useSneakerFilterStore = create<SneakerFilterStore>((set, get) => ({
 		brands: [],
 		sizes: [],
 		conditions: [],
+		statuses: [],
 	},
 
 	setSneakers: (sneakers: Sneaker[]) => {

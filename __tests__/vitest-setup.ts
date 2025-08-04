@@ -1,5 +1,9 @@
 import { vi, beforeAll, afterEach } from 'vitest';
 
+globalThis.process = globalThis.process || {};
+globalThis.process.env = globalThis.process.env || {};
+globalThis.process.env.EXPO_OS = 'ios';
+
 vi.mock('react-native', () => ({
 	Platform: {
 		OS: 'ios',
@@ -8,6 +12,7 @@ vi.mock('react-native', () => ({
 	Dimensions: {
 		get: vi.fn(() => ({ width: 375, height: 812 })),
 	},
+	NativeModules: {},
 }));
 
 vi.mock('expo-constants', () => ({
@@ -26,6 +31,21 @@ vi.mock('expo-asset', () => ({
 	Asset: {
 		loadAsync: vi.fn(),
 	},
+}));
+
+vi.mock('expo-modules-core', () => ({
+	NativeModule: vi.fn(),
+	requireNativeModule: vi.fn(),
+	ensureNativeModulesAreInstalled: vi.fn(),
+	Platform: {
+		OS: 'ios',
+		select: vi.fn(),
+	},
+}));
+
+vi.mock('expo-localization', () => ({
+	getLocales: vi.fn(() => [{ languageCode: 'en', regionCode: 'US' }]),
+	locale: 'en-US',
 }));
 
 vi.mock('@/config/supabase/supabase.config', () => ({
@@ -177,6 +197,10 @@ vi.mock('react-i18next', () => ({
 			changeLanguage: vi.fn(),
 		},
 	}),
+	initReactI18next: {
+		type: '3rdParty',
+		init: vi.fn(),
+	},
 }));
 
 beforeAll(() => {

@@ -4,7 +4,7 @@ import { wishlistProvider } from '@/domain/WishlistProvider';
 import useToast from '@/hooks/ui/useToast';
 import { useTranslation } from 'react-i18next';
 
-export const useWishlist = () => {
+export default function useWishlist() {
 	const { showSuccessToast, showErrorToast } = useToast();
 	const { refreshUserData } = useSession();
 	const { t } = useTranslation();
@@ -88,4 +88,4 @@ export const useWishlist = () => {
 		removeFromWishList,
 		checkWishlistStatus,
 	};
-};
+}

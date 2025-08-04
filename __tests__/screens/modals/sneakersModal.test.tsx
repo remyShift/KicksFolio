@@ -10,6 +10,17 @@ jest.mock('@/store/useModalStore', () => ({
     useModalStore: () => mockUseModalStoreFn(),
 }));
 
+const mockUseWishlist = {
+    addToWishList: jest.fn(),
+    removeFromWishList: jest.fn(),
+    checkWishlistStatus: jest.fn(),
+};
+
+jest.mock('@/components/ui/modals/SneakersModal/hooks/useWishlist', () => ({
+    __esModule: true,
+    default: () => mockUseWishlist,
+}));
+
 const setup = (overrides = {}) => {
     const mockSetModalStep = jest.fn();
     const mockStore = {
@@ -50,6 +61,12 @@ const setup = (overrides = {}) => {
 describe('SneakersModal', () => {
     beforeEach(() => {
         jest.clearAllMocks();
+        
+        // Reset wishlist mock functions
+        mockUseWishlist.addToWishList.mockReset();
+        mockUseWishlist.removeFromWishList.mockReset();
+        mockUseWishlist.checkWishlistStatus.mockReset();
+        
         const mockSetModalStep = jest.fn();
         const mockStore = {
             modalStep: 'index',

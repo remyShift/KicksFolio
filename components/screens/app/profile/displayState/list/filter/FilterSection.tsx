@@ -2,6 +2,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useSneakerFilterStore } from '@/store/useSneakerFilterStore';
 import FilterGroup from './FilterGroup';
+import { FilterState } from '@/types/filter';
 
 export default function FilterSection() {
   const { t } = useTranslation();
@@ -14,6 +15,38 @@ export default function FilterSection() {
   } = useSneakerFilterStore();
   
   if (!showFilters) return null;
+
+  const handleFilterUpdate = (
+    filterKey: 'brand' | 'size' | 'condition' | 'status', 
+    value: any
+  ) => {
+    const stateKeyMap: Record<typeof filterKey, keyof FilterState> = {
+      brand: 'brands',
+      size: 'sizes', 
+      condition: 'conditions',
+      status: 'statuses'
+    };
+
+    const stateKey = stateKeyMap[filterKey];
+    
+    if (value === undefined) {
+      updateFilter(stateKey, []);
+    } else {
+      updateFilter(stateKey, [value.toString()]);
+    }
+  };
+
+  const getCurrentValue = (filterKey: 'brand' | 'size' | 'condition' | 'status') => {
+    const stateKeyMap = {
+      brand: filters.brands,
+      size: filters.sizes,
+      condition: filters.conditions,
+      status: filters.statuses || []
+    };
+
+    const currentArray = stateKeyMap[filterKey];
+    return currentArray.length > 0 ? currentArray[0] : undefined;
+  };
 
   const brandOptions = uniqueValues.brands.map(brand => ({
     label: brand,
@@ -30,7 +63,7 @@ export default function FilterSection() {
     value: condition
   }));
 
-  const statusOptions = uniqueValues.statuses.map(status => ({
+  const statusOptions = (uniqueValues.statuses).map(status => ({
     label: status.charAt(0).toUpperCase() + status.slice(1),
     value: status
   }));
@@ -52,32 +85,32 @@ export default function FilterSection() {
         title={t('collection.fields.brand')}
         filterKey="brand"
         options={brandOptions}
-        activeValue={filters.brand}
-        onFilter={updateFilter}
+        activeValue={getCurrentValue('brand')}
+        onFilter={handleFilterUpdate}
       />
 
       <FilterGroup
         title={t('collection.fields.size')}
         filterKey="size"
         options={sizeOptions}
-        activeValue={filters.size}
-        onFilter={updateFilter}
+        activeValue={getCurrentValue('size')}
+        onFilter={handleFilterUpdate}
       />
 
       <FilterGroup
         title={t('collection.fields.condition')}
         filterKey="condition"
         options={conditionOptions}
-        activeValue={filters.condition}
-        onFilter={updateFilter}
+        activeValue={getCurrentValue('condition')}
+        onFilter={handleFilterUpdate}
       />
 
       <FilterGroup
         title={t('collection.fields.status')}
         filterKey="status"
         options={statusOptions}
-        activeValue={filters.status}
-        onFilter={updateFilter}
+        activeValue={getCurrentValue('status')}
+        onFilter={handleFilterUpdate}
       />
     </View>
   );

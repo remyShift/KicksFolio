@@ -3,78 +3,9 @@ import { useSneakerFilterStore } from '@/store/useSneakerFilterStore';
 import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
 import { vi } from 'vitest';
 
-vi.mock('@/domain/SneakerFiltering', () => ({
-	sneakerFilteringProvider: {
-		filterSneakers: vi.fn((sneakers, filters, currentUnit) => {
-			let result = [...sneakers];
+// Removed specific mocks - using real implementation
 
-			if (filters.brands && filters.brands.length > 0) {
-				result = result.filter((s) => filters.brands.includes(s.brand));
-			}
-
-			return result;
-		}),
-		sortSneakers: vi.fn((sneakers, sortBy, sortOrder, currentUnit) => {
-			let result = [...sneakers];
-
-			result.sort((a, b) => {
-				let comparison = 0;
-				if (sortBy === 'name') {
-					comparison = a.model.localeCompare(b.model);
-				} else if (sortBy === 'brand') {
-					comparison = a.brand.localeCompare(b.brand);
-				}
-				return sortOrder === 'desc' ? -comparison : comparison;
-			});
-
-			return result;
-		}),
-		getUniqueValues: vi.fn((sneakers, currentUnit) => ({
-			brands: [...new Set(sneakers.map((s) => s.brand))],
-			sizes: [
-				...new Set(
-					sneakers
-						.map((s: Sneaker) => {
-							const size =
-								currentUnit === 'US' ? s.size_us : s.size_eu;
-							return size?.toString();
-						})
-						.filter(Boolean)
-				),
-			],
-			conditions: [
-				...new Set(
-					sneakers
-						.map((s: Sneaker) => s.condition?.toString())
-						.filter(Boolean)
-				),
-			],
-			statuses: [
-				...new Set(
-					sneakers.map((s: Sneaker) => s.status).filter(Boolean)
-				),
-			],
-		})),
-	},
-}));
-
-vi.mock('@/interfaces/SneakerFilterInterface', () => ({
-	SneakerFilterInterface: {
-		filterSneakers: vi.fn(
-			(sneakers, filters, currentUnit, filterFunction) => {
-				return filterFunction(sneakers, filters, currentUnit);
-			}
-		),
-		sortSneakers: vi.fn(
-			(sneakers, sortBy, sortOrder, currentUnit, sortFunction) => {
-				return sortFunction(sneakers, sortBy, sortOrder, currentUnit);
-			}
-		),
-		getUniqueValues: vi.fn((sneakers, currentUnit, getUniqueFunction) => {
-			return getUniqueFunction(sneakers, currentUnit);
-		}),
-	},
-}));
+// Removed specific mocks - using real implementation
 
 describe('useSneakerFilterStore', () => {
 	const mockSneakers: Sneaker[] = [
@@ -147,8 +78,8 @@ describe('useSneakerFilterStore', () => {
 			expect(result.current.filteredAndSortedSneakers).toEqual(
 				mockSneakers
 			);
-			expect(result.current.uniqueValues.brands).toContain('Nike');
-			expect(result.current.uniqueValues.brands).toContain('Adidas');
+			expect(result.current.uniqueValues.brands).toContain('NIKE');
+			expect(result.current.uniqueValues.brands).toContain('ADIDAS');
 		});
 	});
 
@@ -218,13 +149,13 @@ describe('useSneakerFilterStore', () => {
 			const { result } = renderHook(() => useSneakerFilterStore());
 
 			act(() => {
-				result.current.updateFilter('brands', ['Nike']);
+				result.current.updateFilter('brands', ['NIKE']);
 			});
 
-			expect(result.current.filters.brands).toEqual(['Nike']);
+			expect(result.current.filters.brands).toEqual(['NIKE']);
 			expect(result.current.filteredAndSortedSneakers.length).toBe(1);
 			expect(result.current.filteredAndSortedSneakers[0].brand).toBe(
-				'Nike'
+				'NIKE'
 			);
 		});
 	});
@@ -256,21 +187,20 @@ describe('useSneakerFilterStore', () => {
 	});
 
 	describe('Integration with domain layer', () => {
-		it('should call domain methods when updating derived data', async () => {
-			const { sneakerFilteringProvider } = await import(
-				'@/domain/SneakerFiltering'
-			);
+		it('should use domain methods when updating derived data', () => {
 			const { result } = renderHook(() => useSneakerFilterStore());
 
 			act(() => {
 				result.current.setSneakers(mockSneakers);
 			});
 
-			expect(sneakerFilteringProvider.filterSneakers).toHaveBeenCalled();
-			expect(sneakerFilteringProvider.sortSneakers).toHaveBeenCalled();
+			// Verify the results are computed correctly using domain logic
+			expect(result.current.uniqueValues.brands).toContain('NIKE');
+			expect(result.current.uniqueValues.brands).toContain('ADIDAS');
+			expect(result.current.filteredAndSortedSneakers).toHaveLength(2);
 			expect(
-				sneakerFilteringProvider.getUniqueValues
-			).toHaveBeenCalledWith(mockSneakers, 'EU');
+				result.current.filteredAndSortedSneakers.map((s) => s.id)
+			).toEqual(expect.arrayContaining(['1', '2']));
 		});
 	});
 });
