@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useLanguageStore } from './useLanguageStore';
+import { CurrencyProviderInterface } from '@/interfaces/CurrencyProviderInterface';
+import { currencyProvider } from '@/domain/CurrencyProvider';
 
 export type Currency = 'USD' | 'EUR';
 
@@ -11,15 +13,10 @@ interface CurrencyStore {
 	setCurrency: (currency: Currency) => Promise<void>;
 	initializeCurrency: () => Promise<void>;
 	getCurrentCurrency: () => Currency;
-	formattedPrice: (price: number) => string;
+	formattedPrice: (price: number) => Promise<string>;
 }
 
 const CURRENCY_STORAGE_KEY = 'app_currency';
-
-const exchangeRates = {
-	USD: 1,
-	EUR: 0.85,
-};
 
 export const useCurrencyStore = create<CurrencyStore>((set, get) => ({
 	currentCurrency: 'USD',
@@ -61,6 +58,7 @@ export const useCurrencyStore = create<CurrencyStore>((set, get) => ({
 					currentCurrency: currencyToUse,
 					isInitialized: true,
 				});
+				console.log('✅ Currency initialized to:', currencyToUse);
 			})
 			.catch((error) => {
 				console.error('❌ Error in initialization:', error);
@@ -73,17 +71,16 @@ export const useCurrencyStore = create<CurrencyStore>((set, get) => ({
 			});
 	},
 
-	formattedPrice: (price: number) => {
-		const priceExchange = exchangeRates[get().currentCurrency];
-		const priceInCurrency = price * priceExchange;
-
-		switch (get().currentCurrency) {
-			case 'USD':
-				return `$${priceInCurrency.toFixed(2)}`;
-			case 'EUR':
-				return `${priceInCurrency.toFixed(2)}€`;
-			default:
-				return `$${priceInCurrency.toFixed(2)}`;
+	formattedPrice: async (price: number) => {
+		try {
+			return CurrencyProviderInterface.formatPrice(
+				price,
+				get().currentCurrency,
+				currencyProvider.formatPrice
+			);
+		} catch (error) {
+			console.error('❌ Error formatting price:', error);
+			return `$${price.toFixed(2)}`;
 		}
 	},
 

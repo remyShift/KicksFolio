@@ -50,6 +50,7 @@ export const useSizeUnitStore = create<SizeUnitStore>((set, get) => ({
 					currentUnit: unitToUse,
 					isInitialized: true,
 				});
+				console.log('✅ Size unit initialized to:', unitToUse);
 			})
 			.catch((error) => {
 				console.error('❌ Error in initialization:', error);

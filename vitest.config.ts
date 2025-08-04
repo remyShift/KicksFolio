@@ -13,6 +13,8 @@ export default defineConfig({
 		include: [
 			'__tests__/interfaces/**/*.(test|spec).(js|jsx|ts|tsx)',
 			'__tests__/hooks/**/*.(test|spec).(js|jsx|ts|tsx)',
+			'__tests__/domain/**/*.(test|spec).(js|jsx|ts|tsx)',
+			'__tests__/store/**/*.(test|spec).(js|jsx|ts|tsx)',
 		],
 
 		exclude: [
@@ -26,7 +28,12 @@ export default defineConfig({
 
 		coverage: {
 			reporter: ['text', 'html'],
-			include: ['interfaces/**/*.ts', 'hooks/**/*.ts'],
+			include: [
+				'interfaces/**/*.ts',
+				'hooks/**/*.ts',
+				'domain/**/*.ts',
+				'store/**/*.ts',
+			],
 			exclude: ['__tests__/**', 'node_modules/**'],
 		},
 
