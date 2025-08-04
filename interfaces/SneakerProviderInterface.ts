@@ -1,9 +1,20 @@
-import { Sneaker } from '@/types/sneaker';
 import { SupabaseSneaker } from '@/domain/SneakerProvider';
-import { SizeUnit } from '@/types/sneaker';
+import { SizeUnit } from '@/types/Sneaker';
+
+interface SkuSearchResponse {
+	results: Array<{
+		title: string;
+		brand: string;
+		description: string;
+		gender: string;
+		gallery: string[];
+		avg_price: number;
+		sku: string;
+	}>;
+}
 
 export interface SneakerProviderInterface {
-	getSneakersByUser: (userId: string) => Promise<Sneaker[]>;
+	getSneakersByUser: (userId: string) => Promise<SupabaseSneaker[]>;
 	createSneaker: (
 		sneakerData: Omit<
 			SupabaseSneaker,
@@ -15,13 +26,15 @@ export interface SneakerProviderInterface {
 			| 'size_us'
 		> & { size: number },
 		currentUnit?: SizeUnit
-	) => Promise<Sneaker>;
+	) => Promise<SupabaseSneaker>;
 	updateSneaker: (
 		id: string,
 		updates: Partial<SupabaseSneaker & { size?: number }>,
 		currentUnit?: SizeUnit
-	) => Promise<Sneaker | null>;
+	) => Promise<SupabaseSneaker>;
 	deleteSneaker: (id: string) => Promise<void>;
+	searchBySku: (sku: string) => Promise<SkuSearchResponse>;
+	searchByBarcode: (barcode: string) => Promise<SkuSearchResponse>;
 }
 
 export class SneakerProviderInterface {
@@ -35,7 +48,7 @@ export class SneakerProviderInterface {
 			})
 			.catch((error) => {
 				console.error(
-					'❌ SneakerProviderInterface.getSneakersByUser: Error occurred:',
+					'❌ SneakerInterface.getSneakersByUser: Error occurred:',
 					error
 				);
 				throw error;
@@ -61,7 +74,7 @@ export class SneakerProviderInterface {
 			})
 			.catch((error) => {
 				console.error(
-					'❌ SneakerProviderInterface.createSneaker: Error occurred:',
+					'❌ SneakerInterface.createSneaker: Error occurred:',
 					error
 				);
 				throw error;
@@ -80,7 +93,7 @@ export class SneakerProviderInterface {
 			})
 			.catch((error) => {
 				console.error(
-					'❌ SneakerProviderInterface.updateSneaker: Error occurred:',
+					'❌ SneakerInterface.updateSneaker: Error occurred:',
 					error
 				);
 				throw error;
@@ -97,10 +110,46 @@ export class SneakerProviderInterface {
 			})
 			.catch((error) => {
 				console.error(
-					'❌ SneakerProviderInterface.deleteSneaker: Error occurred:',
+					'❌ SneakerInterface.deleteSneaker: Error occurred:',
+					error
+				);
+				throw error;
+			});
+	};
+
+	static searchBySku = async (
+		sku: string,
+		searchBySkuFunction: SneakerProviderInterface['searchBySku']
+	) => {
+		return searchBySkuFunction(sku)
+			.then((response) => {
+				return response;
+			})
+			.catch((error) => {
+				console.error(
+					'❌ SneakerInterface.searchBySku: Error occurred:',
+					error
+				);
+				throw error;
+			});
+	};
+
+	static searchByBarcode = async (
+		barcode: string,
+		searchByBarcodeFunction: SneakerProviderInterface['searchByBarcode']
+	) => {
+		return searchByBarcodeFunction(barcode)
+			.then((response) => {
+				return response;
+			})
+			.catch((error) => {
+				console.error(
+					'❌ SneakerInterface.searchByBarcode: Error occurred:',
 					error
 				);
 				throw error;
 			});
 	};
 }
+
+export const SneakerInterface = SneakerProviderInterface;

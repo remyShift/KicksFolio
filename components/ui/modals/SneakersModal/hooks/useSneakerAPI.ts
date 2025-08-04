@@ -1,5 +1,6 @@
-import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
-import { SneakerProvider, SupabaseSneaker } from '@/domain/SneakerProvider';
+import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/Sneaker';
+import { SupabaseSneaker, sneakerProvider } from '@/domain/SneakerProvider';
+import { SneakerInterface } from '@/interfaces/SneakerProviderInterface';
 import {
 	SneakerFormData,
 	createSneakerSchema,
@@ -87,7 +88,10 @@ export const useSneakerAPI = () => {
 
 		callbacks.setErrorMsg('');
 
-		return SneakerProvider.searchBySku(sku.trim())
+		return SneakerInterface.searchBySku(
+			sku.trim(),
+			sneakerProvider.searchBySku
+		)
 			.then((response: SkuSearchResponse) => {
 				if (
 					response &&
@@ -227,7 +231,11 @@ export const useSneakerAPI = () => {
 					ds: validatedData.ds || false,
 				};
 
-				return SneakerProvider.createSneaker(sneakerToAdd, currentUnit);
+				return SneakerInterface.createSneaker(
+					sneakerToAdd,
+					currentUnit,
+					sneakerProvider.createSneaker
+				);
 			})
 			.then(async (createdSneaker: SupabaseSneaker) => {
 				const processedImages =
@@ -241,14 +249,16 @@ export const useSneakerAPI = () => {
 					);
 
 				if (processedImages.length > 0) {
-					const updatedSneaker = await SneakerProvider.updateSneaker(
+					const updatedSneaker = await SneakerInterface.updateSneaker(
 						createdSneaker.id,
 						{
 							images: processedImages.map((img) => ({
 								id: img.id,
 								uri: img.uri,
 							})),
-						}
+						},
+						currentUnit,
+						sneakerProvider.updateSneaker
 					);
 					return updatedSneaker;
 				}
@@ -353,10 +363,11 @@ export const useSneakerAPI = () => {
 					ds: validatedData.ds || false,
 				};
 
-				return SneakerProvider.updateSneaker(
+				return SneakerInterface.updateSneaker(
 					sneakerId,
 					sneakerUpdates,
-					currentUnit
+					currentUnit,
+					sneakerProvider.updateSneaker
 				);
 			})
 			.then((response: SupabaseSneaker) => {
@@ -421,7 +432,10 @@ export const useSneakerAPI = () => {
 			return Promise.reject('No session token');
 		}
 
-		return SneakerProvider.deleteSneaker(sneakerId)
+		return SneakerInterface.deleteSneaker(
+			sneakerId,
+			sneakerProvider.deleteSneaker
+		)
 			.then(async () => {
 				await ImageProvider.deleteSneakerImages(user.id, sneakerId);
 
@@ -453,7 +467,10 @@ export const useSneakerAPI = () => {
 
 		callbacks.setErrorMsg('');
 
-		return SneakerProvider.searchByBarcode(barcode.trim())
+		return SneakerInterface.searchByBarcode(
+			barcode.trim(),
+			sneakerProvider.searchByBarcode
+		)
 			.then((response: SkuSearchResponse) => {
 				if (
 					response &&

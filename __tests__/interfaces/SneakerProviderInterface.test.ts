@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { SneakerProviderInterface } from '@/interfaces/SneakerProviderInterface';
-import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
+import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/Sneaker';
 
 describe('SneakerProviderInterface', () => {
 	describe('getSneakersByUser', () => {
@@ -58,7 +58,7 @@ describe('SneakerProviderInterface', () => {
 			).rejects.toThrow('Failed to get sneakers');
 
 			expect(consoleSpy).toHaveBeenCalledWith(
-				'❌ SneakerProviderInterface.getSneakersByUser: Error occurred:',
+				'❌ SneakerInterface.getSneakersByUser: Error occurred:',
 				mockError
 			);
 
@@ -129,7 +129,7 @@ describe('SneakerProviderInterface', () => {
 			).rejects.toThrow('Failed to create sneaker');
 
 			expect(consoleSpy).toHaveBeenCalledWith(
-				'❌ SneakerProviderInterface.createSneaker: Error occurred:',
+				'❌ SneakerInterface.createSneaker: Error occurred:',
 				mockError
 			);
 
@@ -203,7 +203,7 @@ describe('SneakerProviderInterface', () => {
 			).rejects.toThrow('Failed to update sneaker');
 
 			expect(consoleSpy).toHaveBeenCalledWith(
-				'❌ SneakerProviderInterface.updateSneaker: Error occurred:',
+				'❌ SneakerInterface.updateSneaker: Error occurred:',
 				mockError
 			);
 
@@ -242,7 +242,7 @@ describe('SneakerProviderInterface', () => {
 			).rejects.toThrow('Failed to delete sneaker');
 
 			expect(consoleSpy).toHaveBeenCalledWith(
-				'❌ SneakerProviderInterface.deleteSneaker: Error occurred:',
+				'❌ SneakerInterface.deleteSneaker: Error occurred:',
 				mockError
 			);
 

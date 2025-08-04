@@ -1,8 +1,8 @@
 import { supabase } from '@/config/supabase/supabase';
-import { SneakerBrand } from '@/types/sneaker';
+import { SneakerBrand } from '@/types/Sneaker';
 import { sneakerBrandOptions } from '@/validation/schemas';
 import { sneakerSizeConverter, GenderType } from './SneakerSizeConverter';
-import { SizeUnit } from '@/types/sneaker';
+import { SizeUnit } from '@/types/Sneaker';
 import { t } from 'i18next';
 import { SneakerProviderInterface } from '@/interfaces/SneakerProviderInterface';
 
@@ -29,7 +29,7 @@ export interface SupabaseSneaker {
 	sku?: string;
 }
 
-export class SneakerProvider implements SneakerProviderInterface {
+class SneakerProvider implements SneakerProviderInterface {
 	async getSneakersByUser(userId: string) {
 		const { data, error } = await supabase
 			.from('sneakers')
@@ -231,7 +231,7 @@ export class SneakerProvider implements SneakerProviderInterface {
 		if (error) throw error;
 	}
 
-	static async updateWishlistStatus(id: string, wishlist: boolean) {
+	async updateWishlistStatus(id: string, wishlist: boolean) {
 		const { data, error } = await supabase
 			.from('sneakers')
 			.update({ wishlist })
@@ -249,7 +249,7 @@ export class SneakerProvider implements SneakerProviderInterface {
 			: data;
 	}
 
-	static async uploadSneakerImage(sneakerId: string, imageUri: string) {
+	async uploadSneakerImage(sneakerId: string, imageUri: string) {
 		const {
 			data: { user },
 			error: authError,
@@ -276,7 +276,7 @@ export class SneakerProvider implements SneakerProviderInterface {
 		return urlData.publicUrl;
 	}
 
-	static async searchBySku(sku: string) {
+	async searchBySku(sku: string) {
 		return supabase.functions
 			.invoke('sku-lookup', {
 				body: { sku },
@@ -334,7 +334,7 @@ export class SneakerProvider implements SneakerProviderInterface {
 			});
 	}
 
-	static async searchByBarcode(barcode: string) {
+	async searchByBarcode(barcode: string) {
 		return supabase.functions
 			.invoke('barcode-lookup', {
 				body: { barcode },
