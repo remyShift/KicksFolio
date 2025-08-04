@@ -22,7 +22,6 @@ vi.mock('@/store/useLanguageStore', () => ({
 vi.mock('@/domain/CurrencyProvider', () => ({
 	currencyProvider: {
 		formatPrice: vi.fn((price: number, currency: string) => {
-			// Simuler la conversion dans formatPrice comme dans la vraie implémentation
 			const convertedPrice = currency === 'EUR' ? price * 0.85 : price;
 			if (currency === 'EUR') return `${convertedPrice.toFixed(2)}€`;
 			return `$${convertedPrice.toFixed(2)}`;
