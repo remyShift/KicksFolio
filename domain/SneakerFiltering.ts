@@ -1,104 +1,101 @@
-import { Sneaker } from '@/types/sneaker';
-import { SizeUnit } from '@/types/sneaker';
-import {
-	SneakerFilterInterface,
-	UniqueValues,
-} from '@/interfaces/SneakerFilterInterface';
-import { Filter, SortOption } from '@/types/filter';
+import { Sneaker } from '@/types/Sneaker';
+import { SortOption, SortOrder, FilterState } from '@/types/filter';
+import { SneakerFilterInterface } from '@/interfaces/SneakerFilterInterface';
 
 export class SneakerFiltering implements SneakerFilterInterface {
-	filterSneakers(
+	filterAndSortSneakers(
 		sneakers: Sneaker[],
-		filters: Filter,
-		currentUnit: SizeUnit
+		filters: FilterState,
+		sortBy: SortOption,
+		sortOrder: SortOrder
 	): Sneaker[] {
-		let result = [...sneakers];
+		// Filtrage
+		let filteredSneakers = [...sneakers];
 
-		if (filters.brand) {
-			result = result.filter((s) => s.brand === filters.brand);
-		}
-
-		if (filters.size !== undefined) {
-			result = result.filter(
-				(s) => this.getSizeForUnit(s, currentUnit) === filters.size
+		if (filters.brands.length > 0) {
+			filteredSneakers = filteredSneakers.filter((sneaker) =>
+				filters.brands.includes(sneaker.brand)
 			);
 		}
 
-		if (filters.condition !== undefined) {
-			result = result.filter((s) => s.condition === filters.condition);
+		if (filters.sizes.length > 0) {
+			filteredSneakers = filteredSneakers.filter(
+				(sneaker) =>
+					sneaker.size &&
+					filters.sizes.includes(sneaker.size.toString())
+			);
 		}
 
-		if (filters.status) {
-			result = result.filter((s) => s.status === filters.status);
+		if (filters.conditions.length > 0) {
+			filteredSneakers = filteredSneakers.filter(
+				(sneaker) =>
+					sneaker.condition &&
+					filters.conditions.includes(sneaker.condition.toString())
+			);
 		}
 
-		return result;
-	}
-
-	sortSneakers(
-		sneakers: Sneaker[],
-		sortBy: SortOption,
-		sortOrder: 'asc' | 'desc',
-		currentUnit: SizeUnit
-	): Sneaker[] {
-		return [...sneakers].sort((a, b) => {
-			let aVal: any;
-			let bVal: any;
+		// Tri
+		filteredSneakers.sort((a, b) => {
+			let comparison = 0;
 
 			switch (sortBy) {
 				case 'name':
-					aVal = a.model.toLowerCase();
-					bVal = b.model.toLowerCase();
+					comparison = a.model.localeCompare(b.model);
 					break;
 				case 'brand':
-					aVal = a.brand.toLowerCase();
-					bVal = b.brand.toLowerCase();
+					comparison = a.brand.localeCompare(b.brand);
 					break;
 				case 'size':
-					aVal = this.getSizeForUnit(a, currentUnit);
-					bVal = this.getSizeForUnit(b, currentUnit);
+					comparison = (a.size || 0) - (b.size || 0);
 					break;
 				case 'condition':
-					aVal = a.condition;
-					bVal = b.condition;
+					comparison = (a.condition || 0) - (b.condition || 0);
 					break;
 				case 'value':
-					aVal = a.estimated_value || 0;
-					bVal = b.estimated_value || 0;
+					comparison =
+						(a.purchase_price || 0) - (b.purchase_price || 0);
 					break;
 				default:
-					aVal = a.model.toLowerCase();
-					bVal = b.model.toLowerCase();
+					comparison = 0;
 			}
 
-			if (aVal < bVal) return sortOrder === 'asc' ? -1 : 1;
-			if (aVal > bVal) return sortOrder === 'asc' ? 1 : -1;
-			return 0;
+			return sortOrder === 'desc' ? -comparison : comparison;
 		});
+
+		return filteredSneakers;
 	}
 
-	getUniqueValues(sneakers: Sneaker[], currentUnit: SizeUnit): UniqueValues {
-		if (!sneakers.length) {
-			return { brands: [], sizes: [], conditions: [], statuses: [] };
-		}
+	getUniqueValues(sneakers: Sneaker[]): {
+		brands: string[];
+		sizes: string[];
+		conditions: string[];
+	} {
+		const brands = [
+			...new Set(
+				sneakers.map((sneaker) => sneaker.brand).filter(Boolean)
+			),
+		].sort();
+		const sizes = [
+			...new Set(
+				sneakers
+					.map((sneaker) => sneaker.size?.toString())
+					.filter(Boolean)
+			),
+		].sort((a, b) => Number(a) - Number(b));
+		const conditions = [
+			...new Set(
+				sneakers
+					.map((sneaker) => sneaker.condition?.toString())
+					.filter(Boolean)
+			),
+		].sort((a, b) => Number(b) - Number(a));
 
 		return {
-			brands: [...new Set(sneakers.map((s) => s.brand))],
-			sizes: [
-				...new Set(
-					sneakers.map((s) => this.getSizeForUnit(s, currentUnit))
-				),
-			].sort((a, b) => a - b),
-			conditions: [...new Set(sneakers.map((s) => s.condition))].sort(
-				(a, b) => b - a
-			),
-			statuses: [...new Set(sneakers.map((s) => s.status))],
+			brands,
+			sizes,
+			conditions,
 		};
-	}
-
-	getSizeForUnit(sneaker: Sneaker, unit: SizeUnit): number {
-		return unit === 'EU' ? sneaker.size_eu : sneaker.size_us;
 	}
 }
 
-export const sneakerFiltering = new SneakerFiltering();
+export const sneakerFilterProvider = new SneakerFiltering();

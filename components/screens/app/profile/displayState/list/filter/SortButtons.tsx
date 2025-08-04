@@ -1,7 +1,7 @@
 import { TouchableOpacity, View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
-import { useSneakerFilterContext } from '@/context/SneakerFilterContext';
+import { useSneakerFilterStore } from '@/store/useSneakerFilterStore';
 import { SortOption } from '@/types/filter';
 
 const SORT_OPTIONS: { key: SortOption; label: string }[] = [
@@ -13,7 +13,7 @@ const SORT_OPTIONS: { key: SortOption; label: string }[] = [
 ];
 
 export default function SortButtons() {
-  const { sortBy, sortOrder, toggleSort } = useSneakerFilterContext();
+  const { sortBy, sortOrder, toggleSort } = useSneakerFilterStore();
   const { t } = useTranslation();
   
   return (
@@ -39,4 +39,4 @@ export default function SortButtons() {
       ))}
     </View>
   );
-} 
+}

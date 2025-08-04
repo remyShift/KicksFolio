@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { useSneakerFilterContext } from '@/context/SneakerFilterContext';
+import { useSneakerFilterStore } from '@/store/useSneakerFilterStore';
 import FilterGroup from './FilterGroup';
 
 export default function FilterSection() {
@@ -11,7 +11,7 @@ export default function FilterSection() {
     uniqueValues, 
     updateFilter, 
     clearFilters 
-  } = listState;
+  } = useSneakerFilterStore();
   
   if (!showFilters) return null;
 

@@ -1,7 +1,7 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { FlatList } from 'react-native';
 import { Sneaker } from '@/types/sneaker';
-import { useSneakerFiltering } from '@/hooks/useSneakerFiltering';
+import { useSneakerFilterStore } from '@/store/useSneakerFilterStore';
 import SneakerListItem from './SneakerListItem';
 import ListControls from './ListControls';
 
@@ -18,19 +18,24 @@ export default function SneakersListView({
   scrollEnabled = true,
   showOwnerInfo = false
 }: SneakersListViewProps) {
-  const listState = useSneakerFiltering(sneakers);
+  const { filteredAndSortedSneakers, setSneakers } = useSneakerFilterStore();
+  
+  // Mettre à jour les sneakers dans le store quand les props changent
+  useEffect(() => {
+    setSneakers(sneakers);
+  }, [sneakers, setSneakers]);
 
   const renderSneakerItem = useCallback(({ item }: { item: Sneaker }) => (
     <SneakerListItem sneaker={item} onPress={onSneakerPress} showOwnerInfo={showOwnerInfo} />
   ), [onSneakerPress, showOwnerInfo]);
 
   const renderListHeader = useCallback(() => (
-    <ListControls listState={listState} />
-  ), [listState]);
+    <ListControls />
+  ), []);
 
   return (
     <FlatList
-      data={listState.filteredAndSortedSneakers}
+      data={filteredAndSortedSneakers}
       renderItem={renderSneakerItem}
       keyExtractor={(item) => item.id}
       ListHeaderComponent={renderListHeader}

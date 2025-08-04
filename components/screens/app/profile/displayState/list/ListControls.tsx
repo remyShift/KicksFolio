@@ -1,16 +1,13 @@
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
+import { useSneakerFilterStore } from '@/store/useSneakerFilterStore';
 import SortButtons from './filter/SortButtons';
 import FilterSection from './filter/FilterSection';
 
-interface ListControlsProps {
-  	listState: ReturnType<typeof import('@/hooks/useSneakerFiltering').useSneakerFiltering>;
-}
-
-export default function ListControls({ listState }: ListControlsProps) {
+export default function ListControls() {
   const { t } = useTranslation();
-  const { filteredAndSortedSneakers, toggleFilters } = listState;
+  const { filteredAndSortedSneakers, toggleFilters } = useSneakerFilterStore();
 
   return (
     <View className="py-2 bg-background border-b border-gray-200 mb-2">
