@@ -1,5 +1,5 @@
 import { Text, View, Pressable } from 'react-native';
-import { Sneaker } from '@/types/Sneaker';
+import { Sneaker } from '@/types/sneaker';
 import { router } from 'expo-router';
 import { Image } from 'expo-image';
 import EmptySneakerImage from '../placeholders/EmptySneakerImage';

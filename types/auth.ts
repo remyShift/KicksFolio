@@ -1,5 +1,5 @@
-import { User } from './User';
-import { Sneaker } from './Sneaker';
+import { User } from '@/types/User';
+import { Sneaker } from '@/types/sneaker';
 import { Dispatch, SetStateAction } from 'react';
 import { FollowingUser } from '@/domain/FollowerProvider';
 

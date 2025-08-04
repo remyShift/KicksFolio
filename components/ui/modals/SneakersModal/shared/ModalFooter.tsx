@@ -5,7 +5,7 @@ import EditButton from '@/components/ui/buttons/EditButton';
 import { useModalStore } from '@/store/useModalStore';
 import { useSession } from '@/context/authContext';
 import DeleteButton from '@/components/ui/buttons/DeleteButton';
-import { Sneaker } from '@/types/Sneaker';
+import { Sneaker } from '@/types/sneaker';
 import { useEffect } from 'react';
 import { useModalFooterActions } from '../hooks/useModalFooterActions';
 import { useTranslation } from 'react-i18next';

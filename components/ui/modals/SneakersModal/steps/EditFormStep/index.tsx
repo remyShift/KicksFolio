@@ -6,11 +6,11 @@ import { createSneakerSchema, SneakerFormData } from '@/validation/schemas';
 import { FormFields } from '../../shared/FormFields';
 import { useFormValidation } from '../../hooks/useFormValidation';
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
-import { SneakerBrand, SneakerStatus } from '@/types/Sneaker';
+import { SneakerBrand, SneakerStatus } from '@/types/sneaker';
 import { useSizeConversion } from '@/hooks/useSizeConversion';
 import { useTranslation } from 'react-i18next';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { Photo } from '@/types/Sneaker';
+import { Photo } from '@/types/sneaker';
 
 export const EditFormStep = () => {
     const { t } = useTranslation();

@@ -5,7 +5,7 @@ import { useFormController } from '@/hooks/TODO/useFormController';
 import { createSneakerSchema, SneakerFormData } from '@/validation/schemas';
 import { useFormValidation } from '../../hooks/useFormValidation';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
-import { Photo, SneakerBrand, SneakerStatus, Sneaker } from '@/types/Sneaker';
+import { Photo, SneakerBrand, SneakerStatus, Sneaker } from '@/types/sneaker';
 import { useTranslation } from 'react-i18next';
 import { FormFields } from '../../shared/FormFields';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';

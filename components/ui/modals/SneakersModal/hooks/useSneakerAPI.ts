@@ -1,4 +1,4 @@
-import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/Sneaker';
+import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
 import { SneakerProvider, SupabaseSneaker } from '@/domain/SneakerProvider';
 import {
 	SneakerFormData,

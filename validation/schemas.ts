@@ -1,4 +1,4 @@
-import { SneakerBrand, SneakerStatus } from '@/types/Sneaker';
+import { SneakerBrand, SneakerStatus } from '@/types/sneaker';
 import { z } from 'zod';
 import { t } from 'i18next';
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';

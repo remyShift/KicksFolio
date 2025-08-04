@@ -1,7 +1,7 @@
 import { useModalStore } from '@/store/useModalStore';
 import { useSneakerAPI } from './useSneakerAPI';
 import { useSession } from '@/context/authContext';
-import { Sneaker } from '@/types/Sneaker';
+import { Sneaker } from '@/types/sneaker';
 import { useState } from 'react';
 import { Alert } from 'react-native';
 import { SneakerFormData } from '@/validation/schemas';

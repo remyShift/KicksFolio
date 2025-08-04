@@ -1,7 +1,7 @@
 import { RefreshControl, ScrollView, View } from 'react-native';
 import { useSession } from '@/context/authContext';
 import { useState } from 'react';
-import { Sneaker } from '@/types/Sneaker';
+import { Sneaker } from '@/types/sneaker';
 import EmptyWishlistState from '@/components/screens/app/wishlist/EmptyWishlistState';
 import WishlistHeader from '@/components/screens/app/wishlist/WishlistHeader';
 import WishlistDualViewContainer from '@/components/screens/app/wishlist/WishlistDualViewContainer';

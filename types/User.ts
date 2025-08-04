@@ -1,4 +1,4 @@
-import { Sneaker } from './Sneaker';
+import { Sneaker } from './sneaker';
 
 export type User = {
 	id: string;

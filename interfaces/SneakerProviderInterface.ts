@@ -1,6 +1,6 @@
-import { Sneaker } from '@/types/Sneaker';
+import { Sneaker } from '@/types/sneaker';
 import { SupabaseSneaker } from '@/domain/SneakerProvider';
-import { SizeUnit } from '@/types/Sneaker';
+import { SizeUnit } from '@/types/sneaker';
 
 export interface SneakerProviderInterface {
 	getSneakersByUser: (userId: string) => Promise<Sneaker[]>;

@@ -1,8 +1,8 @@
 import { View } from "react-native";
 import ProfileInfo from "./ProfileInfo";
 import ViewToggleButton from "@/components/ui/buttons/ViewToggleButton";
-import { Sneaker } from "@/types/Sneaker";
-import { User } from "@/types/User";
+import { Sneaker } from "@/types/sneaker";
+import { User } from "@/types/user";
 import SettingsButton from "./SettingsButton";
 import Title from "@/components/ui/text/Title";
 import { useTranslation } from "react-i18next";

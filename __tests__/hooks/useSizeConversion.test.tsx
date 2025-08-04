@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import { useSizeConversion } from '@/hooks/useSizeConversion';
-import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/Sneaker';
+import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
 
 vi.mock('@/store/useSizeUnitStore', () => ({
 	useSizeUnitStore: vi.fn(() => ({

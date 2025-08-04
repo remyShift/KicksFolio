@@ -1,6 +1,6 @@
 import { View } from "react-native";
 import ViewToggleButton from "@/components/ui/buttons/ViewToggleButton";
-import { Sneaker } from "@/types/Sneaker";
+import { Sneaker } from "@/types/sneaker";
 import Title from "@/components/ui/text/Title";
 import { useTranslation } from "react-i18next";
 

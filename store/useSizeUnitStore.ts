@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useLanguageStore } from './useLanguageStore';
-import { SizeUnit } from '@/types/Sneaker';
+import { SizeUnit } from '@/types/sneaker';
 
 interface SizeUnitStore {
 	currentUnit: SizeUnit;

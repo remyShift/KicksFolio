@@ -1,7 +1,7 @@
 import { TouchableOpacity, View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
-import { SortOption } from '@/hooks/TODO/useLocalListState';
+import { SortOption } from '@/types/filter';
 
 const SORT_OPTIONS: { key: SortOption; label: string }[] = [
   { key: 'name', label: 'collection.fields.name' },
@@ -12,7 +12,7 @@ const SORT_OPTIONS: { key: SortOption; label: string }[] = [
 ];
 
 interface SortButtonsProps {
-  listState: ReturnType<typeof import('@/hooks/TODO/useLocalListState').useLocalListState>;
+  	listState: ReturnType<typeof import('@/hooks/useFilterState').useFilterState>;
 }
 
 export default function SortButtons({ listState }: SortButtonsProps) {

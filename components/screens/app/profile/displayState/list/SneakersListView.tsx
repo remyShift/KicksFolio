@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { FlatList } from 'react-native';
-import { Sneaker } from '@/types/Sneaker';
-import { useLocalListState } from '@/hooks/TODO/useLocalListState';
+import { Sneaker } from '@/types/sneaker';
+import { useFilterState } from '@/hooks/useFilterState';
 import SneakerListItem from './SneakerListItem';
 import ListControls from './ListControls';
 
@@ -18,7 +18,7 @@ export default function SneakersListView({
   scrollEnabled = true,
   showOwnerInfo = false
 }: SneakersListViewProps) {
-  const listState = useLocalListState(sneakers);
+  const listState = useFilterState(sneakers);
 
   const renderSneakerItem = useCallback(({ item }: { item: Sneaker }) => (
     <SneakerListItem sneaker={item} onPress={onSneakerPress} showOwnerInfo={showOwnerInfo} />

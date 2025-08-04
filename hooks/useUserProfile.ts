@@ -3,7 +3,7 @@ import { SearchUser } from '@/domain/UserSearchProvider';
 import { useSession } from '@/context/authContext';
 import useToast from '@/hooks/ui/useToast';
 import { router } from 'expo-router';
-import { Sneaker } from '@/types/Sneaker';
+import { Sneaker } from '@/types/sneaker';
 import { useTranslation } from 'react-i18next';
 import { UserSearchInterface } from '@/interfaces/UserSearchInterface';
 import { FollowerInterface } from '@/interfaces/FollowerInterface';

@@ -66,7 +66,7 @@ const FormTextInput = forwardRef<TextInput, FormTextInputProps<any>>(
                     const { handleSubmitEditing } = useInputSubmit({
                         ref,
                         fieldName: name,
-                        getFieldError: getFieldError || (() => undefined),
+                        getFieldError,
                         nextInputRef,
                         onSubmitEditing,
                         setIsFocused,

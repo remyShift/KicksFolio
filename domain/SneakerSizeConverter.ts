@@ -1,5 +1,5 @@
 import { SneakerSizeConverterInterface } from '@/interfaces/SneakerSizeConverterInterface';
-import { SizeUnit } from '@/types/Sneaker';
+import { SizeUnit } from '@/types/sneaker';
 
 export type GenderType = 'men' | 'women';
 

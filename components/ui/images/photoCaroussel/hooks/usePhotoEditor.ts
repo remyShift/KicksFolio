@@ -1,5 +1,5 @@
 import { Alert } from 'react-native';
-import { Photo } from '@/types/Sneaker';
+import { Photo } from '@/types/sneaker';
 import { ImageService } from '@/services/ImageService';
 import ImageProvider from '@/domain/ImageProvider';
 import { useSession } from '@/context/authContext';

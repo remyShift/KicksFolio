@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Sneaker, SneakerBrand } from '@/types/Sneaker';
+import { Sneaker, SneakerBrand } from '@/types/sneaker';
 
 export type SortOption =
 	| 'name'

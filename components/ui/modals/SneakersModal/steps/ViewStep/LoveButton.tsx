@@ -1,7 +1,7 @@
 import { Pressable } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { useState, useEffect } from 'react';
-import { Sneaker } from '@/types/Sneaker';
+import { Sneaker } from '@/types/sneaker';
 import useWishlist from '@/components/ui/modals/SneakersModal/hooks/useWishlist';
 
 export default function LoveButton({ sneaker }: { sneaker: Sneaker }) {

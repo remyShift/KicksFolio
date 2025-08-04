@@ -1,5 +1,5 @@
 import { View, Text } from 'react-native';
-import { Sneaker } from '@/types/Sneaker';
+import { Sneaker } from '@/types/sneaker';
 
 export const ConditionBar = ({ sneaker }: { sneaker: Sneaker }) => {
     const segments = Array.from({ length: sneaker.condition }, (_, i) => i);

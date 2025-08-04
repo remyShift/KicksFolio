@@ -1,4 +1,4 @@
-import { Sneaker } from '@/types/Sneaker';
+import { Sneaker } from '@/types/sneaker';
 import { supabase } from '@/config/supabase/supabase';
 import { UserSearchInterface } from '@/interfaces/UserSearchInterface';
 

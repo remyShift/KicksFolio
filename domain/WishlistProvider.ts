@@ -1,5 +1,5 @@
 import { supabase } from '@/config/supabase/supabase';
-import { Sneaker, SneakerBrand, SneakerStatus, Photo } from '@/types/Sneaker';
+import { Sneaker, SneakerBrand, SneakerStatus, Photo } from '@/types/sneaker';
 import { WishlistProviderInterface } from '@/interfaces/WishlistProviderInterface';
 
 export interface WishlistItem {

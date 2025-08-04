@@ -1,9 +1,9 @@
 import { View, Text } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useCurrencyStore } from '@/store/useCurrencyStore';
-import { Sneaker } from '@/types/Sneaker';
+import { Sneaker } from '@/types/sneaker';
 import FollowButton from '@/components/ui/buttons/FollowButton';
-import { User } from '@/types/User';
+import { User } from '@/types/user';
 import { SearchUser } from '@/domain/UserSearchProvider';
 
 interface ProfileStatsProps {

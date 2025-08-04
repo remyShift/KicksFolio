@@ -1,7 +1,7 @@
 import { View, Text } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { AnimatedDot } from './AnimatedDot';
-import { Photo } from '@/types/Sneaker';
+import { Photo } from '@/types/sneaker';
 import { PhotoSlide } from './PhotoSlide';
 import { AddPhotoSlide } from './AddPhotoSlide';
 import { usePhotoCarousel } from './hooks/usePhotoCarousel';

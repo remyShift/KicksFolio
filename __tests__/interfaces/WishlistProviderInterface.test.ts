@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { WishlistProviderInterface } from '@/interfaces/WishlistProviderInterface';
-import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/Sneaker';
+import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
 import { WishlistItem } from '@/domain/WishlistProvider';
 
 describe('WishlistProviderInterface', () => {

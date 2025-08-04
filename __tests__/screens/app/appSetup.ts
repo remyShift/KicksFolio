@@ -1,4 +1,4 @@
-import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/Sneaker';
+import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
 
 export const mockSneakers: Sneaker[] = [
 	{

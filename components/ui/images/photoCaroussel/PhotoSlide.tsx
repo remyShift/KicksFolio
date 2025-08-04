@@ -1,6 +1,6 @@
 import { View, Pressable, Alert } from 'react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { Photo } from '@/types/Sneaker';
+import { Photo } from '@/types/sneaker';
 import { Image } from 'expo-image';
 
 interface PhotoSlideProps {

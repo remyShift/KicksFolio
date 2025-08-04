@@ -3,7 +3,7 @@ import {
 	ModalStep,
 	SneakerFormData,
 } from '@/components/ui/modals/SneakersModal/types';
-import { Sneaker, SneakerBrand } from '@/types/Sneaker';
+import { Sneaker, SneakerBrand } from '@/types/sneaker';
 
 export interface FetchedSneaker {
 	model: string;

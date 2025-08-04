@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { View } from 'react-native';
-import { Sneaker } from '@/types/Sneaker';
+import { Sneaker } from '@/types/sneaker';
 import SneakersCardByBrand from '@/components/screens/app/profile/displayState/card/SneakersCardByBrand';
 import SneakersListView from '@/components/screens/app/profile/displayState/list/SneakersListView';
 import { useViewDisplayStateStore, ViewDisplayState } from '@/store/useViewDisplayStateStore';

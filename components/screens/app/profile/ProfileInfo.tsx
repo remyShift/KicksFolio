@@ -2,7 +2,7 @@ import { Text, View } from 'react-native';
 import ProfileAvatar from './ProfileAvatar';
 import ProfileStats from './ProfileStats';
 import SocialMediaLinks from './SocialMediaLinks';
-import { User } from '@/types/User';
+import { User } from '@/types/user';
 import { useSession } from '@/context/authContext';
 import { SearchUser } from '@/domain/UserSearchProvider';
 import { useUserProfile } from '@/hooks/useUserProfile';

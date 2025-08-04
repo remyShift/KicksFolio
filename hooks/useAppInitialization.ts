@@ -6,8 +6,8 @@ import { useCurrencyStore } from '@/store/useCurrencyStore';
 import { useSplashScreenStore } from '@/store/useSplashScreenStore';
 import { storageProvider } from '@/domain/StorageProvider';
 import { deviceLanguage } from '@/locales/i18n';
-import { User } from '@/types/User';
-import { Sneaker } from '@/types/Sneaker';
+import { User } from '@/types/user';
+import { Sneaker } from '@/types/sneaker';
 import { Image } from 'expo-image';
 
 const MIN_SPLASH_DURATION = 2000;

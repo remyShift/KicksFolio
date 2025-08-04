@@ -1,4 +1,4 @@
-import { SizeUnit } from '@/types/Sneaker';
+import { SizeUnit } from '@/types/sneaker';
 import { GenderType } from '@/domain/SneakerSizeConverter';
 
 export interface SneakerSizeConverterInterface {

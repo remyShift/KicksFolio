@@ -1,8 +1,8 @@
 import { supabase } from '@/config/supabase/supabase';
-import { SneakerBrand } from '@/types/Sneaker';
+import { SneakerBrand } from '@/types/sneaker';
 import { sneakerBrandOptions } from '@/validation/schemas';
 import { sneakerSizeConverter, GenderType } from './SneakerSizeConverter';
-import { SizeUnit } from '@/types/Sneaker';
+import { SizeUnit } from '@/types/sneaker';
 import { t } from 'i18next';
 import { SneakerProviderInterface } from '@/interfaces/SneakerProviderInterface';
 

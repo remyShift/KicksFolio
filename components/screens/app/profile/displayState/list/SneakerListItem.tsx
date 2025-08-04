@@ -1,6 +1,6 @@
 import { TouchableOpacity, View, Text } from 'react-native';
 import { Image } from 'expo-image';
-import { Sneaker } from '@/types/Sneaker';
+import { Sneaker } from '@/types/sneaker';
 import { useSession } from '@/context/authContext';
 import SizeDisplay from '@/components/ui/text/SizeDisplay';
 import { useTranslation } from 'react-i18next';

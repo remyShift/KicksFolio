@@ -2,8 +2,8 @@ import { createContext, useContext, type PropsWithChildren, useState, useEffect 
 import { AuthContextType, FollowingUserWithSneakers } from '@/types/auth';
 import { storageProvider } from '@/domain/StorageProvider';
 import { useAppState } from '@react-native-community/hooks';
-import { User } from '@/types/User';
-import { Sneaker } from '@/types/Sneaker';
+import { User } from '@/types/user';
+import { Sneaker } from '@/types/sneaker';
 import { AuthInterface } from '@/interfaces/AuthInterface';
 import { authProvider } from '@/domain/AuthProvider';
 import { SneakerProviderInterface } from '@/interfaces/SneakerProviderInterface';
