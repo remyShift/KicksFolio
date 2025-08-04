@@ -27,9 +27,9 @@ export default function ListControls({ listState }: ListControlsProps) {
         </TouchableOpacity>
       </View>
 
-      <SortButtons listState={listState} />
+      <SortButtons />
 
-      <FilterSection listState={listState} />
+      <FilterSection />
     </View>
   );
 } 

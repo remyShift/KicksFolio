@@ -1,12 +1,9 @@
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { useSneakerFilterContext } from '@/context/SneakerFilterContext';
 import FilterGroup from './FilterGroup';
 
-interface FilterSectionProps {
-  	listState: ReturnType<typeof import('@/hooks/useSneakerFiltering').useSneakerFiltering>;
-}
-
-export default function FilterSection({ listState }: FilterSectionProps) {
+export default function FilterSection() {
   const { t } = useTranslation();
   const { 
     showFilters, 

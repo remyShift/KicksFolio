@@ -49,14 +49,6 @@ jest.mock('@/store/useModalStore', () => ({
 	}),
 }));
 
-jest.mock('@/store/useListViewStore', () => ({
-	useListViewStore: () => ({
-		isListView: false,
-		setIsListView: jest.fn(),
-		toggleView: jest.fn(),
-	}),
-}));
-
 jest.mock('@/store/useCurrencyStore', () => ({
 	useCurrencyStore: () => ({
 		currency: 'EUR',

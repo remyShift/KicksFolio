@@ -1,6 +1,7 @@
 import { TouchableOpacity, View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
+import { useSneakerFilterContext } from '@/context/SneakerFilterContext';
 import { SortOption } from '@/types/filter';
 
 const SORT_OPTIONS: { key: SortOption; label: string }[] = [
@@ -11,12 +12,8 @@ const SORT_OPTIONS: { key: SortOption; label: string }[] = [
   { key: 'value', label: 'collection.fields.value' }
 ];
 
-interface SortButtonsProps {
-  	listState: ReturnType<typeof import('@/hooks/useSneakerFiltering').useSneakerFiltering>;
-}
-
-export default function SortButtons({ listState }: SortButtonsProps) {
-  const { sortBy, sortOrder, toggleSort } = listState;
+export default function SortButtons() {
+  const { sortBy, sortOrder, toggleSort } = useSneakerFilterContext();
   const { t } = useTranslation();
   
   return (

@@ -1,19 +1,11 @@
 import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import i18n from '@/locales/i18n';
-
-export type SupportedLanguage = 'en' | 'fr';
-
-export interface Language {
-	code: SupportedLanguage;
-	name: string;
-	nativeName: string;
-}
-
-export const supportedLanguages: Language[] = [
-	{ code: 'en', name: 'English', nativeName: 'English' },
-	{ code: 'fr', name: 'French', nativeName: 'Français' },
-];
+import {
+	Language,
+	SupportedLanguage,
+	supportedLanguages,
+} from '@/types/language';
 
 interface LanguageStore {
 	currentLanguage: SupportedLanguage;
