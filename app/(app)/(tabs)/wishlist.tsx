@@ -1,4 +1,5 @@
 import { useState } from 'react';
+
 import { RefreshControl, ScrollView, View } from 'react-native';
 
 import EmptyWishlistState from '@/components/screens/app/wishlist/EmptyWishlistState';

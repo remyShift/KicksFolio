@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+
 import { View } from 'react-native';
 
 import SneakersCardByBrand from '@/components/screens/app/profile/displayState/card/SneakersCardByBrand';

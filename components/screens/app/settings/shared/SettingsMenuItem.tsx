@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+
 import { Text, TouchableOpacity, View } from 'react-native';
 
 import { Entypo, Ionicons } from '@expo/vector-icons';

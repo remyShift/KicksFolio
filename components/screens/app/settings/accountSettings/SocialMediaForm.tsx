@@ -1,4 +1,5 @@
 import { useRef } from 'react';
+
 import { useTranslation } from 'react-i18next';
 import { ScrollView, Switch, Text, TextInput, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';

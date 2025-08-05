@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { Text, TextProps } from 'react-native';
 
 import { useSizeConversion } from '@/hooks/useSizeConversion';

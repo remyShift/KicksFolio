@@ -1,4 +1,5 @@
 import { ForwardedRef, RefObject } from 'react';
+
 import { Keyboard, TextInput } from 'react-native';
 
 interface UseInputSubmitProps {

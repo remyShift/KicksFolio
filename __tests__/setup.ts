@@ -1,4 +1,5 @@
 import { act } from 'react';
+
 import { ReactTestInstance } from 'react-test-renderer';
 
 import { fireEvent } from '@testing-library/react-native';

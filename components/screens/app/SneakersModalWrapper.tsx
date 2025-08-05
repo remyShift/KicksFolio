@@ -1,4 +1,5 @@
 import { useCallback, useEffect } from 'react';
+
 import { Dimensions, Modal, Pressable, View } from 'react-native';
 import {
 	Gesture,

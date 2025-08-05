@@ -1,4 +1,5 @@
 import { useState } from 'react';
+
 import { ScrollView, Text, View } from 'react-native';
 
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';

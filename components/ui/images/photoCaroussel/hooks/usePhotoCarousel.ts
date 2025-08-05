@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+
 import { Dimensions } from 'react-native';
 import Animated, {
 	runOnJS,

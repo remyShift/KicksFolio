@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+
 import { FlatList, RefreshControl } from 'react-native';
 
 import { SearchUser } from '@/domain/UserSearchProvider';

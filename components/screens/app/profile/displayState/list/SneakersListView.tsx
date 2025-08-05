@@ -1,4 +1,5 @@
 import { useCallback, useEffect } from 'react';
+
 import { FlatList } from 'react-native';
 
 import { useSneakerFilterStore } from '@/store/useSneakerFilterStore';
