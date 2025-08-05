@@ -2,7 +2,7 @@ import { View, Pressable, Alert } from 'react-native';
 import { Image } from 'expo-image';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Controller, Control, FieldValues, Path } from 'react-hook-form';
-import { useImagePicker } from '@/hooks/useImagePicker';
+import { useImageManager } from '@/hooks/useImageManager';
 
 interface FormImageInputProps<T extends FieldValues> {
     name: Path<T>;
@@ -17,47 +17,16 @@ const FormImageInput = <T extends FieldValues>({
     size = 128,
     isRounded = true,
 }: FormImageInputProps<T>) => {
-    const { handleImageSelection } = useImagePicker();
+    const { showSimpleImagePicker } = useImageManager();
 
     const handleImagePress = (onChange: (value: string) => void) => {
-        Alert.alert(
-            'Choose an image',
-            'Select an image from your gallery or take a photo with your camera.',
-            [
-                {
-                    text: 'Choose from gallery',
-                    onPress: () => {
-                        handleImageSelection('gallery').then(uri => {
-                            if (!uri) {
-                                Alert.alert('Sorry, we need permission to access your photos!');
-                                return;
-                            }
-                            onChange(uri);
-                        }).catch(error => {
-                            console.error('❌ FormImageInput.handleImagePress: Gallery selection error', error);
-                        });
-                    },
-                },
-                {
-                    text: 'Take a photo',
-                    onPress: () => {
-                        handleImageSelection('camera').then(uri => {
-                            if (!uri) {
-                                Alert.alert('Sorry, we need permission to access your camera!');
-                                return;
-                            }
-                            onChange(uri);
-                        }).catch(error => {
-                            console.error('❌ FormImageInput.handleImagePress: Camera error', error);
-                        });
-                    },
-                },
-                {
-                    text: 'Cancel',
-                    style: 'cancel'
-                }
-            ]
-        );
+        showSimpleImagePicker('profile', (uri) => {
+            if (!uri) {
+                Alert.alert('Sorry, we need permission to access your camera/photos!');
+                return;
+            }
+            onChange(uri);
+        });
     };
 
     return (

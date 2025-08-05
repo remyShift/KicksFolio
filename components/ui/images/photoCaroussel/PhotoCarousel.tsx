@@ -1,11 +1,11 @@
 import { View, Text } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { AnimatedDot } from './AnimatedDot';
-import { Photo } from '@/types/sneaker';
+import { Photo } from '@/types/image';
 import { PhotoSlide } from './PhotoSlide';
 import { AddPhotoSlide } from './AddPhotoSlide';
 import { usePhotoCarousel } from './hooks/usePhotoCarousel';
-import { usePhotoEditor } from './hooks/usePhotoEditor';
+import { useImageManager } from '@/hooks/useImageManager';
 
 interface PhotoCarouselProps {
   photos: Photo[];
@@ -35,13 +35,13 @@ export const PhotoCarousel = ({
     onAccessibilityAction
   } = usePhotoCarousel(photos);
 
-  const { showImagePicker, removeImage } = usePhotoEditor(
-    photos,
+  const { showImagePicker, removeImage } = useImageManager(photos, {
     onPhotosChange,
     scrollToIndex,
     currentIndex,
-    sneakerId
-  );
+    sneakerId,
+    maxImages
+  });
 
   if (!photos || photos.length === 0) {
     if (mode === 'edit') {

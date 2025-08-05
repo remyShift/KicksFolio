@@ -5,7 +5,7 @@ import Animated, {
 	useAnimatedScrollHandler,
 	useSharedValue,
 } from 'react-native-reanimated';
-import { Photo } from '@/types/sneaker';
+import { Photo } from '@/types/image';
 
 export const usePhotoCarousel = (photos: Photo[]) => {
 	const scrollX = useSharedValue(0);
