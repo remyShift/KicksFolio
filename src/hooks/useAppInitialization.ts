@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { Image } from 'expo-image';
 
-import { useSession } from '@/context/authContext';
+import { useSession } from '@/contexts/authContext';
 import { deviceLanguage } from '@/locales/i18n';
 import { storageProvider } from '@/services/StorageService';
 import { useCurrencyStore } from '@/store/useCurrencyStore';

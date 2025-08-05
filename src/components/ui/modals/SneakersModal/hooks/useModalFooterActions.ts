@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert } from 'react-native';
 
-import { useSession } from '@/context/authContext';
+import { useSession } from '@/contexts/authContext';
 import useToast from '@/hooks/ui/useToast';
 import { useModalStore } from '@/store/useModalStore';
 import { Sneaker } from '@/types/sneaker';

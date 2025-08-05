@@ -3,7 +3,7 @@ import { View } from 'react-native';
 
 import ViewToggleButton from '@/components/ui/buttons/ViewToggleButton';
 import Title from '@/components/ui/text/Title';
-import { useSession } from '@/context/authContext';
+import { useSession } from '@/contexts/authContext';
 import { SearchUser } from '@/domain/UserSearchProvider';
 import { Sneaker } from '@/types/sneaker';
 import { User } from '@/types/user';

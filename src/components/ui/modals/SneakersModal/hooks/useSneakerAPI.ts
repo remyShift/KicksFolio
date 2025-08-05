@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 
 import { ZodIssue } from 'zod';
 
-import { useSession } from '@/context/authContext';
+import { useSession } from '@/contexts/authContext';
 import { imageProvider } from '@/domain/ImageProvider';
 import { sneakerProvider } from '@/domain/SneakerProvider';
 import useToast from '@/hooks/ui/useToast';

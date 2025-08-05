@@ -7,7 +7,7 @@ import BackButton from '@/components/ui/buttons/BackButton';
 import DeleteButton from '@/components/ui/buttons/DeleteButton';
 import EditButton from '@/components/ui/buttons/EditButton';
 import NextButton from '@/components/ui/buttons/NextButton';
-import { useSession } from '@/context/authContext';
+import { useSession } from '@/contexts/authContext';
 import { useModalStore } from '@/store/useModalStore';
 import { Sneaker } from '@/types/sneaker';
 

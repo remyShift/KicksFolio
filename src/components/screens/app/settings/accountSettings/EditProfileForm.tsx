@@ -11,7 +11,7 @@ import MainButton from '@/components/ui/buttons/MainButton';
 import FormImageInput from '@/components/ui/inputs/FormImageInput';
 import FormTextInput from '@/components/ui/inputs/FormTextInput';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
-import { useSession } from '@/context/authContext';
+import { useSession } from '@/contexts/authContext';
 import { useFormController } from '@/hooks/form/useFormController';
 import useToast from '@/hooks/ui/useToast';
 import { useAuth } from '@/hooks/useAuth';

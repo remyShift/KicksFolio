@@ -2,7 +2,7 @@ import { Alert } from 'react-native';
 
 import * as ImagePicker from 'expo-image-picker';
 
-import { useSession } from '@/context/authContext';
+import { useSession } from '@/contexts/authContext';
 import { imageProvider } from '@/domain/ImageProvider';
 import { ImageProviderInterface } from '@/interfaces/ImageProviderInterface';
 import { imageService } from '@/services/ImageService';

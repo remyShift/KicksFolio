@@ -1,6 +1,6 @@
 import { Stack } from 'expo-router';
 
-import { SignUpPropsProvider } from '@/context/signUpPropsContext';
+import { SignUpPropsProvider } from '@/contexts/signUpPropsContext';
 
 export default function AuthLayout() {
 	return (

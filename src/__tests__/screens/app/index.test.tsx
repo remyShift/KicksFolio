@@ -5,7 +5,7 @@ import { router } from 'expo-router';
 import { fireEvent, render, screen } from '@testing-library/react-native';
 
 import Index from '@/app/(app)/(tabs)/index';
-import { useSession } from '@/context/authContext';
+import { useSession } from '@/contexts/authContext';
 
 describe('Index', () => {
 	let collectionCard: ReactTestInstance;

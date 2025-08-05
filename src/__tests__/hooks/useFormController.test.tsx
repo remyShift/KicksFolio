@@ -22,7 +22,7 @@ vi.mock('@/hooks/useAuth', () => ({
 	useAuth: () => mockUseAuth,
 }));
 
-vi.mock('@/context/authContext', () => ({
+vi.mock('@/contexts/authContext', () => ({
 	useSession: () => ({
 		refreshUserData: vi.fn(),
 	}),

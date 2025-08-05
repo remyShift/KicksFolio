@@ -134,7 +134,7 @@ vi.mock('expo-router', () => ({
 	},
 }));
 
-vi.mock('@/context/authContext', () => ({
+vi.mock('@/contexts/authContext', () => ({
 	useSession: vi.fn(() => ({
 		user: null,
 		setUser: vi.fn(),

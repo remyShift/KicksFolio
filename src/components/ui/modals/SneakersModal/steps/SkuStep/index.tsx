@@ -10,7 +10,7 @@ import { Link } from 'expo-router';
 import { FontAwesome6 } from '@expo/vector-icons';
 
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
-import { useSession } from '@/context/authContext';
+import { useSession } from '@/contexts/authContext';
 import { useModalStore } from '@/store/useModalStore';
 
 import { useSneakerAPI } from '../../hooks/useSneakerAPI';

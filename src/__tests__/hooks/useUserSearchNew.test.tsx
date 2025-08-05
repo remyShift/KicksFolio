@@ -20,7 +20,7 @@ const mockUser = {
 	email: 'test@example.com',
 };
 
-vi.mock('@/context/authContext', () => ({
+vi.mock('@/contexts/authContext', () => ({
 	useSession: () => ({
 		user: mockUser,
 	}),

@@ -6,7 +6,7 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 
 import SplashScreen from '@/components/screens/SplashScreen/SplashScreen';
-import { SessionProvider, useSession } from '@/context/authContext';
+import { SessionProvider, useSession } from '@/contexts/authContext';
 import { useAppInitialization } from '@/hooks/useAppInitialization';
 import '@/locales/i18n';
 import { useSplashScreenStore } from '@/store/useSplashScreenStore';

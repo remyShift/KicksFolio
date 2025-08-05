@@ -13,7 +13,7 @@ import FormTextInput from '@/components/ui/inputs/FormTextInput';
 import PageLink from '@/components/ui/links/LoginPageLink';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import PageTitle from '@/components/ui/text/PageTitle';
-import { useSession } from '@/context/authContext';
+import { useSession } from '@/contexts/authContext';
 import { useFormController } from '@/hooks/form/useFormController';
 import useToast from '@/hooks/ui/useToast';
 import { useAuth } from '@/hooks/useAuth';

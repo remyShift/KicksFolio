@@ -33,7 +33,7 @@ vi.mock('@/domain/ImageProvider', () => ({
 	},
 }));
 
-vi.mock('@/context/authContext', () => ({
+vi.mock('@/contexts/authContext', () => ({
 	useSession: vi.fn(() => ({
 		user: { id: 'test-user-id' },
 	})),

@@ -1,6 +1,6 @@
 import { Text, View } from 'react-native';
 
-import { useSession } from '@/context/authContext';
+import { useSession } from '@/contexts/authContext';
 import { SearchUser } from '@/domain/UserSearchProvider';
 import { useUserProfile } from '@/hooks/useUserProfile';
 import { User } from '@/types/user';

@@ -5,7 +5,7 @@ import AccountSettings from '@/components/screens/app/settings/accountSettings/A
 import AppSettings from '@/components/screens/app/settings/appSettings/AppSettings';
 import SettingsHeader from '@/components/screens/app/settings/SettingsHeader';
 import SettingsMenuItem from '@/components/screens/app/settings/shared/SettingsMenuItem';
-import { useSession } from '@/context/authContext';
+import { useSession } from '@/contexts/authContext';
 import useToast from '@/hooks/ui/useToast';
 import { useAuth } from '@/hooks/useAuth';
 

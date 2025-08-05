@@ -10,7 +10,7 @@ import MainButton from '@/components/ui/buttons/MainButton';
 import FormPasswordInput from '@/components/ui/inputs/FormPasswordInput';
 import FormTextInput from '@/components/ui/inputs/FormTextInput';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
-import { useSignUpProps } from '@/context/signUpPropsContext';
+import { useSignUpProps } from '@/contexts/signUpPropsContext';
 import { useFormController } from '@/hooks/form/useFormController';
 import { useAuth } from '@/hooks/useAuth';
 import { useAuthValidation } from '@/hooks/useAuthValidation';

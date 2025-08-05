@@ -29,7 +29,7 @@ const mockUser = {
 const mockRefreshFollowingUsers = vi.fn();
 const mockRefreshUserData = vi.fn();
 
-vi.mock('@/context/authContext', () => ({
+vi.mock('@/contexts/authContext', () => ({
 	useSession: () => ({
 		user: mockUser,
 		refreshFollowingUsers: mockRefreshFollowingUsers,

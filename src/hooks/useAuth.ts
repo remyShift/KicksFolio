@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { router } from 'expo-router';
 
-import { useSession } from '@/context/authContext';
+import { useSession } from '@/contexts/authContext';
 import { authProvider } from '@/domain/AuthProvider';
 import { imageProvider } from '@/domain/ImageProvider';
 import { AuthInterface } from '@/interfaces/AuthInterface';

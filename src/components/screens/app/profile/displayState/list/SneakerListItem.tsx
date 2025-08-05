@@ -5,7 +5,7 @@ import { Image } from 'expo-image';
 
 import EmptySneakerImage from '@/components/ui/placeholders/EmptySneakerImage';
 import SizeDisplay from '@/components/ui/text/SizeDisplay';
-import { useSession } from '@/context/authContext';
+import { useSession } from '@/contexts/authContext';
 import { useCurrencyStore } from '@/store/useCurrencyStore';
 import { Sneaker } from '@/types/sneaker';
 

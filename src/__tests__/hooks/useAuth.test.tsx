@@ -10,7 +10,7 @@ import { UpdateUserData, UserData } from '@/types/auth';
 
 import { createMockError } from '../interfaces/authInterfaceSetup';
 
-vi.mock('@/context/authContext', () => ({
+vi.mock('@/contexts/authContext', () => ({
 	useSession: () => ({
 		setUser: vi.fn(),
 		refreshUserData: vi.fn(),

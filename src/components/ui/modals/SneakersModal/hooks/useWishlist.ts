@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-import { useSession } from '@/context/authContext';
+import { useSession } from '@/contexts/authContext';
 import { wishlistProvider } from '@/domain/WishlistProvider';
 import useToast from '@/hooks/ui/useToast';
 import { WishlistProviderInterface } from '@/interfaces/WishlistProviderInterface';

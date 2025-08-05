@@ -9,7 +9,7 @@ import MainButton from '@/components/ui/buttons/MainButton';
 import CollectionCard from '@/components/ui/cards/CollectionCard';
 import FollowerTitle from '@/components/ui/text/FollowerTitle';
 import Title from '@/components/ui/text/Title';
-import { useSession } from '@/context/authContext';
+import { useSession } from '@/contexts/authContext';
 import { useModalStore } from '@/store/useModalStore';
 
 export default function Index() {

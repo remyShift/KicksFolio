@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { router } from 'expo-router';
 
-import { useSession } from '@/context/authContext';
+import { useSession } from '@/contexts/authContext';
 import { followerProvider } from '@/domain/FollowerProvider';
 import { SearchUser } from '@/domain/UserSearchProvider';
 import { userSearchProvider } from '@/domain/UserSearchProvider';

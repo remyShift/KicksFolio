@@ -130,7 +130,7 @@ export const resetMocks = () => {
 	});
 };
 
-jest.mock('@/context/signUpPropsContext', () => ({
+jest.mock('@/contexts/signUpPropsContext', () => ({
 	useSignUpProps: () => mockUseSignUpProps,
 }));
 
@@ -152,7 +152,7 @@ jest.mock('@/hooks/ui/useToast', () => ({
 	}),
 }));
 
-jest.mock('@/context/authContext', () => ({
+jest.mock('@/contexts/authContext', () => ({
 	useSession: jest.fn().mockReturnValue({
 		user: mockUser,
 		isLoading: false,
