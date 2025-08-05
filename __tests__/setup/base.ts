@@ -47,21 +47,28 @@ jest.mock('expo-router', () => ({
 
 import i18n from '@/locales/i18n';
 
+const originalConsole = {
+	log: console.log,
+	warn: console.warn,
+	error: console.error,
+	info: console.info,
+	debug: console.debug,
+};
+
 beforeAll(async () => {
 	if (!i18n.isInitialized) {
 		await i18n.init();
 	}
 	await i18n.changeLanguage('en');
-});
 
-const originalConsoleError = console.error;
-
-beforeEach(() => {
 	console.error = jest.fn();
+	console.log = jest.fn();
+	console.warn = jest.fn();
+	console.info = jest.fn();
+	console.debug = jest.fn();
 });
 
 afterEach(() => {
 	cleanup();
 	jest.clearAllMocks();
-	console.error = originalConsoleError;
 });

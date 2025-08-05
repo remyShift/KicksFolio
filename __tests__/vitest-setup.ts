@@ -203,8 +203,59 @@ vi.mock('react-i18next', () => ({
 	},
 }));
 
+vi.mock('i18next', () => ({
+	default: {
+		use: vi.fn().mockReturnThis(),
+		init: vi.fn().mockReturnThis(),
+		t: vi.fn((key: string) => key),
+		changeLanguage: vi.fn(),
+		language: 'en',
+	},
+}));
+
+(globalThis as any).originalConsole = {
+	log: console.log,
+	warn: console.warn,
+	error: console.error,
+	info: console.info,
+	debug: console.debug,
+};
+
 beforeAll(() => {
 	vi.spyOn(console, 'error').mockImplementation(() => {});
+
+	const originalLog = console.log;
+	const originalWarn = console.warn;
+
+	vi.spyOn(console, 'log').mockImplementation((...args) => {
+		if (
+			args.some(
+				(arg) =>
+					typeof arg === 'string' &&
+					(arg.includes('ImageProviderInterface') ||
+						arg.includes('useImageManager') ||
+						arg.includes('Currency initialized'))
+			)
+		) {
+			originalLog(...args);
+		}
+	});
+
+	vi.spyOn(console, 'warn').mockImplementation((...args) => {
+		if (
+			args.some(
+				(arg) =>
+					typeof arg === 'string' &&
+					(arg.includes('ImageProviderInterface') ||
+						arg.includes('useImageManager'))
+			)
+		) {
+			originalWarn(...args);
+		}
+	});
+
+	vi.spyOn(console, 'info').mockImplementation(() => {});
+	vi.spyOn(console, 'debug').mockImplementation(() => {});
 });
 
 afterEach(() => {
