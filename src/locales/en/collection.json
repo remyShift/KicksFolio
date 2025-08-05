@@ -1,0 +1,188 @@
+{
+	"pages": {
+		"titles": {
+			"collection": "My collection",
+			"wishlist": "My wishlist"
+		},
+		"empty": {
+			"title": "No sneakers yet !",
+			"description": "Start building your collection by adding your first sneaker !"
+		}
+	},
+	"stats": {
+		"sneakers": "Sneakers"
+	},
+	"actions": {
+		"add": "Add",
+		"edit": "Edit",
+		"delete": "Delete",
+		"search": "Search",
+		"view": "View",
+		"save": "Save",
+		"cancel": "Cancel",
+		"next": "Next",
+		"back": "Back"
+	},
+	"messages": {
+		"searching": {
+			"title": "🔍 Searching for sneaker...",
+			"description": "Please wait while we find your sneaker..."
+		},
+		"found": {
+			"title": "🔍 Sneaker found",
+			"description": "The sneaker has been found successfully."
+		},
+		"adding": {
+			"title": "🔍 Adding sneaker to your collection...",
+			"description": "The sneaker is being added to your collection."
+		},
+		"added": {
+			"title": "✅ Sneaker added !",
+			"description": "The sneaker has been added successfully to your collection."
+		},
+		"updating": {
+			"title": "🔍 Updating sneaker...",
+			"description": "The sneaker is being updated."
+		},
+		"updated": {
+			"title": "✅ Sneaker updated !",
+			"description": "The sneaker has been updated successfully."
+		},
+		"deleting": {
+			"title": "🗑️ Deleting sneaker...",
+			"description": "Please wait..."
+		},
+		"deleted": {
+			"title": "🗑️ Sneaker deleted !",
+			"description": "The sneaker has been deleted successfully."
+		},
+		"deletionFailed": {
+			"title": "❌ Sneaker deletion failed !",
+			"description": "The sneaker could not be deleted."
+		}
+	},
+	"modal": {
+		"titles": {
+			"add": "Add a sneaker",
+			"edit": "Edit a sneaker",
+			"skuStep": "Put your sneaker SKU below",
+			"addImages": "Add photos",
+			"editImages": "Edit photos",
+			"selectedImages": "Selected photos"
+		},
+		"barcode": {
+			"requesting": "Requesting camera permission...",
+			"noPermission": "Camera access denied.",
+			"enablePermission": "Please enable camera access in app settings.",
+			"instruction": "Point the camera at your sneaker's barcode.",
+			"description": "Make sure the barcode is clearly visible and well-lit.",
+			"noData": "No data found for this barcode."
+		},
+		"descriptions": {
+			"howProceed": "How do you want to proceed?",
+			"bySearch": "Prefetch your sneaker information from a SKU.",
+			"byBarcode": "Scan your sneaker's barcode to prefetch information.",
+			"manually": "You provide the sneaker information manually in a form.",
+			"skuNote": "NB: For Nike's SKU, don't forget the '-' and the 3 numbers following it or it will not work.",
+			"addImages": "Add 1 to 3 photos of your sneaker to get started",
+			"editImages": "Edit or replace your sneaker photos",
+			"noImages": "No images selected"
+		},
+		"buttons": {
+			"bySearch": "Search",
+			"byBarcode": "Barcode",
+			"manually": "Manually",
+			"search": "Search",
+			"editImages": "Edit"
+		},
+		"form": {
+			"labels": {
+				"size": "Size",
+				"condition": "Condition",
+				"pricePaid": "Price paid"
+			},
+			"placeholders": {
+				"status": "Rocking",
+				"brand": "Nike",
+				"description": "Personal notes about this sneaker..."
+			},
+			"success": {
+				"added": "added!",
+				"addedDescription": "The sneaker has been added successfully to your collection.",
+				"updated": "updated!",
+				"updatedDescription": "The sneaker has been updated successfully."
+			},
+			"errors": {
+				"images": {
+					"min": "Please upload at least one image.",
+					"max": "You can upload a maximum of 3 images.",
+					"required": "Please add at least one image before continuing."
+				},
+				"model": {
+					"min": "Sneaker model must be at least 2 characters long.",
+					"brandInModel": "The model cannot contain the brand."
+				},
+				"brand": {
+					"required": "Please select a brand."
+				},
+				"status": {
+					"required": "Please select a status."
+				},
+				"size": {
+					"min": "Please enter the size.",
+					"multiple": "Size must be a multiple of 0.5 (e.g., 7, 7.5, 8, 8.5).",
+					"eu": "Size must be between 35 and 48 (EU).",
+					"us": "Size must be between 7 and 15 (US)."
+				},
+				"condition": {
+					"min": "Please select a condition.",
+					"refine": "Condition must be between 1 and 10."
+				},
+				"price_paid": {
+					"min": "Please enter a valid price."
+				},
+				"sku": {
+					"required": "Please enter a SKU."
+				},
+				"barcode": {
+					"required": "Please scan a barcode."
+				},
+				"user": {
+					"required": "No user authenticated"
+				},
+				"sneaker": {
+					"error": "An error occurred while submitting the sneaker",
+					"errorDescription": "Please try again."
+				},
+				"validateForm": {
+					"missing": "Validation function is missing"
+				},
+				"currentSneaker": {
+					"missing": "Current sneaker is missing"
+				}
+			}
+		}
+	},
+	"fields": {
+		"name": "Name",
+		"brand": "Brand",
+		"size": "Size",
+		"condition": "Condition",
+		"value": "Value",
+		"sku": "SKU",
+		"status": "Status",
+		"description": "Description",
+		"price_paid": "Price paid",
+		"images": "Images"
+	},
+	"filters": {
+		"title": "Filters",
+		"sortBy": "Sort by",
+		"all": "All",
+		"clearAll": "Clear all filters"
+	},
+	"cards": {
+		"ownedBy": "Owned by",
+		"me": "me"
+	}
+}

@@ -4,18 +4,19 @@
     "baseUrl": ".",
     "paths": {
       "@/*": [
-        "./*"
+        "./src/*"
       ]
     },
     "jsx": "react-jsx"
   },
   "include": [
+    "src",
     "**/*.ts",
     "**/*.tsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
     "nativewind-env.d.ts",
-    "config/supabase/functions/sku-lookup/index.js"
+    "src/config/supabase/functions/sku-lookup/index.js"
   ],
   "extends": "expo/tsconfig.base"
 }

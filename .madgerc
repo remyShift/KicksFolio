@@ -1,0 +1,14 @@
+{
+	"extensions": [
+		"ts",
+		"tsx",
+		"js",
+		"jsx"
+	],
+	"alias": {
+		"@/*": [
+			"./src/*"
+		]
+	},
+	"tsConfig": "./tsconfig.json"
+}
