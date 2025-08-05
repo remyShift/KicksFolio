@@ -1,36 +1,13 @@
 import { supabase } from '@/config/supabase/supabase';
-import { SneakerBrand } from '@/types/sneaker';
+import { SneakerBrand, Sneaker } from '@/types/sneaker';
 import { sneakerBrandOptions } from '@/validation/schemas';
 import { sneakerSizeConverter, GenderType } from './SneakerSizeConverter';
 import { SizeUnit } from '@/types/sneaker';
 import { t } from 'i18next';
 import { SneakerProviderInterface } from '@/interfaces/SneakerProviderInterface';
 
-export interface SupabaseSneaker {
-	id: string;
-	brand: SneakerBrand;
-	model: string;
-	size_eu: number;
-	size_us: number;
-	purchase_date?: string;
-	price_paid?: number;
-	condition: number;
-	estimated_value?: number;
-	description?: string;
-	status: string;
-	images: { id: string; uri: string }[];
-	user_id: string;
-	created_at: string;
-	updated_at: string;
-	wishlist?: boolean;
-	og_box?: boolean;
-	gender?: 'men' | 'women';
-	ds?: boolean;
-	sku?: string;
-}
-
 class SneakerProvider implements SneakerProviderInterface {
-	async getSneakersByUser(userId: string) {
+	async getSneakersByUser(userId: string): Promise<Sneaker[]> {
 		const { data, error } = await supabase
 			.from('sneakers')
 			.select('*')
@@ -40,10 +17,14 @@ class SneakerProvider implements SneakerProviderInterface {
 		if (error) throw error;
 
 		return (
-			data?.map((sneaker) => ({
-				...sneaker,
-				images: SneakerProvider.parseImages(sneaker.images),
-			})) || []
+			data?.map((sneaker) => {
+				const { created_at, updated_at, ...sneakerWithoutTimestamps } =
+					sneaker;
+				return {
+					...sneakerWithoutTimestamps,
+					images: SneakerProvider.parseImages(sneaker.images),
+				} as Sneaker;
+			}) || []
 		);
 	}
 
@@ -105,17 +86,11 @@ class SneakerProvider implements SneakerProviderInterface {
 	}
 
 	async createSneaker(
-		sneakerData: Omit<
-			SupabaseSneaker,
-			| 'id'
-			| 'created_at'
-			| 'updated_at'
-			| 'user_id'
-			| 'size_eu'
-			| 'size_us'
-		> & { size: number },
+		sneakerData: Omit<Sneaker, 'id' | 'user_id' | 'size_eu' | 'size_us'> & {
+			size: number;
+		},
 		currentUnit?: SizeUnit
-	) {
+	): Promise<Sneaker> {
 		const {
 			data: { user },
 			error: authError,
@@ -165,19 +140,20 @@ class SneakerProvider implements SneakerProviderInterface {
 			throw error;
 		}
 
-		return data
-			? {
-					...data,
-					images: SneakerProvider.parseImages(data.images),
-			  }
-			: data;
+		if (!data) return data;
+
+		const { created_at, updated_at, ...sneakerWithoutTimestamps } = data;
+		return {
+			...sneakerWithoutTimestamps,
+			images: SneakerProvider.parseImages(data.images),
+		} as Sneaker;
 	}
 
 	async updateSneaker(
 		id: string,
-		updates: Partial<SupabaseSneaker & { size?: number }>,
+		updates: Partial<Sneaker & { size?: number }>,
 		currentUnit?: SizeUnit
-	) {
+	): Promise<Sneaker> {
 		if (updates.size) {
 			let size_eu: number, size_us: number;
 
@@ -217,12 +193,13 @@ class SneakerProvider implements SneakerProviderInterface {
 
 		if (error) throw error;
 
-		return data
-			? {
-					...data,
-					images: SneakerProvider.parseImages(data.images),
-			  }
-			: data;
+		if (!data) return data;
+
+		const { created_at, updated_at, ...sneakerWithoutTimestamps } = data;
+		return {
+			...sneakerWithoutTimestamps,
+			images: SneakerProvider.parseImages(data.images),
+		} as Sneaker;
 	}
 
 	async deleteSneaker(id: string) {
@@ -241,12 +218,13 @@ class SneakerProvider implements SneakerProviderInterface {
 
 		if (error) throw error;
 
-		return data
-			? {
-					...data,
-					images: SneakerProvider.parseImages(data.images),
-			  }
-			: data;
+		if (!data) return data;
+
+		const { created_at, updated_at, ...sneakerWithoutTimestamps } = data;
+		return {
+			...sneakerWithoutTimestamps,
+			images: SneakerProvider.parseImages(data.images),
+		} as Sneaker;
 	}
 
 	async uploadSneakerImage(sneakerId: string, imageUri: string) {

@@ -143,8 +143,6 @@ export class WishlistProvider implements WishlistProviderInterface {
 				status: sneaker.status as SneakerStatus,
 				description: sneaker.description,
 				user_id: String(sneaker.user_id),
-				created_at: String(sneaker.created_at),
-				updated_at: String(sneaker.updated_at),
 				estimated_value: Number(sneaker.estimated_value || 0),
 				images: parsedImages,
 				owner: {

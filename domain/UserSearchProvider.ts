@@ -1,6 +1,6 @@
-import { Sneaker } from '@/types/sneaker';
 import { supabase } from '@/config/supabase/supabase';
 import { UserSearchInterface } from '@/interfaces/UserSearchInterface';
+import { Sneaker } from '@/types/sneaker';
 
 export interface SearchUser {
 	id: string;
@@ -203,7 +203,7 @@ export class UserSearchProvider implements UserSearchInterface {
 		}
 	}
 
-	async getUserSneakers(userId: string): Promise<any[]> {
+	async getUserSneakers(userId: string): Promise<Sneaker[]> {
 		try {
 			const { data: sneakers, error } = await supabase
 				.from('sneakers')
@@ -220,10 +220,17 @@ export class UserSearchProvider implements UserSearchInterface {
 			}
 
 			return (
-				sneakers?.map((sneaker) => ({
-					...sneaker,
-					images: UserSearchProvider.parseImages(sneaker.images),
-				})) || []
+				sneakers?.map((sneaker) => {
+					const {
+						created_at,
+						updated_at,
+						...sneakerWithoutTimestamps
+					} = sneaker;
+					return {
+						...sneakerWithoutTimestamps,
+						images: UserSearchProvider.parseImages(sneaker.images),
+					} as Sneaker;
+				}) || []
 			);
 		} catch (error) {
 			console.error(

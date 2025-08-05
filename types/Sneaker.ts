@@ -48,13 +48,11 @@ export type Sneaker = {
 	status: SneakerStatus;
 	description: string | null;
 	images: Photo[];
-	estimated_value: number;
+	estimated_value?: number;
 	owner?: SneakerOwner;
 	wishlist_added_at?: string;
 	wishlist?: boolean | false;
 	gender?: string;
 	og_box?: boolean;
 	ds?: boolean;
-	created_at: string;
-	updated_at: string;
 };

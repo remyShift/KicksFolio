@@ -1,6 +1,6 @@
 import { createContext, useContext, type PropsWithChildren, useState, useEffect } from 'react';
 import { AuthContextType, FollowingUserWithSneakers } from '@/types/auth';
-import { storageProvider } from '@/domain/StorageProvider';
+import { storageProvider } from '@/services/StorageService';
 import { useAppState } from '@react-native-community/hooks';
 import { User } from '@/types/user';
 import { Sneaker } from '@/types/sneaker';
@@ -14,6 +14,7 @@ import { FollowerInterface } from '@/interfaces/FollowerInterface';
 import { followerProvider } from '@/domain/FollowerProvider';
 import { UserSearchInterface } from '@/interfaces/UserSearchInterface';
 import { userSearchProvider } from '@/domain/UserSearchProvider';
+
 import { supabase } from '@/config/supabase/supabase';
 import * as Linking from 'expo-linking';
 import { router } from 'expo-router';
@@ -161,21 +162,24 @@ export function SessionProvider({ children }: PropsWithChildren) {
         
         return Promise.all([sneakersPromise, wishlistPromise])
             .then(([sneakers, wishlistSneakers]) => {
-                setUserSneakers(sneakers || []);
-                setWishlistSneakers(wishlistSneakers || []);
+                const userSneakers = sneakers || [];
+                const userWishlistSneakers = wishlistSneakers || [];
                 
-                storageProvider.setItem('sneakers', sneakers || []);
-                storageProvider.setItem('wishlistSneakers', wishlistSneakers || []);
+                setUserSneakers(userSneakers);
+                setWishlistSneakers(userWishlistSneakers);
                 
-                userWithUrl.sneakers = sneakers;
+                storageProvider.setSneakersData(userSneakers);
+                storageProvider.setItem('wishlistSneakers', userWishlistSneakers);
+                
+                userWithUrl.sneakers = userSneakers;
                 setUser(userWithUrl);
-                storageProvider.setItem('user', userWithUrl);
+                storageProvider.setUserData(userWithUrl);
             })
             .catch((error) => {
                 console.error('Error loading user sneakers:', error);
                 setUserSneakers([]);
                 setWishlistSneakers([]);
-                storageProvider.setItem('sneakers', []);
+                storageProvider.setSneakersData([]);
                 storageProvider.setItem('wishlistSneakers', []);
             });
     };
@@ -230,7 +234,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
                     if (userData) {
                         const userWithUrl = { ...userData, profile_picture_url: userData.profile_picture };
                         setUser(userWithUrl as User);
-                        storageProvider.setItem('user', userWithUrl);
+                        storageProvider.setUserData(userWithUrl as User);
                         
                         return Promise.all([
                             loadUserSneakers(userWithUrl),
@@ -294,7 +298,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
                 console.error('❌ refreshUserData: Error refreshing user data:', error);
                 setUserSneakers([]);
                 setWishlistSneakers([]);
-                storageProvider.setItem('sneakers', []);
+                storageProvider.setSneakersData([]);
                 storageProvider.setItem('wishlistSneakers', []);
             });
     };
@@ -303,7 +307,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
         if (!user?.id) {
             setUserSneakers([]);
             setWishlistSneakers([]);
-            storageProvider.setItem('sneakers', []);
+            storageProvider.setSneakersData([]);
             storageProvider.setItem('wishlistSneakers', []);
             return;
         }
@@ -319,17 +323,20 @@ export function SessionProvider({ children }: PropsWithChildren) {
         
         return Promise.all([sneakersPromise, wishlistPromise])
             .then(([sneakers, wishlistSneakers]) => {
-                setUserSneakers(sneakers || []);
-                setWishlistSneakers(wishlistSneakers || []);
+                const userSneakers = sneakers || [];
+                const userWishlistSneakers = wishlistSneakers || [];
                 
-                storageProvider.setItem('sneakers', sneakers || []);
-                storageProvider.setItem('wishlistSneakers', wishlistSneakers || []);
+                setUserSneakers(userSneakers);
+                setWishlistSneakers(userWishlistSneakers);
+                
+                storageProvider.setSneakersData(userSneakers);
+                storageProvider.setItem('wishlistSneakers', userWishlistSneakers);
             })
             .catch((error) => {
                 console.error('Error refreshing sneakers:', error);
                 setUserSneakers([]);
                 setWishlistSneakers([]);
-                storageProvider.setItem('sneakers', []);
+                storageProvider.setSneakersData([]);
                 storageProvider.setItem('wishlistSneakers', []);
             });
     };

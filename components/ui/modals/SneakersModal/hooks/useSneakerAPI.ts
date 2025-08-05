@@ -1,6 +1,7 @@
 import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
-import { SupabaseSneaker, sneakerProvider } from '@/domain/SneakerProvider';
+import { sneakerProvider } from '@/domain/SneakerProvider';
 import { SneakerInterface } from '@/interfaces/SneakerProviderInterface';
+
 import {
 	SneakerFormData,
 	createSneakerSchema,
@@ -130,41 +131,6 @@ export const useSneakerAPI = () => {
 			});
 	};
 
-	const convertSupabaseSneakerToSneaker = (
-		supabaseSneaker: SupabaseSneaker
-	): Sneaker => {
-		return {
-			id: supabaseSneaker.id,
-			sku: supabaseSneaker.sku || '',
-			gender: supabaseSneaker.gender || '',
-			brand: supabaseSneaker.brand,
-			model: supabaseSneaker.model,
-			size_eu: supabaseSneaker.size_eu,
-			size_us: supabaseSneaker.size_us,
-			condition: supabaseSneaker.condition,
-			status: supabaseSneaker.status as SneakerStatus,
-			images: supabaseSneaker.images.map((img, index) => {
-				const fileNameFromUrl = ImageProvider.extractFilePathFromUrl(
-					img.uri,
-					'sneakers'
-				);
-				return {
-					id: img.id || fileNameFromUrl || '',
-					uri: img.uri || '',
-					alt: `${supabaseSneaker.model} image ${index + 1}`,
-				};
-			}),
-			price_paid: supabaseSneaker.price_paid || 0,
-			description: supabaseSneaker.description || '',
-			og_box: supabaseSneaker.og_box || false,
-			ds: supabaseSneaker.ds || false,
-			created_at: supabaseSneaker.created_at,
-			updated_at: supabaseSneaker.updated_at,
-			user_id: supabaseSneaker.user_id,
-			estimated_value: supabaseSneaker.estimated_value || 0,
-		};
-	};
-
 	const handleAddSneaker = async (
 		formData: SneakerFormData,
 		callbacks?: Callbacks,
@@ -206,13 +172,8 @@ export const useSneakerAPI = () => {
 				});
 
 				const sneakerToAdd: Omit<
-					SupabaseSneaker,
-					| 'id'
-					| 'created_at'
-					| 'updated_at'
-					| 'user_id'
-					| 'size_eu'
-					| 'size_us'
+					Sneaker,
+					'id' | 'user_id' | 'size_eu' | 'size_us'
 				> & { size: number } = {
 					model: validatedData.model,
 					brand: validatedData.brand,
@@ -223,10 +184,10 @@ export const useSneakerAPI = () => {
 					price_paid: validatedData.price_paid
 						? parseFloat(validatedData.price_paid)
 						: undefined,
-					description: validatedData.description,
+					description: validatedData.description || '',
 					estimated_value: estimatedValue || 0,
 					gender: formData.is_women ? 'women' : 'men',
-					sku: sku || undefined,
+					sku: sku || '',
 					og_box: validatedData.og_box || false,
 					ds: validatedData.ds || false,
 				};
@@ -237,7 +198,7 @@ export const useSneakerAPI = () => {
 					sneakerProvider.createSneaker
 				);
 			})
-			.then(async (createdSneaker: SupabaseSneaker) => {
+			.then(async (createdSneaker: Sneaker) => {
 				const processedImages =
 					await ImageProvider.processAndUploadSneakerImages(
 						formData.images.map((img) => ({
@@ -265,16 +226,25 @@ export const useSneakerAPI = () => {
 
 				return createdSneaker;
 			})
-			.then((response: SupabaseSneaker) => {
+			.then((response: Sneaker) => {
 				if (response && callbacks) {
-					const convertedSneaker =
-						convertSupabaseSneakerToSneaker(response);
-					callbacks.setCurrentSneaker?.(convertedSneaker);
+					// Ajouter les textes alt aux images s'ils ne sont pas déjà présents
+					const sneakerWithAltText = {
+						...response,
+						images: response.images.map((img, index) => ({
+							...img,
+							alt:
+								img.alt ||
+								`${response.model} image ${index + 1}`,
+						})),
+					};
+
+					callbacks.setCurrentSneaker?.(sneakerWithAltText);
 					callbacks.setModalStep('view');
 					refreshUserSneakers().then(() => {
-						console.log('sneaker added', convertedSneaker);
+						console.log('sneaker added', sneakerWithAltText);
 						showSuccessToast(
-							`➕ ${convertedSneaker.model} ${t(
+							`➕ ${sneakerWithAltText.model} ${t(
 								'collection.modal.form.success.added'
 							)}`,
 							t('collection.modal.form.success.addedDescription')
@@ -342,9 +312,7 @@ export const useSneakerAPI = () => {
 						sneakerId
 					);
 
-				const sneakerUpdates: Partial<
-					SupabaseSneaker & { size?: number }
-				> = {
+				const sneakerUpdates: Partial<Sneaker & { size?: number }> = {
 					model: validatedData.model,
 					brand: validatedData.brand,
 					status: validatedData.status,
@@ -370,15 +338,24 @@ export const useSneakerAPI = () => {
 					sneakerProvider.updateSneaker
 				);
 			})
-			.then((response: SupabaseSneaker) => {
+			.then((response: Sneaker) => {
 				if (response && callbacks) {
-					const convertedSneaker =
-						convertSupabaseSneakerToSneaker(response);
-					callbacks.setCurrentSneaker?.(convertedSneaker);
+					// Ajouter les textes alt aux images s'ils ne sont pas déjà présents
+					const sneakerWithAltText = {
+						...response,
+						images: response.images.map((img, index) => ({
+							...img,
+							alt:
+								img.alt ||
+								`${response.model} image ${index + 1}`,
+						})),
+					};
+
+					callbacks.setCurrentSneaker?.(sneakerWithAltText);
 					callbacks.setModalStep('view');
 					refreshUserSneakers().then(() => {
 						showSuccessToast(
-							`♻️ ${convertedSneaker.model} ${t(
+							`♻️ ${sneakerWithAltText.model} ${t(
 								'collection.modal.form.success.updated'
 							)}`,
 							t(

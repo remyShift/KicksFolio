@@ -1,5 +1,4 @@
-import { SupabaseSneaker } from '@/domain/SneakerProvider';
-import { SizeUnit } from '@/types/sneaker';
+import { SizeUnit, Sneaker } from '@/types/sneaker';
 
 interface SkuSearchResponse {
 	results: Array<{
@@ -14,24 +13,18 @@ interface SkuSearchResponse {
 }
 
 export interface SneakerProviderInterface {
-	getSneakersByUser: (userId: string) => Promise<SupabaseSneaker[]>;
+	getSneakersByUser: (userId: string) => Promise<Sneaker[]>;
 	createSneaker: (
-		sneakerData: Omit<
-			SupabaseSneaker,
-			| 'id'
-			| 'created_at'
-			| 'updated_at'
-			| 'user_id'
-			| 'size_eu'
-			| 'size_us'
-		> & { size: number },
+		sneakerData: Omit<Sneaker, 'id' | 'user_id' | 'size_eu' | 'size_us'> & {
+			size: number;
+		},
 		currentUnit?: SizeUnit
-	) => Promise<SupabaseSneaker>;
+	) => Promise<Sneaker>;
 	updateSneaker: (
 		id: string,
-		updates: Partial<SupabaseSneaker & { size?: number }>,
+		updates: Partial<Sneaker & { size?: number }>,
 		currentUnit?: SizeUnit
-	) => Promise<SupabaseSneaker>;
+	) => Promise<Sneaker>;
 	deleteSneaker: (id: string) => Promise<void>;
 	searchBySku: (sku: string) => Promise<SkuSearchResponse>;
 	searchByBarcode: (barcode: string) => Promise<SkuSearchResponse>;
@@ -56,15 +49,9 @@ export class SneakerProviderInterface {
 	};
 
 	static createSneaker = async (
-		sneakerData: Omit<
-			SupabaseSneaker,
-			| 'id'
-			| 'created_at'
-			| 'updated_at'
-			| 'user_id'
-			| 'size_eu'
-			| 'size_us'
-		> & { size: number },
+		sneakerData: Omit<Sneaker, 'id' | 'user_id' | 'size_eu' | 'size_us'> & {
+			size: number;
+		},
 		currentUnit: SizeUnit = 'EU',
 		createSneakerFunction: SneakerProviderInterface['createSneaker']
 	) => {
@@ -83,7 +70,7 @@ export class SneakerProviderInterface {
 
 	static updateSneaker = async (
 		id: string,
-		updates: Partial<SupabaseSneaker & { size?: number }>,
+		updates: Partial<Sneaker & { size?: number }>,
 		currentUnit: SizeUnit = 'EU',
 		updateSneakerFunction: SneakerProviderInterface['updateSneaker']
 	) => {

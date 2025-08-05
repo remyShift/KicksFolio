@@ -3,9 +3,9 @@ import {
 	SneakerInterface,
 	SneakerProviderInterface,
 } from '@/interfaces/SneakerProviderInterface';
-import { SupabaseSneaker } from '@/domain/SneakerProvider';
-import { SneakerBrand } from '@/types/sneaker';
+import { SneakerBrand, SneakerStatus } from '@/types/sneaker';
 import { SizeUnit } from '@/types/sneaker';
+import { Sneaker } from '@/types/sneaker';
 
 const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
@@ -17,7 +17,7 @@ describe('SneakerInterface', () => {
 	const mockSneakerData = {
 		brand: SneakerBrand.Nike,
 		model: 'Air Max 90',
-		status: 'owned',
+		status: SneakerStatus.Stocking,
 		size: 42,
 		condition: 9,
 		images: [],
@@ -30,7 +30,7 @@ describe('SneakerInterface', () => {
 		ds: false,
 	};
 
-	const mockSupabaseSneaker: SupabaseSneaker = {
+	const mockSneaker: Sneaker = {
 		id: '123',
 		brand: SneakerBrand.Nike,
 		model: 'Air Max 90',
@@ -39,11 +39,9 @@ describe('SneakerInterface', () => {
 		condition: 9,
 		estimated_value: 200,
 		description: 'Great sneaker',
-		status: 'owned',
+		status: SneakerStatus.Stocking,
 		images: [{ id: '1', uri: 'test-uri' }],
 		user_id: 'user-123',
-		created_at: '2023-01-01',
-		updated_at: '2023-01-01',
 		price_paid: 150,
 		og_box: true,
 		ds: false,
@@ -68,7 +66,7 @@ describe('SneakerInterface', () => {
 	describe('getSneakersByUser', () => {
 		it('should successfully get sneakers by user and return response', async () => {
 			const mockGetSneakersFunction: SneakerProviderInterface['getSneakersByUser'] =
-				vi.fn().mockResolvedValue([mockSupabaseSneaker]);
+				vi.fn().mockResolvedValue([mockSneaker]);
 
 			const result = await SneakerInterface.getSneakersByUser(
 				'user-123',
@@ -76,7 +74,7 @@ describe('SneakerInterface', () => {
 			);
 
 			expect(mockGetSneakersFunction).toHaveBeenCalledWith('user-123');
-			expect(result).toEqual([mockSupabaseSneaker]);
+			expect(result).toEqual([mockSneaker]);
 			expect(consoleErrorSpy).not.toHaveBeenCalled();
 		});
 
@@ -99,7 +97,7 @@ describe('SneakerInterface', () => {
 	describe('createSneaker', () => {
 		it('should successfully create a sneaker and return response', async () => {
 			const mockCreateSneakerFunction: SneakerProviderInterface['createSneaker'] =
-				vi.fn().mockResolvedValue(mockSupabaseSneaker);
+				vi.fn().mockResolvedValue(mockSneaker);
 
 			const result = await SneakerInterface.createSneaker(
 				mockSneakerData,
@@ -111,7 +109,7 @@ describe('SneakerInterface', () => {
 				mockSneakerData,
 				'EU'
 			);
-			expect(result).toEqual(mockSupabaseSneaker);
+			expect(result).toEqual(mockSneaker);
 			expect(consoleErrorSpy).not.toHaveBeenCalled();
 		});
 
@@ -155,7 +153,7 @@ describe('SneakerInterface', () => {
 		it('should successfully update a sneaker and return response', async () => {
 			const updates = { model: 'Air Max 95', condition: 8 };
 			const mockUpdateSneakerFunction: SneakerProviderInterface['updateSneaker'] =
-				vi.fn().mockResolvedValue(mockSupabaseSneaker);
+				vi.fn().mockResolvedValue(mockSneaker);
 
 			const result = await SneakerInterface.updateSneaker(
 				'123',
@@ -169,7 +167,7 @@ describe('SneakerInterface', () => {
 				updates,
 				'EU'
 			);
-			expect(result).toEqual(mockSupabaseSneaker);
+			expect(result).toEqual(mockSneaker);
 			expect(consoleErrorSpy).not.toHaveBeenCalled();
 		});
 
