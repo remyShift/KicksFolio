@@ -1,9 +1,10 @@
-import { useState, useMemo, useCallback } from 'react';
-import { Sneaker } from '@/types/sneaker';
+import { useCallback, useMemo, useState } from 'react';
+
+import { sneakerFilteringProvider } from '@/domain/SneakerFiltering';
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';
 import { UniqueValues } from '@/types/filter';
-import { sneakerFilteringProvider } from '@/domain/SneakerFiltering';
 import { FilterState, SortOption } from '@/types/filter';
+import { Sneaker } from '@/types/sneaker';
 
 export function useLocalListState(sneakers: Sneaker[]) {
 	const [showFilters, setShowFilters] = useState(false);
@@ -24,7 +25,12 @@ export function useLocalListState(sneakers: Sneaker[]) {
 			);
 		} catch (error) {
 			console.error('❌ Error getting unique values:', error);
-			return { brands: [], sizes: [], conditions: [], statuses: [] };
+			return {
+				brands: [],
+				sizes: [],
+				conditions: [],
+				statuses: [],
+			};
 		}
 	}, [sneakers, currentUnit]);
 

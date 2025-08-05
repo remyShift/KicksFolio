@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+
 import { SearchUser } from '@/domain/UserSearchProvider';
 
 interface UserSearchState {

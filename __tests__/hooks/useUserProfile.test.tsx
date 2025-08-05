@@ -1,8 +1,10 @@
-import { vi } from 'vitest';
-import { renderHook } from '@testing-library/react';
-import { useUserProfile } from '@/hooks/useUserProfile';
 import { act } from 'react';
+
+import { renderHook } from '@testing-library/react';
+import { vi } from 'vitest';
+
 import { SearchUser } from '@/domain/UserSearchProvider';
+import { useUserProfile } from '@/hooks/useUserProfile';
 
 vi.mock('@/interfaces/UserSearchInterface', () => ({
 	UserSearchInterface: {
@@ -60,8 +62,11 @@ vi.mock('react-i18next', () => ({
 				'social.followed': 'Followed',
 				'social.followedDesc': `You followed ${options?.username}`,
 			};
-			return options 
-				? translations[key]?.replace('${options?.username}', options.username) || key
+			return options
+				? translations[key]?.replace(
+						'${options?.username}',
+						options.username
+					) || key
 				: translations[key] || key;
 		},
 	}),
@@ -73,8 +78,10 @@ describe('useUserProfile', () => {
 
 	beforeEach(async () => {
 		vi.clearAllMocks();
-		UserSearchInterface = (await import('@/interfaces/UserSearchInterface')).UserSearchInterface;
-		FollowerInterface = (await import('@/interfaces/FollowerInterface')).FollowerInterface;
+		UserSearchInterface = (await import('@/interfaces/UserSearchInterface'))
+			.UserSearchInterface;
+		FollowerInterface = (await import('@/interfaces/FollowerInterface'))
+			.FollowerInterface;
 	});
 
 	it('should initialize with correct default values', () => {
@@ -111,13 +118,15 @@ describe('useUserProfile', () => {
 				},
 			];
 
-			UserSearchInterface.getUserProfile.mockResolvedValue(mockUserProfile);
+			UserSearchInterface.getUserProfile.mockResolvedValue(
+				mockUserProfile
+			);
 			UserSearchInterface.getUserSneakers.mockResolvedValue(mockSneakers);
 
 			const { result } = renderHook(() => useUserProfile('test-user-id'));
 
 			await act(async () => {
-				await new Promise(resolve => setTimeout(resolve, 0));
+				await new Promise((resolve) => setTimeout(resolve, 0));
 			});
 
 			expect(result.current.userProfile).toEqual({
@@ -134,7 +143,7 @@ describe('useUserProfile', () => {
 			renderHook(() => useUserProfile('nonexistent-user-id'));
 
 			await act(async () => {
-				await new Promise(resolve => setTimeout(resolve, 0));
+				await new Promise((resolve) => setTimeout(resolve, 0));
 			});
 
 			expect(mockToast.showErrorToast).toHaveBeenCalledWith(
@@ -150,15 +159,20 @@ describe('useUserProfile', () => {
 			UserSearchInterface.getUserProfile.mockRejectedValue(mockError);
 			UserSearchInterface.getUserSneakers.mockRejectedValue(mockError);
 
-			const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+			const consoleSpy = vi
+				.spyOn(console, 'error')
+				.mockImplementation(() => {});
 
 			renderHook(() => useUserProfile('test-user-id'));
 
 			await act(async () => {
-				await new Promise(resolve => setTimeout(resolve, 0));
+				await new Promise((resolve) => setTimeout(resolve, 0));
 			});
 
-			expect(consoleSpy).toHaveBeenCalledWith('Error loading user profile:', mockError);
+			expect(consoleSpy).toHaveBeenCalledWith(
+				'Error loading user profile:',
+				mockError
+			);
 			expect(mockToast.showErrorToast).toHaveBeenCalledWith(
 				'Erreur de chargement',
 				'Impossible de charger le profil utilisateur.'
@@ -182,7 +196,9 @@ describe('useUserProfile', () => {
 				sneakers: [],
 			};
 
-			UserSearchInterface.getUserProfile.mockResolvedValue(mockUserProfile);
+			UserSearchInterface.getUserProfile.mockResolvedValue(
+				mockUserProfile
+			);
 			UserSearchInterface.getUserSneakers.mockResolvedValue([]);
 			FollowerInterface.followUser.mockResolvedValue(true);
 			mockRefreshFollowingUsers.mockResolvedValue(undefined);
@@ -191,7 +207,7 @@ describe('useUserProfile', () => {
 			const { result } = renderHook(() => useUserProfile('test-user-id'));
 
 			await act(async () => {
-				await new Promise(resolve => setTimeout(resolve, 0));
+				await new Promise((resolve) => setTimeout(resolve, 0));
 			});
 
 			await act(async () => {
@@ -206,8 +222,12 @@ describe('useUserProfile', () => {
 				'Followed',
 				'You followed testuser'
 			);
-			expect(result.current.userProfile?.userSearch.is_following).toBe(true);
-			expect(result.current.userProfile?.userSearch.followers_count).toBe(11);
+			expect(result.current.userProfile?.userSearch.is_following).toBe(
+				true
+			);
+			expect(result.current.userProfile?.userSearch.followers_count).toBe(
+				11
+			);
 		});
 
 		it('should unfollow a user successfully', async () => {
@@ -223,7 +243,9 @@ describe('useUserProfile', () => {
 				sneakers: [],
 			};
 
-			UserSearchInterface.getUserProfile.mockResolvedValue(mockUserProfile);
+			UserSearchInterface.getUserProfile.mockResolvedValue(
+				mockUserProfile
+			);
 			UserSearchInterface.getUserSneakers.mockResolvedValue([]);
 			FollowerInterface.unfollowUser.mockResolvedValue(true);
 			mockRefreshFollowingUsers.mockResolvedValue(undefined);
@@ -232,7 +254,7 @@ describe('useUserProfile', () => {
 			const { result } = renderHook(() => useUserProfile('test-user-id'));
 
 			await act(async () => {
-				await new Promise(resolve => setTimeout(resolve, 0));
+				await new Promise((resolve) => setTimeout(resolve, 0));
 			});
 
 			await act(async () => {
@@ -247,8 +269,12 @@ describe('useUserProfile', () => {
 				'Unfollowed',
 				'You unfollowed testuser'
 			);
-			expect(result.current.userProfile?.userSearch.is_following).toBe(false);
-			expect(result.current.userProfile?.userSearch.followers_count).toBe(9);
+			expect(result.current.userProfile?.userSearch.is_following).toBe(
+				false
+			);
+			expect(result.current.userProfile?.userSearch.followers_count).toBe(
+				9
+			);
 		});
 
 		it('should handle follow toggle errors gracefully', async () => {
@@ -265,23 +291,30 @@ describe('useUserProfile', () => {
 			};
 
 			const mockError = new Error('Follow failed');
-			UserSearchInterface.getUserProfile.mockResolvedValue(mockUserProfile);
+			UserSearchInterface.getUserProfile.mockResolvedValue(
+				mockUserProfile
+			);
 			UserSearchInterface.getUserSneakers.mockResolvedValue([]);
 			FollowerInterface.followUser.mockRejectedValue(mockError);
 
-			const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+			const consoleSpy = vi
+				.spyOn(console, 'error')
+				.mockImplementation(() => {});
 
 			const { result } = renderHook(() => useUserProfile('test-user-id'));
 
 			await act(async () => {
-				await new Promise(resolve => setTimeout(resolve, 0));
+				await new Promise((resolve) => setTimeout(resolve, 0));
 			});
 
 			await act(async () => {
 				await result.current.handleFollowToggle();
 			});
 
-			expect(consoleSpy).toHaveBeenCalledWith('Error toggling follow:', mockError);
+			expect(consoleSpy).toHaveBeenCalledWith(
+				'Error toggling follow:',
+				mockError
+			);
 			expect(mockToast.showErrorToast).toHaveBeenCalledWith(
 				'Erreur',
 				'Impossible de modifier le suivi pour le moment.'
@@ -316,7 +349,9 @@ describe('useUserProfile', () => {
 				sneakers: [],
 			};
 
-			UserSearchInterface.getUserProfile.mockResolvedValue(mockUserProfile);
+			UserSearchInterface.getUserProfile.mockResolvedValue(
+				mockUserProfile
+			);
 			UserSearchInterface.getUserSneakers.mockResolvedValue([]);
 
 			const { result } = renderHook(() => useUserProfile('test-user-id'));
@@ -335,7 +370,9 @@ describe('useUserProfile', () => {
 			UserSearchInterface.getUserProfile.mockRejectedValue(mockError);
 			UserSearchInterface.getUserSneakers.mockRejectedValue(mockError);
 
-			const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+			const consoleSpy = vi
+				.spyOn(console, 'error')
+				.mockImplementation(() => {});
 
 			const { result } = renderHook(() => useUserProfile('test-user-id'));
 
@@ -343,7 +380,10 @@ describe('useUserProfile', () => {
 				await result.current.refreshUserProfile();
 			});
 
-			expect(consoleSpy).toHaveBeenCalledWith('Error loading user profile:', mockError);
+			expect(consoleSpy).toHaveBeenCalledWith(
+				'Error loading user profile:',
+				mockError
+			);
 
 			consoleSpy.mockRestore();
 		});

@@ -1,7 +1,8 @@
 import { useTranslation } from 'react-i18next';
-import { GitHubInterface } from '@/interfaces/GitHubInterface';
+
 import { gitHubProvider } from '@/domain/GitHubProvider';
 import useToast from '@/hooks/ui/useToast';
+import { GitHubInterface } from '@/interfaces/GitHubInterface';
 import { useBugReportStore } from '@/store/useBugReportStore';
 
 const useBugReport = () => {
@@ -59,12 +60,18 @@ const useBugReport = () => {
 	};
 
 	const priorityOptions = [
-		{ label: t('settings.bugReport.fields.priority.low'), value: 'low' },
+		{
+			label: t('settings.bugReport.fields.priority.low'),
+			value: 'low',
+		},
 		{
 			label: t('settings.bugReport.fields.priority.medium'),
 			value: 'medium',
 		},
-		{ label: t('settings.bugReport.fields.priority.high'), value: 'high' },
+		{
+			label: t('settings.bugReport.fields.priority.high'),
+			value: 'high',
+		},
 	];
 
 	const colorConfig = {

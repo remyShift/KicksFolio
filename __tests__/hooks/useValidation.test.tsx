@@ -1,7 +1,9 @@
-import { vi } from 'vitest';
-import { renderHook } from '@testing-library/react';
-import { useAuthValidation } from '@/hooks/useAuthValidation';
 import { act } from 'react';
+
+import { renderHook } from '@testing-library/react';
+import { vi } from 'vitest';
+
+import { useAuthValidation } from '@/hooks/useAuthValidation';
 import { UserData } from '@/types/auth';
 
 vi.mock('@/domain/AuthValidator', () => ({
@@ -36,7 +38,9 @@ describe('useAuthValidation', () => {
 
 	beforeEach(async () => {
 		vi.clearAllMocks();
-		AuthValidatorInterface = (await import('@/interfaces/AuthValidatorInterface')).AuthValidatorInterface;
+		AuthValidatorInterface = (
+			await import('@/interfaces/AuthValidatorInterface')
+		).AuthValidatorInterface;
 	});
 
 	describe('checkUsernameExists', () => {
@@ -48,12 +52,14 @@ describe('useAuthValidation', () => {
 			});
 
 			expect(validationResult).toBeNull();
-			expect(AuthValidatorInterface.checkUsernameExists).not.toHaveBeenCalled();
+			expect(
+				AuthValidatorInterface.checkUsernameExists
+			).not.toHaveBeenCalled();
 		});
 
 		it('should return username exists error when username exists', async () => {
 			AuthValidatorInterface.checkUsernameExists.mockResolvedValue(true);
-			
+
 			const { result } = renderHook(() => useAuthValidation());
 
 			const validationResult = await act(async () => {
@@ -61,15 +67,14 @@ describe('useAuthValidation', () => {
 			});
 
 			expect(validationResult).toBe('Username already exists');
-			expect(AuthValidatorInterface.checkUsernameExists).toHaveBeenCalledWith(
-				'testuser',
-				expect.any(Function)
-			);
+			expect(
+				AuthValidatorInterface.checkUsernameExists
+			).toHaveBeenCalledWith('testuser', expect.any(Function));
 		});
 
 		it('should return null when username is available', async () => {
 			AuthValidatorInterface.checkUsernameExists.mockResolvedValue(false);
-			
+
 			const { result } = renderHook(() => useAuthValidation());
 
 			const validationResult = await act(async () => {
@@ -80,9 +85,13 @@ describe('useAuthValidation', () => {
 		});
 
 		it('should handle errors gracefully', async () => {
-			AuthValidatorInterface.checkUsernameExists.mockRejectedValue(new Error('Network error'));
-			const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-			
+			AuthValidatorInterface.checkUsernameExists.mockRejectedValue(
+				new Error('Network error')
+			);
+			const consoleSpy = vi
+				.spyOn(console, 'error')
+				.mockImplementation(() => {});
+
 			const { result } = renderHook(() => useAuthValidation());
 
 			const validationResult = await act(async () => {
@@ -90,8 +99,11 @@ describe('useAuthValidation', () => {
 			});
 
 			expect(validationResult).toBeNull();
-			expect(consoleSpy).toHaveBeenCalledWith('Error checking username:', new Error('Network error'));
-			
+			expect(consoleSpy).toHaveBeenCalledWith(
+				'Error checking username:',
+				new Error('Network error')
+			);
+
 			consoleSpy.mockRestore();
 		});
 	});
@@ -105,32 +117,37 @@ describe('useAuthValidation', () => {
 			});
 
 			expect(validationResult).toBeNull();
-			expect(AuthValidatorInterface.checkEmailExists).not.toHaveBeenCalled();
+			expect(
+				AuthValidatorInterface.checkEmailExists
+			).not.toHaveBeenCalled();
 		});
 
 		it('should return email exists error when email exists', async () => {
 			AuthValidatorInterface.checkEmailExists.mockResolvedValue(true);
-			
+
 			const { result } = renderHook(() => useAuthValidation());
 
 			const validationResult = await act(async () => {
-				return await result.current.checkEmailExists('test@example.com');
+				return await result.current.checkEmailExists(
+					'test@example.com'
+				);
 			});
 
 			expect(validationResult).toBe('Email already exists');
-			expect(AuthValidatorInterface.checkEmailExists).toHaveBeenCalledWith(
-				'test@example.com',
-				expect.any(Function)
-			);
+			expect(
+				AuthValidatorInterface.checkEmailExists
+			).toHaveBeenCalledWith('test@example.com', expect.any(Function));
 		});
 
 		it('should return null when email is available', async () => {
 			AuthValidatorInterface.checkEmailExists.mockResolvedValue(false);
-			
+
 			const { result } = renderHook(() => useAuthValidation());
 
 			const validationResult = await act(async () => {
-				return await result.current.checkEmailExists('test@example.com');
+				return await result.current.checkEmailExists(
+					'test@example.com'
+				);
 			});
 
 			expect(validationResult).toBeNull();
@@ -140,11 +157,13 @@ describe('useAuthValidation', () => {
 	describe('checkEmailExistsForReset', () => {
 		it('should return email not found error when email does not exist', async () => {
 			AuthValidatorInterface.checkEmailExists.mockResolvedValue(false);
-			
+
 			const { result } = renderHook(() => useAuthValidation());
 
 			const validationResult = await act(async () => {
-				return await result.current.checkEmailExistsForReset('test@example.com');
+				return await result.current.checkEmailExistsForReset(
+					'test@example.com'
+				);
 			});
 
 			expect(validationResult).toBe('Email not found');
@@ -152,11 +171,13 @@ describe('useAuthValidation', () => {
 
 		it('should return null when email exists', async () => {
 			AuthValidatorInterface.checkEmailExists.mockResolvedValue(true);
-			
+
 			const { result } = renderHook(() => useAuthValidation());
 
 			const validationResult = await act(async () => {
-				return await result.current.checkEmailExistsForReset('test@example.com');
+				return await result.current.checkEmailExistsForReset(
+					'test@example.com'
+				);
 			});
 
 			expect(validationResult).toBeNull();
@@ -167,7 +188,7 @@ describe('useAuthValidation', () => {
 		it('should return valid result when username and email are available', async () => {
 			AuthValidatorInterface.checkUsernameExists.mockResolvedValue(false);
 			AuthValidatorInterface.checkEmailExists.mockResolvedValue(false);
-			
+
 			const { result } = renderHook(() => useAuthValidation());
 
 			const userData: UserData = {
@@ -193,7 +214,7 @@ describe('useAuthValidation', () => {
 
 		it('should return error when username exists', async () => {
 			AuthValidatorInterface.checkUsernameExists.mockResolvedValue(true);
-			
+
 			const { result } = renderHook(() => useAuthValidation());
 
 			const userData: UserData = {
@@ -220,7 +241,7 @@ describe('useAuthValidation', () => {
 		it('should return error when email exists', async () => {
 			AuthValidatorInterface.checkUsernameExists.mockResolvedValue(false);
 			AuthValidatorInterface.checkEmailExists.mockResolvedValue(true);
-			
+
 			const { result } = renderHook(() => useAuthValidation());
 
 			const userData: UserData = {
@@ -244,13 +265,19 @@ describe('useAuthValidation', () => {
 			expect(result.current.errorMsg).toBe('Email already exists');
 		});
 
-			it('should handle validation errors gracefully', async () => {
-		const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-		
-		AuthValidatorInterface.checkUsernameExists.mockRejectedValue(new Error('Network error'));
-		AuthValidatorInterface.checkEmailExists.mockRejectedValue(new Error('Network error'));
-		
-		const { result } = renderHook(() => useAuthValidation());
+		it('should handle validation errors gracefully', async () => {
+			const consoleSpy = vi
+				.spyOn(console, 'error')
+				.mockImplementation(() => {});
+
+			AuthValidatorInterface.checkUsernameExists.mockRejectedValue(
+				new Error('Network error')
+			);
+			AuthValidatorInterface.checkEmailExists.mockRejectedValue(
+				new Error('Network error')
+			);
+
+			const { result } = renderHook(() => useAuthValidation());
 
 			const userData: UserData = {
 				username: 'testuser',
@@ -269,12 +296,12 @@ describe('useAuthValidation', () => {
 			expect(validationResult).toEqual({
 				isValid: true,
 				errorMsg: '',
-					});
-		expect(result.current.errorMsg).toBe('');
-		
-		consoleSpy.mockRestore();
+			});
+			expect(result.current.errorMsg).toBe('');
+
+			consoleSpy.mockRestore();
+		});
 	});
-});
 
 	describe('errorMsg state management', () => {
 		it('should allow setting error message', () => {

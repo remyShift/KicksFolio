@@ -1,4 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
 import {
 	SneakerInterface,
 	SneakerProviderInterface,
@@ -151,7 +152,10 @@ describe('SneakerInterface', () => {
 
 	describe('updateSneaker', () => {
 		it('should successfully update a sneaker and return response', async () => {
-			const updates = { model: 'Air Max 95', condition: 8 };
+			const updates = {
+				model: 'Air Max 95',
+				condition: 8,
+			};
 			const mockUpdateSneakerFunction: SneakerProviderInterface['updateSneaker'] =
 				vi.fn().mockResolvedValue(mockSneaker);
 

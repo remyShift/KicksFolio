@@ -1,12 +1,14 @@
-import { useModalStore } from '@/store/useModalStore';
-import { useSneakerAPI } from './useSneakerAPI';
-import { useSession } from '@/context/authContext';
-import { Sneaker } from '@/types/sneaker';
 import { useState } from 'react';
-import { Alert } from 'react-native';
-import { SneakerFormData } from '@/validation/sneaker';
-import useToast from '@/hooks/ui/useToast';
 import { useTranslation } from 'react-i18next';
+import { Alert } from 'react-native';
+
+import { useSession } from '@/context/authContext';
+import useToast from '@/hooks/ui/useToast';
+import { useModalStore } from '@/store/useModalStore';
+import { Sneaker } from '@/types/sneaker';
+import { SneakerFormData } from '@/validation/sneaker';
+
+import { useSneakerAPI } from './useSneakerAPI';
 
 export const useModalFooterActions = () => {
 	const { t } = useTranslation();

@@ -1,4 +1,5 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+
 import { SneakerSizeConverterInterface } from '@/interfaces/SneakerSizeConverterInterface';
 import { SizeUnit } from '@/types/sneaker';
 
@@ -295,7 +296,10 @@ describe('SneakerSizeConverterInterface', () => {
 
 	describe('generateBothSizes', () => {
 		it('should generate both sizes successfully', async () => {
-			const mockSizes = { size_eu: 42, size_us: 8.5 };
+			const mockSizes = {
+				size_eu: 42,
+				size_us: 8.5,
+			};
 			const mockGenerateBothSizes = vi.fn().mockReturnValue(mockSizes);
 
 			const result =

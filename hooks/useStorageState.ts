@@ -1,6 +1,7 @@
-import * as SecureStore from 'expo-secure-store';
 import { useCallback, useEffect, useReducer } from 'react';
 import { Platform } from 'react-native';
+
+import * as SecureStore from 'expo-secure-store';
 
 type UseStateHook<T> = [[boolean, T | null], (value: T | null) => void];
 

@@ -1,8 +1,10 @@
-import { vi } from 'vitest';
-import { renderHook } from '@testing-library/react';
-import { useUserSearch } from '@/hooks/useUserSearch';
 import { act } from 'react';
+
+import { renderHook } from '@testing-library/react';
+import { vi } from 'vitest';
+
 import { SearchUsersResponse } from '@/domain/UserSearchProvider';
+import { useUserSearch } from '@/hooks/useUserSearch';
 
 vi.mock('@/interfaces/UserSearchInterface', () => ({
 	UserSearchInterface: {
@@ -73,7 +75,8 @@ describe('useUserSearch', () => {
 		vi.clearAllMocks();
 		vi.clearAllTimers();
 		vi.useFakeTimers();
-		UserSearchInterface = (await import('@/interfaces/UserSearchInterface')).UserSearchInterface;
+		UserSearchInterface = (await import('@/interfaces/UserSearchInterface'))
+			.UserSearchInterface;
 	});
 
 	afterEach(() => {
@@ -110,7 +113,9 @@ describe('useUserSearch', () => {
 				totalCount: 1,
 			};
 
-			UserSearchInterface.searchUsers.mockResolvedValue(mockSearchResponse);
+			UserSearchInterface.searchUsers.mockResolvedValue(
+				mockSearchResponse
+			);
 
 			const { result } = renderHook(() => useUserSearch());
 
@@ -169,7 +174,9 @@ describe('useUserSearch', () => {
 				totalCount: 0,
 			};
 
-			UserSearchInterface.searchUsers.mockResolvedValue(mockSearchResponse);
+			UserSearchInterface.searchUsers.mockResolvedValue(
+				mockSearchResponse
+			);
 
 			mockStore.hasMore = true;
 			mockStore.isLoading = false;
@@ -227,7 +234,9 @@ describe('useUserSearch', () => {
 				totalCount: 0,
 			};
 
-			UserSearchInterface.searchUsers.mockResolvedValue(mockSearchResponse);
+			UserSearchInterface.searchUsers.mockResolvedValue(
+				mockSearchResponse
+			);
 			mockStore.searchTerm = 'test';
 
 			const { result } = renderHook(() => useUserSearch());
@@ -263,7 +272,9 @@ describe('useUserSearch', () => {
 		it('should handle search errors gracefully', async () => {
 			const mockError = new Error('Search failed');
 			UserSearchInterface.searchUsers.mockRejectedValue(mockError);
-			const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+			const consoleSpy = vi
+				.spyOn(console, 'error')
+				.mockImplementation(() => {});
 
 			mockStore.searchTerm = 'test';
 

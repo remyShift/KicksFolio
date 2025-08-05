@@ -1,10 +1,11 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+
+import { ImageProviderInterface } from '@/interfaces/ImageProviderInterface';
 import {
-	UploadResult,
 	ImageValidationResult,
 	SneakerPhoto,
+	UploadResult,
 } from '@/types/image';
-import { ImageProviderInterface } from '@/interfaces/ImageProviderInterface';
 
 const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
 const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
@@ -35,7 +36,10 @@ describe('ImageProviderInterface', () => {
 
 			const result = await ImageProviderInterface.uploadImage(
 				'file://test.jpg',
-				{ bucket: 'profiles', userId: 'user123' },
+				{
+					bucket: 'profiles',
+					userId: 'user123',
+				},
 				mockImplementation
 			);
 
@@ -65,7 +69,10 @@ describe('ImageProviderInterface', () => {
 
 			const result = await ImageProviderInterface.uploadImage(
 				'file://test.jpg',
-				{ bucket: 'sneakers', userId: 'user123' },
+				{
+					bucket: 'sneakers',
+					userId: 'user123',
+				},
 				mockImplementation
 			);
 
@@ -85,7 +92,10 @@ describe('ImageProviderInterface', () => {
 			await expect(
 				ImageProviderInterface.uploadImage(
 					'file://test.jpg',
-					{ bucket: 'profiles', userId: 'user123' },
+					{
+						bucket: 'profiles',
+						userId: 'user123',
+					},
 					mockImplementation
 				)
 			).rejects.toThrow('Image upload failed: Network error');
@@ -111,7 +121,14 @@ describe('ImageProviderInterface', () => {
 				vi.fn().mockResolvedValue(mockResults);
 
 			const result = await ImageProviderInterface.uploadSneakerImages(
-				[{ uri: 'file://1.jpg' }, { uri: 'file://2.jpg' }],
+				[
+					{
+						uri: 'file://1.jpg',
+					},
+					{
+						uri: 'file://2.jpg',
+					},
+				],
 				'user123',
 				'sneaker456',
 				mockImplementation
@@ -135,14 +152,24 @@ describe('ImageProviderInterface', () => {
 					url: 'https://example.com/1.jpg',
 					fileName: '1.jpg',
 				},
-				{ success: false, error: 'Upload failed' },
+				{
+					success: false,
+					error: 'Upload failed',
+				},
 			];
 
 			const mockImplementation: ImageProviderInterface['uploadSneakerImages'] =
 				vi.fn().mockResolvedValue(mockResults);
 
 			const result = await ImageProviderInterface.uploadSneakerImages(
-				[{ uri: 'file://1.jpg' }, { uri: 'file://2.jpg' }],
+				[
+					{
+						uri: 'file://1.jpg',
+					},
+					{
+						uri: 'file://2.jpg',
+					},
+				],
 				'user123',
 				'sneaker456',
 				mockImplementation
@@ -280,8 +307,14 @@ describe('ImageProviderInterface', () => {
 	describe('processAndUploadSneakerImages', () => {
 		it('should process and upload sneaker images', async () => {
 			const mockPhotos: SneakerPhoto[] = [
-				{ id: '1', uri: 'https://example.com/1.jpg' },
-				{ id: '2', uri: 'https://example.com/2.jpg' },
+				{
+					id: '1',
+					uri: 'https://example.com/1.jpg',
+				},
+				{
+					id: '2',
+					uri: 'https://example.com/2.jpg',
+				},
 			];
 
 			const mockImplementation: ImageProviderInterface['processAndUploadSneakerImages'] =
@@ -289,7 +322,14 @@ describe('ImageProviderInterface', () => {
 
 			const result =
 				await ImageProviderInterface.processAndUploadSneakerImages(
-					[{ uri: 'file://1.jpg' }, { uri: 'file://2.jpg' }],
+					[
+						{
+							uri: 'file://1.jpg',
+						},
+						{
+							uri: 'file://2.jpg',
+						},
+					],
 					'user123',
 					'sneaker456',
 					mockImplementation
@@ -313,7 +353,11 @@ describe('ImageProviderInterface', () => {
 
 			await expect(
 				ImageProviderInterface.processAndUploadSneakerImages(
-					[{ uri: 'file://1.jpg' }],
+					[
+						{
+							uri: 'file://1.jpg',
+						},
+					],
 					'user123',
 					'sneaker456',
 					mockImplementation

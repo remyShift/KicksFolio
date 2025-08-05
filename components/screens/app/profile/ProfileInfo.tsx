@@ -1,62 +1,71 @@
 import { Text, View } from 'react-native';
-import ProfileAvatar from './ProfileAvatar';
-import ProfileStats from './ProfileStats';
-import SocialMediaLinks from './SocialMediaLinks';
-import { User } from '@/types/user';
+
 import { useSession } from '@/context/authContext';
 import { SearchUser } from '@/domain/UserSearchProvider';
 import { useUserProfile } from '@/hooks/useUserProfile';
+import { User } from '@/types/user';
+
+import ProfileAvatar from './ProfileAvatar';
+import ProfileStats from './ProfileStats';
+import SocialMediaLinks from './SocialMediaLinks';
 
 export interface ProfileInfoProps {
-    user: User | SearchUser;
+	user: User | SearchUser;
 }
 
 export default function ProfileInfo({ user }: ProfileInfoProps) {
-    const { user: currentUser, userSneakers } = useSession();
-    
-    const { userProfile, handleFollowToggle, isFollowLoading } = useUserProfile(user.id);
+	const { user: currentUser, userSneakers } = useSession();
 
-    if (!user) return null;
+	const { userProfile, handleFollowToggle, isFollowLoading } = useUserProfile(
+		user.id
+	);
 
-    const isOwnProfile = currentUser?.id === user.id;
+	if (!user) return null;
 
-    if (!isOwnProfile && !userProfile) {
-        return null;
-    }
+	const isOwnProfile = currentUser?.id === user.id;
 
-    const displayUser = isOwnProfile ? user : userProfile?.userSearch;
-    const displaySneakers = isOwnProfile 
-        ? (userSneakers || [])
-        : (userProfile?.sneakers || []);
+	if (!isOwnProfile && !userProfile) {
+		return null;
+	}
 
-    if (!displayUser) {
-        return null;
-    }
+	const displayUser = isOwnProfile ? user : userProfile?.userSearch;
+	const displaySneakers = isOwnProfile
+		? userSneakers || []
+		: userProfile?.sneakers || [];
 
-    return (
-        <View className="flex flex-row gap-4 items-center justify-center" testID='profile-info'>
-            <View className="flex-col items-center justify-center">
-                <ProfileAvatar
-                    profilePictureUrl={displayUser.profile_picture || null} 
-                />
-                
-                <View className="flex gap-1">
-                    <Text className="font-open-sans text-base text-primary text-center">
-                        @{displayUser.username}
-                    </Text>
-                    <SocialMediaLinks user={displayUser} isOwnProfile={isOwnProfile} />
-                </View>
+	if (!displayUser) {
+		return null;
+	}
 
-            </View>
+	return (
+		<View
+			className="flex flex-row gap-4 items-center justify-center"
+			testID="profile-info"
+		>
+			<View className="flex-col items-center justify-center">
+				<ProfileAvatar
+					profilePictureUrl={displayUser.profile_picture || null}
+				/>
 
-            <ProfileStats 
-                sneakersCount={displaySneakers.length}
-                sneakers={displaySneakers}
-                user={displayUser}
-                isOwnProfile={isOwnProfile}
-                handleFollowToggle={handleFollowToggle}
-                isFollowLoading={isFollowLoading}
-            />
-        </View>
-    );
-} 
+				<View className="flex gap-1">
+					<Text className="font-open-sans text-base text-primary text-center">
+						@{displayUser.username}
+					</Text>
+					<SocialMediaLinks
+						user={displayUser}
+						isOwnProfile={isOwnProfile}
+					/>
+				</View>
+			</View>
+
+			<ProfileStats
+				sneakersCount={displaySneakers.length}
+				sneakers={displaySneakers}
+				user={displayUser}
+				isOwnProfile={isOwnProfile}
+				handleFollowToggle={handleFollowToggle}
+				isFollowLoading={isFollowLoading}
+			/>
+		</View>
+	);
+}

@@ -1,10 +1,12 @@
 import { Alert } from 'react-native';
+
 import * as ImagePicker from 'expo-image-picker';
-import { SneakerPhoto } from '@/types/image';
-import { imageService } from '@/services/ImageService';
-import { ImageProviderInterface } from '@/interfaces/ImageProviderInterface';
-import { imageProvider } from '@/domain/ImageProvider';
+
 import { useSession } from '@/context/authContext';
+import { imageProvider } from '@/domain/ImageProvider';
+import { ImageProviderInterface } from '@/interfaces/ImageProviderInterface';
+import { imageService } from '@/services/ImageService';
+import { SneakerPhoto } from '@/types/image';
 
 export type ImageSelectionType = 'camera' | 'gallery';
 export type ImagePurpose = 'profile' | 'sneaker';
@@ -109,9 +111,10 @@ export function useImageManager(
 
 			if (canAddMultiple) {
 				const availableSlots = maxImages - photos.length;
-				const imageUris = await imageService.pickMultipleSneakerImages(
-					availableSlots
-				);
+				const imageUris =
+					await imageService.pickMultipleSneakerImages(
+						availableSlots
+					);
 				if (!imageUris || imageUris.length === 0) return;
 
 				await addMultiplePhotos(imageUris);

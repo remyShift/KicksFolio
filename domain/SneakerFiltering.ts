@@ -1,11 +1,11 @@
-import { Sneaker } from '@/types/sneaker';
+import { SneakerFilterProviderInterface } from '@/interfaces/SneakerFilterInterface';
 import {
+	FilterState,
 	SortOption,
 	SortOrder,
-	FilterState,
 	UniqueValues,
 } from '@/types/filter';
-import { SneakerFilterProviderInterface } from '@/interfaces/SneakerFilterInterface';
+import { Sneaker } from '@/types/sneaker';
 
 class SneakerFiltering implements SneakerFilterProviderInterface {
 	filterSneakers(

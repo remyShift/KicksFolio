@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { UserData } from '@/types/auth';
-import { AuthValidatorInterface } from '@/interfaces/AuthValidatorInterface';
+
 import { authValidator } from '@/domain/AuthValidator';
+import { AuthValidatorInterface } from '@/interfaces/AuthValidatorInterface';
+import { UserData } from '@/types/auth';
 
 type ValidationValue = string | number | boolean | null | undefined;
 

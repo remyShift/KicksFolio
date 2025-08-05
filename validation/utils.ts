@@ -1,6 +1,5 @@
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';
 import { SneakerBrand } from '@/types/sneaker';
-
 import { SneakerStatus } from '@/types/sneaker';
 
 export const sneakerStatusOptions = [

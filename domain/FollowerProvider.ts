@@ -89,11 +89,17 @@ export class FollowerProvider implements FollowerInterface {
 						return Promise.all([
 							supabase
 								.from('followers')
-								.select('*', { count: 'exact', head: true })
+								.select('*', {
+									count: 'exact',
+									head: true,
+								})
 								.eq('following_id', user.id),
 							supabase
 								.from('followers')
-								.select('*', { count: 'exact', head: true })
+								.select('*', {
+									count: 'exact',
+									head: true,
+								})
 								.eq('follower_id', user.id),
 						])
 							.then(([followersResult, followingResult]) => {
@@ -173,11 +179,17 @@ export class FollowerProvider implements FollowerInterface {
 						return Promise.all([
 							supabase
 								.from('followers')
-								.select('*', { count: 'exact', head: true })
+								.select('*', {
+									count: 'exact',
+									head: true,
+								})
 								.eq('following_id', user.id),
 							supabase
 								.from('followers')
-								.select('*', { count: 'exact', head: true })
+								.select('*', {
+									count: 'exact',
+									head: true,
+								})
 								.eq('follower_id', user.id),
 							supabase
 								.from('followers')
@@ -260,11 +272,17 @@ export class FollowerProvider implements FollowerInterface {
 		return Promise.all([
 			supabase
 				.from('followers')
-				.select('*', { count: 'exact', head: true })
+				.select('*', {
+					count: 'exact',
+					head: true,
+				})
 				.eq('following_id', userId),
 			supabase
 				.from('followers')
-				.select('*', { count: 'exact', head: true })
+				.select('*', {
+					count: 'exact',
+					head: true,
+				})
 				.eq('follower_id', userId),
 		]).then(([followersResult, followingResult]) => {
 			return {

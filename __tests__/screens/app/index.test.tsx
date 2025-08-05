@@ -1,7 +1,10 @@
-import Index from '@/app/(app)/(tabs)/index';
-import { fireEvent, render, screen } from '@testing-library/react-native';
 import { ReactTestInstance } from 'react-test-renderer';
+
 import { router } from 'expo-router';
+
+import { fireEvent, render, screen } from '@testing-library/react-native';
+
+import Index from '@/app/(app)/(tabs)/index';
 import { useSession } from '@/context/authContext';
 
 describe('Index', () => {
@@ -12,7 +15,7 @@ describe('Index', () => {
 		jest.clearAllMocks();
 		(useSession as jest.Mock).mockReturnValue({
 			user: { id: 'test-user-id' },
-			userSneakers: []
+			userSneakers: [],
 		});
 		render(<Index />);
 		collectionCard = screen.getByTestId('collection-card');
@@ -42,15 +45,21 @@ describe('Index', () => {
 		it('should display 1 sneaker and 3 empty slots', () => {
 			(useSession as jest.Mock).mockReturnValue({
 				user: { id: 'test-user-id' },
-				userSneakers: [{
-					images: [{ url: 'test-url-1' }]
-				}]
+				userSneakers: [
+					{
+						images: [
+							{
+								url: 'test-url-1',
+							},
+						],
+					},
+				],
 			});
 			render(<Index />);
-			
+
 			const images = screen.getAllByTestId('sneaker-image');
 			const emptySlots = screen.getAllByTestId('empty-slot');
-			
+
 			expect(images).toHaveLength(1);
 			expect(emptySlots).toHaveLength(3);
 		});
@@ -59,15 +68,27 @@ describe('Index', () => {
 			(useSession as jest.Mock).mockReturnValue({
 				user: { id: 'test-user-id' },
 				userSneakers: [
-					{ images: [{ url: 'test-url-1' }] },
-					{ images: [{ url: 'test-url-2' }] }
-				]
+					{
+						images: [
+							{
+								url: 'test-url-1',
+							},
+						],
+					},
+					{
+						images: [
+							{
+								url: 'test-url-2',
+							},
+						],
+					},
+				],
 			});
 			render(<Index />);
-			
+
 			const images = screen.getAllByTestId('sneaker-image');
 			const emptySlots = screen.getAllByTestId('empty-slot');
-			
+
 			expect(images).toHaveLength(2);
 			expect(emptySlots).toHaveLength(2);
 		});
@@ -76,16 +97,34 @@ describe('Index', () => {
 			(useSession as jest.Mock).mockReturnValue({
 				user: { id: 'test-user-id' },
 				userSneakers: [
-					{ images: [{ url: 'test-url-1' }] },
-					{ images: [{ url: 'test-url-2' }] },
-					{ images: [{ url: 'test-url-3' }] }
-				]
+					{
+						images: [
+							{
+								url: 'test-url-1',
+							},
+						],
+					},
+					{
+						images: [
+							{
+								url: 'test-url-2',
+							},
+						],
+					},
+					{
+						images: [
+							{
+								url: 'test-url-3',
+							},
+						],
+					},
+				],
 			});
 			render(<Index />);
-			
+
 			const images = screen.getAllByTestId('sneaker-image');
 			const emptySlots = screen.getAllByTestId('empty-slot');
-			
+
 			expect(images).toHaveLength(3);
 			expect(emptySlots).toHaveLength(1);
 		});
@@ -94,17 +133,41 @@ describe('Index', () => {
 			(useSession as jest.Mock).mockReturnValue({
 				user: { id: 'test-user-id' },
 				userSneakers: [
-					{ images: [{ url: 'test-url-1' }] },
-					{ images: [{ url: 'test-url-2' }] },
-					{ images: [{ url: 'test-url-3' }] },
-					{ images: [{ url: 'test-url-4' }] }
-				]
+					{
+						images: [
+							{
+								url: 'test-url-1',
+							},
+						],
+					},
+					{
+						images: [
+							{
+								url: 'test-url-2',
+							},
+						],
+					},
+					{
+						images: [
+							{
+								url: 'test-url-3',
+							},
+						],
+					},
+					{
+						images: [
+							{
+								url: 'test-url-4',
+							},
+						],
+					},
+				],
 			});
 			render(<Index />);
-			
+
 			const images = screen.getAllByTestId('sneaker-image');
 			const emptySlots = screen.queryAllByTestId('empty-slot');
-			
+
 			expect(images).toHaveLength(4);
 			expect(emptySlots).toHaveLength(0);
 		});
@@ -113,18 +176,48 @@ describe('Index', () => {
 			(useSession as jest.Mock).mockReturnValue({
 				user: { id: 'test-user-id' },
 				userSneakers: [
-					{ images: [{ url: 'test-url-1' }] },
-					{ images: [{ url: 'test-url-2' }] },
-					{ images: [{ url: 'test-url-3' }] },
-					{ images: [{ url: 'test-url-4' }] },
-					{ images: [{ url: 'test-url-5' }] }
-				]
+					{
+						images: [
+							{
+								url: 'test-url-1',
+							},
+						],
+					},
+					{
+						images: [
+							{
+								url: 'test-url-2',
+							},
+						],
+					},
+					{
+						images: [
+							{
+								url: 'test-url-3',
+							},
+						],
+					},
+					{
+						images: [
+							{
+								url: 'test-url-4',
+							},
+						],
+					},
+					{
+						images: [
+							{
+								url: 'test-url-5',
+							},
+						],
+					},
+				],
 			});
 			render(<Index />);
-			
+
 			const images = screen.getAllByTestId('sneaker-image');
 			const emptySlots = screen.queryAllByTestId('empty-slot');
-			
+
 			expect(images).toHaveLength(4);
 			expect(emptySlots).toHaveLength(0);
 		});

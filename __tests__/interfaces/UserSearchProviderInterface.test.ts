@@ -1,6 +1,7 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+
+import { SearchUser, SearchUsersResponse } from '@/domain/UserSearchProvider';
 import { UserSearchInterface } from '@/interfaces/UserSearchInterface';
-import { SearchUsersResponse, SearchUser } from '@/domain/UserSearchProvider';
 
 describe('UserSearchInterface', () => {
 	describe('searchUsers', () => {
@@ -176,7 +177,12 @@ describe('UserSearchInterface', () => {
 					size: 42,
 					condition: 9,
 					price: 150,
-					images: [{ id: '1', uri: 'image.jpg' }],
+					images: [
+						{
+							id: '1',
+							uri: 'image.jpg',
+						},
+					],
 				},
 			];
 

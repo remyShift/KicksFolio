@@ -1,11 +1,12 @@
-import {
-	useSharedValue,
-	useAnimatedStyle,
-	withSpring,
-	runOnJS,
-} from 'react-native-reanimated';
-import * as Haptics from 'expo-haptics';
 import { Gesture } from 'react-native-gesture-handler';
+import {
+	runOnJS,
+	useAnimatedStyle,
+	useSharedValue,
+	withSpring,
+} from 'react-native-reanimated';
+
+import * as Haptics from 'expo-haptics';
 
 const triggerHaptic = () => {
 	Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);

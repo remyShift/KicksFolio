@@ -1,8 +1,10 @@
 import { create } from 'zustand';
-import { SizeUnit, Sneaker } from '@/types/sneaker';
-import { SortOption, SortOrder, FilterState } from '@/types/filter';
-import { SneakerFilterInterface } from '@/interfaces/SneakerFilterInterface';
+
 import { sneakerFilteringProvider } from '@/domain/SneakerFiltering';
+import { SneakerFilterInterface } from '@/interfaces/SneakerFilterInterface';
+import { FilterState, SortOption, SortOrder } from '@/types/filter';
+import { SizeUnit, Sneaker } from '@/types/sneaker';
+
 import { useSizeUnitStore } from './useSizeUnitStore';
 
 interface SneakerFilterStore {

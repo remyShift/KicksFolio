@@ -1,13 +1,14 @@
-import { supabase } from '@/config/supabase/supabase';
 import * as FileSystem from 'expo-file-system';
+
+import { supabase } from '@/config/supabase/supabase';
+import { ImageProviderInterface } from '@/interfaces/ImageProviderInterface';
 import {
-	UploadResult,
+	ImageInfo,
 	ImageUploadOptions,
 	ImageValidationResult,
-	ImageInfo,
 	SneakerPhoto,
+	UploadResult,
 } from '@/types/image';
-import { ImageProviderInterface } from '@/interfaces/ImageProviderInterface';
 
 class ImageProvider implements ImageProviderInterface {
 	async uploadImage(

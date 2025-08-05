@@ -1,4 +1,4 @@
-import { vi, beforeAll, afterEach } from 'vitest';
+import { afterEach, beforeAll, vi } from 'vitest';
 
 globalThis.process = globalThis.process || {};
 globalThis.process.env = globalThis.process.env || {};
@@ -69,11 +69,17 @@ vi.mock('@/config/supabase/supabase.config', () => ({
 const createSupabaseMock = () => ({
 	auth: {
 		signUp: vi.fn().mockResolvedValue({
-			data: { user: { id: 'test-user-id' }, session: null },
+			data: {
+				user: { id: 'test-user-id' },
+				session: null,
+			},
 			error: null,
 		}),
 		signInWithPassword: vi.fn().mockResolvedValue({
-			data: { user: { id: 'test-user-id' }, session: null },
+			data: {
+				user: { id: 'test-user-id' },
+				session: null,
+			},
 			error: null,
 		}),
 		signOut: vi.fn().mockResolvedValue({ error: null }),
@@ -104,7 +110,10 @@ const createSupabaseMock = () => ({
 		update: vi.fn().mockReturnThis(),
 		delete: vi.fn().mockReturnThis(),
 		eq: vi.fn().mockReturnThis(),
-		single: vi.fn().mockResolvedValue({ data: null, error: null }),
+		single: vi.fn().mockResolvedValue({
+			data: null,
+			error: null,
+		}),
 	})),
 	rpc: vi.fn().mockResolvedValue({ data: null, error: null }),
 });
@@ -140,11 +149,15 @@ vi.mock('@/store/useModalStore', () => ({
 
 vi.mock('@/domain/AuthProvider', () => ({
 	authProvider: {
-		signIn: vi
-			.fn()
-			.mockResolvedValue({ user: { id: 'test-user-id' }, session: null }),
+		signIn: vi.fn().mockResolvedValue({
+			user: { id: 'test-user-id' },
+			session: null,
+		}),
 		signUp: vi.fn().mockResolvedValue({
-			data: { user: { id: 'test-user-id' }, session: null },
+			data: {
+				user: { id: 'test-user-id' },
+				session: null,
+			},
 		}),
 		signOut: vi.fn().mockResolvedValue(undefined),
 		getCurrentUser: vi.fn().mockResolvedValue({
@@ -159,9 +172,9 @@ vi.mock('@/domain/AuthProvider', () => ({
 		}),
 		deleteUser: vi.fn().mockResolvedValue(true),
 		forgotPassword: vi.fn().mockResolvedValue(undefined),
-		resetPassword: vi
-			.fn()
-			.mockResolvedValue({ user: { id: 'test-user-id' } }),
+		resetPassword: vi.fn().mockResolvedValue({
+			user: { id: 'test-user-id' },
+		}),
 		resetPasswordWithTokens: vi.fn().mockResolvedValue(true),
 		cleanupOrphanedSessions: vi.fn().mockResolvedValue(undefined),
 	},
@@ -182,7 +195,9 @@ vi.mock('@/domain/ImageProvider', () => ({
 vi.mock('react-i18next', () => ({
 	useTranslation: () => ({
 		t: (key: string, params?: any) => {
-			const translations: { [key: string]: string } = {
+			const translations: {
+				[key: string]: string;
+			} = {
 				'auth.error.login': 'An error occurred during login.',
 				'auth.error.signUp': 'An error occurred during sign up.',
 				'auth.error.samePasswordAsOld':

@@ -1,14 +1,16 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { SearchUser } from '@/domain/UserSearchProvider';
-import { useSession } from '@/context/authContext';
-import useToast from '@/hooks/ui/useToast';
-import { router } from 'expo-router';
-import { Sneaker } from '@/types/sneaker';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { UserSearchInterface } from '@/interfaces/UserSearchInterface';
-import { FollowerInterface } from '@/interfaces/FollowerInterface';
-import { userSearchProvider } from '@/domain/UserSearchProvider';
+
+import { router } from 'expo-router';
+
+import { useSession } from '@/context/authContext';
 import { followerProvider } from '@/domain/FollowerProvider';
+import { SearchUser } from '@/domain/UserSearchProvider';
+import { userSearchProvider } from '@/domain/UserSearchProvider';
+import useToast from '@/hooks/ui/useToast';
+import { FollowerInterface } from '@/interfaces/FollowerInterface';
+import { UserSearchInterface } from '@/interfaces/UserSearchInterface';
+import { Sneaker } from '@/types/sneaker';
 
 interface UseUserProfile {
 	userProfile: UserProfileData | null;
@@ -108,11 +110,11 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 			? FollowerInterface.unfollowUser(
 					userProfile.userSearch.id,
 					followerProvider.unfollowUser
-			  )
+				)
 			: FollowerInterface.followUser(
 					userProfile.userSearch.id,
 					followerProvider.followUser
-			  );
+				);
 
 		return followAction
 			.then(() => {

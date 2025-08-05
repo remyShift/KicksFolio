@@ -1,4 +1,5 @@
 import { vi } from 'vitest';
+
 import { SupabaseUser } from '@/domain/AuthProvider';
 
 export const mockSupabaseUser: SupabaseUser = {
@@ -23,7 +24,10 @@ export const mockUserWithStats = {
 
 export const mockSuccessfulSignUpResponse = {
 	user: mockSupabaseUser,
-	session: { access_token: 'mock-token', refresh_token: 'mock-refresh' },
+	session: {
+		access_token: 'mock-token',
+		refresh_token: 'mock-refresh',
+	},
 };
 
 export const mockSuccessfulSignInResponse = {

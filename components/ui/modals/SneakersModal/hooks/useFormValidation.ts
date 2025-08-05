@@ -1,11 +1,12 @@
-import { useEffect, useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import {
-	UseFormWatch,
+	Path,
+	UseFormGetValues,
 	UseFormReset,
 	UseFormTrigger,
-	UseFormGetValues,
-	Path,
+	UseFormWatch,
 } from 'react-hook-form';
+
 import { useModalStore } from '@/store/useModalStore';
 import { SneakerFormData } from '@/validation/sneaker';
 
@@ -89,7 +90,11 @@ export const useFormValidation = (
 			} as SneakerFormData;
 
 			setSneakerToAdd(finalData);
-			return { isValid: true, errorMsg: '', data: finalData };
+			return {
+				isValid: true,
+				errorMsg: '',
+				data: finalData,
+			};
 		} else {
 			const getErrorSafe = (fieldName: Path<SneakerFormData>) => {
 				const error = getFieldErrorRef.current(fieldName);

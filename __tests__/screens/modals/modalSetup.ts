@@ -1,5 +1,5 @@
-import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
 import { FetchedSneaker } from '@/store/useModalStore';
+import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
 
 export const mockSneaker: Sneaker = {
 	id: '1',

@@ -1,10 +1,11 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
 import {
 	SneakerFilterInterface,
 	SneakerFilterProviderInterface,
 } from '@/interfaces/SneakerFilterInterface';
-import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
 import { FilterState, SortOption, SortOrder } from '@/types/filter';
+import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
 
 const mockSneakers: Sneaker[] = [
 	{

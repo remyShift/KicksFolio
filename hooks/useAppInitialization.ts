@@ -1,14 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
+
+import { Image } from 'expo-image';
+
 import { useSession } from '@/context/authContext';
+import { deviceLanguage } from '@/locales/i18n';
+import { storageProvider } from '@/services/StorageService';
+import { useCurrencyStore } from '@/store/useCurrencyStore';
 import { useLanguageStore } from '@/store/useLanguageStore';
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';
-import { useCurrencyStore } from '@/store/useCurrencyStore';
 import { useSplashScreenStore } from '@/store/useSplashScreenStore';
-import { storageProvider } from '@/services/StorageService';
-import { deviceLanguage } from '@/locales/i18n';
-import { User } from '@/types/user';
 import { Sneaker } from '@/types/sneaker';
-import { Image } from 'expo-image';
+import { User } from '@/types/user';
 
 const MIN_SPLASH_DURATION = 2000;
 

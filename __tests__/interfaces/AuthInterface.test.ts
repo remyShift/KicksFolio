@@ -1,22 +1,23 @@
 import { vi } from 'vitest';
 
-vi.unmock('@/interfaces/AuthInterface');
-
 import { AuthInterface } from '@/interfaces/AuthInterface';
+
 import {
-	mockSupabaseUser,
-	createSuccessfulSignUp,
 	createFailingMockFunction,
-	createSuccessfulSignIn,
-	createSuccessfulSignOut,
-	createSuccessfulGetCurrentUser,
-	createSuccessfulUpdateProfile,
+	createSuccessfulCleanupOrphanedSessions,
 	createSuccessfulDeleteUser,
 	createSuccessfulForgotPassword,
+	createSuccessfulGetCurrentUser,
 	createSuccessfulResetPassword,
 	createSuccessfulResetPasswordWithTokens,
-	createSuccessfulCleanupOrphanedSessions,
+	createSuccessfulSignIn,
+	createSuccessfulSignOut,
+	createSuccessfulSignUp,
+	createSuccessfulUpdateProfile,
+	mockSupabaseUser,
 } from './authInterfaceSetup';
+
+vi.unmock('@/interfaces/AuthInterface');
 
 describe('AuthInterface', () => {
 	beforeEach(() => {
@@ -128,9 +129,8 @@ describe('AuthInterface', () => {
 		it('should return the current user', async () => {
 			const mockGetCurrentUser = createSuccessfulGetCurrentUser();
 
-			const result = await AuthInterface.getCurrentUser(
-				mockGetCurrentUser
-			);
+			const result =
+				await AuthInterface.getCurrentUser(mockGetCurrentUser);
 
 			expect(mockGetCurrentUser).toHaveBeenCalled();
 			expect(result.id).toBe('test-user-id');
@@ -176,7 +176,9 @@ describe('AuthInterface', () => {
 			await expect(
 				AuthInterface.updateProfile(
 					'test-user-id',
-					{ first_name: 'Updated' },
+					{
+						first_name: 'Updated',
+					},
 					mockUpdateProfile
 				)
 			).rejects.toThrow('Update failed');

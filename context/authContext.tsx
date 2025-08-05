@@ -1,393 +1,448 @@
-import { createContext, useContext, type PropsWithChildren, useState, useEffect } from 'react';
-import { AuthContextType, FollowingUserWithSneakers } from '@/types/auth';
-import { storageProvider } from '@/services/StorageService';
-import { useAppState } from '@react-native-community/hooks';
-import { User } from '@/types/user';
-import { Sneaker } from '@/types/sneaker';
-import { AuthInterface } from '@/interfaces/AuthInterface';
-import { authProvider } from '@/domain/AuthProvider';
-import { SneakerProviderInterface } from '@/interfaces/SneakerProviderInterface';
-import { sneakerProvider } from '@/domain/SneakerProvider';
-import { WishlistProviderInterface } from '@/interfaces/WishlistProviderInterface';
-import { wishlistProvider } from '@/domain/WishlistProvider';
-import { FollowerInterface } from '@/interfaces/FollowerInterface';
-import { followerProvider } from '@/domain/FollowerProvider';
-import { UserSearchInterface } from '@/interfaces/UserSearchInterface';
-import { userSearchProvider } from '@/domain/UserSearchProvider';
+import {
+	createContext,
+	type PropsWithChildren,
+	useContext,
+	useEffect,
+	useState,
+} from 'react';
 
-import { supabase } from '@/config/supabase/supabase';
+import { useAppState } from '@react-native-community/hooks';
+
 import * as Linking from 'expo-linking';
 import { router } from 'expo-router';
+
+import { supabase } from '@/config/supabase/supabase';
+import { authProvider } from '@/domain/AuthProvider';
+import { followerProvider } from '@/domain/FollowerProvider';
+import { sneakerProvider } from '@/domain/SneakerProvider';
+import { userSearchProvider } from '@/domain/UserSearchProvider';
+import { wishlistProvider } from '@/domain/WishlistProvider';
+import { AuthInterface } from '@/interfaces/AuthInterface';
+import { FollowerInterface } from '@/interfaces/FollowerInterface';
+import { SneakerProviderInterface } from '@/interfaces/SneakerProviderInterface';
+import { UserSearchInterface } from '@/interfaces/UserSearchInterface';
+import { WishlistProviderInterface } from '@/interfaces/WishlistProviderInterface';
+import { storageProvider } from '@/services/StorageService';
+import { AuthContextType, FollowingUserWithSneakers } from '@/types/auth';
+import { Sneaker } from '@/types/sneaker';
+import { User } from '@/types/user';
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
 export function useSession() {
-    const value = useContext(AuthContext);
-    if (process.env.NODE_ENV !== 'production') {
-        if (!value) {
-            throw new Error('useSession must be wrapped in a <SessionProvider />');
-        }
-    }
-    return value;
+	const value = useContext(AuthContext);
+	if (process.env.NODE_ENV !== 'production') {
+		if (!value) {
+			throw new Error(
+				'useSession must be wrapped in a <SessionProvider />'
+			);
+		}
+	}
+	return value;
 }
 
 export function SessionProvider({ children }: PropsWithChildren) {
-    const appState = useAppState();
-    const [isLoading, setIsLoading] = useState(true);
-    const [resetTokens, setResetTokens] = useState<{access_token: string, refresh_token: string} | null>(null);
+	const appState = useAppState();
+	const [isLoading, setIsLoading] = useState(true);
+	const [resetTokens, setResetTokens] = useState<{
+		access_token: string;
+		refresh_token: string;
+	} | null>(null);
 
-    const [user, setUser] = useState<User | null>(null);
-    const [userSneakers, setUserSneakers] = useState<Sneaker[] | null>(null);
-    const [wishlistSneakers, setWishlistSneakers] = useState<Sneaker[] | null>(null);
-    const [followingUsers, setFollowingUsers] = useState<FollowingUserWithSneakers[] | null>(null);
+	const [user, setUser] = useState<User | null>(null);
+	const [userSneakers, setUserSneakers] = useState<Sneaker[] | null>(null);
+	const [wishlistSneakers, setWishlistSneakers] = useState<Sneaker[] | null>(
+		null
+	);
+	const [followingUsers, setFollowingUsers] = useState<
+		FollowingUserWithSneakers[] | null
+	>(null);
 
-    useEffect(() => {
-        const handleDeepLink = (url: string) => {
-            if (url.includes('reset-password')) {
-                const fragmentPart = url.split('#')[1];
-                
-                if (fragmentPart) {
-                    const params = new URLSearchParams(fragmentPart);
+	useEffect(() => {
+		const handleDeepLink = (url: string) => {
+			if (url.includes('reset-password')) {
+				const fragmentPart = url.split('#')[1];
 
-                    const error = params.get('error');
-                    const errorCode = params.get('error_code');
-                    
-                    if (error) {                        
-                        if (errorCode === 'otp_expired') {
-                            router.replace({
-                                pathname: '/login',
-                                params: {
-                                    error: 'reset_link_expired',
-                                }
-                            });
-                            
-                        } else {
-                            router.replace({
-                                pathname: '/login',
-                                params: {
-                                    error: 'reset_link_invalid',
-                                }
-                            });
-                        }
-                        return;
-                    }
-                    
-                    const accessToken = params.get('access_token');
-                    const refreshToken = params.get('refresh_token');
+				if (fragmentPart) {
+					const params = new URLSearchParams(fragmentPart);
 
-                    if (accessToken && refreshToken) {
-                        setResetTokens({ access_token: accessToken, refresh_token: refreshToken });
-                    } else {
-                        router.replace({
-                            pathname: '/login',
-                            params: {
-                                error: 'reset_link_invalid',
-                            }
-                        });
-                    }
-                } else {
-                    router.replace({
-                        pathname: '/login',
-                        params: {
-                            error: 'reset_link_invalid',
-                        }
-                    });
-                }
-            }
-        };
+					const error = params.get('error');
+					const errorCode = params.get('error_code');
 
-        Linking.getInitialURL().then((url) => {
-            if (url) {
-                handleDeepLink(url);
-            }
-        });
+					if (error) {
+						if (errorCode === 'otp_expired') {
+							router.replace({
+								pathname: '/login',
+								params: {
+									error: 'reset_link_expired',
+								},
+							});
+						} else {
+							router.replace({
+								pathname: '/login',
+								params: {
+									error: 'reset_link_invalid',
+								},
+							});
+						}
+						return;
+					}
 
-        const linkingListener = Linking.addEventListener('url', (event) => {
-            handleDeepLink(event.url);
-        });
+					const accessToken = params.get('access_token');
+					const refreshToken = params.get('refresh_token');
 
-        return () => {
-            linkingListener.remove();
-        };
-    }, []);
+					if (accessToken && refreshToken) {
+						setResetTokens({
+							access_token: accessToken,
+							refresh_token: refreshToken,
+						});
+					} else {
+						router.replace({
+							pathname: '/login',
+							params: {
+								error: 'reset_link_invalid',
+							},
+						});
+					}
+				} else {
+					router.replace({
+						pathname: '/login',
+						params: {
+							error: 'reset_link_invalid',
+						},
+					});
+				}
+			}
+		};
 
-    useEffect(() => {
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(
-            async (event, session) => {
-                if (session?.user) {
-                    await initializeUserData(session.user.id);
-                } else {
-                    clearUserData();
-                }
-                
-                setIsLoading(false);
-            }
-        );
+		Linking.getInitialURL().then((url) => {
+			if (url) {
+				handleDeepLink(url);
+			}
+		});
 
-        const checkInitialSession = async () => {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session?.user) {
-                return AuthInterface.getCurrentUser(authProvider.getCurrentUser)
-                    .catch((error: any) => {
-                        if (error.code === 'PGRST116') {
-                            return supabase.auth.signOut()
-                                .then(() => {
-                                    clearUserData();
-                                });
-                        }
-                        throw error;
-                    });
-            }
-        };
-        checkInitialSession();
+		const linkingListener = Linking.addEventListener('url', (event) => {
+			handleDeepLink(event.url);
+		});
 
-        return () => {
-            subscription?.unsubscribe();
-        };
-    }, []);
+		return () => {
+			linkingListener.remove();
+		};
+	}, []);
 
-    useEffect(() => {
-        handleAppStateChange();
-    }, [appState]);
+	useEffect(() => {
+		const {
+			data: { subscription },
+		} = supabase.auth.onAuthStateChange(async (event, session) => {
+			if (session?.user) {
+				await initializeUserData(session.user.id);
+			} else {
+				clearUserData();
+			}
 
-    const loadUserSneakers = async (userWithUrl: User) => {
-        const sneakersPromise = SneakerProviderInterface.getSneakersByUser(
-            userWithUrl.id,
-            sneakerProvider.getSneakersByUser
-        );
-        const wishlistPromise = WishlistProviderInterface.getUserWishlistSneakers(
-            userWithUrl.id,
-            wishlistProvider.getUserWishlistSneakers
-        );
-        
-        return Promise.all([sneakersPromise, wishlistPromise])
-            .then(([sneakers, wishlistSneakers]) => {
-                const userSneakers = sneakers || [];
-                const userWishlistSneakers = wishlistSneakers || [];
-                
-                setUserSneakers(userSneakers);
-                setWishlistSneakers(userWishlistSneakers);
-                
-                storageProvider.setSneakersData(userSneakers);
-                storageProvider.setItem('wishlistSneakers', userWishlistSneakers);
-                
-                userWithUrl.sneakers = userSneakers;
-                setUser(userWithUrl);
-                storageProvider.setUserData(userWithUrl);
-            })
-            .catch((error) => {
-                console.error('Error loading user sneakers:', error);
-                setUserSneakers([]);
-                setWishlistSneakers([]);
-                storageProvider.setSneakersData([]);
-                storageProvider.setItem('wishlistSneakers', []);
-            });
-    };
+			setIsLoading(false);
+		});
 
-    const loadFollowingUsers = async (userId: string) => {
-        return FollowerInterface.getFollowingUsers(
-            userId,
-            followerProvider.getFollowingUsers
-        )
-            .then(async (followingUsersData) => {
-                const followingWithSneakers = await Promise.all(
-                    followingUsersData.map(async (followingUser) => {
-                        try {
-                            const sneakers = await UserSearchInterface.getUserSneakers(
-                                followingUser.id,
-                                userSearchProvider.getUserSneakers
-                            );
-                            return {
-                                ...followingUser,
-                                sneakers: sneakers || []
-                            };
-                        } catch (error) {
-                            console.warn(`Error loading sneakers for user ${followingUser.id}:`, error);
-                            return {
-                                ...followingUser,
-                                sneakers: []
-                            };
-                        }
-                    })
-                );
+		const checkInitialSession = async () => {
+			const {
+				data: { session },
+			} = await supabase.auth.getSession();
+			if (session?.user) {
+				return AuthInterface.getCurrentUser(
+					authProvider.getCurrentUser
+				).catch((error: any) => {
+					if (error.code === 'PGRST116') {
+						return supabase.auth.signOut().then(() => {
+							clearUserData();
+						});
+					}
+					throw error;
+				});
+			}
+		};
+		checkInitialSession();
 
-                setFollowingUsers(followingWithSneakers);
-                storageProvider.setItem('followingUsers', followingWithSneakers);
-                
-                return followingWithSneakers;
-            })
-            .catch((error) => {
-                console.error('Error loading following users:', error);
-                setFollowingUsers([]);
-                storageProvider.setItem('followingUsers', []);
-                return [];
-            });
-    };
+		return () => {
+			subscription?.unsubscribe();
+		};
+	}, []);
 
-    const initializeUserData = async (userId: string) => {
-        const maxRetries = 3;
-        const retryDelay = 1000;
+	useEffect(() => {
+		handleAppStateChange();
+	}, [appState]);
 
-        const getUserWithRetries = async (attempt: number): Promise<any> => {
-            return AuthInterface.getCurrentUser(authProvider.getCurrentUser)
-                .then((userData: any) => {
-                    if (userData) {
-                        const userWithUrl = { ...userData, profile_picture_url: userData.profile_picture };
-                        setUser(userWithUrl as User);
-                        storageProvider.setUserData(userWithUrl as User);
-                        
-                        return Promise.all([
-                            loadUserSneakers(userWithUrl),
-                            loadFollowingUsers(userWithUrl.id)
-                        ]);
-                    } else if (attempt < maxRetries) {
-                        return new Promise((resolve) => {
-                            setTimeout(() => {
-                                resolve(getUserWithRetries(attempt + 1));
-                            }, retryDelay);
-                        });
-                    } else {
-                        throw new Error('User not found after multiple attempts');
-                    }
-                })
-                .catch((error: any) => {
-                    if (attempt < maxRetries && error.code === 'PGRST116') {
-                        return new Promise((resolve) => {
-                            setTimeout(() => {
-                                resolve(getUserWithRetries(attempt + 1));
-                            }, retryDelay);
-                        });
-                    } else {
-                        throw error;
-                    }
-                });
-        };
+	const loadUserSneakers = async (userWithUrl: User) => {
+		const sneakersPromise = SneakerProviderInterface.getSneakersByUser(
+			userWithUrl.id,
+			sneakerProvider.getSneakersByUser
+		);
+		const wishlistPromise =
+			WishlistProviderInterface.getUserWishlistSneakers(
+				userWithUrl.id,
+				wishlistProvider.getUserWishlistSneakers
+			);
 
-        getUserWithRetries(0)
-            .catch((error) => {
-                console.error('Error initializing user data:', error);
-                clearUserData();
-            });
-    };
+		return Promise.all([sneakersPromise, wishlistPromise])
+			.then(([sneakers, wishlistSneakers]) => {
+				const userSneakers = sneakers || [];
+				const userWishlistSneakers = wishlistSneakers || [];
 
-    const refreshUserData = async () => {
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-        
-        if (sessionError) {
-            console.error('❌ refreshUserData: Error getting session:', sessionError);
-            return;
-        }
-        
-        if (!session?.user) {
-            console.log('ℹ️ refreshUserData: No valid session found, skipping data refresh');
-            return;
-        }
+				setUserSneakers(userSneakers);
+				setWishlistSneakers(userWishlistSneakers);
 
-        return AuthInterface.getCurrentUser(authProvider.getCurrentUser)
-            .then(async (freshUserData: any) => {
-                if (!freshUserData) {
-                    return;
-                }
+				storageProvider.setSneakersData(userSneakers);
+				storageProvider.setItem(
+					'wishlistSneakers',
+					userWishlistSneakers
+				);
 
-                const userWithUrl = { ...freshUserData, profile_picture_url: freshUserData.profile_picture };
-                
-                await loadUserSneakers(userWithUrl);
-                await loadFollowingUsers(userWithUrl.id);
-            })
-            .catch((error) => {
-                console.error('❌ refreshUserData: Error refreshing user data:', error);
-                setUserSneakers([]);
-                setWishlistSneakers([]);
-                storageProvider.setSneakersData([]);
-                storageProvider.setItem('wishlistSneakers', []);
-            });
-    };
+				userWithUrl.sneakers = userSneakers;
+				setUser(userWithUrl);
+				storageProvider.setUserData(userWithUrl);
+			})
+			.catch((error) => {
+				console.error('Error loading user sneakers:', error);
+				setUserSneakers([]);
+				setWishlistSneakers([]);
+				storageProvider.setSneakersData([]);
+				storageProvider.setItem('wishlistSneakers', []);
+			});
+	};
 
-    const refreshUserSneakers = async () => {
-        if (!user?.id) {
-            setUserSneakers([]);
-            setWishlistSneakers([]);
-            storageProvider.setSneakersData([]);
-            storageProvider.setItem('wishlistSneakers', []);
-            return;
-        }
-        
-        const sneakersPromise = SneakerProviderInterface.getSneakersByUser(
-            user.id,
-            sneakerProvider.getSneakersByUser
-        );
-        const wishlistPromise = WishlistProviderInterface.getUserWishlistSneakers(
-            user.id,
-            wishlistProvider.getUserWishlistSneakers
-        );
-        
-        return Promise.all([sneakersPromise, wishlistPromise])
-            .then(([sneakers, wishlistSneakers]) => {
-                const userSneakers = sneakers || [];
-                const userWishlistSneakers = wishlistSneakers || [];
-                
-                setUserSneakers(userSneakers);
-                setWishlistSneakers(userWishlistSneakers);
-                
-                storageProvider.setSneakersData(userSneakers);
-                storageProvider.setItem('wishlistSneakers', userWishlistSneakers);
-            })
-            .catch((error) => {
-                console.error('Error refreshing sneakers:', error);
-                setUserSneakers([]);
-                setWishlistSneakers([]);
-                storageProvider.setSneakersData([]);
-                storageProvider.setItem('wishlistSneakers', []);
-            });
-    };
+	const loadFollowingUsers = async (userId: string) => {
+		return FollowerInterface.getFollowingUsers(
+			userId,
+			followerProvider.getFollowingUsers
+		)
+			.then(async (followingUsersData) => {
+				const followingWithSneakers = await Promise.all(
+					followingUsersData.map(async (followingUser) => {
+						try {
+							const sneakers =
+								await UserSearchInterface.getUserSneakers(
+									followingUser.id,
+									userSearchProvider.getUserSneakers
+								);
+							return {
+								...followingUser,
+								sneakers: sneakers || [],
+							};
+						} catch (error) {
+							console.warn(
+								`Error loading sneakers for user ${followingUser.id}:`,
+								error
+							);
+							return {
+								...followingUser,
+								sneakers: [],
+							};
+						}
+					})
+				);
 
-    const refreshFollowingUsers = async () => {
-        if (!user?.id) {
-            setFollowingUsers([]);
-            storageProvider.setItem('followingUsers', []);
-            return;
-        }
-        
-        await loadFollowingUsers(user.id);
-    };
+				setFollowingUsers(followingWithSneakers);
+				storageProvider.setItem(
+					'followingUsers',
+					followingWithSneakers
+				);
 
-    const clearUserData = () => {
-        setUser(null);
-        setUserSneakers(null);
-        setWishlistSneakers(null);
-        setFollowingUsers(null);
-        setResetTokens(null);
+				return followingWithSneakers;
+			})
+			.catch((error) => {
+				console.error('Error loading following users:', error);
+				setFollowingUsers([]);
+				storageProvider.setItem('followingUsers', []);
+				return [];
+			});
+	};
 
-        storageProvider.clearSessionData();
-    };
+	const initializeUserData = async (userId: string) => {
+		const maxRetries = 3;
+		const retryDelay = 1000;
 
-    const handleAppStateChange = async () => {
-        if (appState === 'background') {
-            await storageProvider.saveAppState({
-                user,
-                sneakers: userSneakers,
-                followingUsers: followingUsers
-            });
-        }
-    };
+		const getUserWithRetries = async (attempt: number): Promise<any> => {
+			return AuthInterface.getCurrentUser(authProvider.getCurrentUser)
+				.then((userData: any) => {
+					if (userData) {
+						const userWithUrl = {
+							...userData,
+							profile_picture_url: userData.profile_picture,
+						};
+						setUser(userWithUrl as User);
+						storageProvider.setUserData(userWithUrl as User);
 
-    return (
-        <AuthContext.Provider
-            value={{
-                isLoading,
-                user,
-                setUser,
-                userSneakers,
-                setUserSneakers,
-                refreshUserData,
-                refreshUserSneakers,
-                clearUserData,
-                wishlistSneakers,
-                resetTokens,
-                followingUsers,
-                setFollowingUsers,
-                refreshFollowingUsers
-            }}>
+						return Promise.all([
+							loadUserSneakers(userWithUrl),
+							loadFollowingUsers(userWithUrl.id),
+						]);
+					} else if (attempt < maxRetries) {
+						return new Promise((resolve) => {
+							setTimeout(() => {
+								resolve(getUserWithRetries(attempt + 1));
+							}, retryDelay);
+						});
+					} else {
+						throw new Error(
+							'User not found after multiple attempts'
+						);
+					}
+				})
+				.catch((error: any) => {
+					if (attempt < maxRetries && error.code === 'PGRST116') {
+						return new Promise((resolve) => {
+							setTimeout(() => {
+								resolve(getUserWithRetries(attempt + 1));
+							}, retryDelay);
+						});
+					} else {
+						throw error;
+					}
+				});
+		};
+
+		getUserWithRetries(0).catch((error) => {
+			console.error('Error initializing user data:', error);
+			clearUserData();
+		});
+	};
+
+	const refreshUserData = async () => {
+		const {
+			data: { session },
+			error: sessionError,
+		} = await supabase.auth.getSession();
+
+		if (sessionError) {
+			console.error(
+				'❌ refreshUserData: Error getting session:',
+				sessionError
+			);
+			return;
+		}
+
+		if (!session?.user) {
+			console.log(
+				'ℹ️ refreshUserData: No valid session found, skipping data refresh'
+			);
+			return;
+		}
+
+		return AuthInterface.getCurrentUser(authProvider.getCurrentUser)
+			.then(async (freshUserData: any) => {
+				if (!freshUserData) {
+					return;
+				}
+
+				const userWithUrl = {
+					...freshUserData,
+					profile_picture_url: freshUserData.profile_picture,
+				};
+
+				await loadUserSneakers(userWithUrl);
+				await loadFollowingUsers(userWithUrl.id);
+			})
+			.catch((error) => {
+				console.error(
+					'❌ refreshUserData: Error refreshing user data:',
+					error
+				);
+				setUserSneakers([]);
+				setWishlistSneakers([]);
+				storageProvider.setSneakersData([]);
+				storageProvider.setItem('wishlistSneakers', []);
+			});
+	};
+
+	const refreshUserSneakers = async () => {
+		if (!user?.id) {
+			setUserSneakers([]);
+			setWishlistSneakers([]);
+			storageProvider.setSneakersData([]);
+			storageProvider.setItem('wishlistSneakers', []);
+			return;
+		}
+
+		const sneakersPromise = SneakerProviderInterface.getSneakersByUser(
+			user.id,
+			sneakerProvider.getSneakersByUser
+		);
+		const wishlistPromise =
+			WishlistProviderInterface.getUserWishlistSneakers(
+				user.id,
+				wishlistProvider.getUserWishlistSneakers
+			);
+
+		return Promise.all([sneakersPromise, wishlistPromise])
+			.then(([sneakers, wishlistSneakers]) => {
+				const userSneakers = sneakers || [];
+				const userWishlistSneakers = wishlistSneakers || [];
+
+				setUserSneakers(userSneakers);
+				setWishlistSneakers(userWishlistSneakers);
+
+				storageProvider.setSneakersData(userSneakers);
+				storageProvider.setItem(
+					'wishlistSneakers',
+					userWishlistSneakers
+				);
+			})
+			.catch((error) => {
+				console.error('Error refreshing sneakers:', error);
+				setUserSneakers([]);
+				setWishlistSneakers([]);
+				storageProvider.setSneakersData([]);
+				storageProvider.setItem('wishlistSneakers', []);
+			});
+	};
+
+	const refreshFollowingUsers = async () => {
+		if (!user?.id) {
+			setFollowingUsers([]);
+			storageProvider.setItem('followingUsers', []);
+			return;
+		}
+
+		await loadFollowingUsers(user.id);
+	};
+
+	const clearUserData = () => {
+		setUser(null);
+		setUserSneakers(null);
+		setWishlistSneakers(null);
+		setFollowingUsers(null);
+		setResetTokens(null);
+
+		storageProvider.clearSessionData();
+	};
+
+	const handleAppStateChange = async () => {
+		if (appState === 'background') {
+			await storageProvider.saveAppState({
+				user,
+				sneakers: userSneakers,
+				followingUsers: followingUsers,
+			});
+		}
+	};
+
+	return (
+		<AuthContext.Provider
+			value={{
+				isLoading,
+				user,
+				setUser,
+				userSneakers,
+				setUserSneakers,
+				refreshUserData,
+				refreshUserSneakers,
+				clearUserData,
+				wishlistSneakers,
+				resetTokens,
+				followingUsers,
+				setFollowingUsers,
+				refreshFollowingUsers,
+			}}
+		>
 			{children}
 		</AuthContext.Provider>
 	);

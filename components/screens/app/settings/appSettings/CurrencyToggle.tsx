@@ -2,23 +2,26 @@ import Toggle from '@/components/ui/buttons/Toggle';
 import { Currency } from '@/store/useCurrencyStore';
 
 interface CurrencyToggleProps {
-    onToggle: (newCurrency: Currency) => void;
-    currentCurrency: Currency;
+	onToggle: (newCurrency: Currency) => void;
+	currentCurrency: Currency;
 }
 
-export default function CurrencyToggle({ onToggle, currentCurrency }: CurrencyToggleProps) {
-    const handleToggle = (newValue: string) => {
-        onToggle(newValue as Currency);
-    };
+export default function CurrencyToggle({
+	onToggle,
+	currentCurrency,
+}: CurrencyToggleProps) {
+	const handleToggle = (newValue: string) => {
+		onToggle(newValue as Currency);
+	};
 
-    return (
-        <Toggle
-            leftValue="USD"
-            rightValue="EUR"
-            currentValue={currentCurrency}
-            onToggle={handleToggle}
-            testID="currency-toggle"
-            px={3}
-        />
-    );
-} 
+	return (
+		<Toggle
+			leftValue="USD"
+			rightValue="EUR"
+			currentValue={currentCurrency}
+			onToggle={handleToggle}
+			testID="currency-toggle"
+			px={3}
+		/>
+	);
+}

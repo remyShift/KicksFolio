@@ -1,4 +1,5 @@
-import { renderHook, act } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
+
 import { useSneakerFilterStore } from '@/store/useSneakerFilterStore';
 import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
 

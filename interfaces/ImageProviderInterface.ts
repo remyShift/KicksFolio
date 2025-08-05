@@ -1,9 +1,9 @@
 import {
-	UploadResult,
+	ImageInfo,
 	ImageUploadOptions,
 	ImageValidationResult,
-	ImageInfo,
 	SneakerPhoto,
+	UploadResult,
 } from '@/types/image';
 
 export interface ImageProviderInterface {

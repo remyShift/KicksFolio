@@ -1,7 +1,8 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
+
 import { sneakerFilteringProvider } from '@/domain/SneakerFiltering';
-import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
 import { FilterState } from '@/types/filter';
+import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
 
 describe('SneakerFiltering', () => {
 	const mockSneakers: Sneaker[] = [

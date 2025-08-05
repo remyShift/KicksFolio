@@ -1,7 +1,7 @@
 import { supabase } from '@/config/supabase/supabase';
-import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
-import { SneakerPhoto } from '@/types/image';
 import { WishlistProviderInterface } from '@/interfaces/WishlistProviderInterface';
+import { SneakerPhoto } from '@/types/image';
+import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
 
 export interface WishlistItem {
 	id: string;
@@ -21,7 +21,12 @@ export class WishlistProvider implements WishlistProviderInterface {
 
 		const { data, error } = await supabase
 			.from('wishlists')
-			.insert([{ user_id: user.id, sneaker_id: sneakerId }])
+			.insert([
+				{
+					user_id: user.id,
+					sneaker_id: sneakerId,
+				},
+			])
 			.select()
 			.single();
 
@@ -126,7 +131,10 @@ export class WishlistProvider implements WishlistProviderInterface {
 			if (!sneaker?.id || !owner?.id) {
 				console.warn(
 					'🔍 WishlistService: Missing sneaker or owner data:',
-					{ sneaker: !!sneaker?.id, owner: !!owner?.id }
+					{
+						sneaker: !!sneaker?.id,
+						owner: !!owner?.id,
+					}
 				);
 				return null;
 			}

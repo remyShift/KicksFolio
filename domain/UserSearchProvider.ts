@@ -85,11 +85,17 @@ export class UserSearchProvider implements UserSearchInterface {
 				return Promise.all([
 					supabase
 						.from('followers')
-						.select('*', { count: 'exact', head: true })
+						.select('*', {
+							count: 'exact',
+							head: true,
+						})
 						.eq('following_id', user.id),
 					supabase
 						.from('followers')
-						.select('*', { count: 'exact', head: true })
+						.select('*', {
+							count: 'exact',
+							head: true,
+						})
 						.eq('follower_id', user.id),
 					supabase
 						.from('followers')
@@ -167,11 +173,17 @@ export class UserSearchProvider implements UserSearchInterface {
 				await Promise.all([
 					supabase
 						.from('followers')
-						.select('*', { count: 'exact', head: true })
+						.select('*', {
+							count: 'exact',
+							head: true,
+						})
 						.eq('following_id', userId),
 					supabase
 						.from('followers')
-						.select('*', { count: 'exact', head: true })
+						.select('*', {
+							count: 'exact',
+							head: true,
+						})
 						.eq('follower_id', userId),
 					supabase
 						.from('followers')
@@ -209,7 +221,9 @@ export class UserSearchProvider implements UserSearchInterface {
 				.from('sneakers')
 				.select('*')
 				.eq('user_id', userId)
-				.order('created_at', { ascending: false });
+				.order('created_at', {
+					ascending: false,
+				});
 
 			if (error) {
 				console.error(
@@ -267,10 +281,16 @@ export class UserSearchProvider implements UserSearchInterface {
 						};
 					} catch (error) {
 						console.warn('Error parsing image JSON:', error);
-						return { id: '', uri: img };
+						return {
+							id: '',
+							uri: img,
+						};
 					}
 				}
-				return { id: img.id || '', uri: img.uri || img.url || '' };
+				return {
+					id: img.id || '',
+					uri: img.uri || img.url || '',
+				};
 			});
 		}
 
@@ -291,7 +311,12 @@ export class UserSearchProvider implements UserSearchInterface {
 				];
 			} catch (error) {
 				console.warn('Error parsing images JSON string:', error);
-				return [{ id: '', uri: images }];
+				return [
+					{
+						id: '',
+						uri: images,
+					},
+				];
 			}
 		}
 

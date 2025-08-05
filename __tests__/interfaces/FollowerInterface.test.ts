@@ -1,7 +1,8 @@
-import { describe, it, expect, vi } from 'vitest';
-import { FollowerInterface } from '@/interfaces/FollowerInterface';
+import { describe, expect, it, vi } from 'vitest';
+
 import { FollowingUser } from '@/domain/FollowerProvider';
 import { SearchUser } from '@/domain/UserSearchProvider';
+import { FollowerInterface } from '@/interfaces/FollowerInterface';
 
 describe('FollowerInterface', () => {
 	describe('followUser', () => {
@@ -250,7 +251,10 @@ describe('FollowerInterface', () => {
 
 	describe('getFollowCounts', () => {
 		it('should return follow counts', async () => {
-			const mockCounts = { followers: 10, following: 5 };
+			const mockCounts = {
+				followers: 10,
+				following: 5,
+			};
 			const mockGetFollowCountsFunction = vi
 				.fn()
 				.mockResolvedValue(mockCounts);

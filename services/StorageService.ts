@@ -1,7 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { User } from '@/types/user';
-import { Sneaker } from '@/types/sneaker';
+
 import { FollowingUserWithSneakers } from '@/types/auth';
+import { Sneaker } from '@/types/sneaker';
+import { User } from '@/types/user';
 
 interface AppState {
 	user: User | null;

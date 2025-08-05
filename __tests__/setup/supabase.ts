@@ -15,20 +15,33 @@ jest.mock('@/config/supabase/supabase.config', () => ({
 
 const createSupabaseMock = () => ({
 	auth: {
-		signUp: jest.fn().mockResolvedValue({ data: null, error: null }),
-		signInWithPassword: jest
-			.fn()
-			.mockResolvedValue({ data: null, error: null }),
+		signUp: jest.fn().mockResolvedValue({
+			data: null,
+			error: null,
+		}),
+		signInWithPassword: jest.fn().mockResolvedValue({
+			data: null,
+			error: null,
+		}),
 		signOut: jest.fn().mockResolvedValue({ error: null }),
-		resetPasswordForEmail: jest
-			.fn()
-			.mockResolvedValue({ data: null, error: null }),
-		updateUser: jest.fn().mockResolvedValue({ data: null, error: null }),
-		getSession: jest
-			.fn()
-			.mockResolvedValue({ data: { session: null }, error: null }),
+		resetPasswordForEmail: jest.fn().mockResolvedValue({
+			data: null,
+			error: null,
+		}),
+		updateUser: jest.fn().mockResolvedValue({
+			data: null,
+			error: null,
+		}),
+		getSession: jest.fn().mockResolvedValue({
+			data: { session: null },
+			error: null,
+		}),
 		onAuthStateChange: jest.fn().mockReturnValue({
-			data: { subscription: { unsubscribe: jest.fn() } },
+			data: {
+				subscription: {
+					unsubscribe: jest.fn(),
+				},
+			},
 		}),
 	},
 	from: jest.fn().mockReturnValue({
@@ -39,16 +52,21 @@ const createSupabaseMock = () => ({
 		eq: jest.fn().mockReturnThis(),
 		order: jest.fn().mockReturnThis(),
 		limit: jest.fn().mockReturnThis(),
-		single: jest.fn().mockResolvedValue({ data: null, error: null }),
+		single: jest.fn().mockResolvedValue({
+			data: null,
+			error: null,
+		}),
 	}),
 	storage: {
 		from: jest.fn().mockReturnValue({
 			upload: jest.fn(),
 			download: jest.fn(),
 			remove: jest.fn(),
-			getPublicUrl: jest
-				.fn()
-				.mockReturnValue({ data: { publicUrl: 'mocked-url' } }),
+			getPublicUrl: jest.fn().mockReturnValue({
+				data: {
+					publicUrl: 'mocked-url',
+				},
+			}),
 		}),
 	},
 });

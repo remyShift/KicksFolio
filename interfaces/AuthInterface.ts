@@ -1,4 +1,5 @@
 import { Session, User, WeakPassword } from '@supabase/supabase-js';
+
 import { SupabaseUser } from '../domain/AuthProvider';
 
 export interface AuthProviderInterface {
@@ -11,12 +12,19 @@ export interface AuthProviderInterface {
 	signIn: (
 		email: string,
 		password: string
-	) => Promise<{ user: User; session: Session; weakPassword?: WeakPassword }>;
+	) => Promise<{
+		user: User;
+		session: Session;
+		weakPassword?: WeakPassword;
+	}>;
 
 	signOut: () => Promise<void>;
 
 	getCurrentUser: () => Promise<
-		SupabaseUser & { followers_count: number; following_count: number }
+		SupabaseUser & {
+			followers_count: number;
+			following_count: number;
+		}
 	>;
 
 	updateProfile: (

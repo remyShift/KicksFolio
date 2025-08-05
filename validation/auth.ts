@@ -1,7 +1,9 @@
-import { z } from 'zod';
 import { t } from 'i18next';
-import { validateSneakerSize } from './utils';
+import { z } from 'zod';
+
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';
+
+import { validateSneakerSize } from './utils';
 
 export const createSignUpStep1Schema = () => {
 	return z

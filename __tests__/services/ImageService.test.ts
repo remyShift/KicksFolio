@@ -1,6 +1,8 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { ImageService } from '@/services/ImageService';
 import { Alert } from 'react-native';
+
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { ImageService } from '@/services/ImageService';
 
 const mockImagePicker = {
 	openPicker: vi.fn(),
@@ -102,8 +104,12 @@ describe('ImageService', () => {
 	describe('pickMultipleSneakerImages', () => {
 		it('should pick multiple images with default max', async () => {
 			const mockImages = [
-				{ path: 'file://path/to/image1.jpg' },
-				{ path: 'file://path/to/image2.jpg' },
+				{
+					path: 'file://path/to/image1.jpg',
+				},
+				{
+					path: 'file://path/to/image2.jpg',
+				},
 			];
 			mockImagePicker.openPicker.mockResolvedValue(mockImages);
 
@@ -125,7 +131,11 @@ describe('ImageService', () => {
 		});
 
 		it('should respect custom max images limit', async () => {
-			const mockImages = [{ path: 'file://path/to/image1.jpg' }];
+			const mockImages = [
+				{
+					path: 'file://path/to/image1.jpg',
+				},
+			];
 			mockImagePicker.openPicker.mockResolvedValue(mockImages);
 
 			const result = await imageService.pickMultipleSneakerImages(2);
@@ -139,7 +149,11 @@ describe('ImageService', () => {
 		});
 
 		it('should enforce minimum of 1 image', async () => {
-			const mockImages = [{ path: 'file://path/to/image1.jpg' }];
+			const mockImages = [
+				{
+					path: 'file://path/to/image1.jpg',
+				},
+			];
 			mockImagePicker.openPicker.mockResolvedValue(mockImages);
 
 			await imageService.pickMultipleSneakerImages(0);
@@ -153,9 +167,15 @@ describe('ImageService', () => {
 
 		it('should enforce maximum of 3 images', async () => {
 			const mockImages = [
-				{ path: 'file://path/to/image1.jpg' },
-				{ path: 'file://path/to/image2.jpg' },
-				{ path: 'file://path/to/image3.jpg' },
+				{
+					path: 'file://path/to/image1.jpg',
+				},
+				{
+					path: 'file://path/to/image2.jpg',
+				},
+				{
+					path: 'file://path/to/image3.jpg',
+				},
 			];
 			mockImagePicker.openPicker.mockResolvedValue(mockImages);
 

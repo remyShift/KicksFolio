@@ -1,8 +1,9 @@
-import './setup/base';
-
-import { ReactTestInstance } from 'react-test-renderer';
-import { fireEvent } from '@testing-library/react-native';
 import { act } from 'react';
+import { ReactTestInstance } from 'react-test-renderer';
+
+import { fireEvent } from '@testing-library/react-native';
+
+import './setup/base';
 
 export const fillAndBlurInput = async (
 	input: ReactTestInstance,

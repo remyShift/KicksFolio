@@ -1,15 +1,18 @@
+import { useEffect, useMemo, useState } from 'react';
 import {
-	useForm,
+	DefaultValues,
 	FieldValues,
 	Path,
+	useForm,
 	UseFormProps,
-	DefaultValues,
 } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useState, useEffect, useMemo } from 'react';
-import { useAuth } from '../useAuth';
-import { useSession } from '@/context/authContext';
 import { useTranslation } from 'react-i18next';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+
+import { useSession } from '@/context/authContext';
+
+import { useAuth } from '../useAuth';
 
 interface FormControllerOptions<T extends FieldValues>
 	extends Omit<UseFormProps<T>, 'defaultValues'> {
@@ -82,14 +85,20 @@ export function useFormController<T extends FieldValues>({
 	const validateFieldAsync = async (fieldName: keyof T, value: any) => {
 		const errorMsg = await asyncValidation![fieldName]!(value);
 		if (errorMsg) {
-			setAsyncErrors((prev) => ({ ...prev, [fieldName]: errorMsg }));
+			setAsyncErrors((prev) => ({
+				...prev,
+				[fieldName]: errorMsg,
+			}));
 			setError(fieldName as Path<T>, {
 				type: 'manual',
 				message: errorMsg,
 			});
 			return false;
 		} else {
-			setAsyncErrors((prev) => ({ ...prev, [fieldName]: undefined }));
+			setAsyncErrors((prev) => ({
+				...prev,
+				[fieldName]: undefined,
+			}));
 			clearErrors(fieldName as Path<T>);
 			return true;
 		}
@@ -136,7 +145,10 @@ export function useFormController<T extends FieldValues>({
 
 	const handleFieldFocus = (fieldName: keyof T) => {
 		clearErrors(fieldName as Path<T>);
-		setAsyncErrors((prev) => ({ ...prev, [fieldName]: undefined }));
+		setAsyncErrors((prev) => ({
+			...prev,
+			[fieldName]: undefined,
+		}));
 		if (enableClearError && clearError) {
 			clearError();
 		}
@@ -150,7 +162,10 @@ export function useFormController<T extends FieldValues>({
 						fieldName as keyof T,
 						data[fieldName as keyof T]
 					);
-					return { fieldName, isValid };
+					return {
+						fieldName,
+						isValid,
+					};
 				}
 			);
 
@@ -271,12 +286,16 @@ export function useFormController<T extends FieldValues>({
 
 	const isSubmitDisabled = isEditForm
 		? isSubmitting ||
-		  Object.keys(asyncErrors).some((key) => asyncErrors[key as keyof T]) ||
-		  !hasChanges
+			Object.keys(asyncErrors).some(
+				(key) => asyncErrors[key as keyof T]
+			) ||
+			!hasChanges
 		: !isValid ||
-		  isSubmitting ||
-		  Object.keys(asyncErrors).some((key) => asyncErrors[key as keyof T]) ||
-		  Object.keys(errors).length > 0;
+			isSubmitting ||
+			Object.keys(asyncErrors).some(
+				(key) => asyncErrors[key as keyof T]
+			) ||
+			Object.keys(errors).length > 0;
 
 	return {
 		...form,

@@ -1,8 +1,11 @@
-import { vi } from 'vitest';
-import { renderHook } from '@testing-library/react';
 import { act } from 'react';
-import { useFormController } from '@/hooks/form/useFormController';
+
+import { renderHook } from '@testing-library/react';
+import { vi } from 'vitest';
 import { z } from 'zod';
+
+import { useFormController } from '@/hooks/form/useFormController';
+
 const mockUseAuth = {
 	login: vi.fn(),
 	signUp: vi.fn(),
@@ -59,7 +62,9 @@ describe('useFormController', () => {
 			);
 
 			await act(async () => {
-				mockAsyncValidation.username.mockResolvedValueOnce('Username already exists');
+				mockAsyncValidation.username.mockResolvedValueOnce(
+					'Username already exists'
+				);
 				await result.current.validateFieldAsync('username', 'testuser');
 			});
 
@@ -121,7 +126,9 @@ describe('useFormController', () => {
 			});
 
 			expect(result.current.hasFieldError('username')).toBe(true);
-			expect(result.current.getFieldError('username')).toBe('Username must be at least 2 characters');
+			expect(result.current.getFieldError('username')).toBe(
+				'Username must be at least 2 characters'
+			);
 		});
 
 		it('should call async validation when field has value and async validation is defined', async () => {
@@ -135,10 +142,15 @@ describe('useFormController', () => {
 
 			await act(async () => {
 				result.current.setValue('username', 'validuser');
-				await result.current.validateFieldOnBlur('username', 'validuser');
+				await result.current.validateFieldOnBlur(
+					'username',
+					'validuser'
+				);
 			});
 
-			expect(mockAsyncValidation.username).toHaveBeenCalledWith('validuser');
+			expect(mockAsyncValidation.username).toHaveBeenCalledWith(
+				'validuser'
+			);
 		});
 
 		it('should not call async validation when field is empty', async () => {
@@ -185,12 +197,16 @@ describe('useFormController', () => {
 			);
 
 			await act(async () => {
-				mockAsyncValidation.username.mockResolvedValueOnce('Username already exists');
+				mockAsyncValidation.username.mockResolvedValueOnce(
+					'Username already exists'
+				);
 				await result.current.validateFieldAsync('username', 'testuser');
 			});
 
 			expect(result.current.hasFieldError('username')).toBe(true);
-			expect(result.current.getFieldError('username')).toBe('Username already exists');
+			expect(result.current.getFieldError('username')).toBe(
+				'Username already exists'
+			);
 		});
 
 		it('should clear async error when async validation succeeds', async () => {
@@ -203,7 +219,9 @@ describe('useFormController', () => {
 			);
 
 			await act(async () => {
-				mockAsyncValidation.username.mockResolvedValueOnce('Username already exists');
+				mockAsyncValidation.username.mockResolvedValueOnce(
+					'Username already exists'
+				);
 				await result.current.validateFieldAsync('username', 'testuser');
 			});
 
@@ -236,7 +254,9 @@ describe('useFormController', () => {
 			});
 
 			expect(result.current.hasMultipleErrors).toBe(true);
-			expect(result.current.displayedError).toBe('Please correct the errors in the form.');
+			expect(result.current.displayedError).toBe(
+				'Please correct the errors in the form.'
+			);
 		});
 
 		it('should display specific error when only one field has error', async () => {
@@ -254,7 +274,9 @@ describe('useFormController', () => {
 			});
 
 			expect(result.current.hasMultipleErrors).toBe(false);
-			expect(result.current.displayedError).toBe('Username must be at least 2 characters');
+			expect(result.current.displayedError).toBe(
+				'Username must be at least 2 characters'
+			);
 		});
 
 		it('should display auth error when no field errors exist', () => {
@@ -307,8 +329,12 @@ describe('useFormController', () => {
 				await result.current.handleFormSubmit();
 			});
 
-			expect(mockAsyncValidation.username).toHaveBeenCalledWith('validuser');
-			expect(mockAsyncValidation.email).toHaveBeenCalledWith('valid@email.com');
+			expect(mockAsyncValidation.username).toHaveBeenCalledWith(
+				'validuser'
+			);
+			expect(mockAsyncValidation.email).toHaveBeenCalledWith(
+				'valid@email.com'
+			);
 			expect(mockOnSubmit).toHaveBeenCalled();
 		});
 
@@ -322,7 +348,9 @@ describe('useFormController', () => {
 			);
 
 			await act(async () => {
-				mockAsyncValidation.username.mockResolvedValueOnce('Username already exists');
+				mockAsyncValidation.username.mockResolvedValueOnce(
+					'Username already exists'
+				);
 				result.current.setValue('username', 'testuser');
 				result.current.setValue('email', 'valid@email.com');
 				await result.current.handleFormSubmit();
@@ -331,4 +359,4 @@ describe('useFormController', () => {
 			expect(mockOnSubmit).not.toHaveBeenCalled();
 		});
 	});
-}); 
+});

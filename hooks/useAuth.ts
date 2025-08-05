@@ -1,13 +1,16 @@
 import { useState } from 'react';
-import { router } from 'expo-router';
-import { UserData, UpdateUserData } from '@/types/auth';
-import { useSession } from '@/context/authContext';
-import { useAuthValidation } from './useAuthValidation';
-import { ImageProviderInterface } from '@/interfaces/ImageProviderInterface';
-import { imageProvider } from '@/domain/ImageProvider';
 import { useTranslation } from 'react-i18next';
-import { AuthInterface } from '@/interfaces/AuthInterface';
+
+import { router } from 'expo-router';
+
+import { useSession } from '@/context/authContext';
 import { authProvider } from '@/domain/AuthProvider';
+import { imageProvider } from '@/domain/ImageProvider';
+import { AuthInterface } from '@/interfaces/AuthInterface';
+import { ImageProviderInterface } from '@/interfaces/ImageProviderInterface';
+import { UpdateUserData, UserData } from '@/types/auth';
+
+import { useAuthValidation } from './useAuthValidation';
 
 export const useAuth = () => {
 	const [errorMsg, setErrorMsg] = useState('');
@@ -43,7 +46,9 @@ export const useAuth = () => {
 						if (uploadResult.success && uploadResult.url) {
 							return AuthInterface.updateProfile(
 								response.user.id,
-								{ profile_picture: uploadResult.url },
+								{
+									profile_picture: uploadResult.url,
+								},
 								authProvider.updateProfile
 							).then((updatedUser) => {
 								setUser(updatedUser as any);
@@ -109,11 +114,11 @@ export const useAuth = () => {
 					resetTokens.refresh_token,
 					newPassword,
 					authProvider.resetPasswordWithTokens
-			  )
+				)
 			: AuthInterface.resetPassword(
 					newPassword,
 					authProvider.resetPassword
-			  );
+				);
 
 		return resetPasswordPromise
 			.then(() => {

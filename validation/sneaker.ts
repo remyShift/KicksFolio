@@ -1,9 +1,11 @@
-import { z } from 'zod';
 import { t } from 'i18next';
+import { z } from 'zod';
+
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';
+import { SneakerBrand, SneakerStatus } from '@/types/sneaker';
+
 import { validateSneakerSize } from './utils';
 import { sneakerBrandOptions } from './utils';
-import { SneakerBrand, SneakerStatus } from '@/types/sneaker';
 
 export const createSneakerSchema = () => {
 	const currentUnit = useSizeUnitStore.getState().currentUnit;

@@ -1,10 +1,10 @@
-import { Sneaker } from '@/types/sneaker';
 import {
+	FilterState,
 	SortOption,
 	SortOrder,
-	FilterState,
 	UniqueValues,
 } from '@/types/filter';
+import { Sneaker } from '@/types/sneaker';
 
 export interface SneakerFilterProviderInterface {
 	filterSneakers(

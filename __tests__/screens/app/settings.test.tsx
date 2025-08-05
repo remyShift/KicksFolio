@@ -1,44 +1,45 @@
-import Settings from '@/app/(app)/settings';
 import { render, screen } from '@testing-library/react-native';
 
+import Settings from '@/app/(app)/settings';
+
 describe('Settings', () => {
-    beforeEach(() => {
-        jest.clearAllMocks();
-    });
+	beforeEach(() => {
+		jest.clearAllMocks();
+	});
 
-    it('should render the settings page', () => {
-        render(<Settings />);
+	it('should render the settings page', () => {
+		render(<Settings />);
 
-        const settingsContainer = screen.getByTestId('settings-container');
-        expect(settingsContainer).toBeOnTheScreen();
-    });
+		const settingsContainer = screen.getByTestId('settings-container');
+		expect(settingsContainer).toBeOnTheScreen();
+	});
 
-    it('should render the page title', () => {
-        render(<Settings />);
+	it('should render the page title', () => {
+		render(<Settings />);
 
-        const pageTitle = screen.getByTestId('page-title');
-        expect(pageTitle).toBeTruthy();
-        expect(pageTitle.props.children).toBe('Settings');
-    });
+		const pageTitle = screen.getByTestId('page-title');
+		expect(pageTitle).toBeTruthy();
+		expect(pageTitle.props.children).toBe('Settings');
+	});
 
-    it('should render the settings content', () => {
-        render(<Settings />);
+	it('should render the settings content', () => {
+		render(<Settings />);
 
-        const settingsContent = screen.getByTestId('settings-content');
-        expect(settingsContent).toBeOnTheScreen();
-    });
+		const settingsContent = screen.getByTestId('settings-content');
+		expect(settingsContent).toBeOnTheScreen();
+	});
 
-    it('should render account settings section', () => {
-        render(<Settings />);
+	it('should render account settings section', () => {
+		render(<Settings />);
 
-        const accountSettings = screen.getByText('Account Settings');
-        expect(accountSettings).toBeOnTheScreen();
-    });
+		const accountSettings = screen.getByText('Account Settings');
+		expect(accountSettings).toBeOnTheScreen();
+	});
 
-    it('should render app settings section', () => {
-        render(<Settings />);
+	it('should render app settings section', () => {
+		render(<Settings />);
 
-        const appSettings = screen.getByText('App Settings');
-        expect(appSettings).toBeOnTheScreen();
-    });
-}); 
+		const appSettings = screen.getByText('App Settings');
+		expect(appSettings).toBeOnTheScreen();
+	});
+});

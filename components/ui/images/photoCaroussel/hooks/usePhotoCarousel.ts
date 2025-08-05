@@ -5,6 +5,7 @@ import Animated, {
 	useAnimatedScrollHandler,
 	useSharedValue,
 } from 'react-native-reanimated';
+
 import { SneakerPhoto } from '@/types/image';
 
 export const usePhotoCarousel = (photos: SneakerPhoto[]) => {
@@ -24,7 +25,10 @@ export const usePhotoCarousel = (photos: SneakerPhoto[]) => {
 
 	const scrollToIndex = (index: number) => {
 		if (flatListRef.current && index >= 0 && index < photos.length) {
-			flatListRef.current.scrollToIndex({ index, animated: true });
+			flatListRef.current.scrollToIndex({
+				index,
+				animated: true,
+			});
 			setCurrentIndex(index);
 		}
 	};

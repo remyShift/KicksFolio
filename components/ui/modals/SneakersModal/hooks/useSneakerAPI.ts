@@ -1,17 +1,20 @@
-import { Sneaker, SneakerBrand } from '@/types/sneaker';
-import { sneakerProvider } from '@/domain/SneakerProvider';
-import { SneakerInterface } from '@/interfaces/SneakerProviderInterface';
-import { SneakerFormData, createSneakerSchema } from '@/validation/sneaker';
-import { sneakerBrandOptions } from '@/validation/utils';
-import { ModalStep } from '../types';
-import { FetchedSneaker } from '@/store/useModalStore';
-import { useSession } from '@/context/authContext';
-import { ZodIssue } from 'zod';
-import { ImageProviderInterface } from '@/interfaces/ImageProviderInterface';
-import { imageProvider } from '@/domain/ImageProvider';
-import useToast from '@/hooks/ui/useToast';
 import { useTranslation } from 'react-i18next';
+
+import { ZodIssue } from 'zod';
+
+import { useSession } from '@/context/authContext';
+import { imageProvider } from '@/domain/ImageProvider';
+import { sneakerProvider } from '@/domain/SneakerProvider';
+import useToast from '@/hooks/ui/useToast';
+import { ImageProviderInterface } from '@/interfaces/ImageProviderInterface';
+import { SneakerInterface } from '@/interfaces/SneakerProviderInterface';
+import { FetchedSneaker } from '@/store/useModalStore';
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';
+import { Sneaker, SneakerBrand } from '@/types/sneaker';
+import { createSneakerSchema, SneakerFormData } from '@/validation/sneaker';
+import { sneakerBrandOptions } from '@/validation/utils';
+
+import { ModalStep } from '../types';
 
 interface Callbacks {
 	setCurrentSneaker?: (sneaker: Sneaker | null) => void;
@@ -59,14 +62,22 @@ export const useSneakerAPI = () => {
 			const parseResult = createSneakerSchema().safeParse(validationData);
 
 			if (parseResult.success) {
-				resolve({ isValid: true, errors: {} });
+				resolve({
+					isValid: true,
+					errors: {},
+				});
 			} else {
-				const errors: { [key: string]: string } = {};
+				const errors: {
+					[key: string]: string;
+				} = {};
 				parseResult.error.errors.forEach((err: ZodIssue) => {
 					const field = err.path[0];
 					errors[field] = err.message;
 				});
-				resolve({ isValid: false, errors });
+				resolve({
+					isValid: false,
+					errors,
+				});
 			}
 		});
 	};
@@ -310,7 +321,11 @@ export const useSneakerAPI = () => {
 						imageProvider.processAndUploadSneakerImages
 					);
 
-				const sneakerUpdates: Partial<Sneaker & { size?: number }> = {
+				const sneakerUpdates: Partial<
+					Sneaker & {
+						size?: number;
+					}
+				> = {
 					model: validatedData.model,
 					brand: validatedData.brand,
 					status: validatedData.status,

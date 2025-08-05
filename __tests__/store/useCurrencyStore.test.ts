@@ -1,6 +1,8 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { useCurrencyStore } from '@/store/useCurrencyStore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { useCurrencyStore } from '@/store/useCurrencyStore';
 import { useLanguageStore } from '@/store/useLanguageStore';
 
 vi.mock('@react-native-async-storage/async-storage', () => ({
@@ -118,7 +120,9 @@ describe('useCurrencyStore', () => {
 
 			mockGetItem.mockResolvedValue(null);
 			mockSetItem.mockResolvedValue();
-			mockGetState.mockReturnValue({ currentLanguage: 'fr' } as any);
+			mockGetState.mockReturnValue({
+				currentLanguage: 'fr',
+			} as any);
 
 			const { initializeCurrency } = useCurrencyStore.getState();
 			await initializeCurrency();
@@ -151,7 +155,9 @@ describe('useCurrencyStore', () => {
 				.mockImplementation(() => {});
 
 			mockGetItem.mockRejectedValue(new Error('Storage error'));
-			mockGetState.mockReturnValue({ currentLanguage: 'en' } as any);
+			mockGetState.mockReturnValue({
+				currentLanguage: 'en',
+			} as any);
 
 			const { initializeCurrency } = useCurrencyStore.getState();
 			await initializeCurrency();
@@ -176,7 +182,9 @@ describe('useCurrencyStore', () => {
 		});
 
 		it('should format EUR price correctly', async () => {
-			useCurrencyStore.setState({ currentCurrency: 'EUR' });
+			useCurrencyStore.setState({
+				currentCurrency: 'EUR',
+			});
 
 			const { formattedPrice } = useCurrencyStore.getState();
 			const result = await formattedPrice(100);

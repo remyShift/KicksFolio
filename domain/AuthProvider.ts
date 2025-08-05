@@ -116,11 +116,17 @@ export class AuthProvider implements AuthProviderInterface {
 		const [followersResult, followingResult] = await Promise.all([
 			supabase
 				.from('followers')
-				.select('*', { count: 'exact', head: true })
+				.select('*', {
+					count: 'exact',
+					head: true,
+				})
 				.eq('following_id', user.id),
 			supabase
 				.from('followers')
-				.select('*', { count: 'exact', head: true })
+				.select('*', {
+					count: 'exact',
+					head: true,
+				})
 				.eq('follower_id', user.id),
 		]);
 
@@ -147,7 +153,10 @@ export class AuthProvider implements AuthProviderInterface {
 			.single();
 
 		if (error) throw error;
-		return { ...data, profile_picture_url: data.profile_picture };
+		return {
+			...data,
+			profile_picture_url: data.profile_picture,
+		};
 	}
 
 	async forgotPassword(email: string) {

@@ -1,8 +1,11 @@
-import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useLanguageStore } from './useLanguageStore';
-import { CurrencyProviderInterface } from '@/interfaces/CurrencyProviderInterface';
+
+import { create } from 'zustand';
+
 import { currencyProvider } from '@/domain/CurrencyProvider';
+import { CurrencyProviderInterface } from '@/interfaces/CurrencyProviderInterface';
+
+import { useLanguageStore } from './useLanguageStore';
 
 export type Currency = 'USD' | 'EUR';
 
@@ -25,7 +28,9 @@ export const useCurrencyStore = create<CurrencyStore>((set, get) => ({
 	setCurrency: async (currency: Currency) => {
 		return AsyncStorage.setItem(CURRENCY_STORAGE_KEY, currency)
 			.then(() => {
-				set({ currentCurrency: currency });
+				set({
+					currentCurrency: currency,
+				});
 			})
 			.catch((error) => {
 				console.error('❌ Error saving currency:', error);

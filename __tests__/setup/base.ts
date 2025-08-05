@@ -1,15 +1,17 @@
 import { cleanup } from '@testing-library/react-native';
 import '@testing-library/react-native/extend-expect';
 
+import i18n from '@/locales/i18n';
+
+import './auth';
+import './stores';
+import './supabase';
+import './ui';
+
 afterEach(() => {
 	cleanup();
 	jest.clearAllTimers();
 });
-
-import './supabase';
-import './ui';
-import './auth';
-import './stores';
 
 jest.mock('@react-native-async-storage/async-storage', () => ({
 	__esModule: true,
@@ -44,8 +46,6 @@ jest.mock('expo-router', () => ({
 		back: jest.fn(),
 	},
 }));
-
-import i18n from '@/locales/i18n';
 
 const originalConsole = {
 	log: console.log,

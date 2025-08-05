@@ -1,5 +1,5 @@
-import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
 import { SneakerPhoto } from '@/types/image';
+import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
 
 export type ModalStep =
 	| 'index'
