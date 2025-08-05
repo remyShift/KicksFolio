@@ -23,7 +23,10 @@
 		"format:check": "prettier --check .",
 		"format:staged": "prettier --write",
 		"prepare": "husky",
-		"commit": "cz"
+		"commit": "cz",
+		"madge": "madge --circular --extensions ts,tsx,js,jsx src/",
+		"madge:warn": "madge --warning --extensions ts,tsx,js,jsx src/",
+		"madge:image": "madge --image graph.svg src/"
 	},
 	"dependencies": {
 		"@expo/config-plugins": "~10.1.1",
