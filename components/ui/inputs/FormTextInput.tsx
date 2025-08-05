@@ -1,7 +1,7 @@
 import { TextInput, View, Text } from 'react-native';
 import { Controller, Control, FieldValues, Path } from 'react-hook-form';
 import { useState, forwardRef, RefObject } from 'react';
-import { useInputSubmit } from '@/hooks/TODO/useInputSubmit';
+import { useInputSubmit } from '@/hooks/form/useInputSubmit';
 
 interface FormTextInputProps<T extends FieldValues> {
     name: Path<T>;

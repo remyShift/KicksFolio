@@ -1,7 +1,7 @@
 import { ScrollView, TextInput, View, Text, Pressable, Image } from 'react-native';
 import { useRef, useEffect } from 'react';
 import { useModalStore } from '@/store/useModalStore';
-import { useFormController } from '@/hooks/TODO/useFormController';
+import { useFormController } from '@/hooks/form/useFormController';
 import { createSneakerSchema, SneakerFormData } from '@/validation/sneaker';
 import { FormFields } from '../../shared/FormFields';
 import { useFormValidation } from '../../hooks/useFormValidation';

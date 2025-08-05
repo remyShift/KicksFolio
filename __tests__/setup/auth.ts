@@ -22,7 +22,6 @@ export const mockUseAuth = {
 	logout: jest.fn().mockResolvedValue(true),
 	deleteAccount: jest.fn().mockResolvedValue(true),
 	getUser: jest.fn().mockResolvedValue(mockUser),
-	getUserSneakers: jest.fn().mockResolvedValue(undefined),
 };
 
 export const mockAuthService = {

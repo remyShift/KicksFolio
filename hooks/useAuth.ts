@@ -11,8 +11,7 @@ import { authProvider } from '@/domain/AuthProvider';
 
 export const useAuth = () => {
 	const [errorMsg, setErrorMsg] = useState('');
-	const { setUser, refreshUserData, clearUserData, resetTokens } =
-		useSession();
+	const { setUser, clearUserData, resetTokens } = useSession();
 	const { validateSignUpStep1Async } = useAuthValidation();
 	const { t } = useTranslation();
 
@@ -295,10 +294,6 @@ export const useAuth = () => {
 			});
 	};
 
-	const getUserSneakers = async () => {
-		await refreshUserData();
-	};
-
 	const handleNextSignupPage = async (
 		signUpProps: UserData
 	): Promise<string | null> => {
@@ -324,8 +319,6 @@ export const useAuth = () => {
 		updateUser,
 		deleteAccount,
 		getUser,
-
-		getUserSneakers,
 		handleNextSignupPage,
 		errorMsg,
 	};

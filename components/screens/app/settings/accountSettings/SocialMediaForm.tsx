@@ -9,7 +9,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import AuthHeader from '@/components/screens/auth/AuthHeader';
 import { RelativePathString } from 'expo-router';
 import FormTextInput from '@/components/ui/inputs/FormTextInput';
-import { useFormController } from '@/hooks/TODO/useFormController';
+import { useFormController } from '@/hooks/form/useFormController';
 import { createSocialMediaSchema, SocialMediaFormData } from '@/validation/schemas';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 
