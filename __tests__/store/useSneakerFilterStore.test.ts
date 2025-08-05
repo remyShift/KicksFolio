@@ -1,11 +1,6 @@
 import { renderHook, act } from '@testing-library/react';
 import { useSneakerFilterStore } from '@/store/useSneakerFilterStore';
 import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
-import { vi } from 'vitest';
-
-// Removed specific mocks - using real implementation
-
-// Removed specific mocks - using real implementation
 
 describe('useSneakerFilterStore', () => {
 	const mockSneakers: Sneaker[] = [
@@ -18,9 +13,7 @@ describe('useSneakerFilterStore', () => {
 			condition: 8,
 			status: SneakerStatus.Stocking,
 			description: 'Great condition',
-			updated_at: '2024-01-01',
 			images: [],
-			created_at: '2024-01-01',
 			user_id: 'user1',
 			estimated_value: 150,
 		},
@@ -33,9 +26,7 @@ describe('useSneakerFilterStore', () => {
 			condition: 9,
 			status: SneakerStatus.Stocking,
 			description: 'Great condition',
-			updated_at: '2024-01-01',
 			images: [],
-			created_at: '2024-01-02',
 			user_id: 'user1',
 			estimated_value: 150,
 		},
@@ -194,7 +185,6 @@ describe('useSneakerFilterStore', () => {
 				result.current.setSneakers(mockSneakers);
 			});
 
-			// Verify the results are computed correctly using domain logic
 			expect(result.current.uniqueValues.brands).toContain('NIKE');
 			expect(result.current.uniqueValues.brands).toContain('ADIDAS');
 			expect(result.current.filteredAndSortedSneakers).toHaveLength(2);

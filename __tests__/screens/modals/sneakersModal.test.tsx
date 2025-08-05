@@ -62,7 +62,6 @@ describe('SneakersModal', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         
-        // Reset wishlist mock functions
         mockUseWishlist.addToWishList.mockReset();
         mockUseWishlist.removeFromWishList.mockReset();
         mockUseWishlist.checkWishlistStatus.mockReset();

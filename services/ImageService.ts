@@ -145,5 +145,4 @@ export class ImageService {
 	}
 }
 
-// Create and export an instance of ImageService
 export const imageService = new ImageService();

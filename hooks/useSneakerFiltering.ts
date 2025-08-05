@@ -28,7 +28,6 @@ export function useSneakerFiltering(sneakers: Sneaker[]) {
 
 	const filteredSneakers = useMemo(() => {
 		try {
-			// Convert Filter to FilterState for compatibility
 			const filterState = {
 				brands: filters.brand ? [filters.brand] : [],
 				sizes: filters.size ? [filters.size.toString()] : [],

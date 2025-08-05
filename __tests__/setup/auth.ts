@@ -167,16 +167,3 @@ jest.mock('@/context/authContext', () => ({
 jest.mock('@/hooks/useSizeConversion', () => ({
 	useSizeConversion: () => mockUseSizeConversion,
 }));
-
-jest.mock('@/services/TODO/FormValidationService', () => ({
-	FormValidationService: {
-		validateUsername: jest.fn(),
-		validateFirstName: jest.fn(),
-		validateLastName: jest.fn(),
-		validateSneakerSize: jest.fn(),
-		validateModel: jest.fn(),
-		validateSize: jest.fn(),
-		validateCondition: jest.fn(),
-		validatePrice: jest.fn(),
-	},
-}));

@@ -10,10 +10,6 @@ export default defineConfig({
 
 		setupFiles: ['./__tests__/vitest-setup.ts'],
 
-		// Supprimer les logs pendant les tests
-		silent: false,
-		reporters: ['default'],
-
 		include: [
 			'__tests__/interfaces/**/*.(test|spec).(js|jsx|ts|tsx)',
 			'__tests__/hooks/**/*.(test|spec).(js|jsx|ts|tsx)',

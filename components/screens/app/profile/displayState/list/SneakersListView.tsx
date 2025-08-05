@@ -20,7 +20,6 @@ export default function SneakersListView({
 }: SneakersListViewProps) {
   const { filteredAndSortedSneakers, setSneakers } = useSneakerFilterStore();
   
-  // Mettre à jour les sneakers dans le store quand les props changent
   useEffect(() => {
     setSneakers(sneakers);
   }, [sneakers, setSneakers]);

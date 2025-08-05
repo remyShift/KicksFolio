@@ -226,7 +226,6 @@ export const useSneakerAPI = () => {
 			})
 			.then((response: Sneaker) => {
 				if (response && callbacks) {
-					// Ajouter les textes alt aux images s'ils ne sont pas déjà présents
 					const sneakerWithAltText = {
 						...response,
 						images: response.images.map((img, index) => ({
@@ -339,7 +338,6 @@ export const useSneakerAPI = () => {
 			})
 			.then((response: Sneaker) => {
 				if (response && callbacks) {
-					// Ajouter les textes alt aux images s'ils ne sont pas déjà présents
 					const sneakerWithAltText = {
 						...response,
 						images: response.images.map((img, index) => ({
