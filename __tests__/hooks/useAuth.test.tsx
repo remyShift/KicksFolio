@@ -36,6 +36,15 @@ vi.mock('@/domain/ImageProvider', () => ({
 		deleteImage: vi.fn().mockResolvedValue(true),
 		deleteAllUserFiles: vi.fn().mockResolvedValue(true),
 	},
+	imageProvider: {
+		uploadProfileImage: vi.fn().mockResolvedValue({
+			success: true,
+			url: 'https://example.com/uploaded-image.jpg',
+		}),
+		extractFilePathFromUrl: vi.fn().mockReturnValue('old-file-path'),
+		deleteImage: vi.fn().mockResolvedValue(true),
+		deleteAllUserFiles: vi.fn().mockResolvedValue(true),
+	},
 }));
 
 vi.mock('@/domain/AuthProvider', () => ({
@@ -50,6 +59,18 @@ vi.mock('@/domain/AuthProvider', () => ({
 		resetPassword: vi.fn(),
 		resetPasswordWithTokens: vi.fn(),
 		cleanupOrphanedSessions: vi.fn(),
+	},
+}));
+
+vi.mock('@/interfaces/AuthInterface', () => ({
+	AuthInterface: {
+		signUp: vi.fn().mockResolvedValue({ user: { id: 'test-user-id' }, session: null }),
+		signIn: vi.fn().mockResolvedValue({ user: { id: 'test-user-id' }, session: {} }),
+		updateProfile: vi.fn().mockResolvedValue({ id: 'test-user-id' }),
+		getCurrentUser: vi.fn().mockResolvedValue({ id: 'test-user-id' }),
+		forgotPassword: vi.fn().mockResolvedValue(undefined),
+		resetPassword: vi.fn().mockResolvedValue(undefined),
+		signOut: vi.fn().mockResolvedValue(undefined),
 	},
 }));
 
@@ -68,11 +89,29 @@ const { authProvider: MockedAuthProvider } = await vi.importMock('@/domain/AuthP
 	};
 };
 
+const { AuthInterface: MockedAuthInterface } = await vi.importMock('@/interfaces/AuthInterface') as {
+	AuthInterface: {
+		signUp: ReturnType<typeof vi.fn>;
+		signIn: ReturnType<typeof vi.fn>;
+		updateProfile: ReturnType<typeof vi.fn>;
+		getCurrentUser: ReturnType<typeof vi.fn>;
+		forgotPassword: ReturnType<typeof vi.fn>;
+		resetPassword: ReturnType<typeof vi.fn>;
+		signOut: ReturnType<typeof vi.fn>;
+	};
+};
+
 describe('useAuth', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 
         Object.values(MockedAuthProvider).forEach(mock => {
+			if (vi.isMockFunction(mock)) {
+				mock.mockClear();
+			}
+		});
+
+        Object.values(MockedAuthInterface).forEach(mock => {
 			if (vi.isMockFunction(mock)) {
 				mock.mockClear();
 			}
@@ -114,21 +153,27 @@ describe('useAuth', () => {
 
 	describe('login', () => {
 		it('should login with success', async () => {
+			MockedAuthInterface.signIn.mockResolvedValueOnce({
+				user: { id: 'test-user-id', email: 'test@example.com' },
+				session: { access_token: 'mock-token' }
+			});
+
 			const { result } = renderHook(() => useAuth());
 			
 			const user = await act(async () => {
 				return result.current.login('test@example.com', 'password123');
 			});
 
-			expect(MockedAuthProvider.signIn).toHaveBeenCalledWith(
+			expect(MockedAuthInterface.signIn).toHaveBeenCalledWith(
 				'test@example.com',
-				'password123'
+				'password123',
+				MockedAuthProvider.signIn
 			);
 			expect(user).toBeDefined();
 		});
 
 		it('should handle login errors', async () => {
-			MockedAuthProvider.signIn.mockRejectedValueOnce(
+			MockedAuthInterface.signIn.mockRejectedValueOnce(
 				createMockError('Invalid credentials')
 			);
 
@@ -157,7 +202,7 @@ describe('useAuth', () => {
 		it('should sign up with success without profile picture', async () => {
 			const userDataWithoutPhoto = { ...userData, profile_picture: '' };
 			
-			MockedAuthProvider.signUp.mockResolvedValueOnce({
+			MockedAuthInterface.signUp.mockResolvedValueOnce({
 				user: { id: 'test-user-id' },
 				session: {} as any,
 			});
@@ -168,7 +213,7 @@ describe('useAuth', () => {
 				return result.current.signUp(userDataWithoutPhoto);
 			});
 
-			expect(MockedAuthProvider.signUp).toHaveBeenCalledWith(
+			expect(MockedAuthInterface.signUp).toHaveBeenCalledWith(
 				'test@example.com',
 				'password123',
 				expect.objectContaining({
@@ -176,7 +221,8 @@ describe('useAuth', () => {
 					first_name: 'Test',
 					last_name: 'User',
 					sneaker_size: 10,
-				})
+				}),
+				MockedAuthProvider.signUp
 			);
 			expect(success).toBe(true);
 		});
@@ -187,7 +233,17 @@ describe('useAuth', () => {
 				session: {} as any,
 			});
 
+			MockedAuthInterface.signUp.mockResolvedValueOnce({
+				user: { id: 'test-user-id' },
+				session: {} as any,
+			});
+
 			MockedAuthProvider.updateProfile.mockResolvedValueOnce({
+				id: 'test-user-id',
+				profile_picture: 'https://example.com/uploaded-image.jpg',
+			} as any);
+
+			MockedAuthInterface.updateProfile.mockResolvedValueOnce({
 				id: 'test-user-id',
 				profile_picture: 'https://example.com/uploaded-image.jpg',
 			} as any);
@@ -199,17 +255,17 @@ describe('useAuth', () => {
 			});
 
 					expect(success).toBe(true);
-		const { ImageProvider } = await vi.importMock('@/domain/ImageProvider') as {
-			ImageProvider: {
+		const { imageProvider } = await vi.importMock('@/domain/ImageProvider') as {
+			imageProvider: {
 				uploadProfileImage: ReturnType<typeof vi.fn>;
 			};
 		};
-		expect(ImageProvider.uploadProfileImage)
+		expect(imageProvider.uploadProfileImage)
 			.toHaveBeenCalledWith('file://local-image.jpg', 'test-user-id');
 		});
 
 		it('should handle sign up errors', async () => {
-			MockedAuthProvider.signUp.mockRejectedValueOnce(
+			MockedAuthInterface.signUp.mockRejectedValueOnce(
 				createMockError('Email already exists')
 			);
 
@@ -226,7 +282,7 @@ describe('useAuth', () => {
 
 	describe('forgotPassword', () => {
 		it('should send reset email with success', async () => {
-			MockedAuthProvider.forgotPassword.mockResolvedValueOnce(true);
+			MockedAuthInterface.forgotPassword.mockResolvedValueOnce(undefined);
 
 			const { result } = renderHook(() => useAuth());
 
@@ -234,8 +290,9 @@ describe('useAuth', () => {
 				return result.current.forgotPassword('test@example.com');
 			});
 
-			expect(MockedAuthProvider.forgotPassword).toHaveBeenCalledWith(
-				'test@example.com'
+			expect(MockedAuthInterface.forgotPassword).toHaveBeenCalledWith(
+				'test@example.com',
+				MockedAuthProvider.forgotPassword
 			);
 			expect(success).toBe(true);
 			expect(router.replace).toHaveBeenCalledWith({
@@ -245,7 +302,7 @@ describe('useAuth', () => {
 		});
 
 		it('should handle email sending errors', async () => {
-			MockedAuthProvider.forgotPassword.mockRejectedValueOnce(
+			MockedAuthInterface.forgotPassword.mockRejectedValueOnce(
 				createMockError('Email not found')
 			);
 
@@ -265,9 +322,7 @@ describe('useAuth', () => {
 
 	describe('resetPassword', () => {
 		it('should reset password with success', async () => {
-			MockedAuthProvider.resetPassword.mockResolvedValueOnce({
-				user: { id: 'test-user-id' } as any,
-			});
+			MockedAuthInterface.resetPassword.mockResolvedValueOnce(undefined);
 
 			const { result } = renderHook(() => useAuth());
 
@@ -275,8 +330,9 @@ describe('useAuth', () => {
 				return result.current.resetPassword('newpassword123', 'newpassword123');
 			});
 
-			expect(MockedAuthProvider.resetPassword).toHaveBeenCalledWith(
-				'newpassword123'
+			expect(MockedAuthInterface.resetPassword).toHaveBeenCalledWith(
+				'newpassword123',
+				MockedAuthProvider.resetPassword
 			);
 			expect(success).toBe(true);
 			expect(router.replace).toHaveBeenCalledWith({
@@ -300,8 +356,8 @@ describe('useAuth', () => {
 		});
 
 		it('should handle reset errors', async () => {
-			MockedAuthProvider.resetPassword.mockRejectedValueOnce(
-				createMockError('Password should be at least 8 characters')
+			MockedAuthInterface.resetPassword.mockRejectedValueOnce(
+				createMockError('Password must be at least 8 characters long.')
 			);
 
 			const { result } = renderHook(() => useAuth());
@@ -320,7 +376,7 @@ describe('useAuth', () => {
 
 	describe('logout', () => {
 		it('should logout with success', async () => {
-			MockedAuthProvider.signOut.mockResolvedValueOnce(true);
+			MockedAuthInterface.signOut.mockResolvedValueOnce(undefined);
 
 			const { result } = renderHook(() => useAuth());
 
@@ -328,13 +384,13 @@ describe('useAuth', () => {
 				return result.current.logout();
 			});
 
-			expect(MockedAuthProvider.signOut).toHaveBeenCalled();
+			expect(MockedAuthInterface.signOut).toHaveBeenCalledWith(MockedAuthProvider.signOut);
 			expect(success).toBe(true);
 			expect(router.replace).toHaveBeenCalledWith('/login');
 		});
 
 		it('devrait gérer les erreurs de déconnexion', async () => {
-			MockedAuthProvider.signOut.mockRejectedValueOnce(
+			MockedAuthInterface.signOut.mockRejectedValueOnce(
 				createMockError('Logout failed')
 			);
 
@@ -362,15 +418,22 @@ describe('useAuth', () => {
 				last_name: 'Name',
 			} as any);
 
+			MockedAuthInterface.updateProfile.mockResolvedValueOnce({
+				id: 'test-user-id',
+				first_name: 'Updated',
+				last_name: 'Name',
+			} as any);
+
 			const { result } = renderHook(() => useAuth());
 
 			const response = await act(async () => {
 				return result.current.updateUser('test-user-id', updateData);
 			});
 
-			expect(MockedAuthProvider.updateProfile).toHaveBeenCalledWith(
+			expect(MockedAuthInterface.updateProfile).toHaveBeenCalledWith(
 				'test-user-id',
-				updateData
+				updateData,
+				MockedAuthProvider.updateProfile
 			);
 			expect(response.user.first_name).toBe('Updated');
 			expect(router.replace).toHaveBeenCalledWith('/(app)/(tabs)/profile');
@@ -378,6 +441,10 @@ describe('useAuth', () => {
 
 		it('should handle update errors', async () => {
 			MockedAuthProvider.updateProfile.mockRejectedValueOnce(
+				createMockError('Update failed')
+			);
+
+			MockedAuthInterface.updateProfile.mockRejectedValueOnce(
 				createMockError('Update failed')
 			);
 
@@ -400,7 +467,7 @@ describe('useAuth', () => {
 			const { result } = renderHook(() => useAuth());
 
 			await act(async () => {
-				MockedAuthProvider.signIn.mockRejectedValueOnce(
+				MockedAuthInterface.signIn.mockRejectedValueOnce(
 					createMockError('Test error')
 				);
 				await result.current.login('test@example.com', 'wrongpassword');
