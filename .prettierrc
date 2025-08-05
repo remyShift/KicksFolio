@@ -11,6 +11,7 @@
 	"endOfLine": "lf",
 	"plugins": ["@trivago/prettier-plugin-sort-imports"],
 	"importOrder": [
+		"^react$",
 		"^react(.*)",
 		"^@react-native(.*)",
 		"^react-native(.*)",
