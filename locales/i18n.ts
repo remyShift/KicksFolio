@@ -53,7 +53,7 @@ i18n.use(initReactI18next).init({
 	resources,
 	lng: 'en',
 	fallbackLng: 'en',
-	debug: __DEV__ && process.env.NODE_ENV !== 'test',
+	debug: __DEV__,
 
 	interpolation: {
 		escapeValue: false,

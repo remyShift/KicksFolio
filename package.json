@@ -13,7 +13,7 @@
 		"build:android:dev": "eas build --platform android --profile development --clear-cache",
 		"test": "npm run test:jest && npm run test:vitest",
 		"test:jest": "jest --verbose",
-		"test:vitest": "vitest run",
+		"test:vitest": "NODE_ENV=test vitest run",
 		"test:interfaces": "vitest run __tests__/interfaces",
 		"test:hooks": "vitest run __tests__/hooks",
 		"test:components": "jest --verbose __tests__/screens",
