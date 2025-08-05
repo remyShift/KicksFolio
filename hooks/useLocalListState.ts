@@ -1,20 +1,27 @@
 import { useState, useMemo, useCallback } from 'react';
 import { Sneaker } from '@/types/sneaker';
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';
-import { UniqueValues } from '@/interfaces/SneakerFilterInterface';
-import { sneakerFilterProvider } from '@/domain/SneakerFiltering';
-import { Filter, SortOption } from '@/types/filter';
+import { UniqueValues } from '@/types/filter';
+import { sneakerFilteringProvider } from '@/domain/SneakerFiltering';
+import { FilterState, SortOption } from '@/types/filter';
 
 export function useLocalListState(sneakers: Sneaker[]) {
 	const [showFilters, setShowFilters] = useState(false);
 	const [sortBy, setSortBy] = useState<SortOption>('name');
 	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
-	const [filters, setFilters] = useState<Filter>({});
+	const [filters, setFilters] = useState<FilterState>({
+		brands: [],
+		sizes: [],
+		conditions: [],
+	});
 	const { currentUnit } = useSizeUnitStore();
 
 	const uniqueValues = useMemo((): UniqueValues => {
 		try {
-			return sneakerFilterProvider.getUniqueValues(sneakers, currentUnit);
+			return sneakerFilteringProvider.getUniqueValues(
+				sneakers,
+				currentUnit
+			);
 		} catch (error) {
 			console.error('❌ Error getting unique values:', error);
 			return { brands: [], sizes: [], conditions: [], statuses: [] };
@@ -23,7 +30,7 @@ export function useLocalListState(sneakers: Sneaker[]) {
 
 	const filteredSneakers = useMemo(() => {
 		try {
-			return sneakerFilterProvider.filterSneakers(
+			return sneakerFilteringProvider.filterSneakers(
 				sneakers,
 				filters,
 				currentUnit
@@ -36,7 +43,7 @@ export function useLocalListState(sneakers: Sneaker[]) {
 
 	const filteredAndSortedSneakers = useMemo(() => {
 		try {
-			return sneakerFilterProvider.sortSneakers(
+			return sneakerFilteringProvider.sortSneakers(
 				filteredSneakers,
 				sortBy,
 				sortOrder,
@@ -64,20 +71,23 @@ export function useLocalListState(sneakers: Sneaker[]) {
 		[sortBy]
 	);
 
-	const updateFilter = useCallback((key: keyof Filter, value: any) => {
-		setFilters((prev) => {
-			const newFilters = { ...prev };
-			if (value === undefined) {
-				delete newFilters[key];
-			} else {
-				newFilters[key] = value;
-			}
-			return newFilters;
-		});
-	}, []);
+	const updateFilter = useCallback(
+		(key: keyof FilterState, value: string[]) => {
+			setFilters((prev) => {
+				const newFilters = { ...prev };
+				if (value === undefined) {
+					delete newFilters[key];
+				} else {
+					newFilters[key] = value;
+				}
+				return newFilters;
+			});
+		},
+		[]
+	);
 
 	const clearFilters = useCallback(() => {
-		setFilters({});
+		setFilters({ brands: [], sizes: [], conditions: [] });
 	}, []);
 
 	return {

@@ -7,7 +7,7 @@ import {
 	Path,
 } from 'react-hook-form';
 import { useModalStore } from '@/store/useModalStore';
-import { SneakerFormData } from '@/validation/schemas';
+import { SneakerFormData } from '@/validation/sneaker';
 
 export const useFormValidation = (
 	watch: UseFormWatch<SneakerFormData>,
