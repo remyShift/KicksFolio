@@ -2,7 +2,7 @@ import { Alert } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
 
 export class ImageService {
-	static async pickSneakerImage(): Promise<string | null> {
+	async pickSneakerImage(): Promise<string | null> {
 		return ImagePicker.openPicker({
 			width: 800,
 			height: 800,
@@ -24,7 +24,7 @@ export class ImageService {
 			});
 	}
 
-	static async pickUserProfileImage(): Promise<string | null> {
+	async pickUserProfileImage(): Promise<string | null> {
 		return ImagePicker.openPicker({
 			width: 800,
 			height: 800,
@@ -47,7 +47,7 @@ export class ImageService {
 			});
 	}
 
-	static async pickMultipleSneakerImages(
+	async pickMultipleSneakerImages(
 		maxImages: number = 3
 	): Promise<string[] | null> {
 		return ImagePicker.openPicker({
@@ -70,7 +70,7 @@ export class ImageService {
 			});
 	}
 
-	static async takeSneakerPhoto(): Promise<string | null> {
+	async takeSneakerPhoto(): Promise<string | null> {
 		return ImagePicker.openCamera({
 			width: 800,
 			height: 800,
@@ -92,7 +92,7 @@ export class ImageService {
 			});
 	}
 
-	static async takeProfilePhoto(): Promise<string | null> {
+	async takeProfilePhoto(): Promise<string | null> {
 		return ImagePicker.openCamera({
 			width: 800,
 			height: 800,
@@ -115,7 +115,7 @@ export class ImageService {
 			});
 	}
 
-	static async pickImageWithoutCrop(): Promise<string | null> {
+	async pickImageWithoutCrop(): Promise<string | null> {
 		return ImagePicker.openPicker({
 			mediaType: 'photo',
 			includeBase64: false,
@@ -134,7 +134,7 @@ export class ImageService {
 			});
 	}
 
-	static async cleanupTempImages(): Promise<void> {
+	async cleanupTempImages(): Promise<void> {
 		return ImagePicker.clean()
 			.then(() => {
 				console.log('Temp images cleaned');
@@ -145,4 +145,5 @@ export class ImageService {
 	}
 }
 
+// Create and export an instance of ImageService
 export const imageService = new ImageService();

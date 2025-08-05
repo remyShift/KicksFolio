@@ -1,7 +1,8 @@
 import { Alert } from 'react-native';
-import { Photo } from '@/types/sneaker';
-import { ImageService } from '@/services/ImageService';
-import ImageProvider from '@/domain/ImageProvider';
+import { Photo } from '@/types/image';
+import { imageService } from '@/services/ImageService';
+import { ImageProviderInterface } from '@/interfaces/ImageProviderInterface';
+import { imageProvider } from '@/domain/ImageProvider';
 import { useSession } from '@/context/authContext';
 
 export const usePhotoEditor = (
@@ -18,7 +19,7 @@ export const usePhotoEditor = (
 		replaceIndex?: number
 	) => {
 		if (type === 'camera') {
-			const imageUri = await ImageService.takeSneakerPhoto();
+			const imageUri = await imageService.takeSneakerPhoto();
 			if (!imageUri) return;
 
 			const newPhotos = [...photos];
@@ -33,12 +34,13 @@ export const usePhotoEditor = (
 					oldPhoto.uri.includes('supabase')
 				) {
 					try {
-						await ImageProvider.deleteSpecificSneakerImage(
+						await ImageProviderInterface.deleteSpecificSneakerImage(
 							user.id,
 							sneakerId,
-							oldPhoto.id
+							oldPhoto.id,
+							imageProvider.deleteSpecificSneakerImage
 						);
-					} catch (error) {
+					} catch (error: unknown) {
 						console.error(
 							'❌ usePhotoEditor.handleImageSelection: Error deleting old image:',
 							error
@@ -67,7 +69,7 @@ export const usePhotoEditor = (
 
 			if (canAddMultiple) {
 				const availableSlots = maxImages - photos.length;
-				const imageUris = await ImageService.pickMultipleSneakerImages(
+				const imageUris = await imageService.pickMultipleSneakerImages(
 					availableSlots
 				);
 				if (!imageUris || imageUris.length === 0) return;
@@ -89,7 +91,7 @@ export const usePhotoEditor = (
 					setTimeout(() => scrollToIndex?.(firstNewIndex), 100);
 				}
 			} else {
-				const imageUri = await ImageService.pickSneakerImage();
+				const imageUri = await imageService.pickSneakerImage();
 				if (!imageUri) return;
 
 				const newPhotos = [...photos];
@@ -104,12 +106,13 @@ export const usePhotoEditor = (
 						oldPhoto.uri.includes('supabase')
 					) {
 						try {
-							await ImageProvider.deleteSpecificSneakerImage(
+							await ImageProviderInterface.deleteSpecificSneakerImage(
 								user.id,
 								sneakerId,
-								oldPhoto.id
+								oldPhoto.id,
+								imageProvider.deleteSpecificSneakerImage
 							);
-						} catch (error) {
+						} catch (error: unknown) {
 							console.error(
 								'❌ usePhotoEditor.handleImageSelection: Error deleting old image:',
 								error
@@ -147,11 +150,12 @@ export const usePhotoEditor = (
 			sneakerId &&
 			photoToRemove.uri.includes('supabase')
 		) {
-			ImageProvider.deleteSpecificSneakerImage(
+			ImageProviderInterface.deleteSpecificSneakerImage(
 				user.id,
 				sneakerId,
-				photoToRemove.id
-			).catch((error) => {
+				photoToRemove.id,
+				imageProvider.deleteSpecificSneakerImage
+			).catch((error: unknown) => {
 				console.error('Error deleting image from Supabase:', error);
 			});
 		}

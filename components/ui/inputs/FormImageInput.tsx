@@ -2,7 +2,7 @@ import { View, Pressable, Alert } from 'react-native';
 import { Image } from 'expo-image';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Controller, Control, FieldValues, Path } from 'react-hook-form';
-import { useImagePicker } from '@/hooks/TODO/useImagePicker';
+import { useImagePicker } from '@/hooks/useImagePicker';
 
 interface FormImageInputProps<T extends FieldValues> {
     name: Path<T>;

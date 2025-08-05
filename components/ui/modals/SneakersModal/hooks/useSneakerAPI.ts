@@ -11,7 +11,8 @@ import { ModalStep } from '../types';
 import { FetchedSneaker } from '@/store/useModalStore';
 import { useSession } from '@/context/authContext';
 import { ZodIssue } from 'zod';
-import { ImageProvider } from '@/domain/ImageProvider';
+import { ImageProviderInterface } from '@/interfaces/ImageProviderInterface';
+import { imageProvider } from '@/domain/ImageProvider';
 import useToast from '@/hooks/ui/useToast';
 import { useTranslation } from 'react-i18next';
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';
@@ -200,13 +201,14 @@ export const useSneakerAPI = () => {
 			})
 			.then(async (createdSneaker: Sneaker) => {
 				const processedImages =
-					await ImageProvider.processAndUploadSneakerImages(
+					await ImageProviderInterface.processAndUploadSneakerImages(
 						formData.images.map((img) => ({
 							uri: img.uri,
 							id: img.id,
 						})),
 						user.id,
-						createdSneaker.id
+						createdSneaker.id,
+						imageProvider.processAndUploadSneakerImages
 					);
 
 				if (processedImages.length > 0) {
@@ -303,13 +305,14 @@ export const useSneakerAPI = () => {
 				});
 
 				const processedImages =
-					await ImageProvider.processAndUploadSneakerImages(
+					await ImageProviderInterface.processAndUploadSneakerImages(
 						formData.images.map((img) => ({
 							uri: img.uri,
 							id: img.id,
 						})),
 						user.id,
-						sneakerId
+						sneakerId,
+						imageProvider.processAndUploadSneakerImages
 					);
 
 				const sneakerUpdates: Partial<Sneaker & { size?: number }> = {
@@ -414,7 +417,11 @@ export const useSneakerAPI = () => {
 			sneakerProvider.deleteSneaker
 		)
 			.then(async () => {
-				await ImageProvider.deleteSneakerImages(user.id, sneakerId);
+				await ImageProviderInterface.deleteSneakerImages(
+					user.id,
+					sneakerId,
+					imageProvider.deleteSneakerImages
+				);
 
 				return refreshUserSneakers();
 			})

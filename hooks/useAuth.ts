@@ -3,7 +3,8 @@ import { router } from 'expo-router';
 import { UserData, UpdateUserData } from '@/types/auth';
 import { useSession } from '@/context/authContext';
 import { useAuthValidation } from './useAuthValidation';
-import { ImageProvider } from '@/domain/ImageProvider';
+import { ImageProviderInterface } from '@/interfaces/ImageProviderInterface';
+import { imageProvider } from '@/domain/ImageProvider';
 import { useTranslation } from 'react-i18next';
 import { AuthInterface } from '@/interfaces/AuthInterface';
 import { authProvider } from '@/domain/AuthProvider';
@@ -35,10 +36,11 @@ export const useAuth = () => {
 		)
 			.then((response) => {
 				if (response.user && profilePictureUri) {
-					return ImageProvider.uploadProfileImage(
+					return ImageProviderInterface.uploadProfileImage(
 						profilePictureUri,
-						response.user.id
-					).then((uploadResult: any) => {
+						response.user.id,
+						imageProvider.uploadProfileImage
+					).then((uploadResult) => {
 						if (uploadResult.success && uploadResult.url) {
 							return AuthInterface.updateProfile(
 								response.user.id,
@@ -188,16 +190,18 @@ export const useAuth = () => {
 						.then((currentUser) => {
 							if (currentUser?.profile_picture) {
 								const oldFilePath =
-									ImageProvider.extractFilePathFromUrl(
+									ImageProviderInterface.extractFilePathFromUrl(
 										currentUser.profile_picture,
-										'profiles'
+										'profiles',
+										imageProvider.extractFilePathFromUrl
 									);
 
 								if (oldFilePath) {
-									return ImageProvider.deleteImage(
+									return ImageProviderInterface.deleteImage(
 										'profiles',
-										oldFilePath
-									).then((deleted: any) => {
+										oldFilePath,
+										imageProvider.deleteImage
+									).then((deleted) => {
 										if (!deleted) {
 											console.warn(
 												'Could not delete old profile picture'
@@ -210,9 +214,10 @@ export const useAuth = () => {
 							return Promise.resolve(true);
 						})
 						.then(() => {
-							return ImageProvider.uploadProfileImage(
+							return ImageProviderInterface.uploadProfileImage(
 								newProfileData.profile_picture!,
-								userId
+								userId,
+								imageProvider.uploadProfileImage
 							);
 						})
 						.then((uploadResult) => {
@@ -252,8 +257,11 @@ export const useAuth = () => {
 	};
 
 	const deleteAccount = async (userId: string) => {
-		return ImageProvider.deleteAllUserFiles(userId)
-			.then((filesDeleted: any) => {
+		return ImageProviderInterface.deleteAllUserFiles(
+			userId,
+			imageProvider.deleteAllUserFiles
+		)
+			.then((filesDeleted) => {
 				if (!filesDeleted) {
 					console.warn(
 						'[useAuth] Some files could not be deleted, but continuing with account deletion'
@@ -270,7 +278,7 @@ export const useAuth = () => {
 				router.replace('/login');
 				return true;
 			})
-			.catch((error: any) => {
+			.catch((error: unknown) => {
 				console.error('❌ Error deleting account:', error);
 				throw error;
 			});

@@ -1,3 +1,5 @@
+import { Photo } from './image';
+
 export enum SneakerBrand {
 	Nike = 'NIKE',
 	Adidas = 'ADIDAS',
@@ -20,12 +22,6 @@ export enum SneakerStatus {
 	Selling = 'Selling',
 	null = 'null',
 }
-
-export type Photo = {
-	id?: string;
-	uri: string;
-	alt?: string;
-};
 
 export type SneakerOwner = {
 	id: string;

@@ -1,22 +1,16 @@
 import { supabase } from '@/config/supabase/supabase';
 import * as FileSystem from 'expo-file-system';
+import {
+	UploadResult,
+	ImageUploadOptions,
+	ImageValidationResult,
+	ImageInfo,
+	Photo,
+} from '@/types/image';
+import { ImageProviderInterface } from '@/interfaces/ImageProviderInterface';
 
-interface UploadResult {
-	success: boolean;
-	url?: string;
-	fileName?: string;
-	error?: string;
-}
-
-interface ImageUploadOptions {
-	bucket: 'sneakers' | 'profiles';
-	userId: string;
-	entityId?: string;
-	quality?: number;
-}
-
-export class ImageProvider {
-	static async uploadImage(
+class ImageProvider implements ImageProviderInterface {
+	async uploadImage(
 		imageUri: string,
 		options: ImageUploadOptions
 	): Promise<UploadResult> {
@@ -80,7 +74,7 @@ export class ImageProvider {
 		}
 	}
 
-	static async uploadSneakerImages(
+	async uploadSneakerImages(
 		images: Array<{ uri: string }>,
 		userId: string,
 		sneakerId: string
@@ -96,7 +90,7 @@ export class ImageProvider {
 		return Promise.all(uploadPromises);
 	}
 
-	static async uploadProfileImage(
+	async uploadProfileImage(
 		imageUri: string,
 		userId: string
 	): Promise<UploadResult> {
@@ -106,7 +100,7 @@ export class ImageProvider {
 		});
 	}
 
-	static async deleteImage(
+	async deleteImage(
 		bucket: 'sneakers' | 'profiles',
 		filePath: string
 	): Promise<boolean> {
@@ -153,7 +147,7 @@ export class ImageProvider {
 		}
 	}
 
-	static extractFilePathFromUrl(url: string, bucket: string): string | null {
+	extractFilePathFromUrl(url: string, bucket: string): string | null {
 		if (!url || typeof url !== 'string') {
 			return null;
 		}
@@ -186,7 +180,7 @@ export class ImageProvider {
 		return null;
 	}
 
-	static async getSignedUrl(
+	async getSignedUrl(
 		bucket: 'sneakers' | 'profiles',
 		filePath: string,
 		expiresIn: number = 3600
@@ -202,18 +196,14 @@ export class ImageProvider {
 		return data.signedUrl;
 	}
 
-	static async compressImage(
+	async compressImage(
 		imageUri: string,
 		quality: number = 0.8
 	): Promise<string> {
 		return imageUri;
 	}
 
-	static async validateImageUri(imageUri: string): Promise<{
-		isValid: boolean;
-		error?: string;
-		size?: number;
-	}> {
+	async validateImageUri(imageUri: string): Promise<ImageValidationResult> {
 		const imageInfo = await FileSystem.getInfoAsync(imageUri);
 
 		if (!imageInfo.exists) {
@@ -241,12 +231,7 @@ export class ImageProvider {
 		};
 	}
 
-	static async getImageInfo(imageUri: string): Promise<{
-		exists: boolean;
-		size?: number;
-		width?: number;
-		height?: number;
-	}> {
+	async getImageInfo(imageUri: string): Promise<ImageInfo> {
 		const info = await FileSystem.getInfoAsync(imageUri);
 		const fileSize = 'size' in info ? info.size : undefined;
 
@@ -256,7 +241,7 @@ export class ImageProvider {
 		};
 	}
 
-	static async migrateImageFromUrl(
+	async migrateImageFromUrl(
 		sourceUrl: string,
 		options: ImageUploadOptions
 	): Promise<UploadResult> {
@@ -327,7 +312,7 @@ export class ImageProvider {
 		}
 	}
 
-	static async deleteUserFolder(
+	async deleteUserFolder(
 		bucket: 'sneakers' | 'profiles',
 		userId: string
 	): Promise<boolean> {
@@ -366,7 +351,7 @@ export class ImageProvider {
 			});
 	}
 
-	static async deleteAllUserFiles(userId: string): Promise<boolean> {
+	async deleteAllUserFiles(userId: string): Promise<boolean> {
 		try {
 			const sneakersResult = await this.deleteUserFolder(
 				'sneakers',
@@ -384,7 +369,7 @@ export class ImageProvider {
 		}
 	}
 
-	static async deleteSneakerImages(
+	async deleteSneakerImages(
 		userId: string,
 		sneakerId: string
 	): Promise<boolean> {
@@ -425,16 +410,16 @@ export class ImageProvider {
 			});
 	}
 
-	static async processAndUploadSneakerImages(
+	async processAndUploadSneakerImages(
 		images: Array<{ uri: string; id?: string }>,
 		userId: string,
 		sneakerId: string
-	): Promise<Array<{ id: string; uri: string }>> {
+	): Promise<Photo[]> {
 		if (!images || images.length === 0) {
 			return [];
 		}
 
-		const processedImages: Array<{ id: string; uri: string }> = [];
+		const processedImages: Photo[] = [];
 
 		for (const img of images) {
 			if (
@@ -496,7 +481,7 @@ export class ImageProvider {
 		return processedImages;
 	}
 
-	static async deleteSpecificSneakerImage(
+	async deleteSpecificSneakerImage(
 		userId: string,
 		sneakerId: string,
 		fileName: string
@@ -524,3 +509,7 @@ export class ImageProvider {
 			});
 	}
 }
+
+export { ImageProvider };
+
+export const imageProvider = new ImageProvider();
