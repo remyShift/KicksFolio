@@ -1,19 +1,6 @@
 import { supabase } from '@/config/supabase/supabase';
 import { AuthProviderInterface } from '@/interfaces/AuthInterface';
-
-export interface SupabaseUser {
-	id: string;
-	email: string;
-	username: string;
-	first_name: string;
-	last_name: string;
-	sneaker_size: number;
-	profile_picture?: string;
-	created_at: string;
-	updated_at: string;
-	instagram_username?: string;
-	social_media_visibility?: boolean;
-}
+import { SupabaseUser } from '@/types/user';
 
 export class AuthProvider implements AuthProviderInterface {
 	async signUp(

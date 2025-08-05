@@ -1,6 +1,6 @@
 import { Session, User, WeakPassword } from '@supabase/supabase-js';
 
-import { SupabaseUser } from '../domain/AuthProvider';
+import { SupabaseUser } from '@/types/user';
 
 export interface AuthProviderInterface {
 	signUp: (

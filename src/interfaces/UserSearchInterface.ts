@@ -1,4 +1,4 @@
-import { SearchUser, SearchUsersResponse } from '@/domain/UserSearchProvider';
+import { SearchUser, SearchUsersResponse } from '@/types/user';
 
 export interface UserSearchInterface {
 	searchUsers: (

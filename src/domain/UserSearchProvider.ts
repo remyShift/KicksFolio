@@ -1,26 +1,7 @@
 import { supabase } from '@/config/supabase/supabase';
 import { UserSearchInterface } from '@/interfaces/UserSearchInterface';
 import { Sneaker } from '@/types/sneaker';
-
-export interface SearchUser {
-	id: string;
-	username: string;
-	first_name: string;
-	last_name: string;
-	profile_picture: string | null;
-	is_following: boolean;
-	followers_count: number;
-	following_count: number;
-	instagram_username?: string;
-	social_media_visibility?: boolean;
-	sneakers: Sneaker[];
-}
-
-export interface SearchUsersResponse {
-	users: SearchUser[];
-	hasMore: boolean;
-	totalCount: number;
-}
+import { SearchUser, SearchUsersResponse } from '@/types/user';
 
 export class UserSearchProvider implements UserSearchInterface {
 	private static readonly PAGE_SIZE = 20;

@@ -1,4 +1,4 @@
-import { Currency } from '@/store/useCurrencyStore';
+import { Currency } from '@/types/currency';
 
 export interface CurrencyProviderInterface {
 	formatPrice(price: number, currency: Currency): string;

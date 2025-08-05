@@ -3,13 +3,6 @@ import { WishlistProviderInterface } from '@/interfaces/WishlistProviderInterfac
 import { SneakerPhoto } from '@/types/image';
 import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
 
-export interface WishlistItem {
-	id: string;
-	user_id: string;
-	sneaker_id: string;
-	created_at: string;
-}
-
 export class WishlistProvider implements WishlistProviderInterface {
 	async addToWishlist(sneakerId: string) {
 		const {

@@ -16,6 +16,14 @@ export enum SneakerBrand {
 
 export type SizeUnit = 'US' | 'EU';
 
+export type GenderType = 'men' | 'women';
+
+export interface SizeMapping {
+	usMen: number;
+	usWomen: number;
+	eu: number;
+}
+
 export enum SneakerStatus {
 	Stocking = 'Stocking',
 	Rocking = 'Rocking',

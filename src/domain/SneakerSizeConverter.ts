@@ -1,13 +1,5 @@
 import { SneakerSizeConverterInterface } from '@/interfaces/SneakerSizeConverterInterface';
-import { SizeUnit } from '@/types/sneaker';
-
-export type GenderType = 'men' | 'women';
-
-interface SizeMapping {
-	usMen: number;
-	usWomen: number;
-	eu: number;
-}
+import { GenderType, SizeMapping, SizeUnit } from '@/types/sneaker';
 
 const SIZE_MAPPINGS: SizeMapping[] = [
 	{ usMen: 3, usWomen: 4.5, eu: 35 },

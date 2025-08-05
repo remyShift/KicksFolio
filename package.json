@@ -38,6 +38,7 @@
 		"@react-navigation/bottom-tabs": "^7.0.0",
 		"@react-navigation/native": "^7.0.0",
 		"@supabase/supabase-js": "^2.50.0",
+		"@trivago/prettier-plugin-sort-imports": "^5.2.2",
 		"base64-arraybuffer": "^1.0.2",
 		"chalk": "^5.4.0",
 		"expo": "53.0.20",
@@ -93,7 +94,6 @@
 		"@testing-library/jest-native": "^5.4.3",
 		"@testing-library/react": "^16.3.0",
 		"@testing-library/react-native": "^12.4.0",
-		"@trivago/prettier-plugin-sort-imports": "^5.2.2",
 		"@types/expo": "^32.0.13",
 		"@types/jest": "^29.5.14",
 		"@types/react": "~19.0.10",
@@ -114,8 +114,10 @@
 		"react-test-renderer": "19.0.0",
 		"rimraf": "^5.0.5",
 		"typescript": "^5.3.3",
+		"typescript-eslint": "^8.39.0",
 		"vitest": "^3.2.4"
 	},
+	"type": "module",
 	"private": true,
 	"config": {
 		"commitizen": {

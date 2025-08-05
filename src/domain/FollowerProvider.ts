@@ -1,10 +1,6 @@
 import { supabase } from '@/config/supabase/supabase';
-import { SearchUser } from '@/domain/UserSearchProvider';
 import { FollowerInterface } from '@/interfaces/FollowerInterface';
-
-export interface FollowingUser extends SearchUser {
-	followed_at: string;
-}
+import { FollowingUser, SearchUser } from '@/types/user';
 
 export class FollowerProvider implements FollowerInterface {
 	async followUser(followingId: string): Promise<boolean> {

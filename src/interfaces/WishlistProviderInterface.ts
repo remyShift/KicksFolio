@@ -1,5 +1,5 @@
-import { WishlistItem } from '@/domain/WishlistProvider';
 import { Sneaker } from '@/types/sneaker';
+import { WishlistItem } from '@/types/wishlist';
 
 export interface WishlistProviderInterface {
 	addToWishlist: (sneakerId: string) => Promise<WishlistItem>;

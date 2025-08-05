@@ -4,10 +4,9 @@ import { create } from 'zustand';
 
 import { currencyProvider } from '@/domain/CurrencyProvider';
 import { CurrencyProviderInterface } from '@/interfaces/CurrencyProviderInterface';
+import { Currency } from '@/types/currency';
 
 import { useLanguageStore } from './useLanguageStore';
-
-export type Currency = 'USD' | 'EUR';
 
 interface CurrencyStore {
 	currentCurrency: Currency;

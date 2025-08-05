@@ -1,5 +1,5 @@
 import { CurrencyProviderInterface } from '@/interfaces/CurrencyProviderInterface';
-import { Currency } from '@/store/useCurrencyStore';
+import { Currency } from '@/types/currency';
 
 const EXCHANGE_RATES = {
 	USD: 1,
