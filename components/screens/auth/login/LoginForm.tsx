@@ -9,7 +9,7 @@ import { useAuth } from "@/hooks/useAuth";
 import FormTextInput from "@/components/ui/inputs/FormTextInput";
 import FormPasswordInput from "@/components/ui/inputs/FormPasswordInput";
 import { useFormController } from "@/hooks/TODO/useFormController";
-import { createLoginSchema, LoginFormData } from "@/validation/schemas";
+import { createLoginSchema, LoginFormData } from "@/validation/auth";
 import PageLink from "@/components/ui/links/LoginPageLink"; 
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import useToast from "@/hooks/ui/useToast";

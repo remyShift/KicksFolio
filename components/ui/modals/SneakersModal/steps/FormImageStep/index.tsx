@@ -2,9 +2,9 @@ import { View, Text } from 'react-native';
 import { useEffect, useMemo, useCallback } from 'react';
 import { useModalStore } from '@/store/useModalStore';
 import { useFormController } from '@/hooks/TODO/useFormController';
-import { createSneakerSchema, SneakerFormData } from '@/validation/schemas';
+import { createSneakerSchema, SneakerFormData } from '@/validation/sneaker';
 import { Controller } from 'react-hook-form';
-import { Photo } from '@/types/sneaker';
+import { SneakerPhoto } from '@/types/image';
 import { SneakerBrand, SneakerStatus } from '@/types/sneaker';
 import { useTranslation } from 'react-i18next';
 import { PhotoCarousel } from '@/components/ui/images/photoCaroussel/PhotoCarousel';
@@ -71,7 +71,7 @@ export const FormImageStep = () => {
 
     useEffect(() => {
         if (fetchedSneaker) {
-            const imageData: Photo[] = fetchedSneaker.image?.uri ? [{
+            const imageData: SneakerPhoto[] = fetchedSneaker.image?.uri ? [{
                 id: '',
                 uri: fetchedSneaker.image.uri,
                 alt: `${fetchedSneaker.model} from SKU search`
@@ -143,7 +143,7 @@ export const FormImageStep = () => {
                 
                 handleSneakerToAddUpdate({
                     ...currentData,
-                    images: (value.images || []).filter((img): img is Photo => img != null && img.uri != null)
+                    images: (value.images || []).filter((img): img is SneakerPhoto => img != null && img.uri != null)
                 });
             }
         });

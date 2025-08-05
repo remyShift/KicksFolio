@@ -5,11 +5,11 @@ import Animated, {
 	useAnimatedScrollHandler,
 	useSharedValue,
 } from 'react-native-reanimated';
-import { Photo } from '@/types/image';
+import { SneakerPhoto } from '@/types/image';
 
-export const usePhotoCarousel = (photos: Photo[]) => {
+export const usePhotoCarousel = (photos: SneakerPhoto[]) => {
 	const scrollX = useSharedValue(0);
-	const flatListRef = useRef<Animated.FlatList<Photo>>(null);
+	const flatListRef = useRef<Animated.FlatList<SneakerPhoto>>(null);
 	const screenWidth = Dimensions.get('window').width;
 	const [carouselWidth, setCarouselWidth] = useState(screenWidth);
 	const [currentIndex, setCurrentIndex] = useState(0);

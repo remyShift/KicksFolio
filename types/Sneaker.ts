@@ -1,4 +1,4 @@
-import { Photo } from './image';
+import { SneakerPhoto } from './image';
 
 export enum SneakerBrand {
 	Nike = 'NIKE',
@@ -43,7 +43,7 @@ export type Sneaker = {
 	condition: number;
 	status: SneakerStatus;
 	description: string | null;
-	images: Photo[];
+	images: SneakerPhoto[];
 	estimated_value?: number;
 	owner?: SneakerOwner;
 	wishlist_added_at?: string;

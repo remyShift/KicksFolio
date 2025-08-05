@@ -1,4 +1,5 @@
-import { Sneaker, SneakerBrand, SneakerStatus, Photo } from '@/types/sneaker';
+import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
+import { SneakerPhoto } from '@/types/image';
 
 export type ModalStep =
 	| 'index'
@@ -71,7 +72,7 @@ export interface SneakerFormData {
 		| SneakerStatus.null;
 	size: string;
 	condition: string;
-	images: Photo[];
+	images: SneakerPhoto[];
 	price_paid?: string;
 	description?: string;
 	og_box?: boolean;

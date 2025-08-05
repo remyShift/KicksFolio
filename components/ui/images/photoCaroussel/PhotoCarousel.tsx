@@ -1,17 +1,17 @@
 import { View, Text } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { AnimatedDot } from './AnimatedDot';
-import { Photo } from '@/types/image';
+import { SneakerPhoto } from '@/types/image';
 import { PhotoSlide } from './PhotoSlide';
 import { AddPhotoSlide } from './AddPhotoSlide';
 import { usePhotoCarousel } from './hooks/usePhotoCarousel';
 import { useImageManager } from '@/hooks/useImageManager';
 
 interface PhotoCarouselProps {
-  photos: Photo[];
+  photos: SneakerPhoto[];
   height?: number;
   mode?: 'view' | 'edit';
-  onPhotosChange?: (photos: Photo[]) => void;
+  onPhotosChange?: (photos: SneakerPhoto[]) => void;
   maxImages?: number;
   sneakerId?: string;
 }
@@ -62,10 +62,10 @@ export const PhotoCarousel = ({
   }
 
   const displayPhotos = mode === 'edit' && photos.length < maxImages 
-    ? [...photos, { id: 'add-photo', uri: '', alt: 'Add photo' } as Photo] 
+    ? [...photos, { id: 'add-photo', uri: '', alt: 'Add photo' } as SneakerPhoto] 
     : photos;
 
-  const renderItem = ({ item, index }: { item: Photo; index: number }) => {
+  const renderItem = ({ item, index }: { item: SneakerPhoto; index: number }) => {
     if (item.id === 'add-photo') {
       return (
         <AddPhotoSlide 
@@ -95,7 +95,7 @@ export const PhotoCarousel = ({
       onLayout={event => setCarouselWidth(event.nativeEvent.layout.width)}
       accessible
       accessibilityRole="adjustable"
-      accessibilityLabel={`Photo carousel, showing photo ${currentIndex + 1} of ${photos.length}. ${photos[currentIndex]?.alt || ''}`}
+      accessibilityLabel={`SneakerPhoto carousel, showing photo ${currentIndex + 1} of ${photos.length}. ${photos[currentIndex]?.alt || ''}`}
       accessibilityActions={[
         { name: 'increment', label: 'Next photo' },
         { name: 'decrement', label: 'Previous photo' },

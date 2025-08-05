@@ -1,5 +1,6 @@
 import { supabase } from '@/config/supabase/supabase';
-import { Sneaker, SneakerBrand, SneakerStatus, Photo } from '@/types/sneaker';
+import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
+import { SneakerPhoto } from '@/types/image';
 import { WishlistProviderInterface } from '@/interfaces/WishlistProviderInterface';
 
 export interface WishlistItem {
@@ -169,7 +170,7 @@ export class WishlistProvider implements WishlistProviderInterface {
 		}
 	}
 
-	private static parseImages(images: unknown): Photo[] {
+	private static parseImages(images: unknown): SneakerPhoto[] {
 		if (!images) return [];
 
 		if (

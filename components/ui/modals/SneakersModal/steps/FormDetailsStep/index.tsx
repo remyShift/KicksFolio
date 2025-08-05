@@ -2,10 +2,11 @@ import { Image, Pressable, ScrollView, TextInput, View, Text } from 'react-nativ
 import { useRef, useEffect, useState, useMemo, useCallback } from 'react';
 import { useModalStore } from '@/store/useModalStore';
 import { useFormController } from '@/hooks/TODO/useFormController';
-import { createSneakerSchema, SneakerFormData } from '@/validation/schemas';
+import { createSneakerSchema, SneakerFormData } from '@/validation/sneaker';
 import { useFormValidation } from '../../hooks/useFormValidation';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
-import { Photo, SneakerBrand, SneakerStatus, Sneaker } from '@/types/sneaker';
+import { SneakerBrand, SneakerStatus, Sneaker } from '@/types/sneaker';
+import { SneakerPhoto } from '@/types/image';
 import { useTranslation } from 'react-i18next';
 import { FormFields } from '../../shared/FormFields';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
@@ -121,7 +122,7 @@ export const FormDetailsStep = () => {
                     
                     {sneakerToAdd?.images && sneakerToAdd.images.length > 0 ? (
                         <View className="flex-row gap-2">
-                            {sneakerToAdd.images.map((image: Photo, index: number) => (
+                            {sneakerToAdd.images.map((image: SneakerPhoto, index: number) => (
                                 <Image
                                     key={index}
                                     source={{ uri: image.uri }}

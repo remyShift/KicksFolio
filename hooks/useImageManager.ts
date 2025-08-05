@@ -1,6 +1,6 @@
 import { Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { Photo } from '@/types/image';
+import { SneakerPhoto } from '@/types/image';
 import { imageService } from '@/services/ImageService';
 import { ImageProviderInterface } from '@/interfaces/ImageProviderInterface';
 import { imageProvider } from '@/domain/ImageProvider';
@@ -10,7 +10,7 @@ export type ImageSelectionType = 'camera' | 'gallery';
 export type ImagePurpose = 'profile' | 'sneaker';
 
 interface ImageManagerOptions {
-	onPhotosChange?: (photos: Photo[]) => void;
+	onPhotosChange?: (photos: SneakerPhoto[]) => void;
 	scrollToIndex?: (index: number) => void;
 	currentIndex?: number;
 	sneakerId?: string;
@@ -18,7 +18,7 @@ interface ImageManagerOptions {
 }
 
 export function useImageManager(
-	photos?: Photo[],
+	photos?: SneakerPhoto[],
 	options?: ImageManagerOptions
 ) {
 	const { user } = useSession();

@@ -5,7 +5,7 @@ import {
 	ImageUploadOptions,
 	ImageValidationResult,
 	ImageInfo,
-	Photo,
+	SneakerPhoto,
 } from '@/types/image';
 import { ImageProviderInterface } from '@/interfaces/ImageProviderInterface';
 
@@ -414,12 +414,12 @@ class ImageProvider implements ImageProviderInterface {
 		images: Array<{ uri: string; id?: string }>,
 		userId: string,
 		sneakerId: string
-	): Promise<Photo[]> {
+	): Promise<SneakerPhoto[]> {
 		if (!images || images.length === 0) {
 			return [];
 		}
 
-		const processedImages: Photo[] = [];
+		const processedImages: SneakerPhoto[] = [];
 
 		for (const img of images) {
 			if (

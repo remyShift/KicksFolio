@@ -7,7 +7,7 @@ import MainButton from '@/components/ui/buttons/MainButton';
 import { useAuth } from '@/hooks/useAuth';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import { useFormController } from '@/hooks/TODO/useFormController';
-import { createSignUpStep2Schema, SignUpStep2FormData } from '@/validation/schemas';
+import { createSignUpStep2Schema, SignUpStep2FormData } from '@/validation/auth';
 import { RelativePathString, router } from 'expo-router';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import useToast from '@/hooks/ui/useToast';

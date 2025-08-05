@@ -2,7 +2,7 @@ import { ScrollView, TextInput, View, Text, Pressable, Image } from 'react-nativ
 import { useRef, useEffect } from 'react';
 import { useModalStore } from '@/store/useModalStore';
 import { useFormController } from '@/hooks/TODO/useFormController';
-import { createSneakerSchema, SneakerFormData } from '@/validation/schemas';
+import { createSneakerSchema, SneakerFormData } from '@/validation/sneaker';
 import { FormFields } from '../../shared/FormFields';
 import { useFormValidation } from '../../hooks/useFormValidation';
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
@@ -10,7 +10,7 @@ import { SneakerBrand, SneakerStatus } from '@/types/sneaker';
 import { useSizeConversion } from '@/hooks/useSizeConversion';
 import { useTranslation } from 'react-i18next';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { Photo } from '@/types/sneaker';
+import { SneakerPhoto } from '@/types/image';
 
 export const EditFormStep = () => {
     const { t } = useTranslation();
@@ -144,7 +144,7 @@ export const EditFormStep = () => {
                     
                     {displayImages.length > 0 ? (
                         <View className="flex-row gap-2">
-                            {displayImages.map((image: Photo, index: number) => (
+                            {displayImages.map((image: SneakerPhoto, index: number) => (
                                 <Image
                                     key={index}
                                     source={{ uri: image.uri }}

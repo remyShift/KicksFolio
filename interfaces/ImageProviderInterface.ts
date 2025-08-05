@@ -3,7 +3,7 @@ import {
 	ImageUploadOptions,
 	ImageValidationResult,
 	ImageInfo,
-	Photo,
+	SneakerPhoto,
 } from '@/types/image';
 
 export interface ImageProviderInterface {
@@ -55,7 +55,7 @@ export interface ImageProviderInterface {
 		images: Array<{ uri: string; id?: string }>,
 		userId: string,
 		sneakerId: string
-	): Promise<Photo[]>;
+	): Promise<SneakerPhoto[]>;
 
 	deleteSpecificSneakerImage(
 		userId: string,
@@ -416,7 +416,7 @@ export class ImageProviderInterface {
 		userId: string,
 		sneakerId: string,
 		implementation: ImageProviderInterface['processAndUploadSneakerImages']
-	): Promise<Photo[]> {
+	): Promise<SneakerPhoto[]> {
 		console.log(
 			'🔄 ImageProviderInterface.processAndUploadSneakerImages: Processing',
 			images.length,
@@ -425,7 +425,7 @@ export class ImageProviderInterface {
 
 		return Promise.resolve()
 			.then(() => implementation(images, userId, sneakerId))
-			.then((processedImages: Photo[]) => {
+			.then((processedImages: SneakerPhoto[]) => {
 				console.log(
 					`✅ ImageProviderInterface.processAndUploadSneakerImages: ${processedImages.length} images processed successfully`
 				);

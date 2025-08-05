@@ -1,12 +1,8 @@
-import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
+import { Sneaker, SneakerBrand } from '@/types/sneaker';
 import { sneakerProvider } from '@/domain/SneakerProvider';
 import { SneakerInterface } from '@/interfaces/SneakerProviderInterface';
-
-import {
-	SneakerFormData,
-	createSneakerSchema,
-	sneakerBrandOptions,
-} from '@/validation/schemas';
+import { SneakerFormData, createSneakerSchema } from '@/validation/sneaker';
+import { sneakerBrandOptions } from '@/validation/utils';
 import { ModalStep } from '../types';
 import { FetchedSneaker } from '@/store/useModalStore';
 import { useSession } from '@/context/authContext';

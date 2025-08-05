@@ -25,7 +25,7 @@ export interface ImageInfo {
 	height?: number;
 }
 
-export type Photo = {
+export type SneakerPhoto = {
 	id?: string;
 	uri: string;
 	alt?: string;

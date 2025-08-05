@@ -1,5 +1,9 @@
 import { describe, it, expect, vi } from 'vitest';
-import { UploadResult, ImageValidationResult, Photo } from '@/types/image';
+import {
+	UploadResult,
+	ImageValidationResult,
+	SneakerPhoto,
+} from '@/types/image';
 import { ImageProviderInterface } from '@/interfaces/ImageProviderInterface';
 
 const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
@@ -275,7 +279,7 @@ describe('ImageProviderInterface', () => {
 
 	describe('processAndUploadSneakerImages', () => {
 		it('should process and upload sneaker images', async () => {
-			const mockPhotos: Photo[] = [
+			const mockPhotos: SneakerPhoto[] = [
 				{ id: '1', uri: 'https://example.com/1.jpg' },
 				{ id: '2', uri: 'https://example.com/2.jpg' },
 			];

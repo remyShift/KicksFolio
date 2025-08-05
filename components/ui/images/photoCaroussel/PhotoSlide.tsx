@@ -1,10 +1,10 @@
 import { View, Pressable, Alert } from 'react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { Photo } from '@/types/sneaker';
+import { SneakerPhoto } from '@/types/image';
 import { Image } from 'expo-image';
 
 interface PhotoSlideProps {
-  photo: Photo;
+  photo: SneakerPhoto;
   index: number;
   width: number;
   mode: 'view' | 'edit';
