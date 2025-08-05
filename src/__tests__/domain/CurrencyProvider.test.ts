@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
-import { CurrencyProvider } from '@/src/domain/CurrencyProvider';
+import { CurrencyProvider } from '@/domain/CurrencyProvider';
 
 describe('CurrencyProvider', () => {
 	let currencyProvider: CurrencyProvider;

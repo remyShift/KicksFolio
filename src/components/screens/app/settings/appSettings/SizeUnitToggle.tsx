@@ -1,5 +1,5 @@
-import Toggle from '@/src/components/ui/buttons/Toggle';
-import { SizeUnit } from '@/src/store/useSizeUnitStore';
+import Toggle from '@/components/ui/buttons/Toggle';
+import { SizeUnit } from '@/store/useSizeUnitStore';
 
 interface SizeUnitToggleProps {
 	onToggle: (newUnit: SizeUnit) => void;

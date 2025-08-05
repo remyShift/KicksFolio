@@ -7,17 +7,17 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { RelativePathString } from 'expo-router';
 
-import MainButton from '@/src/components/ui/buttons/MainButton';
-import FormTextInput from '@/src/components/ui/inputs/FormTextInput';
-import ErrorMsg from '@/src/components/ui/text/ErrorMsg';
-import { useFormController } from '@/src/hooks/form/useFormController';
-import useToast from '@/src/hooks/ui/useToast';
-import { useAuth } from '@/src/hooks/useAuth';
-import { useAuthValidation } from '@/src/hooks/useAuthValidation';
+import MainButton from '@/components/ui/buttons/MainButton';
+import FormTextInput from '@/components/ui/inputs/FormTextInput';
+import ErrorMsg from '@/components/ui/text/ErrorMsg';
+import { useFormController } from '@/hooks/form/useFormController';
+import useToast from '@/hooks/ui/useToast';
+import { useAuth } from '@/hooks/useAuth';
+import { useAuthValidation } from '@/hooks/useAuthValidation';
 import {
 	createForgotPasswordSchema,
 	ForgotPasswordFormData,
-} from '@/src/validation/auth';
+} from '@/validation/auth';
 
 import AuthHeader from '../AuthHeader';
 

@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Text, View } from 'react-native';
 
-import { SearchUser } from '@/src/domain/UserSearchProvider';
+import { SearchUser } from '@/domain/UserSearchProvider';
 
 interface UserInfoProps {
 	searchUser: SearchUser;

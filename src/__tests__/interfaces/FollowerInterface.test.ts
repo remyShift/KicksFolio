@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from 'vitest';
 
+import { FollowingUser } from '@/domain/FollowerProvider';
+import { SearchUser } from '@/domain/UserSearchProvider';
 import { FollowerInterface } from '@/interfaces/FollowerInterface';
-import { FollowingUser } from '@/src/domain/FollowerProvider';
-import { SearchUser } from '@/src/domain/UserSearchProvider';
 
 describe('FollowerInterface', () => {
 	describe('followUser', () => {

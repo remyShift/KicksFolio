@@ -1,6 +1,6 @@
 import { act, renderHook } from '@testing-library/react';
 
-import { useSneakerFilterStore } from '@/src/store/useSneakerFilterStore';
+import { useSneakerFilterStore } from '@/store/useSneakerFilterStore';
 import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
 
 describe('useSneakerFilterStore', () => {

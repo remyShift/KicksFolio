@@ -5,12 +5,12 @@ import { ScrollView, View } from 'react-native';
 
 import { router } from 'expo-router';
 
-import MainButton from '@/src/components/ui/buttons/MainButton';
-import CollectionCard from '@/src/components/ui/cards/CollectionCard';
-import FollowerTitle from '@/src/components/ui/text/FollowerTitle';
-import Title from '@/src/components/ui/text/Title';
-import { useSession } from '@/src/context/authContext';
-import { useModalStore } from '@/src/store/useModalStore';
+import MainButton from '@/components/ui/buttons/MainButton';
+import CollectionCard from '@/components/ui/cards/CollectionCard';
+import FollowerTitle from '@/components/ui/text/FollowerTitle';
+import Title from '@/components/ui/text/Title';
+import { useSession } from '@/context/authContext';
+import { useModalStore } from '@/store/useModalStore';
 
 export default function Index() {
 	const { t } = useTranslation();

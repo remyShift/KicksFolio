@@ -1,7 +1,7 @@
 import { Text, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
-import { useImageManager } from '@/src/hooks/useImageManager';
+import { useImageManager } from '@/hooks/useImageManager';
 import { SneakerPhoto } from '@/types/image';
 
 import { AddPhotoSlide } from './AddPhotoSlide';

@@ -1,7 +1,7 @@
 import { View } from 'react-native';
 
-import SearchHeader from '@/src/components/screens/app/search/SearchHeader';
-import SearchResultsList from '@/src/components/screens/app/search/SearchResultList';
+import SearchHeader from '@/components/screens/app/search/SearchHeader';
+import SearchResultsList from '@/components/screens/app/search/SearchResultList';
 
 export default function SearchScreen() {
 	return (

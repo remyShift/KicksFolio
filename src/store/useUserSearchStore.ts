@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-import { SearchUser } from '@/src/domain/UserSearchProvider';
+import { SearchUser } from '@/domain/UserSearchProvider';
 
 interface UserSearchState {
 	searchTerm: string;

@@ -6,21 +6,21 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { RelativePathString } from 'expo-router';
 
-import AuthHeader from '@/src/components/screens/auth/AuthHeader';
-import MainButton from '@/src/components/ui/buttons/MainButton';
-import FormImageInput from '@/src/components/ui/inputs/FormImageInput';
-import FormTextInput from '@/src/components/ui/inputs/FormTextInput';
-import ErrorMsg from '@/src/components/ui/text/ErrorMsg';
-import { useSession } from '@/src/context/authContext';
-import { useFormController } from '@/src/hooks/form/useFormController';
-import useToast from '@/src/hooks/ui/useToast';
-import { useAuth } from '@/src/hooks/useAuth';
-import { useSizeConversion } from '@/src/hooks/useSizeConversion';
-import { useSizeUnitStore } from '@/src/store/useSizeUnitStore';
+import AuthHeader from '@/components/screens/auth/AuthHeader';
+import MainButton from '@/components/ui/buttons/MainButton';
+import FormImageInput from '@/components/ui/inputs/FormImageInput';
+import FormTextInput from '@/components/ui/inputs/FormTextInput';
+import ErrorMsg from '@/components/ui/text/ErrorMsg';
+import { useSession } from '@/context/authContext';
+import { useFormController } from '@/hooks/form/useFormController';
+import useToast from '@/hooks/ui/useToast';
+import { useAuth } from '@/hooks/useAuth';
+import { useSizeConversion } from '@/hooks/useSizeConversion';
+import { useSizeUnitStore } from '@/store/useSizeUnitStore';
 import {
 	createEditProfileSchema,
 	EditProfileFormData,
-} from '@/src/validation/auth';
+} from '@/validation/auth';
 
 export default function EditProfileForm() {
 	const { t } = useTranslation();

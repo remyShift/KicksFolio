@@ -4,7 +4,7 @@ import { ReactTestInstance } from 'react-test-renderer';
 
 import { fireEvent, render, screen } from '@testing-library/react-native';
 
-import LoginPage from '@/src/app/(auth)/login';
+import LoginPage from '@/app/(auth)/login';
 
 import { fillAndBlurInput } from '../../setup';
 import { mockAuthService, mockUseAuth, resetMocks } from '../../setup/auth';

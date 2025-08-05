@@ -4,13 +4,13 @@ import { useTranslation } from 'react-i18next';
 
 import { router } from 'expo-router';
 
+import { useSession } from '@/context/authContext';
+import { followerProvider } from '@/domain/FollowerProvider';
+import { SearchUser } from '@/domain/UserSearchProvider';
+import { userSearchProvider } from '@/domain/UserSearchProvider';
+import useToast from '@/hooks/ui/useToast';
 import { FollowerInterface } from '@/interfaces/FollowerInterface';
 import { UserSearchInterface } from '@/interfaces/UserSearchInterface';
-import { useSession } from '@/src/context/authContext';
-import { followerProvider } from '@/src/domain/FollowerProvider';
-import { SearchUser } from '@/src/domain/UserSearchProvider';
-import { userSearchProvider } from '@/src/domain/UserSearchProvider';
-import useToast from '@/src/hooks/ui/useToast';
 import { Sneaker } from '@/types/sneaker';
 
 interface UseUserProfile {

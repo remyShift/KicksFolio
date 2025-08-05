@@ -1,4 +1,4 @@
-import Toggle from '@/src/components/ui/buttons/Toggle';
+import Toggle from '@/components/ui/buttons/Toggle';
 
 interface LanguageToggleProps {
 	onToggle: (newLanguage: 'en' | 'fr') => void;

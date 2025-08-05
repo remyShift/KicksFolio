@@ -3,8 +3,8 @@ import { act } from 'react';
 import { renderHook } from '@testing-library/react';
 import { vi } from 'vitest';
 
-import { SearchUsersResponse } from '@/src/domain/UserSearchProvider';
-import { useUserSearch } from '@/src/hooks/useUserSearch';
+import { SearchUsersResponse } from '@/domain/UserSearchProvider';
+import { useUserSearch } from '@/hooks/useUserSearch';
 
 vi.mock('@/interfaces/UserSearchInterface', () => ({
 	UserSearchInterface: {

@@ -1,7 +1,7 @@
 import { cleanup } from '@testing-library/react-native';
 import '@testing-library/react-native/extend-expect';
 
-import i18n from '@/src/locales/i18n';
+import i18n from '@/locales/i18n';
 
 import './auth';
 import './stores';

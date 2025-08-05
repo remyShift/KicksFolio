@@ -1,6 +1,6 @@
 import { RefreshControl, ScrollView, View } from 'react-native';
 
-import { SearchUser } from '@/src/domain/UserSearchProvider';
+import { SearchUser } from '@/domain/UserSearchProvider';
 import { Sneaker } from '@/types/sneaker';
 import { User } from '@/types/user';
 

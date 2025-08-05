@@ -2,17 +2,17 @@ import { useTranslation } from 'react-i18next';
 
 import { ZodIssue } from 'zod';
 
+import { useSession } from '@/context/authContext';
+import { imageProvider } from '@/domain/ImageProvider';
+import { sneakerProvider } from '@/domain/SneakerProvider';
+import useToast from '@/hooks/ui/useToast';
 import { ImageProviderInterface } from '@/interfaces/ImageProviderInterface';
 import { SneakerInterface } from '@/interfaces/SneakerProviderInterface';
-import { useSession } from '@/src/context/authContext';
-import { imageProvider } from '@/src/domain/ImageProvider';
-import { sneakerProvider } from '@/src/domain/SneakerProvider';
-import useToast from '@/src/hooks/ui/useToast';
-import { FetchedSneaker } from '@/src/store/useModalStore';
-import { useSizeUnitStore } from '@/src/store/useSizeUnitStore';
-import { createSneakerSchema, SneakerFormData } from '@/src/validation/sneaker';
-import { sneakerBrandOptions } from '@/src/validation/utils';
+import { FetchedSneaker } from '@/store/useModalStore';
+import { useSizeUnitStore } from '@/store/useSizeUnitStore';
 import { Sneaker, SneakerBrand } from '@/types/sneaker';
+import { createSneakerSchema, SneakerFormData } from '@/validation/sneaker';
+import { sneakerBrandOptions } from '@/validation/utils';
 
 import { ModalStep } from '../types';
 

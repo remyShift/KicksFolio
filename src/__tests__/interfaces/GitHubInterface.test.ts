@@ -4,7 +4,7 @@ import {
 	GitHubInterface,
 	GitHubProviderInterface,
 } from '@/interfaces/GitHubInterface';
-import { BugReportFormData } from '@/src/store/useBugReportStore';
+import { BugReportFormData } from '@/store/useBugReportStore';
 
 const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 

@@ -14,16 +14,16 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { Ionicons } from '@expo/vector-icons';
 
-import BackButton from '@/src/components/ui/buttons/BackButton';
-import MainButton from '@/src/components/ui/buttons/MainButton';
-import FormTextInput from '@/src/components/ui/inputs/FormTextInput';
-import ErrorMsg from '@/src/components/ui/text/ErrorMsg';
-import { useFormController } from '@/src/hooks/form/useFormController';
+import BackButton from '@/components/ui/buttons/BackButton';
+import MainButton from '@/components/ui/buttons/MainButton';
+import FormTextInput from '@/components/ui/inputs/FormTextInput';
+import ErrorMsg from '@/components/ui/text/ErrorMsg';
+import { useFormController } from '@/hooks/form/useFormController';
 import {
 	BugReportFormData,
 	useBugReportStore,
-} from '@/src/store/useBugReportStore';
-import { createBugReportSchema } from '@/src/validation/schemas';
+} from '@/store/useBugReportStore';
+import { createBugReportSchema } from '@/validation/schemas';
 
 import useBugReport from './hooks/useBugReport';
 

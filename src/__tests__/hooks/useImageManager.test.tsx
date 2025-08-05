@@ -3,8 +3,8 @@ import * as ImagePicker from 'expo-image-picker';
 import { renderHook } from '@testing-library/react';
 import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { useImageManager } from '@/src/hooks/useImageManager';
-import { imageService } from '@/src/services/ImageService';
+import { useImageManager } from '@/hooks/useImageManager';
+import { imageService } from '@/services/ImageService';
 
 vi.mock('expo-image-picker', () => ({
 	requestCameraPermissionsAsync: vi.fn(),

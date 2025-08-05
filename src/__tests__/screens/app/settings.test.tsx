@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react-native';
 
-import Settings from '@/src/app/(app)/settings';
+import Settings from '@/app/(app)/settings';
 
 describe('Settings', () => {
 	beforeEach(() => {

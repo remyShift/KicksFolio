@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Text, TextProps } from 'react-native';
 
-import { useSizeConversion } from '@/src/hooks/useSizeConversion';
+import { useSizeConversion } from '@/hooks/useSizeConversion';
 import { Sneaker } from '@/types/sneaker';
 
 interface SizeDisplayProps extends TextProps {

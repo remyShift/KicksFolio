@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { create } from 'zustand';
 
-import i18n from '@/src/locales/i18n';
+import i18n from '@/locales/i18n';
 import {
 	Language,
 	SupportedLanguage,

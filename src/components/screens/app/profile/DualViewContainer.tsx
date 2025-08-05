@@ -2,11 +2,11 @@ import { useMemo } from 'react';
 
 import { View } from 'react-native';
 
-import { SearchUser } from '@/src/domain/UserSearchProvider';
+import { SearchUser } from '@/domain/UserSearchProvider';
 import {
 	useViewDisplayStateStore,
 	ViewDisplayState,
-} from '@/src/store/useViewDisplayStateStore';
+} from '@/store/useViewDisplayStateStore';
 import { Sneaker } from '@/types/sneaker';
 import { User } from '@/types/user';
 

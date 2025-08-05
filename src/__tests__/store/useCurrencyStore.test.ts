@@ -2,8 +2,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { useCurrencyStore } from '@/src/store/useCurrencyStore';
-import { useLanguageStore } from '@/src/store/useLanguageStore';
+import { useCurrencyStore } from '@/store/useCurrencyStore';
+import { useLanguageStore } from '@/store/useLanguageStore';
 
 vi.mock('@react-native-async-storage/async-storage', () => ({
 	default: {
@@ -223,7 +223,7 @@ describe('useCurrencyStore', () => {
 			}));
 
 			const { useCurrencyStore: testStore } = await import(
-				'@/src/store/useCurrencyStore'
+				'@/store/useCurrencyStore'
 			);
 
 			const consoleSpy = vi

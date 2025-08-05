@@ -3,7 +3,7 @@ import Animated from 'react-native-reanimated';
 
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-import useAnimatedButtons from '@/src/hooks/ui/useAnimatedButtons';
+import useAnimatedButtons from '@/hooks/ui/useAnimatedButtons';
 
 export default function TabAddButton({
 	handleAddPress,

@@ -6,19 +6,19 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { RelativePathString, router } from 'expo-router';
 
-import MainButton from '@/src/components/ui/buttons/MainButton';
-import FormImageInput from '@/src/components/ui/inputs/FormImageInput';
-import FormTextInput from '@/src/components/ui/inputs/FormTextInput';
-import ErrorMsg from '@/src/components/ui/text/ErrorMsg';
-import { useSignUpProps } from '@/src/context/signUpPropsContext';
-import { useFormController } from '@/src/hooks/form/useFormController';
-import useToast from '@/src/hooks/ui/useToast';
-import { useAuth } from '@/src/hooks/useAuth';
-import { useSizeUnitStore } from '@/src/store/useSizeUnitStore';
+import MainButton from '@/components/ui/buttons/MainButton';
+import FormImageInput from '@/components/ui/inputs/FormImageInput';
+import FormTextInput from '@/components/ui/inputs/FormTextInput';
+import ErrorMsg from '@/components/ui/text/ErrorMsg';
+import { useSignUpProps } from '@/context/signUpPropsContext';
+import { useFormController } from '@/hooks/form/useFormController';
+import useToast from '@/hooks/ui/useToast';
+import { useAuth } from '@/hooks/useAuth';
+import { useSizeUnitStore } from '@/store/useSizeUnitStore';
 import {
 	createSignUpStep2Schema,
 	SignUpStep2FormData,
-} from '@/src/validation/auth';
+} from '@/validation/auth';
 
 import AuthHeader from '../AuthHeader';
 

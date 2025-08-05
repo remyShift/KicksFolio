@@ -3,11 +3,11 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert } from 'react-native';
 
-import { useSession } from '@/src/context/authContext';
-import useToast from '@/src/hooks/ui/useToast';
-import { useModalStore } from '@/src/store/useModalStore';
-import { SneakerFormData } from '@/src/validation/sneaker';
+import { useSession } from '@/context/authContext';
+import useToast from '@/hooks/ui/useToast';
+import { useModalStore } from '@/store/useModalStore';
 import { Sneaker } from '@/types/sneaker';
+import { SneakerFormData } from '@/validation/sneaker';
 
 import { useSneakerAPI } from './useSneakerAPI';
 

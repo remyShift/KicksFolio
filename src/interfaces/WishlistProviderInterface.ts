@@ -1,4 +1,4 @@
-import { WishlistItem } from '@/src/domain/WishlistProvider';
+import { WishlistItem } from '@/domain/WishlistProvider';
 import { Sneaker } from '@/types/sneaker';
 
 export interface WishlistProviderInterface {

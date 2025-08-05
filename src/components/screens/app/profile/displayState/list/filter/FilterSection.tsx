@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Text, TouchableOpacity, View } from 'react-native';
 
-import { useSneakerFilterStore } from '@/src/store/useSneakerFilterStore';
+import { useSneakerFilterStore } from '@/store/useSneakerFilterStore';
 import { FilterState } from '@/types/filter';
 
 import FilterGroup from './FilterGroup';

@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
-import ViewToggleButton from '@/src/components/ui/buttons/ViewToggleButton';
-import Title from '@/src/components/ui/text/Title';
+import ViewToggleButton from '@/components/ui/buttons/ViewToggleButton';
+import Title from '@/components/ui/text/Title';
 import { Sneaker } from '@/types/sneaker';
 
 interface WishlistHeaderProps {

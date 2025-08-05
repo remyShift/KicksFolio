@@ -5,13 +5,13 @@ import { ScrollView, Text, View } from 'react-native';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
-import { PhotoCarousel } from '@/src/components/ui/images/photoCaroussel/PhotoCarousel';
-import { ConditionBar } from '@/src/components/ui/indicators/ConditionBar';
-import LoveButton from '@/src/components/ui/modals/SneakersModal/steps/ViewStep/LoveButton';
-import ErrorMsg from '@/src/components/ui/text/ErrorMsg';
-import SizeDisplay from '@/src/components/ui/text/SizeDisplay';
-import { useCurrencyStore } from '@/src/store/useCurrencyStore';
-import { useModalStore } from '@/src/store/useModalStore';
+import { PhotoCarousel } from '@/components/ui/images/photoCaroussel/PhotoCarousel';
+import { ConditionBar } from '@/components/ui/indicators/ConditionBar';
+import LoveButton from '@/components/ui/modals/SneakersModal/steps/ViewStep/LoveButton';
+import ErrorMsg from '@/components/ui/text/ErrorMsg';
+import SizeDisplay from '@/components/ui/text/SizeDisplay';
+import { useCurrencyStore } from '@/store/useCurrencyStore';
+import { useModalStore } from '@/store/useModalStore';
 
 export const ViewStep = () => {
 	const { currentSneaker } = useModalStore();

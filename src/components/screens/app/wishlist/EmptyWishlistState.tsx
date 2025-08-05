@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Text, View } from 'react-native';
 
-import Title from '@/src/components/ui/text/Title';
+import Title from '@/components/ui/text/Title';
 
 export default function EmptyWishlistState() {
 	const { t } = useTranslation();

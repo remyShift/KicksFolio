@@ -3,7 +3,7 @@ import { create } from 'zustand';
 import {
 	ModalStep,
 	SneakerFormData,
-} from '@/src/components/ui/modals/SneakersModal/types';
+} from '@/components/ui/modals/SneakersModal/types';
 import { Sneaker, SneakerBrand } from '@/types/sneaker';
 
 export interface FetchedSneaker {

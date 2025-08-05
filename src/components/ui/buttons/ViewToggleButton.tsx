@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import {
 	useViewDisplayStateStore,
 	ViewDisplayState,
-} from '@/src/store/useViewDisplayStateStore';
+} from '@/store/useViewDisplayStateStore';
 
 export default function ViewToggleButton() {
 	const { viewDisplayState, setViewDisplayState } =

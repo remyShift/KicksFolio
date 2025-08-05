@@ -1,5 +1,5 @@
-import { FollowingUser } from '@/src/domain/FollowerProvider';
-import { SearchUser } from '@/src/domain/UserSearchProvider';
+import { FollowingUser } from '@/domain/FollowerProvider';
+import { SearchUser } from '@/domain/UserSearchProvider';
 
 export interface FollowerInterface {
 	followUser: (followingId: string) => Promise<boolean>;

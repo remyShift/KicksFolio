@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { useSession } from '@/src/context/authContext';
+import { useSession } from '@/context/authContext';
 
 import { useAuth } from '../useAuth';
 

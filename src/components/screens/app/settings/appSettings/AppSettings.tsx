@@ -1,11 +1,11 @@
 import { useTranslation } from 'react-i18next';
 import { Linking } from 'react-native';
 
-import useToast from '@/src/hooks/ui/useToast';
-import { useBugReportStore } from '@/src/store/useBugReportStore';
-import { useCurrencyStore } from '@/src/store/useCurrencyStore';
-import { useLanguageStore } from '@/src/store/useLanguageStore';
-import { useSizeUnitStore } from '@/src/store/useSizeUnitStore';
+import useToast from '@/hooks/ui/useToast';
+import { useBugReportStore } from '@/store/useBugReportStore';
+import { useCurrencyStore } from '@/store/useCurrencyStore';
+import { useLanguageStore } from '@/store/useLanguageStore';
+import { useSizeUnitStore } from '@/store/useSizeUnitStore';
 
 import SettingsCategory from '../shared/SettingsCategory';
 import SettingsMenuItem from '../shared/SettingsMenuItem';

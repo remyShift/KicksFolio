@@ -2,7 +2,7 @@ import { Alert } from 'react-native';
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { ImageService } from '@/src/services/ImageService';
+import { ImageService } from '@/services/ImageService';
 
 const mockImagePicker = {
 	openPicker: vi.fn(),

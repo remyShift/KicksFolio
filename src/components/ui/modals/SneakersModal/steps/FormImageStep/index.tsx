@@ -4,14 +4,14 @@ import { Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Text, View } from 'react-native';
 
-import { PhotoCarousel } from '@/src/components/ui/images/photoCaroussel/PhotoCarousel';
-import ErrorMsg from '@/src/components/ui/text/ErrorMsg';
-import { useFormController } from '@/src/hooks/form/useFormController';
-import { useSizeConversion } from '@/src/hooks/useSizeConversion';
-import { useModalStore } from '@/src/store/useModalStore';
-import { createSneakerSchema, SneakerFormData } from '@/src/validation/sneaker';
+import { PhotoCarousel } from '@/components/ui/images/photoCaroussel/PhotoCarousel';
+import ErrorMsg from '@/components/ui/text/ErrorMsg';
+import { useFormController } from '@/hooks/form/useFormController';
+import { useSizeConversion } from '@/hooks/useSizeConversion';
+import { useModalStore } from '@/store/useModalStore';
 import { SneakerPhoto } from '@/types/image';
 import { SneakerBrand, SneakerStatus } from '@/types/sneaker';
+import { createSneakerSchema, SneakerFormData } from '@/validation/sneaker';
 
 export const FormImageStep = () => {
 	const { t } = useTranslation();

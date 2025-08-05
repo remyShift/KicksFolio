@@ -1,9 +1,9 @@
 import { useTranslation } from 'react-i18next';
 
+import { useSession } from '@/context/authContext';
+import { wishlistProvider } from '@/domain/WishlistProvider';
+import useToast from '@/hooks/ui/useToast';
 import { WishlistProviderInterface } from '@/interfaces/WishlistProviderInterface';
-import { useSession } from '@/src/context/authContext';
-import { wishlistProvider } from '@/src/domain/WishlistProvider';
-import useToast from '@/src/hooks/ui/useToast';
 
 export default function useWishlist() {
 	const { showSuccessToast, showErrorToast } = useToast();

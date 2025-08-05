@@ -2,8 +2,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { create } from 'zustand';
 
+import { currencyProvider } from '@/domain/CurrencyProvider';
 import { CurrencyProviderInterface } from '@/interfaces/CurrencyProviderInterface';
-import { currencyProvider } from '@/src/domain/CurrencyProvider';
 
 import { useLanguageStore } from './useLanguageStore';
 

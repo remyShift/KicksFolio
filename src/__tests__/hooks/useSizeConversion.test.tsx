@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { useSizeConversion } from '@/src/hooks/useSizeConversion';
+import { useSizeConversion } from '@/hooks/useSizeConversion';
 import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
 
 vi.mock('@/store/useSizeUnitStore', () => ({
@@ -36,7 +36,7 @@ describe('useSizeConversion', () => {
 	beforeEach(async () => {
 		vi.clearAllMocks();
 
-		const storeModule = await import('@/src/store/useSizeUnitStore');
+		const storeModule = await import('@/store/useSizeUnitStore');
 		useSizeUnitStore = vi.mocked(storeModule.useSizeUnitStore);
 	});
 

@@ -2,12 +2,12 @@ import { useCallback, useEffect, useRef } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
+import { useSession } from '@/context/authContext';
+import { SearchUser } from '@/domain/UserSearchProvider';
+import { userSearchProvider } from '@/domain/UserSearchProvider';
+import useToast from '@/hooks/ui/useToast';
 import { UserSearchInterface } from '@/interfaces/UserSearchInterface';
-import { useSession } from '@/src/context/authContext';
-import { SearchUser } from '@/src/domain/UserSearchProvider';
-import { userSearchProvider } from '@/src/domain/UserSearchProvider';
-import useToast from '@/src/hooks/ui/useToast';
-import { useUserSearchStore } from '@/src/store/useUserSearchStore';
+import { useUserSearchStore } from '@/store/useUserSearchStore';
 
 interface UseUserSearchReturn {
 	searchTerm: string;

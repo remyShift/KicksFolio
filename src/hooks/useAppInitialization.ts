@@ -2,13 +2,13 @@ import { useEffect, useRef, useState } from 'react';
 
 import { Image } from 'expo-image';
 
-import { useSession } from '@/src/context/authContext';
-import { deviceLanguage } from '@/src/locales/i18n';
-import { storageProvider } from '@/src/services/StorageService';
-import { useCurrencyStore } from '@/src/store/useCurrencyStore';
-import { useLanguageStore } from '@/src/store/useLanguageStore';
-import { useSizeUnitStore } from '@/src/store/useSizeUnitStore';
-import { useSplashScreenStore } from '@/src/store/useSplashScreenStore';
+import { useSession } from '@/context/authContext';
+import { deviceLanguage } from '@/locales/i18n';
+import { storageProvider } from '@/services/StorageService';
+import { useCurrencyStore } from '@/store/useCurrencyStore';
+import { useLanguageStore } from '@/store/useLanguageStore';
+import { useSizeUnitStore } from '@/store/useSizeUnitStore';
+import { useSplashScreenStore } from '@/store/useSplashScreenStore';
 import { Sneaker } from '@/types/sneaker';
 import { User } from '@/types/user';
 

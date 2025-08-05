@@ -1,6 +1,6 @@
 import { View } from 'react-native';
 
-import { useModalStore } from '@/src/store/useModalStore';
+import { useModalStore } from '@/store/useModalStore';
 
 import { ModalFooter } from './shared/ModalFooter';
 import { BarcodeStep } from './steps/BarcodeStep';

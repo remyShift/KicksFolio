@@ -1,13 +1,13 @@
 import { useTranslation } from 'react-i18next';
 import { Alert, View } from 'react-native';
 
-import AccountSettings from '@/src/components/screens/app/settings/accountSettings/AccountSettings';
-import AppSettings from '@/src/components/screens/app/settings/appSettings/AppSettings';
-import SettingsHeader from '@/src/components/screens/app/settings/SettingsHeader';
-import SettingsMenuItem from '@/src/components/screens/app/settings/shared/SettingsMenuItem';
-import { useSession } from '@/src/context/authContext';
-import useToast from '@/src/hooks/ui/useToast';
-import { useAuth } from '@/src/hooks/useAuth';
+import AccountSettings from '@/components/screens/app/settings/accountSettings/AccountSettings';
+import AppSettings from '@/components/screens/app/settings/appSettings/AppSettings';
+import SettingsHeader from '@/components/screens/app/settings/SettingsHeader';
+import SettingsMenuItem from '@/components/screens/app/settings/shared/SettingsMenuItem';
+import { useSession } from '@/context/authContext';
+import useToast from '@/hooks/ui/useToast';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function Settings() {
 	const { t } = useTranslation();

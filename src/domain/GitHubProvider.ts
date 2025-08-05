@@ -8,7 +8,7 @@ import {
 	validateGitHubConfig,
 } from '@/config/github/github.config';
 import { GitHubProviderInterface } from '@/interfaces/GitHubInterface';
-import { BugReportFormData } from '@/src/store/useBugReportStore';
+import { BugReportFormData } from '@/store/useBugReportStore';
 
 export interface GitHubIssueData {
 	title: string;

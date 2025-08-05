@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react-native';
 
-import Wishlist from '@/src/app/(app)/(tabs)/wishlist';
-import { useSession } from '@/src/context/authContext';
+import Wishlist from '@/app/(app)/(tabs)/wishlist';
+import { useSession } from '@/context/authContext';
 import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
 
 describe('Wishlist', () => {

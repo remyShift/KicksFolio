@@ -17,8 +17,8 @@ import Animated, {
 } from 'react-native-reanimated';
 import Toast from 'react-native-toast-message';
 
-import { SneakersModal } from '@/src/components/ui/modals/SneakersModal';
-import { useModalStore } from '@/src/store/useModalStore';
+import { SneakersModal } from '@/components/ui/modals/SneakersModal';
+import { useModalStore } from '@/store/useModalStore';
 
 const { height: screenHeight } = Dimensions.get('window');
 const MODAL_HEIGHT = screenHeight * 0.8;

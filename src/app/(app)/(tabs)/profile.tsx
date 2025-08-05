@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
-import ProfileDisplayContainer from '@/src/components/screens/app/profile/ProfileDisplayContainer';
-import { useSession } from '@/src/context/authContext';
-import { useModalStore } from '@/src/store/useModalStore';
+import ProfileDisplayContainer from '@/components/screens/app/profile/ProfileDisplayContainer';
+import { useSession } from '@/context/authContext';
+import { useModalStore } from '@/store/useModalStore';
 import { Sneaker } from '@/types/sneaker';
 
 export default function Profile() {

@@ -2,8 +2,8 @@ import { useCallback } from 'react';
 
 import { FlatList, RefreshControl } from 'react-native';
 
-import { SearchUser } from '@/src/domain/UserSearchProvider';
-import { useUserSearch } from '@/src/hooks/useUserSearch';
+import { SearchUser } from '@/domain/UserSearchProvider';
+import { useUserSearch } from '@/hooks/useUserSearch';
 
 import UserListItem from './listItem/UserListItem';
 import SearchEmptyState from './SearchEmptyState';

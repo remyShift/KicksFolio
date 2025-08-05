@@ -1,8 +1,8 @@
 import { act, renderHook } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { useSneakerFiltering } from '@/src/hooks/useSneakerFiltering';
-import { useSizeUnitStore } from '@/src/store/useSizeUnitStore';
+import { useSneakerFiltering } from '@/hooks/useSneakerFiltering';
+import { useSizeUnitStore } from '@/store/useSizeUnitStore';
 import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
 
 vi.mock('@/store/useSizeUnitStore', () => ({

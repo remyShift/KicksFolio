@@ -1,9 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import { Text, View } from 'react-native';
 
-import FollowButton from '@/src/components/ui/buttons/FollowButton';
-import { SearchUser } from '@/src/domain/UserSearchProvider';
-import { useCurrencyStore } from '@/src/store/useCurrencyStore';
+import FollowButton from '@/components/ui/buttons/FollowButton';
+import { SearchUser } from '@/domain/UserSearchProvider';
+import { useCurrencyStore } from '@/store/useCurrencyStore';
 import { Sneaker } from '@/types/sneaker';
 import { User } from '@/types/user';
 

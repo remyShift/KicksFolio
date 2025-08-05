@@ -1,4 +1,4 @@
-import { useSizeUnitStore } from '@/src/store/useSizeUnitStore';
+import { useSizeUnitStore } from '@/store/useSizeUnitStore';
 import { SneakerBrand } from '@/types/sneaker';
 import { SneakerStatus } from '@/types/sneaker';
 

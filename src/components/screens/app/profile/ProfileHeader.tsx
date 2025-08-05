@@ -1,10 +1,10 @@
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
-import ViewToggleButton from '@/src/components/ui/buttons/ViewToggleButton';
-import Title from '@/src/components/ui/text/Title';
-import { useSession } from '@/src/context/authContext';
-import { SearchUser } from '@/src/domain/UserSearchProvider';
+import ViewToggleButton from '@/components/ui/buttons/ViewToggleButton';
+import Title from '@/components/ui/text/Title';
+import { useSession } from '@/context/authContext';
+import { SearchUser } from '@/domain/UserSearchProvider';
 import { Sneaker } from '@/types/sneaker';
 import { User } from '@/types/user';
 

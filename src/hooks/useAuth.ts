@@ -4,11 +4,11 @@ import { useTranslation } from 'react-i18next';
 
 import { router } from 'expo-router';
 
+import { useSession } from '@/context/authContext';
+import { authProvider } from '@/domain/AuthProvider';
+import { imageProvider } from '@/domain/ImageProvider';
 import { AuthInterface } from '@/interfaces/AuthInterface';
 import { ImageProviderInterface } from '@/interfaces/ImageProviderInterface';
-import { useSession } from '@/src/context/authContext';
-import { authProvider } from '@/src/domain/AuthProvider';
-import { imageProvider } from '@/src/domain/ImageProvider';
 import { UpdateUserData, UserData } from '@/types/auth';
 
 import { useAuthValidation } from './useAuthValidation';

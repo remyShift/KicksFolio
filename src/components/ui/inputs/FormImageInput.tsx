@@ -5,7 +5,7 @@ import { Image } from 'expo-image';
 
 import { MaterialIcons } from '@expo/vector-icons';
 
-import { useImageManager } from '@/src/hooks/useImageManager';
+import { useImageManager } from '@/hooks/useImageManager';
 
 interface FormImageInputProps<T extends FieldValues> {
 	name: Path<T>;

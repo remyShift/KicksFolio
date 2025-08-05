@@ -7,9 +7,9 @@ import { Camera, CameraView } from 'expo-camera';
 
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-import ErrorMsg from '@/src/components/ui/text/ErrorMsg';
-import useToast from '@/src/hooks/ui/useToast';
-import { useModalStore } from '@/src/store/useModalStore';
+import ErrorMsg from '@/components/ui/text/ErrorMsg';
+import useToast from '@/hooks/ui/useToast';
+import { useModalStore } from '@/store/useModalStore';
 
 import { useSneakerAPI } from '../../hooks/useSneakerAPI';
 

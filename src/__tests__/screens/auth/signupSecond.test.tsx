@@ -4,7 +4,7 @@ import { ReactTestInstance } from 'react-test-renderer';
 
 import { fireEvent, render, screen } from '@testing-library/react-native';
 
-import SignUpSecondPage from '@/src/app/(auth)/(signup)/sign-up-second';
+import SignUpSecondPage from '@/app/(auth)/(signup)/sign-up-second';
 
 import { fillAndBlurInput } from '../../setup';
 import {

@@ -2,10 +2,10 @@ import { Alert } from 'react-native';
 
 import * as ImagePicker from 'expo-image-picker';
 
+import { useSession } from '@/context/authContext';
+import { imageProvider } from '@/domain/ImageProvider';
 import { ImageProviderInterface } from '@/interfaces/ImageProviderInterface';
-import { useSession } from '@/src/context/authContext';
-import { imageProvider } from '@/src/domain/ImageProvider';
-import { imageService } from '@/src/services/ImageService';
+import { imageService } from '@/services/ImageService';
 import { SneakerPhoto } from '@/types/image';
 
 export type ImageSelectionType = 'camera' | 'gallery';

@@ -1,7 +1,7 @@
 import { t } from 'i18next';
 import { z } from 'zod';
 
-import { useSizeUnitStore } from '@/src/store/useSizeUnitStore';
+import { useSizeUnitStore } from '@/store/useSizeUnitStore';
 
 import { validateSneakerSize } from './utils';
 

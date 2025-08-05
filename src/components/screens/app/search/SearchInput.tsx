@@ -3,7 +3,7 @@ import { TextInput, View } from 'react-native';
 
 import { Feather } from '@expo/vector-icons';
 
-import { useUserSearch } from '@/src/hooks/useUserSearch';
+import { useUserSearch } from '@/hooks/useUserSearch';
 
 export default function SearchInput() {
 	const { t } = useTranslation();

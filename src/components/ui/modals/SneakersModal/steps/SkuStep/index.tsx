@@ -9,9 +9,9 @@ import { Link } from 'expo-router';
 
 import { FontAwesome6 } from '@expo/vector-icons';
 
-import ErrorMsg from '@/src/components/ui/text/ErrorMsg';
-import { useSession } from '@/src/context/authContext';
-import { useModalStore } from '@/src/store/useModalStore';
+import ErrorMsg from '@/components/ui/text/ErrorMsg';
+import { useSession } from '@/context/authContext';
+import { useModalStore } from '@/store/useModalStore';
 
 import { useSneakerAPI } from '../../hooks/useSneakerAPI';
 import SkuInput from './SkuInput';

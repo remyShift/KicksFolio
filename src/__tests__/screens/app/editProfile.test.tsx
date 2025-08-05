@@ -2,8 +2,8 @@ import { act } from 'react';
 
 import { fireEvent, render, screen } from '@testing-library/react-native';
 
-import { fillAndBlurInput } from '@/src/__tests__/setup';
-import EditProfileForm from '@/src/components/screens/app/settings/accountSettings/EditProfileForm';
+import { fillAndBlurInput } from '@/__tests__/setup';
+import EditProfileForm from '@/components/screens/app/settings/accountSettings/EditProfileForm';
 
 import {
 	mockUseAuth,

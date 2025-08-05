@@ -4,7 +4,7 @@ import { ReactTestInstance } from 'react-test-renderer';
 
 import { fireEvent, render, screen } from '@testing-library/react-native';
 
-import ResetPasswordPage from '@/src/app/(auth)/reset-password';
+import ResetPasswordPage from '@/app/(auth)/reset-password';
 
 import { fillAndBlurInput } from '../../setup';
 import { mockUseAuth, resetMocks } from '../../setup/auth';

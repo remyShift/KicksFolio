@@ -2,11 +2,11 @@ import { useState } from 'react';
 
 import { RefreshControl, ScrollView, View } from 'react-native';
 
-import EmptyWishlistState from '@/src/components/screens/app/wishlist/EmptyWishlistState';
-import WishlistDualViewContainer from '@/src/components/screens/app/wishlist/WishlistDualViewContainer';
-import WishlistHeader from '@/src/components/screens/app/wishlist/WishlistHeader';
-import { useSession } from '@/src/context/authContext';
-import { useModalStore } from '@/src/store/useModalStore';
+import EmptyWishlistState from '@/components/screens/app/wishlist/EmptyWishlistState';
+import WishlistDualViewContainer from '@/components/screens/app/wishlist/WishlistDualViewContainer';
+import WishlistHeader from '@/components/screens/app/wishlist/WishlistHeader';
+import { useSession } from '@/context/authContext';
+import { useModalStore } from '@/store/useModalStore';
 import { Sneaker } from '@/types/sneaker';
 
 export default function Wishlist() {

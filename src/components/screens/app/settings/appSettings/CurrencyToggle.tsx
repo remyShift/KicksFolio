@@ -1,5 +1,5 @@
-import Toggle from '@/src/components/ui/buttons/Toggle';
-import { Currency } from '@/src/store/useCurrencyStore';
+import Toggle from '@/components/ui/buttons/Toggle';
+import { Currency } from '@/store/useCurrencyStore';
 
 interface CurrencyToggleProps {
 	onToggle: (newCurrency: Currency) => void;

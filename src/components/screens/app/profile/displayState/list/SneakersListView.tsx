@@ -2,7 +2,7 @@ import { useCallback, useEffect } from 'react';
 
 import { FlatList } from 'react-native';
 
-import { useSneakerFilterStore } from '@/src/store/useSneakerFilterStore';
+import { useSneakerFilterStore } from '@/store/useSneakerFilterStore';
 import { Sneaker } from '@/types/sneaker';
 
 import ListControls from './ListControls';

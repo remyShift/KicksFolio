@@ -5,16 +5,13 @@ import { useTranslation } from 'react-i18next';
 import { Text, View } from 'react-native';
 import { TextInput } from 'react-native';
 
-import CheckBoxInput from '@/src/components/ui/inputs/CheckBoxInput';
-import FormSelectInput from '@/src/components/ui/inputs/FormSelectInput';
-import FormTextInput from '@/src/components/ui/inputs/FormTextInput';
-import ErrorMsg from '@/src/components/ui/text/ErrorMsg';
-import { useSizeUnitStore } from '@/src/store/useSizeUnitStore';
-import { SneakerFormData } from '@/src/validation/sneaker';
-import {
-	sneakerBrandOptions,
-	sneakerStatusOptions,
-} from '@/src/validation/utils';
+import CheckBoxInput from '@/components/ui/inputs/CheckBoxInput';
+import FormSelectInput from '@/components/ui/inputs/FormSelectInput';
+import FormTextInput from '@/components/ui/inputs/FormTextInput';
+import ErrorMsg from '@/components/ui/text/ErrorMsg';
+import { useSizeUnitStore } from '@/store/useSizeUnitStore';
+import { SneakerFormData } from '@/validation/sneaker';
+import { sneakerBrandOptions, sneakerStatusOptions } from '@/validation/utils';
 
 interface FormFieldsProps {
 	control: Control<SneakerFormData>;

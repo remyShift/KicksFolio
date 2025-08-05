@@ -3,12 +3,12 @@ import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
-import BackButton from '@/src/components/ui/buttons/BackButton';
-import DeleteButton from '@/src/components/ui/buttons/DeleteButton';
-import EditButton from '@/src/components/ui/buttons/EditButton';
-import NextButton from '@/src/components/ui/buttons/NextButton';
-import { useSession } from '@/src/context/authContext';
-import { useModalStore } from '@/src/store/useModalStore';
+import BackButton from '@/components/ui/buttons/BackButton';
+import DeleteButton from '@/components/ui/buttons/DeleteButton';
+import EditButton from '@/components/ui/buttons/EditButton';
+import NextButton from '@/components/ui/buttons/NextButton';
+import { useSession } from '@/context/authContext';
+import { useModalStore } from '@/store/useModalStore';
 import { Sneaker } from '@/types/sneaker';
 
 import { useModalFooterActions } from '../hooks/useModalFooterActions';

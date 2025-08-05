@@ -1,4 +1,4 @@
-import { BugReportFormData } from '@/src/store/useBugReportStore';
+import { BugReportFormData } from '@/store/useBugReportStore';
 
 export interface GitHubProviderInterface {
 	createIssue: (

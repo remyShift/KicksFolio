@@ -6,8 +6,8 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import Feather from '@expo/vector-icons/Feather';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-import TabAddButton from '@/src/components/ui/buttons/TabAddButton';
-import { useModalStore } from '@/src/store/useModalStore';
+import TabAddButton from '@/components/ui/buttons/TabAddButton';
+import { useModalStore } from '@/store/useModalStore';
 
 export default function TabLayout() {
 	const { t } = useTranslation();

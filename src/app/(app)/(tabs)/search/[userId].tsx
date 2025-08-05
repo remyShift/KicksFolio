@@ -5,9 +5,9 @@ import { Text, View } from 'react-native';
 
 import { useLocalSearchParams } from 'expo-router';
 
-import ProfileDisplayContainer from '@/src/components/screens/app/profile/ProfileDisplayContainer';
-import { useUserProfile } from '@/src/hooks/useUserProfile';
-import { useModalStore } from '@/src/store/useModalStore';
+import ProfileDisplayContainer from '@/components/screens/app/profile/ProfileDisplayContainer';
+import { useUserProfile } from '@/hooks/useUserProfile';
+import { useModalStore } from '@/store/useModalStore';
 import { Sneaker } from '@/types/sneaker';
 
 export default function UserProfileScreen() {

@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
-import Title from '@/src/components/ui/text/Title';
+import Title from '@/components/ui/text/Title';
 
 import SearchInput from './SearchInput';
 

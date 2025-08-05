@@ -2,8 +2,8 @@ import { View } from 'react-native';
 
 import { RelativePathString, router } from 'expo-router';
 
-import BackButton from '@/src/components/ui/buttons/BackButton';
-import PageTitle from '@/src/components/ui/text/PageTitle';
+import BackButton from '@/components/ui/buttons/BackButton';
+import PageTitle from '@/components/ui/text/PageTitle';
 
 interface AuthHeaderProps {
 	page: {

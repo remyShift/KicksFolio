@@ -13,12 +13,12 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
-import { useFormController } from '@/src/hooks/form/useFormController';
-import { useSizeConversion } from '@/src/hooks/useSizeConversion';
-import { useModalStore } from '@/src/store/useModalStore';
-import { createSneakerSchema, SneakerFormData } from '@/src/validation/sneaker';
+import { useFormController } from '@/hooks/form/useFormController';
+import { useSizeConversion } from '@/hooks/useSizeConversion';
+import { useModalStore } from '@/store/useModalStore';
 import { SneakerPhoto } from '@/types/image';
 import { SneakerBrand, SneakerStatus } from '@/types/sneaker';
+import { createSneakerSchema, SneakerFormData } from '@/validation/sneaker';
 
 import { useFormValidation } from '../../hooks/useFormValidation';
 import { FormFields } from '../../shared/FormFields';

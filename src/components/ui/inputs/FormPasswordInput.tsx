@@ -5,7 +5,7 @@ import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 import { Ionicons } from '@expo/vector-icons';
 
-import { useInputSubmit } from '@/src/hooks/form/useInputSubmit';
+import { useInputSubmit } from '@/hooks/form/useInputSubmit';
 
 interface FormPasswordInputProps<T extends FieldValues> {
 	name: Path<T>;

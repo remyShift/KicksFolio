@@ -5,7 +5,7 @@ import { router } from 'expo-router';
 import { renderHook } from '@testing-library/react';
 import { vi } from 'vitest';
 
-import { useAuth } from '@/src/hooks/useAuth';
+import { useAuth } from '@/hooks/useAuth';
 import { UpdateUserData, UserData } from '@/types/auth';
 
 import { createMockError } from '../interfaces/authInterfaceSetup';

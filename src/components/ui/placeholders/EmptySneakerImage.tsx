@@ -1,6 +1,6 @@
 import { View } from 'react-native';
 
-import { ShoeIcon } from '@/src/components/ui/icons/ShoeIcon';
+import { ShoeIcon } from '@/components/ui/icons/ShoeIcon';
 
 export default function EmptySneakerImage() {
 	return (

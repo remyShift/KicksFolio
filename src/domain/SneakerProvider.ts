@@ -2,9 +2,9 @@ import { t } from 'i18next';
 
 import { supabase } from '@/config/supabase/supabase';
 import { SneakerProviderInterface } from '@/interfaces/SneakerProviderInterface';
-import { sneakerBrandOptions } from '@/src/validation/utils';
 import { Sneaker } from '@/types/sneaker';
 import { SizeUnit } from '@/types/sneaker';
+import { sneakerBrandOptions } from '@/validation/utils';
 
 import { GenderType, sneakerSizeConverter } from './SneakerSizeConverter';
 

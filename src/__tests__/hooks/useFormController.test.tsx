@@ -4,7 +4,7 @@ import { renderHook } from '@testing-library/react';
 import { vi } from 'vitest';
 import { z } from 'zod';
 
-import { useFormController } from '@/src/hooks/form/useFormController';
+import { useFormController } from '@/hooks/form/useFormController';
 
 const mockUseAuth = {
 	login: vi.fn(),

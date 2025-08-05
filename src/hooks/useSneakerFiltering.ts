@@ -1,8 +1,8 @@
 import { useCallback, useMemo, useState } from 'react';
 
+import { sneakerFilteringProvider } from '@/domain/SneakerFiltering';
 import { SneakerFilterInterface } from '@/interfaces/SneakerFilterInterface';
-import { sneakerFilteringProvider } from '@/src/domain/SneakerFiltering';
-import { useSizeUnitStore } from '@/src/store/useSizeUnitStore';
+import { useSizeUnitStore } from '@/store/useSizeUnitStore';
 import { UniqueValues } from '@/types/filter';
 import { Filter, SortOption } from '@/types/filter';
 import { Sneaker } from '@/types/sneaker';

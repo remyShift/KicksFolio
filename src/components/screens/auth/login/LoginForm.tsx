@@ -7,17 +7,17 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { router, useLocalSearchParams } from 'expo-router';
 
-import MainButton from '@/src/components/ui/buttons/MainButton';
-import FormPasswordInput from '@/src/components/ui/inputs/FormPasswordInput';
-import FormTextInput from '@/src/components/ui/inputs/FormTextInput';
-import PageLink from '@/src/components/ui/links/LoginPageLink';
-import ErrorMsg from '@/src/components/ui/text/ErrorMsg';
-import PageTitle from '@/src/components/ui/text/PageTitle';
-import { useSession } from '@/src/context/authContext';
-import { useFormController } from '@/src/hooks/form/useFormController';
-import useToast from '@/src/hooks/ui/useToast';
-import { useAuth } from '@/src/hooks/useAuth';
-import { createLoginSchema, LoginFormData } from '@/src/validation/auth';
+import MainButton from '@/components/ui/buttons/MainButton';
+import FormPasswordInput from '@/components/ui/inputs/FormPasswordInput';
+import FormTextInput from '@/components/ui/inputs/FormTextInput';
+import PageLink from '@/components/ui/links/LoginPageLink';
+import ErrorMsg from '@/components/ui/text/ErrorMsg';
+import PageTitle from '@/components/ui/text/PageTitle';
+import { useSession } from '@/context/authContext';
+import { useFormController } from '@/hooks/form/useFormController';
+import useToast from '@/hooks/ui/useToast';
+import { useAuth } from '@/hooks/useAuth';
+import { createLoginSchema, LoginFormData } from '@/validation/auth';
 
 export default function LoginForm() {
 	const scrollViewRef = useRef<ScrollView>(null);

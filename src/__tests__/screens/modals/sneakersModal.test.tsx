@@ -2,7 +2,7 @@ import { act } from 'react';
 
 import { fireEvent, render, screen } from '@testing-library/react-native';
 
-import { SneakersModal } from '@/src/components/ui/modals/SneakersModal';
+import { SneakersModal } from '@/components/ui/modals/SneakersModal';
 
 import { fillAndBlurInput } from '../../setup';
 import { mockSneaker } from './modalSetup';

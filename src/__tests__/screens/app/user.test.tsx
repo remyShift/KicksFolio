@@ -6,8 +6,8 @@ import { router } from 'expo-router';
 
 import { fireEvent, render, screen } from '@testing-library/react-native';
 
-import UserPage from '@/src/app/(app)/(tabs)/profile';
-import { useSession } from '@/src/context/authContext';
+import UserPage from '@/app/(app)/(tabs)/profile';
+import { useSession } from '@/context/authContext';
 
 import { mockUseAuth } from '../../setup/auth';
 import { mockSneakers } from './appSetup';

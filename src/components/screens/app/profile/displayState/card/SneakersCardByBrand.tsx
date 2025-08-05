@@ -1,8 +1,8 @@
 import { ScrollView, View } from 'react-native';
 
-import SneakerCard from '@/src/components/ui/cards/SneakerCard';
-import BrandTitle from '@/src/components/ui/text/BrandTitle';
-import { useModalStore } from '@/src/store/useModalStore';
+import SneakerCard from '@/components/ui/cards/SneakerCard';
+import BrandTitle from '@/components/ui/text/BrandTitle';
+import { useModalStore } from '@/store/useModalStore';
 import { Sneaker } from '@/types/sneaker';
 
 const brandLogos: Record<string, any> = {

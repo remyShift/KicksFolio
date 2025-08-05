@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { Pressable, Text, View } from 'react-native';
 
-import MainButton from '@/src/components/ui/buttons/MainButton';
-import { useModalStore } from '@/src/store/useModalStore';
+import MainButton from '@/components/ui/buttons/MainButton';
+import { useModalStore } from '@/store/useModalStore';
 
 interface InitialStepProps {
 	userSneakersLength?: number;

@@ -2,7 +2,7 @@ import { Text } from 'react-native';
 import { GestureDetector } from 'react-native-gesture-handler';
 import Animated from 'react-native-reanimated';
 
-import useAnimatedButtons from '@/src/hooks/ui/useAnimatedButtons';
+import useAnimatedButtons from '@/hooks/ui/useAnimatedButtons';
 
 type MainButtonProps = {
 	content: string;

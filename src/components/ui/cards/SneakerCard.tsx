@@ -5,8 +5,8 @@ import { Image } from 'expo-image';
 
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
-import { ModalStep } from '@/src/components/ui/modals/SneakersModal/types';
-import { useSession } from '@/src/context/authContext';
+import { ModalStep } from '@/components/ui/modals/SneakersModal/types';
+import { useSession } from '@/context/authContext';
 import { Sneaker } from '@/types/sneaker';
 
 import SizeDisplay from '../text/SizeDisplay';

@@ -1,8 +1,8 @@
 import { Text, View } from 'react-native';
 
-import { useSession } from '@/src/context/authContext';
-import { SearchUser } from '@/src/domain/UserSearchProvider';
-import { useUserProfile } from '@/src/hooks/useUserProfile';
+import { useSession } from '@/context/authContext';
+import { SearchUser } from '@/domain/UserSearchProvider';
+import { useUserProfile } from '@/hooks/useUserProfile';
 import { User } from '@/types/user';
 
 import ProfileAvatar from './ProfileAvatar';

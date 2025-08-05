@@ -6,18 +6,18 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { RelativePathString } from 'expo-router';
 
-import AuthHeader from '@/src/components/screens/auth/AuthHeader';
-import MainButton from '@/src/components/ui/buttons/MainButton';
-import FormTextInput from '@/src/components/ui/inputs/FormTextInput';
-import ErrorMsg from '@/src/components/ui/text/ErrorMsg';
-import { useSession } from '@/src/context/authContext';
-import { useFormController } from '@/src/hooks/form/useFormController';
-import useToast from '@/src/hooks/ui/useToast';
-import { useAuth } from '@/src/hooks/useAuth';
+import AuthHeader from '@/components/screens/auth/AuthHeader';
+import MainButton from '@/components/ui/buttons/MainButton';
+import FormTextInput from '@/components/ui/inputs/FormTextInput';
+import ErrorMsg from '@/components/ui/text/ErrorMsg';
+import { useSession } from '@/context/authContext';
+import { useFormController } from '@/hooks/form/useFormController';
+import useToast from '@/hooks/ui/useToast';
+import { useAuth } from '@/hooks/useAuth';
 import {
 	createSocialMediaSchema,
 	SocialMediaFormData,
-} from '@/src/validation/schemas';
+} from '@/validation/schemas';
 
 export default function SocialMediaForm() {
 	const { t } = useTranslation();

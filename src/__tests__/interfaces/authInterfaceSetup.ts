@@ -1,6 +1,6 @@
 import { vi } from 'vitest';
 
-import { SupabaseUser } from '@/src/domain/AuthProvider';
+import { SupabaseUser } from '@/domain/AuthProvider';
 
 export const mockSupabaseUser: SupabaseUser = {
 	id: 'test-user-id',

@@ -1,6 +1,6 @@
 import { supabase } from '@/config/supabase/supabase';
+import { SearchUser } from '@/domain/UserSearchProvider';
 import { FollowerInterface } from '@/interfaces/FollowerInterface';
-import { SearchUser } from '@/src/domain/UserSearchProvider';
 
 export interface FollowingUser extends SearchUser {
 	followed_at: string;

@@ -15,7 +15,7 @@ const SORT_OPTIONS: { key: SortOption; label: string }[] = [
 
 interface SortButtonsProps {
 	listState: ReturnType<
-		typeof import('@/src/hooks/useSneakerFiltering').useSneakerFiltering
+		typeof import('@/hooks/useSneakerFiltering').useSneakerFiltering
 	>;
 }
 

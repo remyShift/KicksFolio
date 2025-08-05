@@ -5,11 +5,11 @@ import Toast from 'react-native-toast-message';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 
-import SplashScreen from '@/src/components/screens/SplashScreen/SplashScreen';
-import { SessionProvider, useSession } from '@/src/context/authContext';
-import { useAppInitialization } from '@/src/hooks/useAppInitialization';
-import '@/src/locales/i18n';
-import { useSplashScreenStore } from '@/src/store/useSplashScreenStore';
+import SplashScreen from '@/components/screens/SplashScreen/SplashScreen';
+import { SessionProvider, useSession } from '@/context/authContext';
+import { useAppInitialization } from '@/hooks/useAppInitialization';
+import '@/locales/i18n';
+import { useSplashScreenStore } from '@/store/useSplashScreenStore';
 
 import '../global.css';
 

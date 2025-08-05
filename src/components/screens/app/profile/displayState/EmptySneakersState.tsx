@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
-import MainButton from '@/src/components/ui/buttons/MainButton';
-import Title from '@/src/components/ui/text/Title';
+import MainButton from '@/components/ui/buttons/MainButton';
+import Title from '@/components/ui/text/Title';
 
 interface EmptySneakersStateProps {
 	onAddPress: () => void;

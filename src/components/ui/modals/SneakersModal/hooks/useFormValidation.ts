@@ -8,8 +8,8 @@ import {
 	UseFormWatch,
 } from 'react-hook-form';
 
-import { useModalStore } from '@/src/store/useModalStore';
-import { SneakerFormData } from '@/src/validation/sneaker';
+import { useModalStore } from '@/store/useModalStore';
+import { SneakerFormData } from '@/validation/sneaker';
 
 export const useFormValidation = (
 	watch: UseFormWatch<SneakerFormData>,

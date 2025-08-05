@@ -1,9 +1,9 @@
 import { useTranslation } from 'react-i18next';
 
+import { gitHubProvider } from '@/domain/GitHubProvider';
+import useToast from '@/hooks/ui/useToast';
 import { GitHubInterface } from '@/interfaces/GitHubInterface';
-import { gitHubProvider } from '@/src/domain/GitHubProvider';
-import useToast from '@/src/hooks/ui/useToast';
-import { useBugReportStore } from '@/src/store/useBugReportStore';
+import { useBugReportStore } from '@/store/useBugReportStore';
 
 const useBugReport = () => {
 	const { t } = useTranslation();

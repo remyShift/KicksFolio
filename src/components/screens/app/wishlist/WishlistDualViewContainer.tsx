@@ -2,12 +2,12 @@ import { useMemo } from 'react';
 
 import { View } from 'react-native';
 
-import SneakersCardByBrand from '@/src/components/screens/app/profile/displayState/card/SneakersCardByBrand';
-import SneakersListView from '@/src/components/screens/app/profile/displayState/list/SneakersListView';
+import SneakersCardByBrand from '@/components/screens/app/profile/displayState/card/SneakersCardByBrand';
+import SneakersListView from '@/components/screens/app/profile/displayState/list/SneakersListView';
 import {
 	useViewDisplayStateStore,
 	ViewDisplayState,
-} from '@/src/store/useViewDisplayStateStore';
+} from '@/store/useViewDisplayStateStore';
 import { Sneaker } from '@/types/sneaker';
 
 interface WishlistDualViewContainerProps {
