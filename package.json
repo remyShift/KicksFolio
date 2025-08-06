@@ -127,38 +127,42 @@
 	"lint-staged": {
 		"*.{js,ts,tsx,jsx,json,css,md}": "prettier --write"
 	},
-	"jest": {
-		"preset": "jest-expo",
-		"maxWorkers": "50%",
-		"testTimeout": 5000,
-		"setupFilesAfterEnv": [
-			"./__tests__/setup.ts"
-		],
-		"testMatch": [
-			"**/__tests__/screens/**/*.(test|spec).(js|jsx|ts|tsx)",
-			"**/__tests__/modals/**/*.(test|spec).(js|jsx|ts|tsx)"
-		],
-		"testPathIgnorePatterns": [
-			"__tests__/setup.ts",
-			"__tests__/vitest-setup.ts",
-			"__tests__/interfaces/",
-			"__tests__/hooks/"
-		],
-		"transformIgnorePatterns": [
-			"node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|native-base|react-native-svg|@supabase/.*|isows|ws)"
-		],
-		"moduleNameMapper": {
-			"^@/(.*)$": "<rootDir>/$1"
-		},
-		"collectCoverageFrom": [
-			"**/*.{ts,tsx,js,jsx}",
-			"!**/coverage/**",
-			"!**/node_modules/**",
-			"!**/babel.config.js",
-			"!**/expo-env.d.ts",
-			"!**/.expo/**",
-			"!**/__tests__/**"
-		]
+	  "jest": {
+    "preset": "jest-expo",
+    "maxWorkers": "50%",
+    "testTimeout": 5000,
+    "setupFilesAfterEnv": [
+      "./src/__tests__/setup.ts"
+    ],
+    "testMatch": [
+      "**/src/__tests__/screens/**/*.(test|spec).(js|jsx|ts|tsx)",
+      "**/src/__tests__/modals/**/*.(test|spec).(js|jsx|ts|tsx)"
+    ],
+    "testPathIgnorePatterns": [
+      "src/__tests__/setup.ts",
+      "src/__tests__/vitest-setup.ts",
+      "src/__tests__/interfaces/",
+      "src/__tests__/hooks/"
+    ],
+    "transformIgnorePatterns": [
+      "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|native-base|react-native-svg|@supabase/.*|isows|ws)"
+    ],
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/$1"
+    },
+    "collectCoverageFrom": [
+      "**/*.{ts,tsx,js,jsx}",
+      "!**/coverage/**",
+      "!**/node_modules/**",
+      "!**/babel.config.cjs",
+      "!**/expo-env.d.ts",
+      "!**/.expo/**",
+      "!**/__tests__/**"
+    ],
+    "extensionsToTreatAsEsm": [".ts", ".tsx"],
+    "transform": {
+      "^.+\\.(js|jsx|ts|tsx)$": ["babel-jest", { "configFile": "./babel.config.cjs" }]
+    }
 	},
 	"expo": {
 		"doctor": {

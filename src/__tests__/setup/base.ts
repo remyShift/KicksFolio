@@ -8,6 +8,55 @@ import './stores';
 import './supabase';
 import './ui';
 
+jest.mock('expo-localization', () => ({
+	getLocales: () => [
+		{
+			languageCode: 'en',
+			languageTag: 'en-US',
+			regionCode: 'US',
+			currencyCode: 'USD',
+			currencySymbol: '$',
+			decimalSeparator: '.',
+			digitGroupingSeparator: ',',
+			textDirection: 'ltr',
+			measurementSystem: 'imperial',
+			temperatureUnit: 'fahrenheit',
+		},
+	],
+	getCalendars: () => [
+		{
+			calendar: 'gregorian',
+			timeZone: 'America/New_York',
+			uses24hourClock: false,
+			firstWeekday: 1,
+		},
+	],
+}));
+
+jest.mock('expo-image', () => ({
+	Image: 'Image',
+}));
+
+jest.mock('expo-camera', () => ({
+	Camera: 'Camera',
+	CameraView: 'CameraView',
+	useCameraPermissions: () => [null, jest.fn()],
+	requestCameraPermissionsAsync: jest.fn(),
+}));
+
+jest.mock('expo-image-picker', () => ({
+	launchImageLibraryAsync: jest.fn(),
+	launchCameraAsync: jest.fn(),
+	requestMediaLibraryPermissionsAsync: jest.fn(),
+	requestCameraPermissionsAsync: jest.fn(),
+	MediaTypeOptions: {
+		Images: 'Images',
+		Videos: 'Videos',
+		All: 'All',
+	},
+	ImagePickerResult: {},
+}));
+
 afterEach(() => {
 	cleanup();
 	jest.clearAllTimers();
