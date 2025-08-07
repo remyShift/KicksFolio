@@ -116,10 +116,7 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 					}
 				})
 				.catch((error) => {
-					console.error(
-						'[useUserProfile] Error loading user profile:',
-						error
-					);
+					console.error('Error loading user profile:', error);
 					showErrorToast(
 						'Erreur de chargement',
 						'Impossible de charger le profil utilisateur.'
