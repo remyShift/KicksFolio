@@ -7,16 +7,6 @@ import { Sneaker } from '@/types/sneaker';
 
 export default function Profile() {
 	const { user, userSneakers, refreshUserData } = useSession();
-
-	console.log('🔍 Profile.tsx - État de la session:', {
-		user,
-		userSneakers,
-		userSneakersLength: userSneakers?.length,
-		userIsNull: user === null,
-		userIsUndefined: user === undefined,
-		userSneakersIsNull: userSneakers === null,
-		userSneakersIsUndefined: userSneakers === undefined,
-	});
 	const { setModalStep, setIsVisible, setCurrentSneaker } = useModalStore();
 	const [refreshing, setRefreshing] = useState(false);
 

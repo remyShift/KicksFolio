@@ -2,11 +2,10 @@ import { t } from 'i18next';
 
 import { supabase } from '@/config/supabase/supabase';
 import { SneakerProviderInterface } from '@/interfaces/SneakerProviderInterface';
-import { Sneaker } from '@/types/sneaker';
-import { SizeUnit } from '@/types/sneaker';
+import { GenderType, SizeUnit, Sneaker } from '@/types/sneaker';
 import { sneakerBrandOptions } from '@/validation/utils';
 
-import { GenderType, sneakerSizeConverter } from './SneakerSizeConverter';
+import { sneakerSizeConverter } from './SneakerSizeConverter';
 
 class SneakerProvider implements SneakerProviderInterface {
 	async getSneakersByUser(userId: string): Promise<Sneaker[]> {
