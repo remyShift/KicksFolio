@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import {
@@ -38,7 +38,7 @@ export const BugReportModal: React.FC = () => {
 	const { t } = useTranslation();
 	const { handleReportBugSubmit, priorityOptions, colorConfig } =
 		useBugReport();
-	const { isVisible, isLoading, errorMsg, formData, resetStore } =
+	const { isVisible, isLoading, errorMsg, resetStore, updateFormData } =
 		useBugReportStore();
 
 	const formController = useFormController<BugReportFormData>({
@@ -75,6 +75,13 @@ export const BugReportModal: React.FC = () => {
 		getFieldErrorWrapper,
 		setValue,
 	} = formController;
+
+	useEffect(() => {
+		const subscription = watch((value) => {
+			updateFormData(value as BugReportFormData);
+		});
+		return () => subscription.unsubscribe();
+	}, [watch, updateFormData]);
 
 	const handleClose = () => {
 		Alert.alert(

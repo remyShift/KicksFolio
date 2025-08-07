@@ -42,7 +42,7 @@ export const useAuth = () => {
 					return ImageProviderInterface.uploadProfileImage(
 						profilePictureUri,
 						response.user.id,
-						imageProvider.uploadProfileImage.bind(imageProvider)
+						imageProvider.uploadProfileImage
 					).then((uploadResult) => {
 						if (uploadResult.success && uploadResult.url) {
 							return AuthInterface.updateProfile(
@@ -205,9 +205,7 @@ export const useAuth = () => {
 									return ImageProviderInterface.deleteImage(
 										'profiles',
 										oldFilePath,
-										imageProvider.deleteImage.bind(
-											imageProvider
-										)
+										imageProvider.deleteImage
 									).then((deleted) => {
 										if (!deleted) {
 											console.warn(
@@ -224,9 +222,7 @@ export const useAuth = () => {
 							return ImageProviderInterface.uploadProfileImage(
 								newProfileData.profile_picture!,
 								userId,
-								imageProvider.uploadProfileImage.bind(
-									imageProvider
-								)
+								imageProvider.uploadProfileImage
 							);
 						})
 						.then((uploadResult) => {
@@ -268,7 +264,7 @@ export const useAuth = () => {
 	const deleteAccount = async (userId: string) => {
 		return ImageProviderInterface.deleteAllUserFiles(
 			userId,
-			imageProvider.deleteAllUserFiles.bind(imageProvider)
+			imageProvider.deleteAllUserFiles
 		)
 			.then((filesDeleted) => {
 				if (!filesDeleted) {
