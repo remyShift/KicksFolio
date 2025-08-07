@@ -155,7 +155,7 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 			await Promise.all([refreshFollowingUsers(), refreshUserData()]);
 		} catch (error) {
 			console.error('Error toggling follow:', error);
-			showErrorToast('Error', 'Cant toggle follow.');
+			showErrorToast('Error', 'Unable to toggle follow for now.');
 		} finally {
 			setIsFollowLoading(false);
 		}

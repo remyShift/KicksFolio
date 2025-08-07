@@ -3,11 +3,11 @@ import { useCallback, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useSession } from '@/contexts/authContext';
-import { SearchUser } from '@/domain/UserSearchProvider';
 import { userSearchProvider } from '@/domain/UserSearchProvider';
 import useToast from '@/hooks/ui/useToast';
 import { UserSearchInterface } from '@/interfaces/UserSearchInterface';
 import { useUserSearchStore } from '@/store/useUserSearchStore';
+import { SearchUser } from '@/types/user';
 
 interface UseUserSearchReturn {
 	searchTerm: string;
@@ -44,7 +44,7 @@ export const useUserSearch = (): UseUserSearchReturn => {
 		clearResults,
 	} = useUserSearchStore();
 
-	const debounceRef = useRef<number | undefined>(undefined);
+	const debounceRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
 	const performSearch = useCallback(
 		async (

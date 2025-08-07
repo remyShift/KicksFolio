@@ -70,8 +70,8 @@ describe('useSneakerFilterStore', () => {
 			expect(result.current.filteredAndSortedSneakers).toEqual(
 				mockSneakers
 			);
-			expect(result.current.uniqueValues.brands).toContain('NIKE');
-			expect(result.current.uniqueValues.brands).toContain('ADIDAS');
+			expect(result.current.uniqueValues.brands).toContain('Nike');
+			expect(result.current.uniqueValues.brands).toContain('Adidas');
 		});
 	});
 
@@ -141,13 +141,13 @@ describe('useSneakerFilterStore', () => {
 			const { result } = renderHook(() => useSneakerFilterStore());
 
 			act(() => {
-				result.current.updateFilter('brands', ['NIKE']);
+				result.current.updateFilter('brands', ['Nike']);
 			});
 
-			expect(result.current.filters.brands).toEqual(['NIKE']);
+			expect(result.current.filters.brands).toEqual(['Nike']);
 			expect(result.current.filteredAndSortedSneakers.length).toBe(1);
 			expect(result.current.filteredAndSortedSneakers[0].brand).toBe(
-				'NIKE'
+				'Nike'
 			);
 		});
 	});
@@ -186,8 +186,8 @@ describe('useSneakerFilterStore', () => {
 				result.current.setSneakers(mockSneakers);
 			});
 
-			expect(result.current.uniqueValues.brands).toContain('NIKE');
-			expect(result.current.uniqueValues.brands).toContain('ADIDAS');
+			expect(result.current.uniqueValues.brands).toContain('Nike');
+			expect(result.current.uniqueValues.brands).toContain('Adidas');
 			expect(result.current.filteredAndSortedSneakers).toHaveLength(2);
 			expect(
 				result.current.filteredAndSortedSneakers.map((s) => s.id)

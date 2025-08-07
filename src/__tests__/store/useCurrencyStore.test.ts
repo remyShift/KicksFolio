@@ -235,7 +235,7 @@ describe('useCurrencyStore', () => {
 
 			expect(result).toBe('$100.00');
 			expect(consoleSpy).toHaveBeenCalledWith(
-				'Error formatting price:',
+				'❌ Error formatting price:',
 				expect.any(Error)
 			);
 

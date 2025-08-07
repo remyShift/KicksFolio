@@ -1,16 +1,16 @@
 import { SneakerPhoto } from './image';
 
 export enum SneakerBrand {
-	Nike = 'NIKE',
-	Adidas = 'ADIDAS',
-	Converse = 'CONVERSE',
-	NewBalance = 'NEW BALANCE',
-	Puma = 'PUMA',
-	Jordan = 'JORDAN',
-	Asics = 'ASICS',
-	Reebok = 'REEBOK',
-	Vans = 'VANS',
-	Other = 'OTHER',
+	Nike = 'Nike',
+	Adidas = 'Adidas',
+	Converse = 'Converse',
+	NewBalance = 'New Balance',
+	Puma = 'Puma',
+	Jordan = 'Jordan',
+	Asics = 'Asics',
+	Reebok = 'Reebok',
+	Vans = 'Vans',
+	Other = 'Other',
 	null = 'null',
 }
 

@@ -4,7 +4,7 @@ import { Image } from 'expo-image';
 
 import { Feather } from '@expo/vector-icons';
 
-import { SearchUser } from '@/domain/UserSearchProvider';
+import { SearchUser } from '@/types/user';
 
 interface UserAvatarProps {
 	searchUser: SearchUser;

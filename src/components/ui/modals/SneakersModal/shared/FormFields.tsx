@@ -27,7 +27,6 @@ interface FormFieldsProps {
 	pricePaidInputRef: React.RefObject<TextInput | null>;
 	descriptionInputRef: React.RefObject<TextInput | null>;
 	displayedError: string;
-	sneakerId?: string;
 	setValue: (name: keyof SneakerFormData, value: any) => void;
 }
 
@@ -42,7 +41,6 @@ export const FormFields = ({
 	displayedError,
 	pricePaidInputRef,
 	descriptionInputRef,
-	sneakerId,
 	setValue,
 }: FormFieldsProps) => {
 	const { t } = useTranslation();

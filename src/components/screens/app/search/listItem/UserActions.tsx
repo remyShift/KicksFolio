@@ -3,7 +3,7 @@ import { Text, View } from 'react-native';
 
 import { Feather } from '@expo/vector-icons';
 
-import { SearchUser } from '@/domain/UserSearchProvider';
+import { SearchUser } from '@/types/user';
 
 interface UserActionsProps {
 	searchUser: SearchUser;

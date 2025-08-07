@@ -3,8 +3,8 @@ import { act } from 'react';
 import { renderHook } from '@testing-library/react';
 import { vi } from 'vitest';
 
-import { SearchUser } from '@/domain/UserSearchProvider';
 import { useUserProfile } from '@/hooks/useUserProfile';
+import { SearchUser } from '@/types/user';
 
 vi.mock('@/interfaces/UserSearchInterface', () => ({
 	UserSearchInterface: {
@@ -316,8 +316,8 @@ describe('useUserProfile', () => {
 				mockError
 			);
 			expect(mockToast.showErrorToast).toHaveBeenCalledWith(
-				'Erreur',
-				'Impossible de modifier le suivi pour le moment.'
+				'Error',
+				'Unable to toggle follow for now.'
 			);
 
 			consoleSpy.mockRestore();

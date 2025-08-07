@@ -4,7 +4,7 @@ import { TouchableOpacity } from 'react-native';
 
 import { router } from 'expo-router';
 
-import { SearchUser } from '@/domain/UserSearchProvider';
+import { SearchUser } from '@/types/user';
 
 import UserActions from './UserActions';
 import UserAvatar from './UserAvatar';

@@ -18,8 +18,6 @@ describe('SneakerFiltering', () => {
 			price_paid: 200,
 			description: 'Great condition',
 			images: [],
-			created_at: '2023-01-01',
-			updated_at: '2023-01-01',
 			estimated_value: 250,
 			sku: 'AJ1-001',
 			gender: 'unisex',
@@ -45,8 +43,6 @@ describe('SneakerFiltering', () => {
 			price_paid: 150,
 			description: 'Good condition',
 			images: [],
-			created_at: '2023-01-02',
-			updated_at: '2023-01-02',
 			estimated_value: 180,
 			sku: 'AM90-001',
 			gender: 'men',
@@ -72,8 +68,6 @@ describe('SneakerFiltering', () => {
 			price_paid: 80,
 			description: 'Used condition',
 			images: [],
-			created_at: '2023-01-03',
-			updated_at: '2023-01-03',
 			estimated_value: 90,
 			sku: 'SS-001',
 			gender: 'unisex',
@@ -110,7 +104,7 @@ describe('SneakerFiltering', () => {
 
 		it('should filter sneakers by brand', () => {
 			const filters: FilterState = {
-				brands: ['JORDAN'],
+				brands: ['Jordan'],
 				sizes: [],
 				conditions: [],
 			};
@@ -196,7 +190,7 @@ describe('SneakerFiltering', () => {
 
 		it('should apply multiple filters', () => {
 			const filters: FilterState = {
-				brands: ['NIKE', 'JORDAN'],
+				brands: ['Nike', 'Jordan'],
 				sizes: ['42', '43'],
 				conditions: ['8', '9'],
 			};
@@ -209,7 +203,7 @@ describe('SneakerFiltering', () => {
 
 			expect(result).toHaveLength(2);
 			expect(
-				result.every((s) => ['NIKE', 'JORDAN'].includes(s.brand))
+				result.every((s) => ['Nike', 'Jordan'].includes(s.brand))
 			).toBe(true);
 			expect(result.every((s) => [42, 43].includes(s.size_eu))).toBe(
 				true
@@ -358,7 +352,7 @@ describe('SneakerFiltering', () => {
 				'EU'
 			);
 
-			expect(result.brands).toEqual(['ADIDAS', 'JORDAN', 'NIKE']);
+			expect(result.brands).toEqual(['Adidas', 'Jordan', 'Nike']);
 		});
 
 		it('should return unique sizes (EU) sorted numerically', () => {
@@ -425,7 +419,7 @@ describe('SneakerFiltering', () => {
 				'EU'
 			);
 
-			expect(result.brands).toEqual(['ADIDAS', 'JORDAN', 'NIKE']);
+			expect(result.brands).toEqual(['Adidas', 'Jordan', 'Nike']);
 			expect(result.sizes).toEqual(['41', '42', '43']);
 			expect(result.conditions).toEqual(['9', '8', '7']);
 			expect(result.statuses).toEqual(['Rocking', 'Selling', 'Stocking']);
