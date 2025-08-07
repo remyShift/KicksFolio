@@ -10,6 +10,7 @@ import { ImageProviderInterface } from '@/interfaces/ImageProviderInterface';
 import { SneakerInterface } from '@/interfaces/SneakerProviderInterface';
 import { FetchedSneaker } from '@/store/useModalStore';
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';
+import { SneakerPhoto } from '@/types/image';
 import { Sneaker, SneakerBrand } from '@/types/sneaker';
 import { createSneakerSchema, SneakerFormData } from '@/validation/sneaker';
 import { sneakerBrandOptions } from '@/validation/utils';
@@ -207,33 +208,51 @@ export const useSneakerAPI = () => {
 				);
 			})
 			.then(async (createdSneaker: Sneaker) => {
-				const processedImages =
-					await ImageProviderInterface.processAndUploadSneakerImages(
-						formData.images.map((img) => ({
-							uri: img.uri,
-							id: img.id,
-						})),
-						user.id,
-						createdSneaker.id,
-						imageProvider.processAndUploadSneakerImages
-					);
+				return ImageProviderInterface.processAndUploadSneakerImages(
+					formData.images.map((img) => ({
+						uri: img.uri,
+						id: img.id,
+					})),
+					user.id,
+					createdSneaker.id,
+					imageProvider.processAndUploadSneakerImages.bind(
+						imageProvider
+					)
+				)
+					.then((processedImages: SneakerPhoto[]) => {
+						if (processedImages.length > 0) {
+							return SneakerInterface.updateSneaker(
+								createdSneaker.id,
+								{
+									images: processedImages.map((img) => ({
+										id: img.id,
+										uri: img.uri,
+									})),
+								},
+								currentUnit,
+								sneakerProvider.updateSneaker
+							);
+						}
 
-				if (processedImages.length > 0) {
-					const updatedSneaker = await SneakerInterface.updateSneaker(
-						createdSneaker.id,
-						{
-							images: processedImages.map((img) => ({
-								id: img.id,
-								uri: img.uri,
-							})),
-						},
-						currentUnit,
-						sneakerProvider.updateSneaker
-					);
-					return updatedSneaker;
-				}
-
-				return createdSneaker;
+						return SneakerInterface.deleteSneaker(
+							createdSneaker.id,
+							sneakerProvider.deleteSneaker
+						).then(() => {
+							return Promise.reject(
+								new Error(
+									'Image processing returned no images; creation rolled back'
+								)
+							);
+						});
+					})
+					.catch((error: Error) => {
+						return SneakerInterface.deleteSneaker(
+							createdSneaker.id,
+							sneakerProvider.deleteSneaker
+						).then(() => {
+							throw error;
+						});
+					});
 			})
 			.then((response: Sneaker) => {
 				if (response && callbacks) {
@@ -318,7 +337,9 @@ export const useSneakerAPI = () => {
 						})),
 						user.id,
 						sneakerId,
-						imageProvider.processAndUploadSneakerImages
+						imageProvider.processAndUploadSneakerImages.bind(
+							imageProvider
+						)
 					);
 
 				const sneakerUpdates: Partial<
