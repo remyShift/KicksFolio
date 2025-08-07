@@ -215,7 +215,9 @@ export const useSneakerAPI = () => {
 						})),
 						user.id,
 						createdSneaker.id,
-						imageProvider.processAndUploadSneakerImages
+						imageProvider.processAndUploadSneakerImages.bind(
+							imageProvider
+						)
 					);
 
 				if (processedImages.length > 0) {
@@ -318,7 +320,9 @@ export const useSneakerAPI = () => {
 						})),
 						user.id,
 						sneakerId,
-						imageProvider.processAndUploadSneakerImages
+						imageProvider.processAndUploadSneakerImages.bind(
+							imageProvider
+						)
 					);
 
 				const sneakerUpdates: Partial<
