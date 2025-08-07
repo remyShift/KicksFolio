@@ -65,7 +65,7 @@ export const useUserSearch = (): UseUserSearchReturn => {
 				term.trim(),
 				user.id,
 				pageNum,
-				userSearchProvider.searchUsers
+				userSearchProvider.searchUsers.bind(userSearchProvider)
 			)
 				.then((result) => {
 					if (pageNum === 0 || isRefresh) {

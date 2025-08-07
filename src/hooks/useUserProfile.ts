@@ -44,40 +44,70 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 	const [isFollowLoading, setIsFollowLoading] = useState(false);
 	const [refreshing, setRefreshing] = useState(false);
 	const isLoadingRef = useRef(false);
+	const lastLoadedForRef = useRef<string | null>(null);
 
 	const loadUserProfile = useCallback(
 		async (showRefresh: boolean = false) => {
-			if (!userId || !currentUser?.id) {
+			console.log('[useUserProfile] loadUserProfile:start', {
+				userId,
+				currentUserId: currentUser?.id,
+				showRefresh,
+			});
+
+			if (!userId) {
+				console.warn(
+					'[useUserProfile] loadUserProfile: missing userId'
+				);
 				return;
 			}
 
 			if (isLoadingRef.current && !showRefresh) {
+				console.log(
+					'[useUserProfile] loadUserProfile: already loading, skipping'
+				);
 				return;
 			}
 
 			isLoadingRef.current = true;
 
-			if (showRefresh) setRefreshing(true);
-			else setIsLoading(true);
+			if (showRefresh) {
+				setRefreshing(true);
+			} else {
+				if (!userProfile) {
+					setIsLoading(true);
+				} else {
+					setRefreshing(true);
+				}
+			}
+
+			console.log('[useUserProfile] loadUserProfile: calling providers');
 
 			return Promise.all([
 				UserSearchInterface.getUserProfile(
 					userId,
-					currentUser.id,
-					userSearchProvider.getUserProfile
+					currentUser?.id ?? '',
+					userSearchProvider.getUserProfile.bind(userSearchProvider)
 				),
 				UserSearchInterface.getUserSneakers(
 					userId,
-					userSearchProvider.getUserSneakers
+					userSearchProvider.getUserSneakers.bind(userSearchProvider)
 				),
 			])
 				.then(([userSearch, sneakers]) => {
+					console.log(
+						'[useUserProfile] providers: results received',
+						{
+							userFound: !!userSearch,
+							sneakersCount: (sneakers || []).length,
+						}
+					);
 					if (userSearch) {
 						setUserProfile({
 							userSearch,
 							sneakers: sneakers || [],
 						});
 					} else {
+						console.warn('[useUserProfile] user not found');
 						showErrorToast(
 							'Utilisateur introuvable',
 							"Cet utilisateur n'existe pas ou n'est plus disponible."
@@ -86,7 +116,10 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 					}
 				})
 				.catch((error) => {
-					console.error('Error loading user profile:', error);
+					console.error(
+						'[useUserProfile] Error loading user profile:',
+						error
+					);
 					showErrorToast(
 						'Erreur de chargement',
 						'Impossible de charger le profil utilisateur.'
@@ -96,9 +129,10 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 					isLoadingRef.current = false;
 					setIsLoading(false);
 					setRefreshing(false);
+					console.log('[useUserProfile] loadUserProfile: finished');
 				});
 		},
-		[userId, currentUser?.id, showErrorToast]
+		[userId, currentUser?.id, showErrorToast, userProfile]
 	);
 
 	const handleFollowToggle = useCallback(async () => {
@@ -178,10 +212,24 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 	}, [loadUserProfile]);
 
 	useEffect(() => {
-		if (userId && currentUser?.id) {
+		console.log('[useUserProfile] effect: userId/currentUser changed', {
+			userId,
+			currentUserId: currentUser?.id,
+		});
+		if (userId && lastLoadedForRef.current !== userId) {
+			lastLoadedForRef.current = userId;
 			loadUserProfile();
 		}
-	}, [userId, currentUser?.id, loadUserProfile]);
+	}, [userId, currentUser?.id]);
+
+	useEffect(() => {
+		console.log('[useUserProfile] state', {
+			isLoading,
+			refreshing,
+			isFollowLoading,
+			userProfilePresent: !!userProfile,
+		});
+	}, [isLoading, refreshing, isFollowLoading, userProfile]);
 
 	return {
 		userProfile,

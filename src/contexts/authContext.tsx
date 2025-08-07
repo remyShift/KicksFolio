@@ -221,7 +221,9 @@ export function SessionProvider({ children }: PropsWithChildren) {
 							const sneakers =
 								await UserSearchInterface.getUserSneakers(
 									followingUser.id,
-									userSearchProvider.getUserSneakers
+									userSearchProvider.getUserSneakers.bind(
+										userSearchProvider
+									)
 								);
 							return {
 								...followingUser,
