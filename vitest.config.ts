@@ -8,20 +8,20 @@ export default defineConfig({
 	test: {
 		environment: 'jsdom',
 
-		setupFiles: ['./__tests__/vitest-setup.ts'],
+		setupFiles: ['./src/__tests__/vitest-setup.ts'],
 
 		include: [
-			'__tests__/interfaces/**/*.(test|spec).(js|jsx|ts|tsx)',
-			'__tests__/hooks/**/*.(test|spec).(js|jsx|ts|tsx)',
-			'__tests__/domain/**/*.(test|spec).(js|jsx|ts|tsx)',
-			'__tests__/store/**/*.(test|spec).(js|jsx|ts|tsx)',
+			'src/__tests__/interfaces/**/*.(test|spec).(js|jsx|ts|tsx)',
+			'src/__tests__/hooks/**/*.(test|spec).(js|jsx|ts|tsx)',
+			'src/__tests__/domain/**/*.(test|spec).(js|jsx|ts|tsx)',
+			'src/__tests__/store/**/*.(test|spec).(js|jsx|ts|tsx)',
 		],
 
 		exclude: [
 			'**/node_modules/**',
-			'__tests__/screens/**',
-			'__tests__/setup.ts',
-			'__tests__/vitest-setup.ts',
+			'src/__tests__/screens/**',
+			'src/__tests__/setup.ts',
+			'src/__tests__/vitest-setup.ts',
 		],
 
 		globals: true,
@@ -48,7 +48,7 @@ export default defineConfig({
 
 	resolve: {
 		alias: {
-			'@': resolve(__dirname, './'),
+			'@': resolve(__dirname, './src'),
 		},
 	},
 

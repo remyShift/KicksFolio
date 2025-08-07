@@ -132,7 +132,7 @@
 		"maxWorkers": "50%",
 		"testTimeout": 5000,
 		"setupFilesAfterEnv": [
-			"./__tests__/setup.ts"
+			"./src/__tests__/setup.ts"
 		],
 		"testMatch": [
 			"**/__tests__/screens/**/*.(test|spec).(js|jsx|ts|tsx)",
