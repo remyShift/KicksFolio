@@ -2,12 +2,12 @@ import { useMemo } from 'react';
 
 import { View } from 'react-native';
 
-import { SearchUser } from '@/domain/UserSearchProvider';
 import {
 	useViewDisplayStateStore,
 	ViewDisplayState,
 } from '@/store/useViewDisplayStateStore';
 import { Sneaker } from '@/types/sneaker';
+import { SearchUser } from '@/types/user';
 import { User } from '@/types/user';
 
 import CardDisplay from './displayState/card/CardDisplay';

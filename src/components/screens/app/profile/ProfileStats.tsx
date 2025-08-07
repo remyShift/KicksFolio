@@ -2,30 +2,34 @@ import { useTranslation } from 'react-i18next';
 import { Text, View } from 'react-native';
 
 import FollowButton from '@/components/ui/buttons/FollowButton';
-import { SearchUser } from '@/domain/UserSearchProvider';
 import { useCurrencyStore } from '@/store/useCurrencyStore';
 import { Sneaker } from '@/types/sneaker';
-import { User } from '@/types/user';
+import { SearchUser, User } from '@/types/user';
 
 interface ProfileStatsProps {
 	sneakersCount: number;
 	sneakers: Sneaker[];
 	user: User | SearchUser;
 	isOwnProfile: boolean;
-	handleFollowToggle: () => Promise<void>;
+	handleFollowToggle?: () => Promise<void>;
 	isFollowLoading: boolean;
 }
 
-export default function ProfileStats({
-	sneakersCount,
-	sneakers,
-	user,
-	isOwnProfile,
-	handleFollowToggle,
-	isFollowLoading,
-}: ProfileStatsProps) {
+export default function ProfileStats(props: ProfileStatsProps) {
+	const {
+		sneakersCount = 0,
+		sneakers = [],
+		user,
+		isOwnProfile = false,
+		handleFollowToggle,
+		isFollowLoading = false,
+	} = props;
 	const { t } = useTranslation();
 	const { formattedPrice } = useCurrencyStore();
+
+	if (!user) {
+		return null;
+	}
 
 	const totalValue =
 		sneakers?.reduce(
@@ -83,7 +87,7 @@ export default function ProfileStats({
 				</Text>
 			</View>
 
-			{!isOwnProfile && (
+			{!isOwnProfile && handleFollowToggle && (
 				<FollowButton
 					onPressAction={handleFollowToggle}
 					backgroundColor={buttonColor}

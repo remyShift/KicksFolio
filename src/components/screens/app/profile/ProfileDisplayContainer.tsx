@@ -1,8 +1,7 @@
 import { RefreshControl, ScrollView } from 'react-native';
 
-import { SearchUser } from '@/domain/UserSearchProvider';
 import { Sneaker } from '@/types/sneaker';
-import { User } from '@/types/user';
+import { SearchUser, User } from '@/types/user';
 
 import EmptySneakersState from './displayState/EmptySneakersState';
 import DualViewContainer from './DualViewContainer';
@@ -18,15 +17,18 @@ interface ProfileDisplayContainerProps {
 	showBackButton?: boolean;
 }
 
-export default function ProfileDisplayContainer({
-	user,
-	userSneakers,
-	refreshing,
-	onRefresh,
-	onSneakerPress,
-	onAddSneaker,
-	showBackButton = false,
-}: ProfileDisplayContainerProps) {
+export default function ProfileDisplayContainer(
+	props: ProfileDisplayContainerProps
+) {
+	const {
+		user,
+		userSneakers,
+		refreshing,
+		onRefresh,
+		onSneakerPress,
+		onAddSneaker,
+		showBackButton = false,
+	} = props;
 	if (!userSneakers || userSneakers.length === 0) {
 		return (
 			<ScrollView

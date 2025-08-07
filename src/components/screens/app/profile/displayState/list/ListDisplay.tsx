@@ -1,8 +1,7 @@
 import { RefreshControl, ScrollView, View } from 'react-native';
 
-import { SearchUser } from '@/domain/UserSearchProvider';
 import { Sneaker } from '@/types/sneaker';
-import { User } from '@/types/user';
+import { SearchUser, User } from '@/types/user';
 
 import ProfileHeader from '../../ProfileHeader';
 import SneakersListView from './SneakersListView';
@@ -16,14 +15,21 @@ interface ListDisplayProps {
 	showBackButton?: boolean;
 }
 
-export default function ListDisplay({
-	userSneakers,
-	handleSneakerPress,
-	refreshing,
-	onRefresh,
-	user,
-	showBackButton,
-}: ListDisplayProps) {
+export default function ListDisplay(props: ListDisplayProps) {
+	// Vérification défensive pour éviter l'erreur "Cannot convert null value to object"
+	if (!props || typeof props !== 'object') {
+		console.error('ListDisplay: Props sont null ou invalides:', props);
+		return null;
+	}
+
+	const {
+		userSneakers,
+		handleSneakerPress,
+		refreshing,
+		onRefresh,
+		user,
+		showBackButton,
+	} = props;
 	return (
 		<ScrollView
 			className="flex-1 mt-16"

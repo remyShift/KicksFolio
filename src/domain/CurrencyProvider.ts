@@ -12,7 +12,7 @@ const CURRENCY_SYMBOLS = {
 } as const;
 
 export class CurrencyProvider implements CurrencyProviderInterface {
-	formatPrice(price: number, currency: Currency): string {
+	formatPrice = (price: number, currency: Currency): string => {
 		try {
 			const convertedPrice = this.convertPrice(price, 'USD', currency);
 			const symbol = CURRENCY_SYMBOLS[currency];
@@ -29,13 +29,13 @@ export class CurrencyProvider implements CurrencyProviderInterface {
 			console.error('Error in formatPrice:', error);
 			return `$${price.toFixed(2)}`;
 		}
-	}
+	};
 
-	convertPrice(
+	convertPrice = (
 		price: number,
 		fromCurrency: Currency,
 		toCurrency: Currency
-	): number {
+	): number => {
 		if (fromCurrency === toCurrency) {
 			return price;
 		}
@@ -54,15 +54,15 @@ export class CurrencyProvider implements CurrencyProviderInterface {
 
 		const priceInUSD = price / EXCHANGE_RATES[fromCurrency];
 		return priceInUSD * EXCHANGE_RATES[toCurrency];
-	}
+	};
 
-	getExchangeRate(currency: Currency): number {
+	getExchangeRate = (currency: Currency): number => {
 		return EXCHANGE_RATES[currency] || 1;
-	}
+	};
 
-	getSupportedCurrencies(): Currency[] {
+	getSupportedCurrencies = (): Currency[] => {
 		return Object.keys(EXCHANGE_RATES) as Currency[];
-	}
+	};
 }
 
 export const currencyProvider = new CurrencyProvider();

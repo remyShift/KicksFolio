@@ -4,9 +4,8 @@ import { View } from 'react-native';
 import ViewToggleButton from '@/components/ui/buttons/ViewToggleButton';
 import Title from '@/components/ui/text/Title';
 import { useSession } from '@/contexts/authContext';
-import { SearchUser } from '@/domain/UserSearchProvider';
 import { Sneaker } from '@/types/sneaker';
-import { User } from '@/types/user';
+import { SearchUser, User } from '@/types/user';
 
 import BackToSearchButton from '../search/BackToSearchButton';
 import ProfileInfo from './ProfileInfo';
@@ -18,11 +17,8 @@ interface ProfileHeaderProps {
 	showBackButton?: boolean;
 }
 
-export default function ProfileHeader({
-	user,
-	userSneakers,
-	showBackButton = false,
-}: ProfileHeaderProps) {
+export default function ProfileHeader(props: ProfileHeaderProps) {
+	const { user, userSneakers, showBackButton = false } = props;
 	const { t } = useTranslation();
 	const { user: currentUser } = useSession();
 	const isOwnProfile = user.id === currentUser?.id;

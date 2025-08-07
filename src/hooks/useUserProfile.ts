@@ -6,12 +6,12 @@ import { router } from 'expo-router';
 
 import { useSession } from '@/contexts/authContext';
 import { followerProvider } from '@/domain/FollowerProvider';
-import { SearchUser } from '@/domain/UserSearchProvider';
 import { userSearchProvider } from '@/domain/UserSearchProvider';
 import useToast from '@/hooks/ui/useToast';
 import { FollowerInterface } from '@/interfaces/FollowerInterface';
 import { UserSearchInterface } from '@/interfaces/UserSearchInterface';
 import { Sneaker } from '@/types/sneaker';
+import { SearchUser } from '@/types/user';
 
 interface UseUserProfile {
 	userProfile: UserProfileData | null;
@@ -19,7 +19,7 @@ interface UseUserProfile {
 	isFollowLoading: boolean;
 	refreshing: boolean;
 
-	handleFollowToggle: () => Promise<void | [void, void]>;
+	handleFollowToggle: () => Promise<void>;
 	refreshUserProfile: () => Promise<void>;
 }
 
@@ -101,9 +101,9 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 		[userId, currentUser?.id, showErrorToast]
 	);
 
-	const handleFollowToggle = useCallback(() => {
+	const handleFollowToggle = useCallback(async () => {
 		if (!userProfile?.userSearch || !currentUser?.id || isFollowLoading)
-			return Promise.resolve();
+			return;
 
 		setIsFollowLoading(true);
 
@@ -117,55 +117,48 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 					followerProvider.followUser
 				);
 
-		return followAction
-			.then(() => {
-				const isUnfollowing = userProfile.userSearch.is_following;
+		try {
+			await followAction;
 
-				if (isUnfollowing) {
-					showSuccessToast(
-						t('social.unfollowed'),
-						t('social.unfollowedDesc', {
-							username: userProfile.userSearch.username,
-						})
-					);
-				} else {
-					showSuccessToast(
-						t('social.followed'),
-						t('social.followedDesc', {
-							username: userProfile.userSearch.username,
-						})
-					);
-				}
+			const isUnfollowing = userProfile.userSearch.is_following;
 
-				setUserProfile((prev) => {
-					if (!prev) return prev;
-					return {
-						...prev,
-						userSearch: {
-							...prev.userSearch,
-							is_following: !prev.userSearch.is_following,
-							followers_count: prev.userSearch.is_following
-								? prev.userSearch.followers_count - 1
-								: prev.userSearch.followers_count + 1,
-						},
-					};
-				});
-
-				return Promise.all([
-					refreshFollowingUsers(),
-					refreshUserData(),
-				]);
-			})
-			.catch((error) => {
-				console.error('Error toggling follow:', error);
-				showErrorToast(
-					'Erreur',
-					'Impossible de modifier le suivi pour le moment.'
+			if (isUnfollowing) {
+				showSuccessToast(
+					t('social.unfollowed'),
+					t('social.unfollowedDesc', {
+						username: userProfile.userSearch.username,
+					})
 				);
-			})
-			.finally(() => {
-				setIsFollowLoading(false);
+			} else {
+				showSuccessToast(
+					t('social.followed'),
+					t('social.followedDesc', {
+						username: userProfile.userSearch.username,
+					})
+				);
+			}
+
+			setUserProfile((prev) => {
+				if (!prev) return prev;
+				return {
+					...prev,
+					userSearch: {
+						...prev.userSearch,
+						is_following: !prev.userSearch.is_following,
+						followers_count: prev.userSearch.is_following
+							? prev.userSearch.followers_count - 1
+							: prev.userSearch.followers_count + 1,
+					},
+				};
 			});
+
+			await Promise.all([refreshFollowingUsers(), refreshUserData()]);
+		} catch (error) {
+			console.error('Error toggling follow:', error);
+			showErrorToast('Error', 'Cant toggle follow.');
+		} finally {
+			setIsFollowLoading(false);
+		}
 	}, [
 		userProfile?.userSearch,
 		currentUser?.id,

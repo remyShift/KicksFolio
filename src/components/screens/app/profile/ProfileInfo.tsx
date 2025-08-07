@@ -1,9 +1,8 @@
 import { Text, View } from 'react-native';
 
 import { useSession } from '@/contexts/authContext';
-import { SearchUser } from '@/domain/UserSearchProvider';
 import { useUserProfile } from '@/hooks/useUserProfile';
-import { User } from '@/types/user';
+import { SearchUser, User } from '@/types/user';
 
 import ProfileAvatar from './ProfileAvatar';
 import ProfileStats from './ProfileStats';
@@ -13,7 +12,8 @@ export interface ProfileInfoProps {
 	user: User | SearchUser;
 }
 
-export default function ProfileInfo({ user }: ProfileInfoProps) {
+export default function ProfileInfo(props: ProfileInfoProps) {
+	const { user } = props;
 	const { user: currentUser, userSneakers } = useSession();
 
 	const { userProfile, handleFollowToggle, isFollowLoading } = useUserProfile(

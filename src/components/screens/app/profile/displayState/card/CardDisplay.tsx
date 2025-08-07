@@ -1,8 +1,7 @@
 import { RefreshControl, ScrollView } from 'react-native';
 
-import { SearchUser } from '@/domain/UserSearchProvider';
 import { Sneaker } from '@/types/sneaker';
-import { User } from '@/types/user';
+import { SearchUser, User } from '@/types/user';
 
 import ProfileHeader from '../../ProfileHeader';
 import SneakersCardByBrand from './SneakersCardByBrand';
@@ -17,15 +16,22 @@ interface CardDisplayProps {
 	showBackButton?: boolean;
 }
 
-export default function CardDisplay({
-	sneakersByBrand,
-	handleSneakerPress,
-	refreshing,
-	onRefresh,
-	user,
-	userSneakers,
-	showBackButton,
-}: CardDisplayProps) {
+export default function CardDisplay(props: CardDisplayProps) {
+	// Vérification défensive pour éviter l'erreur "Cannot convert null value to object"
+	if (!props || typeof props !== 'object') {
+		console.error('CardDisplay: Props sont null ou invalides:', props);
+		return null;
+	}
+
+	const {
+		sneakersByBrand,
+		handleSneakerPress,
+		refreshing,
+		onRefresh,
+		user,
+		userSneakers,
+		showBackButton,
+	} = props;
 	return (
 		<ScrollView
 			className="flex-1 mt-16"

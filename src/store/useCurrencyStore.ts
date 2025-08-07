@@ -15,7 +15,8 @@ interface CurrencyStore {
 	setCurrency: (currency: Currency) => Promise<void>;
 	initializeCurrency: () => Promise<void>;
 	getCurrentCurrency: () => Currency;
-	formattedPrice: (price: number) => Promise<string>;
+	formattedPrice: (price: number) => string;
+	formattedPriceAsync: (price: number) => Promise<string>;
 }
 
 const CURRENCY_STORAGE_KEY = 'app_currency';
@@ -75,7 +76,16 @@ export const useCurrencyStore = create<CurrencyStore>((set, get) => ({
 			});
 	},
 
-	formattedPrice: async (price: number) => {
+	formattedPrice: (price: number) => {
+		try {
+			return currencyProvider.formatPrice(price, get().currentCurrency);
+		} catch (error) {
+			console.error('❌ Error formatting price:', error);
+			return `$${price.toFixed(2)}`;
+		}
+	},
+
+	formattedPriceAsync: async (price: number) => {
 		try {
 			return CurrencyProviderInterface.formatPrice(
 				price,
