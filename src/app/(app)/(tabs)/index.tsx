@@ -8,6 +8,7 @@ import { router } from 'expo-router';
 import MainButton from '@/components/ui/buttons/MainButton';
 import CollectionCard from '@/components/ui/cards/CollectionCard';
 import FollowerTitle from '@/components/ui/text/FollowerTitle';
+import PageTitle from '@/components/ui/text/PageTitle';
 import Title from '@/components/ui/text/Title';
 import { useSession } from '@/contexts/authContext';
 import { useModalStore } from '@/store/useModalStore';
@@ -29,8 +30,9 @@ export default function Index() {
 	}, [user, userSneakers, setModalStep, setIsVisible]);
 
 	return (
-		<ScrollView className="flex-1 pt-32">
-			<View className="flex-1 gap-8">
+		<ScrollView className="flex-1">
+			<View className="flex-1 gap-8 mt-20">
+				<PageTitle content="KicksFolio" />
 				<View className="flex-1 gap-4">
 					<Title content={t('collection.pages.titles.collection')} />
 					<View className="flex-1 px-4">
