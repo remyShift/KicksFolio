@@ -20,5 +20,5 @@ config.transformer = {
 };
 
 module.exports = wrapWithReanimatedMetroConfig(
-	withNativeWind(config, { input: './src/global.css' })
+	withNativeWind(config, { input: './src/styles/global.css' })
 );

@@ -11,7 +11,7 @@ import { useAppInitialization } from '@/hooks/useAppInitialization';
 import '@/locales/i18n';
 import { useSplashScreenStore } from '@/store/useSplashScreenStore';
 
-import '../global.css';
+import '../styles/global.css';
 
 const FONTS = {
 	Actonia: require('../assets/fonts/Actonia.ttf'),
