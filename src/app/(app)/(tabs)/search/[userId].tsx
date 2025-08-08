@@ -18,16 +18,7 @@ export default function UserProfileScreen() {
 
 	const { userProfile, isLoading, refreshUserProfile } =
 		useUserProfile(userId);
-
-	console.log('[UserProfileScreen] params', { userId });
-	console.log('[UserProfileScreen] state', {
-		isLoading,
-		refreshing,
-		userProfilePresent: !!userProfile,
-	});
-
 	if (isLoading) {
-		console.log('[UserProfileScreen] rendering loading');
 		return (
 			<View className="flex-1 bg-background pt-32 items-center justify-center">
 				<Text className="font-open-sans text-gray-500">
@@ -38,7 +29,6 @@ export default function UserProfileScreen() {
 	}
 
 	if (!userProfile) {
-		console.log('[UserProfileScreen] no userProfile');
 		return (
 			<View className="flex-1 bg-background pt-32 items-center justify-center">
 				<Text className="font-open-sans text-gray-500">
@@ -57,7 +47,6 @@ export default function UserProfileScreen() {
 	const onRefresh = async () => {
 		setRefreshing(true);
 		if (userProfile) {
-			console.log('[UserProfileScreen] onRefresh');
 			await refreshUserProfile();
 		}
 		setRefreshing(false);

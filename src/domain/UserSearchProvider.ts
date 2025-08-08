@@ -11,16 +11,8 @@ export class UserSearchProvider implements UserSearchInterface {
 		currentUserId: string,
 		page: number = 0
 	): Promise<SearchUsersResponse> {
-		console.log('[UserSearchProvider] searchUsers:start', {
-			searchTerm,
-			currentUserId,
-			page,
-		});
 		return Promise.resolve().then(() => {
 			if (searchTerm.trim().length < 2) {
-				console.log(
-					'[UserSearchProvider] searchUsers: short term -> empty'
-				);
 				return {
 					users: [],
 					hasMore: false,
@@ -33,11 +25,6 @@ export class UserSearchProvider implements UserSearchInterface {
 				currentUserId,
 				page
 			).then((res) => {
-				console.log('[UserSearchProvider] searchUsers:done', {
-					count: res.users.length,
-					hasMore: res.hasMore,
-					totalCount: res.totalCount,
-				});
 				return res;
 			});
 		});
@@ -48,11 +35,6 @@ export class UserSearchProvider implements UserSearchInterface {
 		currentUserId: string,
 		page: number = 0
 	): Promise<SearchUsersResponse> {
-		console.log('[UserSearchProvider] searchUsersDirectSQL', {
-			searchTerm,
-			currentUserId,
-			page,
-		});
 		const offset = page * UserSearchProvider.PAGE_SIZE;
 		const searchPattern = `%${searchTerm.trim().toLowerCase()}%`;
 
@@ -119,14 +101,6 @@ export class UserSearchProvider implements UserSearchInterface {
 							followingResult,
 							isFollowingResult,
 						]) => {
-							console.log('[UserSearchProvider] enrich user', {
-								userId: user.id,
-								followersCount: followersResult.count,
-								followingCount: followingResult.count,
-								isFollowing:
-									!isFollowingResult.error &&
-									!!isFollowingResult.data,
-							});
 							return {
 								...user,
 								followers_count: followersResult.error
@@ -164,10 +138,6 @@ export class UserSearchProvider implements UserSearchInterface {
 		userId: string,
 		currentUserId: string
 	): Promise<SearchUser | null> {
-		console.log('[UserSearchProvider] getUserProfile:start', {
-			userId,
-			currentUserId,
-		});
 		try {
 			const { data: user, error } = await supabase
 				.from('users')
@@ -234,7 +204,6 @@ export class UserSearchProvider implements UserSearchInterface {
 				is_following: isFollowing,
 				sneakers: [],
 			};
-			console.log('[UserSearchProvider] getUserProfile:done');
 			return result;
 		} catch (error) {
 			console.warn(`Error getting user profile ${userId}:`, error);
@@ -243,7 +212,6 @@ export class UserSearchProvider implements UserSearchInterface {
 	}
 
 	async getUserSneakers(userId: string): Promise<Sneaker[]> {
-		console.log('[UserSearchProvider] getUserSneakers:start', { userId });
 		try {
 			const { data: sneakers, error } = await supabase
 				.from('sneakers')
@@ -273,9 +241,6 @@ export class UserSearchProvider implements UserSearchInterface {
 						images: UserSearchProvider.parseImages(sneaker.images),
 					} as Sneaker;
 				}) || [];
-			console.log('[UserSearchProvider] getUserSneakers:done', {
-				count: result.length,
-			});
 			return result;
 		} catch (error) {
 			console.error(

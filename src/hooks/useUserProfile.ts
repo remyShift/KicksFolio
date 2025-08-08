@@ -48,21 +48,15 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 
 	const loadUserProfile = useCallback(
 		async (showRefresh: boolean = false) => {
-			console.log('[useUserProfile] loadUserProfile:start', {
-				userId,
-				currentUserId: currentUser?.id,
-				showRefresh,
-			});
-
 			if (!userId) {
-				console.warn(
+				console.error(
 					'[useUserProfile] loadUserProfile: missing userId'
 				);
 				return;
 			}
 
 			if (isLoadingRef.current && !showRefresh) {
-				console.log(
+				console.warn(
 					'[useUserProfile] loadUserProfile: already loading, skipping'
 				);
 				return;
@@ -80,8 +74,6 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 				}
 			}
 
-			console.log('[useUserProfile] loadUserProfile: calling providers');
-
 			return Promise.all([
 				UserSearchInterface.getUserProfile(
 					userId,
@@ -94,13 +86,6 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 				),
 			])
 				.then(([userSearch, sneakers]) => {
-					console.log(
-						'[useUserProfile] providers: results received',
-						{
-							userFound: !!userSearch,
-							sneakersCount: (sneakers || []).length,
-						}
-					);
 					if (userSearch) {
 						setUserProfile({
 							userSearch,
@@ -126,7 +111,6 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 					isLoadingRef.current = false;
 					setIsLoading(false);
 					setRefreshing(false);
-					console.log('[useUserProfile] loadUserProfile: finished');
 				});
 		},
 		[userId, currentUser?.id, showErrorToast, userProfile]
@@ -209,24 +193,13 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 	}, [loadUserProfile]);
 
 	useEffect(() => {
-		console.log('[useUserProfile] effect: userId/currentUser changed', {
-			userId,
-			currentUserId: currentUser?.id,
-		});
 		if (userId && lastLoadedForRef.current !== userId) {
 			lastLoadedForRef.current = userId;
 			loadUserProfile();
 		}
 	}, [userId, currentUser?.id]);
 
-	useEffect(() => {
-		console.log('[useUserProfile] state', {
-			isLoading,
-			refreshing,
-			isFollowLoading,
-			userProfilePresent: !!userProfile,
-		});
-	}, [isLoading, refreshing, isFollowLoading, userProfile]);
+	useEffect(() => {}, [isLoading, refreshing, isFollowLoading, userProfile]);
 
 	return {
 		userProfile,

@@ -70,20 +70,11 @@ export class ImageProviderInterface {
 		options: ImageUploadOptions,
 		implementation: ImageProviderInterface['uploadImage']
 	): Promise<UploadResult> {
-		console.log(
-			'🖼️ ImageProviderInterface.uploadImage: Starting upload for bucket:',
-			options.bucket
-		);
-
 		return Promise.resolve()
 			.then(() => implementation(imageUri, options))
 			.then((result: UploadResult) => {
-				if (result.success) {
-					console.log(
-						'✅ ImageProviderInterface.uploadImage: Upload successful'
-					);
-				} else {
-					console.warn(
+				if (result.error) {
+					console.error(
 						'⚠️ ImageProviderInterface.uploadImage: Upload failed:',
 						result.error
 					);
@@ -105,19 +96,10 @@ export class ImageProviderInterface {
 		sneakerId: string,
 		implementation: ImageProviderInterface['uploadSneakerImages']
 	): Promise<UploadResult[]> {
-		console.log(
-			'🖼️ ImageProviderInterface.uploadSneakerImages: Uploading',
-			images.length,
-			'images'
-		);
-
 		return Promise.resolve()
 			.then(() => implementation(images, userId, sneakerId))
 			.then((results: UploadResult[]) => {
 				const successful = results.filter((r) => r.success).length;
-				console.log(
-					`✅ ImageProviderInterface.uploadSneakerImages: ${successful}/${results.length} uploads successful`
-				);
 				return results;
 			})
 			.catch((error: Error) => {
@@ -136,19 +118,11 @@ export class ImageProviderInterface {
 		userId: string,
 		implementation: ImageProviderInterface['uploadProfileImage']
 	): Promise<UploadResult> {
-		console.log(
-			'🖼️ ImageProviderInterface.uploadProfileImage: Starting profile image upload'
-		);
-
 		return Promise.resolve()
 			.then(() => implementation(imageUri, userId))
 			.then((result: UploadResult) => {
-				if (result.success) {
-					console.log(
-						'✅ ImageProviderInterface.uploadProfileImage: Profile image uploaded successfully'
-					);
-				} else {
-					console.warn(
+				if (result.error) {
+					console.error(
 						'⚠️ ImageProviderInterface.uploadProfileImage: Upload failed:',
 						result.error
 					);
@@ -171,20 +145,12 @@ export class ImageProviderInterface {
 		filePath: string,
 		implementation: ImageProviderInterface['deleteImage']
 	): Promise<boolean> {
-		console.log(
-			'🗑️ ImageProviderInterface.deleteImage: Deleting image from bucket:',
-			bucket
-		);
-
 		return Promise.resolve()
 			.then(() => implementation(bucket, filePath))
 			.then((success: boolean) => {
 				if (success) {
-					console.log(
-						'✅ ImageProviderInterface.deleteImage: Image deleted successfully'
-					);
 				} else {
-					console.warn(
+					console.error(
 						'⚠️ ImageProviderInterface.deleteImage: Failed to delete image'
 					);
 				}
@@ -213,20 +179,11 @@ export class ImageProviderInterface {
 		expiresIn: number = 3600,
 		implementation: ImageProviderInterface['getSignedUrl']
 	): Promise<string | null> {
-		console.log(
-			'🔗 ImageProviderInterface.getSignedUrl: Getting signed URL for bucket:',
-			bucket
-		);
-
 		return Promise.resolve()
 			.then(() => implementation(bucket, filePath, expiresIn))
 			.then((url: string | null) => {
-				if (url) {
-					console.log(
-						'✅ ImageProviderInterface.getSignedUrl: Signed URL generated successfully'
-					);
-				} else {
-					console.warn(
+				if (!url) {
+					console.error(
 						'⚠️ ImageProviderInterface.getSignedUrl: Failed to generate signed URL'
 					);
 				}
@@ -281,19 +238,11 @@ export class ImageProviderInterface {
 		options: ImageUploadOptions,
 		implementation: ImageProviderInterface['migrateImageFromUrl']
 	): Promise<UploadResult> {
-		console.log(
-			'🔄 ImageProviderInterface.migrateImageFromUrl: Migrating image from external URL'
-		);
-
 		return Promise.resolve()
 			.then(() => implementation(sourceUrl, options))
 			.then((result: UploadResult) => {
-				if (result.success) {
-					console.log(
-						'✅ ImageProviderInterface.migrateImageFromUrl: Migration successful'
-					);
-				} else {
-					console.warn(
+				if (result.error) {
+					console.error(
 						'⚠️ ImageProviderInterface.migrateImageFromUrl: Migration failed:',
 						result.error
 					);
@@ -314,20 +263,11 @@ export class ImageProviderInterface {
 		userId: string,
 		implementation: ImageProviderInterface['deleteUserFolder']
 	): Promise<boolean> {
-		console.log(
-			'🗑️ ImageProviderInterface.deleteUserFolder: Deleting user folder from bucket:',
-			bucket
-		);
-
 		return Promise.resolve()
 			.then(() => implementation(bucket, userId))
 			.then((success: boolean) => {
-				if (success) {
-					console.log(
-						'✅ ImageProviderInterface.deleteUserFolder: User folder deleted successfully'
-					);
-				} else {
-					console.warn(
+				if (!success) {
+					console.error(
 						'⚠️ ImageProviderInterface.deleteUserFolder: Failed to delete user folder'
 					);
 				}
@@ -348,20 +288,11 @@ export class ImageProviderInterface {
 		userId: string,
 		implementation: ImageProviderInterface['deleteAllUserFiles']
 	): Promise<boolean> {
-		console.log(
-			'🗑️ ImageProviderInterface.deleteAllUserFiles: Deleting all files for user:',
-			userId
-		);
-
 		return Promise.resolve()
 			.then(() => implementation(userId))
 			.then((success: boolean) => {
-				if (success) {
-					console.log(
-						'✅ ImageProviderInterface.deleteAllUserFiles: All user files deleted successfully'
-					);
-				} else {
-					console.warn(
+				if (!success) {
+					console.error(
 						'⚠️ ImageProviderInterface.deleteAllUserFiles: Failed to delete some user files'
 					);
 				}
@@ -381,20 +312,11 @@ export class ImageProviderInterface {
 		sneakerId: string,
 		implementation: ImageProviderInterface['deleteSneakerImages']
 	): Promise<boolean> {
-		console.log(
-			'🗑️ ImageProviderInterface.deleteSneakerImages: Deleting sneaker images for:',
-			sneakerId
-		);
-
 		return Promise.resolve()
 			.then(() => implementation(userId, sneakerId))
 			.then((success: boolean) => {
-				if (success) {
-					console.log(
-						'✅ ImageProviderInterface.deleteSneakerImages: Sneaker images deleted successfully'
-					);
-				} else {
-					console.warn(
+				if (!success) {
+					console.error(
 						'⚠️ ImageProviderInterface.deleteSneakerImages: Failed to delete sneaker images'
 					);
 				}
@@ -417,18 +339,9 @@ export class ImageProviderInterface {
 		sneakerId: string,
 		implementation: ImageProviderInterface['processAndUploadSneakerImages']
 	): Promise<SneakerPhoto[]> {
-		console.log(
-			'🔄 ImageProviderInterface.processAndUploadSneakerImages: Processing',
-			images.length,
-			'images'
-		);
-
 		return Promise.resolve()
 			.then(() => implementation(images, userId, sneakerId))
 			.then((processedImages: SneakerPhoto[]) => {
-				console.log(
-					`✅ ImageProviderInterface.processAndUploadSneakerImages: ${processedImages.length} images processed successfully`
-				);
 				return processedImages;
 			})
 			.catch((error: Error) => {
@@ -448,20 +361,11 @@ export class ImageProviderInterface {
 		fileName: string,
 		implementation: ImageProviderInterface['deleteSpecificSneakerImage']
 	): Promise<boolean> {
-		console.log(
-			'🗑️ ImageProviderInterface.deleteSpecificSneakerImage: Deleting specific image:',
-			fileName
-		);
-
 		return Promise.resolve()
 			.then(() => implementation(userId, sneakerId, fileName))
 			.then((success: boolean) => {
-				if (success) {
-					console.log(
-						'✅ ImageProviderInterface.deleteSpecificSneakerImage: Specific image deleted successfully'
-					);
-				} else {
-					console.warn(
+				if (!success) {
+					console.error(
 						'⚠️ ImageProviderInterface.deleteSpecificSneakerImage: Failed to delete specific image'
 					);
 				}
