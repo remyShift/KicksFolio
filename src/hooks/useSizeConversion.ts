@@ -1,9 +1,6 @@
-import {
-	GenderType,
-	sneakerSizeConverter,
-} from '@/domain/SneakerSizeConverter';
+import { sneakerSizeConverter } from '@/domain/SneakerSizeConverter';
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';
-import { SizeUnit, Sneaker } from '@/types/sneaker';
+import { GenderType, SizeUnit, Sneaker } from '@/types/sneaker';
 
 export const useSizeConversion = () => {
 	const { currentUnit } = useSizeUnitStore();

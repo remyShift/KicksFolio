@@ -92,7 +92,7 @@ export default function SneakerListItem({
 								? `${sneaker.condition}/10`
 								: 'N/A'}
 						</Text>
-						{sneaker.price_paid > 0 && (
+						{sneaker.price_paid && sneaker.price_paid > 0 && (
 							<Text className="text-sm font-medium text-green-600">
 								{formattedPrice(sneaker.price_paid)}
 							</Text>
