@@ -147,7 +147,7 @@ vi.mock('@/store/useModalStore', () => ({
 	useModalStore: vi.fn(),
 }));
 
-vi.mock('@/domain/AuthProvider', () => ({
+vi.mock('@/domain/AuthProxy', () => ({
 	authProvider: {
 		signIn: vi.fn().mockResolvedValue({
 			user: { id: 'test-user-id' },

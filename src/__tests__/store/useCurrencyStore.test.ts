@@ -202,8 +202,8 @@ describe('useCurrencyStore', () => {
 				},
 			}));
 
-			vi.doMock('@/interfaces/CurrencyProviderInterface', () => ({
-				CurrencyProviderInterface: {
+			vi.doMock('@/interfaces/CurrencyProvider', () => ({
+				CurrencyProvider: {
 					formatPrice: vi
 						.fn()
 						.mockImplementation(

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { CurrencyProviderInterface } from '@/domain/CurrencyProviderInterface';
+import { CurrencyProvider } from '@/domain/CurrencyProvider';
 import { Currency } from '@/store/useCurrencyStore';
 
 const mockProvider = {
@@ -10,7 +10,7 @@ const mockProvider = {
 	getSupportedCurrencies: vi.fn(),
 };
 
-describe('CurrencyProviderInterface', () => {
+describe('CurrencyProvider', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 	});
@@ -20,7 +20,7 @@ describe('CurrencyProviderInterface', () => {
 			const expectedResult = 85;
 			mockProvider.convertPrice.mockReturnValue(expectedResult);
 
-			const result = await CurrencyProviderInterface.convertPrice(
+			const result = await CurrencyProvider.convertPrice(
 				100,
 				'EUR',
 				'USD',
@@ -40,7 +40,7 @@ describe('CurrencyProviderInterface', () => {
 				throw new Error('Calculation error');
 			});
 
-			const result = await CurrencyProviderInterface.convertPrice(
+			const result = await CurrencyProvider.convertPrice(
 				100,
 				'EUR',
 				'USD',
@@ -56,7 +56,7 @@ describe('CurrencyProviderInterface', () => {
 			const expectedResult = '$100.00';
 			mockProvider.formatPrice.mockReturnValue(expectedResult);
 
-			const result = await CurrencyProviderInterface.formatPrice(
+			const result = await CurrencyProvider.formatPrice(
 				100,
 				'USD',
 				mockProvider.formatPrice
@@ -71,7 +71,7 @@ describe('CurrencyProviderInterface', () => {
 				throw new Error('Format error');
 			});
 
-			const result = await CurrencyProviderInterface.formatPrice(
+			const result = await CurrencyProvider.formatPrice(
 				100,
 				'USD',
 				mockProvider.formatPrice
@@ -86,7 +86,7 @@ describe('CurrencyProviderInterface', () => {
 			const expectedResult = 85;
 			mockProvider.convertPrice.mockReturnValue(expectedResult);
 
-			const result = await CurrencyProviderInterface.convertPrice(
+			const result = await CurrencyProvider.convertPrice(
 				100,
 				'USD',
 				'EUR',
@@ -106,7 +106,7 @@ describe('CurrencyProviderInterface', () => {
 				throw new Error('Conversion error');
 			});
 
-			const result = await CurrencyProviderInterface.convertPrice(
+			const result = await CurrencyProvider.convertPrice(
 				100,
 				'USD',
 				'EUR',
@@ -122,7 +122,7 @@ describe('CurrencyProviderInterface', () => {
 			const expectedResult = 0.85;
 			mockProvider.getExchangeRate.mockReturnValue(expectedResult);
 
-			const result = await CurrencyProviderInterface.getExchangeRate(
+			const result = await CurrencyProvider.getExchangeRate(
 				'EUR',
 				mockProvider.getExchangeRate
 			);
@@ -136,7 +136,7 @@ describe('CurrencyProviderInterface', () => {
 				throw new Error('Exchange rate error');
 			});
 
-			const result = await CurrencyProviderInterface.getExchangeRate(
+			const result = await CurrencyProvider.getExchangeRate(
 				'EUR',
 				mockProvider.getExchangeRate
 			);
@@ -150,10 +150,9 @@ describe('CurrencyProviderInterface', () => {
 			const expectedResult: Currency[] = ['USD', 'EUR'];
 			mockProvider.getSupportedCurrencies.mockReturnValue(expectedResult);
 
-			const result =
-				await CurrencyProviderInterface.getSupportedCurrencies(
-					mockProvider.getSupportedCurrencies
-				);
+			const result = await CurrencyProvider.getSupportedCurrencies(
+				mockProvider.getSupportedCurrencies
+			);
 
 			expect(result).toEqual(expectedResult);
 			expect(mockProvider.getSupportedCurrencies).toHaveBeenCalled();
@@ -164,10 +163,9 @@ describe('CurrencyProviderInterface', () => {
 				throw new Error('Supported currencies error');
 			});
 
-			const result =
-				await CurrencyProviderInterface.getSupportedCurrencies(
-					mockProvider.getSupportedCurrencies
-				);
+			const result = await CurrencyProvider.getSupportedCurrencies(
+				mockProvider.getSupportedCurrencies
+			);
 
 			expect(result).toEqual(['USD', 'EUR']);
 		});
