@@ -176,13 +176,13 @@ KicksFolio/
 │   │
 │   ├── domain/                # Business logic layer
 │   │   ├── AuthProxy.ts    # Authentication business logic
-│   │   ├── SneakerProvider.ts # Sneaker management logic
+│   │   ├── SneakerProxy.ts # Sneaker management logic
 │   │   ├── UserSearchProvider.ts
 │   │   └── WishlistProvider.ts
 │   │
 │   ├── interfaces/            # Domain contracts
 │   │   ├── Auth.ts   # Authentication interface
-│   │   ├── SneakerProviderInterface.ts
+│   │   ├── SneakerHandler.ts
 │   │   └── UserSearchInterface.ts
 │   │
 │   ├── hooks/                 # Custom React hooks

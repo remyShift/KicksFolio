@@ -1,9 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import {
-	SneakerInterface,
-	SneakerProviderInterface,
-} from '@/domain/SneakerProviderInterface';
+import { SneakerHandler, SneakerInterface } from '@/domain/SneakerHandler';
 import { SneakerBrand, SneakerStatus } from '@/types/sneaker';
 import { SizeUnit } from '@/types/sneaker';
 import { Sneaker } from '@/types/sneaker';
@@ -66,7 +63,7 @@ describe('SneakerInterface', () => {
 
 	describe('getSneakersByUser', () => {
 		it('should successfully get sneakers by user and return response', async () => {
-			const mockGetSneakersFunction: SneakerProviderInterface['getSneakersByUser'] =
+			const mockGetSneakersFunction: SneakerHandler['getSneakersByUser'] =
 				vi.fn().mockResolvedValue([mockSneaker]);
 
 			const result = await SneakerInterface.getSneakersByUser(
@@ -81,7 +78,7 @@ describe('SneakerInterface', () => {
 
 		it('should handle errors and rethrow them', async () => {
 			const mockError = new Error('Database error');
-			const mockGetSneakersFunction: SneakerProviderInterface['getSneakersByUser'] =
+			const mockGetSneakersFunction: SneakerHandler['getSneakersByUser'] =
 				vi.fn().mockImplementation(() => Promise.reject(mockError));
 
 			await expect(
@@ -97,7 +94,7 @@ describe('SneakerInterface', () => {
 
 	describe('createSneaker', () => {
 		it('should successfully create a sneaker and return response', async () => {
-			const mockCreateSneakerFunction: SneakerProviderInterface['createSneaker'] =
+			const mockCreateSneakerFunction: SneakerHandler['createSneaker'] =
 				vi.fn().mockResolvedValue(mockSneaker);
 
 			const result = await SneakerInterface.createSneaker(
@@ -116,7 +113,7 @@ describe('SneakerInterface', () => {
 
 		it('should handle errors and rethrow them', async () => {
 			const mockError = new Error('Creation failed');
-			const mockCreateSneakerFunction: SneakerProviderInterface['createSneaker'] =
+			const mockCreateSneakerFunction: SneakerHandler['createSneaker'] =
 				vi.fn().mockImplementation(() => Promise.reject(mockError));
 
 			await expect(
@@ -135,7 +132,7 @@ describe('SneakerInterface', () => {
 
 		it('should handle validation errors', async () => {
 			const validationError = new Error('Invalid sneaker data');
-			const mockCreateSneakerFunction: SneakerProviderInterface['createSneaker'] =
+			const mockCreateSneakerFunction: SneakerHandler['createSneaker'] =
 				vi
 					.fn()
 					.mockImplementation(() => Promise.reject(validationError));
@@ -156,7 +153,7 @@ describe('SneakerInterface', () => {
 				model: 'Air Max 95',
 				condition: 8,
 			};
-			const mockUpdateSneakerFunction: SneakerProviderInterface['updateSneaker'] =
+			const mockUpdateSneakerFunction: SneakerHandler['updateSneaker'] =
 				vi.fn().mockResolvedValue(mockSneaker);
 
 			const result = await SneakerInterface.updateSneaker(
@@ -178,7 +175,7 @@ describe('SneakerInterface', () => {
 		it('should handle errors and rethrow them', async () => {
 			const mockError = new Error('Update failed');
 			const updates = { model: 'Air Max 95' };
-			const mockUpdateSneakerFunction: SneakerProviderInterface['updateSneaker'] =
+			const mockUpdateSneakerFunction: SneakerHandler['updateSneaker'] =
 				vi.fn().mockImplementation(() => Promise.reject(mockError));
 
 			await expect(
@@ -200,7 +197,7 @@ describe('SneakerInterface', () => {
 
 	describe('deleteSneaker', () => {
 		it('should successfully delete a sneaker', async () => {
-			const mockDeleteSneakerFunction: SneakerProviderInterface['deleteSneaker'] =
+			const mockDeleteSneakerFunction: SneakerHandler['deleteSneaker'] =
 				vi.fn().mockResolvedValue(undefined);
 
 			await SneakerInterface.deleteSneaker(
@@ -214,7 +211,7 @@ describe('SneakerInterface', () => {
 
 		it('should handle errors and rethrow them', async () => {
 			const mockError = new Error('Deletion failed');
-			const mockDeleteSneakerFunction: SneakerProviderInterface['deleteSneaker'] =
+			const mockDeleteSneakerFunction: SneakerHandler['deleteSneaker'] =
 				vi.fn().mockImplementation(() => Promise.reject(mockError));
 
 			await expect(
@@ -227,8 +224,9 @@ describe('SneakerInterface', () => {
 
 	describe('searchBySku', () => {
 		it('should successfully search by SKU and return response', async () => {
-			const mockSearchBySkuFunction: SneakerProviderInterface['searchBySku'] =
-				vi.fn().mockResolvedValue(mockSkuSearchResponse);
+			const mockSearchBySkuFunction: SneakerHandler['searchBySku'] = vi
+				.fn()
+				.mockResolvedValue(mockSkuSearchResponse);
 
 			const result = await SneakerInterface.searchBySku(
 				'DH4071-101',
@@ -242,8 +240,9 @@ describe('SneakerInterface', () => {
 
 		it('should handle errors and rethrow them', async () => {
 			const mockError = new Error('SKU search failed');
-			const mockSearchBySkuFunction: SneakerProviderInterface['searchBySku'] =
-				vi.fn().mockImplementation(() => Promise.reject(mockError));
+			const mockSearchBySkuFunction: SneakerHandler['searchBySku'] = vi
+				.fn()
+				.mockImplementation(() => Promise.reject(mockError));
 
 			await expect(
 				SneakerInterface.searchBySku(
@@ -257,8 +256,9 @@ describe('SneakerInterface', () => {
 
 		it('should handle API errors', async () => {
 			const apiError = new Error('External API unavailable');
-			const mockSearchBySkuFunction: SneakerProviderInterface['searchBySku'] =
-				vi.fn().mockImplementation(() => Promise.reject(apiError));
+			const mockSearchBySkuFunction: SneakerHandler['searchBySku'] = vi
+				.fn()
+				.mockImplementation(() => Promise.reject(apiError));
 
 			await expect(
 				SneakerInterface.searchBySku(
@@ -271,7 +271,7 @@ describe('SneakerInterface', () => {
 
 	describe('searchByBarcode', () => {
 		it('should successfully search by barcode and return response', async () => {
-			const mockSearchByBarcodeFunction: SneakerProviderInterface['searchByBarcode'] =
+			const mockSearchByBarcodeFunction: SneakerHandler['searchByBarcode'] =
 				vi.fn().mockResolvedValue(mockSkuSearchResponse);
 
 			const result = await SneakerInterface.searchByBarcode(
@@ -288,7 +288,7 @@ describe('SneakerInterface', () => {
 
 		it('should handle errors and rethrow them', async () => {
 			const mockError = new Error('Barcode search failed');
-			const mockSearchByBarcodeFunction: SneakerProviderInterface['searchByBarcode'] =
+			const mockSearchByBarcodeFunction: SneakerHandler['searchByBarcode'] =
 				vi.fn().mockImplementation(() => Promise.reject(mockError));
 
 			await expect(
@@ -305,7 +305,7 @@ describe('SneakerInterface', () => {
 
 		it('should handle network errors', async () => {
 			const networkError = new Error('Network timeout');
-			const mockSearchByBarcodeFunction: SneakerProviderInterface['searchByBarcode'] =
+			const mockSearchByBarcodeFunction: SneakerHandler['searchByBarcode'] =
 				vi.fn().mockImplementation(() => Promise.reject(networkError));
 
 			await expect(

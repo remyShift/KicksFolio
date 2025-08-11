@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { SneakerProviderInterface } from '@/domain/SneakerProviderInterface';
+import { SneakerHandler } from '@/domain/SneakerHandler';
 import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
 
-describe('SneakerProviderInterface', () => {
+describe('SneakerHandler', () => {
 	describe('getSneakersByUser', () => {
 		it('should return sneakers for a user', async () => {
 			const mockSneakers: Sneaker[] = [
@@ -33,7 +33,7 @@ describe('SneakerProviderInterface', () => {
 				.fn()
 				.mockResolvedValue(mockSneakers);
 
-			const result = await SneakerProviderInterface.getSneakersByUser(
+			const result = await SneakerHandler.getSneakersByUser(
 				'user-1',
 				mockGetSneakersFunction
 			);
@@ -52,7 +52,7 @@ describe('SneakerProviderInterface', () => {
 				.mockImplementation(() => {});
 
 			await expect(
-				SneakerProviderInterface.getSneakersByUser(
+				SneakerHandler.getSneakersByUser(
 					'user-1',
 					mockGetSneakersFunction
 				)
@@ -99,7 +99,7 @@ describe('SneakerProviderInterface', () => {
 				.fn()
 				.mockResolvedValue(mockCreatedSneaker);
 
-			const result = await SneakerProviderInterface.createSneaker(
+			const result = await SneakerHandler.createSneaker(
 				mockSneakerData,
 				'EU',
 				mockCreateSneakerFunction
@@ -122,7 +122,7 @@ describe('SneakerProviderInterface', () => {
 				.mockImplementation(() => {});
 
 			await expect(
-				SneakerProviderInterface.createSneaker(
+				SneakerHandler.createSneaker(
 					{} as any,
 					'EU',
 					mockCreateSneakerFunction
@@ -170,7 +170,7 @@ describe('SneakerProviderInterface', () => {
 				.fn()
 				.mockResolvedValue(mockUpdatedSneaker);
 
-			const result = await SneakerProviderInterface.updateSneaker(
+			const result = await SneakerHandler.updateSneaker(
 				'1',
 				mockUpdates,
 				'EU',
@@ -195,7 +195,7 @@ describe('SneakerProviderInterface', () => {
 				.mockImplementation(() => {});
 
 			await expect(
-				SneakerProviderInterface.updateSneaker(
+				SneakerHandler.updateSneaker(
 					'1',
 					{},
 					'EU',
@@ -218,10 +218,7 @@ describe('SneakerProviderInterface', () => {
 				.fn()
 				.mockResolvedValue(undefined);
 
-			await SneakerProviderInterface.deleteSneaker(
-				'1',
-				mockDeleteSneakerFunction
-			);
+			await SneakerHandler.deleteSneaker('1', mockDeleteSneakerFunction);
 
 			expect(mockDeleteSneakerFunction).toHaveBeenCalledWith('1');
 		});
@@ -236,10 +233,7 @@ describe('SneakerProviderInterface', () => {
 				.mockImplementation(() => {});
 
 			await expect(
-				SneakerProviderInterface.deleteSneaker(
-					'1',
-					mockDeleteSneakerFunction
-				)
+				SneakerHandler.deleteSneaker('1', mockDeleteSneakerFunction)
 			).rejects.toThrow('Failed to delete sneaker');
 
 			expect(consoleSpy).toHaveBeenCalledWith(

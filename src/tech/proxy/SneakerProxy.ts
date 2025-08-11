@@ -1,13 +1,12 @@
 import { t } from 'i18next';
 
 import { supabase } from '@/config/supabase/supabase';
-import { SneakerProviderInterface } from '@/domain/SneakerProviderInterface';
+import { sneakerSizeConverter } from '@/d/SneakerSizeConverter';
+import { SneakerHandlerInterface } from '@/domain/SneakerHandler';
 import { GenderType, SizeUnit, Sneaker } from '@/types/sneaker';
 import { sneakerBrandOptions } from '@/validation/utils';
 
-import { sneakerSizeConverter } from '../tech/SneakerSizeConverter';
-
-class SneakerProvider implements SneakerProviderInterface {
+class SneakerProxy implements SneakerHandlerInterface {
 	async getSneakersByUser(userId: string): Promise<Sneaker[]> {
 		const { data, error } = await supabase
 			.from('sneakers')
@@ -23,7 +22,7 @@ class SneakerProvider implements SneakerProviderInterface {
 					sneaker;
 				return {
 					...sneakerWithoutTimestamps,
-					images: SneakerProvider.parseImages(sneaker.images),
+					images: SneakerProxy.parseImages(sneaker.images),
 				} as Sneaker;
 			}) || []
 		);
@@ -157,7 +156,7 @@ class SneakerProvider implements SneakerProviderInterface {
 		const { created_at, updated_at, ...sneakerWithoutTimestamps } = data;
 		return {
 			...sneakerWithoutTimestamps,
-			images: SneakerProvider.parseImages(data.images),
+			images: SneakerProxy.parseImages(data.images),
 		} as Sneaker;
 	}
 
@@ -210,7 +209,7 @@ class SneakerProvider implements SneakerProviderInterface {
 		const { created_at, updated_at, ...sneakerWithoutTimestamps } = data;
 		return {
 			...sneakerWithoutTimestamps,
-			images: SneakerProvider.parseImages(data.images),
+			images: SneakerProxy.parseImages(data.images),
 		} as Sneaker;
 	}
 
@@ -235,7 +234,7 @@ class SneakerProvider implements SneakerProviderInterface {
 		const { created_at, updated_at, ...sneakerWithoutTimestamps } = data;
 		return {
 			...sneakerWithoutTimestamps,
-			images: SneakerProvider.parseImages(data.images),
+			images: SneakerProxy.parseImages(data.images),
 		} as Sneaker;
 	}
 
@@ -389,4 +388,4 @@ class SneakerProvider implements SneakerProviderInterface {
 	}
 }
 
-export const sneakerProvider = new SneakerProvider();
+export const sneakerProxy = new SneakerProxy();

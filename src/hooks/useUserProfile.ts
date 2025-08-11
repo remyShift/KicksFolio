@@ -46,7 +46,7 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 	const isLoadingRef = useRef(false);
 	const lastLoadedForRef = useRef<string | null>(null);
 
-	const follower = new FollowerHandler(followerProxy);
+	const followerHandler = new FollowerHandler(followerProxy);
 
 	const loadUserProfile = useCallback(
 		async (showRefresh: boolean = false) => {
@@ -125,8 +125,8 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 		setIsFollowLoading(true);
 
 		const followAction = userProfile.userSearch.is_following
-			? follower.unfollowUser(userProfile.userSearch.id)
-			: follower.followUser(userProfile.userSearch.id);
+			? followerHandler.unfollowUser(userProfile.userSearch.id)
+			: followerHandler.followUser(userProfile.userSearch.id);
 
 		try {
 			await followAction;

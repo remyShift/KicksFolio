@@ -12,7 +12,7 @@ interface SkuSearchResponse {
 	}>;
 }
 
-export interface SneakerProviderInterface {
+export interface SneakerHandlerInterface {
 	getSneakersByUser: (userId: string) => Promise<Sneaker[]>;
 	createSneaker: (
 		sneakerData: Omit<Sneaker, 'id' | 'user_id' | 'size_eu' | 'size_us'> & {
@@ -30,12 +30,12 @@ export interface SneakerProviderInterface {
 	searchByBarcode: (barcode: string) => Promise<SkuSearchResponse>;
 }
 
-export class SneakerProviderInterface {
-	static getSneakersByUser = async (
-		userId: string,
-		getSneakersFunction: SneakerProviderInterface['getSneakersByUser']
-	) => {
-		return getSneakersFunction(userId)
+export class SneakerHandler {
+	constructor(private readonly sneakerHandler: SneakerHandlerInterface) {}
+
+	getSneakersByUser = async (userId: string) => {
+		return this.sneakerHandler
+			.getSneakersByUser(userId)
 			.then((sneakers) => {
 				return sneakers;
 			})
@@ -48,14 +48,14 @@ export class SneakerProviderInterface {
 			});
 	};
 
-	static createSneaker = async (
+	createSneaker = async (
 		sneakerData: Omit<Sneaker, 'id' | 'user_id' | 'size_eu' | 'size_us'> & {
 			size: number;
 		},
-		currentUnit: SizeUnit = 'EU',
-		createSneakerFunction: SneakerProviderInterface['createSneaker']
+		currentUnit: SizeUnit = 'EU'
 	) => {
-		return createSneakerFunction(sneakerData, currentUnit)
+		return this.sneakerHandler
+			.createSneaker(sneakerData, currentUnit)
 			.then((sneaker) => {
 				return sneaker;
 			})
@@ -68,13 +68,13 @@ export class SneakerProviderInterface {
 			});
 	};
 
-	static updateSneaker = async (
+	updateSneaker = async (
 		id: string,
 		updates: Partial<Sneaker & { size?: number }>,
-		currentUnit: SizeUnit = 'EU',
-		updateSneakerFunction: SneakerProviderInterface['updateSneaker']
+		currentUnit: SizeUnit = 'EU'
 	) => {
-		return updateSneakerFunction(id, updates, currentUnit)
+		return this.sneakerHandler
+			.updateSneaker(id, updates, currentUnit)
 			.then((sneaker) => {
 				return sneaker;
 			})
@@ -87,11 +87,9 @@ export class SneakerProviderInterface {
 			});
 	};
 
-	static deleteSneaker = async (
-		id: string,
-		deleteSneakerFunction: SneakerProviderInterface['deleteSneaker']
-	) => {
-		return deleteSneakerFunction(id)
+	deleteSneaker = async (id: string) => {
+		return this.sneakerHandler
+			.deleteSneaker(id)
 			.then(() => {
 				return;
 			})
@@ -104,11 +102,9 @@ export class SneakerProviderInterface {
 			});
 	};
 
-	static searchBySku = async (
-		sku: string,
-		searchBySkuFunction: SneakerProviderInterface['searchBySku']
-	) => {
-		return searchBySkuFunction(sku)
+	searchBySku = async (sku: string) => {
+		return this.sneakerHandler
+			.searchBySku(sku)
 			.then((response) => {
 				return response;
 			})
@@ -121,11 +117,9 @@ export class SneakerProviderInterface {
 			});
 	};
 
-	static searchByBarcode = async (
-		barcode: string,
-		searchByBarcodeFunction: SneakerProviderInterface['searchByBarcode']
-	) => {
-		return searchByBarcodeFunction(barcode)
+	searchByBarcode = async (barcode: string) => {
+		return this.sneakerHandler
+			.searchByBarcode(barcode)
 			.then((response) => {
 				return response;
 			})
@@ -138,5 +132,3 @@ export class SneakerProviderInterface {
 			});
 	};
 }
-
-export const SneakerInterface = SneakerProviderInterface;

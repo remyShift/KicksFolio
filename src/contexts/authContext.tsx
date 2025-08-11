@@ -12,17 +12,17 @@ import * as Linking from 'expo-linking';
 import { router } from 'expo-router';
 
 import { supabase } from '@/config/supabase/supabase';
-import { sneakerProvider } from '@/d/SneakerProvider';
 import { userSearchProvider } from '@/d/UserSearchProvider';
 import { wishlistProvider } from '@/d/WishlistProvider';
 import { Auth } from '@/domain/Auth';
 import { FollowerHandler } from '@/domain/FollowerHandler';
-import { SneakerProviderInterface } from '@/domain/SneakerProviderInterface';
+import { SneakerHandler } from '@/domain/SneakerHandler';
 import { UserSearchInterface } from '@/domain/UserSearchInterface';
 import { WishlistProviderInterface } from '@/domain/WishlistProviderInterface';
 import { storageProvider } from '@/services/StorageService';
 import { authProxy } from '@/tech/proxy/AuthProxy';
 import { followerProxy } from '@/tech/proxy/FollowerProxy';
+import { sneakerProxy } from '@/tech/proxy/SneakerProxy';
 import { AuthContextType, FollowingUserWithSneakers } from '@/types/auth';
 import { Sneaker } from '@/types/sneaker';
 import { User } from '@/types/user';
@@ -59,7 +59,8 @@ export function SessionProvider({ children }: PropsWithChildren) {
 	>(null);
 
 	const auth = new Auth(authProxy);
-	const follower = new FollowerHandler(followerProxy);
+	const followerHandler = new FollowerHandler(followerProxy);
+	const sneakerHandler = new SneakerHandler(sneakerProxy);
 
 	useEffect(() => {
 		const handleDeepLink = (url: string) => {
@@ -173,9 +174,8 @@ export function SessionProvider({ children }: PropsWithChildren) {
 	}, [appState]);
 
 	const loadUserSneakers = async (userWithUrl: User) => {
-		const sneakersPromise = SneakerProviderInterface.getSneakersByUser(
-			userWithUrl.id,
-			sneakerProvider.getSneakersByUser
+		const sneakersPromise = sneakerHandler.getSneakersByUser(
+			userWithUrl.id
 		);
 		const wishlistPromise =
 			WishlistProviderInterface.getUserWishlistSneakers(
@@ -211,7 +211,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
 	};
 
 	const loadFollowingUsers = async (userId: string) => {
-		return follower
+		return followerHandler
 			.getFollowingUsers(userId)
 			.then(async (followingUsersData) => {
 				const followingWithSneakers = await Promise.all(
@@ -365,10 +365,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
 			return;
 		}
 
-		const sneakersPromise = SneakerProviderInterface.getSneakersByUser(
-			user.id,
-			sneakerProvider.getSneakersByUser
-		);
+		const sneakersPromise = sneakerHandler.getSneakersByUser(user.id);
 		const wishlistPromise =
 			WishlistProviderInterface.getUserWishlistSneakers(
 				user.id,
