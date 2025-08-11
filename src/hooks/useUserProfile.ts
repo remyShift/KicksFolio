@@ -5,11 +5,11 @@ import { useTranslation } from 'react-i18next';
 import { router } from 'expo-router';
 
 import { useSession } from '@/contexts/authContext';
-import { userSearchProvider } from '@/d/UserSearchProvider';
 import { FollowerHandler } from '@/domain/FollowerHandler';
-import { UserSearchInterface } from '@/domain/UserSearchInterface';
+import { UserSearch } from '@/domain/UserSearch';
 import useToast from '@/hooks/ui/useToast';
 import { followerProxy } from '@/tech/proxy/FollowerProxy';
+import { userSearchProxy } from '@/tech/proxy/UserSearchProxy';
 import { Sneaker } from '@/types/sneaker';
 import { SearchUser } from '@/types/user';
 
@@ -47,6 +47,7 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 	const lastLoadedForRef = useRef<string | null>(null);
 
 	const followerHandler = new FollowerHandler(followerProxy);
+	const userSearch = new UserSearch(userSearchProxy);
 
 	const loadUserProfile = useCallback(
 		async (showRefresh: boolean = false) => {
@@ -77,15 +78,8 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 			}
 
 			return Promise.all([
-				UserSearchInterface.getUserProfile(
-					userId,
-					currentUser?.id ?? '',
-					userSearchProvider.getUserProfile.bind(userSearchProvider)
-				),
-				UserSearchInterface.getUserSneakers(
-					userId,
-					userSearchProvider.getUserSneakers.bind(userSearchProvider)
-				),
+				userSearch.getUserProfile(userId, currentUser?.id ?? ''),
+				userSearch.getUserSneakers(userId),
 			])
 				.then(([userSearch, sneakers]) => {
 					if (userSearch) {

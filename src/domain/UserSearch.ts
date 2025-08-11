@@ -15,55 +15,52 @@ export interface UserSearchInterface {
 	getUserSneakers: (userId: string) => Promise<any[]>;
 }
 
-export class UserSearchInterface {
-	static searchUsers = async (
+export class UserSearch {
+	constructor(private readonly userSearch: UserSearchInterface) {}
+
+	searchUsers = async (
 		searchTerm: string,
 		currentUserId: string,
-		page: number = 0,
-		searchFunction: UserSearchInterface['searchUsers']
+		page: number = 0
 	) => {
-		return searchFunction(searchTerm, currentUserId, page)
+		return this.userSearch
+			.searchUsers(searchTerm, currentUserId, page)
 			.then((response) => {
 				return response;
 			})
 			.catch((error) => {
 				console.error(
-					'❌ UserSearchInterface.searchUsers: Error occurred:',
+					'❌ UserSearch.searchUsers: Error occurred:',
 					error
 				);
 				throw error;
 			});
 	};
 
-	static getUserProfile = async (
-		userId: string,
-		currentUserId: string,
-		getUserProfileFunction: UserSearchInterface['getUserProfile']
-	) => {
-		return getUserProfileFunction(userId, currentUserId)
+	getUserProfile = async (userId: string, currentUserId: string) => {
+		return this.userSearch
+			.getUserProfile(userId, currentUserId)
 			.then((user) => {
 				return user;
 			})
 			.catch((error) => {
 				console.error(
-					'❌ UserSearchInterface.getUserProfile: Error occurred:',
+					'❌ UserSearch.getUserProfile: Error occurred:',
 					error
 				);
 				throw error;
 			});
 	};
 
-	static getUserSneakers = async (
-		userId: string,
-		getUserSneakersFunction: UserSearchInterface['getUserSneakers']
-	) => {
-		return getUserSneakersFunction(userId)
+	getUserSneakers = async (userId: string) => {
+		return this.userSearch
+			.getUserSneakers(userId)
 			.then((sneakers) => {
 				return sneakers;
 			})
 			.catch((error) => {
 				console.error(
-					'❌ UserSearchInterface.getUserSneakers: Error occurred:',
+					'❌ UserSearch.getUserSneakers: Error occurred:',
 					error
 				);
 				throw error;

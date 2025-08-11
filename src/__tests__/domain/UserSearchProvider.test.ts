@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { SearchUser, SearchUsersResponse } from '@/d/UserSearchProvider';
-import { UserSearchInterface } from '@/domain/UserSearchInterface';
+import { UserSearch } from '@/domain/UserSearch';
+import { SearchUser, SearchUsersResponse } from '@/tech/proxy/UserSearchProxy';
 
-describe('UserSearchInterface', () => {
+describe('UserSearch', () => {
 	describe('searchUsers', () => {
 		it('should return search results when users are found', async () => {
 			const mockSearchResponse: SearchUsersResponse = {
@@ -28,7 +28,7 @@ describe('UserSearchInterface', () => {
 				.fn()
 				.mockResolvedValue(mockSearchResponse);
 
-			const result = await UserSearchInterface.searchUsers(
+			const result = await UserSearch.searchUsers(
 				'test',
 				'current-user-id',
 				0,
@@ -54,7 +54,7 @@ describe('UserSearchInterface', () => {
 				.fn()
 				.mockResolvedValue(mockSearchResponse);
 
-			const result = await UserSearchInterface.searchUsers(
+			const result = await UserSearch.searchUsers(
 				'',
 				'current-user-id',
 				0,
@@ -77,7 +77,7 @@ describe('UserSearchInterface', () => {
 				.mockImplementation(() => {});
 
 			await expect(
-				UserSearchInterface.searchUsers(
+				UserSearch.searchUsers(
 					'test',
 					'current-user-id',
 					0,
@@ -86,7 +86,7 @@ describe('UserSearchInterface', () => {
 			).rejects.toThrow('Search failed');
 
 			expect(consoleSpy).toHaveBeenCalledWith(
-				'❌ UserSearchInterface.searchUsers: Error occurred:',
+				'❌ UserSearch.searchUsers: Error occurred:',
 				mockError
 			);
 
@@ -112,7 +112,7 @@ describe('UserSearchInterface', () => {
 				.fn()
 				.mockResolvedValue(mockUser);
 
-			const result = await UserSearchInterface.getUserProfile(
+			const result = await UserSearch.getUserProfile(
 				'1',
 				'current-user-id',
 				mockGetUserProfileFunction
@@ -128,7 +128,7 @@ describe('UserSearchInterface', () => {
 		it('should return null when user not found', async () => {
 			const mockGetUserProfileFunction = vi.fn().mockResolvedValue(null);
 
-			const result = await UserSearchInterface.getUserProfile(
+			const result = await UserSearch.getUserProfile(
 				'nonexistent',
 				'current-user-id',
 				mockGetUserProfileFunction
@@ -151,7 +151,7 @@ describe('UserSearchInterface', () => {
 				.mockImplementation(() => {});
 
 			await expect(
-				UserSearchInterface.getUserProfile(
+				UserSearch.getUserProfile(
 					'1',
 					'current-user-id',
 					mockGetUserProfileFunction
@@ -159,7 +159,7 @@ describe('UserSearchInterface', () => {
 			).rejects.toThrow('Profile fetch failed');
 
 			expect(consoleSpy).toHaveBeenCalledWith(
-				'❌ UserSearchInterface.getUserProfile: Error occurred:',
+				'❌ UserSearch.getUserProfile: Error occurred:',
 				mockError
 			);
 
@@ -190,7 +190,7 @@ describe('UserSearchInterface', () => {
 				.fn()
 				.mockResolvedValue(mockSneakers);
 
-			const result = await UserSearchInterface.getUserSneakers(
+			const result = await UserSearch.getUserSneakers(
 				'user-id',
 				mockGetUserSneakersFunction
 			);
@@ -202,7 +202,7 @@ describe('UserSearchInterface', () => {
 		it('should return empty array when no sneakers found', async () => {
 			const mockGetUserSneakersFunction = vi.fn().mockResolvedValue([]);
 
-			const result = await UserSearchInterface.getUserSneakers(
+			const result = await UserSearch.getUserSneakers(
 				'user-id',
 				mockGetUserSneakersFunction
 			);
@@ -221,14 +221,14 @@ describe('UserSearchInterface', () => {
 				.mockImplementation(() => {});
 
 			await expect(
-				UserSearchInterface.getUserSneakers(
+				UserSearch.getUserSneakers(
 					'user-id',
 					mockGetUserSneakersFunction
 				)
 			).rejects.toThrow('Sneakers fetch failed');
 
 			expect(consoleSpy).toHaveBeenCalledWith(
-				'❌ UserSearchInterface.getUserSneakers: Error occurred:',
+				'❌ UserSearch.getUserSneakers: Error occurred:',
 				mockError
 			);
 

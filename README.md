@@ -183,7 +183,7 @@ KicksFolio/
 │   ├── interfaces/            # Domain contracts
 │   │   ├── Auth.ts   # Authentication interface
 │   │   ├── SneakerHandler.ts
-│   │   └── UserSearchInterface.ts
+│   │   └── UserSearch.ts
 │   │
 │   ├── hooks/                 # Custom React hooks
 │   │   ├── form/              # Form-related hooks

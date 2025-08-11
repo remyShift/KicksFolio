@@ -1,9 +1,9 @@
 import { supabase } from '@/config/supabase/supabase';
-import { UserSearchInterface } from '@/domain/UserSearchInterface';
+import { UserSearchInterface } from '@/domain/UserSearch';
 import { Sneaker } from '@/types/sneaker';
 import { SearchUser, SearchUsersResponse } from '@/types/user';
 
-export class UserSearchProvider implements UserSearchInterface {
+export class UserSearchProxy implements UserSearchInterface {
 	private static readonly PAGE_SIZE = 20;
 
 	async searchUsers(
@@ -35,7 +35,7 @@ export class UserSearchProvider implements UserSearchInterface {
 		currentUserId: string,
 		page: number = 0
 	): Promise<SearchUsersResponse> {
-		const offset = page * UserSearchProvider.PAGE_SIZE;
+		const offset = page * UserSearchProxy.PAGE_SIZE;
 		const searchPattern = `%${searchTerm.trim().toLowerCase()}%`;
 
 		const { data: users, error } = await supabase
@@ -55,7 +55,7 @@ export class UserSearchProvider implements UserSearchInterface {
 				`username.ilike.${searchPattern},first_name.ilike.${searchPattern},last_name.ilike.${searchPattern}`
 			)
 			.neq('id', currentUserId)
-			.range(offset, offset + UserSearchProvider.PAGE_SIZE);
+			.range(offset, offset + UserSearchProxy.PAGE_SIZE);
 
 		if (error) {
 			console.error(
@@ -66,9 +66,9 @@ export class UserSearchProvider implements UserSearchInterface {
 		}
 
 		const usersList = users || [];
-		const hasMore = usersList.length > UserSearchProvider.PAGE_SIZE;
+		const hasMore = usersList.length > UserSearchProxy.PAGE_SIZE;
 		const actualUsers = hasMore
-			? usersList.slice(0, UserSearchProvider.PAGE_SIZE)
+			? usersList.slice(0, UserSearchProxy.PAGE_SIZE)
 			: usersList;
 
 		const enrichedUsers = await Promise.all(
@@ -238,7 +238,7 @@ export class UserSearchProvider implements UserSearchInterface {
 					} = sneaker;
 					return {
 						...sneakerWithoutTimestamps,
-						images: UserSearchProvider.parseImages(sneaker.images),
+						images: UserSearchProxy.parseImages(sneaker.images),
 					} as Sneaker;
 				}) || [];
 			return result;
@@ -320,4 +320,4 @@ export class UserSearchProvider implements UserSearchInterface {
 	}
 }
 
-export const userSearchProvider = new UserSearchProvider();
+export const userSearchProxy = new UserSearchProxy();

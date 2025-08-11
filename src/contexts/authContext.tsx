@@ -12,17 +12,17 @@ import * as Linking from 'expo-linking';
 import { router } from 'expo-router';
 
 import { supabase } from '@/config/supabase/supabase';
-import { userSearchProvider } from '@/d/UserSearchProvider';
 import { wishlistProvider } from '@/d/WishlistProvider';
 import { Auth } from '@/domain/Auth';
 import { FollowerHandler } from '@/domain/FollowerHandler';
 import { SneakerHandler } from '@/domain/SneakerHandler';
-import { UserSearchInterface } from '@/domain/UserSearchInterface';
+import { UserSearch } from '@/domain/UserSearch';
 import { WishlistProviderInterface } from '@/domain/WishlistProviderInterface';
 import { storageProvider } from '@/services/StorageService';
 import { authProxy } from '@/tech/proxy/AuthProxy';
 import { followerProxy } from '@/tech/proxy/FollowerProxy';
 import { sneakerProxy } from '@/tech/proxy/SneakerProxy';
+import { userSearchProxy } from '@/tech/proxy/UserSearchProxy';
 import { AuthContextType, FollowingUserWithSneakers } from '@/types/auth';
 import { Sneaker } from '@/types/sneaker';
 import { User } from '@/types/user';
@@ -61,6 +61,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
 	const auth = new Auth(authProxy);
 	const followerHandler = new FollowerHandler(followerProxy);
 	const sneakerHandler = new SneakerHandler(sneakerProxy);
+	const userSearch = new UserSearch(userSearchProxy);
 
 	useEffect(() => {
 		const handleDeepLink = (url: string) => {
@@ -217,13 +218,9 @@ export function SessionProvider({ children }: PropsWithChildren) {
 				const followingWithSneakers = await Promise.all(
 					followingUsersData.map(async (followingUser) => {
 						try {
-							const sneakers =
-								await UserSearchInterface.getUserSneakers(
-									followingUser.id,
-									userSearchProvider.getUserSneakers.bind(
-										userSearchProvider
-									)
-								);
+							const sneakers = await userSearch.getUserSneakers(
+								followingUser.id
+							);
 							return {
 								...followingUser,
 								sneakers: sneakers || [],
