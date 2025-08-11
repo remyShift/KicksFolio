@@ -30,8 +30,8 @@ export default function Index() {
 	}, [user, userSneakers, setModalStep, setIsVisible]);
 
 	return (
-		<ScrollView className="flex-1">
-			<View className="flex-1 gap-8 mt-20">
+		<ScrollView className="flex-1 mt-16">
+			<View className="flex-1 gap-8">
 				<PageTitle content="KicksFolio" />
 				<View className="flex-1 gap-4">
 					<Title content={t('collection.pages.titles.collection')} />
@@ -44,7 +44,7 @@ export default function Index() {
 				</View>
 
 				{followingUsers && followingUsers.length > 0 ? (
-					<View className="flex-1 gap-4">
+					<View className="flex-1 gap-4 pb-4">
 						<View className="flex-1 gap-8">
 							{followingUsers.map((followingUser) => (
 								<View
