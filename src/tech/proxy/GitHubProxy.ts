@@ -7,7 +7,7 @@ import {
 	GITHUB_CONFIG,
 	validateGitHubConfig,
 } from '@/config/github/github.config';
-import { GitHubProviderInterface } from '@/domain/GitHubInterface';
+import { GitHubIssueHandlerInterface } from '@/domain/GitHubIssueHandler';
 import { BugReportFormData } from '@/store/useBugReportStore';
 
 export interface GitHubIssueData {
@@ -16,7 +16,7 @@ export interface GitHubIssueData {
 	labels: string[];
 }
 
-export class GitHubProvider implements GitHubProviderInterface {
+export class GitHubProxy implements GitHubIssueHandlerInterface {
 	private static readonly GITHUB_API_URL = GITHUB_CONFIG.API_URL;
 	private static readonly REPO_OWNER = GITHUB_CONFIG.REPO_OWNER;
 	private static readonly REPO_NAME = GITHUB_CONFIG.REPO_NAME;
@@ -138,21 +138,21 @@ export class GitHubProvider implements GitHubProviderInterface {
 			);
 		}
 
-		return GitHubProvider.getDeviceInfo()
+		return GitHubProxy.getDeviceInfo()
 			.then((deviceInfo) => {
-				const priorityLabel = GitHubProvider.getPriorityLabel(
+				const priorityLabel = GitHubProxy.getPriorityLabel(
 					formData.priority
 				);
 
 				const issueData: GitHubIssueData = {
 					title: `[Bug Report] ${formData.title}`,
-					body: GitHubProvider.formatIssueBody(formData, deviceInfo),
+					body: GitHubProxy.formatIssueBody(formData, deviceInfo),
 					labels: ['bug', 'mobile-app', priorityLabel],
 				};
 
-				const url = `${GitHubProvider.GITHUB_API_URL}/repos/${GitHubProvider.REPO_OWNER}/${GitHubProvider.REPO_NAME}/issues`;
+				const url = `${GitHubProxy.GITHUB_API_URL}/repos/${GitHubProxy.REPO_OWNER}/${GitHubProxy.REPO_NAME}/issues`;
 
-				return GitHubProvider.makeRequest(url, 'POST', issueData);
+				return GitHubProxy.makeRequest(url, 'POST', issueData);
 			})
 			.then((response) => {
 				return {
@@ -168,9 +168,9 @@ export class GitHubProvider implements GitHubProviderInterface {
 	}
 
 	async validateConfiguration(): Promise<boolean> {
-		const url = `${GitHubProvider.GITHUB_API_URL}/repos/${GitHubProvider.REPO_OWNER}/${GitHubProvider.REPO_NAME}`;
+		const url = `${GitHubProxy.GITHUB_API_URL}/repos/${GitHubProxy.REPO_OWNER}/${GitHubProxy.REPO_NAME}`;
 
-		return GitHubProvider.makeRequest(url)
+		return GitHubProxy.makeRequest(url)
 			.then(() => true)
 			.catch((error) => {
 				console.error('GitHub configuration validation failed:', error);
@@ -179,4 +179,4 @@ export class GitHubProvider implements GitHubProviderInterface {
 	}
 }
 
-export const gitHubProvider = new GitHubProvider();
+export const gitHubProxy = new GitHubProxy();
