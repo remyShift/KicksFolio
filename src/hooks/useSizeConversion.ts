@@ -6,7 +6,8 @@ export const useSizeConversion = () => {
 	const { currentUnit } = useSizeUnitStore();
 
 	const getSizeForCurrentUnit = (sneaker: Sneaker): number => {
-		return currentUnit === 'EU' ? sneaker.size_eu : sneaker.size_us;
+		const size = currentUnit === 'EU' ? sneaker.size_eu : sneaker.size_us;
+		return size || 0;
 	};
 
 	const formatSizeForDisplay = (sneaker: Sneaker): string => {

@@ -70,6 +70,10 @@ export class SneakerSizeConverter implements SneakerSizeConverterInterface {
 	}
 
 	formatSize(size: number, unit: SizeUnit): string {
+		if (size === null || size === undefined || isNaN(size) || size <= 0) {
+			return 'N/A';
+		}
+
 		return `${String(size)} ${unit}`;
 	}
 
