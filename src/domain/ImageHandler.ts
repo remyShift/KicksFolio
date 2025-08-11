@@ -6,7 +6,7 @@ import {
 	UploadResult,
 } from '@/types/image';
 
-export interface ImageProviderInterface {
+export interface ImageHandlerInterface {
 	uploadImage(
 		imageUri: string,
 		options: ImageUploadOptions
@@ -64,27 +64,28 @@ export interface ImageProviderInterface {
 	): Promise<boolean>;
 }
 
-export class ImageProviderInterface {
-	static async uploadImage(
+export class ImageHandler {
+	constructor(private readonly imageHandler: ImageHandlerInterface) {}
+
+	uploadImage = async (
 		imageUri: string,
-		options: ImageUploadOptions,
-		implementation: ImageProviderInterface['uploadImage']
-	): Promise<UploadResult> {
+		options: ImageUploadOptions
+	): Promise<UploadResult> => {
 		console.log(
-			'🖼️ ImageProviderInterface.uploadImage: Starting upload for bucket:',
+			'🖼️ ImageHandler.uploadImage: Starting upload for bucket:',
 			options.bucket
 		);
 
 		return Promise.resolve()
-			.then(() => implementation(imageUri, options))
+			.then(() => this.imageHandler.uploadImage(imageUri, options))
 			.then((result: UploadResult) => {
 				if (result.success) {
 					console.log(
-						'✅ ImageProviderInterface.uploadImage: Upload successful'
+						'✅ ImageHandler.uploadImage: Upload successful'
 					);
 				} else if (result.error) {
 					console.warn(
-						'⚠️ ImageProviderInterface.uploadImage: Upload failed:',
+						'⚠️ ImageHandler.uploadImage: Upload failed:',
 						result.error
 					);
 				}
@@ -92,56 +93,56 @@ export class ImageProviderInterface {
 			})
 			.catch((error: Error) => {
 				console.error(
-					'❌ ImageProviderInterface.uploadImage: Error occurred:',
+					'❌ ImageHandler.uploadImage: Error occurred:',
 					error
 				);
 				throw new Error(`Image upload failed: ${error.message}`);
 			});
-	}
+	};
 
-	static async uploadSneakerImages(
+	uploadSneakerImages = async (
 		images: Array<{ uri: string }>,
 		userId: string,
-		sneakerId: string,
-		implementation: ImageProviderInterface['uploadSneakerImages']
-	): Promise<UploadResult[]> {
+		sneakerId: string
+	): Promise<UploadResult[]> => {
 		console.log(
-			'🖼️ ImageProviderInterface.uploadSneakerImages: Uploading',
+			'🖼️ ImageHandler.uploadSneakerImages: Uploading',
 			images.length,
 			'images'
 		);
 
 		return Promise.resolve()
-			.then(() => implementation(images, userId, sneakerId))
+			.then(() =>
+				this.imageHandler.uploadSneakerImages(images, userId, sneakerId)
+			)
 			.then((results: UploadResult[]) => {
 				const successful = results.filter((r) => r.success).length;
 				console.log(
-					`✅ ImageProviderInterface.uploadSneakerImages: ${successful}/${results.length} uploads successful`
+					`✅ ImageHandler.uploadSneakerImages: ${successful}/${results.length} uploads successful`
 				);
 				return results;
 			})
 			.catch((error: Error) => {
 				console.error(
-					'❌ ImageProviderInterface.uploadSneakerImages: Error occurred:',
+					'❌ ImageHandler.uploadSneakerImages: Error occurred:',
 					error
 				);
 				throw new Error(
 					`Sneaker images upload failed: ${error.message}`
 				);
 			});
-	}
+	};
 
-	static async uploadProfileImage(
+	uploadProfileImage = async (
 		imageUri: string,
-		userId: string,
-		implementation: ImageProviderInterface['uploadProfileImage']
-	): Promise<UploadResult> {
+		userId: string
+	): Promise<UploadResult> => {
 		return Promise.resolve()
-			.then(() => implementation(imageUri, userId))
+			.then(() => this.imageHandler.uploadProfileImage(imageUri, userId))
 			.then((result: UploadResult) => {
 				if (result.error) {
 					console.error(
-						'⚠️ ImageProviderInterface.uploadProfileImage: Upload failed:',
+						'⚠️ ImageHandler.uploadProfileImage: Upload failed:',
 						result.error
 					);
 				}
@@ -149,31 +150,30 @@ export class ImageProviderInterface {
 			})
 			.catch((error: Error) => {
 				console.error(
-					'❌ ImageProviderInterface.uploadProfileImage: Error occurred:',
+					'❌ ImageHandler.uploadProfileImage: Error occurred:',
 					error
 				);
 				throw new Error(
 					`Profile image upload failed: ${error.message}`
 				);
 			});
-	}
+	};
 
-	static async deleteImage(
+	deleteImage = async (
 		bucket: 'sneakers' | 'profiles',
-		filePath: string,
-		implementation: ImageProviderInterface['deleteImage']
-	): Promise<boolean> {
+		filePath: string
+	): Promise<boolean> => {
 		console.log(
-			'🗑️ ImageProviderInterface.deleteImage: Deleting image from bucket:',
+			'🗑️ ImageHandler.deleteImage: Deleting image from bucket:',
 			bucket
 		);
 
 		return Promise.resolve()
-			.then(() => implementation(bucket, filePath))
+			.then(() => this.imageHandler.deleteImage(bucket, filePath))
 			.then((success: boolean) => {
 				if (success) {
 					console.log(
-						'✅ ImageProviderInterface.deleteImage: Image deleted successfully'
+						'✅ ImageHandler.deleteImage: Image deleted successfully'
 					);
 				} else {
 					console.warn(
@@ -189,24 +189,24 @@ export class ImageProviderInterface {
 				);
 				throw new Error(`Image deletion failed: ${error.message}`);
 			});
-	}
+	};
 
-	static extractFilePathFromUrl(
+	extractFilePathFromUrl = async (
 		url: string,
-		bucket: string,
-		implementation: ImageProviderInterface['extractFilePathFromUrl']
-	): string | null {
-		return implementation(url, bucket);
-	}
+		bucket: string
+	): Promise<string | null> => {
+		return this.imageHandler.extractFilePathFromUrl(url, bucket);
+	};
 
-	static async getSignedUrl(
+	getSignedUrl = async (
 		bucket: 'sneakers' | 'profiles',
 		filePath: string,
-		expiresIn: number = 3600,
-		implementation: ImageProviderInterface['getSignedUrl']
-	): Promise<string | null> {
+		expiresIn: number = 3600
+	): Promise<string | null> => {
 		return Promise.resolve()
-			.then(() => implementation(bucket, filePath, expiresIn))
+			.then(() =>
+				this.imageHandler.getSignedUrl(bucket, filePath, expiresIn)
+			)
 			.then((url: string | null) => {
 				if (!url) {
 					console.error(
@@ -224,17 +224,16 @@ export class ImageProviderInterface {
 					`Signed URL generation failed: ${error.message}`
 				);
 			});
-	}
+	};
 
-	static async validateImageUri(
-		imageUri: string,
-		implementation: ImageProviderInterface['validateImageUri']
-	): Promise<ImageValidationResult> {
+	validateImageUri = async (
+		imageUri: string
+	): Promise<ImageValidationResult> => {
 		return Promise.resolve()
-			.then(() => implementation(imageUri))
+			.then(() => this.imageHandler.validateImageUri(imageUri))
 			.catch((error: Error) => {
 				console.error(
-					'❌ ImageProviderInterface.validateImageUri: Error occurred:',
+					'❌ ImageHandler.validateImageUri: Error occurred:',
 					error
 				);
 				return {
@@ -242,14 +241,11 @@ export class ImageProviderInterface {
 					error: `Image validation failed: ${error.message}`,
 				};
 			});
-	}
+	};
 
-	static async getImageInfo(
-		imageUri: string,
-		implementation: ImageProviderInterface['getImageInfo']
-	): Promise<ImageInfo> {
+	getImageInfo = async (imageUri: string): Promise<ImageInfo> => {
 		return Promise.resolve()
-			.then(() => implementation(imageUri))
+			.then(() => this.imageHandler.getImageInfo(imageUri))
 			.catch((error: Error) => {
 				console.error(
 					'❌ ImageProviderInterface.getImageInfo: Error occurred:',
@@ -257,19 +253,20 @@ export class ImageProviderInterface {
 				);
 				return { exists: false };
 			});
-	}
+	};
 
-	static async migrateImageFromUrl(
+	migrateImageFromUrl = async (
 		sourceUrl: string,
-		options: ImageUploadOptions,
-		implementation: ImageProviderInterface['migrateImageFromUrl']
-	): Promise<UploadResult> {
+		options: ImageUploadOptions
+	): Promise<UploadResult> => {
 		return Promise.resolve()
-			.then(() => implementation(sourceUrl, options))
+			.then(() =>
+				this.imageHandler.migrateImageFromUrl(sourceUrl, options)
+			)
 			.then((result: UploadResult) => {
 				if (result.error) {
 					console.error(
-						'⚠️ ImageProviderInterface.migrateImageFromUrl: Migration failed:',
+						'⚠️ ImageHandler.migrateImageFromUrl: Migration failed:',
 						result.error
 					);
 				}
@@ -277,49 +274,45 @@ export class ImageProviderInterface {
 			})
 			.catch((error: Error) => {
 				console.error(
-					'❌ ImageProviderInterface.migrateImageFromUrl: Error occurred:',
+					'❌ ImageHandler.migrateImageFromUrl: Error occurred:',
 					error
 				);
 				throw new Error(`Image migration failed: ${error.message}`);
 			});
-	}
+	};
 
-	static async deleteUserFolder(
+	deleteUserFolder = async (
 		bucket: 'sneakers' | 'profiles',
-		userId: string,
-		implementation: ImageProviderInterface['deleteUserFolder']
-	): Promise<boolean> {
+		userId: string
+	): Promise<boolean> => {
 		return Promise.resolve()
-			.then(() => implementation(bucket, userId))
+			.then(() => this.imageHandler.deleteUserFolder(bucket, userId))
 			.then((success: boolean) => {
 				if (!success) {
 					console.error(
-						'⚠️ ImageProviderInterface.deleteUserFolder: Failed to delete user folder'
+						'⚠️ ImageHandler.deleteUserFolder: Failed to delete user folder'
 					);
 				}
 				return success;
 			})
 			.catch((error: Error) => {
 				console.error(
-					'❌ ImageProviderInterface.deleteUserFolder: Error occurred:',
+					'❌ ImageHandler.deleteUserFolder: Error occurred:',
 					error
 				);
 				throw new Error(
 					`User folder deletion failed: ${error.message}`
 				);
 			});
-	}
+	};
 
-	static async deleteAllUserFiles(
-		userId: string,
-		implementation: ImageProviderInterface['deleteAllUserFiles']
-	): Promise<boolean> {
+	deleteAllUserFiles = async (userId: string): Promise<boolean> => {
 		return Promise.resolve()
-			.then(() => implementation(userId))
+			.then(() => this.imageHandler.deleteAllUserFiles(userId))
 			.then((success: boolean) => {
 				if (!success) {
 					console.error(
-						'⚠️ ImageProviderInterface.deleteAllUserFiles: Failed to delete some user files'
+						'⚠️ ImageHandler.deleteAllUserFiles: Failed to delete some user files'
 					);
 				}
 				return success;
@@ -331,89 +324,100 @@ export class ImageProviderInterface {
 				);
 				throw new Error(`User files deletion failed: ${error.message}`);
 			});
-	}
+	};
 
-	static async deleteSneakerImages(
+	deleteSneakerImages = async (
 		userId: string,
-		sneakerId: string,
-		implementation: ImageProviderInterface['deleteSneakerImages']
-	): Promise<boolean> {
+		sneakerId: string
+	): Promise<boolean> => {
 		return Promise.resolve()
-			.then(() => implementation(userId, sneakerId))
+			.then(() =>
+				this.imageHandler.deleteSneakerImages(userId, sneakerId)
+			)
 			.then((success: boolean) => {
 				if (!success) {
 					console.error(
-						'⚠️ ImageProviderInterface.deleteSneakerImages: Failed to delete sneaker images'
+						'⚠️ ImageHandler.deleteSneakerImages: Failed to delete sneaker images'
 					);
 				}
 				return success;
 			})
 			.catch((error: Error) => {
 				console.error(
-					'❌ ImageProviderInterface.deleteSneakerImages: Error occurred:',
+					'❌ ImageHandler.deleteSneakerImages: Error occurred:',
 					error
 				);
 				throw new Error(
 					`Sneaker images deletion failed: ${error.message}`
 				);
 			});
-	}
+	};
 
-	static async processAndUploadSneakerImages(
+	processAndUploadSneakerImages = async (
 		images: Array<{ uri: string; id?: string }>,
 		userId: string,
-		sneakerId: string,
-		implementation: ImageProviderInterface['processAndUploadSneakerImages']
-	): Promise<SneakerPhoto[]> {
+		sneakerId: string
+	): Promise<SneakerPhoto[]> => {
 		console.log(
-			'🔄 ImageProviderInterface.processAndUploadSneakerImages: Processing',
+			'🔄 ImageHandler.processAndUploadSneakerImages: Processing',
 			images.length,
 			'images'
 		);
 
 		return Promise.resolve()
-			.then(() => implementation(images, userId, sneakerId))
+			.then(() =>
+				this.imageHandler.processAndUploadSneakerImages(
+					images,
+					userId,
+					sneakerId
+				)
+			)
 			.then((processedImages: SneakerPhoto[]) => {
 				console.log(
-					`✅ ImageProviderInterface.processAndUploadSneakerImages: ${processedImages.length} images processed successfully`
+					`✅ ImageHandler.processAndUploadSneakerImages: ${processedImages.length} images processed successfully`
 				);
 				return processedImages;
 			})
 			.catch((error: Error) => {
 				console.error(
-					'❌ ImageProviderInterface.processAndUploadSneakerImages: Error occurred:',
+					'❌ ImageHandler.processAndUploadSneakerImages: Error occurred:',
 					error
 				);
 				throw new Error(
 					`Sneaker images processing failed: ${error.message}`
 				);
 			});
-	}
+	};
 
-	static async deleteSpecificSneakerImage(
+	deleteSpecificSneakerImage = async (
 		userId: string,
 		sneakerId: string,
-		fileName: string,
-		implementation: ImageProviderInterface['deleteSpecificSneakerImage']
-	): Promise<boolean> {
+		fileName: string
+	): Promise<boolean> => {
 		return Promise.resolve()
-			.then(() => implementation(userId, sneakerId, fileName))
+			.then(() =>
+				this.imageHandler.deleteSpecificSneakerImage(
+					userId,
+					sneakerId,
+					fileName
+				)
+			)
 			.then((success: boolean) => {
 				if (!success) {
 					console.error(
-						'⚠️ ImageProviderInterface.deleteSpecificSneakerImage: Failed to delete specific image'
+						'⚠️ ImageHandler.deleteSpecificSneakerImage: Failed to delete specific image'
 					);
 				}
 				return success;
 			})
 			.catch((error: Error) => {
 				console.error(
-					'❌ ImageProviderInterface.deleteSpecificSneakerImage: Error occurred:',
+					'❌ ImageHandler.deleteSpecificSneakerImage: Error occurred:',
 					error
 				);
 				throw new Error(
 					`Specific sneaker image deletion failed: ${error.message}`
 				);
 			});
-	}
+	};
 }

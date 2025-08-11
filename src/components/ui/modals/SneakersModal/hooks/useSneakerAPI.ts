@@ -3,13 +3,13 @@ import { useTranslation } from 'react-i18next';
 import { ZodIssue } from 'zod';
 
 import { useSession } from '@/contexts/authContext';
-import { imageProvider } from '@/d/ImageProvider';
 import { sneakerProvider } from '@/d/SneakerProvider';
-import { ImageProviderInterface } from '@/domain/ImageProviderInterface';
+import { ImageHandler } from '@/domain/ImageHandler';
 import { SneakerInterface } from '@/domain/SneakerProviderInterface';
 import useToast from '@/hooks/ui/useToast';
 import { FetchedSneaker } from '@/store/useModalStore';
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';
+import { imageProxy } from '@/tech/proxy/ImageProxy';
 import { SneakerPhoto } from '@/types/image';
 import { Sneaker, SneakerBrand } from '@/types/sneaker';
 import { createSneakerSchema, SneakerFormData } from '@/validation/sneaker';
@@ -41,6 +41,9 @@ export const useSneakerAPI = () => {
 	const { showSuccessToast, showErrorToast } = useToast();
 	const { t } = useTranslation();
 	const { currentUnit } = useSizeUnitStore();
+
+	const imageHandler = new ImageHandler(imageProxy);
+
 	const validateSneakerData = (formData: SneakerFormData) => {
 		return new Promise<{
 			isValid: boolean;
@@ -208,17 +211,15 @@ export const useSneakerAPI = () => {
 				);
 			})
 			.then(async (createdSneaker: Sneaker) => {
-				return ImageProviderInterface.processAndUploadSneakerImages(
-					formData.images.map((img) => ({
-						uri: img.uri,
-						id: img.id,
-					})),
-					user.id,
-					createdSneaker.id,
-					imageProvider.processAndUploadSneakerImages.bind(
-						imageProvider
+				return imageHandler
+					.processAndUploadSneakerImages(
+						formData.images.map((img) => ({
+							uri: img.uri,
+							id: img.id,
+						})),
+						user.id,
+						createdSneaker.id
 					)
-				)
 					.then((processedImages: SneakerPhoto[]) => {
 						if (processedImages.length > 0) {
 							return SneakerInterface.updateSneaker(
@@ -330,16 +331,13 @@ export const useSneakerAPI = () => {
 				});
 
 				const processedImages =
-					await ImageProviderInterface.processAndUploadSneakerImages(
+					await imageHandler.processAndUploadSneakerImages(
 						formData.images.map((img) => ({
 							uri: img.uri,
 							id: img.id,
 						})),
 						user.id,
-						sneakerId,
-						imageProvider.processAndUploadSneakerImages.bind(
-							imageProvider
-						)
+						sneakerId
 					);
 
 				const sneakerUpdates: Partial<
@@ -447,11 +445,7 @@ export const useSneakerAPI = () => {
 			sneakerProvider.deleteSneaker
 		)
 			.then(async () => {
-				await ImageProviderInterface.deleteSneakerImages(
-					user.id,
-					sneakerId,
-					imageProvider.deleteSneakerImages
-				);
+				await imageHandler.deleteSneakerImages(user.id, sneakerId);
 
 				return refreshUserSneakers();
 			})

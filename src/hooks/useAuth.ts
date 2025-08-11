@@ -5,10 +5,10 @@ import { useTranslation } from 'react-i18next';
 import { router } from 'expo-router';
 
 import { useSession } from '@/contexts/authContext';
-import { imageProvider } from '@/d/ImageProvider';
 import { Auth } from '@/domain/Auth';
-import { ImageProviderInterface } from '@/domain/ImageProviderInterface';
+import { ImageHandler } from '@/domain/ImageHandler';
 import { authProxy } from '@/tech/proxy/AuthProxy';
+import { imageProxy } from '@/tech/proxy/ImageProxy';
 import { UpdateUserData, UserData } from '@/types/auth';
 
 import { useAuthValidation } from './useAuthValidation';
@@ -20,6 +20,7 @@ export const useAuth = () => {
 	const { t } = useTranslation();
 
 	const auth = new Auth(authProxy);
+	const imageHandler = new ImageHandler(imageProxy);
 
 	const login = async (email: string, password: string) => {
 		return auth.signIn(email, password).catch((error) => {
@@ -39,28 +40,26 @@ export const useAuth = () => {
 			)
 			.then((response) => {
 				if (response.user && profilePictureUri) {
-					return ImageProviderInterface.uploadProfileImage(
-						profilePictureUri,
-						response.user.id,
-						imageProvider.uploadProfileImage
-					).then((uploadResult) => {
-						if (uploadResult.success && uploadResult.url) {
-							return auth
-								.updateProfile(response.user.id, {
-									profile_picture: uploadResult.url,
-								})
-								.then((updatedUser) => {
-									setUser(updatedUser as any);
-									return response;
-								});
-						} else {
-							console.error(
-								'❌ useAuth.signUp: Failed to upload profile picture:',
-								uploadResult.error
-							);
-							return response;
-						}
-					});
+					return imageHandler
+						.uploadProfileImage(profilePictureUri, response.user.id)
+						.then((uploadResult) => {
+							if (uploadResult.success && uploadResult.url) {
+								return auth
+									.updateProfile(response.user.id, {
+										profile_picture: uploadResult.url,
+									})
+									.then((updatedUser) => {
+										setUser(updatedUser as any);
+										return response;
+									});
+							} else {
+								console.error(
+									'❌ useAuth.signUp: Failed to upload profile picture:',
+									uploadResult.error
+								);
+								return response;
+							}
+						});
 				}
 				return response;
 			})
@@ -189,35 +188,36 @@ export const useAuth = () => {
 						.getCurrentUser()
 						.then((currentUser) => {
 							if (currentUser?.profile_picture) {
-								const oldFilePath =
-									ImageProviderInterface.extractFilePathFromUrl(
+								return imageHandler
+									.extractFilePathFromUrl(
 										currentUser.profile_picture,
-										'profiles',
-										imageProvider.extractFilePathFromUrl
-									);
-
-								if (oldFilePath) {
-									return ImageProviderInterface.deleteImage(
-										'profiles',
-										oldFilePath,
-										imageProvider.deleteImage
-									).then((deleted) => {
-										if (!deleted) {
-											console.warn(
-												'Could not delete old profile picture'
-											);
+										'profiles'
+									)
+									.then((oldFilePath) => {
+										if (oldFilePath) {
+											return imageHandler
+												.deleteImage(
+													'profiles',
+													oldFilePath
+												)
+												.then((deleted) => {
+													if (!deleted) {
+														console.warn(
+															'Could not delete old profile picture'
+														);
+													}
+													return deleted;
+												});
 										}
-										return deleted;
+										return Promise.resolve(true);
 									});
-								}
 							}
 							return Promise.resolve(true);
 						})
 						.then(() => {
-							return ImageProviderInterface.uploadProfileImage(
+							return imageHandler.uploadProfileImage(
 								newProfileData.profile_picture!,
-								userId,
-								imageProvider.uploadProfileImage
+								userId
 							);
 						})
 						.then((uploadResult) => {
@@ -253,10 +253,8 @@ export const useAuth = () => {
 	};
 
 	const deleteAccount = async (userId: string) => {
-		return ImageProviderInterface.deleteAllUserFiles(
-			userId,
-			imageProvider.deleteAllUserFiles
-		)
+		return imageHandler
+			.deleteAllUserFiles(userId)
 			.then((filesDeleted) => {
 				if (!filesDeleted) {
 					console.warn(

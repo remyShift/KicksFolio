@@ -1,7 +1,7 @@
 import * as FileSystem from 'expo-file-system';
 
 import { supabase } from '@/config/supabase/supabase';
-import { ImageProviderInterface } from '@/domain/ImageProviderInterface';
+import { ImageHandlerInterface } from '@/domain/ImageHandler';
 import {
 	ImageInfo,
 	ImageUploadOptions,
@@ -10,7 +10,7 @@ import {
 	UploadResult,
 } from '@/types/image';
 
-class ImageProvider implements ImageProviderInterface {
+class ImageProxy implements ImageHandlerInterface {
 	async uploadImage(
 		imageUri: string,
 		options: ImageUploadOptions
@@ -511,6 +511,4 @@ class ImageProvider implements ImageProviderInterface {
 	}
 }
 
-export { ImageProvider };
-
-export const imageProvider = new ImageProvider();
+export const imageProxy = new ImageProxy();

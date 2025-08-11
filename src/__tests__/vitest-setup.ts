@@ -180,8 +180,8 @@ vi.mock('@/domain/AuthProxy', () => ({
 	},
 }));
 
-vi.mock('@/domain/ImageProvider', () => ({
-	ImageProvider: {
+vi.mock('@/domain/ImageProxy', () => ({
+	ImageProxy: {
 		uploadProfileImage: vi.fn().mockResolvedValue({
 			success: true,
 			url: 'https://example.com/uploaded-image.jpg',

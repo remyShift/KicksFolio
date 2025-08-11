@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { ImageProviderInterface } from '@/domain/ImageProviderInterface';
+import { ImageProviderInterface } from '@/domain/ImageHandler';
 import {
 	ImageValidationResult,
 	SneakerPhoto,

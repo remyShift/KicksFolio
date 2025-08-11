@@ -28,8 +28,8 @@ vi.mock('@/hooks/useAuthValidation', () => ({
 	}),
 }));
 
-vi.mock('@/domain/ImageProvider', () => ({
-	ImageProvider: {
+vi.mock('@/domain/ImageProxy', () => ({
+	ImageProxy: {
 		uploadProfileImage: vi.fn().mockResolvedValue({
 			success: true,
 			url: 'https://example.com/uploaded-image.jpg',
@@ -290,7 +290,7 @@ describe('useAuth', () => {
 
 			expect(success).toBe(true);
 			const { imageProvider } = (await vi.importMock(
-				'@/domain/ImageProvider'
+				'@/domain/ImageProxy'
 			)) as {
 				imageProvider: {
 					uploadProfileImage: ReturnType<typeof vi.fn>;
