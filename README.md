@@ -533,17 +533,8 @@ const useFormController = <T>(config: FormConfig<T>) => {
 
 This project is licensed under the AGPL-3.0 - see the [LICENSE](LICENSE) file for details.
 
-### Development Workflow
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests for new functionality
-5. Ensure all tests pass
-6. Submit a pull request
-
 ### Code Standards
 - Follow TypeScript best practices
-- Maintain test coverage above 80%
 - Use conventional commit messages
 - Follow the established architecture patterns
 
@@ -551,9 +542,8 @@ This project is licensed under the AGPL-3.0 - see the [LICENSE](LICENSE) file fo
 
 For support, bug reports, or feature requests:
 - **Issues**: GitHub Issues
-- **Documentation**: [Project Wiki](docs/)
-- **Email**: support@kicksfolio.app
+- **Email**: contact@kicksfolio.com
 
 ---
 
-**KicksFolio** - Manage your sneaker collection with style and precision.
+**KicksFolio** - Flex Smarter. Collect Better.
