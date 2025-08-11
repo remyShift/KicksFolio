@@ -70,11 +70,20 @@ export class ImageProviderInterface {
 		options: ImageUploadOptions,
 		implementation: ImageProviderInterface['uploadImage']
 	): Promise<UploadResult> {
+		console.log(
+			'🖼️ ImageProviderInterface.uploadImage: Starting upload for bucket:',
+			options.bucket
+		);
+
 		return Promise.resolve()
 			.then(() => implementation(imageUri, options))
 			.then((result: UploadResult) => {
-				if (result.error) {
-					console.error(
+				if (result.success) {
+					console.log(
+						'✅ ImageProviderInterface.uploadImage: Upload successful'
+					);
+				} else if (result.error) {
+					console.warn(
 						'⚠️ ImageProviderInterface.uploadImage: Upload failed:',
 						result.error
 					);
@@ -96,10 +105,19 @@ export class ImageProviderInterface {
 		sneakerId: string,
 		implementation: ImageProviderInterface['uploadSneakerImages']
 	): Promise<UploadResult[]> {
+		console.log(
+			'🖼️ ImageProviderInterface.uploadSneakerImages: Uploading',
+			images.length,
+			'images'
+		);
+
 		return Promise.resolve()
 			.then(() => implementation(images, userId, sneakerId))
 			.then((results: UploadResult[]) => {
 				const successful = results.filter((r) => r.success).length;
+				console.log(
+					`✅ ImageProviderInterface.uploadSneakerImages: ${successful}/${results.length} uploads successful`
+				);
 				return results;
 			})
 			.catch((error: Error) => {
@@ -145,12 +163,20 @@ export class ImageProviderInterface {
 		filePath: string,
 		implementation: ImageProviderInterface['deleteImage']
 	): Promise<boolean> {
+		console.log(
+			'🗑️ ImageProviderInterface.deleteImage: Deleting image from bucket:',
+			bucket
+		);
+
 		return Promise.resolve()
 			.then(() => implementation(bucket, filePath))
 			.then((success: boolean) => {
 				if (success) {
+					console.log(
+						'✅ ImageProviderInterface.deleteImage: Image deleted successfully'
+					);
 				} else {
-					console.error(
+					console.warn(
 						'⚠️ ImageProviderInterface.deleteImage: Failed to delete image'
 					);
 				}
@@ -339,9 +365,18 @@ export class ImageProviderInterface {
 		sneakerId: string,
 		implementation: ImageProviderInterface['processAndUploadSneakerImages']
 	): Promise<SneakerPhoto[]> {
+		console.log(
+			'🔄 ImageProviderInterface.processAndUploadSneakerImages: Processing',
+			images.length,
+			'images'
+		);
+
 		return Promise.resolve()
 			.then(() => implementation(images, userId, sneakerId))
 			.then((processedImages: SneakerPhoto[]) => {
+				console.log(
+					`✅ ImageProviderInterface.processAndUploadSneakerImages: ${processedImages.length} images processed successfully`
+				);
 				return processedImages;
 			})
 			.catch((error: Error) => {
