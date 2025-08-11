@@ -1,8 +1,8 @@
 import { supabase } from '@/config/supabase/supabase';
-import { FollowerInterface } from '@/domain/FollowerInterface';
+import { FollowerHandlerInterface } from '@/domain/FollowerHandler';
 import { FollowingUser, SearchUser } from '@/types/user';
 
-export class FollowerProvider implements FollowerInterface {
+export class FollowerProxy implements FollowerHandlerInterface {
 	async followUser(followingId: string): Promise<boolean> {
 		return supabase.auth
 			.getUser()
@@ -289,4 +289,4 @@ export class FollowerProvider implements FollowerInterface {
 	}
 }
 
-export const followerProvider = new FollowerProvider();
+export const followerProxy = new FollowerProxy();

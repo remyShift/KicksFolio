@@ -5,11 +5,11 @@ import { useTranslation } from 'react-i18next';
 import { router } from 'expo-router';
 
 import { useSession } from '@/contexts/authContext';
-import { followerProvider } from '@/d/FollowerProvider';
 import { userSearchProvider } from '@/d/UserSearchProvider';
-import { FollowerInterface } from '@/domain/FollowerInterface';
+import { FollowerHandler } from '@/domain/FollowerHandler';
 import { UserSearchInterface } from '@/domain/UserSearchInterface';
 import useToast from '@/hooks/ui/useToast';
+import { followerProxy } from '@/tech/proxy/FollowerProxy';
 import { Sneaker } from '@/types/sneaker';
 import { SearchUser } from '@/types/user';
 
@@ -45,6 +45,8 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 	const [refreshing, setRefreshing] = useState(false);
 	const isLoadingRef = useRef(false);
 	const lastLoadedForRef = useRef<string | null>(null);
+
+	const follower = new FollowerHandler(followerProxy);
 
 	const loadUserProfile = useCallback(
 		async (showRefresh: boolean = false) => {
@@ -123,14 +125,8 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 		setIsFollowLoading(true);
 
 		const followAction = userProfile.userSearch.is_following
-			? FollowerInterface.unfollowUser(
-					userProfile.userSearch.id,
-					followerProvider.unfollowUser
-				)
-			: FollowerInterface.followUser(
-					userProfile.userSearch.id,
-					followerProvider.followUser
-				);
+			? follower.unfollowUser(userProfile.userSearch.id)
+			: follower.followUser(userProfile.userSearch.id);
 
 		try {
 			await followAction;

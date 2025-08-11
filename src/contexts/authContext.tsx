@@ -12,17 +12,17 @@ import * as Linking from 'expo-linking';
 import { router } from 'expo-router';
 
 import { supabase } from '@/config/supabase/supabase';
-import { followerProvider } from '@/d/FollowerProvider';
 import { sneakerProvider } from '@/d/SneakerProvider';
 import { userSearchProvider } from '@/d/UserSearchProvider';
 import { wishlistProvider } from '@/d/WishlistProvider';
 import { Auth } from '@/domain/Auth';
-import { FollowerInterface } from '@/domain/FollowerInterface';
+import { FollowerHandler } from '@/domain/FollowerHandler';
 import { SneakerProviderInterface } from '@/domain/SneakerProviderInterface';
 import { UserSearchInterface } from '@/domain/UserSearchInterface';
 import { WishlistProviderInterface } from '@/domain/WishlistProviderInterface';
 import { storageProvider } from '@/services/StorageService';
-import { authProvider } from '@/tech/proxy/AuthProxy';
+import { authProxy } from '@/tech/proxy/AuthProxy';
+import { followerProxy } from '@/tech/proxy/FollowerProxy';
 import { AuthContextType, FollowingUserWithSneakers } from '@/types/auth';
 import { Sneaker } from '@/types/sneaker';
 import { User } from '@/types/user';
@@ -57,6 +57,9 @@ export function SessionProvider({ children }: PropsWithChildren) {
 	const [followingUsers, setFollowingUsers] = useState<
 		FollowingUserWithSneakers[] | null
 	>(null);
+
+	const auth = new Auth(authProxy);
+	const follower = new FollowerHandler(followerProxy);
 
 	useEffect(() => {
 		const handleDeepLink = (url: string) => {
@@ -148,16 +151,14 @@ export function SessionProvider({ children }: PropsWithChildren) {
 				data: { session },
 			} = await supabase.auth.getSession();
 			if (session?.user) {
-				return Auth.getCurrentUser(authProvider.getCurrentUser).catch(
-					(error: any) => {
-						if (error.code === 'PGRST116') {
-							return supabase.auth.signOut().then(() => {
-								clearUserData();
-							});
-						}
-						throw error;
+				return auth.getCurrentUser().catch((error: any) => {
+					if (error.code === 'PGRST116') {
+						return supabase.auth.signOut().then(() => {
+							clearUserData();
+						});
 					}
-				);
+					throw error;
+				});
 			}
 		};
 		checkInitialSession();
@@ -210,10 +211,8 @@ export function SessionProvider({ children }: PropsWithChildren) {
 	};
 
 	const loadFollowingUsers = async (userId: string) => {
-		return FollowerInterface.getFollowingUsers(
-			userId,
-			followerProvider.getFollowingUsers
-		)
+		return follower
+			.getFollowingUsers(userId)
 			.then(async (followingUsersData) => {
 				const followingWithSneakers = await Promise.all(
 					followingUsersData.map(async (followingUser) => {
@@ -263,7 +262,8 @@ export function SessionProvider({ children }: PropsWithChildren) {
 		const retryDelay = 1000;
 
 		const getUserWithRetries = async (attempt: number): Promise<any> => {
-			return Auth.getCurrentUser(authProvider.getCurrentUser)
+			return auth
+				.getCurrentUser()
 				.then((userData: any) => {
 					if (userData) {
 						const userWithUrl = {
@@ -329,7 +329,8 @@ export function SessionProvider({ children }: PropsWithChildren) {
 			return;
 		}
 
-		return Auth.getCurrentUser(authProvider.getCurrentUser)
+		return auth
+			.getCurrentUser()
 			.then(async (freshUserData: any) => {
 				if (!freshUserData) {
 					return;

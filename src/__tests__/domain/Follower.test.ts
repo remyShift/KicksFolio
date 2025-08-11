@@ -1,14 +1,14 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { FollowerInterface } from '@/domain/FollowerInterface';
+import { FollowerHandler } from '@/domain/FollowerHandler';
 import { FollowingUser, SearchUser } from '@/types/user';
 
-describe('FollowerInterface', () => {
+describe('FollowerHandler', () => {
 	describe('followUser', () => {
 		it('should successfully follow a user', async () => {
 			const mockFollowFunction = vi.fn().mockResolvedValue(true);
 
-			const result = await FollowerInterface.followUser(
+			const result = await FollowerHandler.followUser(
 				'user-to-follow-id',
 				mockFollowFunction
 			);
@@ -27,14 +27,14 @@ describe('FollowerInterface', () => {
 				.mockImplementation(() => {});
 
 			await expect(
-				FollowerInterface.followUser(
+				FollowerHandler.followUser(
 					'user-to-follow-id',
 					mockFollowFunction
 				)
 			).rejects.toThrow('Follow failed');
 
 			expect(consoleSpy).toHaveBeenCalledWith(
-				'❌ FollowerInterface.followUser: Error occurred:',
+				'❌ FollowerHandler.followUser: Error occurred:',
 				mockError
 			);
 
@@ -46,7 +46,7 @@ describe('FollowerInterface', () => {
 		it('should successfully unfollow a user', async () => {
 			const mockUnfollowFunction = vi.fn().mockResolvedValue(true);
 
-			const result = await FollowerInterface.unfollowUser(
+			const result = await FollowerHandler.unfollowUser(
 				'user-to-unfollow-id',
 				mockUnfollowFunction
 			);
@@ -65,14 +65,14 @@ describe('FollowerInterface', () => {
 				.mockImplementation(() => {});
 
 			await expect(
-				FollowerInterface.unfollowUser(
+				FollowerHandler.unfollowUser(
 					'user-to-unfollow-id',
 					mockUnfollowFunction
 				)
 			).rejects.toThrow('Unfollow failed');
 
 			expect(consoleSpy).toHaveBeenCalledWith(
-				'❌ FollowerInterface.unfollowUser: Error occurred:',
+				'❌ FollowerHandler.unfollowUser: Error occurred:',
 				mockError
 			);
 
@@ -101,7 +101,7 @@ describe('FollowerInterface', () => {
 				.fn()
 				.mockResolvedValue(mockFollowingUsers);
 
-			const result = await FollowerInterface.getFollowingUsers(
+			const result = await FollowerHandler.getFollowingUsers(
 				'user-id',
 				mockGetFollowingFunction
 			);
@@ -120,14 +120,14 @@ describe('FollowerInterface', () => {
 				.mockImplementation(() => {});
 
 			await expect(
-				FollowerInterface.getFollowingUsers(
+				FollowerHandler.getFollowingUsers(
 					'user-id',
 					mockGetFollowingFunction
 				)
 			).rejects.toThrow('Failed to get following users');
 
 			expect(consoleSpy).toHaveBeenCalledWith(
-				'❌ FollowerInterface.getFollowingUsers: Error occurred:',
+				'❌ FollowerHandler.getFollowingUsers: Error occurred:',
 				mockError
 			);
 
@@ -155,7 +155,7 @@ describe('FollowerInterface', () => {
 				.fn()
 				.mockResolvedValue(mockFollowers);
 
-			const result = await FollowerInterface.getFollowersOfUser(
+			const result = await FollowerHandler.getFollowersOfUser(
 				'user-id',
 				mockGetFollowersFunction
 			);
@@ -174,14 +174,14 @@ describe('FollowerInterface', () => {
 				.mockImplementation(() => {});
 
 			await expect(
-				FollowerInterface.getFollowersOfUser(
+				FollowerHandler.getFollowersOfUser(
 					'user-id',
 					mockGetFollowersFunction
 				)
 			).rejects.toThrow('Failed to get followers');
 
 			expect(consoleSpy).toHaveBeenCalledWith(
-				'❌ FollowerInterface.getFollowersOfUser: Error occurred:',
+				'❌ FollowerHandler.getFollowersOfUser: Error occurred:',
 				mockError
 			);
 
@@ -193,7 +193,7 @@ describe('FollowerInterface', () => {
 		it('should return true when user is following', async () => {
 			const mockIsFollowingFunction = vi.fn().mockResolvedValue(true);
 
-			const result = await FollowerInterface.isFollowing(
+			const result = await FollowerHandler.isFollowing(
 				'follower-id',
 				'following-id',
 				mockIsFollowingFunction
@@ -209,7 +209,7 @@ describe('FollowerInterface', () => {
 		it('should return false when user is not following', async () => {
 			const mockIsFollowingFunction = vi.fn().mockResolvedValue(false);
 
-			const result = await FollowerInterface.isFollowing(
+			const result = await FollowerHandler.isFollowing(
 				'follower-id',
 				'following-id',
 				mockIsFollowingFunction
@@ -232,7 +232,7 @@ describe('FollowerInterface', () => {
 				.mockImplementation(() => {});
 
 			await expect(
-				FollowerInterface.isFollowing(
+				FollowerHandler.isFollowing(
 					'follower-id',
 					'following-id',
 					mockIsFollowingFunction
@@ -240,7 +240,7 @@ describe('FollowerInterface', () => {
 			).rejects.toThrow('Failed to check following status');
 
 			expect(consoleSpy).toHaveBeenCalledWith(
-				'❌ FollowerInterface.isFollowing: Error occurred:',
+				'❌ FollowerHandler.isFollowing: Error occurred:',
 				mockError
 			);
 
@@ -258,7 +258,7 @@ describe('FollowerInterface', () => {
 				.fn()
 				.mockResolvedValue(mockCounts);
 
-			const result = await FollowerInterface.getFollowCounts(
+			const result = await FollowerHandler.getFollowCounts(
 				'user-id',
 				mockGetFollowCountsFunction
 			);
@@ -277,14 +277,14 @@ describe('FollowerInterface', () => {
 				.mockImplementation(() => {});
 
 			await expect(
-				FollowerInterface.getFollowCounts(
+				FollowerHandler.getFollowCounts(
 					'user-id',
 					mockGetFollowCountsFunction
 				)
 			).rejects.toThrow('Failed to get follow counts');
 
 			expect(consoleSpy).toHaveBeenCalledWith(
-				'❌ FollowerInterface.getFollowCounts: Error occurred:',
+				'❌ FollowerHandler.getFollowCounts: Error occurred:',
 				mockError
 			);
 

@@ -13,8 +13,8 @@ vi.mock('@/interfaces/UserSearchInterface', () => ({
 	},
 }));
 
-vi.mock('@/interfaces/FollowerInterface', () => ({
-	FollowerInterface: {
+vi.mock('@/interfaces/FollowerHandler', () => ({
+	FollowerHandler: {
 		followUser: vi.fn(),
 		unfollowUser: vi.fn(),
 	},
@@ -74,14 +74,14 @@ vi.mock('react-i18next', () => ({
 
 describe('useUserProfile', () => {
 	let UserSearchInterface: any;
-	let FollowerInterface: any;
+	let FollowerHandler: any;
 
 	beforeEach(async () => {
 		vi.clearAllMocks();
 		UserSearchInterface = (await import('@/domain/UserSearchInterface'))
 			.UserSearchInterface;
-		FollowerInterface = (await import('@/domain/FollowerInterface'))
-			.FollowerInterface;
+		FollowerHandler = (await import('@/domain/FollowerHandler'))
+			.FollowerHandler;
 	});
 
 	it('should initialize with correct default values', () => {
@@ -200,7 +200,7 @@ describe('useUserProfile', () => {
 				mockUserProfile
 			);
 			UserSearchInterface.getUserSneakers.mockResolvedValue([]);
-			FollowerInterface.followUser.mockResolvedValue(true);
+			FollowerHandler.followUser.mockResolvedValue(true);
 			mockRefreshFollowingUsers.mockResolvedValue(undefined);
 			mockRefreshUserData.mockResolvedValue(undefined);
 
@@ -214,7 +214,7 @@ describe('useUserProfile', () => {
 				await result.current.handleFollowToggle();
 			});
 
-			expect(FollowerInterface.followUser).toHaveBeenCalledWith(
+			expect(FollowerHandler.followUser).toHaveBeenCalledWith(
 				'test-user-id',
 				expect.any(Function)
 			);
@@ -247,7 +247,7 @@ describe('useUserProfile', () => {
 				mockUserProfile
 			);
 			UserSearchInterface.getUserSneakers.mockResolvedValue([]);
-			FollowerInterface.unfollowUser.mockResolvedValue(true);
+			FollowerHandler.unfollowUser.mockResolvedValue(true);
 			mockRefreshFollowingUsers.mockResolvedValue(undefined);
 			mockRefreshUserData.mockResolvedValue(undefined);
 
@@ -261,7 +261,7 @@ describe('useUserProfile', () => {
 				await result.current.handleFollowToggle();
 			});
 
-			expect(FollowerInterface.unfollowUser).toHaveBeenCalledWith(
+			expect(FollowerHandler.unfollowUser).toHaveBeenCalledWith(
 				'test-user-id',
 				expect.any(Function)
 			);
@@ -295,7 +295,7 @@ describe('useUserProfile', () => {
 				mockUserProfile
 			);
 			UserSearchInterface.getUserSneakers.mockResolvedValue([]);
-			FollowerInterface.followUser.mockRejectedValue(mockError);
+			FollowerHandler.followUser.mockRejectedValue(mockError);
 
 			const consoleSpy = vi
 				.spyOn(console, 'error')
@@ -330,8 +330,8 @@ describe('useUserProfile', () => {
 				await result.current.handleFollowToggle();
 			});
 
-			expect(FollowerInterface.followUser).not.toHaveBeenCalled();
-			expect(FollowerInterface.unfollowUser).not.toHaveBeenCalled();
+			expect(FollowerHandler.followUser).not.toHaveBeenCalled();
+			expect(FollowerHandler.unfollowUser).not.toHaveBeenCalled();
 		});
 	});
 
