@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
 	SneakerInterface,
 	SneakerProviderInterface,
-} from '@/interfaces/SneakerProviderInterface';
+} from '@/domain/SneakerProviderInterface';
 import { SneakerBrand, SneakerStatus } from '@/types/sneaker';
 import { SizeUnit } from '@/types/sneaker';
 import { Sneaker } from '@/types/sneaker';

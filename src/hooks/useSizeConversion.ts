@@ -1,4 +1,4 @@
-import { sneakerSizeConverter } from '@/domain/SneakerSizeConverter';
+import { sneakerSizeConverter } from '@/d/SneakerSizeConverter';
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';
 import { GenderType, SizeUnit, Sneaker } from '@/types/sneaker';
 

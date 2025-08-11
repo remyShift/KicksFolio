@@ -1,4 +1,4 @@
-import { SneakerFilterProviderInterface } from '@/interfaces/SneakerFilterInterface';
+import { SneakerFilterProviderInterface } from '@/domain/SneakerFilterInterface';
 import {
 	FilterState,
 	SortOption,

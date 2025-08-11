@@ -1,4 +1,4 @@
-import { SneakerSizeConverterInterface } from '@/interfaces/SneakerSizeConverterInterface';
+import { SneakerSizeConverterInterface } from '@/domain/SneakerSizeConverterInterface';
 import { GenderType, SizeMapping, SizeUnit } from '@/types/sneaker';
 
 const SIZE_MAPPINGS: SizeMapping[] = [

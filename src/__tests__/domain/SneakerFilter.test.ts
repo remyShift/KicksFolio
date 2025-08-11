@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
 	SneakerFilterInterface,
 	SneakerFilterProviderInterface,
-} from '@/interfaces/SneakerFilterInterface';
+} from '@/domain/SneakerFilterInterface';
 import { FilterState, SortOption, SortOrder } from '@/types/filter';
 import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
 

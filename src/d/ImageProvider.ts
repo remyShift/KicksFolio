@@ -1,7 +1,7 @@
 import * as FileSystem from 'expo-file-system';
 
 import { supabase } from '@/config/supabase/supabase';
-import { ImageProviderInterface } from '@/interfaces/ImageProviderInterface';
+import { ImageProviderInterface } from '@/domain/ImageProviderInterface';
 import {
 	ImageInfo,
 	ImageUploadOptions,

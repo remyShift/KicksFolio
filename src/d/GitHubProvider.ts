@@ -7,7 +7,7 @@ import {
 	GITHUB_CONFIG,
 	validateGitHubConfig,
 } from '@/config/github/github.config';
-import { GitHubProviderInterface } from '@/interfaces/GitHubInterface';
+import { GitHubProviderInterface } from '@/domain/GitHubInterface';
 import { BugReportFormData } from '@/store/useBugReportStore';
 
 export interface GitHubIssueData {

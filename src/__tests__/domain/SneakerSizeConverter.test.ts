@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { SneakerSizeConverterInterface } from '@/interfaces/SneakerSizeConverterInterface';
+import { SneakerSizeConverterInterface } from '@/domain/SneakerSizeConverterInterface';
 import { SizeUnit } from '@/types/sneaker';
 
 describe('SneakerSizeConverterInterface', () => {

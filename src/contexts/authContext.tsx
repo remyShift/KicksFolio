@@ -12,17 +12,17 @@ import * as Linking from 'expo-linking';
 import { router } from 'expo-router';
 
 import { supabase } from '@/config/supabase/supabase';
-import { authProvider } from '@/domain/AuthProvider';
-import { followerProvider } from '@/domain/FollowerProvider';
-import { sneakerProvider } from '@/domain/SneakerProvider';
-import { userSearchProvider } from '@/domain/UserSearchProvider';
-import { wishlistProvider } from '@/domain/WishlistProvider';
-import { AuthInterface } from '@/interfaces/AuthInterface';
-import { FollowerInterface } from '@/interfaces/FollowerInterface';
-import { SneakerProviderInterface } from '@/interfaces/SneakerProviderInterface';
-import { UserSearchInterface } from '@/interfaces/UserSearchInterface';
-import { WishlistProviderInterface } from '@/interfaces/WishlistProviderInterface';
+import { followerProvider } from '@/d/FollowerProvider';
+import { sneakerProvider } from '@/d/SneakerProvider';
+import { userSearchProvider } from '@/d/UserSearchProvider';
+import { wishlistProvider } from '@/d/WishlistProvider';
+import { Auth } from '@/domain/Auth';
+import { FollowerInterface } from '@/domain/FollowerInterface';
+import { SneakerProviderInterface } from '@/domain/SneakerProviderInterface';
+import { UserSearchInterface } from '@/domain/UserSearchInterface';
+import { WishlistProviderInterface } from '@/domain/WishlistProviderInterface';
 import { storageProvider } from '@/services/StorageService';
+import { authProvider } from '@/tech/proxy/AuthProxy';
 import { AuthContextType, FollowingUserWithSneakers } from '@/types/auth';
 import { Sneaker } from '@/types/sneaker';
 import { User } from '@/types/user';
@@ -148,16 +148,16 @@ export function SessionProvider({ children }: PropsWithChildren) {
 				data: { session },
 			} = await supabase.auth.getSession();
 			if (session?.user) {
-				return AuthInterface.getCurrentUser(
-					authProvider.getCurrentUser
-				).catch((error: any) => {
-					if (error.code === 'PGRST116') {
-						return supabase.auth.signOut().then(() => {
-							clearUserData();
-						});
+				return Auth.getCurrentUser(authProvider.getCurrentUser).catch(
+					(error: any) => {
+						if (error.code === 'PGRST116') {
+							return supabase.auth.signOut().then(() => {
+								clearUserData();
+							});
+						}
+						throw error;
 					}
-					throw error;
-				});
+				);
 			}
 		};
 		checkInitialSession();
@@ -263,7 +263,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
 		const retryDelay = 1000;
 
 		const getUserWithRetries = async (attempt: number): Promise<any> => {
-			return AuthInterface.getCurrentUser(authProvider.getCurrentUser)
+			return Auth.getCurrentUser(authProvider.getCurrentUser)
 				.then((userData: any) => {
 					if (userData) {
 						const userWithUrl = {
@@ -329,7 +329,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
 			return;
 		}
 
-		return AuthInterface.getCurrentUser(authProvider.getCurrentUser)
+		return Auth.getCurrentUser(authProvider.getCurrentUser)
 			.then(async (freshUserData: any) => {
 				if (!freshUserData) {
 					return;

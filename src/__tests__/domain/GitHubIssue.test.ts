@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
 	GitHubInterface,
 	GitHubProviderInterface,
-} from '@/interfaces/GitHubInterface';
+} from '@/domain/GitHubInterface';
 import { BugReportFormData } from '@/store/useBugReportStore';
 
 const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});

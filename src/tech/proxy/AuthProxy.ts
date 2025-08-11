@@ -1,13 +1,9 @@
 import { supabase } from '@/config/supabase/supabase';
-import { AuthProviderInterface } from '@/interfaces/AuthInterface';
-import { SupabaseUser } from '@/types/user';
+import { AuthProviderInterface } from '@/domain/Auth';
+import { UserInfo } from '@/types/user';
 
-export class AuthProvider implements AuthProviderInterface {
-	async signUp(
-		email: string,
-		password: string,
-		userData: Partial<SupabaseUser>
-	) {
+export class AuthProxy implements AuthProviderInterface {
+	async signUp(email: string, password: string, userData: Partial<UserInfo>) {
 		const result = await supabase.auth.signUp({
 			email,
 			password,
@@ -131,7 +127,7 @@ export class AuthProvider implements AuthProviderInterface {
 		};
 	}
 
-	async updateProfile(userId: string, userData: Partial<SupabaseUser>) {
+	async updateProfile(userId: string, userData: Partial<UserInfo>) {
 		const { data, error } = await supabase
 			.from('users')
 			.update(userData)
@@ -226,4 +222,4 @@ export class AuthProvider implements AuthProviderInterface {
 	}
 }
 
-export const authProvider = new AuthProvider();
+export const authProxy = new AuthProxy();

@@ -2,8 +2,8 @@ import { useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { authValidator } from '@/domain/AuthValidator';
-import { AuthValidatorInterface } from '@/interfaces/AuthValidatorInterface';
+import { AuthValidator } from '@/domain/AuthValidator';
+import { authValidatorProxy } from '@/tech/proxy/AuthValidatorProxy';
 import { UserData } from '@/types/auth';
 
 type ValidationValue = string | number | boolean | null | undefined;
@@ -12,15 +12,15 @@ export function useAuthValidation() {
 	const [errorMsg, setErrorMsg] = useState('');
 	const { t } = useTranslation();
 
+	const authValidator = new AuthValidator(authValidatorProxy);
+
 	const checkUsernameExists = async (
 		username: string
 	): Promise<string | null> => {
 		if (!username || username.length < 4) return null;
 
-		return AuthValidatorInterface.checkUsernameExists(
-			username,
-			authValidator.checkUsernameExists
-		)
+		return authValidator
+			.checkUsernameExists(username)
 			.then((exists) => {
 				if (exists) {
 					return t('auth.form.username.error.exists');
@@ -39,10 +39,8 @@ export function useAuthValidation() {
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 		if (!value || !emailRegex.test(value.toString())) return null;
 
-		return AuthValidatorInterface.checkEmailExists(
-			value.toString(),
-			authValidator.checkEmailExists
-		)
+		return authValidator
+			.checkEmailExists(value.toString())
 			.then((exists) => {
 				return exists ? t('auth.form.email.error.exists') : null;
 			})
@@ -58,10 +56,8 @@ export function useAuthValidation() {
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 		if (!value || !emailRegex.test(value.toString())) return null;
 
-		return AuthValidatorInterface.checkEmailExists(
-			value.toString(),
-			authValidator.checkEmailExists
-		)
+		return authValidator
+			.checkEmailExists(value.toString())
 			.then((exists) => {
 				return !exists ? t('auth.form.email.error.notExists') : null;
 			})

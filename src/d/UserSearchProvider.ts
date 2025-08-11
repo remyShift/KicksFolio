@@ -1,5 +1,5 @@
 import { supabase } from '@/config/supabase/supabase';
-import { UserSearchInterface } from '@/interfaces/UserSearchInterface';
+import { UserSearchInterface } from '@/domain/UserSearchInterface';
 import { Sneaker } from '@/types/sneaker';
 import { SearchUser, SearchUsersResponse } from '@/types/user';
 

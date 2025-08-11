@@ -1,4 +1,4 @@
-import { CurrencyProviderInterface } from '@/interfaces/CurrencyProviderInterface';
+import { CurrencyProviderInterface } from '@/domain/CurrencyProviderInterface';
 import { Currency } from '@/types/currency';
 
 const EXCHANGE_RATES = {

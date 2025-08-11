@@ -1,13 +1,13 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { AuthValidatorInterface } from '@/interfaces/AuthValidatorInterface';
+import { AuthValidator } from '@/domain/AuthValidator';
 
-describe('AuthValidatorInterface', () => {
+describe('AuthValidator', () => {
 	describe('checkUsernameExists', () => {
 		it('should return true when username exists', async () => {
 			const mockCheckUsername = vi.fn().mockResolvedValue(true);
 
-			const result = await AuthValidatorInterface.checkUsernameExists(
+			const result = await AuthValidator.checkUsernameExists(
 				'testuser',
 				mockCheckUsername
 			);
@@ -19,7 +19,7 @@ describe('AuthValidatorInterface', () => {
 		it('should return false when username does not exist', async () => {
 			const mockCheckUsername = vi.fn().mockResolvedValue(false);
 
-			const result = await AuthValidatorInterface.checkUsernameExists(
+			const result = await AuthValidator.checkUsernameExists(
 				'testuser',
 				mockCheckUsername
 			);
@@ -36,14 +36,14 @@ describe('AuthValidatorInterface', () => {
 				.spyOn(console, 'error')
 				.mockImplementation(() => {});
 
-			const result = await AuthValidatorInterface.checkUsernameExists(
+			const result = await AuthValidator.checkUsernameExists(
 				'testuser',
 				mockCheckUsername
 			);
 
 			expect(result).toBe(false);
 			expect(consoleSpy).toHaveBeenCalledWith(
-				'❌ AuthValidatorInterface.checkUsernameExists: Error occurred:',
+				'❌ AuthValidator.checkUsernameExists: Error occurred:',
 				new Error('Database error')
 			);
 
@@ -55,7 +55,7 @@ describe('AuthValidatorInterface', () => {
 		it('should return true when email exists', async () => {
 			const mockCheckEmail = vi.fn().mockResolvedValue(true);
 
-			const result = await AuthValidatorInterface.checkEmailExists(
+			const result = await AuthValidator.checkEmailExists(
 				'test@example.com',
 				mockCheckEmail
 			);
@@ -67,7 +67,7 @@ describe('AuthValidatorInterface', () => {
 		it('should return false when email does not exist', async () => {
 			const mockCheckEmail = vi.fn().mockResolvedValue(false);
 
-			const result = await AuthValidatorInterface.checkEmailExists(
+			const result = await AuthValidator.checkEmailExists(
 				'test@example.com',
 				mockCheckEmail
 			);
@@ -84,14 +84,14 @@ describe('AuthValidatorInterface', () => {
 				.spyOn(console, 'error')
 				.mockImplementation(() => {});
 
-			const result = await AuthValidatorInterface.checkEmailExists(
+			const result = await AuthValidator.checkEmailExists(
 				'test@example.com',
 				mockCheckEmail
 			);
 
 			expect(result).toBe(false);
 			expect(consoleSpy).toHaveBeenCalledWith(
-				'❌ AuthValidatorInterface.checkEmailExists: Error occurred:',
+				'❌ AuthValidator.checkEmailExists: Error occurred:',
 				new Error('Network error')
 			);
 

@@ -5,11 +5,11 @@ import { useTranslation } from 'react-i18next';
 import { router } from 'expo-router';
 
 import { useSession } from '@/contexts/authContext';
-import { followerProvider } from '@/domain/FollowerProvider';
-import { userSearchProvider } from '@/domain/UserSearchProvider';
+import { followerProvider } from '@/d/FollowerProvider';
+import { userSearchProvider } from '@/d/UserSearchProvider';
+import { FollowerInterface } from '@/domain/FollowerInterface';
+import { UserSearchInterface } from '@/domain/UserSearchInterface';
 import useToast from '@/hooks/ui/useToast';
-import { FollowerInterface } from '@/interfaces/FollowerInterface';
-import { UserSearchInterface } from '@/interfaces/UserSearchInterface';
 import { Sneaker } from '@/types/sneaker';
 import { SearchUser } from '@/types/user';
 

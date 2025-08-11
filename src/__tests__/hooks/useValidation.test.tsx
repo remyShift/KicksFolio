@@ -6,15 +6,15 @@ import { vi } from 'vitest';
 import { useAuthValidation } from '@/hooks/useAuthValidation';
 import { UserData } from '@/types/auth';
 
-vi.mock('@/domain/AuthValidator', () => ({
+vi.mock('@/domain/AuthValidatorProxy', () => ({
 	authValidator: {
 		checkUsernameExists: vi.fn(),
 		checkEmailExists: vi.fn(),
 	},
 }));
 
-vi.mock('@/interfaces/AuthValidatorInterface', () => ({
-	AuthValidatorInterface: {
+vi.mock('@/interfaces/AuthValidatorProxy', () => ({
+	AuthValidatorProxy: {
 		checkUsernameExists: vi.fn(),
 		checkEmailExists: vi.fn(),
 	},
@@ -34,13 +34,12 @@ vi.mock('react-i18next', () => ({
 }));
 
 describe('useAuthValidation', () => {
-	let AuthValidatorInterface: any;
+	let AuthValidatorProxy: any;
 
 	beforeEach(async () => {
 		vi.clearAllMocks();
-		AuthValidatorInterface = (
-			await import('@/interfaces/AuthValidatorInterface')
-		).AuthValidatorInterface;
+		AuthValidatorProxy = (await import('@/domain/AuthValidatorProxy'))
+			.AuthValidatorProxy;
 	});
 
 	describe('checkUsernameExists', () => {
@@ -53,12 +52,12 @@ describe('useAuthValidation', () => {
 
 			expect(validationResult).toBeNull();
 			expect(
-				AuthValidatorInterface.checkUsernameExists
+				AuthValidatorProxy.checkUsernameExists
 			).not.toHaveBeenCalled();
 		});
 
 		it('should return username exists error when username exists', async () => {
-			AuthValidatorInterface.checkUsernameExists.mockResolvedValue(true);
+			AuthValidatorProxy.checkUsernameExists.mockResolvedValue(true);
 
 			const { result } = renderHook(() => useAuthValidation());
 
@@ -67,13 +66,14 @@ describe('useAuthValidation', () => {
 			});
 
 			expect(validationResult).toBe('Username already exists');
-			expect(
-				AuthValidatorInterface.checkUsernameExists
-			).toHaveBeenCalledWith('testuser', expect.any(Function));
+			expect(AuthValidatorProxy.checkUsernameExists).toHaveBeenCalledWith(
+				'testuser',
+				expect.any(Function)
+			);
 		});
 
 		it('should return null when username is available', async () => {
-			AuthValidatorInterface.checkUsernameExists.mockResolvedValue(false);
+			AuthValidatorProxy.checkUsernameExists.mockResolvedValue(false);
 
 			const { result } = renderHook(() => useAuthValidation());
 
@@ -85,7 +85,7 @@ describe('useAuthValidation', () => {
 		});
 
 		it('should handle errors gracefully', async () => {
-			AuthValidatorInterface.checkUsernameExists.mockRejectedValue(
+			AuthValidatorProxy.checkUsernameExists.mockRejectedValue(
 				new Error('Network error')
 			);
 			const consoleSpy = vi
@@ -117,13 +117,11 @@ describe('useAuthValidation', () => {
 			});
 
 			expect(validationResult).toBeNull();
-			expect(
-				AuthValidatorInterface.checkEmailExists
-			).not.toHaveBeenCalled();
+			expect(AuthValidatorProxy.checkEmailExists).not.toHaveBeenCalled();
 		});
 
 		it('should return email exists error when email exists', async () => {
-			AuthValidatorInterface.checkEmailExists.mockResolvedValue(true);
+			AuthValidatorProxy.checkEmailExists.mockResolvedValue(true);
 
 			const { result } = renderHook(() => useAuthValidation());
 
@@ -134,13 +132,14 @@ describe('useAuthValidation', () => {
 			});
 
 			expect(validationResult).toBe('Email already exists');
-			expect(
-				AuthValidatorInterface.checkEmailExists
-			).toHaveBeenCalledWith('test@example.com', expect.any(Function));
+			expect(AuthValidatorProxy.checkEmailExists).toHaveBeenCalledWith(
+				'test@example.com',
+				expect.any(Function)
+			);
 		});
 
 		it('should return null when email is available', async () => {
-			AuthValidatorInterface.checkEmailExists.mockResolvedValue(false);
+			AuthValidatorProxy.checkEmailExists.mockResolvedValue(false);
 
 			const { result } = renderHook(() => useAuthValidation());
 
@@ -156,7 +155,7 @@ describe('useAuthValidation', () => {
 
 	describe('checkEmailExistsForReset', () => {
 		it('should return email not found error when email does not exist', async () => {
-			AuthValidatorInterface.checkEmailExists.mockResolvedValue(false);
+			AuthValidatorProxy.checkEmailExists.mockResolvedValue(false);
 
 			const { result } = renderHook(() => useAuthValidation());
 
@@ -170,7 +169,7 @@ describe('useAuthValidation', () => {
 		});
 
 		it('should return null when email exists', async () => {
-			AuthValidatorInterface.checkEmailExists.mockResolvedValue(true);
+			AuthValidatorProxy.checkEmailExists.mockResolvedValue(true);
 
 			const { result } = renderHook(() => useAuthValidation());
 
@@ -186,8 +185,8 @@ describe('useAuthValidation', () => {
 
 	describe('validateSignUpStep1Async', () => {
 		it('should return valid result when username and email are available', async () => {
-			AuthValidatorInterface.checkUsernameExists.mockResolvedValue(false);
-			AuthValidatorInterface.checkEmailExists.mockResolvedValue(false);
+			AuthValidatorProxy.checkUsernameExists.mockResolvedValue(false);
+			AuthValidatorProxy.checkEmailExists.mockResolvedValue(false);
 
 			const { result } = renderHook(() => useAuthValidation());
 
@@ -213,7 +212,7 @@ describe('useAuthValidation', () => {
 		});
 
 		it('should return error when username exists', async () => {
-			AuthValidatorInterface.checkUsernameExists.mockResolvedValue(true);
+			AuthValidatorProxy.checkUsernameExists.mockResolvedValue(true);
 
 			const { result } = renderHook(() => useAuthValidation());
 
@@ -239,8 +238,8 @@ describe('useAuthValidation', () => {
 		});
 
 		it('should return error when email exists', async () => {
-			AuthValidatorInterface.checkUsernameExists.mockResolvedValue(false);
-			AuthValidatorInterface.checkEmailExists.mockResolvedValue(true);
+			AuthValidatorProxy.checkUsernameExists.mockResolvedValue(false);
+			AuthValidatorProxy.checkEmailExists.mockResolvedValue(true);
 
 			const { result } = renderHook(() => useAuthValidation());
 
@@ -270,10 +269,10 @@ describe('useAuthValidation', () => {
 				.spyOn(console, 'error')
 				.mockImplementation(() => {});
 
-			AuthValidatorInterface.checkUsernameExists.mockRejectedValue(
+			AuthValidatorProxy.checkUsernameExists.mockRejectedValue(
 				new Error('Network error')
 			);
-			AuthValidatorInterface.checkEmailExists.mockRejectedValue(
+			AuthValidatorProxy.checkEmailExists.mockRejectedValue(
 				new Error('Network error')
 			);
 

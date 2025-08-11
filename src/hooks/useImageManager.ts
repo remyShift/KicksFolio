@@ -3,8 +3,8 @@ import { Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 
 import { useSession } from '@/contexts/authContext';
-import { imageProvider } from '@/domain/ImageProvider';
-import { ImageProviderInterface } from '@/interfaces/ImageProviderInterface';
+import { imageProvider } from '@/d/ImageProvider';
+import { ImageProviderInterface } from '@/domain/ImageProviderInterface';
 import { imageService } from '@/services/ImageService';
 import { SneakerPhoto } from '@/types/image';
 

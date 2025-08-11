@@ -1,8 +1,8 @@
 import { vi } from 'vitest';
 
-import { SupabaseUser } from '@/domain/AuthProvider';
+import { UserInfo } from '@/tech/proxy/AuthProxy';
 
-export const mockSupabaseUser: SupabaseUser = {
+export const mockSupabaseUser: UserInfo = {
 	id: 'test-user-id',
 	email: 'test@example.com',
 	username: 'testuser',

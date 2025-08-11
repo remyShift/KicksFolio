@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
-import { sneakerFilteringProvider } from '@/domain/SneakerFiltering';
+import { sneakerFilteringProvider } from '@/d/SneakerFiltering';
 import { FilterState } from '@/types/filter';
 import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
 

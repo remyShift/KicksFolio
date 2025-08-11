@@ -5,10 +5,10 @@ import { useTranslation } from 'react-i18next';
 import { router } from 'expo-router';
 
 import { useSession } from '@/contexts/authContext';
-import { authProvider } from '@/domain/AuthProvider';
-import { imageProvider } from '@/domain/ImageProvider';
-import { AuthInterface } from '@/interfaces/AuthInterface';
-import { ImageProviderInterface } from '@/interfaces/ImageProviderInterface';
+import { imageProvider } from '@/d/ImageProvider';
+import { Auth } from '@/domain/Auth';
+import { ImageProviderInterface } from '@/domain/ImageProviderInterface';
+import { authProxy } from '@/tech/proxy/AuthProxy';
 import { UpdateUserData, UserData } from '@/types/auth';
 
 import { useAuthValidation } from './useAuthValidation';
@@ -19,24 +19,24 @@ export const useAuth = () => {
 	const { validateSignUpStep1Async } = useAuthValidation();
 	const { t } = useTranslation();
 
+	const auth = new Auth(authProxy);
+
 	const login = async (email: string, password: string) => {
-		return AuthInterface.signIn(email, password, authProvider.signIn).catch(
-			(error) => {
-				setErrorMsg(`${t('auth.error.login')} : ${error.message}`);
-			}
-		);
+		return auth.signIn(email, password).catch((error) => {
+			setErrorMsg(`${t('auth.error.login')} : ${error.message}`);
+		});
 	};
 
 	const signUp = async (userData: UserData) => {
 		const { profile_picture: profilePictureUri, ...restOfUserData } =
 			userData;
 
-		return AuthInterface.signUp(
-			restOfUserData.email,
-			restOfUserData.password,
-			restOfUserData,
-			authProvider.signUp
-		)
+		return auth
+			.signUp(
+				restOfUserData.email,
+				restOfUserData.password,
+				restOfUserData
+			)
 			.then((response) => {
 				if (response.user && profilePictureUri) {
 					return ImageProviderInterface.uploadProfileImage(
@@ -45,16 +45,14 @@ export const useAuth = () => {
 						imageProvider.uploadProfileImage
 					).then((uploadResult) => {
 						if (uploadResult.success && uploadResult.url) {
-							return AuthInterface.updateProfile(
-								response.user.id,
-								{
+							return auth
+								.updateProfile(response.user.id, {
 									profile_picture: uploadResult.url,
-								},
-								authProvider.updateProfile
-							).then((updatedUser) => {
-								setUser(updatedUser as any);
-								return response;
-							});
+								})
+								.then((updatedUser) => {
+									setUser(updatedUser as any);
+									return response;
+								});
 						} else {
 							console.error(
 								'❌ useAuth.signUp: Failed to upload profile picture:',
@@ -80,7 +78,8 @@ export const useAuth = () => {
 	};
 
 	const forgotPassword = async (email: string) => {
-		return AuthInterface.forgotPassword(email, authProvider.forgotPassword)
+		return auth
+			.forgotPassword(email)
 			.then(() => {
 				router.replace({
 					pathname: '/login',
@@ -110,16 +109,12 @@ export const useAuth = () => {
 		}
 
 		const resetPasswordPromise = resetTokens
-			? AuthInterface.resetPasswordWithTokens(
+			? auth.resetPasswordWithTokens(
 					resetTokens.access_token,
 					resetTokens.refresh_token,
-					newPassword,
-					authProvider.resetPasswordWithTokens
+					newPassword
 				)
-			: AuthInterface.resetPassword(
-					newPassword,
-					authProvider.resetPassword
-				);
+			: auth.resetPassword(newPassword);
 
 		return resetPasswordPromise
 			.then(() => {
@@ -155,7 +150,8 @@ export const useAuth = () => {
 	};
 
 	const logout = async () => {
-		return AuthInterface.signOut(authProvider.signOut)
+		return auth
+			.signOut()
 			.then(() => {
 				router.replace('/login');
 				return true;
@@ -189,9 +185,8 @@ export const useAuth = () => {
 						) ||
 						!newProfileData.profile_picture.startsWith('http'))
 				) {
-					return AuthInterface.getCurrentUser(
-						authProvider.getCurrentUser
-					)
+					return auth
+						.getCurrentUser()
 						.then((currentUser) => {
 							if (currentUser?.profile_picture) {
 								const oldFilePath =
@@ -243,11 +238,7 @@ export const useAuth = () => {
 				}
 			})
 			.then(() => {
-				return AuthInterface.updateProfile(
-					userId,
-					newProfileData,
-					authProvider.updateProfile
-				);
+				return auth.updateProfile(userId, newProfileData);
 			})
 			.then((updatedUser) => {
 				setUser(updatedUser as any);
@@ -273,10 +264,7 @@ export const useAuth = () => {
 					);
 				}
 
-				return AuthInterface.deleteUser(
-					userId,
-					authProvider.deleteUser
-				);
+				return auth.deleteUser(userId);
 			})
 			.then(() => {
 				clearUserData();
@@ -290,7 +278,8 @@ export const useAuth = () => {
 	};
 
 	const getUser = async () => {
-		return AuthInterface.getCurrentUser(authProvider.getCurrentUser)
+		return auth
+			.getCurrentUser()
 			.then((user) => {
 				return user;
 			})

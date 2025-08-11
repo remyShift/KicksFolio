@@ -3,11 +3,11 @@ import { useTranslation } from 'react-i18next';
 import { ZodIssue } from 'zod';
 
 import { useSession } from '@/contexts/authContext';
-import { imageProvider } from '@/domain/ImageProvider';
-import { sneakerProvider } from '@/domain/SneakerProvider';
+import { imageProvider } from '@/d/ImageProvider';
+import { sneakerProvider } from '@/d/SneakerProvider';
+import { ImageProviderInterface } from '@/domain/ImageProviderInterface';
+import { SneakerInterface } from '@/domain/SneakerProviderInterface';
 import useToast from '@/hooks/ui/useToast';
-import { ImageProviderInterface } from '@/interfaces/ImageProviderInterface';
-import { SneakerInterface } from '@/interfaces/SneakerProviderInterface';
 import { FetchedSneaker } from '@/store/useModalStore';
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';
 import { SneakerPhoto } from '@/types/image';

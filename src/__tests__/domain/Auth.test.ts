@@ -1,6 +1,6 @@
 import { vi } from 'vitest';
 
-import { AuthInterface } from '@/interfaces/AuthInterface';
+import { Auth } from '@/domain/Auth';
 
 import {
 	createFailingMockFunction,
@@ -15,11 +15,11 @@ import {
 	createSuccessfulSignUp,
 	createSuccessfulUpdateProfile,
 	mockSupabaseUser,
-} from './authInterfaceSetup';
+} from './authSetup';
 
-vi.unmock('@/interfaces/AuthInterface');
+vi.unmock('@/interfaces/Auth');
 
-describe('AuthInterface', () => {
+describe('Auth', () => {
 	beforeEach(() => {
 		vi.spyOn(console, 'error').mockImplementation(() => {});
 	});
@@ -35,7 +35,7 @@ describe('AuthInterface', () => {
 			const userData = mockSupabaseUser;
 			const mockSignUp = createSuccessfulSignUp();
 
-			const result = await AuthInterface.signUp(
+			const result = await Auth.signUp(
 				email,
 				password,
 				userData,
@@ -51,7 +51,7 @@ describe('AuthInterface', () => {
 			const mockSignUp = createFailingMockFunction('Sign up failed');
 
 			await expect(
-				AuthInterface.signUp(
+				Auth.signUp(
 					'test@example.com',
 					'password123',
 					mockSupabaseUser,
@@ -60,7 +60,7 @@ describe('AuthInterface', () => {
 			).rejects.toThrow('Sign up failed');
 
 			expect(console.error).toHaveBeenCalledWith(
-				'❌ AuthInterface.signUp: Error occurred:',
+				'❌ Auth.signUp: Error occurred:',
 				expect.any(Error)
 			);
 		});
@@ -72,11 +72,7 @@ describe('AuthInterface', () => {
 			const password = 'password123';
 			const mockSignIn = createSuccessfulSignIn();
 
-			const result = await AuthInterface.signIn(
-				email,
-				password,
-				mockSignIn
-			);
+			const result = await Auth.signIn(email, password, mockSignIn);
 
 			expect(mockSignIn).toHaveBeenCalledWith(email, password);
 			expect(result).toBeDefined();
@@ -87,15 +83,11 @@ describe('AuthInterface', () => {
 			const mockSignIn = createFailingMockFunction('Invalid credentials');
 
 			await expect(
-				AuthInterface.signIn(
-					'test@example.com',
-					'wrongpassword',
-					mockSignIn
-				)
+				Auth.signIn('test@example.com', 'wrongpassword', mockSignIn)
 			).rejects.toThrow('Invalid credentials');
 
 			expect(console.error).toHaveBeenCalledWith(
-				'❌ AuthInterface.signIn: Error occurred:',
+				'❌ Auth.signIn: Error occurred:',
 				expect.any(Error)
 			);
 		});
@@ -105,7 +97,7 @@ describe('AuthInterface', () => {
 		it('should sign out and return true', async () => {
 			const mockSignOut = createSuccessfulSignOut();
 
-			const result = await AuthInterface.signOut(mockSignOut);
+			const result = await Auth.signOut(mockSignOut);
 
 			expect(mockSignOut).toHaveBeenCalled();
 			expect(result).toBe(true);
@@ -114,12 +106,12 @@ describe('AuthInterface', () => {
 		it('should log the error and rethrow in case of failure', async () => {
 			const mockSignOut = createFailingMockFunction('Sign out failed');
 
-			await expect(AuthInterface.signOut(mockSignOut)).rejects.toThrow(
+			await expect(Auth.signOut(mockSignOut)).rejects.toThrow(
 				'Sign out failed'
 			);
 
 			expect(console.error).toHaveBeenCalledWith(
-				'❌ AuthInterface.signOut: Error occurred:',
+				'❌ Auth.signOut: Error occurred:',
 				expect.any(Error)
 			);
 		});
@@ -129,8 +121,7 @@ describe('AuthInterface', () => {
 		it('should return the current user', async () => {
 			const mockGetCurrentUser = createSuccessfulGetCurrentUser();
 
-			const result =
-				await AuthInterface.getCurrentUser(mockGetCurrentUser);
+			const result = await Auth.getCurrentUser(mockGetCurrentUser);
 
 			expect(mockGetCurrentUser).toHaveBeenCalled();
 			expect(result.id).toBe('test-user-id');
@@ -143,11 +134,11 @@ describe('AuthInterface', () => {
 				createFailingMockFunction('User not found');
 
 			await expect(
-				AuthInterface.getCurrentUser(mockGetCurrentUser)
+				Auth.getCurrentUser(mockGetCurrentUser)
 			).rejects.toThrow('User not found');
 
 			expect(console.error).toHaveBeenCalledWith(
-				'❌ AuthInterface.getCurrentUser: Error occurred:',
+				'❌ Auth.getCurrentUser: Error occurred:',
 				expect.any(Error)
 			);
 		});
@@ -159,7 +150,7 @@ describe('AuthInterface', () => {
 			const userData = { first_name: 'Updated' };
 			const mockUpdateProfile = createSuccessfulUpdateProfile();
 
-			const result = await AuthInterface.updateProfile(
+			const result = await Auth.updateProfile(
 				userId,
 				userData,
 				mockUpdateProfile
@@ -174,7 +165,7 @@ describe('AuthInterface', () => {
 				createFailingMockFunction('Update failed');
 
 			await expect(
-				AuthInterface.updateProfile(
+				Auth.updateProfile(
 					'test-user-id',
 					{
 						first_name: 'Updated',
@@ -184,7 +175,7 @@ describe('AuthInterface', () => {
 			).rejects.toThrow('Update failed');
 
 			expect(console.error).toHaveBeenCalledWith(
-				'❌ AuthInterface.updateProfile: Error occurred:',
+				'❌ Auth.updateProfile: Error occurred:',
 				expect.any(Error)
 			);
 		});
@@ -195,10 +186,7 @@ describe('AuthInterface', () => {
 			const userId = 'test-user-id';
 			const mockDeleteUser = createSuccessfulDeleteUser();
 
-			const result = await AuthInterface.deleteUser(
-				userId,
-				mockDeleteUser
-			);
+			const result = await Auth.deleteUser(userId, mockDeleteUser);
 
 			expect(mockDeleteUser).toHaveBeenCalledWith(userId);
 			expect(result).toBe(true);
@@ -208,11 +196,11 @@ describe('AuthInterface', () => {
 			const mockDeleteUser = createFailingMockFunction('Delete failed');
 
 			await expect(
-				AuthInterface.deleteUser('test-user-id', mockDeleteUser)
+				Auth.deleteUser('test-user-id', mockDeleteUser)
 			).rejects.toThrow('Delete failed');
 
 			expect(console.error).toHaveBeenCalledWith(
-				'❌ AuthInterface.deleteUser: Error occurred:',
+				'❌ Auth.deleteUser: Error occurred:',
 				expect.any(Error)
 			);
 		});
@@ -223,10 +211,7 @@ describe('AuthInterface', () => {
 			const email = 'test@example.com';
 			const mockForgotPassword = createSuccessfulForgotPassword();
 
-			const result = await AuthInterface.forgotPassword(
-				email,
-				mockForgotPassword
-			);
+			const result = await Auth.forgotPassword(email, mockForgotPassword);
 
 			expect(mockForgotPassword).toHaveBeenCalledWith(email);
 			expect(result).toBe(true);
@@ -237,14 +222,11 @@ describe('AuthInterface', () => {
 				createFailingMockFunction('Email not found');
 
 			await expect(
-				AuthInterface.forgotPassword(
-					'test@example.com',
-					mockForgotPassword
-				)
+				Auth.forgotPassword('test@example.com', mockForgotPassword)
 			).rejects.toThrow('Email not found');
 
 			expect(console.error).toHaveBeenCalledWith(
-				'❌ AuthInterface.forgotPassword: Error occurred:',
+				'❌ Auth.forgotPassword: Error occurred:',
 				expect.any(Error)
 			);
 		});
@@ -255,7 +237,7 @@ describe('AuthInterface', () => {
 			const newPassword = 'newpassword123';
 			const mockResetPassword = createSuccessfulResetPassword();
 
-			const result = await AuthInterface.resetPassword(
+			const result = await Auth.resetPassword(
 				newPassword,
 				mockResetPassword
 			);
@@ -270,11 +252,11 @@ describe('AuthInterface', () => {
 			);
 
 			await expect(
-				AuthInterface.resetPassword('newpassword123', mockResetPassword)
+				Auth.resetPassword('newpassword123', mockResetPassword)
 			).rejects.toThrow('Password reset failed');
 
 			expect(console.error).toHaveBeenCalledWith(
-				'❌ AuthInterface.resetPassword: Error occurred:',
+				'❌ Auth.resetPassword: Error occurred:',
 				expect.any(Error)
 			);
 		});
@@ -288,7 +270,7 @@ describe('AuthInterface', () => {
 			const mockResetPasswordWithTokens =
 				createSuccessfulResetPasswordWithTokens();
 
-			const result = await AuthInterface.resetPasswordWithTokens(
+			const result = await Auth.resetPasswordWithTokens(
 				accessToken,
 				refreshToken,
 				newPassword,
@@ -308,7 +290,7 @@ describe('AuthInterface', () => {
 				createFailingMockFunction('Token reset failed');
 
 			await expect(
-				AuthInterface.resetPasswordWithTokens(
+				Auth.resetPasswordWithTokens(
 					'access-token',
 					'refresh-token',
 					'newpassword123',
@@ -317,7 +299,7 @@ describe('AuthInterface', () => {
 			).rejects.toThrow('Token reset failed');
 
 			expect(console.error).toHaveBeenCalledWith(
-				'❌ AuthInterface.resetPasswordWithTokens: Error occurred:',
+				'❌ Auth.resetPasswordWithTokens: Error occurred:',
 				expect.any(Error)
 			);
 		});
@@ -328,7 +310,7 @@ describe('AuthInterface', () => {
 			const mockCleanupOrphanedSessions =
 				createSuccessfulCleanupOrphanedSessions();
 
-			const result = await AuthInterface.cleanupOrphanedSessions(
+			const result = await Auth.cleanupOrphanedSessions(
 				mockCleanupOrphanedSessions
 			);
 
@@ -341,13 +323,11 @@ describe('AuthInterface', () => {
 				createFailingMockFunction('Cleanup failed');
 
 			await expect(
-				AuthInterface.cleanupOrphanedSessions(
-					mockCleanupOrphanedSessions
-				)
+				Auth.cleanupOrphanedSessions(mockCleanupOrphanedSessions)
 			).rejects.toThrow('Cleanup failed');
 
 			expect(console.error).toHaveBeenCalledWith(
-				'❌ AuthInterface.cleanupOrphanedSessions: Error occurred:',
+				'❌ Auth.cleanupOrphanedSessions: Error occurred:',
 				expect.any(Error)
 			);
 		});

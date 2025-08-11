@@ -39,7 +39,7 @@ export interface SearchUsersResponse {
 	totalCount: number;
 }
 
-export interface SupabaseUser {
+export interface UserInfo {
 	id: string;
 	email: string;
 	username: string;

@@ -78,9 +78,9 @@ describe('useUserProfile', () => {
 
 	beforeEach(async () => {
 		vi.clearAllMocks();
-		UserSearchInterface = (await import('@/interfaces/UserSearchInterface'))
+		UserSearchInterface = (await import('@/domain/UserSearchInterface'))
 			.UserSearchInterface;
-		FollowerInterface = (await import('@/interfaces/FollowerInterface'))
+		FollowerInterface = (await import('@/domain/FollowerInterface'))
 			.FollowerInterface;
 	});
 

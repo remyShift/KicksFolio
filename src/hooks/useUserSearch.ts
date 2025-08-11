@@ -3,9 +3,9 @@ import { useCallback, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useSession } from '@/contexts/authContext';
-import { userSearchProvider } from '@/domain/UserSearchProvider';
+import { userSearchProvider } from '@/d/UserSearchProvider';
+import { UserSearchInterface } from '@/domain/UserSearchInterface';
 import useToast from '@/hooks/ui/useToast';
-import { UserSearchInterface } from '@/interfaces/UserSearchInterface';
 import { useUserSearchStore } from '@/store/useUserSearchStore';
 import { SearchUser } from '@/types/user';
 

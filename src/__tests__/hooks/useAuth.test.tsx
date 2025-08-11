@@ -8,7 +8,7 @@ import { vi } from 'vitest';
 import { useAuth } from '@/hooks/useAuth';
 import { UpdateUserData, UserData } from '@/types/auth';
 
-import { createMockError } from '../interfaces/authInterfaceSetup';
+import { createMockError } from '../domain/authSetup';
 
 vi.mock('@/contexts/authContext', () => ({
 	useSession: () => ({
@@ -49,7 +49,7 @@ vi.mock('@/domain/ImageProvider', () => ({
 	},
 }));
 
-vi.mock('@/domain/AuthProvider', () => ({
+vi.mock('@/domain/AuthProxy', () => ({
 	authProvider: {
 		signIn: vi.fn(),
 		signUp: vi.fn(),
@@ -64,8 +64,8 @@ vi.mock('@/domain/AuthProvider', () => ({
 	},
 }));
 
-vi.mock('@/interfaces/AuthInterface', () => ({
-	AuthInterface: {
+vi.mock('@/interfaces/Auth', () => ({
+	Auth: {
 		signUp: vi.fn().mockResolvedValue({
 			user: { id: 'test-user-id' },
 			session: null,
@@ -83,7 +83,7 @@ vi.mock('@/interfaces/AuthInterface', () => ({
 }));
 
 const { authProvider: MockedAuthProvider } = (await vi.importMock(
-	'@/domain/AuthProvider'
+	'@/domain/AuthProxy'
 )) as {
 	authProvider: {
 		signIn: ReturnType<typeof vi.fn>;
@@ -99,10 +99,10 @@ const { authProvider: MockedAuthProvider } = (await vi.importMock(
 	};
 };
 
-const { AuthInterface: MockedAuthInterface } = (await vi.importMock(
-	'@/interfaces/AuthInterface'
+const { Auth: MockedAuthInterface } = (await vi.importMock(
+	'@/interfaces/Auth'
 )) as {
-	AuthInterface: {
+	Auth: {
 		signUp: ReturnType<typeof vi.fn>;
 		signIn: ReturnType<typeof vi.fn>;
 		updateProfile: ReturnType<typeof vi.fn>;

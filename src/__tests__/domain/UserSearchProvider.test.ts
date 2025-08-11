@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { SearchUser, SearchUsersResponse } from '@/domain/UserSearchProvider';
-import { UserSearchInterface } from '@/interfaces/UserSearchInterface';
+import { SearchUser, SearchUsersResponse } from '@/d/UserSearchProvider';
+import { UserSearchInterface } from '@/domain/UserSearchInterface';
 
 describe('UserSearchInterface', () => {
 	describe('searchUsers', () => {

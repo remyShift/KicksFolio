@@ -1,5 +1,5 @@
 import { supabase } from '@/config/supabase/supabase';
-import { FollowerInterface } from '@/interfaces/FollowerInterface';
+import { FollowerInterface } from '@/domain/FollowerInterface';
 import { FollowingUser, SearchUser } from '@/types/user';
 
 export class FollowerProvider implements FollowerInterface {

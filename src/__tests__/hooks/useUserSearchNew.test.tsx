@@ -3,7 +3,7 @@ import { act } from 'react';
 import { renderHook } from '@testing-library/react';
 import { vi } from 'vitest';
 
-import { SearchUsersResponse } from '@/domain/UserSearchProvider';
+import { SearchUsersResponse } from '@/d/UserSearchProvider';
 import { useUserSearch } from '@/hooks/useUserSearch';
 
 vi.mock('@/interfaces/UserSearchInterface', () => ({
@@ -75,7 +75,7 @@ describe('useUserSearch', () => {
 		vi.clearAllMocks();
 		vi.clearAllTimers();
 		vi.useFakeTimers();
-		UserSearchInterface = (await import('@/interfaces/UserSearchInterface'))
+		UserSearchInterface = (await import('@/domain/UserSearchInterface'))
 			.UserSearchInterface;
 	});
 
