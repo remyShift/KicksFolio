@@ -4,7 +4,7 @@ import { Image } from 'expo-image';
 
 import Feather from '@expo/vector-icons/Feather';
 
-export default function FollowerTitle({
+export default function FollowingTitle({
 	content,
 	userAvatar,
 }: {

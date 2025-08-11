@@ -7,7 +7,7 @@ import { router } from 'expo-router';
 
 import MainButton from '@/components/ui/buttons/MainButton';
 import CollectionCard from '@/components/ui/cards/CollectionCard';
-import FollowerTitle from '@/components/ui/text/FollowerTitle';
+import FollowingTitle from '@/components/ui/text/FollowingTitle';
 import PageTitle from '@/components/ui/text/PageTitle';
 import Title from '@/components/ui/text/Title';
 import { useSession } from '@/contexts/authContext';
@@ -51,7 +51,7 @@ export default function Index() {
 									className="flex-1 gap-2"
 									key={followingUser.id}
 								>
-									<FollowerTitle
+									<FollowingTitle
 										content={followingUser.username}
 										userAvatar={
 											followingUser.profile_picture
