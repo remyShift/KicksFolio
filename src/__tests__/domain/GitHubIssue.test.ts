@@ -18,13 +18,11 @@ describe('GitHubIssueHandler', () => {
 			.spyOn(console, 'error')
 			.mockImplementation(() => {});
 
-		// Create mock provider
 		mockGitHubProvider = {
 			createIssue: vi.fn(),
 			validateConfiguration: vi.fn(),
 		};
 
-		// Create GitHub issue handler instance with mock provider
 		gitHubIssueHandler = new GitHubIssueHandler(mockGitHubProvider);
 	});
 
@@ -53,7 +51,7 @@ describe('GitHubIssueHandler', () => {
 				mockCreateIssueResponse
 			);
 
-			const result = await gitHubIssueHandler.createIssue(mockFormData);
+			const result = await gitHubIssueHandler.create(mockFormData);
 
 			expect(mockGitHubProvider.createIssue).toHaveBeenCalledWith(
 				mockFormData
@@ -69,7 +67,7 @@ describe('GitHubIssueHandler', () => {
 			);
 
 			await expect(
-				gitHubIssueHandler.createIssue(mockFormData)
+				gitHubIssueHandler.create(mockFormData)
 			).rejects.toThrow('Test error');
 
 			expect(mockGitHubProvider.createIssue).toHaveBeenCalledWith(
@@ -88,7 +86,7 @@ describe('GitHubIssueHandler', () => {
 			);
 
 			await expect(
-				gitHubIssueHandler.createIssue(mockFormData)
+				gitHubIssueHandler.create(mockFormData)
 			).rejects.toThrow('Network request failed');
 
 			expect(consoleErrorSpy).toHaveBeenCalledWith(
@@ -102,7 +100,7 @@ describe('GitHubIssueHandler', () => {
 			(mockGitHubProvider.createIssue as any).mockRejectedValue(apiError);
 
 			await expect(
-				gitHubIssueHandler.createIssue(mockFormData)
+				gitHubIssueHandler.create(mockFormData)
 			).rejects.toThrow('GitHub API Error: 403 - Forbidden');
 
 			expect(consoleErrorSpy).toHaveBeenCalledWith(
@@ -120,7 +118,7 @@ describe('GitHubIssueHandler', () => {
 			);
 
 			await expect(
-				gitHubIssueHandler.createIssue(mockFormData)
+				gitHubIssueHandler.create(mockFormData)
 			).rejects.toThrow('GitHub configuration is not properly set up');
 
 			expect(consoleErrorSpy).toHaveBeenCalledWith(
