@@ -16,9 +16,13 @@ interface CurrencyStore {
 	setCurrency: (currency: Currency) => Promise<void>;
 	initializeCurrency: () => Promise<void>;
 	getCurrentCurrency: () => Currency;
-	formattedPrice: (price: number) => Promise<string>;
-	formattedPriceAsync: (price: number) => Promise<string>;
+	convertAndFormatdPrice: (price: number, currency: Currency) => string;
 }
+
+const CURRENCY_SYMBOLS = {
+	USD: '$',
+	EUR: '€',
+} as const;
 
 const CURRENCY_STORAGE_KEY = 'app_currency';
 
@@ -79,27 +83,21 @@ export const useCurrencyStore = create<CurrencyStore>((set, get) => ({
 			});
 	},
 
-	formattedPrice: async (price: number) => {
-		try {
-			return await get().currencyProvider.formatPrice(
-				price,
-				get().currentCurrency
-			);
-		} catch (error) {
-			console.error('❌ Error formatting price:', error);
-			return `$${price.toFixed(2)}`;
-		}
-	},
+	convertAndFormatdPrice: (price: number, currency: Currency): string => {
+		const convertedPrice = get().currencyProvider.convertPrice(
+			price,
+			'USD',
+			currency
+		);
+		const symbol = CURRENCY_SYMBOLS[currency];
 
-	formattedPriceAsync: async (price: number) => {
-		try {
-			return await get().currencyProvider.formatPrice(
-				price,
-				get().currentCurrency
-			);
-		} catch (error) {
-			console.error('❌ Error formatting price:', error);
-			return `$${price.toFixed(2)}`;
+		switch (currency) {
+			case 'USD':
+				return `${symbol}${convertedPrice.toFixed(2)}`;
+			case 'EUR':
+				return `${convertedPrice.toFixed(2)}${symbol}`;
+			default:
+				return `${symbol}${convertedPrice.toFixed(2)}`;
 		}
 	},
 
