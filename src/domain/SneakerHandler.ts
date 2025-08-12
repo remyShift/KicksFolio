@@ -13,29 +13,29 @@ interface SkuSearchResponse {
 }
 
 export interface SneakerHandlerInterface {
-	getSneakersByUser: (userId: string) => Promise<Sneaker[]>;
-	createSneaker: (
+	getByUserId: (userId: string) => Promise<Sneaker[]>;
+	create: (
 		sneakerData: Omit<Sneaker, 'id' | 'user_id' | 'size_eu' | 'size_us'> & {
 			size: number;
 		},
 		currentUnit?: SizeUnit
 	) => Promise<Sneaker>;
-	updateSneaker: (
+	update: (
 		id: string,
 		updates: Partial<Sneaker & { size?: number }>,
 		currentUnit?: SizeUnit
 	) => Promise<Sneaker>;
-	deleteSneaker: (id: string) => Promise<void>;
+	delete: (id: string) => Promise<void>;
 	searchBySku: (sku: string) => Promise<SkuSearchResponse>;
 	searchByBarcode: (barcode: string) => Promise<SkuSearchResponse>;
 }
 
 export class SneakerHandler {
-	constructor(private readonly sneakerHandler: SneakerHandlerInterface) {}
+	constructor(private readonly sneakerProxy: SneakerHandlerInterface) {}
 
-	getSneakersByUser = async (userId: string) => {
-		return this.sneakerHandler
-			.getSneakersByUser(userId)
+	getByUserId = async (userId: string) => {
+		return this.sneakerProxy
+			.getByUserId(userId)
 			.then((sneakers) => {
 				return sneakers;
 			})
@@ -48,14 +48,14 @@ export class SneakerHandler {
 			});
 	};
 
-	createSneaker = async (
+	create = async (
 		sneakerData: Omit<Sneaker, 'id' | 'user_id' | 'size_eu' | 'size_us'> & {
 			size: number;
 		},
 		currentUnit: SizeUnit = 'EU'
 	) => {
-		return this.sneakerHandler
-			.createSneaker(sneakerData, currentUnit)
+		return this.sneakerProxy
+			.create(sneakerData, currentUnit)
 			.then((sneaker) => {
 				return sneaker;
 			})
@@ -68,13 +68,13 @@ export class SneakerHandler {
 			});
 	};
 
-	updateSneaker = async (
+	update = async (
 		id: string,
 		updates: Partial<Sneaker & { size?: number }>,
 		currentUnit: SizeUnit = 'EU'
 	) => {
-		return this.sneakerHandler
-			.updateSneaker(id, updates, currentUnit)
+		return this.sneakerProxy
+			.update(id, updates, currentUnit)
 			.then((sneaker) => {
 				return sneaker;
 			})
@@ -87,9 +87,9 @@ export class SneakerHandler {
 			});
 	};
 
-	deleteSneaker = async (id: string) => {
-		return this.sneakerHandler
-			.deleteSneaker(id)
+	delete = async (id: string) => {
+		return this.sneakerProxy
+			.delete(id)
 			.then(() => {
 				return;
 			})
@@ -103,7 +103,7 @@ export class SneakerHandler {
 	};
 
 	searchBySku = async (sku: string) => {
-		return this.sneakerHandler
+		return this.sneakerProxy
 			.searchBySku(sku)
 			.then((response) => {
 				return response;
@@ -118,7 +118,7 @@ export class SneakerHandler {
 	};
 
 	searchByBarcode = async (barcode: string) => {
-		return this.sneakerHandler
+		return this.sneakerProxy
 			.searchByBarcode(barcode)
 			.then((response) => {
 				return response;

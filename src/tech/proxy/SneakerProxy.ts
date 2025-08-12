@@ -7,7 +7,7 @@ import { GenderType, SizeUnit, Sneaker } from '@/types/sneaker';
 import { sneakerBrandOptions } from '@/validation/utils';
 
 class SneakerProxy implements SneakerHandlerInterface {
-	async getSneakersByUser(userId: string): Promise<Sneaker[]> {
+	async getByUserId(userId: string): Promise<Sneaker[]> {
 		const { data, error } = await supabase
 			.from('sneakers')
 			.select('*')
@@ -96,7 +96,7 @@ class SneakerProxy implements SneakerHandlerInterface {
 		return [];
 	}
 
-	async createSneaker(
+	async create(
 		sneakerData: Omit<Sneaker, 'id' | 'user_id' | 'size_eu' | 'size_us'> & {
 			size: number;
 		},
@@ -160,7 +160,7 @@ class SneakerProxy implements SneakerHandlerInterface {
 		} as Sneaker;
 	}
 
-	async updateSneaker(
+	async update(
 		id: string,
 		updates: Partial<Sneaker & { size?: number }>,
 		currentUnit?: SizeUnit
@@ -213,13 +213,13 @@ class SneakerProxy implements SneakerHandlerInterface {
 		} as Sneaker;
 	}
 
-	async deleteSneaker(id: string) {
+	async delete(id: string) {
 		const { error } = await supabase.from('sneakers').delete().eq('id', id);
 
 		if (error) throw error;
 	}
 
-	async updateWishlistStatus(id: string, wishlist: boolean) {
+	async updateWishlist(id: string, wishlist: boolean) {
 		const { data, error } = await supabase
 			.from('sneakers')
 			.update({ wishlist })
@@ -238,7 +238,7 @@ class SneakerProxy implements SneakerHandlerInterface {
 		} as Sneaker;
 	}
 
-	async uploadSneakerImage(sneakerId: string, imageUri: string) {
+	async uploadImage(sneakerId: string, imageUri: string) {
 		const {
 			data: { user },
 			error: authError,

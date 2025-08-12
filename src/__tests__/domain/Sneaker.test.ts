@@ -18,17 +18,15 @@ describe('SneakerHandler', () => {
 			.spyOn(console, 'error')
 			.mockImplementation(() => {});
 
-		// Create mock provider
 		mockSneakerProvider = {
-			getSneakersByUser: vi.fn(),
-			createSneaker: vi.fn(),
-			updateSneaker: vi.fn(),
-			deleteSneaker: vi.fn(),
+			getByUserId: vi.fn(),
+			create: vi.fn(),
+			update: vi.fn(),
+			delete: vi.fn(),
 			searchBySku: vi.fn(),
 			searchByBarcode: vi.fn(),
 		};
 
-		// Create sneaker handler instance with mock provider
 		sneakerHandler = new SneakerHandler(mockSneakerProvider);
 	});
 
@@ -87,13 +85,13 @@ describe('SneakerHandler', () => {
 
 	describe('getSneakersByUser', () => {
 		it('should successfully get sneakers by user and return response', async () => {
-			(mockSneakerProvider.getSneakersByUser as any).mockResolvedValue([
+			(mockSneakerProvider.getByUserId as any).mockResolvedValue([
 				mockSneaker,
 			]);
 
-			const result = await sneakerHandler.getSneakersByUser('user-123');
+			const result = await sneakerHandler.getByUserId('user-123');
 
-			expect(mockSneakerProvider.getSneakersByUser).toHaveBeenCalledWith(
+			expect(mockSneakerProvider.getByUserId).toHaveBeenCalledWith(
 				'user-123'
 			);
 			expect(result).toEqual([mockSneaker]);
@@ -102,19 +100,19 @@ describe('SneakerHandler', () => {
 
 		it('should handle errors and rethrow them', async () => {
 			const mockError = new Error('Database error');
-			(mockSneakerProvider.getSneakersByUser as any).mockRejectedValue(
+			(mockSneakerProvider.getByUserId as any).mockRejectedValue(
 				mockError
 			);
 
 			await expect(
-				sneakerHandler.getSneakersByUser('user-123')
+				sneakerHandler.getByUserId('user-123')
 			).rejects.toThrow('Database error');
 
-			expect(mockSneakerProvider.getSneakersByUser).toHaveBeenCalledWith(
+			expect(mockSneakerProvider.getByUserId).toHaveBeenCalledWith(
 				'user-123'
 			);
 			expect(consoleErrorSpy).toHaveBeenCalledWith(
-				'❌ SneakerInterface.getSneakersByUser: Error occurred:',
+				'❌ SneakerInterface.getByUserId: Error occurred:',
 				mockError
 			);
 		});
@@ -122,16 +120,14 @@ describe('SneakerHandler', () => {
 
 	describe('createSneaker', () => {
 		it('should successfully create a sneaker and return response', async () => {
-			(mockSneakerProvider.createSneaker as any).mockResolvedValue(
-				mockSneaker
-			);
+			(mockSneakerProvider.create as any).mockResolvedValue(mockSneaker);
 
-			const result = await sneakerHandler.createSneaker(
+			const result = await sneakerHandler.create(
 				mockSneakerData,
 				'EU' as SizeUnit
 			);
 
-			expect(mockSneakerProvider.createSneaker).toHaveBeenCalledWith(
+			expect(mockSneakerProvider.create).toHaveBeenCalledWith(
 				mockSneakerData,
 				'EU'
 			);
@@ -141,32 +137,30 @@ describe('SneakerHandler', () => {
 
 		it('should handle errors and rethrow them', async () => {
 			const mockError = new Error('Creation failed');
-			(mockSneakerProvider.createSneaker as any).mockRejectedValue(
-				mockError
-			);
+			(mockSneakerProvider.create as any).mockRejectedValue(mockError);
 
 			await expect(
-				sneakerHandler.createSneaker(mockSneakerData, 'EU' as SizeUnit)
+				sneakerHandler.create(mockSneakerData, 'EU' as SizeUnit)
 			).rejects.toThrow('Creation failed');
 
-			expect(mockSneakerProvider.createSneaker).toHaveBeenCalledWith(
+			expect(mockSneakerProvider.create).toHaveBeenCalledWith(
 				mockSneakerData,
 				'EU'
 			);
 			expect(consoleErrorSpy).toHaveBeenCalledWith(
-				'❌ SneakerInterface.createSneaker: Error occurred:',
+				'❌ SneakerInterface.create: Error occurred:',
 				mockError
 			);
 		});
 
 		it('should handle validation errors', async () => {
 			const validationError = new Error('Invalid sneaker data');
-			(mockSneakerProvider.createSneaker as any).mockRejectedValue(
+			(mockSneakerProvider.create as any).mockRejectedValue(
 				validationError
 			);
 
 			await expect(
-				sneakerHandler.createSneaker(mockSneakerData, 'US' as SizeUnit)
+				sneakerHandler.create(mockSneakerData, 'US' as SizeUnit)
 			).rejects.toThrow('Invalid sneaker data');
 		});
 	});
@@ -177,17 +171,15 @@ describe('SneakerHandler', () => {
 				model: 'Air Max 95',
 				condition: 8,
 			};
-			(mockSneakerProvider.updateSneaker as any).mockResolvedValue(
-				mockSneaker
-			);
+			(mockSneakerProvider.update as any).mockResolvedValue(mockSneaker);
 
-			const result = await sneakerHandler.updateSneaker(
+			const result = await sneakerHandler.update(
 				'123',
 				updates,
 				'EU' as SizeUnit
 			);
 
-			expect(mockSneakerProvider.updateSneaker).toHaveBeenCalledWith(
+			expect(mockSneakerProvider.update).toHaveBeenCalledWith(
 				'123',
 				updates,
 				'EU'
@@ -199,15 +191,13 @@ describe('SneakerHandler', () => {
 		it('should handle errors and rethrow them', async () => {
 			const mockError = new Error('Update failed');
 			const updates = { model: 'Air Max 95' };
-			(mockSneakerProvider.updateSneaker as any).mockRejectedValue(
-				mockError
-			);
+			(mockSneakerProvider.update as any).mockRejectedValue(mockError);
 
 			await expect(
-				sneakerHandler.updateSneaker('123', updates, 'US' as SizeUnit)
+				sneakerHandler.update('123', updates, 'US' as SizeUnit)
 			).rejects.toThrow('Update failed');
 
-			expect(mockSneakerProvider.updateSneaker).toHaveBeenCalledWith(
+			expect(mockSneakerProvider.update).toHaveBeenCalledWith(
 				'123',
 				updates,
 				'US'
@@ -221,33 +211,25 @@ describe('SneakerHandler', () => {
 
 	describe('deleteSneaker', () => {
 		it('should successfully delete a sneaker', async () => {
-			(mockSneakerProvider.deleteSneaker as any).mockResolvedValue(
-				undefined
-			);
+			(mockSneakerProvider.delete as any).mockResolvedValue(undefined);
 
-			await sneakerHandler.deleteSneaker('123');
+			await sneakerHandler.delete('123');
 
-			expect(mockSneakerProvider.deleteSneaker).toHaveBeenCalledWith(
-				'123'
-			);
+			expect(mockSneakerProvider.delete).toHaveBeenCalledWith('123');
 			expect(consoleErrorSpy).not.toHaveBeenCalled();
 		});
 
 		it('should handle errors and rethrow them', async () => {
 			const mockError = new Error('Deletion failed');
-			(mockSneakerProvider.deleteSneaker as any).mockRejectedValue(
-				mockError
-			);
+			(mockSneakerProvider.delete as any).mockRejectedValue(mockError);
 
-			await expect(sneakerHandler.deleteSneaker('123')).rejects.toThrow(
+			await expect(sneakerHandler.delete('123')).rejects.toThrow(
 				'Deletion failed'
 			);
 
-			expect(mockSneakerProvider.deleteSneaker).toHaveBeenCalledWith(
-				'123'
-			);
+			expect(mockSneakerProvider.delete).toHaveBeenCalledWith('123');
 			expect(consoleErrorSpy).toHaveBeenCalledWith(
-				'❌ SneakerInterface.deleteSneaker: Error occurred:',
+				'❌ SneakerInterface.delete: Error occurred:',
 				mockError
 			);
 		});

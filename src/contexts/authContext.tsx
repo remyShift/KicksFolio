@@ -177,9 +177,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
 	}, [appState]);
 
 	const loadUserSneakers = async (userWithUrl: User) => {
-		const sneakersPromise = sneakerHandler.getSneakersByUser(
-			userWithUrl.id
-		);
+		const sneakersPromise = sneakerHandler.getByUserId(userWithUrl.id);
 		const wishlistPromise = wishlist.getUserWishlistSneakers(
 			userWithUrl.id
 		);
@@ -362,7 +360,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
 			return;
 		}
 
-		const sneakersPromise = sneakerHandler.getSneakersByUser(user.id);
+		const sneakersPromise = sneakerHandler.getByUserId(user.id);
 		const wishlistPromise = wishlist.getUserWishlistSneakers(user.id);
 
 		return Promise.all([sneakersPromise, wishlistPromise])

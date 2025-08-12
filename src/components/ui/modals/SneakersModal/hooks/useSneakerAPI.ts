@@ -203,7 +203,7 @@ export const useSneakerAPI = () => {
 					ds: validatedData.ds || false,
 				};
 
-				return sneakerHandler.createSneaker(sneakerToAdd, currentUnit);
+				return sneakerHandler.create(sneakerToAdd, currentUnit);
 			})
 			.then(async (createdSneaker: Sneaker) => {
 				return imageHandler
@@ -217,7 +217,7 @@ export const useSneakerAPI = () => {
 					)
 					.then((processedImages: SneakerPhoto[]) => {
 						if (processedImages.length > 0) {
-							return sneakerHandler.updateSneaker(
+							return sneakerHandler.update(
 								createdSneaker.id,
 								{
 									images: processedImages.map((img) => ({
@@ -230,7 +230,7 @@ export const useSneakerAPI = () => {
 						}
 
 						return sneakerHandler
-							.deleteSneaker(createdSneaker.id)
+							.delete(createdSneaker.id)
 							.then(() => {
 								return Promise.reject(
 									new Error(
@@ -241,7 +241,7 @@ export const useSneakerAPI = () => {
 					})
 					.catch((error: Error) => {
 						return sneakerHandler
-							.deleteSneaker(createdSneaker.id)
+							.delete(createdSneaker.id)
 							.then(() => {
 								throw error;
 							});
@@ -355,7 +355,7 @@ export const useSneakerAPI = () => {
 					ds: validatedData.ds || false,
 				};
 
-				return sneakerHandler.updateSneaker(
+				return sneakerHandler.update(
 					sneakerId,
 					sneakerUpdates,
 					currentUnit
@@ -432,7 +432,7 @@ export const useSneakerAPI = () => {
 		}
 
 		return sneakerHandler
-			.deleteSneaker(sneakerId)
+			.delete(sneakerId)
 			.then(async () => {
 				await imageHandler.deleteSneaker(user.id, sneakerId);
 
