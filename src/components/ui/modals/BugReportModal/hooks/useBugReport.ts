@@ -1,15 +1,17 @@
 import { useTranslation } from 'react-i18next';
 
-import { gitHubProvider } from '@/domain/GitHubProvider';
+import { GitHubIssueHandler } from '@/domain/GitHubIssueHandler';
 import useToast from '@/hooks/ui/useToast';
-import { GitHubInterface } from '@/interfaces/GitHubInterface';
 import { useBugReportStore } from '@/store/useBugReportStore';
+import { gitHubProxy } from '@/tech/proxy/GitHubProxy';
 
 const useBugReport = () => {
 	const { t } = useTranslation();
 	const { showSuccessToast, showErrorToast } = useToast();
 	const { setErrorMsg, setIsLoading, resetStore, formData } =
 		useBugReportStore();
+
+	const gitHub = new GitHubIssueHandler(gitHubProxy);
 
 	const validateForm = (): boolean => {
 		if (!formData.title.trim()) {
@@ -36,7 +38,8 @@ const useBugReport = () => {
 		setIsLoading(true);
 		setErrorMsg('');
 
-		GitHubInterface.createIssue(formData, gitHubProvider.createIssue)
+		gitHub
+			.createIssue(formData)
 			.then((result) => {
 				showSuccessToast(
 					t('settings.bugReport.success.title'),

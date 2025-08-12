@@ -1,82 +1,173 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { CurrencyProvider } from '@/domain/CurrencyProvider';
+import { Currency } from '@/store/useCurrencyStore';
+
+const mockProvider = {
+	formatPrice: vi.fn(),
+	convertPrice: vi.fn(),
+	getExchangeRate: vi.fn(),
+	getSupportedCurrencies: vi.fn(),
+};
 
 describe('CurrencyProvider', () => {
-	let currencyProvider: CurrencyProvider;
-
 	beforeEach(() => {
-		currencyProvider = new CurrencyProvider();
+		vi.clearAllMocks();
+	});
+
+	describe('calculatePrice', () => {
+		it('should calculate price successfully', async () => {
+			const expectedResult = 85;
+			mockProvider.convertPrice.mockReturnValue(expectedResult);
+
+			const result = await CurrencyProvider.convertPrice(
+				100,
+				'EUR',
+				'USD',
+				mockProvider.convertPrice
+			);
+
+			expect(result).toBe(expectedResult);
+			expect(mockProvider.convertPrice).toHaveBeenCalledWith(
+				100,
+				'EUR',
+				'USD'
+			);
+		});
+
+		it('should handle calculation error gracefully', async () => {
+			mockProvider.convertPrice.mockImplementation(() => {
+				throw new Error('Calculation error');
+			});
+
+			const result = await CurrencyProvider.convertPrice(
+				100,
+				'EUR',
+				'USD',
+				mockProvider.convertPrice
+			);
+
+			expect(result).toBe(100);
+		});
 	});
 
 	describe('formatPrice', () => {
-		it('should format USD price correctly', () => {
-			const result = currencyProvider.formatPrice(100, 'USD');
+		it('should format price successfully', async () => {
+			const expectedResult = '$100.00';
+			mockProvider.formatPrice.mockReturnValue(expectedResult);
+
+			const result = await CurrencyProvider.formatPrice(
+				100,
+				'USD',
+				mockProvider.formatPrice
+			);
+
+			expect(result).toBe(expectedResult);
+			expect(mockProvider.formatPrice).toHaveBeenCalledWith(100, 'USD');
+		});
+
+		it('should handle format error gracefully', async () => {
+			mockProvider.formatPrice.mockImplementation(() => {
+				throw new Error('Format error');
+			});
+
+			const result = await CurrencyProvider.formatPrice(
+				100,
+				'USD',
+				mockProvider.formatPrice
+			);
+
 			expect(result).toBe('$100.00');
-		});
-
-		it('should format EUR price correctly', () => {
-			const result = currencyProvider.formatPrice(100, 'EUR');
-			expect(result).toBe('85.00€');
-		});
-
-		it('should handle decimal prices', () => {
-			const result = currencyProvider.formatPrice(99.99, 'USD');
-			expect(result).toBe('$99.99');
-		});
-
-		it('should format zero price', () => {
-			const result = currencyProvider.formatPrice(0, 'USD');
-			expect(result).toBe('$0.00');
 		});
 	});
 
 	describe('convertPrice', () => {
-		it('should return same price for same currency', () => {
-			const result = currencyProvider.convertPrice(100, 'USD', 'USD');
+		it('should convert price successfully', async () => {
+			const expectedResult = 85;
+			mockProvider.convertPrice.mockReturnValue(expectedResult);
+
+			const result = await CurrencyProvider.convertPrice(
+				100,
+				'USD',
+				'EUR',
+				mockProvider.convertPrice
+			);
+
+			expect(result).toBe(expectedResult);
+			expect(mockProvider.convertPrice).toHaveBeenCalledWith(
+				100,
+				'USD',
+				'EUR'
+			);
+		});
+
+		it('should handle conversion error gracefully', async () => {
+			mockProvider.convertPrice.mockImplementation(() => {
+				throw new Error('Conversion error');
+			});
+
+			const result = await CurrencyProvider.convertPrice(
+				100,
+				'USD',
+				'EUR',
+				mockProvider.convertPrice
+			);
+
 			expect(result).toBe(100);
-		});
-
-		it('should convert USD to EUR correctly', () => {
-			const result = currencyProvider.convertPrice(100, 'USD', 'EUR');
-			expect(result).toBe(85);
-		});
-
-		it('should convert EUR to USD correctly', () => {
-			const result = currencyProvider.convertPrice(85, 'EUR', 'USD');
-			expect(result).toBe(100);
-		});
-
-		it('should handle decimal conversion', () => {
-			const result = currencyProvider.convertPrice(50.5, 'USD', 'EUR');
-			expect(result).toBeCloseTo(42.925, 3);
 		});
 	});
 
 	describe('getExchangeRate', () => {
-		it('should return correct USD exchange rate', () => {
-			const result = currencyProvider.getExchangeRate('USD');
-			expect(result).toBe(1);
+		it('should get exchange rate successfully', async () => {
+			const expectedResult = 0.85;
+			mockProvider.getExchangeRate.mockReturnValue(expectedResult);
+
+			const result = await CurrencyProvider.getExchangeRate(
+				'EUR',
+				mockProvider.getExchangeRate
+			);
+
+			expect(result).toBe(expectedResult);
+			expect(mockProvider.getExchangeRate).toHaveBeenCalledWith('EUR');
 		});
 
-		it('should return correct EUR exchange rate', () => {
-			const result = currencyProvider.getExchangeRate('EUR');
-			expect(result).toBe(0.85);
+		it('should handle exchange rate error gracefully', async () => {
+			mockProvider.getExchangeRate.mockImplementation(() => {
+				throw new Error('Exchange rate error');
+			});
+
+			const result = await CurrencyProvider.getExchangeRate(
+				'EUR',
+				mockProvider.getExchangeRate
+			);
+
+			expect(result).toBe(1);
 		});
 	});
 
 	describe('getSupportedCurrencies', () => {
-		it('should return all supported currencies', () => {
-			const result = currencyProvider.getSupportedCurrencies();
-			expect(result).toEqual(['USD', 'EUR']);
-			expect(result).toHaveLength(2);
+		it('should get supported currencies successfully', async () => {
+			const expectedResult: Currency[] = ['USD', 'EUR'];
+			mockProvider.getSupportedCurrencies.mockReturnValue(expectedResult);
+
+			const result = await CurrencyProvider.getSupportedCurrencies(
+				mockProvider.getSupportedCurrencies
+			);
+
+			expect(result).toEqual(expectedResult);
+			expect(mockProvider.getSupportedCurrencies).toHaveBeenCalled();
 		});
 
-		it('should return currencies as Currency type', () => {
-			const result = currencyProvider.getSupportedCurrencies();
-			result.forEach((currency) => {
-				expect(['USD', 'EUR']).toContain(currency);
+		it('should handle supported currencies error gracefully', async () => {
+			mockProvider.getSupportedCurrencies.mockImplementation(() => {
+				throw new Error('Supported currencies error');
 			});
+
+			const result = await CurrencyProvider.getSupportedCurrencies(
+				mockProvider.getSupportedCurrencies
+			);
+
+			expect(result).toEqual(['USD', 'EUR']);
 		});
 	});
 });

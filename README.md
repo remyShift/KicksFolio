@@ -175,15 +175,15 @@ KicksFolio/
 │   │   └── signUpPropsContext.tsx
 │   │
 │   ├── domain/                # Business logic layer
-│   │   ├── AuthProvider.ts    # Authentication business logic
-│   │   ├── SneakerProvider.ts # Sneaker management logic
+│   │   ├── AuthProxy.ts    # Authentication business logic
+│   │   ├── SneakerProxy.ts # Sneaker management logic
 │   │   ├── UserSearchProvider.ts
-│   │   └── WishlistProvider.ts
+│   │   └── WishlistProxy.ts
 │   │
 │   ├── interfaces/            # Domain contracts
-│   │   ├── AuthInterface.ts   # Authentication interface
-│   │   ├── SneakerProviderInterface.ts
-│   │   └── UserSearchInterface.ts
+│   │   ├── Auth.ts   # Authentication interface
+│   │   ├── SneakerHandler.ts
+│   │   └── UserSearch.ts
 │   │
 │   ├── hooks/                 # Custom React hooks
 │   │   ├── form/              # Form-related hooks

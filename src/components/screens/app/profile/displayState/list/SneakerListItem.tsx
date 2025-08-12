@@ -6,7 +6,6 @@ import { Image } from 'expo-image';
 import EmptySneakerImage from '@/components/ui/placeholders/EmptySneakerImage';
 import SizeDisplay from '@/components/ui/text/SizeDisplay';
 import { useSession } from '@/contexts/authContext';
-import { useCurrencyStore } from '@/store/useCurrencyStore';
 import { Sneaker } from '@/types/sneaker';
 
 interface SneakerListItemProps {
@@ -21,8 +20,8 @@ export default function SneakerListItem({
 	showOwnerInfo = false,
 }: SneakerListItemProps) {
 	const { user } = useSession();
-	const { formattedPrice } = useCurrencyStore();
 	const { t } = useTranslation();
+	const isOwner = sneaker.owner?.id === user?.id;
 
 	return (
 		<TouchableOpacity
@@ -60,52 +59,33 @@ export default function SneakerListItem({
 				)}
 
 				<View className="flex-1">
-					<View className="flex-row items-center gap-1">
-						<Text className="text-sm text-gray-600 mt-1">
-							{sneaker.brand || ''}
-						</Text>
-						{sneaker.sku && (
-							<View className="flex-row items-center gap-1 mt-1">
-								<Text className="text-xs text-gray-600">|</Text>
-								<Text className="text-xs text-gray-600">
-									{sneaker.sku.toUpperCase()}
-								</Text>
-							</View>
-						)}
-					</View>
 					<Text
 						className="text-lg font-semibold text-gray-900"
 						numberOfLines={1}
 						ellipsizeMode="tail"
 					>
-						{sneaker.model || ''}
+						{String(sneaker.model || '')}
 					</Text>
-
-					<View className="flex-row items-center gap-4">
+					<View className="flex-row items-center gap-2 mt-1">
+						<Text className="text-sm text-gray-600">
+							{String(sneaker.brand || '')}
+						</Text>
 						<SizeDisplay
 							sneaker={sneaker}
 							className="text-sm text-gray-500"
 						/>
-						<Text className="text-sm text-gray-500">
-							{t('collection.fields.condition')} :{' '}
-							{sneaker.condition
-								? `${sneaker.condition}/10`
-								: 'N/A'}
-						</Text>
-						{sneaker.price_paid > 0 && (
-							<Text className="text-sm font-medium text-green-600">
-								{formattedPrice(sneaker.price_paid)}
-							</Text>
-						)}
 					</View>
-
-					{showOwnerInfo && sneaker.owner && (
-						<View className="flex-row items-center mt-2 gap-1">
-							<Text className="font-open-sans text-xs text-gray-600 uppercase">
+					<Text className="text-sm text-gray-500">
+						Condition:{' '}
+						{sneaker.condition ? `${sneaker.condition}/10` : 'N/A'}
+					</Text>
+					{sneaker.owner && showOwnerInfo && (
+						<View className="flex-row items-center gap-1">
+							<Text className="text-sm text-gray-500">
 								{t('collection.cards.ownedBy')}
 							</Text>
-							<Text className="font-open-sans text-sm text-primary pb-1">
-								{sneaker.owner.username === user!.username
+							<Text className="text-sm text-primary">
+								{isOwner
 									? t('collection.cards.me')
 									: `@${sneaker.owner.username}`}
 							</Text>

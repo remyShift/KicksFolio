@@ -147,7 +147,7 @@ vi.mock('@/store/useModalStore', () => ({
 	useModalStore: vi.fn(),
 }));
 
-vi.mock('@/domain/AuthProvider', () => ({
+vi.mock('@/domain/AuthProxy', () => ({
 	authProvider: {
 		signIn: vi.fn().mockResolvedValue({
 			user: { id: 'test-user-id' },
@@ -180,8 +180,8 @@ vi.mock('@/domain/AuthProvider', () => ({
 	},
 }));
 
-vi.mock('@/domain/ImageProvider', () => ({
-	ImageProvider: {
+vi.mock('@/domain/ImageProxy', () => ({
+	ImageProxy: {
 		uploadProfileImage: vi.fn().mockResolvedValue({
 			success: true,
 			url: 'https://example.com/uploaded-image.jpg',

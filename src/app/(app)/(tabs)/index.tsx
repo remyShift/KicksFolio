@@ -7,7 +7,7 @@ import { router } from 'expo-router';
 
 import MainButton from '@/components/ui/buttons/MainButton';
 import CollectionCard from '@/components/ui/cards/CollectionCard';
-import FollowerTitle from '@/components/ui/text/FollowerTitle';
+import FollowingTitle from '@/components/ui/text/FollowingTitle';
 import PageTitle from '@/components/ui/text/PageTitle';
 import Title from '@/components/ui/text/Title';
 import { useSession } from '@/contexts/authContext';
@@ -30,8 +30,8 @@ export default function Index() {
 	}, [user, userSneakers, setModalStep, setIsVisible]);
 
 	return (
-		<ScrollView className="flex-1">
-			<View className="flex-1 gap-8 mt-20">
+		<ScrollView className="flex-1 mt-16">
+			<View className="flex-1 gap-8">
 				<PageTitle content="KicksFolio" />
 				<View className="flex-1 gap-4">
 					<Title content={t('collection.pages.titles.collection')} />
@@ -44,14 +44,14 @@ export default function Index() {
 				</View>
 
 				{followingUsers && followingUsers.length > 0 ? (
-					<View className="flex-1 gap-4">
+					<View className="flex-1 gap-4 pb-4">
 						<View className="flex-1 gap-8">
 							{followingUsers.map((followingUser) => (
 								<View
 									className="flex-1 gap-2"
 									key={followingUser.id}
 								>
-									<FollowerTitle
+									<FollowingTitle
 										content={followingUser.username}
 										userAvatar={
 											followingUser.profile_picture

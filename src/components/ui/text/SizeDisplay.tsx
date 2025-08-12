@@ -13,5 +13,12 @@ interface SizeDisplayProps extends TextProps {
 export default function SizeDisplay({ sneaker, className }: SizeDisplayProps) {
 	const { formatSizeForDisplay } = useSizeConversion();
 
-	return <Text className={className}>{formatSizeForDisplay(sneaker)}</Text>;
+	const displaySize = () => {
+		if (!sneaker.size_eu && !sneaker.size_us) {
+			return 'N/A';
+		}
+		return formatSizeForDisplay(sneaker);
+	};
+
+	return <Text className={className}>{displaySize()}</Text>;
 }

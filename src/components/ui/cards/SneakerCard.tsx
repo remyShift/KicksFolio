@@ -103,7 +103,7 @@ export default function SneakerCard({
 						</Text>
 						<Text className="font-open-sans text-sm text-primary mb-1">
 							{sneaker.owner.username === user!.username
-								? 'me'
+								? t('collection.cards.me')
 								: `@${sneaker.owner.username}`}
 						</Text>
 					</View>

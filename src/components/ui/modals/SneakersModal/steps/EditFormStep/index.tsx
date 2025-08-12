@@ -228,7 +228,6 @@ export const EditFormStep = () => {
 					displayedError={
 						typeof displayedError === 'string' ? displayedError : ''
 					}
-					sneakerId={currentSneaker?.id}
 					setValue={setValue}
 				/>
 			</View>

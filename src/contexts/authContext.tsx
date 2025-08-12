@@ -12,17 +12,17 @@ import * as Linking from 'expo-linking';
 import { router } from 'expo-router';
 
 import { supabase } from '@/config/supabase/supabase';
-import { authProvider } from '@/domain/AuthProvider';
-import { followerProvider } from '@/domain/FollowerProvider';
-import { sneakerProvider } from '@/domain/SneakerProvider';
-import { userSearchProvider } from '@/domain/UserSearchProvider';
-import { wishlistProvider } from '@/domain/WishlistProvider';
-import { AuthInterface } from '@/interfaces/AuthInterface';
-import { FollowerInterface } from '@/interfaces/FollowerInterface';
-import { SneakerProviderInterface } from '@/interfaces/SneakerProviderInterface';
-import { UserSearchInterface } from '@/interfaces/UserSearchInterface';
-import { WishlistProviderInterface } from '@/interfaces/WishlistProviderInterface';
+import { Auth } from '@/domain/Auth';
+import { FollowerHandler } from '@/domain/FollowerHandler';
+import { SneakerHandler } from '@/domain/SneakerHandler';
+import { UserSearch } from '@/domain/UserSearch';
+import { Wishlist } from '@/domain/Wishlist';
 import { storageProvider } from '@/services/StorageService';
+import { authProxy } from '@/tech/proxy/AuthProxy';
+import { followerProxy } from '@/tech/proxy/FollowerProxy';
+import { sneakerProxy } from '@/tech/proxy/SneakerProxy';
+import { userSearchProxy } from '@/tech/proxy/UserSearchProxy';
+import { wishlistProxy } from '@/tech/proxy/WishlistProxy';
 import { AuthContextType, FollowingUserWithSneakers } from '@/types/auth';
 import { Sneaker } from '@/types/sneaker';
 import { User } from '@/types/user';
@@ -57,6 +57,13 @@ export function SessionProvider({ children }: PropsWithChildren) {
 	const [followingUsers, setFollowingUsers] = useState<
 		FollowingUserWithSneakers[] | null
 	>(null);
+
+	const auth = new Auth(authProxy);
+	const followerHandler = new FollowerHandler(followerProxy);
+	const sneakerHandler = new SneakerHandler(sneakerProxy);
+	const userSearch = new UserSearch(userSearchProxy);
+
+	const wishlist = new Wishlist(wishlistProxy);
 
 	useEffect(() => {
 		const handleDeepLink = (url: string) => {
@@ -148,9 +155,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
 				data: { session },
 			} = await supabase.auth.getSession();
 			if (session?.user) {
-				return AuthInterface.getCurrentUser(
-					authProvider.getCurrentUser
-				).catch((error: any) => {
+				return auth.getCurrentUser().catch((error: any) => {
 					if (error.code === 'PGRST116') {
 						return supabase.auth.signOut().then(() => {
 							clearUserData();
@@ -172,15 +177,12 @@ export function SessionProvider({ children }: PropsWithChildren) {
 	}, [appState]);
 
 	const loadUserSneakers = async (userWithUrl: User) => {
-		const sneakersPromise = SneakerProviderInterface.getSneakersByUser(
-			userWithUrl.id,
-			sneakerProvider.getSneakersByUser
+		const sneakersPromise = sneakerHandler.getSneakersByUser(
+			userWithUrl.id
 		);
-		const wishlistPromise =
-			WishlistProviderInterface.getUserWishlistSneakers(
-				userWithUrl.id,
-				wishlistProvider.getUserWishlistSneakers
-			);
+		const wishlistPromise = wishlist.getUserWishlistSneakers(
+			userWithUrl.id
+		);
 
 		return Promise.all([sneakersPromise, wishlistPromise])
 			.then(([sneakers, wishlistSneakers]) => {
@@ -210,21 +212,15 @@ export function SessionProvider({ children }: PropsWithChildren) {
 	};
 
 	const loadFollowingUsers = async (userId: string) => {
-		return FollowerInterface.getFollowingUsers(
-			userId,
-			followerProvider.getFollowingUsers
-		)
+		return followerHandler
+			.getFollowingUsers(userId)
 			.then(async (followingUsersData) => {
 				const followingWithSneakers = await Promise.all(
 					followingUsersData.map(async (followingUser) => {
 						try {
-							const sneakers =
-								await UserSearchInterface.getUserSneakers(
-									followingUser.id,
-									userSearchProvider.getUserSneakers.bind(
-										userSearchProvider
-									)
-								);
+							const sneakers = await userSearch.getUserSneakers(
+								followingUser.id
+							);
 							return {
 								...followingUser,
 								sneakers: sneakers || [],
@@ -263,7 +259,8 @@ export function SessionProvider({ children }: PropsWithChildren) {
 		const retryDelay = 1000;
 
 		const getUserWithRetries = async (attempt: number): Promise<any> => {
-			return AuthInterface.getCurrentUser(authProvider.getCurrentUser)
+			return auth
+				.getCurrentUser()
 				.then((userData: any) => {
 					if (userData) {
 						const userWithUrl = {
@@ -329,7 +326,8 @@ export function SessionProvider({ children }: PropsWithChildren) {
 			return;
 		}
 
-		return AuthInterface.getCurrentUser(authProvider.getCurrentUser)
+		return auth
+			.getCurrentUser()
 			.then(async (freshUserData: any) => {
 				if (!freshUserData) {
 					return;
@@ -364,15 +362,8 @@ export function SessionProvider({ children }: PropsWithChildren) {
 			return;
 		}
 
-		const sneakersPromise = SneakerProviderInterface.getSneakersByUser(
-			user.id,
-			sneakerProvider.getSneakersByUser
-		);
-		const wishlistPromise =
-			WishlistProviderInterface.getUserWishlistSneakers(
-				user.id,
-				wishlistProvider.getUserWishlistSneakers
-			);
+		const sneakersPromise = sneakerHandler.getSneakersByUser(user.id);
+		const wishlistPromise = wishlist.getUserWishlistSneakers(user.id);
 
 		return Promise.all([sneakersPromise, wishlistPromise])
 			.then(([sneakers, wishlistSneakers]) => {

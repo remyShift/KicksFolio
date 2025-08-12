@@ -53,8 +53,8 @@ export const useModalFooterActions = () => {
 		setModalStep('editForm');
 	};
 
-	const handleDeleteAction = () => {
-		if (currentSneaker?.id) {
+	const handleDeleteAction = (sneakerToDelete: Sneaker | null = null) => {
+		if (sneakerToDelete?.id || currentSneaker?.id) {
 			Alert.alert(
 				t('alert.titles.deleteSneaker'),
 				t('alert.descriptions.deleteSneaker'),
@@ -71,7 +71,12 @@ export const useModalFooterActions = () => {
 								t('collection.messages.deleting.title'),
 								t('collection.messages.deleting.description')
 							);
-							handleSneakerDelete(currentSneaker.id)
+							const idToDelete =
+								sneakerToDelete?.id || currentSneaker?.id;
+							if (!idToDelete) {
+								throw new Error('Sneaker ID is required');
+							}
+							handleSneakerDelete(idToDelete)
 								.then(() => {
 									refreshUserData();
 									resetModalData();

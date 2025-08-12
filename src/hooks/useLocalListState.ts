@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 
-import { sneakerFilteringProvider } from '@/domain/SneakerFiltering';
+import { sneakerFilteringProvider } from '@/d/SneakerFiltering';
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';
 import { UniqueValues } from '@/types/filter';
 import { FilterState, SortOption } from '@/types/filter';

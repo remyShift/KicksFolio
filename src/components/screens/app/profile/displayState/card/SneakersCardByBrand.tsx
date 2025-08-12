@@ -46,7 +46,7 @@ export default function SneakersCardByBrand({
 							<ScrollView
 								horizontal
 								showsHorizontalScrollIndicator={false}
-								className="p-2"
+								className="pl-2 py-2 pr-8"
 								contentContainerStyle={{
 									gap: 20,
 								}}

@@ -3,9 +3,9 @@ import { Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 
 import { useSession } from '@/contexts/authContext';
-import { imageProvider } from '@/domain/ImageProvider';
-import { ImageProviderInterface } from '@/interfaces/ImageProviderInterface';
+import { ImageHandler } from '@/domain/ImageHandler';
 import { imageService } from '@/services/ImageService';
+import { imageProxy } from '@/tech/proxy/ImageProxy';
 import { SneakerPhoto } from '@/types/image';
 
 export type ImageSelectionType = 'camera' | 'gallery';
@@ -31,6 +31,8 @@ export function useImageManager(
 		sneakerId,
 		maxImages = 3,
 	} = options || {};
+
+	const imageHandler = new ImageHandler(imageProxy);
 
 	const requestPermissions = async (
 		type: ImageSelectionType
@@ -145,11 +147,10 @@ export function useImageManager(
 				oldPhoto.uri.includes('supabase')
 			) {
 				try {
-					await ImageProviderInterface.deleteSpecificSneakerImage(
+					await imageHandler.deleteSpecificSneakerImage(
 						user.id,
 						sneakerId,
-						oldPhoto.id,
-						imageProvider.deleteSpecificSneakerImage
+						oldPhoto.id
 					);
 				} catch (error: unknown) {
 					console.error(
@@ -207,11 +208,10 @@ export function useImageManager(
 			photoToRemove.uri.includes('supabase')
 		) {
 			try {
-				await ImageProviderInterface.deleteSpecificSneakerImage(
+				await imageHandler.deleteSpecificSneakerImage(
 					user.id,
 					sneakerId,
-					photoToRemove.id,
-					imageProvider.deleteSpecificSneakerImage
+					photoToRemove.id
 				);
 			} catch (error: unknown) {
 				console.error(

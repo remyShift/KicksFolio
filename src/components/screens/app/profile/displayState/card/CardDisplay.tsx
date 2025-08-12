@@ -17,7 +17,6 @@ interface CardDisplayProps {
 }
 
 export default function CardDisplay(props: CardDisplayProps) {
-	// Vérification défensive pour éviter l'erreur "Cannot convert null value to object"
 	if (!props || typeof props !== 'object') {
 		console.error('CardDisplay: Props sont null ou invalides:', props);
 		return null;

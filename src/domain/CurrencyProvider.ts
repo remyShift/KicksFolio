@@ -1,68 +1,50 @@
-import { CurrencyProviderInterface } from '@/interfaces/CurrencyProviderInterface';
 import { Currency } from '@/types/currency';
 
-const EXCHANGE_RATES = {
-	USD: 1,
-	EUR: 0.85,
-} as const;
-
-const CURRENCY_SYMBOLS = {
-	USD: '$',
-	EUR: '€',
-} as const;
-
-export class CurrencyProvider implements CurrencyProviderInterface {
-	formatPrice = (price: number, currency: Currency): string => {
-		try {
-			const convertedPrice = this.convertPrice(price, 'USD', currency);
-			const symbol = CURRENCY_SYMBOLS[currency];
-
-			switch (currency) {
-				case 'USD':
-					return `${symbol}${convertedPrice.toFixed(2)}`;
-				case 'EUR':
-					return `${convertedPrice.toFixed(2)}${symbol}`;
-				default:
-					return `${symbol}${convertedPrice.toFixed(2)}`;
-			}
-		} catch (error) {
-			console.error('Error in formatPrice:', error);
-			return `$${price.toFixed(2)}`;
-		}
-	};
-
-	convertPrice = (
+export interface CurrencyProviderInterface {
+	formatPrice(price: number, currency: Currency): string;
+	convertPrice(
 		price: number,
 		fromCurrency: Currency,
 		toCurrency: Currency
-	): number => {
-		if (fromCurrency === toCurrency) {
-			return price;
-		}
-
-		if (!EXCHANGE_RATES[fromCurrency] || !EXCHANGE_RATES[toCurrency]) {
-			console.error(
-				'Error in convertPrice:',
-				fromCurrency,
-				toCurrency,
-				EXCHANGE_RATES
-			);
-			throw new Error(
-				`Unsupported currency: ${fromCurrency} or ${toCurrency}`
-			);
-		}
-
-		const priceInUSD = price / EXCHANGE_RATES[fromCurrency];
-		return priceInUSD * EXCHANGE_RATES[toCurrency];
-	};
-
-	getExchangeRate = (currency: Currency): number => {
-		return EXCHANGE_RATES[currency] || 1;
-	};
-
-	getSupportedCurrencies = (): Currency[] => {
-		return Object.keys(EXCHANGE_RATES) as Currency[];
-	};
+	): number;
+	getExchangeRate(currency: Currency): number;
+	getSupportedCurrencies(): Currency[];
 }
 
-export const currencyProvider = new CurrencyProvider();
+export class CurrencyProvider {
+	constructor(private readonly currencyProvider: CurrencyProviderInterface) {}
+
+	formatPrice = async (price: number, currency: Currency) => {
+		return this.currencyProvider.formatPrice(price, currency);
+	};
+
+	convertPrice = async (
+		price: number,
+		fromCurrency: Currency,
+		toCurrency: Currency
+	) => {
+		return this.currencyProvider.convertPrice(
+			price,
+			fromCurrency,
+			toCurrency
+		);
+	};
+
+	getExchangeRate = async (currency: Currency) => {
+		try {
+			return this.currencyProvider.getExchangeRate(currency);
+		} catch (error) {
+			console.error('Error getting exchange rate:', error);
+			return 1;
+		}
+	};
+
+	getSupportedCurrencies = async () => {
+		try {
+			return this.currencyProvider.getSupportedCurrencies();
+		} catch (error) {
+			console.error('Error getting supported currencies:', error);
+			return ['USD', 'EUR'] as Currency[];
+		}
+	};
+}

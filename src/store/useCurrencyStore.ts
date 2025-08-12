@@ -2,8 +2,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { create } from 'zustand';
 
-import { currencyProvider } from '@/domain/CurrencyProvider';
-import { CurrencyProviderInterface } from '@/interfaces/CurrencyProviderInterface';
+import { currencyProvider } from '@/d/CurrencyProvider';
+import { CurrencyProvider } from '@/domain/CurrencyProvider';
 import { Currency } from '@/types/currency';
 
 import { useLanguageStore } from './useLanguageStore';
@@ -11,11 +11,12 @@ import { useLanguageStore } from './useLanguageStore';
 interface CurrencyStore {
 	currentCurrency: Currency;
 	isInitialized: boolean;
+	currencyProvider: CurrencyProvider;
 
 	setCurrency: (currency: Currency) => Promise<void>;
 	initializeCurrency: () => Promise<void>;
 	getCurrentCurrency: () => Currency;
-	formattedPrice: (price: number) => string;
+	formattedPrice: (price: number) => Promise<string>;
 	formattedPriceAsync: (price: number) => Promise<string>;
 }
 
@@ -24,6 +25,8 @@ const CURRENCY_STORAGE_KEY = 'app_currency';
 export const useCurrencyStore = create<CurrencyStore>((set, get) => ({
 	currentCurrency: 'USD',
 	isInitialized: false,
+
+	currencyProvider: new CurrencyProvider(currencyProvider),
 
 	setCurrency: async (currency: Currency) => {
 		return AsyncStorage.setItem(CURRENCY_STORAGE_KEY, currency)
@@ -76,9 +79,12 @@ export const useCurrencyStore = create<CurrencyStore>((set, get) => ({
 			});
 	},
 
-	formattedPrice: (price: number) => {
+	formattedPrice: async (price: number) => {
 		try {
-			return currencyProvider.formatPrice(price, get().currentCurrency);
+			return await get().currencyProvider.formatPrice(
+				price,
+				get().currentCurrency
+			);
 		} catch (error) {
 			console.error('❌ Error formatting price:', error);
 			return `$${price.toFixed(2)}`;
@@ -87,10 +93,9 @@ export const useCurrencyStore = create<CurrencyStore>((set, get) => ({
 
 	formattedPriceAsync: async (price: number) => {
 		try {
-			return CurrencyProviderInterface.formatPrice(
+			return await get().currencyProvider.formatPrice(
 				price,
-				get().currentCurrency,
-				currencyProvider.formatPrice
+				get().currentCurrency
 			);
 		} catch (error) {
 			console.error('❌ Error formatting price:', error);

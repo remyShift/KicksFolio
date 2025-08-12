@@ -53,12 +53,7 @@ export default function DualViewContainer({
 
 	return (
 		<View className="flex-1">
-			<View
-				style={{
-					display: isCardView ? 'flex' : 'none',
-					flex: 1,
-				}}
-			>
+			{isCardView ? (
 				<CardDisplay
 					sneakersByBrand={sneakersByBrand}
 					handleSneakerPress={onSneakerPress}
@@ -68,14 +63,7 @@ export default function DualViewContainer({
 					userSneakers={userSneakers}
 					showBackButton={showBackButton}
 				/>
-			</View>
-
-			<View
-				style={{
-					display: !isCardView ? 'flex' : 'none',
-					flex: 1,
-				}}
-			>
+			) : (
 				<ListDisplay
 					userSneakers={userSneakers}
 					handleSneakerPress={onSneakerPress}
@@ -84,7 +72,7 @@ export default function DualViewContainer({
 					user={user}
 					showBackButton={showBackButton}
 				/>
-			</View>
+			)}
 		</View>
 	);
 }

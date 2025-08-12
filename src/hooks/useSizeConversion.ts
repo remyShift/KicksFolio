@@ -1,15 +1,13 @@
-import {
-	GenderType,
-	sneakerSizeConverter,
-} from '@/domain/SneakerSizeConverter';
+import { sneakerSizeConverter } from '@/d/SneakerSizeConverter';
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';
-import { SizeUnit, Sneaker } from '@/types/sneaker';
+import { GenderType, SizeUnit, Sneaker } from '@/types/sneaker';
 
 export const useSizeConversion = () => {
 	const { currentUnit } = useSizeUnitStore();
 
 	const getSizeForCurrentUnit = (sneaker: Sneaker): number => {
-		return currentUnit === 'EU' ? sneaker.size_eu : sneaker.size_us;
+		const size = currentUnit === 'EU' ? sneaker.size_eu : sneaker.size_us;
+		return size || 0;
 	};
 
 	const formatSizeForDisplay = (sneaker: Sneaker): string => {

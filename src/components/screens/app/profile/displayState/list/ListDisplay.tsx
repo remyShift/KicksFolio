@@ -1,4 +1,4 @@
-import { RefreshControl, ScrollView, View } from 'react-native';
+import { RefreshControl, ScrollView } from 'react-native';
 
 import { Sneaker } from '@/types/sneaker';
 import { SearchUser, User } from '@/types/user';
@@ -16,7 +16,6 @@ interface ListDisplayProps {
 }
 
 export default function ListDisplay(props: ListDisplayProps) {
-	// Vérification défensive pour éviter l'erreur "Cannot convert null value to object"
 	if (!props || typeof props !== 'object') {
 		console.error('ListDisplay: Props sont null ou invalides:', props);
 		return null;

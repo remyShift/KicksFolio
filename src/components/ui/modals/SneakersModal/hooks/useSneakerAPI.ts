@@ -3,13 +3,13 @@ import { useTranslation } from 'react-i18next';
 import { ZodIssue } from 'zod';
 
 import { useSession } from '@/contexts/authContext';
-import { imageProvider } from '@/domain/ImageProvider';
-import { sneakerProvider } from '@/domain/SneakerProvider';
+import { ImageHandler } from '@/domain/ImageHandler';
+import { SneakerHandler } from '@/domain/SneakerHandler';
 import useToast from '@/hooks/ui/useToast';
-import { ImageProviderInterface } from '@/interfaces/ImageProviderInterface';
-import { SneakerInterface } from '@/interfaces/SneakerProviderInterface';
 import { FetchedSneaker } from '@/store/useModalStore';
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';
+import { imageProxy } from '@/tech/proxy/ImageProxy';
+import { sneakerProxy } from '@/tech/proxy/SneakerProxy';
 import { SneakerPhoto } from '@/types/image';
 import { Sneaker, SneakerBrand } from '@/types/sneaker';
 import { createSneakerSchema, SneakerFormData } from '@/validation/sneaker';
@@ -41,6 +41,10 @@ export const useSneakerAPI = () => {
 	const { showSuccessToast, showErrorToast } = useToast();
 	const { t } = useTranslation();
 	const { currentUnit } = useSizeUnitStore();
+
+	const imageHandler = new ImageHandler(imageProxy);
+	const sneakerHandler = new SneakerHandler(sneakerProxy);
+
 	const validateSneakerData = (formData: SneakerFormData) => {
 		return new Promise<{
 			isValid: boolean;
@@ -98,10 +102,8 @@ export const useSneakerAPI = () => {
 
 		callbacks.setErrorMsg('');
 
-		return SneakerInterface.searchBySku(
-			sku.trim(),
-			sneakerProvider.searchBySku
-		)
+		return sneakerHandler
+			.searchBySku(sku.trim())
 			.then((response: SkuSearchResponse) => {
 				if (
 					response &&
@@ -201,27 +203,21 @@ export const useSneakerAPI = () => {
 					ds: validatedData.ds || false,
 				};
 
-				return SneakerInterface.createSneaker(
-					sneakerToAdd,
-					currentUnit,
-					sneakerProvider.createSneaker
-				);
+				return sneakerHandler.createSneaker(sneakerToAdd, currentUnit);
 			})
 			.then(async (createdSneaker: Sneaker) => {
-				return ImageProviderInterface.processAndUploadSneakerImages(
-					formData.images.map((img) => ({
-						uri: img.uri,
-						id: img.id,
-					})),
-					user.id,
-					createdSneaker.id,
-					imageProvider.processAndUploadSneakerImages.bind(
-						imageProvider
+				return imageHandler
+					.processAndUploadSneakerImages(
+						formData.images.map((img) => ({
+							uri: img.uri,
+							id: img.id,
+						})),
+						user.id,
+						createdSneaker.id
 					)
-				)
 					.then((processedImages: SneakerPhoto[]) => {
 						if (processedImages.length > 0) {
-							return SneakerInterface.updateSneaker(
+							return sneakerHandler.updateSneaker(
 								createdSneaker.id,
 								{
 									images: processedImages.map((img) => ({
@@ -229,29 +225,26 @@ export const useSneakerAPI = () => {
 										uri: img.uri,
 									})),
 								},
-								currentUnit,
-								sneakerProvider.updateSneaker
+								currentUnit
 							);
 						}
 
-						return SneakerInterface.deleteSneaker(
-							createdSneaker.id,
-							sneakerProvider.deleteSneaker
-						).then(() => {
-							return Promise.reject(
-								new Error(
-									'Image processing returned no images; creation rolled back'
-								)
-							);
-						});
+						return sneakerHandler
+							.deleteSneaker(createdSneaker.id)
+							.then(() => {
+								return Promise.reject(
+									new Error(
+										'Image processing returned no images; creation rolled back'
+									)
+								);
+							});
 					})
 					.catch((error: Error) => {
-						return SneakerInterface.deleteSneaker(
-							createdSneaker.id,
-							sneakerProvider.deleteSneaker
-						).then(() => {
-							throw error;
-						});
+						return sneakerHandler
+							.deleteSneaker(createdSneaker.id)
+							.then(() => {
+								throw error;
+							});
 					});
 			})
 			.then((response: Sneaker) => {
@@ -330,16 +323,13 @@ export const useSneakerAPI = () => {
 				});
 
 				const processedImages =
-					await ImageProviderInterface.processAndUploadSneakerImages(
+					await imageHandler.processAndUploadSneakerImages(
 						formData.images.map((img) => ({
 							uri: img.uri,
 							id: img.id,
 						})),
 						user.id,
-						sneakerId,
-						imageProvider.processAndUploadSneakerImages.bind(
-							imageProvider
-						)
+						sneakerId
 					);
 
 				const sneakerUpdates: Partial<
@@ -365,11 +355,10 @@ export const useSneakerAPI = () => {
 					ds: validatedData.ds || false,
 				};
 
-				return SneakerInterface.updateSneaker(
+				return sneakerHandler.updateSneaker(
 					sneakerId,
 					sneakerUpdates,
-					currentUnit,
-					sneakerProvider.updateSneaker
+					currentUnit
 				);
 			})
 			.then((response: Sneaker) => {
@@ -442,16 +431,10 @@ export const useSneakerAPI = () => {
 			return Promise.reject('No session token');
 		}
 
-		return SneakerInterface.deleteSneaker(
-			sneakerId,
-			sneakerProvider.deleteSneaker
-		)
+		return sneakerHandler
+			.deleteSneaker(sneakerId)
 			.then(async () => {
-				await ImageProviderInterface.deleteSneakerImages(
-					user.id,
-					sneakerId,
-					imageProvider.deleteSneakerImages
-				);
+				await imageHandler.deleteSneakerImages(user.id, sneakerId);
 
 				return refreshUserSneakers();
 			})
@@ -481,10 +464,8 @@ export const useSneakerAPI = () => {
 
 		callbacks.setErrorMsg('');
 
-		return SneakerInterface.searchByBarcode(
-			barcode.trim(),
-			sneakerProvider.searchByBarcode
-		)
+		return sneakerHandler
+			.searchByBarcode(barcode.trim())
 			.then((response: SkuSearchResponse) => {
 				if (
 					response &&
