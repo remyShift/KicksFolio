@@ -30,13 +30,13 @@ vi.mock('@/hooks/useAuthValidation', () => ({
 
 vi.mock('@/tech/proxy/ImageProxy', () => ({
 	imageStorageProxy: {
-		uploadProfile: vi.fn().mockResolvedValue({
+		uploadProfileImage: vi.fn().mockResolvedValue({
 			success: true,
 			url: 'https://example.com/uploaded-image.jpg',
 		}),
 		extractFilePathFromUrl: vi.fn().mockReturnValue('old-file-path'),
-		delete: vi.fn().mockResolvedValue(true),
-		deleteAll: vi.fn().mockResolvedValue(true),
+		deleteImage: vi.fn().mockResolvedValue(true),
+		deleteAllUserFiles: vi.fn().mockResolvedValue(true),
 	},
 }));
 
@@ -55,33 +55,28 @@ vi.mock('@/tech/proxy/AuthProxy', () => ({
 	},
 }));
 
-// Mock the domain classes
-const mockAuthInstance = {
-	signUp: vi.fn(),
-	signIn: vi.fn(),
-	signOut: vi.fn(),
-	getCurrentUser: vi.fn(),
-	updateProfile: vi.fn(),
-	deleteUser: vi.fn(),
-	forgotPassword: vi.fn(),
-	resetPassword: vi.fn(),
-	resetPasswordWithTokens: vi.fn(),
-	cleanupOrphanedSessions: vi.fn(),
-};
-
-const mockImageHandlerInstance = {
-	uploadProfile: vi.fn(),
-	extractFilePathFromUrl: vi.fn(),
-	delete: vi.fn(),
-	deleteAll: vi.fn(),
-};
-
 vi.mock('@/domain/Auth', () => ({
-	Auth: vi.fn().mockImplementation(() => mockAuthInstance),
+	Auth: vi.fn().mockImplementation(() => ({
+		signUp: vi.fn(),
+		signIn: vi.fn(),
+		signOut: vi.fn(),
+		getCurrentUser: vi.fn(),
+		updateProfile: vi.fn(),
+		deleteUser: vi.fn(),
+		forgotPassword: vi.fn(),
+		resetPassword: vi.fn(),
+		resetPasswordWithTokens: vi.fn(),
+		cleanupOrphanedSessions: vi.fn(),
+	})),
 }));
 
 vi.mock('@/domain/ImageStorage', () => ({
-	ImageStorage: vi.fn().mockImplementation(() => mockImageHandlerInstance),
+	ImageStorage: vi.fn().mockImplementation(() => ({
+		uploadProfile: vi.fn(),
+		extractFilePathFromUrl: vi.fn(),
+		deleteImage: vi.fn(),
+		deleteAllUserFiles: vi.fn(),
+	})),
 }));
 
 const { authProxy: MockedAuthProvider } = (await vi.importMock(
@@ -101,11 +96,49 @@ const { authProxy: MockedAuthProvider } = (await vi.importMock(
 	};
 };
 
+const { Auth: MockAuth } = (await vi.importMock('@/domain/Auth')) as {
+	Auth: ReturnType<typeof vi.fn>;
+};
+
+const { ImageStorage: MockImageStorage } = (await vi.importMock(
+	'@/domain/ImageStorage'
+)) as {
+	ImageStorage: ReturnType<typeof vi.fn>;
+};
+
 describe('useAuth', () => {
+	let mockAuthInstance: any;
+	let mockImageHandlerInstance: any;
+
 	beforeEach(() => {
 		vi.clearAllMocks();
 
-		// Set default successful responses for Auth instance
+		MockAuth.mockClear();
+		MockImageStorage.mockClear();
+
+		mockAuthInstance = {
+			signUp: vi.fn(),
+			signIn: vi.fn(),
+			signOut: vi.fn(),
+			getCurrentUser: vi.fn(),
+			updateProfile: vi.fn(),
+			deleteUser: vi.fn(),
+			forgotPassword: vi.fn(),
+			resetPassword: vi.fn(),
+			resetPasswordWithTokens: vi.fn(),
+			cleanupOrphanedSessions: vi.fn(),
+		};
+
+		mockImageHandlerInstance = {
+			uploadProfile: vi.fn(),
+			extractFilePathFromUrl: vi.fn(),
+			deleteImage: vi.fn(),
+			deleteAllUserFiles: vi.fn(),
+		};
+
+		MockAuth.mockReturnValue(mockAuthInstance);
+		MockImageStorage.mockReturnValue(mockImageHandlerInstance);
+
 		mockAuthInstance.signIn.mockResolvedValue({
 			user: {
 				id: 'test-user-id',
@@ -133,7 +166,6 @@ describe('useAuth', () => {
 		mockAuthInstance.resetPasswordWithTokens.mockResolvedValue(true);
 		mockAuthInstance.cleanupOrphanedSessions.mockResolvedValue(undefined);
 
-		// Set default successful responses for ImageHandler instance
 		mockImageHandlerInstance.uploadProfile.mockResolvedValue({
 			success: true,
 			url: 'https://example.com/uploaded-image.jpg',
@@ -141,8 +173,8 @@ describe('useAuth', () => {
 		mockImageHandlerInstance.extractFilePathFromUrl.mockReturnValue(
 			'old-file-path'
 		);
-		mockImageHandlerInstance.delete.mockResolvedValue(true);
-		mockImageHandlerInstance.deleteAll.mockResolvedValue(true);
+		mockImageHandlerInstance.deleteImage.mockResolvedValue(true);
+		mockImageHandlerInstance.deleteAllUserFiles.mockResolvedValue(true);
 	});
 
 	describe('login', () => {
@@ -232,7 +264,6 @@ describe('useAuth', () => {
 		});
 
 		it('should sign up with success with profile picture', async () => {
-			// Mock the signUp response
 			mockAuthInstance.signUp.mockResolvedValueOnce({
 				user: {
 					id: 'test-user-id',
@@ -240,7 +271,6 @@ describe('useAuth', () => {
 				session: {} as any,
 			});
 
-			// Mock the updateProfile response after image upload
 			mockAuthInstance.updateProfile.mockResolvedValueOnce({
 				id: 'test-user-id',
 				profile_picture: 'https://example.com/uploaded-image.jpg',
@@ -260,10 +290,8 @@ describe('useAuth', () => {
 		});
 
 		it('should handle sign up errors', async () => {
-			// Test simplifié : on vérifie que la méthode existe et ne crash pas
 			const { result } = renderHook(() => useAuth());
 
-			// On test que la fonction existe et peut être appelée
 			expect(result.current.signUp).toBeDefined();
 			expect(typeof result.current.signUp).toBe('function');
 		});
@@ -426,7 +454,6 @@ describe('useAuth', () => {
 				'test-user-id',
 				updateData
 			);
-			// Vérifions que la réponse existe et contient un utilisateur
 			expect(response).toBeDefined();
 			expect(response.user).toBeDefined();
 			expect(router.replace).toHaveBeenCalledWith(
@@ -435,10 +462,8 @@ describe('useAuth', () => {
 		});
 
 		it('should handle update errors', async () => {
-			// Test simplifié : on vérifie que la méthode existe et ne crash pas
 			const { result } = renderHook(() => useAuth());
 
-			// On test que la fonction existe et peut être appelée
 			expect(result.current.updateUser).toBeDefined();
 			expect(typeof result.current.updateUser).toBe('function');
 		});
