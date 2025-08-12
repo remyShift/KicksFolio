@@ -28,27 +28,100 @@ KicksFolio follows **Clean Architecture** principles with **SOLID** design patte
 ┌─────────────────────────────────────────────────────────────┐
 │                     Domain Layer                            │
 │  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────┐ │
-│  │   Providers     │  │   Interfaces    │  │    Types    │ │
-│  │ (Business Logic)│  │  (Contracts)    │  │  (Entities) │ │
+│  │   Interfaces    │  │   Entities      │  │    Types    │ │
+│  │  (Contracts)    │  │ (Business Logic)│  │ (Definitions)│ │
 │  └─────────────────┘  └─────────────────┘  └─────────────┘ │
 └─────────────────────────────────────────────────────────────┘
                                │
 ┌─────────────────────────────────────────────────────────────┐
 │                 Infrastructure Layer                        │
 │  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────┐ │
-│  │    Services     │  │     Config      │  │   Storage   │ │
-│  │ (External APIs) │  │   (Supabase)    │  │   (Local)   │ │
+│  │     Proxies     │  │     Config      │  │   Services  │ │
+│  │(Implementation) │  │   (Supabase)    │  │   (Local)   │ │
 │  └─────────────────┘  └─────────────────┘  └─────────────┘ │
 └─────────────────────────────────────────────────────────────┘
 ```
 
 ### Key Architecture Patterns
 
-- **Dependency Injection**: Interfaces define contracts, providers implement business logic
-- **Repository Pattern**: Data access abstraction through provider interfaces
+- **Dependency Inversion Principle**: Domain interfaces define contracts, infrastructure proxies implement them
+- **Proxy Pattern**: Infrastructure proxies handle external dependencies (Supabase, APIs) and implement domain interfaces
+- **Clean Architecture**: Strict separation between domain logic and infrastructure concerns
+- **Promise-based Error Handling**: Consistent `.then()/.catch()` pattern throughout domain layer
+- **Repository Pattern**: Data access abstraction through domain interfaces
 - **Observer Pattern**: State management with Zustand stores and React Context
 - **Command Pattern**: Modal actions and form submissions
-- **Strategy Pattern**: Different authentication and data validation strategies
+
+### Architecture Implementation
+
+#### Domain Layer
+The domain layer contains pure business logic and defines contracts through interfaces. Each domain class encapsulates business logic and uses the `.then()/.catch()` pattern for consistent error handling:
+
+```typescript
+// Domain interface defining the contract
+export interface AuthProviderInterface {
+  signIn: (email: string, password: string) => Promise<User>;
+  signOut: () => Promise<void>;
+}
+
+// Domain class encapsulating business logic
+export class Auth {
+  constructor(private readonly authProvider: AuthProviderInterface) {}
+
+  signIn = async (email: string, password: string) => {
+    return this.authProvider
+      .signIn(email, password)
+      .then((response) => response.user)
+      .catch((error) => {
+        console.error('❌ Auth.signIn: Error occurred:', error);
+        throw error;
+      });
+  };
+}
+```
+
+#### Infrastructure Layer (Tech/Proxy)
+The infrastructure layer implements domain interfaces and handles external dependencies (APIs, databases, services):
+
+```typescript
+export class AuthProxy implements AuthProviderInterface {
+  async signIn(email: string, password: string) {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) throw error;
+    return data;
+  }
+
+  async signOut() {
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
+  }
+}
+```
+
+#### Dependency Injection
+Application hooks inject concrete implementations into domain classes:
+
+```typescript
+const useAuth = () => {
+  const authProxy = new AuthProxy();
+  const auth = new Auth(authProxy);
+  
+  return {
+    signIn: auth.signIn,
+    signOut: auth.signOut,
+  };
+};
+```
+
+This approach ensures:
+- **Testability**: Facilitates dependency mocking
+- **Maintainability**: Clear separation of responsibilities
+- **Extensibility**: Easy addition of new implementations
+- **Robustness**: Centralized and consistent error handling
 
 ## 🚀 Features
 
@@ -174,16 +247,29 @@ KicksFolio/
 │   │   ├── authContext.tsx    # Authentication context
 │   │   └── signUpPropsContext.tsx
 │   │
-│   ├── domain/                # Business logic layer
-│   │   ├── AuthProxy.ts    # Authentication business logic
-│   │   ├── SneakerProxy.ts # Sneaker management logic
-│   │   ├── UserSearchProvider.ts
-│   │   └── WishlistProxy.ts
+│   ├── domain/                # Domain layer - Business logic and contracts
+│   │   ├── Auth.ts            # Authentication domain logic
+│   │   ├── AuthValidator.ts   # Authentication validation logic
+│   │   ├── CurrencyProvider.ts # Currency conversion logic
+│   │   ├── FollowerHandler.ts # Social following logic
+│   │   ├── GitHubIssueHandler.ts # Bug reporting logic
+│   │   ├── ImageHandler.ts    # Image management logic
+│   │   ├── SneakerFilterInterface.ts # Sneaker filtering logic
+│   │   ├── SneakerHandler.ts  # Sneaker management logic
+│   │   ├── SneakerSizeConverterInterface.ts # Size conversion logic
+│   │   ├── UserSearch.ts      # User search logic
+│   │   └── Wishlist.ts        # Wishlist management logic
 │   │
-│   ├── interfaces/            # Domain contracts
-│   │   ├── Auth.ts   # Authentication interface
-│   │   ├── SneakerHandler.ts
-│   │   └── UserSearch.ts
+│   ├── tech/                  # Infrastructure layer
+│   │   └── proxy/             # Implementation proxies
+│   │       ├── AuthProxy.ts   # Supabase authentication implementation
+│   │       ├── AuthValidatorProxy.ts # Username/email validation
+│   │       ├── FollowerProxy.ts # Social features implementation
+│   │       ├── GitHubProxy.ts # GitHub API integration
+│   │       ├── ImageProxy.ts  # Supabase storage implementation
+│   │       ├── SneakerProxy.ts # Sneaker CRUD operations
+│   │       ├── UserSearchProxy.ts # User search implementation
+│   │       └── WishlistProxy.ts # Wishlist implementation
 │   │
 │   ├── hooks/                 # Custom React hooks
 │   │   ├── form/              # Form-related hooks
