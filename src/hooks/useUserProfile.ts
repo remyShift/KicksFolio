@@ -119,8 +119,8 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 		setIsFollowLoading(true);
 
 		const followAction = userProfile.userSearch.is_following
-			? followerHandler.unfollowUser(userProfile.userSearch.id)
-			: followerHandler.followUser(userProfile.userSearch.id);
+			? followerHandler.unfollow(userProfile.userSearch.id)
+			: followerHandler.follow(userProfile.userSearch.id);
 
 		try {
 			await followAction;

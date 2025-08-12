@@ -3,7 +3,7 @@ import { FollowerHandlerInterface } from '@/domain/FollowerHandler';
 import { FollowingUser, SearchUser } from '@/types/user';
 
 export class FollowerProxy implements FollowerHandlerInterface {
-	async followUser(followingId: string): Promise<boolean> {
+	async follow(userToFollowId: string): Promise<boolean> {
 		return supabase.auth
 			.getUser()
 			.then(({ data: { user }, error: authError }) => {
@@ -15,7 +15,7 @@ export class FollowerProxy implements FollowerHandlerInterface {
 				return supabase.from('followers').insert([
 					{
 						follower_id: user.id,
-						following_id: followingId,
+						following_id: userToFollowId,
 					},
 				]);
 			})
@@ -28,7 +28,7 @@ export class FollowerProxy implements FollowerHandlerInterface {
 			});
 	}
 
-	async unfollowUser(followingId: string): Promise<boolean> {
+	async unfollow(userToUnfollowId: string): Promise<boolean> {
 		return supabase.auth
 			.getUser()
 			.then(({ data: { user }, error: authError }) => {
@@ -41,7 +41,7 @@ export class FollowerProxy implements FollowerHandlerInterface {
 					.from('followers')
 					.delete()
 					.eq('follower_id', user.id)
-					.eq('following_id', followingId);
+					.eq('following_id', userToUnfollowId);
 			})
 			.then(({ error }) => {
 				if (error) {
@@ -52,7 +52,7 @@ export class FollowerProxy implements FollowerHandlerInterface {
 			});
 	}
 
-	async getFollowingUsers(userId: string): Promise<FollowingUser[]> {
+	async getFollowing(userId: string): Promise<FollowingUser[]> {
 		return supabase
 			.from('followers')
 			.select(
@@ -142,7 +142,7 @@ export class FollowerProxy implements FollowerHandlerInterface {
 			});
 	}
 
-	async getFollowersOfUser(userId: string): Promise<SearchUser[]> {
+	async getFollowers(userId: string): Promise<SearchUser[]> {
 		return supabase
 			.from('followers')
 			.select(

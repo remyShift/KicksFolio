@@ -15,8 +15,8 @@ vi.mock('@/tech/proxy/UserSearchProxy', () => ({
 
 vi.mock('@/tech/proxy/FollowerProxy', () => ({
 	followerProxy: {
-		followUser: vi.fn(),
-		unfollowUser: vi.fn(),
+		follow: vi.fn(),
+		unfollow: vi.fn(),
 	},
 }));
 
@@ -196,7 +196,7 @@ describe('useUserProfile', () => {
 
 			userSearchProxy.getUserProfile.mockResolvedValue(mockUserProfile);
 			userSearchProxy.getUserSneakers.mockResolvedValue([]);
-			followerProxy.followUser.mockResolvedValue(true);
+			followerProxy.follow.mockResolvedValue(true);
 			mockRefreshFollowingUsers.mockResolvedValue(undefined);
 			mockRefreshUserData.mockResolvedValue(undefined);
 
@@ -210,9 +210,7 @@ describe('useUserProfile', () => {
 				await result.current.handleFollowToggle();
 			});
 
-			expect(followerProxy.followUser).toHaveBeenCalledWith(
-				'test-user-id'
-			);
+			expect(followerProxy.follow).toHaveBeenCalledWith('test-user-id');
 			expect(mockToast.showSuccessToast).toHaveBeenCalledWith(
 				'Followed',
 				'You followed testuser'
@@ -240,7 +238,7 @@ describe('useUserProfile', () => {
 
 			userSearchProxy.getUserProfile.mockResolvedValue(mockUserProfile);
 			userSearchProxy.getUserSneakers.mockResolvedValue([]);
-			followerProxy.unfollowUser.mockResolvedValue(true);
+			followerProxy.unfollow.mockResolvedValue(true);
 			mockRefreshFollowingUsers.mockResolvedValue(undefined);
 			mockRefreshUserData.mockResolvedValue(undefined);
 
@@ -254,9 +252,7 @@ describe('useUserProfile', () => {
 				await result.current.handleFollowToggle();
 			});
 
-			expect(followerProxy.unfollowUser).toHaveBeenCalledWith(
-				'test-user-id'
-			);
+			expect(followerProxy.unfollow).toHaveBeenCalledWith('test-user-id');
 			expect(mockToast.showSuccessToast).toHaveBeenCalledWith(
 				'Unfollowed',
 				'You unfollowed testuser'
@@ -285,7 +281,7 @@ describe('useUserProfile', () => {
 			const mockError = new Error('Follow failed');
 			userSearchProxy.getUserProfile.mockResolvedValue(mockUserProfile);
 			userSearchProxy.getUserSneakers.mockResolvedValue([]);
-			followerProxy.followUser.mockRejectedValue(mockError);
+			followerProxy.follow.mockRejectedValue(mockError);
 
 			const consoleSpy = vi
 				.spyOn(console, 'error')
@@ -320,8 +316,8 @@ describe('useUserProfile', () => {
 				await result.current.handleFollowToggle();
 			});
 
-			expect(followerProxy.followUser).not.toHaveBeenCalled();
-			expect(followerProxy.unfollowUser).not.toHaveBeenCalled();
+			expect(followerProxy.follow).not.toHaveBeenCalled();
+			expect(followerProxy.unfollow).not.toHaveBeenCalled();
 		});
 	});
 

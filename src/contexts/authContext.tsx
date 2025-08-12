@@ -213,10 +213,10 @@ export function SessionProvider({ children }: PropsWithChildren) {
 
 	const loadFollowingUsers = async (userId: string) => {
 		return followerHandler
-			.getFollowingUsers(userId)
-			.then(async (followingUsersData) => {
+			.getFollowing(userId)
+			.then(async (followingUsers) => {
 				const followingWithSneakers = await Promise.all(
-					followingUsersData.map(async (followingUser) => {
+					followingUsers.map(async (followingUser) => {
 						try {
 							const sneakers = await userSearch.getUserSneakers(
 								followingUser.id
