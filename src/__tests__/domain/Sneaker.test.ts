@@ -83,7 +83,7 @@ describe('SneakerHandler', () => {
 		],
 	};
 
-	describe('getSneakersByUser', () => {
+	describe('getByUserId', () => {
 		it('should successfully get sneakers by user and return response', async () => {
 			(mockSneakerProvider.getByUserId as any).mockResolvedValue([
 				mockSneaker,
@@ -112,7 +112,7 @@ describe('SneakerHandler', () => {
 				'user-123'
 			);
 			expect(consoleErrorSpy).toHaveBeenCalledWith(
-				'❌ SneakerInterface.getByUserId: Error occurred:',
+				'❌ SneakerHandler.getByUserId: Error occurred:',
 				mockError
 			);
 		});
@@ -148,7 +148,7 @@ describe('SneakerHandler', () => {
 				'EU'
 			);
 			expect(consoleErrorSpy).toHaveBeenCalledWith(
-				'❌ SneakerInterface.create: Error occurred:',
+				'❌ SneakerHandler.create: Error occurred:',
 				mockError
 			);
 		});
@@ -203,7 +203,7 @@ describe('SneakerHandler', () => {
 				'US'
 			);
 			expect(consoleErrorSpy).toHaveBeenCalledWith(
-				'❌ SneakerInterface.updateSneaker: Error occurred:',
+				'❌ SneakerHandler.update: Error occurred:',
 				mockError
 			);
 		});
@@ -229,7 +229,7 @@ describe('SneakerHandler', () => {
 
 			expect(mockSneakerProvider.delete).toHaveBeenCalledWith('123');
 			expect(consoleErrorSpy).toHaveBeenCalledWith(
-				'❌ SneakerInterface.delete: Error occurred:',
+				'❌ SneakerHandler.delete: Error occurred:',
 				mockError
 			);
 		});
@@ -264,7 +264,7 @@ describe('SneakerHandler', () => {
 				'INVALID-SKU'
 			);
 			expect(consoleErrorSpy).toHaveBeenCalledWith(
-				'❌ SneakerInterface.searchBySku: Error occurred:',
+				'❌ SneakerHandler.searchBySku: Error occurred:',
 				mockError
 			);
 		});
@@ -310,7 +310,7 @@ describe('SneakerHandler', () => {
 				'INVALID-BARCODE'
 			);
 			expect(consoleErrorSpy).toHaveBeenCalledWith(
-				'❌ SneakerInterface.searchByBarcode: Error occurred:',
+				'❌ SneakerHandler.searchByBarcode: Error occurred:',
 				mockError
 			);
 		});

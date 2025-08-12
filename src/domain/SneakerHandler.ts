@@ -41,7 +41,7 @@ export class SneakerHandler {
 			})
 			.catch((error) => {
 				console.error(
-					'❌ SneakerInterface.getSneakersByUser: Error occurred:',
+					'❌ SneakerHandler.getByUserId: Error occurred:',
 					error
 				);
 				throw error;
@@ -61,7 +61,7 @@ export class SneakerHandler {
 			})
 			.catch((error) => {
 				console.error(
-					'❌ SneakerInterface.createSneaker: Error occurred:',
+					'❌ SneakerHandler.create: Error occurred:',
 					error
 				);
 				throw error;
@@ -80,7 +80,7 @@ export class SneakerHandler {
 			})
 			.catch((error) => {
 				console.error(
-					'❌ SneakerInterface.updateSneaker: Error occurred:',
+					'❌ SneakerHandler.update: Error occurred:',
 					error
 				);
 				throw error;
@@ -95,7 +95,7 @@ export class SneakerHandler {
 			})
 			.catch((error) => {
 				console.error(
-					'❌ SneakerInterface.deleteSneaker: Error occurred:',
+					'❌ SneakerHandler.delete: Error occurred:',
 					error
 				);
 				throw error;
@@ -110,7 +110,7 @@ export class SneakerHandler {
 			})
 			.catch((error) => {
 				console.error(
-					'❌ SneakerInterface.searchBySku: Error occurred:',
+					'❌ SneakerHandler.searchBySku: Error occurred:',
 					error
 				);
 				throw error;
@@ -125,7 +125,7 @@ export class SneakerHandler {
 			})
 			.catch((error) => {
 				console.error(
-					'❌ SneakerInterface.searchByBarcode: Error occurred:',
+					'❌ SneakerHandler.searchByBarcode: Error occurred:',
 					error
 				);
 				throw error;
