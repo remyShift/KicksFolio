@@ -1,6 +1,6 @@
 import { Currency } from '@/types/currency';
 
-export interface CurrencyProviderInterface {
+export interface CurrencyHandlerInterface {
 	convertPrice(
 		price: number,
 		fromCurrency: Currency,
@@ -10,8 +10,8 @@ export interface CurrencyProviderInterface {
 	getSupportedCurrencies(): Currency[];
 }
 
-export class CurrencyProvider {
-	constructor(private readonly currencyProvider: CurrencyProviderInterface) {}
+export class CurrencyHandler {
+	constructor(private readonly currencyProvider: CurrencyHandlerInterface) {}
 
 	convertPrice = (
 		price: number,

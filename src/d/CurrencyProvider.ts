@@ -1,4 +1,4 @@
-import { CurrencyProviderInterface } from '@/domain/CurrencyProvider';
+import { CurrencyHandlerInterface } from '@/domain/CurrencyProvider';
 import { Currency } from '@/types/currency';
 
 const EXCHANGE_RATES = {
@@ -6,7 +6,7 @@ const EXCHANGE_RATES = {
 	EUR: 0.85,
 } as const;
 
-export class CurrencyProvider implements CurrencyProviderInterface {
+export class CurrencyProvider implements CurrencyHandlerInterface {
 	convertPrice = (
 		price: number,
 		fromCurrency: Currency,

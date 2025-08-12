@@ -39,7 +39,7 @@ vi.mock('@/d/CurrencyProvider', () => ({
 }));
 
 vi.mock('@/domain/CurrencyProvider', () => ({
-	CurrencyProvider: vi.fn().mockImplementation((provider) => ({
+	CurrencyHandler: vi.fn().mockImplementation((provider) => ({
 		convertPrice: provider.convertPrice,
 		getExchangeRate: provider.getExchangeRate,
 		getSupportedCurrencies: provider.getSupportedCurrencies,
