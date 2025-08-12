@@ -1,18 +1,35 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import {
-	GitHubInterface,
-	GitHubProviderInterface,
+	GitHubIssueHandler,
+	GitHubIssueHandlerInterface,
 } from '@/domain/GitHubIssueHandler';
 import { BugReportFormData } from '@/store/useBugReportStore';
 
-const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-
 const fakeUrl = 'https://github.com/testowner/testrepo/issues';
 
-describe('GitHubInterface', () => {
+describe('GitHubIssueHandler', () => {
+	let mockGitHubProvider: GitHubIssueHandlerInterface;
+	let gitHubIssueHandler: GitHubIssueHandler;
+	let consoleErrorSpy: any;
+
 	beforeEach(() => {
-		consoleErrorSpy.mockClear();
+		consoleErrorSpy = vi
+			.spyOn(console, 'error')
+			.mockImplementation(() => {});
+
+		// Create mock provider
+		mockGitHubProvider = {
+			createIssue: vi.fn(),
+			validateConfiguration: vi.fn(),
+		};
+
+		// Create GitHub issue handler instance with mock provider
+		gitHubIssueHandler = new GitHubIssueHandler(mockGitHubProvider);
+	});
+
+	afterEach(() => {
+		vi.restoreAllMocks();
 	});
 
 	const mockFormData: BugReportFormData = {
@@ -32,139 +49,159 @@ describe('GitHubInterface', () => {
 
 	describe('createIssue', () => {
 		it('should successfully create an issue and return response', async () => {
-			const mockCreateIssueFunction: GitHubProviderInterface['createIssue'] =
-				vi.fn().mockResolvedValue(mockCreateIssueResponse);
-
-			const result = await GitHubInterface.createIssue(
-				mockFormData,
-				mockCreateIssueFunction
+			(mockGitHubProvider.createIssue as any).mockResolvedValue(
+				mockCreateIssueResponse
 			);
 
-			expect(mockCreateIssueFunction).toHaveBeenCalledWith(mockFormData);
+			const result = await gitHubIssueHandler.createIssue(mockFormData);
+
+			expect(mockGitHubProvider.createIssue).toHaveBeenCalledWith(
+				mockFormData
+			);
 			expect(result).toEqual(mockCreateIssueResponse);
 			expect(consoleErrorSpy).not.toHaveBeenCalled();
 		});
 
 		it('should handle errors and rethrow them', async () => {
 			const mockError = new Error('Test error');
-			const mockCreateIssueFunction: GitHubProviderInterface['createIssue'] =
-				vi.fn().mockImplementation(() => Promise.reject(mockError));
+			(mockGitHubProvider.createIssue as any).mockRejectedValue(
+				mockError
+			);
 
 			await expect(
-				GitHubInterface.createIssue(
-					mockFormData,
-					mockCreateIssueFunction
-				)
+				gitHubIssueHandler.createIssue(mockFormData)
 			).rejects.toThrow('Test error');
 
-			expect(mockCreateIssueFunction).toHaveBeenCalledWith(mockFormData);
+			expect(mockGitHubProvider.createIssue).toHaveBeenCalledWith(
+				mockFormData
+			);
+			expect(consoleErrorSpy).toHaveBeenCalledWith(
+				'❌ GitHubIssueHandler.createIssue: Error occurred:',
+				mockError
+			);
 		});
 
 		it('should handle network errors', async () => {
 			const networkError = new Error('Network request failed');
-			const mockCreateIssueFunction: GitHubProviderInterface['createIssue'] =
-				vi.fn().mockImplementation(() => Promise.reject(networkError));
+			(mockGitHubProvider.createIssue as any).mockRejectedValue(
+				networkError
+			);
 
 			await expect(
-				GitHubInterface.createIssue(
-					mockFormData,
-					mockCreateIssueFunction
-				)
+				gitHubIssueHandler.createIssue(mockFormData)
 			).rejects.toThrow('Network request failed');
+
+			expect(consoleErrorSpy).toHaveBeenCalledWith(
+				'❌ GitHubIssueHandler.createIssue: Error occurred:',
+				networkError
+			);
 		});
 
 		it('should handle GitHub API errors', async () => {
 			const apiError = new Error('GitHub API Error: 403 - Forbidden');
-			const mockCreateIssueFunction: GitHubProviderInterface['createIssue'] =
-				vi.fn().mockImplementation(() => Promise.reject(apiError));
+			(mockGitHubProvider.createIssue as any).mockRejectedValue(apiError);
 
 			await expect(
-				GitHubInterface.createIssue(
-					mockFormData,
-					mockCreateIssueFunction
-				)
+				gitHubIssueHandler.createIssue(mockFormData)
 			).rejects.toThrow('GitHub API Error: 403 - Forbidden');
+
+			expect(consoleErrorSpy).toHaveBeenCalledWith(
+				'❌ GitHubIssueHandler.createIssue: Error occurred:',
+				apiError
+			);
 		});
 
 		it('should handle configuration errors', async () => {
 			const configError = new Error(
 				'GitHub configuration is not properly set up'
 			);
-			const mockCreateIssueFunction: GitHubProviderInterface['createIssue'] =
-				vi.fn().mockImplementation(() => Promise.reject(configError));
+			(mockGitHubProvider.createIssue as any).mockRejectedValue(
+				configError
+			);
 
 			await expect(
-				GitHubInterface.createIssue(
-					mockFormData,
-					mockCreateIssueFunction
-				)
+				gitHubIssueHandler.createIssue(mockFormData)
 			).rejects.toThrow('GitHub configuration is not properly set up');
+
+			expect(consoleErrorSpy).toHaveBeenCalledWith(
+				'❌ GitHubIssueHandler.createIssue: Error occurred:',
+				configError
+			);
 		});
 	});
 
 	describe('validateConfiguration', () => {
 		it('should successfully validate configuration and return true', async () => {
-			const mockValidateConfigurationFunction: GitHubProviderInterface['validateConfiguration'] =
-				vi.fn().mockResolvedValue(true);
-
-			const result = await GitHubInterface.validateConfiguration(
-				mockValidateConfigurationFunction
+			(mockGitHubProvider.validateConfiguration as any).mockResolvedValue(
+				true
 			);
 
-			expect(mockValidateConfigurationFunction).toHaveBeenCalled();
+			const result = await gitHubIssueHandler.validateConfiguration();
+
+			expect(mockGitHubProvider.validateConfiguration).toHaveBeenCalled();
 			expect(result).toBe(true);
 			expect(consoleErrorSpy).not.toHaveBeenCalled();
 		});
 
 		it('should return false when validation fails', async () => {
-			const mockValidateConfigurationFunction: GitHubProviderInterface['validateConfiguration'] =
-				vi.fn().mockResolvedValue(false);
-
-			const result = await GitHubInterface.validateConfiguration(
-				mockValidateConfigurationFunction
+			(mockGitHubProvider.validateConfiguration as any).mockResolvedValue(
+				false
 			);
 
-			expect(mockValidateConfigurationFunction).toHaveBeenCalled();
+			const result = await gitHubIssueHandler.validateConfiguration();
+
+			expect(mockGitHubProvider.validateConfiguration).toHaveBeenCalled();
 			expect(result).toBe(false);
 			expect(consoleErrorSpy).not.toHaveBeenCalled();
 		});
 
 		it('should handle errors and rethrow them', async () => {
 			const mockError = new Error('Validation error');
-			const mockValidateConfigurationFunction: GitHubProviderInterface['validateConfiguration'] =
-				vi.fn().mockImplementation(() => Promise.reject(mockError));
+			(mockGitHubProvider.validateConfiguration as any).mockRejectedValue(
+				mockError
+			);
 
 			await expect(
-				GitHubInterface.validateConfiguration(
-					mockValidateConfigurationFunction
-				)
+				gitHubIssueHandler.validateConfiguration()
 			).rejects.toThrow('Validation error');
 
-			expect(mockValidateConfigurationFunction).toHaveBeenCalled();
+			expect(mockGitHubProvider.validateConfiguration).toHaveBeenCalled();
+			expect(consoleErrorSpy).toHaveBeenCalledWith(
+				'❌ GitHubIssueHandler.validateConfiguration: Error occurred:',
+				mockError
+			);
 		});
 
 		it('should handle network errors during validation', async () => {
 			const networkError = new Error('Failed to connect to GitHub API');
-			const mockValidateConfigurationFunction: GitHubProviderInterface['validateConfiguration'] =
-				vi.fn().mockImplementation(() => Promise.reject(networkError));
+			(mockGitHubProvider.validateConfiguration as any).mockRejectedValue(
+				networkError
+			);
 
 			await expect(
-				GitHubInterface.validateConfiguration(
-					mockValidateConfigurationFunction
-				)
+				gitHubIssueHandler.validateConfiguration()
 			).rejects.toThrow('Failed to connect to GitHub API');
+
+			expect(consoleErrorSpy).toHaveBeenCalledWith(
+				'❌ GitHubIssueHandler.validateConfiguration: Error occurred:',
+				networkError
+			);
 		});
 
 		it('should handle API authentication errors', async () => {
 			const authError = new Error('GitHub API Error: 401 - Unauthorized');
-			const mockValidateConfigurationFunction: GitHubProviderInterface['validateConfiguration'] =
-				vi.fn().mockImplementation(() => Promise.reject(authError));
+			(mockGitHubProvider.validateConfiguration as any).mockRejectedValue(
+				authError
+			);
 
 			await expect(
-				GitHubInterface.validateConfiguration(
-					mockValidateConfigurationFunction
-				)
+				gitHubIssueHandler.validateConfiguration()
 			).rejects.toThrow('GitHub API Error: 401 - Unauthorized');
+
+			expect(consoleErrorSpy).toHaveBeenCalledWith(
+				'❌ GitHubIssueHandler.validateConfiguration: Error occurred:',
+				authError
+			);
 		});
 	});
 });

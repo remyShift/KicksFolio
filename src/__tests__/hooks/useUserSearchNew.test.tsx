@@ -4,10 +4,11 @@ import { renderHook } from '@testing-library/react';
 import { vi } from 'vitest';
 
 import { useUserSearch } from '@/hooks/useUserSearch';
-import { SearchUsersResponse } from '@/tech/proxy/UserSearchProxy';
+import { SearchUsersResponse } from '@/types/user';
 
-vi.mock('@/interfaces/UserSearch', () => ({
-	UserSearch: {
+// Mock the UserSearchProxy
+vi.mock('@/tech/proxy/UserSearchProxy', () => ({
+	userSearchProxy: {
 		searchUsers: vi.fn(),
 		getUserProfile: vi.fn(),
 		getUserSneakers: vi.fn(),
@@ -69,13 +70,14 @@ vi.mock('@/store/useUserSearchStore', () => ({
 }));
 
 describe('useUserSearch', () => {
-	let UserSearch: any;
+	let userSearchProxy: any;
 
 	beforeEach(async () => {
 		vi.clearAllMocks();
 		vi.clearAllTimers();
 		vi.useFakeTimers();
-		UserSearch = (await import('@/domain/UserSearch')).UserSearch;
+		userSearchProxy = (await import('@/tech/proxy/UserSearchProxy'))
+			.userSearchProxy;
 	});
 
 	afterEach(() => {
@@ -112,7 +114,7 @@ describe('useUserSearch', () => {
 				totalCount: 1,
 			};
 
-			UserSearch.searchUsers.mockResolvedValue(mockSearchResponse);
+			userSearchProxy.searchUsers.mockResolvedValue(mockSearchResponse);
 
 			const { result } = renderHook(() => useUserSearch());
 
@@ -130,11 +132,10 @@ describe('useUserSearch', () => {
 				await vi.runAllTimersAsync();
 			});
 
-			expect(UserSearch.searchUsers).toHaveBeenCalledWith(
+			expect(userSearchProxy.searchUsers).toHaveBeenCalledWith(
 				'test',
 				'test-user-id',
-				0,
-				expect.any(Function)
+				0
 			);
 		});
 
@@ -171,7 +172,7 @@ describe('useUserSearch', () => {
 				totalCount: 0,
 			};
 
-			UserSearch.searchUsers.mockResolvedValue(mockSearchResponse);
+			userSearchProxy.searchUsers.mockResolvedValue(mockSearchResponse);
 
 			mockStore.hasMore = true;
 			mockStore.isLoading = false;
@@ -184,11 +185,10 @@ describe('useUserSearch', () => {
 				result.current.loadMore();
 			});
 
-			expect(UserSearch.searchUsers).toHaveBeenCalledWith(
+			expect(userSearchProxy.searchUsers).toHaveBeenCalledWith(
 				'test',
 				'test-user-id',
-				1,
-				expect.any(Function)
+				1
 			);
 		});
 
@@ -203,7 +203,7 @@ describe('useUserSearch', () => {
 				result.current.loadMore();
 			});
 
-			expect(UserSearch.searchUsers).not.toHaveBeenCalled();
+			expect(userSearchProxy.searchUsers).not.toHaveBeenCalled();
 		});
 
 		it('should not trigger search when already loading', () => {
@@ -217,7 +217,7 @@ describe('useUserSearch', () => {
 				result.current.loadMore();
 			});
 
-			expect(UserSearch.searchUsers).not.toHaveBeenCalled();
+			expect(userSearchProxy.searchUsers).not.toHaveBeenCalled();
 		});
 	});
 
@@ -229,7 +229,7 @@ describe('useUserSearch', () => {
 				totalCount: 0,
 			};
 
-			UserSearch.searchUsers.mockResolvedValue(mockSearchResponse);
+			userSearchProxy.searchUsers.mockResolvedValue(mockSearchResponse);
 			mockStore.searchTerm = 'test';
 
 			const { result } = renderHook(() => useUserSearch());
@@ -239,11 +239,10 @@ describe('useUserSearch', () => {
 			});
 
 			expect(mockStore.setRefreshing).toHaveBeenCalledWith(true);
-			expect(UserSearch.searchUsers).toHaveBeenCalledWith(
+			expect(userSearchProxy.searchUsers).toHaveBeenCalledWith(
 				'test',
 				'test-user-id',
-				0,
-				expect.any(Function)
+				0
 			);
 		});
 
@@ -257,14 +256,14 @@ describe('useUserSearch', () => {
 			});
 
 			expect(mockStore.setRefreshing).not.toHaveBeenCalled();
-			expect(UserSearch.searchUsers).not.toHaveBeenCalled();
+			expect(userSearchProxy.searchUsers).not.toHaveBeenCalled();
 		});
 	});
 
 	describe('error handling', () => {
 		it('should handle search errors gracefully', async () => {
 			const mockError = new Error('Search failed');
-			UserSearch.searchUsers.mockRejectedValue(mockError);
+			userSearchProxy.searchUsers.mockRejectedValue(mockError);
 			const consoleSpy = vi
 				.spyOn(console, 'error')
 				.mockImplementation(() => {});
