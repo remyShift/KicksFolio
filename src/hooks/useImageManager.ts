@@ -3,9 +3,9 @@ import { Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 
 import { useSession } from '@/contexts/authContext';
-import { ImageHandler } from '@/domain/ImageHandler';
+import { ImageStorage } from '@/domain/ImageStorage';
 import { imageService } from '@/services/ImageService';
-import { imageProxy } from '@/tech/proxy/ImageProxy';
+import { imageStorageProxy } from '@/tech/proxy/ImageProxy';
 import { SneakerPhoto } from '@/types/image';
 
 export type ImageSelectionType = 'camera' | 'gallery';
@@ -32,7 +32,7 @@ export function useImageManager(
 		maxImages = 3,
 	} = options || {};
 
-	const imageHandler = new ImageHandler(imageProxy);
+	const imageHandler = new ImageStorage(imageStorageProxy);
 
 	const requestPermissions = async (
 		type: ImageSelectionType
@@ -147,7 +147,7 @@ export function useImageManager(
 				oldPhoto.uri.includes('supabase')
 			) {
 				try {
-					await imageHandler.deleteSpecificSneakerImage(
+					await imageHandler.deleteSpecificSneaker(
 						user.id,
 						sneakerId,
 						oldPhoto.id
@@ -208,7 +208,7 @@ export function useImageManager(
 			photoToRemove.uri.includes('supabase')
 		) {
 			try {
-				await imageHandler.deleteSpecificSneakerImage(
+				await imageHandler.deleteSpecificSneaker(
 					user.id,
 					sneakerId,
 					photoToRemove.id

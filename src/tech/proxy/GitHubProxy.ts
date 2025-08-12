@@ -22,6 +22,55 @@ export class GitHubProxy implements GitHubIssueHandlerInterface {
 	private static readonly REPO_NAME = GITHUB_CONFIG.REPO_NAME;
 	private static readonly GITHUB_TOKEN = GITHUB_CONFIG.GITHUB_TOKEN;
 
+	async createIssue(
+		formData: BugReportFormData
+	): Promise<{ url: string; number: number }> {
+		if (!validateGitHubConfig()) {
+			throw new Error(
+				'GitHub configuration is not properly set up. Please check config/github.config.ts'
+			);
+		}
+
+		return GitHubProxy.getDeviceInfo()
+			.then((deviceInfo) => {
+				const priorityLabel = GitHubProxy.getPriorityLabel(
+					formData.priority
+				);
+
+				const issueData: GitHubIssueData = {
+					title: `[Bug Report] ${formData.title}`,
+					body: GitHubProxy.formatIssueBody(formData, deviceInfo),
+					labels: ['bug', 'mobile-app', priorityLabel],
+				};
+
+				const url = `${GitHubProxy.GITHUB_API_URL}/repos/${GitHubProxy.REPO_OWNER}/${GitHubProxy.REPO_NAME}/issues`;
+
+				return GitHubProxy.makeRequest(url, 'POST', issueData);
+			})
+			.then((response) => {
+				return {
+					url: response.html_url,
+					number: response.number,
+				};
+			})
+			.catch((error) => {
+				throw new Error(
+					`Failed to create bug report: ${error.message}`
+				);
+			});
+	}
+
+	async validateConfiguration(): Promise<boolean> {
+		const url = `${GitHubProxy.GITHUB_API_URL}/repos/${GitHubProxy.REPO_OWNER}/${GitHubProxy.REPO_NAME}`;
+
+		return GitHubProxy.makeRequest(url)
+			.then(() => true)
+			.catch((error) => {
+				console.error('GitHub configuration validation failed:', error);
+				return false;
+			});
+	}
+
 	private static async makeRequest(
 		url: string,
 		method: 'GET' | 'POST' = 'GET',
@@ -127,55 +176,6 @@ export class GitHubProxy implements GitHubIssueHandlerInterface {
 			default:
 				return 'priority:medium';
 		}
-	}
-
-	async createIssue(
-		formData: BugReportFormData
-	): Promise<{ url: string; number: number }> {
-		if (!validateGitHubConfig()) {
-			throw new Error(
-				'GitHub configuration is not properly set up. Please check config/github.config.ts'
-			);
-		}
-
-		return GitHubProxy.getDeviceInfo()
-			.then((deviceInfo) => {
-				const priorityLabel = GitHubProxy.getPriorityLabel(
-					formData.priority
-				);
-
-				const issueData: GitHubIssueData = {
-					title: `[Bug Report] ${formData.title}`,
-					body: GitHubProxy.formatIssueBody(formData, deviceInfo),
-					labels: ['bug', 'mobile-app', priorityLabel],
-				};
-
-				const url = `${GitHubProxy.GITHUB_API_URL}/repos/${GitHubProxy.REPO_OWNER}/${GitHubProxy.REPO_NAME}/issues`;
-
-				return GitHubProxy.makeRequest(url, 'POST', issueData);
-			})
-			.then((response) => {
-				return {
-					url: response.html_url,
-					number: response.number,
-				};
-			})
-			.catch((error) => {
-				throw new Error(
-					`Failed to create bug report: ${error.message}`
-				);
-			});
-	}
-
-	async validateConfiguration(): Promise<boolean> {
-		const url = `${GitHubProxy.GITHUB_API_URL}/repos/${GitHubProxy.REPO_OWNER}/${GitHubProxy.REPO_NAME}`;
-
-		return GitHubProxy.makeRequest(url)
-			.then(() => true)
-			.catch((error) => {
-				console.error('GitHub configuration validation failed:', error);
-				return false;
-			});
 	}
 }
 

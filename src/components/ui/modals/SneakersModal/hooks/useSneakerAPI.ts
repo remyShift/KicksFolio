@@ -3,12 +3,12 @@ import { useTranslation } from 'react-i18next';
 import { ZodIssue } from 'zod';
 
 import { useSession } from '@/contexts/authContext';
-import { ImageHandler } from '@/domain/ImageHandler';
+import { ImageStorage } from '@/domain/ImageStorage';
 import { SneakerHandler } from '@/domain/SneakerHandler';
 import useToast from '@/hooks/ui/useToast';
 import { FetchedSneaker } from '@/store/useModalStore';
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';
-import { imageProxy } from '@/tech/proxy/ImageProxy';
+import { imageStorageProxy } from '@/tech/proxy/ImageProxy';
 import { sneakerProxy } from '@/tech/proxy/SneakerProxy';
 import { SneakerPhoto } from '@/types/image';
 import { Sneaker, SneakerBrand } from '@/types/sneaker';
@@ -42,7 +42,7 @@ export const useSneakerAPI = () => {
 	const { t } = useTranslation();
 	const { currentUnit } = useSizeUnitStore();
 
-	const imageHandler = new ImageHandler(imageProxy);
+	const imageHandler = new ImageStorage(imageStorageProxy);
 	const sneakerHandler = new SneakerHandler(sneakerProxy);
 
 	const validateSneakerData = (formData: SneakerFormData) => {
@@ -207,7 +207,7 @@ export const useSneakerAPI = () => {
 			})
 			.then(async (createdSneaker: Sneaker) => {
 				return imageHandler
-					.processAndUploadSneakerImages(
+					.processAndUploadSneaker(
 						formData.images.map((img) => ({
 							uri: img.uri,
 							id: img.id,
@@ -323,7 +323,7 @@ export const useSneakerAPI = () => {
 				});
 
 				const processedImages =
-					await imageHandler.processAndUploadSneakerImages(
+					await imageHandler.processAndUploadSneaker(
 						formData.images.map((img) => ({
 							uri: img.uri,
 							id: img.id,
@@ -434,7 +434,7 @@ export const useSneakerAPI = () => {
 		return sneakerHandler
 			.deleteSneaker(sneakerId)
 			.then(async () => {
-				await imageHandler.deleteSneakerImages(user.id, sneakerId);
+				await imageHandler.deleteSneaker(user.id, sneakerId);
 
 				return refreshUserSneakers();
 			})

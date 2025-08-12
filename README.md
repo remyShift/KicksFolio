@@ -253,7 +253,7 @@ KicksFolio/
 │   │   ├── CurrencyProvider.ts # Currency conversion logic
 │   │   ├── FollowerHandler.ts # Social following logic
 │   │   ├── GitHubIssueHandler.ts # Bug reporting logic
-│   │   ├── ImageHandler.ts    # Image management logic
+│   │   ├── ImageStorage.ts    # Image management logic
 │   │   ├── SneakerFilterInterface.ts # Sneaker filtering logic
 │   │   ├── SneakerHandler.ts  # Sneaker management logic
 │   │   ├── SneakerSizeConverterInterface.ts # Size conversion logic

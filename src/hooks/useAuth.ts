@@ -6,9 +6,9 @@ import { router } from 'expo-router';
 
 import { useSession } from '@/contexts/authContext';
 import { Auth } from '@/domain/Auth';
-import { ImageHandler } from '@/domain/ImageHandler';
+import { ImageStorage } from '@/domain/ImageStorage';
 import { authProxy } from '@/tech/proxy/AuthProxy';
-import { imageProxy } from '@/tech/proxy/ImageProxy';
+import { imageStorageProxy } from '@/tech/proxy/ImageProxy';
 import { UpdateUserData, UserData } from '@/types/auth';
 
 import { useAuthValidation } from './useAuthValidation';
@@ -20,7 +20,7 @@ export const useAuth = () => {
 	const { t } = useTranslation();
 
 	const auth = new Auth(authProxy);
-	const imageHandler = new ImageHandler(imageProxy);
+	const imageHandler = new ImageStorage(imageStorageProxy);
 
 	const login = async (email: string, password: string) => {
 		return auth.signIn(email, password).catch((error) => {
@@ -41,7 +41,7 @@ export const useAuth = () => {
 			.then((response) => {
 				if (response.user && profilePictureUri) {
 					return imageHandler
-						.uploadProfileImage(profilePictureUri, response.user.id)
+						.uploadProfile(profilePictureUri, response.user.id)
 						.then((uploadResult) => {
 							if (uploadResult.success && uploadResult.url) {
 								return auth
@@ -196,10 +196,7 @@ export const useAuth = () => {
 									.then((oldFilePath) => {
 										if (oldFilePath) {
 											return imageHandler
-												.deleteImage(
-													'profiles',
-													oldFilePath
-												)
+												.delete('profiles', oldFilePath)
 												.then((deleted) => {
 													if (!deleted) {
 														console.warn(
@@ -215,7 +212,7 @@ export const useAuth = () => {
 							return Promise.resolve(true);
 						})
 						.then(() => {
-							return imageHandler.uploadProfileImage(
+							return imageHandler.uploadProfile(
 								newProfileData.profile_picture!,
 								userId
 							);
@@ -254,7 +251,7 @@ export const useAuth = () => {
 
 	const deleteAccount = async (userId: string) => {
 		return imageHandler
-			.deleteAllUserFiles(userId)
+			.deleteAll(userId)
 			.then((filesDeleted) => {
 				if (!filesDeleted) {
 					console.warn(
