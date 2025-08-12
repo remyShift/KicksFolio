@@ -22,8 +22,8 @@ vi.mock('@/services/ImageService', () => ({
 }));
 
 vi.mock('@/tech/proxy/ImageProxy', () => ({
-	imageProxy: {
-		deleteSpecificSneakerImage: vi.fn(),
+	imageStorageProxy: {
+		deleteSpecificSneaker: vi.fn(),
 	},
 }));
 
