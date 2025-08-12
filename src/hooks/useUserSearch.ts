@@ -3,10 +3,10 @@ import { useCallback, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useSession } from '@/contexts/authContext';
-import { UserSearch } from '@/domain/UserSearch';
+import { UserLookup } from '@/domain/UserLookup';
 import useToast from '@/hooks/ui/useToast';
 import { useUserSearchStore } from '@/store/useUserSearchStore';
-import { userSearchProxy } from '@/tech/proxy/UserSearchProxy';
+import { userLookupProxy } from '@/tech/proxy/UserLookupProxy';
 import { SearchUser } from '@/types/user';
 
 interface UseUserSearchReturn {
@@ -27,7 +27,7 @@ export const useUserSearch = (): UseUserSearchReturn => {
 	const { showErrorToast } = useToast();
 	const { t } = useTranslation();
 
-	const userSearch = new UserSearch(userSearchProxy);
+	const userLookup = new UserLookup(userLookupProxy);
 
 	const {
 		searchTerm,
@@ -63,8 +63,8 @@ export const useUserSearch = (): UseUserSearchReturn => {
 
 			setIsLoading(true);
 
-			return userSearch
-				.searchUsers(term.trim(), user.id, pageNum)
+			return userLookup
+				.search(term.trim(), user.id, pageNum)
 				.then((result) => {
 					if (pageNum === 0 || isRefresh) {
 						setSearchResults(result.users);

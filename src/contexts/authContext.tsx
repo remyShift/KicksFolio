@@ -15,13 +15,13 @@ import { supabase } from '@/config/supabase/supabase';
 import { Auth } from '@/domain/Auth';
 import { FollowerHandler } from '@/domain/FollowerHandler';
 import { SneakerHandler } from '@/domain/SneakerHandler';
-import { UserSearch } from '@/domain/UserSearch';
+import { UserLookup } from '@/domain/UserLookup';
 import { Wishlist } from '@/domain/Wishlist';
 import { storageProvider } from '@/services/StorageService';
 import { authProxy } from '@/tech/proxy/AuthProxy';
 import { followerProxy } from '@/tech/proxy/FollowerProxy';
 import { sneakerProxy } from '@/tech/proxy/SneakerProxy';
-import { userSearchProxy } from '@/tech/proxy/UserSearchProxy';
+import { userLookupProxy } from '@/tech/proxy/UserLookupProxy';
 import { wishlistProxy } from '@/tech/proxy/WishlistProxy';
 import { AuthContextType, FollowingUserWithSneakers } from '@/types/auth';
 import { Sneaker } from '@/types/sneaker';
@@ -61,7 +61,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
 	const auth = new Auth(authProxy);
 	const followerHandler = new FollowerHandler(followerProxy);
 	const sneakerHandler = new SneakerHandler(sneakerProxy);
-	const userSearch = new UserSearch(userSearchProxy);
+	const userLookup = new UserLookup(userLookupProxy);
 
 	const wishlist = new Wishlist(wishlistProxy);
 
@@ -216,7 +216,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
 				const followingWithSneakers = await Promise.all(
 					followingUsers.map(async (followingUser) => {
 						try {
-							const sneakers = await userSearch.getUserSneakers(
+							const sneakers = await userLookup.getSneakers(
 								followingUser.id
 							);
 							return {

@@ -257,7 +257,7 @@ KicksFolio/
 │   │   ├── SneakerFilterInterface.ts # Sneaker filtering logic
 │   │   ├── SneakerHandler.ts  # Sneaker management logic
 │   │   ├── SneakerSizeConverterInterface.ts # Size conversion logic
-│   │   ├── UserSearch.ts      # User search logic
+│   │   ├── UserLookup.ts      # User search logic
 │   │   └── Wishlist.ts        # Wishlist management logic
 │   │
 │   ├── tech/                  # Infrastructure layer

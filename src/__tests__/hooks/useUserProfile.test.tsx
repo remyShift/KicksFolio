@@ -6,10 +6,10 @@ import { vi } from 'vitest';
 import { useUserProfile } from '@/hooks/useUserProfile';
 import { SearchUser } from '@/types/user';
 
-vi.mock('@/tech/proxy/UserSearchProxy', () => ({
-	userSearchProxy: {
-		getUserProfile: vi.fn(),
-		getUserSneakers: vi.fn(),
+vi.mock('@/tech/proxy/UserLookupProxy', () => ({
+	userLookupProxy: {
+		getProfile: vi.fn(),
+		getSneakers: vi.fn(),
 	},
 }));
 
@@ -73,13 +73,13 @@ vi.mock('react-i18next', () => ({
 }));
 
 describe('useUserProfile', () => {
-	let userSearchProxy: any;
+	let userLookupProxy: any;
 	let followerProxy: any;
 
 	beforeEach(async () => {
 		vi.clearAllMocks();
-		userSearchProxy = (await import('@/tech/proxy/UserSearchProxy'))
-			.userSearchProxy;
+		userLookupProxy = (await import('@/tech/proxy/UserLookupProxy'))
+			.userLookupProxy;
 		followerProxy = (await import('@/tech/proxy/FollowerProxy'))
 			.followerProxy;
 	});
@@ -118,8 +118,8 @@ describe('useUserProfile', () => {
 				},
 			];
 
-			userSearchProxy.getUserProfile.mockResolvedValue(mockUserProfile);
-			userSearchProxy.getUserSneakers.mockResolvedValue(mockSneakers);
+			userLookupProxy.getProfile.mockResolvedValue(mockUserProfile);
+			userLookupProxy.getSneakers.mockResolvedValue(mockSneakers);
 
 			const { result } = renderHook(() => useUserProfile('test-user-id'));
 
@@ -135,8 +135,8 @@ describe('useUserProfile', () => {
 		});
 
 		it('should handle user not found', async () => {
-			userSearchProxy.getUserProfile.mockResolvedValue(null);
-			userSearchProxy.getUserSneakers.mockResolvedValue([]);
+			userLookupProxy.getProfile.mockResolvedValue(null);
+			userLookupProxy.getSneakers.mockResolvedValue([]);
 
 			renderHook(() => useUserProfile('nonexistent-user-id'));
 
@@ -154,8 +154,8 @@ describe('useUserProfile', () => {
 
 		it('should handle load errors gracefully', async () => {
 			const mockError = new Error('Load failed');
-			userSearchProxy.getUserProfile.mockRejectedValue(mockError);
-			userSearchProxy.getUserSneakers.mockRejectedValue(mockError);
+			userLookupProxy.getProfile.mockRejectedValue(mockError);
+			userLookupProxy.getSneakers.mockRejectedValue(mockError);
 
 			const consoleSpy = vi
 				.spyOn(console, 'error')
@@ -194,8 +194,8 @@ describe('useUserProfile', () => {
 				sneakers: [],
 			};
 
-			userSearchProxy.getUserProfile.mockResolvedValue(mockUserProfile);
-			userSearchProxy.getUserSneakers.mockResolvedValue([]);
+			userLookupProxy.getProfile.mockResolvedValue(mockUserProfile);
+			userLookupProxy.getSneakers.mockResolvedValue([]);
 			followerProxy.follow.mockResolvedValue(true);
 			mockRefreshFollowingUsers.mockResolvedValue(undefined);
 			mockRefreshUserData.mockResolvedValue(undefined);
@@ -236,8 +236,8 @@ describe('useUserProfile', () => {
 				sneakers: [],
 			};
 
-			userSearchProxy.getUserProfile.mockResolvedValue(mockUserProfile);
-			userSearchProxy.getUserSneakers.mockResolvedValue([]);
+			userLookupProxy.getProfile.mockResolvedValue(mockUserProfile);
+			userLookupProxy.getSneakers.mockResolvedValue([]);
 			followerProxy.unfollow.mockResolvedValue(true);
 			mockRefreshFollowingUsers.mockResolvedValue(undefined);
 			mockRefreshUserData.mockResolvedValue(undefined);
@@ -279,8 +279,8 @@ describe('useUserProfile', () => {
 			};
 
 			const mockError = new Error('Follow failed');
-			userSearchProxy.getUserProfile.mockResolvedValue(mockUserProfile);
-			userSearchProxy.getUserSneakers.mockResolvedValue([]);
+			userLookupProxy.getProfile.mockResolvedValue(mockUserProfile);
+			userLookupProxy.getSneakers.mockResolvedValue([]);
 			followerProxy.follow.mockRejectedValue(mockError);
 
 			const consoleSpy = vi
@@ -335,8 +335,8 @@ describe('useUserProfile', () => {
 				sneakers: [],
 			};
 
-			userSearchProxy.getUserProfile.mockResolvedValue(mockUserProfile);
-			userSearchProxy.getUserSneakers.mockResolvedValue([]);
+			userLookupProxy.getProfile.mockResolvedValue(mockUserProfile);
+			userLookupProxy.getSneakers.mockResolvedValue([]);
 
 			const { result } = renderHook(() => useUserProfile('test-user-id'));
 
@@ -344,15 +344,15 @@ describe('useUserProfile', () => {
 				await result.current.refreshUserProfile();
 			});
 
-			expect(userSearchProxy.getUserProfile).toHaveBeenCalled();
-			expect(userSearchProxy.getUserSneakers).toHaveBeenCalled();
+			expect(userLookupProxy.getProfile).toHaveBeenCalled();
+			expect(userLookupProxy.getSneakers).toHaveBeenCalled();
 			expect(result.current.refreshing).toBe(false);
 		});
 
 		it('should handle refresh errors gracefully', async () => {
 			const mockError = new Error('Refresh failed');
-			userSearchProxy.getUserProfile.mockRejectedValue(mockError);
-			userSearchProxy.getUserSneakers.mockRejectedValue(mockError);
+			userLookupProxy.getProfile.mockRejectedValue(mockError);
+			userLookupProxy.getSneakers.mockRejectedValue(mockError);
 
 			const consoleSpy = vi
 				.spyOn(console, 'error')
@@ -377,8 +377,8 @@ describe('useUserProfile', () => {
 		it('should not load profile if userId is undefined', () => {
 			renderHook(() => useUserProfile(undefined));
 
-			expect(userSearchProxy.getUserProfile).not.toHaveBeenCalled();
-			expect(userSearchProxy.getUserSneakers).not.toHaveBeenCalled();
+			expect(userLookupProxy.getProfile).not.toHaveBeenCalled();
+			expect(userLookupProxy.getSneakers).not.toHaveBeenCalled();
 		});
 	});
 });
