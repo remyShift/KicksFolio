@@ -2,85 +2,76 @@ import { Sneaker } from '@/types/sneaker';
 import { WishlistItem } from '@/types/wishlist';
 
 export interface WishlistInterface {
-	addToWishlist: (sneakerId: string) => Promise<WishlistItem>;
-	removeFromWishlist: (sneakerId: string) => Promise<void>;
-	isInWishlist: (sneakerId: string) => Promise<boolean>;
-	getUserWishlistSneakers: (userId: string) => Promise<Sneaker[]>;
-	getWishlistsForSneaker: (sneakerId: string) => Promise<any[]>;
+	add: (sneakerId: string) => Promise<WishlistItem>;
+	remove: (sneakerId: string) => Promise<void>;
+	contains: (sneakerId: string) => Promise<boolean>;
+	getByUserId: (userId: string) => Promise<Sneaker[]>;
+	getBySneakerId: (sneakerId: string) => Promise<any[]>;
 }
 
 export class Wishlist {
-	constructor(private readonly wishlist: WishlistInterface) {}
+	constructor(private readonly wishlistProxy: WishlistInterface) {}
 
-	addToWishlist = async (sneakerId: string) => {
-		return this.wishlist
-			.addToWishlist(sneakerId)
+	add = async (sneakerId: string) => {
+		return this.wishlistProxy
+			.add(sneakerId)
 			.then((result) => {
 				return result;
 			})
 			.catch((error) => {
-				console.error(
-					'❌ Wishlist.addToWishlist: Error occurred:',
-					error
-				);
+				console.error('❌ Wishlist.add: Error occurred:', error);
 				throw error;
 			});
 	};
 
-	removeFromWishlist = async (sneakerId: string) => {
-		return this.wishlist
-			.removeFromWishlist(sneakerId)
+	remove = async (sneakerId: string) => {
+		return this.wishlistProxy
+			.remove(sneakerId)
 			.then(() => {
 				return;
 			})
 			.catch((error) => {
-				console.error(
-					'❌ Wishlist.removeFromWishlist: Error occurred:',
-					error
-				);
+				console.error('❌ Wishlist.remove: Error occurred:', error);
 				throw error;
 			});
 	};
 
-	isInWishlist = async (sneakerId: string) => {
-		return this.wishlist
-			.isInWishlist(sneakerId)
+	contains = async (sneakerId: string) => {
+		return this.wishlistProxy
+			.contains(sneakerId)
 			.then((result) => {
 				return result;
 			})
 			.catch((error) => {
-				console.error(
-					'❌ Wishlist.isInWishlist: Error occurred:',
-					error
-				);
+				console.error('❌ Wishlist.contains: Error occurred:', error);
 				throw error;
 			});
 	};
 
-	getUserWishlistSneakers = async (userId: string) => {
-		return this.wishlist
-			.getUserWishlistSneakers(userId)
+	getByUserId = async (userId: string) => {
+		return this.wishlistProxy
+			.getByUserId(userId)
 			.then((sneakers) => {
 				return sneakers;
 			})
 			.catch((error) => {
 				console.error(
-					'❌ Wishlist.getUserWishlistSneakers: Error occurred:',
+					'❌ Wishlist.getByUserId: Error occurred:',
 					error
 				);
 				throw error;
 			});
 	};
 
-	getWishlistsForSneaker = async (sneakerId: string) => {
-		return this.wishlist
-			.getWishlistsForSneaker(sneakerId)
+	getBySneakerId = async (sneakerId: string) => {
+		return this.wishlistProxy
+			.getBySneakerId(sneakerId)
 			.then((wishlists) => {
 				return wishlists;
 			})
 			.catch((error) => {
 				console.error(
-					'❌ Wishlist.getWishlistsForSneaker: Error occurred:',
+					'❌ Wishlist.getBySneakerId: Error occurred:',
 					error
 				);
 				throw error;

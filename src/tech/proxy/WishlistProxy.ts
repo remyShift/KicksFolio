@@ -4,7 +4,7 @@ import { SneakerPhoto } from '@/types/image';
 import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
 
 export class WishlistProxy implements WishlistInterface {
-	async addToWishlist(sneakerId: string) {
+	async add(sneakerId: string) {
 		const {
 			data: { user },
 			error: authError,
@@ -27,7 +27,7 @@ export class WishlistProxy implements WishlistInterface {
 		return data;
 	}
 
-	async removeFromWishlist(sneakerId: string) {
+	async remove(sneakerId: string) {
 		const {
 			data: { user },
 			error: authError,
@@ -44,7 +44,7 @@ export class WishlistProxy implements WishlistInterface {
 		if (error) throw error;
 	}
 
-	async isInWishlist(sneakerId: string): Promise<boolean> {
+	async contains(sneakerId: string): Promise<boolean> {
 		const {
 			data: { user },
 			error: authError,
@@ -63,7 +63,7 @@ export class WishlistProxy implements WishlistInterface {
 		return !!data;
 	}
 
-	async getUserWishlistSneakers(userId: string): Promise<Sneaker[]> {
+	async getByUserId(userId: string): Promise<Sneaker[]> {
 		const { data, error } = await supabase
 			.from('wishlists')
 			.select(
@@ -93,7 +93,7 @@ export class WishlistProxy implements WishlistInterface {
 			.filter((sneaker): sneaker is Sneaker => sneaker !== null);
 	}
 
-	async getWishlistsForSneaker(sneakerId: string) {
+	async getBySneakerId(sneakerId: string) {
 		const { data, error } = await supabase
 			.from('wishlists')
 			.select(
@@ -123,7 +123,7 @@ export class WishlistProxy implements WishlistInterface {
 
 			if (!sneaker?.id || !owner?.id) {
 				console.warn(
-					'🔍 WishlistService: Missing sneaker or owner data:',
+					'🔍 WishlistProxy: Missing sneaker or owner data:',
 					{
 						sneaker: !!sneaker?.id,
 						owner: !!owner?.id,
@@ -164,7 +164,7 @@ export class WishlistProxy implements WishlistInterface {
 			return transformedSneaker;
 		} catch (error) {
 			console.error(
-				'❌ WishlistService: Error transforming wishlist item:',
+				'❌ WishlistProxy: Error transforming wishlist item:',
 				error
 			);
 			return null;

@@ -178,9 +178,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
 
 	const loadUserSneakers = async (userWithUrl: User) => {
 		const sneakersPromise = sneakerHandler.getByUserId(userWithUrl.id);
-		const wishlistPromise = wishlist.getUserWishlistSneakers(
-			userWithUrl.id
-		);
+		const wishlistPromise = wishlist.getByUserId(userWithUrl.id);
 
 		return Promise.all([sneakersPromise, wishlistPromise])
 			.then(([sneakers, wishlistSneakers]) => {
@@ -361,7 +359,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
 		}
 
 		const sneakersPromise = sneakerHandler.getByUserId(user.id);
-		const wishlistPromise = wishlist.getUserWishlistSneakers(user.id);
+		const wishlistPromise = wishlist.getByUserId(user.id);
 
 		return Promise.all([sneakersPromise, wishlistPromise])
 			.then(([sneakers, wishlistSneakers]) => {

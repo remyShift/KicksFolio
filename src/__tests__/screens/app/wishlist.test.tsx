@@ -23,8 +23,6 @@ describe('Wishlist', () => {
 				},
 			],
 			description: 'Great sneaker',
-			created_at: '2024-01-01',
-			updated_at: '2024-01-01',
 			estimated_value: 200,
 		},
 	];
