@@ -23,11 +23,6 @@ vi.mock('@/store/useLanguageStore', () => ({
 
 vi.mock('@/d/CurrencyProvider', () => ({
 	currencyProvider: {
-		formatPrice: vi.fn((price: number, currency: string) => {
-			const convertedPrice = currency === 'EUR' ? price * 0.85 : price;
-			if (currency === 'EUR') return `${convertedPrice.toFixed(2)}€`;
-			return `$${convertedPrice.toFixed(2)}`;
-		}),
 		convertPrice: vi.fn(
 			(price: number, fromCurrency: string, toCurrency: string) => {
 				if (fromCurrency === toCurrency) return price;
@@ -43,10 +38,8 @@ vi.mock('@/d/CurrencyProvider', () => ({
 	},
 }));
 
-// Mock the CurrencyProvider class
 vi.mock('@/domain/CurrencyProvider', () => ({
 	CurrencyProvider: vi.fn().mockImplementation((provider) => ({
-		formatPrice: provider.formatPrice,
 		convertPrice: provider.convertPrice,
 		getExchangeRate: provider.getExchangeRate,
 		getSupportedCurrencies: provider.getSupportedCurrencies,
@@ -183,31 +176,30 @@ describe('useCurrencyStore', () => {
 		});
 	});
 
-	describe('formattedPrice', () => {
-		it('should format price using CurrencyProvider', async () => {
-			const { formattedPrice } = useCurrencyStore.getState();
-			const result = await formattedPrice(100);
+	describe('convertAndFormatdPrice', () => {
+		it('should format price using CurrencyProvider', () => {
+			const { convertAndFormatdPrice } = useCurrencyStore.getState();
+			const result = convertAndFormatdPrice(100, 'USD');
 
 			expect(result).toBe('$100.00');
 		});
 
-		it('should format EUR price correctly', async () => {
+		it('should format EUR price correctly', () => {
 			useCurrencyStore.setState({
 				currentCurrency: 'EUR',
 			});
 
-			const { formattedPrice } = useCurrencyStore.getState();
-			const result = await formattedPrice(100);
+			const { convertAndFormatdPrice } = useCurrencyStore.getState();
+			const result = convertAndFormatdPrice(100, 'EUR');
 
 			expect(result).toBe('85.00€');
 		});
 
-		it('should handle formatting errors gracefully', async () => {
-			// Test simplifié : vérifions que la méthode formattedPrice existe
-			const { formattedPrice } = useCurrencyStore.getState();
+		it('should handle formatting errors gracefully', () => {
+			const { convertAndFormatdPrice } = useCurrencyStore.getState();
 
-			expect(formattedPrice).toBeDefined();
-			expect(typeof formattedPrice).toBe('function');
+			expect(convertAndFormatdPrice).toBeDefined();
+			expect(typeof convertAndFormatdPrice).toBe('function');
 		});
 	});
 });
