@@ -12,17 +12,17 @@ import * as Linking from 'expo-linking';
 import { router } from 'expo-router';
 
 import { supabase } from '@/config/supabase/supabase';
-import { wishlistProvider } from '@/d/WishlistProvider';
 import { Auth } from '@/domain/Auth';
 import { FollowerHandler } from '@/domain/FollowerHandler';
 import { SneakerHandler } from '@/domain/SneakerHandler';
 import { UserSearch } from '@/domain/UserSearch';
-import { WishlistProviderInterface } from '@/domain/WishlistProviderInterface';
+import { Wishlist } from '@/domain/Wishlist';
 import { storageProvider } from '@/services/StorageService';
 import { authProxy } from '@/tech/proxy/AuthProxy';
 import { followerProxy } from '@/tech/proxy/FollowerProxy';
 import { sneakerProxy } from '@/tech/proxy/SneakerProxy';
 import { userSearchProxy } from '@/tech/proxy/UserSearchProxy';
+import { wishlistProxy } from '@/tech/proxy/WishlistProxy';
 import { AuthContextType, FollowingUserWithSneakers } from '@/types/auth';
 import { Sneaker } from '@/types/sneaker';
 import { User } from '@/types/user';
@@ -62,6 +62,8 @@ export function SessionProvider({ children }: PropsWithChildren) {
 	const followerHandler = new FollowerHandler(followerProxy);
 	const sneakerHandler = new SneakerHandler(sneakerProxy);
 	const userSearch = new UserSearch(userSearchProxy);
+
+	const wishlist = new Wishlist(wishlistProxy);
 
 	useEffect(() => {
 		const handleDeepLink = (url: string) => {
@@ -178,11 +180,9 @@ export function SessionProvider({ children }: PropsWithChildren) {
 		const sneakersPromise = sneakerHandler.getSneakersByUser(
 			userWithUrl.id
 		);
-		const wishlistPromise =
-			WishlistProviderInterface.getUserWishlistSneakers(
-				userWithUrl.id,
-				wishlistProvider.getUserWishlistSneakers
-			);
+		const wishlistPromise = wishlist.getUserWishlistSneakers(
+			userWithUrl.id
+		);
 
 		return Promise.all([sneakersPromise, wishlistPromise])
 			.then(([sneakers, wishlistSneakers]) => {
@@ -363,11 +363,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
 		}
 
 		const sneakersPromise = sneakerHandler.getSneakersByUser(user.id);
-		const wishlistPromise =
-			WishlistProviderInterface.getUserWishlistSneakers(
-				user.id,
-				wishlistProvider.getUserWishlistSneakers
-			);
+		const wishlistPromise = wishlist.getUserWishlistSneakers(user.id);
 
 		return Promise.all([sneakersPromise, wishlistPromise])
 			.then(([sneakers, wishlistSneakers]) => {

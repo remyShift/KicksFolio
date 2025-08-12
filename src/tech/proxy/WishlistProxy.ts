@@ -1,9 +1,9 @@
 import { supabase } from '@/config/supabase/supabase';
-import { WishlistProviderInterface } from '@/domain/WishlistProviderInterface';
+import { WishlistInterface } from '@/domain/Wishlist';
 import { SneakerPhoto } from '@/types/image';
 import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
 
-export class WishlistProvider implements WishlistProviderInterface {
+export class WishlistProxy implements WishlistInterface {
 	async addToWishlist(sneakerId: string) {
 		const {
 			data: { user },
@@ -89,7 +89,7 @@ export class WishlistProvider implements WishlistProviderInterface {
 		if (!data) return [];
 
 		return data
-			.map(WishlistProvider.transformToSneaker)
+			.map(WishlistProxy.transformToSneaker)
 			.filter((sneaker): sneaker is Sneaker => sneaker !== null);
 	}
 
@@ -132,7 +132,7 @@ export class WishlistProvider implements WishlistProviderInterface {
 				return null;
 			}
 
-			const parsedImages = WishlistProvider.parseImages(sneaker.images);
+			const parsedImages = WishlistProxy.parseImages(sneaker.images);
 
 			const transformedSneaker = {
 				id: String(sneaker.id),
@@ -247,4 +247,4 @@ export class WishlistProvider implements WishlistProviderInterface {
 	}
 }
 
-export const wishlistProvider = new WishlistProvider();
+export const wishlistProxy = new WishlistProxy();

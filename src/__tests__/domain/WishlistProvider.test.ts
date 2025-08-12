@@ -1,10 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { WishlistItem } from '@/d/WishlistProvider';
-import { WishlistProviderInterface } from '@/domain/WishlistProviderInterface';
+import { Wishlist } from '@/domain/Wishlist';
+import { WishlistItem } from '@/tech/proxy/WishlistProxy';
 import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
 
-describe('WishlistProviderInterface', () => {
+describe('Wishlist', () => {
 	describe('addToWishlist', () => {
 		it('should add sneaker to wishlist successfully', async () => {
 			const mockWishlistItem: WishlistItem = {
@@ -18,7 +18,7 @@ describe('WishlistProviderInterface', () => {
 				.fn()
 				.mockResolvedValue(mockWishlistItem);
 
-			const result = await WishlistProviderInterface.addToWishlist(
+			const result = await Wishlist.addToWishlist(
 				'sneaker-1',
 				mockAddToWishlistFunction
 			);
@@ -37,14 +37,11 @@ describe('WishlistProviderInterface', () => {
 				.mockImplementation(() => {});
 
 			await expect(
-				WishlistProviderInterface.addToWishlist(
-					'sneaker-1',
-					mockAddToWishlistFunction
-				)
+				Wishlist.addToWishlist('sneaker-1', mockAddToWishlistFunction)
 			).rejects.toThrow('Failed to add to wishlist');
 
 			expect(consoleSpy).toHaveBeenCalledWith(
-				'❌ WishlistProviderInterface.addToWishlist: Error occurred:',
+				'❌ Wishlist.addToWishlist: Error occurred:',
 				mockError
 			);
 
@@ -58,7 +55,7 @@ describe('WishlistProviderInterface', () => {
 				.fn()
 				.mockResolvedValue(undefined);
 
-			await WishlistProviderInterface.removeFromWishlist(
+			await Wishlist.removeFromWishlist(
 				'sneaker-1',
 				mockRemoveFromWishlistFunction
 			);
@@ -78,14 +75,14 @@ describe('WishlistProviderInterface', () => {
 				.mockImplementation(() => {});
 
 			await expect(
-				WishlistProviderInterface.removeFromWishlist(
+				Wishlist.removeFromWishlist(
 					'sneaker-1',
 					mockRemoveFromWishlistFunction
 				)
 			).rejects.toThrow('Failed to remove from wishlist');
 
 			expect(consoleSpy).toHaveBeenCalledWith(
-				'❌ WishlistProviderInterface.removeFromWishlist: Error occurred:',
+				'❌ Wishlist.removeFromWishlist: Error occurred:',
 				mockError
 			);
 
@@ -97,7 +94,7 @@ describe('WishlistProviderInterface', () => {
 		it('should return true when sneaker is in wishlist', async () => {
 			const mockIsInWishlistFunction = vi.fn().mockResolvedValue(true);
 
-			const result = await WishlistProviderInterface.isInWishlist(
+			const result = await Wishlist.isInWishlist(
 				'sneaker-1',
 				mockIsInWishlistFunction
 			);
@@ -109,7 +106,7 @@ describe('WishlistProviderInterface', () => {
 		it('should return false when sneaker is not in wishlist', async () => {
 			const mockIsInWishlistFunction = vi.fn().mockResolvedValue(false);
 
-			const result = await WishlistProviderInterface.isInWishlist(
+			const result = await Wishlist.isInWishlist(
 				'sneaker-1',
 				mockIsInWishlistFunction
 			);
@@ -128,14 +125,11 @@ describe('WishlistProviderInterface', () => {
 				.mockImplementation(() => {});
 
 			await expect(
-				WishlistProviderInterface.isInWishlist(
-					'sneaker-1',
-					mockIsInWishlistFunction
-				)
+				Wishlist.isInWishlist('sneaker-1', mockIsInWishlistFunction)
 			).rejects.toThrow('Failed to check wishlist');
 
 			expect(consoleSpy).toHaveBeenCalledWith(
-				'❌ WishlistProviderInterface.isInWishlist: Error occurred:',
+				'❌ Wishlist.isInWishlist: Error occurred:',
 				mockError
 			);
 
@@ -172,11 +166,10 @@ describe('WishlistProviderInterface', () => {
 				.fn()
 				.mockResolvedValue(mockWishlistSneakers);
 
-			const result =
-				await WishlistProviderInterface.getUserWishlistSneakers(
-					'user-1',
-					mockGetUserWishlistSneakersFunction
-				);
+			const result = await Wishlist.getUserWishlistSneakers(
+				'user-1',
+				mockGetUserWishlistSneakersFunction
+			);
 
 			expect(result).toEqual(mockWishlistSneakers);
 			expect(mockGetUserWishlistSneakersFunction).toHaveBeenCalledWith(
@@ -194,14 +187,14 @@ describe('WishlistProviderInterface', () => {
 				.mockImplementation(() => {});
 
 			await expect(
-				WishlistProviderInterface.getUserWishlistSneakers(
+				Wishlist.getUserWishlistSneakers(
 					'user-1',
 					mockGetUserWishlistSneakersFunction
 				)
 			).rejects.toThrow('Failed to get user wishlist sneakers');
 
 			expect(consoleSpy).toHaveBeenCalledWith(
-				'❌ WishlistProviderInterface.getUserWishlistSneakers: Error occurred:',
+				'❌ Wishlist.getUserWishlistSneakers: Error occurred:',
 				mockError
 			);
 
@@ -231,11 +224,10 @@ describe('WishlistProviderInterface', () => {
 				.fn()
 				.mockResolvedValue(mockWishlists);
 
-			const result =
-				await WishlistProviderInterface.getWishlistsForSneaker(
-					'sneaker-1',
-					mockGetWishlistsForSneakerFunction
-				);
+			const result = await Wishlist.getWishlistsForSneaker(
+				'sneaker-1',
+				mockGetWishlistsForSneakerFunction
+			);
 
 			expect(result).toEqual(mockWishlists);
 			expect(mockGetWishlistsForSneakerFunction).toHaveBeenCalledWith(
@@ -253,14 +245,14 @@ describe('WishlistProviderInterface', () => {
 				.mockImplementation(() => {});
 
 			await expect(
-				WishlistProviderInterface.getWishlistsForSneaker(
+				Wishlist.getWishlistsForSneaker(
 					'sneaker-1',
 					mockGetWishlistsForSneakerFunction
 				)
 			).rejects.toThrow('Failed to get wishlists for sneaker');
 
 			expect(consoleSpy).toHaveBeenCalledWith(
-				'❌ WishlistProviderInterface.getWishlistsForSneaker: Error occurred:',
+				'❌ Wishlist.getWishlistsForSneaker: Error occurred:',
 				mockError
 			);
 

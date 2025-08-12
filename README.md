@@ -178,7 +178,7 @@ KicksFolio/
 │   │   ├── AuthProxy.ts    # Authentication business logic
 │   │   ├── SneakerProxy.ts # Sneaker management logic
 │   │   ├── UserSearchProvider.ts
-│   │   └── WishlistProvider.ts
+│   │   └── WishlistProxy.ts
 │   │
 │   ├── interfaces/            # Domain contracts
 │   │   ├── Auth.ts   # Authentication interface
