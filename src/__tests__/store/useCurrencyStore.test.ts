@@ -179,7 +179,7 @@ describe('useCurrencyStore', () => {
 	describe('convertAndFormatdPrice', () => {
 		it('should format price using CurrencyProvider', () => {
 			const { convertAndFormatdPrice } = useCurrencyStore.getState();
-			const result = convertAndFormatdPrice(100, 'USD');
+			const result = convertAndFormatdPrice(100);
 
 			expect(result).toBe('$100.00');
 		});
@@ -190,7 +190,7 @@ describe('useCurrencyStore', () => {
 			});
 
 			const { convertAndFormatdPrice } = useCurrencyStore.getState();
-			const result = convertAndFormatdPrice(100, 'EUR');
+			const result = convertAndFormatdPrice(100);
 
 			expect(result).toBe('85.00€');
 		});

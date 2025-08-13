@@ -1,12 +1,13 @@
 import { useCallback, useEffect } from 'react';
 
-import { FlatList } from 'react-native';
+import SwipeableFlatList from 'rn-gesture-swipeable-flatlist';
 
 import { useSneakerFilterStore } from '@/store/useSneakerFilterStore';
 import { Sneaker } from '@/types/sneaker';
 
 import ListControls from './ListControls';
 import SneakerListItem from './SneakerListItem';
+import SwipeActions from './SwipeActions';
 
 interface SneakersListViewProps {
 	sneakers: Sneaker[];
@@ -38,12 +39,20 @@ export default function SneakersListView({
 		[onSneakerPress, showOwnerInfo]
 	);
 
+	const renderRightActions = useCallback(
+		(item: Sneaker) => {
+			return <SwipeActions sneaker={item} onPress={onSneakerPress} />;
+		},
+		[onSneakerPress]
+	);
+
 	const renderListHeader = useCallback(() => <ListControls />, []);
 
 	return (
-		<FlatList
+		<SwipeableFlatList
 			data={filteredAndSortedSneakers}
 			renderItem={renderSneakerItem}
+			renderRightActions={renderRightActions}
 			keyExtractor={(item) => item.id}
 			ListHeaderComponent={renderListHeader}
 			contentContainerStyle={{ paddingTop: 0 }}
@@ -52,6 +61,7 @@ export default function SneakersListView({
 			nestedScrollEnabled={!scrollEnabled}
 			keyboardShouldPersistTaps="handled"
 			removeClippedSubviews={false}
+			enableOpenMultipleRows={false}
 		/>
 	);
 }

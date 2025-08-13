@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 
 import { View } from 'react-native';
 
+import { useModalStore } from '@/store/useModalStore';
 import {
 	useViewDisplayStateStore,
 	ViewDisplayState,
@@ -18,7 +19,6 @@ interface DualViewContainerProps {
 	userSneakers: Sneaker[];
 	refreshing: boolean;
 	onRefresh: () => Promise<void>;
-	onSneakerPress: (sneaker: Sneaker) => void;
 	showBackButton?: boolean;
 }
 
@@ -27,10 +27,10 @@ export default function DualViewContainer({
 	userSneakers,
 	refreshing,
 	onRefresh,
-	onSneakerPress,
 	showBackButton = false,
 }: DualViewContainerProps) {
 	const { viewDisplayState } = useViewDisplayStateStore();
+	const { setCurrentSneaker, setModalStep, setIsVisible } = useModalStore();
 
 	const sneakersByBrand = useMemo(() => {
 		if (!userSneakers || userSneakers.length === 0) return {};
@@ -51,12 +51,18 @@ export default function DualViewContainer({
 
 	const isCardView = viewDisplayState === ViewDisplayState.Card;
 
+	const handleSneakerPress = (sneaker: Sneaker) => {
+		setCurrentSneaker(sneaker);
+		setModalStep('view');
+		setIsVisible(true);
+	};
+
 	return (
 		<View className="flex-1">
 			{isCardView ? (
 				<CardDisplay
 					sneakersByBrand={sneakersByBrand}
-					handleSneakerPress={onSneakerPress}
+					handleSneakerPress={handleSneakerPress}
 					refreshing={refreshing}
 					onRefresh={onRefresh}
 					user={user}
@@ -66,7 +72,7 @@ export default function DualViewContainer({
 			) : (
 				<ListDisplay
 					userSneakers={userSneakers}
-					handleSneakerPress={onSneakerPress}
+					handleSneakerPress={handleSneakerPress}
 					refreshing={refreshing}
 					onRefresh={onRefresh}
 					user={user}

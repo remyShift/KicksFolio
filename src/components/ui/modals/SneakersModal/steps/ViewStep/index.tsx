@@ -16,7 +16,7 @@ import { useModalStore } from '@/store/useModalStore';
 export const ViewStep = () => {
 	const { currentSneaker } = useModalStore();
 	const [errorMsg, setErrorMsg] = useState('');
-	const { formattedPrice } = useCurrencyStore();
+	const { convertAndFormatdPrice } = useCurrencyStore();
 
 	if (!currentSneaker) {
 		return null;
@@ -118,7 +118,7 @@ export const ViewStep = () => {
 						<View className="w-4/5">
 							<Text className="font-open-sans-bold text-lg text-center">
 								{currentSneaker.estimated_value
-									? formattedPrice(
+									? convertAndFormatdPrice(
 											currentSneaker.estimated_value
 										)
 									: 'N/A'}

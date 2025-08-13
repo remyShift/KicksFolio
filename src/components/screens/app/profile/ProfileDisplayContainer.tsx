@@ -1,5 +1,6 @@
 import { RefreshControl, ScrollView } from 'react-native';
 
+import { useModalStore } from '@/store/useModalStore';
 import { Sneaker } from '@/types/sneaker';
 import { SearchUser, User } from '@/types/user';
 
@@ -12,8 +13,6 @@ interface ProfileDisplayContainerProps {
 	userSneakers: Sneaker[];
 	refreshing: boolean;
 	onRefresh: () => Promise<void>;
-	onSneakerPress: (sneaker: Sneaker) => void;
-	onAddSneaker?: () => void;
 	showBackButton?: boolean;
 }
 
@@ -25,10 +24,16 @@ export default function ProfileDisplayContainer(
 		userSneakers,
 		refreshing,
 		onRefresh,
-		onSneakerPress,
-		onAddSneaker,
 		showBackButton = false,
 	} = props;
+
+	const { setModalStep, setIsVisible } = useModalStore();
+
+	const handleAddSneaker = () => {
+		setModalStep('index');
+		setIsVisible(true);
+	};
+
 	if (!userSneakers || userSneakers.length === 0) {
 		return (
 			<ScrollView
@@ -50,8 +55,8 @@ export default function ProfileDisplayContainer(
 					showBackButton={showBackButton}
 				/>
 				<EmptySneakersState
-					onAddPress={onAddSneaker || (() => {})}
-					showAddButton={!!onAddSneaker}
+					onAddPress={handleAddSneaker}
+					showAddButton={true}
 				/>
 			</ScrollView>
 		);
@@ -63,7 +68,6 @@ export default function ProfileDisplayContainer(
 			userSneakers={userSneakers}
 			refreshing={refreshing}
 			onRefresh={onRefresh}
-			onSneakerPress={onSneakerPress}
 			showBackButton={showBackButton}
 		/>
 	);

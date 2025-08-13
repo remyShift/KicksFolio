@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { Image } from 'expo-image';
 
@@ -24,17 +24,7 @@ export default function SneakerListItem({
 	const isOwner = sneaker.owner?.id === user?.id;
 
 	return (
-		<TouchableOpacity
-			className="bg-white py-2 px-4 border border-gray-100 mb-1"
-			onPress={() => onPress(sneaker)}
-			activeOpacity={0.7}
-			hitSlop={{
-				top: 5,
-				bottom: 5,
-				left: 5,
-				right: 5,
-			}}
-		>
+		<View className="bg-white py-2 px-4 border border-gray-100">
 			<View
 				className="flex-row justify-between items-center gap-3"
 				pointerEvents="none"
@@ -93,6 +83,6 @@ export default function SneakerListItem({
 					)}
 				</View>
 			</View>
-		</TouchableOpacity>
+		</View>
 	);
 }

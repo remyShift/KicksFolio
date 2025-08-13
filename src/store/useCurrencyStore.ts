@@ -16,7 +16,7 @@ interface CurrencyStore {
 	setCurrency: (currency: Currency) => Promise<void>;
 	initializeCurrency: () => Promise<void>;
 	getCurrentCurrency: () => Currency;
-	convertAndFormatdPrice: (price: number, currency: Currency) => string;
+	convertAndFormatdPrice: (price: number) => string;
 }
 
 const CURRENCY_SYMBOLS = {
@@ -83,7 +83,8 @@ export const useCurrencyStore = create<CurrencyStore>((set, get) => ({
 			});
 	},
 
-	convertAndFormatdPrice: (price: number, currency: Currency): string => {
+	convertAndFormatdPrice: (price: number): string => {
+		const currency = get().currentCurrency;
 		const convertedPrice = get().currencyHandler.convertPrice(
 			price,
 			'USD',
