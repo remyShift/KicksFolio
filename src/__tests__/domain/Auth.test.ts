@@ -2,20 +2,7 @@ import { vi } from 'vitest';
 
 import { Auth, AuthProviderInterface } from '@/domain/Auth';
 
-import {
-	createFailingMockFunction,
-	createSuccessfulCleanupOrphanedSessions,
-	createSuccessfulDeleteUser,
-	createSuccessfulForgotPassword,
-	createSuccessfulGetCurrentUser,
-	createSuccessfulResetPassword,
-	createSuccessfulResetPasswordWithTokens,
-	createSuccessfulSignIn,
-	createSuccessfulSignOut,
-	createSuccessfulSignUp,
-	createSuccessfulUpdateProfile,
-	mockSupabaseUser,
-} from './authSetup';
+import { mockSupabaseUser } from './authSetup';
 
 describe('Auth', () => {
 	let mockAuthProvider: AuthProviderInterface;
@@ -24,7 +11,6 @@ describe('Auth', () => {
 	beforeEach(() => {
 		vi.spyOn(console, 'error').mockImplementation(() => {});
 
-		// Create mock provider
 		mockAuthProvider = {
 			signUp: vi.fn(),
 			signIn: vi.fn(),
@@ -38,7 +24,6 @@ describe('Auth', () => {
 			cleanupOrphanedSessions: vi.fn(),
 		};
 
-		// Create auth instance with mock provider
 		auth = new Auth(mockAuthProvider);
 	});
 

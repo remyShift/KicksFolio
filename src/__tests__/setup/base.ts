@@ -37,6 +37,11 @@ jest.mock('expo-font', () => ({
 	loadedNativeFonts: [],
 }));
 
+jest.mock('rn-gesture-swipeable-flatlist', () => ({
+	__esModule: true,
+	default: 'SwipeableFlatList',
+}));
+
 jest.mock('expo-router', () => ({
 	Link: ({ children }: { children: React.ReactNode }) => children,
 	useLocalSearchParams: jest.fn().mockReturnValue({ newUser: 'true' }),
