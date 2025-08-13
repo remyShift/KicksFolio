@@ -5,23 +5,23 @@ import SwipeableFlatList from 'rn-gesture-swipeable-flatlist';
 import { useLocalSneakerData } from '@/hooks/useLocalSneakerData';
 import { Sneaker } from '@/types/sneaker';
 
-import LocalListControls from './LocalListControls';
-import SneakerListItem from './SneakerListItem';
-import SwipeActions from './SwipeActions';
+import SneakerListItem from '../profile/displayState/list/SneakerListItem';
+import WishlistListControls from './WishlistListControls';
+import WishlistSwipeActions from './WishlistSwipeActions';
 
-interface SneakersListViewProps {
+interface WishlistSneakersListViewProps {
 	sneakers: Sneaker[];
 	onSneakerPress: (sneaker: Sneaker) => void;
 	scrollEnabled?: boolean;
 	showOwnerInfo?: boolean;
 }
 
-export default function SneakersListView({
+export default function WishlistSneakersListView({
 	sneakers,
 	onSneakerPress,
 	scrollEnabled = true,
 	showOwnerInfo = false,
-}: SneakersListViewProps) {
+}: WishlistSneakersListViewProps) {
 	const { filteredAndSortedSneakers } = useLocalSneakerData(sneakers);
 
 	const renderSneakerItem = useCallback(
@@ -36,11 +36,11 @@ export default function SneakersListView({
 	);
 
 	const renderRightActions = useCallback((item: Sneaker) => {
-		return <SwipeActions sneaker={item} />;
+		return <WishlistSwipeActions sneaker={item} />;
 	}, []);
 
 	const renderListHeader = useCallback(
-		() => <LocalListControls sneakers={sneakers} />,
+		() => <WishlistListControls sneakers={sneakers} />,
 		[sneakers]
 	);
 

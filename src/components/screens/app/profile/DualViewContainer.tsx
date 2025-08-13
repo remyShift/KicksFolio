@@ -1,5 +1,3 @@
-import { useMemo } from 'react';
-
 import { View } from 'react-native';
 
 import { useModalStore } from '@/store/useModalStore';
@@ -32,23 +30,6 @@ export default function DualViewContainer({
 	const { viewDisplayState } = useViewDisplayStateStore();
 	const { setCurrentSneaker, setModalStep, setIsVisible } = useModalStore();
 
-	const sneakersByBrand = useMemo(() => {
-		if (!userSneakers || userSneakers.length === 0) return {};
-
-		return userSneakers.reduce(
-			(acc, sneaker) => {
-				const normalizedBrand = sneaker.brand.toLowerCase().trim();
-
-				if (!acc[normalizedBrand]) {
-					acc[normalizedBrand] = [];
-				}
-				acc[normalizedBrand].push(sneaker);
-				return acc;
-			},
-			{} as Record<string, Sneaker[]>
-		);
-	}, [userSneakers]);
-
 	const isCardView = viewDisplayState === ViewDisplayState.Card;
 
 	const handleSneakerPress = (sneaker: Sneaker) => {
@@ -61,7 +42,6 @@ export default function DualViewContainer({
 		<View className="flex-1">
 			{isCardView ? (
 				<CardDisplay
-					sneakersByBrand={sneakersByBrand}
 					handleSneakerPress={handleSneakerPress}
 					refreshing={refreshing}
 					onRefresh={onRefresh}

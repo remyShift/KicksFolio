@@ -1,5 +1,6 @@
 import { RefreshControl, ScrollView } from 'react-native';
 
+import { useSession } from '@/contexts/authContext';
 import { useModalStore } from '@/store/useModalStore';
 import { Sneaker } from '@/types/sneaker';
 import { SearchUser, User } from '@/types/user';
@@ -13,6 +14,7 @@ interface ProfileDisplayContainerProps {
 	userSneakers: Sneaker[];
 	refreshing: boolean;
 	onRefresh: () => Promise<void>;
+	onSneakerPress: (sneaker: Sneaker) => void;
 	showBackButton?: boolean;
 }
 
@@ -24,15 +26,20 @@ export default function ProfileDisplayContainer(
 		userSneakers,
 		refreshing,
 		onRefresh,
+		onSneakerPress,
 		showBackButton = false,
 	} = props;
 
 	const { setModalStep, setIsVisible } = useModalStore();
+	const { user: currentUser } = useSession();
 
 	const handleAddSneaker = () => {
 		setModalStep('index');
 		setIsVisible(true);
 	};
+
+	// Vérifier si l'utilisateur actuel est le propriétaire du profil
+	const isOwner = currentUser?.id === user.id;
 
 	if (!userSneakers || userSneakers.length === 0) {
 		return (
@@ -49,14 +56,10 @@ export default function ProfileDisplayContainer(
 					/>
 				}
 			>
-				<ProfileHeader
-					user={user}
-					userSneakers={[]}
-					showBackButton={showBackButton}
-				/>
+				<ProfileHeader user={user} showBackButton={showBackButton} />
 				<EmptySneakersState
 					onAddPress={handleAddSneaker}
-					showAddButton={true}
+					showAddButton={isOwner}
 				/>
 			</ScrollView>
 		);

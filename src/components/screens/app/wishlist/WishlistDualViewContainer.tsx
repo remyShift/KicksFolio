@@ -2,13 +2,14 @@ import { useMemo } from 'react';
 
 import { View } from 'react-native';
 
-import SneakersCardByBrand from '@/components/screens/app/profile/displayState/card/SneakersCardByBrand';
-import SneakersListView from '@/components/screens/app/profile/displayState/list/SneakersListView';
+import LocalSneakersCardByBrand from '@/components/screens/app/profile/displayState/card/LocalSneakersCardByBrand';
 import {
 	useViewDisplayStateStore,
 	ViewDisplayState,
 } from '@/store/useViewDisplayStateStore';
 import { Sneaker } from '@/types/sneaker';
+
+import WishlistSneakersListView from './WishlistSneakersListView';
 
 interface WishlistDualViewContainerProps {
 	wishlistSneakers: Sneaker[];
@@ -21,23 +22,6 @@ export default function WishlistDualViewContainer({
 }: WishlistDualViewContainerProps) {
 	const { viewDisplayState } = useViewDisplayStateStore();
 
-	const sneakersByBrand = useMemo(() => {
-		if (!wishlistSneakers || wishlistSneakers.length === 0) return {};
-
-		return wishlistSneakers.reduce(
-			(acc, sneaker) => {
-				const normalizedBrand = sneaker.brand.toLowerCase().trim();
-
-				if (!acc[normalizedBrand]) {
-					acc[normalizedBrand] = [];
-				}
-				acc[normalizedBrand].push(sneaker);
-				return acc;
-			},
-			{} as Record<string, Sneaker[]>
-		);
-	}, [wishlistSneakers]);
-
 	const isCardView = viewDisplayState === ViewDisplayState.Card;
 
 	return (
@@ -49,8 +33,8 @@ export default function WishlistDualViewContainer({
 					flex: 1,
 				}}
 			>
-				<SneakersCardByBrand
-					sneakersByBrand={sneakersByBrand}
+				<LocalSneakersCardByBrand
+					sneakers={wishlistSneakers}
 					onSneakerPress={onSneakerPress}
 					showOwnerInfo={true}
 				/>
@@ -62,7 +46,7 @@ export default function WishlistDualViewContainer({
 					flex: 1,
 				}}
 			>
-				<SneakersListView
+				<WishlistSneakersListView
 					sneakers={wishlistSneakers}
 					onSneakerPress={onSneakerPress}
 					scrollEnabled={false}

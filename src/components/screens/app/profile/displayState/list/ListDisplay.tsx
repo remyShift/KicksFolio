@@ -43,11 +43,7 @@ export default function ListDisplay(props: ListDisplayProps) {
 				/>
 			}
 		>
-			<ProfileHeader
-				user={user}
-				userSneakers={userSneakers}
-				showBackButton={showBackButton}
-			/>
+			<ProfileHeader user={user} showBackButton={showBackButton} />
 			<SneakersListView
 				sneakers={userSneakers}
 				onSneakerPress={handleSneakerPress}

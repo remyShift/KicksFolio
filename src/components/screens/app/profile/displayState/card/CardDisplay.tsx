@@ -4,10 +4,9 @@ import { Sneaker } from '@/types/sneaker';
 import { SearchUser, User } from '@/types/user';
 
 import ProfileHeader from '../../ProfileHeader';
-import SneakersCardByBrand from './SneakersCardByBrand';
+import LocalSneakersCardByBrand from './LocalSneakersCardByBrand';
 
 interface CardDisplayProps {
-	sneakersByBrand: Record<string, Sneaker[]>;
 	handleSneakerPress: (sneaker: Sneaker) => void;
 	refreshing: boolean;
 	onRefresh: () => Promise<void>;
@@ -23,7 +22,6 @@ export default function CardDisplay(props: CardDisplayProps) {
 	}
 
 	const {
-		sneakersByBrand,
 		handleSneakerPress,
 		refreshing,
 		onRefresh,
@@ -45,13 +43,9 @@ export default function CardDisplay(props: CardDisplayProps) {
 				/>
 			}
 		>
-			<ProfileHeader
-				user={user}
-				userSneakers={userSneakers}
-				showBackButton={showBackButton}
-			/>
-			<SneakersCardByBrand
-				sneakersByBrand={sneakersByBrand}
+			<ProfileHeader user={user} showBackButton={showBackButton} />
+			<LocalSneakersCardByBrand
+				sneakers={userSneakers}
 				onSneakerPress={handleSneakerPress}
 			/>
 		</ScrollView>
