@@ -15,7 +15,6 @@ import FilterSection from './filter/FilterSection';
 import SortButtons from './filter/SortButtons';
 
 interface ListControlsProps {
-	sneakers: Sneaker[];
 	uniqueValues: UniqueValues;
 	sortBy: SortOption;
 	sortOrder: SortOrder;
@@ -25,10 +24,10 @@ interface ListControlsProps {
 	onToggleFilters: () => void;
 	onUpdateFilter: (filterType: keyof FilterState, values: string[]) => void;
 	onClearFilters: () => void;
+	filteredAndSortedSneakers: Sneaker[];
 }
 
 export default function ListControls({
-	sneakers,
 	uniqueValues,
 	sortBy,
 	sortOrder,
@@ -38,6 +37,7 @@ export default function ListControls({
 	onToggleFilters,
 	onUpdateFilter,
 	onClearFilters,
+	filteredAndSortedSneakers,
 }: ListControlsProps) {
 	const { t } = useTranslation();
 
@@ -45,8 +45,8 @@ export default function ListControls({
 		<View className="py-2 bg-background border-b border-gray-200 mb-2">
 			<View className="flex-row justify-between items-center mb-3 px-4">
 				<Text className="text-lg font-semibold">
-					{sneakers.length} sneaker
-					{sneakers.length > 1 ? 's' : ''}
+					{filteredAndSortedSneakers.length} sneaker
+					{filteredAndSortedSneakers.length > 1 ? 's' : ''}
 				</Text>
 				<TouchableOpacity
 					className="flex-row items-center"

@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { View } from 'react-native';
 
-import LocalSneakersCardByBrand from '@/components/screens/app/profile/displayState/card/LocalSneakersCardByBrand';
+import LocalSneakersCardByBrand from '@/components/screens/app/profile/displayState/card/SneakersCardByBrand';
 import {
 	useViewDisplayStateStore,
 	ViewDisplayState,

@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import { Sneaker } from '@/types/sneaker';
 import { SearchUser, User } from '@/types/user';
 
-import LocalSneakersCardByBrand from './LocalSneakersCardByBrand';
+import LocalSneakersCardByBrand from './SneakersCardByBrand';
 
 interface CardDisplayProps {
 	handleSneakerPress: (sneaker: Sneaker) => void;

@@ -4,7 +4,7 @@ import { sneakerFilteringProvider } from '@/d/SneakerFiltering';
 import { SneakerFilterInterface } from '@/domain/SneakerFilterInterface';
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';
 import { FilterState, SortOption, SortOrder } from '@/types/filter';
-import { SizeUnit, Sneaker } from '@/types/sneaker';
+import { Sneaker } from '@/types/sneaker';
 
 interface UseLocalSneakerDataReturn {
 	filteredAndSortedSneakers: Sneaker[];
@@ -29,7 +29,6 @@ export function useLocalSneakerData(
 ): UseLocalSneakerDataReturn {
 	const { currentUnit } = useSizeUnitStore();
 
-	// État local pour chaque instance du hook
 	const [sortBy, setSortBy] = useState<SortOption>('name');
 	const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
 	const [showFilters, setShowFilters] = useState(false);
@@ -37,9 +36,9 @@ export function useLocalSneakerData(
 		brands: [],
 		sizes: [],
 		conditions: [],
+		statuses: [],
 	});
 
-	// Calcul des données filtrées et triées
 	const filteredAndSortedSneakers = useMemo(() => {
 		const filteredSneakers = SneakerFilterInterface.filterSneakers(
 			sneakers,
@@ -57,7 +56,6 @@ export function useLocalSneakerData(
 		);
 	}, [sneakers, filters, sortBy, sortOrder, currentUnit]);
 
-	// Calcul des valeurs uniques
 	const uniqueValues = useMemo(() => {
 		return SneakerFilterInterface.getUniqueValues(
 			sneakers,
@@ -66,7 +64,6 @@ export function useLocalSneakerData(
 		);
 	}, [sneakers, currentUnit]);
 
-	// Actions
 	const toggleSort = useCallback(
 		(option: SortOption) => {
 			setSortBy(option);
@@ -96,6 +93,7 @@ export function useLocalSneakerData(
 			brands: [],
 			sizes: [],
 			conditions: [],
+			statuses: [],
 		});
 	}, []);
 

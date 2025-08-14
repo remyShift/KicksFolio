@@ -48,6 +48,7 @@ export default function SneakersListView({
 		() => (
 			<ListControls
 				sneakers={sneakers}
+				filteredAndSortedSneakers={filteredAndSortedSneakers}
 				uniqueValues={uniqueValues}
 				sortBy={sortBy}
 				sortOrder={sortOrder}

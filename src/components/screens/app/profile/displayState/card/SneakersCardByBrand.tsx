@@ -1,7 +1,10 @@
+import { useMemo } from 'react';
+
 import { ScrollView, View } from 'react-native';
 
 import SneakerCard from '@/components/ui/cards/SneakerCard';
 import BrandTitle from '@/components/ui/text/BrandTitle';
+import { useLocalSneakerData } from '@/hooks/useLocalSneakerData';
 import { useModalStore } from '@/store/useModalStore';
 import { Sneaker } from '@/types/sneaker';
 
@@ -18,17 +21,39 @@ const brandLogos: Record<string, any> = {
 };
 
 interface SneakersCardByBrandProps {
-	sneakersByBrand: Record<string, Sneaker[]>;
+	sneakers: Sneaker[];
 	onSneakerPress: (sneaker: Sneaker) => void;
 	showOwnerInfo?: boolean;
 }
 
 export default function SneakersCardByBrand({
-	sneakersByBrand,
+	sneakers,
 	onSneakerPress,
 	showOwnerInfo = false,
 }: SneakersCardByBrandProps) {
 	const { setModalStep } = useModalStore();
+	const { filteredAndSortedSneakers } = useLocalSneakerData(sneakers);
+
+	const sneakersByBrand = useMemo(() => {
+		if (
+			!filteredAndSortedSneakers ||
+			filteredAndSortedSneakers.length === 0
+		)
+			return {};
+
+		return filteredAndSortedSneakers.reduce(
+			(acc, sneaker) => {
+				const normalizedBrand = sneaker.brand.toLowerCase().trim();
+
+				if (!acc[normalizedBrand]) {
+					acc[normalizedBrand] = [];
+				}
+				acc[normalizedBrand].push(sneaker);
+				return acc;
+			},
+			{} as Record<string, Sneaker[]>
+		);
+	}, [filteredAndSortedSneakers]);
 
 	return (
 		<View className="flex-1 gap-4 pb-4">
