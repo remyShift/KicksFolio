@@ -6,6 +6,7 @@ import { Text, View } from 'react-native';
 import OptimizedSneakerImage from '@/components/ui/images/OptimizedSneakerImage';
 import SizeDisplay from '@/components/ui/text/SizeDisplay';
 import { useSession } from '@/contexts/authContext';
+import { useCurrencyStore } from '@/store/useCurrencyStore';
 import { Sneaker } from '@/types/sneaker';
 
 interface SneakerListItemProps {
@@ -19,7 +20,7 @@ function SneakerListItem({
 }: SneakerListItemProps) {
 	const { user } = useSession();
 	const { t } = useTranslation();
-
+	const { convertAndFormatdPrice } = useCurrencyStore();
 	const isOwner = sneaker.owner?.id === user?.id;
 
 	return (
@@ -45,14 +46,22 @@ function SneakerListItem({
 					>
 						{sneaker.model}
 					</Text>
-					<View className="flex-row items-center gap-2 mt-1">
+					<View className="flex-row items-center gap-1 mt-1">
 						<Text className="text-sm text-gray-600">
-							{sneaker.brand}
+							{sneaker.brand} -
 						</Text>
 						<SizeDisplay
 							sneaker={sneaker}
 							className="text-sm text-gray-500"
 						/>
+						{sneaker.estimated_value && (
+							<Text className="text-sm text-gray-500">
+								-{' '}
+								{convertAndFormatdPrice(
+									sneaker.estimated_value
+								)}
+							</Text>
+						)}
 					</View>
 					<Text className="text-sm text-gray-500">
 						Condition:{' '}

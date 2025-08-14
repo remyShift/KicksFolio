@@ -1,5 +1,7 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 
+import { View } from 'react-native';
+
 import SwipeableFlatList from 'rn-gesture-swipeable-flatlist';
 
 import { useSneakerFiltering } from '@/hooks/useSneakerFiltering';
@@ -105,7 +107,8 @@ export default function SneakersListView({
 			renderRightActions={renderRightActions}
 			keyExtractor={keyExtractor}
 			ListHeaderComponent={ListHeaderComponent}
-			contentContainerStyle={{ paddingTop: 0 }}
+			contentContainerStyle={{ paddingTop: 0, paddingBottom: 10 }}
+			ItemSeparatorComponent={() => <View className="h-1" />}
 			showsVerticalScrollIndicator={false}
 			scrollEnabled={false}
 			nestedScrollEnabled={false}

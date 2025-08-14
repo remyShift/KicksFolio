@@ -37,7 +37,7 @@ export default function SneakersModalWrapper() {
 		translateY.value = withTiming(
 			MODAL_HEIGHT,
 			{
-				duration: 180,
+				duration: 150,
 			},
 			(finished) => {
 				if (finished) {
