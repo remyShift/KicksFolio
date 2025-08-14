@@ -99,7 +99,6 @@ export const useModalStore = create<ModalStore>((set) => ({
 	setClearFormErrors: (fn) => set({ clearFormErrors: fn }),
 	resetModalData: () => {
 		set({
-			isVisible: false,
 			currentSneaker: null,
 			modalStep: 'index',
 			sneakerToAdd: null,
