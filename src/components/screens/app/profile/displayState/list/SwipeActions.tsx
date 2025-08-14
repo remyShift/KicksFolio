@@ -20,7 +20,7 @@ export default function SwipeActions({ sneaker, closeRow }: SwipeActionsProps) {
 	const { t } = useTranslation();
 	const { showInfoToast, showSuccessToast, showErrorToast } = useToast();
 
-	const isOwner = !!user;
+	const isOwner = !!user && user.id === sneaker.user_id;
 	const { setCurrentSneaker, setModalStep, setIsVisible } = useModalStore();
 
 	const handleDelete = async () => {
