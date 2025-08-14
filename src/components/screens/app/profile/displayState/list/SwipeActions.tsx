@@ -11,9 +11,10 @@ import { Sneaker } from '@/types/sneaker';
 
 interface SwipeActionsProps {
 	sneaker: Sneaker;
+	closeRow: () => void;
 }
 
-export default function SwipeActions({ sneaker }: SwipeActionsProps) {
+export default function SwipeActions({ sneaker, closeRow }: SwipeActionsProps) {
 	const { user } = useSession();
 	const { handleSneakerDelete } = useSneakerAPI();
 	const { t } = useTranslation();
@@ -72,6 +73,7 @@ export default function SwipeActions({ sneaker }: SwipeActionsProps) {
 		setCurrentSneaker(sneaker);
 		setModalStep('view');
 		setIsVisible(true);
+		closeRow();
 	};
 
 	return (

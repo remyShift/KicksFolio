@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
 import SwipeableFlatList from 'rn-gesture-swipeable-flatlist';
 
@@ -20,6 +20,9 @@ export default function SneakersListView({
 	scrollEnabled = true,
 	showOwnerInfo = false,
 }: SneakersListViewProps) {
+	const swipeableRef = useRef<any>(null);
+	const [listKey, setListKey] = useState(0);
+
 	const {
 		filteredAndSortedSneakers,
 		uniqueValues,
@@ -41,13 +44,19 @@ export default function SneakersListView({
 	);
 
 	const renderRightActions = useCallback((item: Sneaker) => {
-		return <SwipeActions sneaker={item} />;
+		return (
+			<SwipeActions
+				sneaker={item}
+				closeRow={() => {
+					setListKey((prev) => prev + 1);
+				}}
+			/>
+		);
 	}, []);
 
 	const renderListHeader = useCallback(
 		() => (
 			<ListControls
-				sneakers={sneakers}
 				filteredAndSortedSneakers={filteredAndSortedSneakers}
 				uniqueValues={uniqueValues}
 				sortBy={sortBy}
@@ -76,6 +85,8 @@ export default function SneakersListView({
 
 	return (
 		<SwipeableFlatList
+			key={listKey}
+			ref={swipeableRef}
 			data={filteredAndSortedSneakers}
 			renderItem={renderSneakerItem}
 			renderRightActions={renderRightActions}
