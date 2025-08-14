@@ -18,6 +18,7 @@ export default function UserProfileScreen() {
 
 	const { userProfile, isLoading, refreshUserProfile } =
 		useUserProfile(userId);
+
 	if (isLoading) {
 		return (
 			<View className="flex-1 bg-background pt-32 items-center justify-center">
@@ -38,12 +39,6 @@ export default function UserProfileScreen() {
 		);
 	}
 
-	const handleSneakerPress = (sneaker: Sneaker) => {
-		setCurrentSneaker(sneaker);
-		setModalStep('view');
-		setIsVisible(true);
-	};
-
 	const onRefresh = async () => {
 		setRefreshing(true);
 		if (userProfile) {
@@ -60,7 +55,6 @@ export default function UserProfileScreen() {
 			userSneakers={sneakers || []}
 			refreshing={refreshing}
 			onRefresh={onRefresh}
-			onSneakerPress={handleSneakerPress}
 			showBackButton={true}
 		/>
 	);

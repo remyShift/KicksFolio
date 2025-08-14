@@ -1,18 +1,14 @@
-import { RefreshControl, ScrollView } from 'react-native';
+import { View } from 'react-native';
 
 import { Sneaker } from '@/types/sneaker';
 import { SearchUser, User } from '@/types/user';
 
-import ProfileHeader from '../../ProfileHeader';
 import SneakersListView from './SneakersListView';
 
 interface ListDisplayProps {
 	userSneakers: Sneaker[];
 	handleSneakerPress: (sneaker: Sneaker) => void;
-	refreshing: boolean;
-	onRefresh: () => Promise<void>;
 	user: User | SearchUser;
-	showBackButton?: boolean;
 }
 
 export default function ListDisplay(props: ListDisplayProps) {
@@ -21,34 +17,14 @@ export default function ListDisplay(props: ListDisplayProps) {
 		return null;
 	}
 
-	const {
-		userSneakers,
-		handleSneakerPress,
-		refreshing,
-		onRefresh,
-		user,
-		showBackButton,
-	} = props;
+	const { userSneakers, handleSneakerPress, user } = props;
 	return (
-		<ScrollView
-			className="flex-1 mt-16"
-			testID="scroll-view"
-			refreshControl={
-				<RefreshControl
-					refreshing={refreshing}
-					onRefresh={onRefresh}
-					tintColor="#FF6B6B"
-					progressViewOffset={60}
-					testID="refresh-control"
-				/>
-			}
-		>
-			<ProfileHeader user={user} showBackButton={showBackButton} />
+		<View className="flex-1">
 			<SneakersListView
 				sneakers={userSneakers}
 				onSneakerPress={handleSneakerPress}
 				scrollEnabled={false}
 			/>
-		</ScrollView>
+		</View>
 	);
 }

@@ -14,7 +14,6 @@ interface ProfileDisplayContainerProps {
 	userSneakers: Sneaker[];
 	refreshing: boolean;
 	onRefresh: () => Promise<void>;
-	onSneakerPress: (sneaker: Sneaker) => void;
 	showBackButton?: boolean;
 }
 
@@ -26,7 +25,6 @@ export default function ProfileDisplayContainer(
 		userSneakers,
 		refreshing,
 		onRefresh,
-		onSneakerPress,
 		showBackButton = false,
 	} = props;
 
@@ -38,7 +36,6 @@ export default function ProfileDisplayContainer(
 		setIsVisible(true);
 	};
 
-	// Vérifier si l'utilisateur actuel est le propriétaire du profil
 	const isOwner = currentUser?.id === user.id;
 
 	if (!userSneakers || userSneakers.length === 0) {
@@ -66,12 +63,21 @@ export default function ProfileDisplayContainer(
 	}
 
 	return (
-		<DualViewContainer
-			user={user}
-			userSneakers={userSneakers}
-			refreshing={refreshing}
-			onRefresh={onRefresh}
-			showBackButton={showBackButton}
-		/>
+		<ScrollView
+			className="flex-1 mt-16"
+			testID="scroll-view"
+			refreshControl={
+				<RefreshControl
+					refreshing={refreshing}
+					onRefresh={onRefresh}
+					tintColor="#FF6B6B"
+					progressViewOffset={60}
+					testID="refresh-control"
+				/>
+			}
+		>
+			<ProfileHeader user={user} showBackButton={showBackButton} />
+			<DualViewContainer user={user} userSneakers={userSneakers} />
+		</ScrollView>
 	);
 }

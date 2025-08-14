@@ -15,17 +15,11 @@ import ListDisplay from './displayState/list/ListDisplay';
 interface DualViewContainerProps {
 	user: User | SearchUser;
 	userSneakers: Sneaker[];
-	refreshing: boolean;
-	onRefresh: () => Promise<void>;
-	showBackButton?: boolean;
 }
 
 export default function DualViewContainer({
 	user,
 	userSneakers,
-	refreshing,
-	onRefresh,
-	showBackButton = false,
 }: DualViewContainerProps) {
 	const { viewDisplayState } = useViewDisplayStateStore();
 	const { setCurrentSneaker, setModalStep, setIsVisible } = useModalStore();
@@ -43,20 +37,14 @@ export default function DualViewContainer({
 			{isCardView ? (
 				<CardDisplay
 					handleSneakerPress={handleSneakerPress}
-					refreshing={refreshing}
-					onRefresh={onRefresh}
 					user={user}
 					userSneakers={userSneakers}
-					showBackButton={showBackButton}
 				/>
 			) : (
 				<ListDisplay
 					userSneakers={userSneakers}
 					handleSneakerPress={handleSneakerPress}
-					refreshing={refreshing}
-					onRefresh={onRefresh}
 					user={user}
-					showBackButton={showBackButton}
 				/>
 			)}
 		</View>
