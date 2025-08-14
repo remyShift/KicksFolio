@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { Text, View } from 'react-native';
@@ -6,18 +6,22 @@ import { Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 
 import ProfileDisplayContainer from '@/components/screens/app/profile/ProfileDisplayContainer';
+import { useModalNavigation } from '@/hooks/useModalNavigation';
 import { useUserProfile } from '@/hooks/useUserProfile';
-import { useModalStore } from '@/store/useModalStore';
-import { Sneaker } from '@/types/sneaker';
 
 export default function UserProfileScreen() {
 	const { userId } = useLocalSearchParams<{ userId: string }>();
 	const { t } = useTranslation();
-	const { setModalStep, setIsVisible, setCurrentSneaker } = useModalStore();
 	const [refreshing, setRefreshing] = useState(false);
 
 	const { userProfile, isLoading, refreshUserProfile } =
 		useUserProfile(userId);
+
+	const contextSneakers = useMemo(() => {
+		return userProfile?.sneakers || [];
+	}, [userProfile?.sneakers]);
+
+	useModalNavigation({ contextSneakers });
 
 	if (isLoading) {
 		return (

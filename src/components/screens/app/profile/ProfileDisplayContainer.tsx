@@ -14,6 +14,7 @@ interface ProfileDisplayContainerProps {
 	userSneakers: Sneaker[];
 	refreshing: boolean;
 	onRefresh: () => Promise<void>;
+	onSneakerPress?: (sneaker: Sneaker) => void;
 	showBackButton?: boolean;
 }
 
@@ -25,6 +26,7 @@ export default function ProfileDisplayContainer(
 		userSneakers,
 		refreshing,
 		onRefresh,
+		onSneakerPress,
 		showBackButton = false,
 	} = props;
 
@@ -77,7 +79,11 @@ export default function ProfileDisplayContainer(
 			}
 		>
 			<ProfileHeader user={user} showBackButton={showBackButton} />
-			<DualViewContainer user={user} userSneakers={userSneakers} />
+			<DualViewContainer
+				user={user}
+				userSneakers={userSneakers}
+				onSneakerPress={onSneakerPress}
+			/>
 		</ScrollView>
 	);
 }

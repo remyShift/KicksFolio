@@ -2,12 +2,12 @@ import { useState } from 'react';
 
 import ProfileDisplayContainer from '@/components/screens/app/profile/ProfileDisplayContainer';
 import { useSession } from '@/contexts/authContext';
-import { useModalStore } from '@/store/useModalStore';
+import { useModalContext } from '@/hooks/useModalContext';
 import { Sneaker } from '@/types/sneaker';
 
 export default function Profile() {
 	const { user, userSneakers, refreshUserData } = useSession();
-	const { setModalStep, setIsVisible, setCurrentSneaker } = useModalStore();
+	const { openSneakerModal } = useModalContext();
 	const [refreshing, setRefreshing] = useState(false);
 
 	const onRefresh = async () => {
@@ -19,9 +19,7 @@ export default function Profile() {
 	};
 
 	const handleSneakerPress = (sneaker: Sneaker) => {
-		setCurrentSneaker(sneaker);
-		setModalStep('view');
-		setIsVisible(true);
+		openSneakerModal(sneaker);
 	};
 
 	if (!user) {

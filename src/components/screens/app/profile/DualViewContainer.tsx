@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 
 import { View } from 'react-native';
 
-import { useModalStore } from '@/store/useModalStore';
+import { useModalContext } from '@/hooks/useModalContext';
 import {
 	useViewDisplayStateStore,
 	ViewDisplayState,
@@ -17,24 +17,31 @@ import ListDisplay from './displayState/list/ListDisplay';
 interface DualViewContainerProps {
 	user: User | SearchUser;
 	userSneakers: Sneaker[];
+	onSneakerPress?: (sneaker: Sneaker) => void;
 }
 
 export default function DualViewContainer({
 	user,
 	userSneakers,
+	onSneakerPress,
 }: DualViewContainerProps) {
 	const { viewDisplayState } = useViewDisplayStateStore();
-	const { setCurrentSneaker, setModalStep, setIsVisible } = useModalStore();
+	const { openSneakerModal } = useModalContext({
+		contextSneakers: userSneakers,
+	});
 
 	const isCardView = viewDisplayState === ViewDisplayState.Card;
 
 	const handleSneakerPress = useCallback(
 		(sneaker: Sneaker) => {
-			setCurrentSneaker(sneaker);
-			setModalStep('view');
-			setIsVisible(true);
+			// Utiliser onSneakerPress si fourni, sinon utiliser openSneakerModal
+			if (onSneakerPress) {
+				onSneakerPress(sneaker);
+			} else {
+				openSneakerModal(sneaker);
+			}
 		},
-		[setCurrentSneaker, setModalStep, setIsVisible]
+		[onSneakerPress, openSneakerModal]
 	);
 
 	return (
@@ -49,7 +56,10 @@ export default function DualViewContainer({
 				</View>
 			) : (
 				<View className="flex-1">
-					<ListDisplay userSneakers={userSneakers} />
+					<ListDisplay
+						userSneakers={userSneakers}
+						contextUserSneakers={userSneakers}
+					/>
 				</View>
 			)}
 		</View>

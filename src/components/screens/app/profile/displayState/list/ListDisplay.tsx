@@ -6,6 +6,7 @@ import SneakersListView from './SneakersListView';
 
 interface ListDisplayProps {
 	userSneakers: Sneaker[];
+	contextUserSneakers?: Sneaker[];
 }
 
 export default function ListDisplay(props: ListDisplayProps) {
@@ -14,10 +15,13 @@ export default function ListDisplay(props: ListDisplayProps) {
 		return null;
 	}
 
-	const { userSneakers } = props;
+	const { userSneakers, contextUserSneakers } = props;
 	return (
 		<View className="flex-1">
-			<SneakersListView sneakers={userSneakers} />
+			<SneakersListView
+				sneakers={userSneakers}
+				userSneakers={contextUserSneakers}
+			/>
 		</View>
 	);
 }

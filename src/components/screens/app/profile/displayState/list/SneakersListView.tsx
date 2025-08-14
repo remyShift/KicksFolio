@@ -14,11 +14,13 @@ import SwipeActions from './SwipeActions';
 interface SneakersListViewProps {
 	sneakers: Sneaker[];
 	showOwnerInfo?: boolean;
+	userSneakers?: Sneaker[];
 }
 
 export default function SneakersListView({
 	sneakers,
 	showOwnerInfo = false,
+	userSneakers,
 }: SneakersListViewProps) {
 	const [listKey, setListKey] = useState(0);
 	const swipeableRef = useRef<any>(null);
@@ -60,10 +62,11 @@ export default function SneakersListView({
 					key={`actions-${item.id}`}
 					sneaker={item}
 					closeRow={closeRow}
+					userSneakers={userSneakers}
 				/>
 			);
 		},
-		[closeRow]
+		[closeRow, userSneakers]
 	);
 
 	const ListHeaderComponent = useMemo(() => {

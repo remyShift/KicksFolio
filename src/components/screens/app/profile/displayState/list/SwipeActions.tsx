@@ -6,22 +6,29 @@ import { Ionicons } from '@expo/vector-icons';
 import { useSneakerAPI } from '@/components/ui/modals/SneakersModal/hooks/useSneakerAPI';
 import { useSession } from '@/contexts/authContext';
 import useToast from '@/hooks/ui/useToast';
-import { useModalStore } from '@/store/useModalStore';
+import { useModalContext } from '@/hooks/useModalContext';
 import { Sneaker } from '@/types/sneaker';
 
 interface SwipeActionsProps {
 	sneaker: Sneaker;
 	closeRow: () => void;
+	userSneakers?: Sneaker[];
 }
 
-export default function SwipeActions({ sneaker, closeRow }: SwipeActionsProps) {
+export default function SwipeActions({
+	sneaker,
+	closeRow,
+	userSneakers,
+}: SwipeActionsProps) {
 	const { user } = useSession();
 	const { handleSneakerDelete } = useSneakerAPI();
 	const { t } = useTranslation();
 	const { showInfoToast, showSuccessToast, showErrorToast } = useToast();
+	const { openSneakerModal } = useModalContext({
+		contextSneakers: userSneakers,
+	});
 
 	const isOwner = !!user && user.id === sneaker.user_id;
-	const { setCurrentSneaker, setModalStep, setIsVisible } = useModalStore();
 
 	const handleDelete = async () => {
 		if (!isOwner || !sneaker.id) return;
@@ -70,9 +77,7 @@ export default function SwipeActions({ sneaker, closeRow }: SwipeActionsProps) {
 	};
 
 	const handleSneakerPress = (sneaker: Sneaker) => {
-		setCurrentSneaker(sneaker);
-		setModalStep('view');
-		setIsVisible(true);
+		openSneakerModal(sneaker);
 		closeRow();
 	};
 
