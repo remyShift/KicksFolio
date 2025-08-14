@@ -5,8 +5,8 @@ import BackButton from '@/components/ui/buttons/BackButton';
 import DeleteButton from '@/components/ui/buttons/DeleteButton';
 import EditButton from '@/components/ui/buttons/EditButton';
 import NextButton from '@/components/ui/buttons/NextButton';
+import { useModalNavigation } from '@/components/ui/modals/SneakersModal/hooks/useModalNavigation';
 import { useSession } from '@/contexts/authContext';
-import { useModalNavigation } from '@/hooks/useModalNavigation';
 import { useModalStore } from '@/store/useModalStore';
 
 import { useModalFooterActions } from '../hooks/useModalFooterActions';

@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 
 import { View } from 'react-native';
 
-import { useModalContext } from '@/hooks/useModalContext';
+import { useModalContext } from '@/components/ui/modals/SneakersModal/hooks/useModalContext';
 import {
 	useViewDisplayStateStore,
 	ViewDisplayState,

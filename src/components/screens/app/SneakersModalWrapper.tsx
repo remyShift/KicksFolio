@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 
 import { Dimensions, Modal, Pressable, View } from 'react-native';
 import {
@@ -23,6 +23,21 @@ import { useModalStore } from '@/store/useModalStore';
 const { height: screenHeight } = Dimensions.get('window');
 const MODAL_HEIGHT = screenHeight * 0.8;
 
+// Configuration des animations optimisées
+const ANIMATION_CONFIG = {
+	open: {
+		duration: 300,
+	},
+	close: {
+		duration: 200,
+	},
+	spring: {
+		damping: 20,
+		stiffness: 300,
+		mass: 0.8,
+	},
+};
+
 export default function SneakersModalWrapper() {
 	const { isVisible } = useModalStore();
 	const translateY = useSharedValue(MODAL_HEIGHT);
@@ -31,50 +46,46 @@ export default function SneakersModalWrapper() {
 	const closeModalActions = useCallback(() => {
 		setIsVisible(false);
 		resetModalData();
-	}, []);
+	}, [setIsVisible, resetModalData]);
 
 	const handleCloseModal = useCallback(() => {
 		translateY.value = withTiming(
 			MODAL_HEIGHT,
-			{
-				duration: 150,
-			},
+			ANIMATION_CONFIG.close,
 			(finished) => {
 				if (finished) {
 					runOnJS(closeModalActions)();
 				}
 			}
 		);
-	}, [translateY]);
+	}, [translateY, closeModalActions]);
 
-	const panGesture = Gesture.Pan()
-		.onUpdate((event) => {
-			translateY.value = Math.max(0, event.translationY);
-		})
-		.onEnd((event) => {
-			const shouldClose =
-				event.translationY > MODAL_HEIGHT * 0.3 ||
-				event.velocityY > 1000;
+	// Optimisation du gesture avec des seuils plus précis
+	const panGesture = useMemo(() => {
+		return Gesture.Pan()
+			.onUpdate((event) => {
+				translateY.value = Math.max(0, event.translationY);
+			})
+			.onEnd((event) => {
+				const shouldClose =
+					event.translationY > MODAL_HEIGHT * 0.25 ||
+					event.velocityY > 800;
 
-			if (shouldClose) {
-				translateY.value = withTiming(
-					MODAL_HEIGHT,
-					{
-						duration: 180,
-					},
-					(finished) => {
-						if (finished) {
-							runOnJS(closeModalActions)();
+				if (shouldClose) {
+					translateY.value = withTiming(
+						MODAL_HEIGHT,
+						ANIMATION_CONFIG.close,
+						(finished) => {
+							if (finished) {
+								runOnJS(closeModalActions)();
+							}
 						}
-					}
-				);
-			} else {
-				translateY.value = withSpring(0, {
-					damping: 25,
-					stiffness: 400,
-				});
-			}
-		});
+					);
+				} else {
+					translateY.value = withSpring(0, ANIMATION_CONFIG.spring);
+				}
+			});
+	}, [translateY, closeModalActions]);
 
 	const modalStyle = useAnimatedStyle(() => {
 		return {
@@ -101,11 +112,9 @@ export default function SneakersModalWrapper() {
 
 	useEffect(() => {
 		if (isVisible) {
-			translateY.value = withTiming(0, {
-				duration: 400,
-			});
+			translateY.value = withTiming(0, ANIMATION_CONFIG.open);
 		}
-	}, [isVisible]);
+	}, [isVisible, translateY]);
 
 	return (
 		<Modal
@@ -113,6 +122,7 @@ export default function SneakersModalWrapper() {
 			transparent={true}
 			visible={isVisible}
 			onRequestClose={handleCloseModal}
+			statusBarTranslucent={true}
 		>
 			<GestureHandlerRootView className="flex-1">
 				<Animated.View className="flex-1 bg-black" style={overlayStyle}>

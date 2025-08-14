@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { Text, View } from 'react-native';
@@ -21,7 +21,36 @@ function SneakerListItem({
 	const { user } = useSession();
 	const { t } = useTranslation();
 	const { convertAndFormatdPrice } = useCurrencyStore();
-	const isOwner = sneaker.owner?.id === user?.id;
+
+	const isOwner = useMemo(() => {
+		return sneaker.owner?.id === user?.id;
+	}, [sneaker.owner?.id, user?.id]);
+
+	const formattedPrice = useMemo(() => {
+		if (!sneaker.estimated_value) return null;
+		return convertAndFormatdPrice(sneaker.estimated_value);
+	}, [sneaker.estimated_value, convertAndFormatdPrice]);
+
+	const ownerInfo = useMemo(() => {
+		if (!sneaker.owner || !showOwnerInfo) return null;
+
+		return (
+			<View className="flex-row items-center gap-1">
+				<Text className="text-sm text-gray-500">
+					{t('collection.cards.ownedBy')}
+				</Text>
+				<Text className="text-sm text-primary">
+					{isOwner
+						? t('collection.cards.me')
+						: `@${sneaker.owner.username}`}
+				</Text>
+			</View>
+		);
+	}, [sneaker.owner, showOwnerInfo, isOwner, t]);
+
+	const conditionText = useMemo(() => {
+		return sneaker.condition ? `${sneaker.condition}/10` : 'N/A';
+	}, [sneaker.condition]);
 
 	return (
 		<View className="bg-white py-2 px-4 border border-gray-100">
@@ -54,31 +83,16 @@ function SneakerListItem({
 							sneaker={sneaker}
 							className="text-sm text-gray-500"
 						/>
-						{sneaker.estimated_value && (
+						{formattedPrice && (
 							<Text className="text-sm text-gray-500">
-								-{' '}
-								{convertAndFormatdPrice(
-									sneaker.estimated_value
-								)}
+								- {formattedPrice}
 							</Text>
 						)}
 					</View>
 					<Text className="text-sm text-gray-500">
-						Condition:{' '}
-						{sneaker.condition ? `${sneaker.condition}/10` : 'N/A'}
+						Condition: {conditionText}
 					</Text>
-					{sneaker.owner && showOwnerInfo && (
-						<View className="flex-row items-center gap-1">
-							<Text className="text-sm text-gray-500">
-								{t('collection.cards.ownedBy')}
-							</Text>
-							<Text className="text-sm text-primary">
-								{isOwner
-									? t('collection.cards.me')
-									: `@${sneaker.owner.username}`}
-							</Text>
-						</View>
-					)}
+					{ownerInfo}
 				</View>
 			</View>
 		</View>
@@ -86,13 +100,24 @@ function SneakerListItem({
 }
 
 export default memo(SneakerListItem, (prevProps, nextProps) => {
-	return (
-		prevProps.sneaker.id === nextProps.sneaker.id &&
-		prevProps.sneaker.model === nextProps.sneaker.model &&
-		prevProps.sneaker.brand === nextProps.sneaker.brand &&
-		prevProps.sneaker.condition === nextProps.sneaker.condition &&
-		prevProps.sneaker.images?.[0]?.uri ===
-			nextProps.sneaker.images?.[0]?.uri &&
-		prevProps.showOwnerInfo === nextProps.showOwnerInfo
-	);
+	// Optimisation de la comparaison pour éviter les re-rendus inutiles
+	if (prevProps.sneaker.id !== nextProps.sneaker.id) return false;
+	if (prevProps.sneaker.model !== nextProps.sneaker.model) return false;
+	if (prevProps.sneaker.brand !== nextProps.sneaker.brand) return false;
+	if (prevProps.sneaker.condition !== nextProps.sneaker.condition)
+		return false;
+	if (prevProps.sneaker.estimated_value !== nextProps.sneaker.estimated_value)
+		return false;
+	if (
+		prevProps.sneaker.images?.[0]?.uri !==
+		nextProps.sneaker.images?.[0]?.uri
+	)
+		return false;
+	if (prevProps.sneaker.owner?.id !== nextProps.sneaker.owner?.id)
+		return false;
+	if (prevProps.sneaker.owner?.username !== nextProps.sneaker.owner?.username)
+		return false;
+	if (prevProps.showOwnerInfo !== nextProps.showOwnerInfo) return false;
+
+	return true;
 });

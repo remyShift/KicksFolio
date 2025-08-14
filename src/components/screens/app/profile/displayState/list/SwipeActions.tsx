@@ -1,12 +1,14 @@
+import { useMemo } from 'react';
+
 import { useTranslation } from 'react-i18next';
 import { Alert, TouchableOpacity, View } from 'react-native';
 
 import { Ionicons } from '@expo/vector-icons';
 
+import { useModalContext } from '@/components/ui/modals/SneakersModal/hooks/useModalContext';
 import { useSneakerAPI } from '@/components/ui/modals/SneakersModal/hooks/useSneakerAPI';
 import { useSession } from '@/contexts/authContext';
 import useToast from '@/hooks/ui/useToast';
-import { useModalContext } from '@/hooks/useModalContext';
 import { Sneaker } from '@/types/sneaker';
 
 interface SwipeActionsProps {
@@ -28,7 +30,9 @@ export default function SwipeActions({
 		contextSneakers: userSneakers,
 	});
 
-	const isOwner = !!user && user.id === sneaker.user_id;
+	const isOwner = useMemo(() => {
+		return !!user && user.id === sneaker.user_id;
+	}, [user, sneaker.user_id]);
 
 	const handleDelete = async () => {
 		if (!isOwner || !sneaker.id) return;
@@ -81,18 +85,23 @@ export default function SwipeActions({
 		closeRow();
 	};
 
-	return (
-		<View className="flex-row justify-end items-center">
-			{isOwner && (
-				<TouchableOpacity
-					className="bg-red-500 justify-center items-center px-6 h-full"
-					onPress={handleDelete}
-					style={{ width: 80 }}
-				>
-					<Ionicons name="trash-outline" size={24} color="white" />
-				</TouchableOpacity>
-			)}
+	// Mémoriser les composants pour éviter les re-rendus
+	const deleteButton = useMemo(() => {
+		if (!isOwner) return null;
 
+		return (
+			<TouchableOpacity
+				className="bg-red-500 justify-center items-center px-6 h-full"
+				onPress={handleDelete}
+				style={{ width: 80 }}
+			>
+				<Ionicons name="trash-outline" size={24} color="white" />
+			</TouchableOpacity>
+		);
+	}, [isOwner, handleDelete]);
+
+	const viewButton = useMemo(() => {
+		return (
 			<TouchableOpacity
 				className="bg-blue-500 justify-center items-center px-6 h-full"
 				onPress={() => handleSneakerPress(sneaker)}
@@ -100,6 +109,13 @@ export default function SwipeActions({
 			>
 				<Ionicons name="eye-outline" size={24} color="white" />
 			</TouchableOpacity>
+		);
+	}, [sneaker, handleSneakerPress]);
+
+	return (
+		<View className="flex-row justify-end items-center">
+			{deleteButton}
+			{viewButton}
 		</View>
 	);
 }

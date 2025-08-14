@@ -55,18 +55,23 @@ function OptimizedSneakerImage({
 			priority={priority}
 			placeholder={require('@/assets/images/placeholder-sneaker.png')}
 			placeholderContentFit="cover"
-			transition={200}
+			transition={100}
+			// Optimisations pour les performances
+			recyclingKey={imageUri}
+			allowDownscaling={true}
+			enableLiveTextInteraction={false}
 		/>
 	);
 }
 
 export default memo(OptimizedSneakerImage, (prevProps, nextProps) => {
-	return (
-		prevProps.imageUri === nextProps.imageUri &&
-		prevProps.width === nextProps.width &&
-		prevProps.height === nextProps.height &&
-		prevProps.borderRadius === nextProps.borderRadius &&
-		prevProps.contentFit === nextProps.contentFit &&
-		prevProps.priority === nextProps.priority
-	);
+	// Optimisation de la comparaison pour éviter les re-rendus inutiles
+	if (prevProps.imageUri !== nextProps.imageUri) return false;
+	if (prevProps.width !== nextProps.width) return false;
+	if (prevProps.height !== nextProps.height) return false;
+	if (prevProps.borderRadius !== nextProps.borderRadius) return false;
+	if (prevProps.contentFit !== nextProps.contentFit) return false;
+	if (prevProps.priority !== nextProps.priority) return false;
+
+	return true;
 });

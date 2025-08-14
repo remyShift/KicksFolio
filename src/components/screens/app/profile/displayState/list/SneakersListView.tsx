@@ -5,6 +5,7 @@ import { View } from 'react-native';
 import SwipeableFlatList from 'rn-gesture-swipeable-flatlist';
 
 import { useSneakerFiltering } from '@/hooks/useSneakerFiltering';
+import { useSwipeOptimization } from '@/hooks/useSwipeOptimization';
 import { Sneaker } from '@/types/sneaker';
 
 import ListControls from './ListControls';
@@ -24,6 +25,7 @@ export default function SneakersListView({
 }: SneakersListViewProps) {
 	const [listKey, setListKey] = useState(0);
 	const swipeableRef = useRef<any>(null);
+	const { closeRow, clearOpenRow } = useSwipeOptimization();
 
 	const {
 		filteredAndSortedSneakers,
@@ -38,22 +40,23 @@ export default function SneakersListView({
 		clearFilters,
 	} = useSneakerFiltering({ sneakers });
 
-	const closeRow = useCallback(() => {
-		setListKey((prev) => {
-			const newKey = prev + 1;
-			return newKey;
-		});
-	}, []);
+	const handleCloseRow = useCallback(() => {
+		closeRow();
+		setListKey((prev) => prev + 1);
+	}, [closeRow]);
 
-	const renderSneakerItem = useCallback(({ item }: { item: Sneaker }) => {
-		return (
-			<SneakerListItem
-				key={item.id}
-				sneaker={item}
-				showOwnerInfo={showOwnerInfo}
-			/>
-		);
-	}, []);
+	const renderSneakerItem = useCallback(
+		({ item }: { item: Sneaker }) => {
+			return (
+				<SneakerListItem
+					key={item.id}
+					sneaker={item}
+					showOwnerInfo={showOwnerInfo}
+				/>
+			);
+		},
+		[showOwnerInfo]
+	);
 
 	const renderRightActions = useCallback(
 		(item: Sneaker) => {
@@ -61,12 +64,12 @@ export default function SneakersListView({
 				<SwipeActions
 					key={`actions-${item.id}`}
 					sneaker={item}
-					closeRow={closeRow}
+					closeRow={handleCloseRow}
 					userSneakers={userSneakers}
 				/>
 			);
 		},
-		[closeRow, userSneakers]
+		[handleCloseRow, userSneakers]
 	);
 
 	const ListHeaderComponent = useMemo(() => {
@@ -101,6 +104,20 @@ export default function SneakersListView({
 		return item.id;
 	}, []);
 
+	const ItemSeparatorComponent = useCallback(() => {
+		return <View className="h-1" />;
+	}, []);
+
+	// Optimisations pour les grandes listes
+	const getItemLayout = useCallback((data: any, index: number) => {
+		const itemHeight = 100; // Hauteur approximative de chaque item
+		return {
+			length: itemHeight,
+			offset: itemHeight * index,
+			index,
+		};
+	}, []);
+
 	return (
 		<SwipeableFlatList
 			key={listKey}
@@ -110,19 +127,24 @@ export default function SneakersListView({
 			renderRightActions={renderRightActions}
 			keyExtractor={keyExtractor}
 			ListHeaderComponent={ListHeaderComponent}
+			ItemSeparatorComponent={ItemSeparatorComponent}
+			getItemLayout={getItemLayout}
 			contentContainerStyle={{ paddingTop: 0, paddingBottom: 10 }}
-			ItemSeparatorComponent={() => <View className="h-1" />}
 			showsVerticalScrollIndicator={false}
 			scrollEnabled={false}
 			nestedScrollEnabled={false}
 			keyboardShouldPersistTaps="handled"
 			removeClippedSubviews={true}
 			enableOpenMultipleRows={false}
-			maxToRenderPerBatch={10}
-			windowSize={10}
-			initialNumToRender={10}
-			updateCellsBatchingPeriod={50}
+			maxToRenderPerBatch={5}
+			windowSize={5}
+			initialNumToRender={5}
+			updateCellsBatchingPeriod={100}
 			onEndReachedThreshold={0.5}
+			// Optimisations supplémentaires pour les animations
+			disableVirtualization={false}
+			disableIntervalMomentum={true}
+			decelerationRate="fast"
 		/>
 	);
 }
