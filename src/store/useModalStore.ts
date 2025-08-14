@@ -78,9 +78,15 @@ export const useModalStore = create<ModalStore>((set) => ({
 	validateForm: null,
 	clearFormErrors: null,
 
-	setModalStep: (step) => set({ modalStep: step }),
-	setIsVisible: (isVisible) => set({ isVisible }),
-	setCurrentSneaker: (sneaker) => set({ currentSneaker: sneaker }),
+	setModalStep: (step) => {
+		set({ modalStep: step });
+	},
+	setIsVisible: (isVisible) => {
+		set({ isVisible });
+	},
+	setCurrentSneaker: (sneaker) => {
+		set({ currentSneaker: sneaker });
+	},
 	setSneakerToAdd: (sneaker) => set({ sneakerToAdd: sneaker }),
 	setFetchedSneaker: (sneaker) => set({ fetchedSneaker: sneaker }),
 	setSneakerSKU: (sku) => set({ sneakerSKU: sku }),
@@ -91,16 +97,19 @@ export const useModalStore = create<ModalStore>((set) => ({
 	setIsLoading: (isLoading) => set({ isLoading }),
 	setValidateForm: (fn) => set({ validateForm: fn }),
 	setClearFormErrors: (fn) => set({ clearFormErrors: fn }),
-	resetModalData: () =>
+	resetModalData: () => {
 		set({
+			isVisible: false,
+			currentSneaker: null,
+			modalStep: 'index',
 			sneakerToAdd: null,
 			fetchedSneaker: null,
-			currentSneaker: null,
 			errorMsg: '',
 			sneakerSKU: '',
 			estimatedValue: null,
 			gender: null,
 			sku: null,
 			isLoading: false,
-		}),
+		});
+	},
 }));

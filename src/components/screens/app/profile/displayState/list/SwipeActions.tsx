@@ -53,7 +53,7 @@ export default function SwipeActions({ sneaker, closeRow }: SwipeActionsProps) {
 									t('collection.messages.deleted.description')
 								);
 							})
-							.catch(() => {
+							.catch((error) => {
 								showErrorToast(
 									t(
 										'collection.messages.deletionFailed.title'

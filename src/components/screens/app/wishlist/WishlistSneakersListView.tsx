@@ -1,25 +1,23 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 
 import SwipeableFlatList from 'rn-gesture-swipeable-flatlist';
 
 import { useSneakerFiltering } from '@/hooks/useSneakerFiltering';
 import { Sneaker } from '@/types/sneaker';
 
-import LocalListControls from '../profile/displayState/list/ListControls';
+import ListControls from '../profile/displayState/list/ListControls';
 import SneakerListItem from '../profile/displayState/list/SneakerListItem';
 import WishlistSwipeActions from './WishlistSwipeActions';
 
 interface WishlistSneakersListViewProps {
 	sneakers: Sneaker[];
 	onSneakerPress: (sneaker: Sneaker) => void;
-	scrollEnabled?: boolean;
 	showOwnerInfo?: boolean;
 }
 
 export default function WishlistSneakersListView({
 	sneakers,
 	onSneakerPress,
-	scrollEnabled = true,
 	showOwnerInfo = false,
 }: WishlistSneakersListViewProps) {
 	const {
@@ -36,30 +34,21 @@ export default function WishlistSneakersListView({
 	} = useSneakerFiltering({ sneakers });
 
 	const renderSneakerItem = useCallback(
-		({ item }: { item: Sneaker }) => (
-			<SneakerListItem
-				key={item.id}
-				sneaker={item}
-				showOwnerInfo={showOwnerInfo}
-			/>
-		),
-		[showOwnerInfo]
+		({ item }: { item: Sneaker }) => {
+			return (
+				<SneakerListItem sneaker={item} showOwnerInfo={showOwnerInfo} />
+			);
+		},
+		[onSneakerPress, showOwnerInfo]
 	);
 
 	const renderRightActions = useCallback((item: Sneaker) => {
-		return (
-			<WishlistSwipeActions
-				key={`wishlist-actions-${item.id}`}
-				sneaker={item}
-			/>
-		);
+		return <WishlistSwipeActions sneaker={item} />;
 	}, []);
 
-	// Mémoriser le ListHeaderComponent
-	const ListHeaderComponent = useMemo(
-		() => (
-			<LocalListControls
-				filteredAndSortedSneakers={filteredAndSortedSneakers}
+	const renderListHeader = useCallback(() => {
+		return (
+			<ListControls
 				uniqueValues={uniqueValues}
 				sortBy={sortBy}
 				sortOrder={sortOrder}
@@ -69,35 +58,32 @@ export default function WishlistSneakersListView({
 				onToggleFilters={toggleFilters}
 				onUpdateFilter={updateFilter}
 				onClearFilters={clearFilters}
+				filteredAndSortedSneakers={filteredAndSortedSneakers}
 			/>
-		),
-		[
-			filteredAndSortedSneakers,
-			uniqueValues,
-			sortBy,
-			sortOrder,
-			showFilters,
-			filters,
-			toggleSort,
-			toggleFilters,
-			updateFilter,
-			clearFilters,
-		]
-	);
-
-	const keyExtractor = useCallback((item: Sneaker) => item.id, []);
+		);
+	}, [
+		uniqueValues,
+		sortBy,
+		sortOrder,
+		showFilters,
+		filters,
+		toggleSort,
+		toggleFilters,
+		updateFilter,
+		clearFilters,
+	]);
 
 	return (
 		<SwipeableFlatList
 			data={filteredAndSortedSneakers}
 			renderItem={renderSneakerItem}
 			renderRightActions={renderRightActions}
-			keyExtractor={keyExtractor}
-			ListHeaderComponent={ListHeaderComponent}
+			keyExtractor={(item) => item.id}
+			ListHeaderComponent={renderListHeader}
 			contentContainerStyle={{ paddingTop: 0 }}
 			showsVerticalScrollIndicator={false}
-			scrollEnabled={scrollEnabled}
-			nestedScrollEnabled={!scrollEnabled}
+			scrollEnabled={false}
+			nestedScrollEnabled={false}
 			keyboardShouldPersistTaps="handled"
 			removeClippedSubviews={true}
 			enableOpenMultipleRows={false}

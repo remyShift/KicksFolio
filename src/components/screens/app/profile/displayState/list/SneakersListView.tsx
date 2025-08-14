@@ -18,8 +18,8 @@ export default function SneakersListView({
 	sneakers,
 	showOwnerInfo = false,
 }: SneakersListViewProps) {
-	const swipeableRef = useRef<any>(null);
 	const [listKey, setListKey] = useState(0);
+	const swipeableRef = useRef<any>(null);
 
 	const {
 		filteredAndSortedSneakers,
@@ -34,31 +34,38 @@ export default function SneakersListView({
 		clearFilters,
 	} = useSneakerFiltering({ sneakers });
 
-	const renderSneakerItem = useCallback(
-		({ item }: { item: Sneaker }) => (
+	const closeRow = useCallback(() => {
+		setListKey((prev) => {
+			const newKey = prev + 1;
+			return newKey;
+		});
+	}, []);
+
+	const renderSneakerItem = useCallback(({ item }: { item: Sneaker }) => {
+		return (
 			<SneakerListItem
 				key={item.id}
 				sneaker={item}
 				showOwnerInfo={showOwnerInfo}
 			/>
-		),
-		[showOwnerInfo]
-	);
-
-	const renderRightActions = useCallback((item: Sneaker) => {
-		return (
-			<SwipeActions
-				key={`actions-${item.id}`}
-				sneaker={item}
-				closeRow={() => {
-					setListKey((prev) => prev + 1);
-				}}
-			/>
 		);
 	}, []);
 
-	const ListHeaderComponent = useMemo(
-		() => (
+	const renderRightActions = useCallback(
+		(item: Sneaker) => {
+			return (
+				<SwipeActions
+					key={`actions-${item.id}`}
+					sneaker={item}
+					closeRow={closeRow}
+				/>
+			);
+		},
+		[closeRow]
+	);
+
+	const ListHeaderComponent = useMemo(() => {
+		return (
 			<ListControls
 				filteredAndSortedSneakers={filteredAndSortedSneakers}
 				uniqueValues={uniqueValues}
@@ -71,22 +78,23 @@ export default function SneakersListView({
 				onUpdateFilter={updateFilter}
 				onClearFilters={clearFilters}
 			/>
-		),
-		[
-			filteredAndSortedSneakers,
-			uniqueValues,
-			sortBy,
-			sortOrder,
-			showFilters,
-			filters,
-			toggleSort,
-			toggleFilters,
-			updateFilter,
-			clearFilters,
-		]
-	);
+		);
+	}, [
+		filteredAndSortedSneakers,
+		uniqueValues,
+		sortBy,
+		sortOrder,
+		showFilters,
+		filters,
+		toggleSort,
+		toggleFilters,
+		updateFilter,
+		clearFilters,
+	]);
 
-	const keyExtractor = useCallback((item: Sneaker) => item.id, []);
+	const keyExtractor = useCallback((item: Sneaker) => {
+		return item.id;
+	}, []);
 
 	return (
 		<SwipeableFlatList

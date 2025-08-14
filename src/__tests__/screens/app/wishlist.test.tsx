@@ -50,7 +50,7 @@ describe('Wishlist', () => {
 			setModalStep: mockSetModalStep,
 			setIsVisible: mockSetIsVisible,
 			setCurrentSneaker: mockSetCurrentSneaker,
-			resetModal: jest.fn(),
+			resetModalData: jest.fn(),
 		});
 	});
 

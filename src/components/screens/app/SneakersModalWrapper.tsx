@@ -23,15 +23,15 @@ import { useModalStore } from '@/store/useModalStore';
 const { height: screenHeight } = Dimensions.get('window');
 const MODAL_HEIGHT = screenHeight * 0.8;
 
-const closeModalActions = () => {
-	const { setIsVisible, resetModalData } = useModalStore.getState();
-	setIsVisible(false);
-	resetModalData();
-};
-
 export default function SneakersModalWrapper() {
 	const { isVisible } = useModalStore();
 	const translateY = useSharedValue(MODAL_HEIGHT);
+	const { setIsVisible, resetModalData } = useModalStore();
+
+	const closeModalActions = useCallback(() => {
+		setIsVisible(false);
+		resetModalData();
+	}, []);
 
 	const handleCloseModal = useCallback(() => {
 		translateY.value = withTiming(

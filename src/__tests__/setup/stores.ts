@@ -45,7 +45,6 @@ jest.mock('@/store/useModalStore', () => ({
 		setEstimatedValue: jest.fn(),
 		setGender: jest.fn(),
 		setSku: jest.fn(),
-		resetModal: jest.fn(),
 	}),
 }));
 
