@@ -5,7 +5,7 @@ import SwipeableFlatList from 'rn-gesture-swipeable-flatlist';
 import { useLocalSneakerData } from '@/hooks/useLocalSneakerData';
 import { Sneaker } from '@/types/sneaker';
 
-import LocalListControls from './LocalListControls';
+import ListControls from './ListControls';
 import SneakerListItem from './SneakerListItem';
 import SwipeActions from './SwipeActions';
 
@@ -39,10 +39,7 @@ export default function SneakersListView({
 		return <SwipeActions sneaker={item} />;
 	}, []);
 
-	const renderListHeader = useCallback(
-		() => <LocalListControls sneakers={sneakers} />,
-		[sneakers]
-	);
+	const renderListHeader = useCallback(() => <ListControls />, []);
 
 	return (
 		<SwipeableFlatList
