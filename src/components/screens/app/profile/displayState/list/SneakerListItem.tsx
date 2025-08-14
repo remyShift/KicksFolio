@@ -1,9 +1,9 @@
+import { memo } from 'react';
+
 import { useTranslation } from 'react-i18next';
 import { Text, View } from 'react-native';
 
-import { Image } from 'expo-image';
-
-import EmptySneakerImage from '@/components/ui/placeholders/EmptySneakerImage';
+import OptimizedSneakerImage from '@/components/ui/images/OptimizedSneakerImage';
 import SizeDisplay from '@/components/ui/text/SizeDisplay';
 import { useSession } from '@/contexts/authContext';
 import { Sneaker } from '@/types/sneaker';
@@ -13,12 +13,13 @@ interface SneakerListItemProps {
 	showOwnerInfo?: boolean;
 }
 
-export default function SneakerListItem({
+function SneakerListItem({
 	sneaker,
 	showOwnerInfo = false,
 }: SneakerListItemProps) {
 	const { user } = useSession();
 	const { t } = useTranslation();
+
 	const isOwner = sneaker.owner?.id === user?.id;
 
 	return (
@@ -27,24 +28,14 @@ export default function SneakerListItem({
 				className="flex-row justify-between items-center gap-3"
 				pointerEvents="none"
 			>
-				{sneaker.images?.[0]?.uri ? (
-					<Image
-						source={{
-							uri: sneaker.images[0].uri,
-						}}
-						style={{
-							width: 80,
-							height: 80,
-							borderRadius: 8,
-							backgroundColor: 'transparent',
-						}}
-						contentFit="contain"
-						cachePolicy="memory-disk"
-						testID="sneaker-image"
-					/>
-				) : (
-					<EmptySneakerImage />
-				)}
+				<OptimizedSneakerImage
+					imageUri={sneaker.images?.[0]?.uri}
+					width={80}
+					height={80}
+					borderRadius={8}
+					contentFit="contain"
+					priority="low"
+				/>
 
 				<View className="flex-1">
 					<Text
@@ -52,11 +43,11 @@ export default function SneakerListItem({
 						numberOfLines={1}
 						ellipsizeMode="tail"
 					>
-						{String(sneaker.model || '')}
+						{sneaker.model}
 					</Text>
 					<View className="flex-row items-center gap-2 mt-1">
 						<Text className="text-sm text-gray-600">
-							{String(sneaker.brand || '')}
+							{sneaker.brand}
 						</Text>
 						<SizeDisplay
 							sneaker={sneaker}
@@ -84,3 +75,15 @@ export default function SneakerListItem({
 		</View>
 	);
 }
+
+export default memo(SneakerListItem, (prevProps, nextProps) => {
+	return (
+		prevProps.sneaker.id === nextProps.sneaker.id &&
+		prevProps.sneaker.model === nextProps.sneaker.model &&
+		prevProps.sneaker.brand === nextProps.sneaker.brand &&
+		prevProps.sneaker.condition === nextProps.sneaker.condition &&
+		prevProps.sneaker.images?.[0]?.uri ===
+			nextProps.sneaker.images?.[0]?.uri &&
+		prevProps.showOwnerInfo === nextProps.showOwnerInfo
+	);
+});

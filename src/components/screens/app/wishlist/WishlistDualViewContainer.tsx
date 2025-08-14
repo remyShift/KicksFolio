@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { View } from 'react-native';
 
-import LocalSneakersCardByBrand from '@/components/screens/app/profile/displayState/card/SneakersCardByBrand';
+import SneakersCardByBrand from '@/components/screens/app/profile/displayState/card/SneakersCardByBrand';
 import {
 	useViewDisplayStateStore,
 	ViewDisplayState,
@@ -24,6 +24,29 @@ export default function WishlistDualViewContainer({
 
 	const isCardView = viewDisplayState === ViewDisplayState.Card;
 
+	const cardView = useMemo(
+		() => (
+			<SneakersCardByBrand
+				sneakers={wishlistSneakers}
+				onSneakerPress={onSneakerPress}
+				showOwnerInfo={true}
+			/>
+		),
+		[wishlistSneakers, onSneakerPress]
+	);
+
+	const listView = useMemo(
+		() => (
+			<WishlistSneakersListView
+				sneakers={wishlistSneakers}
+				onSneakerPress={onSneakerPress}
+				scrollEnabled={false}
+				showOwnerInfo={true}
+			/>
+		),
+		[wishlistSneakers, onSneakerPress]
+	);
+
 	return (
 		<View className="flex-1 gap-8">
 			<View
@@ -33,11 +56,7 @@ export default function WishlistDualViewContainer({
 					flex: 1,
 				}}
 			>
-				<LocalSneakersCardByBrand
-					sneakers={wishlistSneakers}
-					onSneakerPress={onSneakerPress}
-					showOwnerInfo={true}
-				/>
+				{cardView}
 			</View>
 
 			<View
@@ -46,12 +65,7 @@ export default function WishlistDualViewContainer({
 					flex: 1,
 				}}
 			>
-				<WishlistSneakersListView
-					sneakers={wishlistSneakers}
-					onSneakerPress={onSneakerPress}
-					scrollEnabled={false}
-					showOwnerInfo={true}
-				/>
+				{listView}
 			</View>
 		</View>
 	);

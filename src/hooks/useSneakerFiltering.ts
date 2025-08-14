@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 
 import { sneakerFilteringProvider } from '@/d/SneakerFiltering';
 import { SneakerFilterInterface } from '@/domain/SneakerFilterInterface';
@@ -25,13 +25,46 @@ export function useSneakerFiltering({
 
 	const { currentUnit } = useSizeUnitStore();
 
-	const filteredAndSortedSneakers = useMemo(() => {
-		const filteredSneakers = SneakerFilterInterface.filterSneakers(
-			sneakers,
-			filters,
+	const prevSneakersRef = useRef<Sneaker[]>([]);
+	const prevFiltersRef = useRef<FilterState>(filters);
+	const prevSortRef = useRef<{ sortBy: SortOption; sortOrder: SortOrder }>({
+		sortBy,
+		sortOrder,
+	});
+
+	const filteredSneakers = useMemo(() => {
+		const sneakersChanged = prevSneakersRef.current !== sneakers;
+		const filtersChanged =
+			JSON.stringify(prevFiltersRef.current) !== JSON.stringify(filters);
+
+		if (sneakersChanged || filtersChanged) {
+			prevSneakersRef.current = sneakers;
+			prevFiltersRef.current = filters;
+
+			return SneakerFilterInterface.filterSneakers(
+				sneakers,
+				filters,
+				currentUnit,
+				sneakerFilteringProvider.filterSneakers
+			);
+		}
+
+		return SneakerFilterInterface.filterSneakers(
+			prevSneakersRef.current,
+			prevFiltersRef.current,
 			currentUnit,
 			sneakerFilteringProvider.filterSneakers
 		);
+	}, [sneakers, filters, currentUnit]);
+
+	const filteredAndSortedSneakers = useMemo(() => {
+		const sortChanged =
+			prevSortRef.current.sortBy !== sortBy ||
+			prevSortRef.current.sortOrder !== sortOrder;
+
+		if (sortChanged) {
+			prevSortRef.current = { sortBy, sortOrder };
+		}
 
 		return SneakerFilterInterface.sortSneakers(
 			filteredSneakers,
@@ -40,11 +73,21 @@ export function useSneakerFiltering({
 			currentUnit,
 			sneakerFilteringProvider.sortSneakers
 		);
-	}, [sneakers, filters, sortBy, sortOrder, currentUnit]);
+	}, [filteredSneakers, sortBy, sortOrder, currentUnit]);
 
 	const uniqueValues = useMemo(() => {
+		const sneakersChanged = prevSneakersRef.current !== sneakers;
+
+		if (sneakersChanged) {
+			return SneakerFilterInterface.getUniqueValues(
+				sneakers,
+				currentUnit,
+				sneakerFilteringProvider.getUniqueValues
+			);
+		}
+
 		return SneakerFilterInterface.getUniqueValues(
-			sneakers,
+			prevSneakersRef.current,
 			currentUnit,
 			sneakerFilteringProvider.getUniqueValues
 		);

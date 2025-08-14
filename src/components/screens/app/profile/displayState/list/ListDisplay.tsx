@@ -17,7 +17,7 @@ export default function ListDisplay(props: ListDisplayProps) {
 	const { userSneakers } = props;
 	return (
 		<View className="flex-1">
-			<SneakersListView sneakers={userSneakers} scrollEnabled={false} />
+			<SneakersListView sneakers={userSneakers} />
 		</View>
 	);
 }

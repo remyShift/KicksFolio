@@ -1,3 +1,5 @@
+import { useCallback, useMemo } from 'react';
+
 import { View } from 'react-native';
 
 import { useModalStore } from '@/store/useModalStore';
@@ -26,23 +28,49 @@ export default function DualViewContainer({
 
 	const isCardView = viewDisplayState === ViewDisplayState.Card;
 
-	const handleSneakerPress = (sneaker: Sneaker) => {
-		setCurrentSneaker(sneaker);
-		setModalStep('view');
-		setIsVisible(true);
-	};
+	const handleSneakerPress = useCallback(
+		(sneaker: Sneaker) => {
+			setCurrentSneaker(sneaker);
+			setModalStep('view');
+			setIsVisible(true);
+		},
+		[setCurrentSneaker, setModalStep, setIsVisible]
+	);
+
+	const cardDisplay = useMemo(
+		() => (
+			<CardDisplay
+				handleSneakerPress={handleSneakerPress}
+				user={user}
+				userSneakers={userSneakers}
+			/>
+		),
+		[handleSneakerPress, user, userSneakers]
+	);
+
+	const listDisplay = useMemo(
+		() => <ListDisplay userSneakers={userSneakers} />,
+		[userSneakers]
+	);
 
 	return (
 		<View className="flex-1">
-			{isCardView ? (
-				<CardDisplay
-					handleSneakerPress={handleSneakerPress}
-					user={user}
-					userSneakers={userSneakers}
-				/>
-			) : (
-				<ListDisplay userSneakers={userSneakers} />
-			)}
+			<View
+				style={{
+					display: isCardView ? 'flex' : 'none',
+					flex: 1,
+				}}
+			>
+				{cardDisplay}
+			</View>
+			<View
+				style={{
+					display: !isCardView ? 'flex' : 'none',
+					flex: 1,
+				}}
+			>
+				{listDisplay}
+			</View>
 		</View>
 	);
 }

@@ -1,9 +1,10 @@
 import { View } from 'react-native';
 
 import { Sneaker } from '@/types/sneaker';
-import { SearchUser, User } from '@/types/user';
+import { SearchUser } from '@/types/user';
+import { User } from '@/types/user';
 
-import LocalSneakersCardByBrand from './SneakersCardByBrand';
+import SneakersCardByBrand from './SneakersCardByBrand';
 
 interface CardDisplayProps {
 	handleSneakerPress: (sneaker: Sneaker) => void;
@@ -20,7 +21,7 @@ export default function CardDisplay(props: CardDisplayProps) {
 	const { handleSneakerPress, user, userSneakers } = props;
 	return (
 		<View className="flex-1">
-			<LocalSneakersCardByBrand
+			<SneakersCardByBrand
 				sneakers={userSneakers}
 				onSneakerPress={handleSneakerPress}
 			/>

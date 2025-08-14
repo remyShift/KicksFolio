@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import SwipeableFlatList from 'rn-gesture-swipeable-flatlist';
 
@@ -38,22 +38,28 @@ export default function WishlistSneakersListView({
 	const renderSneakerItem = useCallback(
 		({ item }: { item: Sneaker }) => (
 			<SneakerListItem
+				key={item.id}
 				sneaker={item}
-				onPress={onSneakerPress}
 				showOwnerInfo={showOwnerInfo}
 			/>
 		),
-		[onSneakerPress, showOwnerInfo]
+		[showOwnerInfo]
 	);
 
 	const renderRightActions = useCallback((item: Sneaker) => {
-		return <WishlistSwipeActions sneaker={item} />;
+		return (
+			<WishlistSwipeActions
+				key={`wishlist-actions-${item.id}`}
+				sneaker={item}
+			/>
+		);
 	}, []);
 
-	const renderListHeader = useCallback(
+	// Mémoriser le ListHeaderComponent
+	const ListHeaderComponent = useMemo(
 		() => (
 			<LocalListControls
-				sneakers={sneakers}
+				filteredAndSortedSneakers={filteredAndSortedSneakers}
 				uniqueValues={uniqueValues}
 				sortBy={sortBy}
 				sortOrder={sortOrder}
@@ -66,7 +72,7 @@ export default function WishlistSneakersListView({
 			/>
 		),
 		[
-			sneakers,
+			filteredAndSortedSneakers,
 			uniqueValues,
 			sortBy,
 			sortOrder,
@@ -79,20 +85,27 @@ export default function WishlistSneakersListView({
 		]
 	);
 
+	const keyExtractor = useCallback((item: Sneaker) => item.id, []);
+
 	return (
 		<SwipeableFlatList
 			data={filteredAndSortedSneakers}
 			renderItem={renderSneakerItem}
 			renderRightActions={renderRightActions}
-			keyExtractor={(item) => item.id}
-			ListHeaderComponent={renderListHeader}
+			keyExtractor={keyExtractor}
+			ListHeaderComponent={ListHeaderComponent}
 			contentContainerStyle={{ paddingTop: 0 }}
 			showsVerticalScrollIndicator={false}
 			scrollEnabled={scrollEnabled}
 			nestedScrollEnabled={!scrollEnabled}
 			keyboardShouldPersistTaps="handled"
-			removeClippedSubviews={false}
+			removeClippedSubviews={true}
 			enableOpenMultipleRows={false}
+			maxToRenderPerBatch={10}
+			windowSize={10}
+			initialNumToRender={10}
+			updateCellsBatchingPeriod={50}
+			onEndReachedThreshold={0.5}
 		/>
 	);
 }

@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 
 import SwipeableFlatList from 'rn-gesture-swipeable-flatlist';
 
@@ -11,13 +11,11 @@ import SwipeActions from './SwipeActions';
 
 interface SneakersListViewProps {
 	sneakers: Sneaker[];
-	scrollEnabled?: boolean;
 	showOwnerInfo?: boolean;
 }
 
 export default function SneakersListView({
 	sneakers,
-	scrollEnabled = true,
 	showOwnerInfo = false,
 }: SneakersListViewProps) {
 	const swipeableRef = useRef<any>(null);
@@ -38,7 +36,11 @@ export default function SneakersListView({
 
 	const renderSneakerItem = useCallback(
 		({ item }: { item: Sneaker }) => (
-			<SneakerListItem sneaker={item} showOwnerInfo={showOwnerInfo} />
+			<SneakerListItem
+				key={item.id}
+				sneaker={item}
+				showOwnerInfo={showOwnerInfo}
+			/>
 		),
 		[showOwnerInfo]
 	);
@@ -46,6 +48,7 @@ export default function SneakersListView({
 	const renderRightActions = useCallback((item: Sneaker) => {
 		return (
 			<SwipeActions
+				key={`actions-${item.id}`}
 				sneaker={item}
 				closeRow={() => {
 					setListKey((prev) => prev + 1);
@@ -54,7 +57,7 @@ export default function SneakersListView({
 		);
 	}, []);
 
-	const renderListHeader = useCallback(
+	const ListHeaderComponent = useMemo(
 		() => (
 			<ListControls
 				filteredAndSortedSneakers={filteredAndSortedSneakers}
@@ -70,7 +73,7 @@ export default function SneakersListView({
 			/>
 		),
 		[
-			sneakers,
+			filteredAndSortedSneakers,
 			uniqueValues,
 			sortBy,
 			sortOrder,
@@ -83,6 +86,8 @@ export default function SneakersListView({
 		]
 	);
 
+	const keyExtractor = useCallback((item: Sneaker) => item.id, []);
+
 	return (
 		<SwipeableFlatList
 			key={listKey}
@@ -90,15 +95,20 @@ export default function SneakersListView({
 			data={filteredAndSortedSneakers}
 			renderItem={renderSneakerItem}
 			renderRightActions={renderRightActions}
-			keyExtractor={(item) => item.id}
-			ListHeaderComponent={renderListHeader}
+			keyExtractor={keyExtractor}
+			ListHeaderComponent={ListHeaderComponent}
 			contentContainerStyle={{ paddingTop: 0 }}
 			showsVerticalScrollIndicator={false}
-			scrollEnabled={scrollEnabled}
-			nestedScrollEnabled={!scrollEnabled}
+			scrollEnabled={false}
+			nestedScrollEnabled={false}
 			keyboardShouldPersistTaps="handled"
-			removeClippedSubviews={false}
+			removeClippedSubviews={true}
 			enableOpenMultipleRows={false}
+			maxToRenderPerBatch={10}
+			windowSize={10}
+			initialNumToRender={10}
+			updateCellsBatchingPeriod={50}
+			onEndReachedThreshold={0.5}
 		/>
 	);
 }
