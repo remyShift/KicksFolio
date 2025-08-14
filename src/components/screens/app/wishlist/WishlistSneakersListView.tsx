@@ -2,11 +2,11 @@ import { useCallback } from 'react';
 
 import SwipeableFlatList from 'rn-gesture-swipeable-flatlist';
 
-import { useLocalSneakerData } from '@/hooks/useLocalSneakerData';
+import { useSneakerFiltering } from '@/hooks/useSneakerFiltering';
 import { Sneaker } from '@/types/sneaker';
 
+import LocalListControls from '../profile/displayState/list/ListControls';
 import SneakerListItem from '../profile/displayState/list/SneakerListItem';
-import WishlistListControls from './WishlistListControls';
 import WishlistSwipeActions from './WishlistSwipeActions';
 
 interface WishlistSneakersListViewProps {
@@ -22,7 +22,18 @@ export default function WishlistSneakersListView({
 	scrollEnabled = true,
 	showOwnerInfo = false,
 }: WishlistSneakersListViewProps) {
-	const { filteredAndSortedSneakers } = useLocalSneakerData(sneakers);
+	const {
+		filteredAndSortedSneakers,
+		uniqueValues,
+		sortBy,
+		sortOrder,
+		showFilters,
+		filters,
+		toggleSort,
+		toggleFilters,
+		updateFilter,
+		clearFilters,
+	} = useSneakerFiltering({ sneakers });
 
 	const renderSneakerItem = useCallback(
 		({ item }: { item: Sneaker }) => (
@@ -40,8 +51,32 @@ export default function WishlistSneakersListView({
 	}, []);
 
 	const renderListHeader = useCallback(
-		() => <WishlistListControls sneakers={sneakers} />,
-		[sneakers]
+		() => (
+			<LocalListControls
+				sneakers={sneakers}
+				uniqueValues={uniqueValues}
+				sortBy={sortBy}
+				sortOrder={sortOrder}
+				showFilters={showFilters}
+				filters={filters}
+				onToggleSort={toggleSort}
+				onToggleFilters={toggleFilters}
+				onUpdateFilter={updateFilter}
+				onClearFilters={clearFilters}
+			/>
+		),
+		[
+			sneakers,
+			uniqueValues,
+			sortBy,
+			sortOrder,
+			showFilters,
+			filters,
+			toggleSort,
+			toggleFilters,
+			updateFilter,
+			clearFilters,
+		]
 	);
 
 	return (

@@ -41,11 +41,7 @@ export default function DualViewContainer({
 					userSneakers={userSneakers}
 				/>
 			) : (
-				<ListDisplay
-					userSneakers={userSneakers}
-					handleSneakerPress={handleSneakerPress}
-					user={user}
-				/>
+				<ListDisplay userSneakers={userSneakers} />
 			)}
 		</View>
 	);

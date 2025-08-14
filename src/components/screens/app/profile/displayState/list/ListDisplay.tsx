@@ -1,14 +1,11 @@
 import { View } from 'react-native';
 
 import { Sneaker } from '@/types/sneaker';
-import { SearchUser, User } from '@/types/user';
 
-import SneakersListView from './SneakersListView';
+import LocalSneakersListView from './SneakersListView';
 
 interface ListDisplayProps {
 	userSneakers: Sneaker[];
-	handleSneakerPress: (sneaker: Sneaker) => void;
-	user: User | SearchUser;
 }
 
 export default function ListDisplay(props: ListDisplayProps) {
@@ -17,12 +14,11 @@ export default function ListDisplay(props: ListDisplayProps) {
 		return null;
 	}
 
-	const { userSneakers, handleSneakerPress, user } = props;
+	const { userSneakers } = props;
 	return (
 		<View className="flex-1">
-			<SneakersListView
+			<LocalSneakersListView
 				sneakers={userSneakers}
-				onSneakerPress={handleSneakerPress}
 				scrollEnabled={false}
 			/>
 		</View>

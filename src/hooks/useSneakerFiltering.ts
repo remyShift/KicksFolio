@@ -3,115 +3,95 @@ import { useCallback, useMemo, useState } from 'react';
 import { sneakerFilteringProvider } from '@/d/SneakerFiltering';
 import { SneakerFilterInterface } from '@/domain/SneakerFilterInterface';
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';
-import { UniqueValues } from '@/types/filter';
-import { Filter, SortOption } from '@/types/filter';
+import { FilterState, SortOption, SortOrder } from '@/types/filter';
 import { Sneaker } from '@/types/sneaker';
 
-export function useSneakerFiltering(sneakers: Sneaker[]) {
-	const [showFilters, setShowFilters] = useState(false);
+interface UseLocalSneakerFilteringProps {
+	sneakers: Sneaker[];
+}
+
+export function useSneakerFiltering({
+	sneakers,
+}: UseLocalSneakerFilteringProps) {
 	const [sortBy, setSortBy] = useState<SortOption>('name');
-	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
-	const [filters, setFilters] = useState<Filter>({});
+	const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
+	const [showFilters, setShowFilters] = useState(false);
+	const [filters, setFilters] = useState<FilterState>({
+		brands: [],
+		sizes: [],
+		conditions: [],
+		statuses: [],
+	});
+
 	const { currentUnit } = useSizeUnitStore();
 
-	const uniqueValues = useMemo((): UniqueValues => {
-		try {
-			return SneakerFilterInterface.getUniqueValues(
-				sneakers,
-				currentUnit,
-				sneakerFilteringProvider.getUniqueValues
-			);
-		} catch (error) {
-			console.error('❌ Error getting unique values:', error);
-			return {
-				brands: [],
-				sizes: [],
-				conditions: [],
-				statuses: [],
-			};
-		}
+	const filteredAndSortedSneakers = useMemo(() => {
+		const filteredSneakers = SneakerFilterInterface.filterSneakers(
+			sneakers,
+			filters,
+			currentUnit,
+			sneakerFilteringProvider.filterSneakers
+		);
+
+		return SneakerFilterInterface.sortSneakers(
+			filteredSneakers,
+			sortBy,
+			sortOrder,
+			currentUnit,
+			sneakerFilteringProvider.sortSneakers
+		);
+	}, [sneakers, filters, sortBy, sortOrder, currentUnit]);
+
+	const uniqueValues = useMemo(() => {
+		return SneakerFilterInterface.getUniqueValues(
+			sneakers,
+			currentUnit,
+			sneakerFilteringProvider.getUniqueValues
+		);
 	}, [sneakers, currentUnit]);
 
-	const filteredSneakers = useMemo(() => {
-		try {
-			const filterState = {
-				brands: filters.brand ? [filters.brand] : [],
-				sizes: filters.size ? [filters.size.toString()] : [],
-				conditions: filters.condition
-					? [filters.condition.toString()]
-					: [],
-				statuses: filters.status ? [filters.status] : [],
-			};
-
-			return SneakerFilterInterface.filterSneakers(
-				sneakers,
-				filterState,
-				currentUnit,
-				sneakerFilteringProvider.filterSneakers
+	const toggleSort = useCallback(
+		(option: SortOption) => {
+			setSortBy(option);
+			setSortOrder((prevOrder) =>
+				sortBy === option && prevOrder === 'asc' ? 'desc' : 'asc'
 			);
-		} catch (error) {
-			console.error('❌ Error filtering sneakers:', error);
-			return sneakers;
-		}
-	}, [sneakers, filters, currentUnit]);
-
-	const filteredAndSortedSneakers = useMemo(() => {
-		try {
-			return SneakerFilterInterface.sortSneakers(
-				filteredSneakers,
-				sortBy,
-				sortOrder,
-				currentUnit,
-				sneakerFilteringProvider.sortSneakers
-			);
-		} catch (error) {
-			console.error('❌ Error sorting sneakers:', error);
-			return filteredSneakers;
-		}
-	}, [filteredSneakers, sortBy, sortOrder, currentUnit]);
+		},
+		[sortBy]
+	);
 
 	const toggleFilters = useCallback(() => {
 		setShowFilters((prev) => !prev);
 	}, []);
 
-	const toggleSort = useCallback(
-		(option: SortOption) => {
-			if (sortBy === option) {
-				setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
-			} else {
-				setSortBy(option);
-				setSortOrder('asc');
-			}
+	const updateFilter = useCallback(
+		(filterType: keyof FilterState, values: string[]) => {
+			setFilters((prev) => ({
+				...prev,
+				[filterType]: values,
+			}));
 		},
-		[sortBy]
+		[]
 	);
 
-	const updateFilter = useCallback((key: keyof Filter, value: any) => {
-		setFilters((prev) => {
-			const newFilters = { ...prev };
-			if (value === undefined) {
-				delete newFilters[key];
-			} else {
-				newFilters[key] = value;
-			}
-			return newFilters;
+	const clearFilters = useCallback(() => {
+		setFilters({
+			brands: [],
+			sizes: [],
+			conditions: [],
+			statuses: [],
 		});
 	}, []);
 
-	const clearFilters = useCallback(() => {
-		setFilters({});
-	}, []);
-
 	return {
-		showFilters,
+		filteredAndSortedSneakers,
+		uniqueValues,
 		sortBy,
 		sortOrder,
+		showFilters,
 		filters,
-		uniqueValues,
-		filteredAndSortedSneakers,
-
-		toggleFilters,
 		toggleSort,
+		toggleFilters,
 		updateFilter,
 		clearFilters,
 	};

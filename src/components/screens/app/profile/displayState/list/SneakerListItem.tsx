@@ -10,13 +10,11 @@ import { Sneaker } from '@/types/sneaker';
 
 interface SneakerListItemProps {
 	sneaker: Sneaker;
-	onPress: (sneaker: Sneaker) => void;
 	showOwnerInfo?: boolean;
 }
 
 export default function SneakerListItem({
 	sneaker,
-	onPress,
 	showOwnerInfo = false,
 }: SneakerListItemProps) {
 	const { user } = useSession();
