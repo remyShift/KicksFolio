@@ -42,6 +42,10 @@ jest.mock('rn-gesture-swipeable-flatlist', () => ({
 	default: 'SwipeableFlatList',
 }));
 
+jest.mock('@shopify/flash-list', () => ({
+	__esModule: true,
+	FlashList: 'FlashList',
+}));
 jest.mock('expo-router', () => ({
 	Link: ({ children }: { children: React.ReactNode }) => children,
 	useLocalSearchParams: jest.fn().mockReturnValue({ newUser: 'true' }),

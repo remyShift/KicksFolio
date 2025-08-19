@@ -1,6 +1,9 @@
 import { useCallback } from 'react';
 
-import SwipeableFlatList from 'rn-gesture-swipeable-flatlist';
+import { View } from 'react-native';
+import { Swipeable } from 'react-native-gesture-handler';
+
+import { FlashList } from '@shopify/flash-list';
 
 import { useSneakerFiltering } from '@/hooks/useSneakerFiltering';
 import { Sneaker } from '@/types/sneaker';
@@ -36,15 +39,21 @@ export default function WishlistSneakersListView({
 	const renderSneakerItem = useCallback(
 		({ item }: { item: Sneaker }) => {
 			return (
-				<SneakerListItem sneaker={item} showOwnerInfo={showOwnerInfo} />
+				<Swipeable
+					renderRightActions={() => (
+						<WishlistSwipeActions sneaker={item} />
+					)}
+					overshootRight={false}
+				>
+					<SneakerListItem
+						sneaker={item}
+						showOwnerInfo={showOwnerInfo}
+					/>
+				</Swipeable>
 			);
 		},
-		[onSneakerPress, showOwnerInfo]
+		[showOwnerInfo]
 	);
-
-	const renderRightActions = useCallback((item: Sneaker) => {
-		return <WishlistSwipeActions sneaker={item} />;
-	}, []);
 
 	const renderListHeader = useCallback(() => {
 		return (
@@ -74,10 +83,9 @@ export default function WishlistSneakersListView({
 	]);
 
 	return (
-		<SwipeableFlatList
+		<FlashList
 			data={filteredAndSortedSneakers}
 			renderItem={renderSneakerItem}
-			renderRightActions={renderRightActions}
 			keyExtractor={(item) => item.id}
 			ListHeaderComponent={renderListHeader}
 			contentContainerStyle={{ paddingTop: 0 }}
@@ -85,13 +93,6 @@ export default function WishlistSneakersListView({
 			scrollEnabled={false}
 			nestedScrollEnabled={false}
 			keyboardShouldPersistTaps="handled"
-			removeClippedSubviews={true}
-			enableOpenMultipleRows={false}
-			maxToRenderPerBatch={10}
-			windowSize={10}
-			initialNumToRender={10}
-			updateCellsBatchingPeriod={50}
-			onEndReachedThreshold={0.5}
 		/>
 	);
 }

@@ -1,8 +1,8 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import { View } from 'react-native';
 
-import SwipeableFlatList from 'rn-gesture-swipeable-flatlist';
+import { FlashList } from '@shopify/flash-list';
 
 import { useSneakerFiltering } from '@/hooks/useSneakerFiltering';
 import { useSwipeOptimization } from '@/hooks/useSwipeOptimization';
@@ -24,7 +24,6 @@ export default function SneakersListView({
 	userSneakers,
 }: SneakersListViewProps) {
 	const [listKey, setListKey] = useState(0);
-	const swipeableRef = useRef<any>(null);
 	const { closeRow, clearOpenRow } = useSwipeOptimization();
 
 	const {
@@ -48,28 +47,23 @@ export default function SneakersListView({
 	const renderSneakerItem = useCallback(
 		({ item }: { item: Sneaker }) => {
 			return (
-				<SneakerListItem
-					key={item.id}
-					sneaker={item}
-					showOwnerInfo={showOwnerInfo}
-				/>
+				<View className="relative">
+					<SneakerListItem
+						key={item.id}
+						sneaker={item}
+						showOwnerInfo={showOwnerInfo}
+					/>
+					<View className="absolute right-0 top-0 bottom-0 flex-row">
+						<SwipeActions
+							sneaker={item}
+							closeRow={handleCloseRow}
+							userSneakers={userSneakers}
+						/>
+					</View>
+				</View>
 			);
 		},
-		[showOwnerInfo]
-	);
-
-	const renderRightActions = useCallback(
-		(item: Sneaker) => {
-			return (
-				<SwipeActions
-					key={`actions-${item.id}`}
-					sneaker={item}
-					closeRow={handleCloseRow}
-					userSneakers={userSneakers}
-				/>
-			);
-		},
-		[handleCloseRow, userSneakers]
+		[handleCloseRow, showOwnerInfo, userSneakers]
 	);
 
 	const ListHeaderComponent = useMemo(() => {
@@ -108,41 +102,21 @@ export default function SneakersListView({
 		return <View className="h-1" />;
 	}, []);
 
-	const getItemLayout = useCallback((data: any, index: number) => {
-		const itemHeight = 100;
-		return {
-			length: itemHeight,
-			offset: itemHeight * index,
-			index,
-		};
-	}, []);
+	// FlashList v2 does not require item size estimates
 
 	return (
-		<SwipeableFlatList
+		<FlashList
 			key={listKey}
-			ref={swipeableRef}
 			data={filteredAndSortedSneakers}
 			renderItem={renderSneakerItem}
-			renderRightActions={renderRightActions}
 			keyExtractor={keyExtractor}
 			ListHeaderComponent={ListHeaderComponent}
 			ItemSeparatorComponent={ItemSeparatorComponent}
-			getItemLayout={getItemLayout}
 			contentContainerStyle={{ paddingTop: 0, paddingBottom: 10 }}
 			showsVerticalScrollIndicator={false}
 			scrollEnabled={false}
 			nestedScrollEnabled={false}
 			keyboardShouldPersistTaps="handled"
-			removeClippedSubviews={true}
-			enableOpenMultipleRows={false}
-			maxToRenderPerBatch={5}
-			windowSize={5}
-			initialNumToRender={5}
-			updateCellsBatchingPeriod={100}
-			onEndReachedThreshold={0.5}
-			disableVirtualization={false}
-			disableIntervalMomentum={true}
-			decelerationRate="fast"
 		/>
 	);
 }
