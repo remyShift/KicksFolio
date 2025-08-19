@@ -108,9 +108,8 @@ export default function SneakersListView({
 		return <View className="h-1" />;
 	}, []);
 
-	// Optimisations pour les grandes listes
 	const getItemLayout = useCallback((data: any, index: number) => {
-		const itemHeight = 100; // Hauteur approximative de chaque item
+		const itemHeight = 100;
 		return {
 			length: itemHeight,
 			offset: itemHeight * index,
@@ -141,7 +140,6 @@ export default function SneakersListView({
 			initialNumToRender={5}
 			updateCellsBatchingPeriod={100}
 			onEndReachedThreshold={0.5}
-			// Optimisations supplémentaires pour les animations
 			disableVirtualization={false}
 			disableIntervalMomentum={true}
 			decelerationRate="fast"

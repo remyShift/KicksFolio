@@ -23,7 +23,6 @@ import { useModalStore } from '@/store/useModalStore';
 const { height: screenHeight } = Dimensions.get('window');
 const MODAL_HEIGHT = screenHeight * 0.8;
 
-// Configuration des animations optimisées
 const ANIMATION_CONFIG = {
 	open: {
 		duration: 300,
@@ -60,7 +59,6 @@ export default function SneakersModalWrapper() {
 		);
 	}, [translateY, closeModalActions]);
 
-	// Optimisation du gesture avec des seuils plus précis
 	const panGesture = useMemo(() => {
 		return Gesture.Pan()
 			.onUpdate((event) => {

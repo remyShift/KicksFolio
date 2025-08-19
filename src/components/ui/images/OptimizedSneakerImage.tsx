@@ -1,7 +1,5 @@
 import { memo, useMemo } from 'react';
 
-import { View } from 'react-native';
-
 import { Image } from 'expo-image';
 
 import EmptySneakerImage from '@/components/ui/placeholders/EmptySneakerImage';
@@ -23,7 +21,6 @@ function OptimizedSneakerImage({
 	contentFit = 'contain',
 	priority = 'low',
 }: OptimizedSneakerImageProps) {
-	// Mémoriser le style de l'image
 	const imageStyle = useMemo(
 		() => ({
 			width,
@@ -34,7 +31,6 @@ function OptimizedSneakerImage({
 		[width, height, borderRadius]
 	);
 
-	// Mémoriser la source de l'image
 	const imageSource = useMemo(
 		() => ({
 			uri: imageUri,
@@ -56,7 +52,6 @@ function OptimizedSneakerImage({
 			placeholder={require('@/assets/images/placeholder-sneaker.png')}
 			placeholderContentFit="cover"
 			transition={100}
-			// Optimisations pour les performances
 			recyclingKey={imageUri}
 			allowDownscaling={true}
 			enableLiveTextInteraction={false}
@@ -65,7 +60,6 @@ function OptimizedSneakerImage({
 }
 
 export default memo(OptimizedSneakerImage, (prevProps, nextProps) => {
-	// Optimisation de la comparaison pour éviter les re-rendus inutiles
 	if (prevProps.imageUri !== nextProps.imageUri) return false;
 	if (prevProps.width !== nextProps.width) return false;
 	if (prevProps.height !== nextProps.height) return false;

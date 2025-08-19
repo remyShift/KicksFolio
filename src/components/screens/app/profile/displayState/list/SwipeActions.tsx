@@ -85,7 +85,6 @@ export default function SwipeActions({
 		closeRow();
 	};
 
-	// Mémoriser les composants pour éviter les re-rendus
 	const deleteButton = useMemo(() => {
 		if (!isOwner) return null;
 

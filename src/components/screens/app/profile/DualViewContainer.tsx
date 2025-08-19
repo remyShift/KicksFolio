@@ -34,7 +34,6 @@ export default function DualViewContainer({
 
 	const handleSneakerPress = useCallback(
 		(sneaker: Sneaker) => {
-			// Utiliser onSneakerPress si fourni, sinon utiliser openSneakerModal
 			if (onSneakerPress) {
 				onSneakerPress(sneaker);
 			} else {

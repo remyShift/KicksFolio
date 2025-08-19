@@ -100,24 +100,7 @@ function SneakerListItem({
 }
 
 export default memo(SneakerListItem, (prevProps, nextProps) => {
-	// Optimisation de la comparaison pour éviter les re-rendus inutiles
 	if (prevProps.sneaker.id !== nextProps.sneaker.id) return false;
-	if (prevProps.sneaker.model !== nextProps.sneaker.model) return false;
-	if (prevProps.sneaker.brand !== nextProps.sneaker.brand) return false;
-	if (prevProps.sneaker.condition !== nextProps.sneaker.condition)
-		return false;
-	if (prevProps.sneaker.estimated_value !== nextProps.sneaker.estimated_value)
-		return false;
-	if (
-		prevProps.sneaker.images?.[0]?.uri !==
-		nextProps.sneaker.images?.[0]?.uri
-	)
-		return false;
-	if (prevProps.sneaker.owner?.id !== nextProps.sneaker.owner?.id)
-		return false;
-	if (prevProps.sneaker.owner?.username !== nextProps.sneaker.owner?.username)
-		return false;
-	if (prevProps.showOwnerInfo !== nextProps.showOwnerInfo) return false;
 
 	return true;
 });
