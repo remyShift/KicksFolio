@@ -25,7 +25,7 @@ export default function ProfileStats(props: ProfileStatsProps) {
 		isFollowLoading = false,
 	} = props;
 	const { t } = useTranslation();
-	const { formattedPrice } = useCurrencyStore();
+	const { convertAndFormatdPrice } = useCurrencyStore();
 
 	if (!user) {
 		return null;
@@ -80,7 +80,7 @@ export default function ProfileStats(props: ProfileStatsProps) {
 
 			<View className="p-3 rounded-lg">
 				<Text className="font-open-sans-bold text-xl">
-					{formattedPrice(totalValue)}
+					{convertAndFormatdPrice(totalValue)}
 				</Text>
 				<Text className="font-open-sans text-base">
 					{t('ui.labels.value')}

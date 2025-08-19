@@ -73,7 +73,8 @@ class SneakerFiltering implements SneakerFilterProviderInterface {
 					comparison = (a.condition || 0) - (b.condition || 0);
 					break;
 				case 'value':
-					comparison = (a.price_paid || 0) - (b.price_paid || 0);
+					comparison =
+						(a.estimated_value || 0) - (b.estimated_value || 0);
 					break;
 				default:
 					comparison = 0;

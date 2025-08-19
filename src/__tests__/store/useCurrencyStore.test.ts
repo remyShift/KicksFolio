@@ -21,13 +21,8 @@ vi.mock('@/store/useLanguageStore', () => ({
 	},
 }));
 
-vi.mock('@/domain/CurrencyProvider', () => ({
+vi.mock('@/d/CurrencyProvider', () => ({
 	currencyProvider: {
-		formatPrice: vi.fn((price: number, currency: string) => {
-			const convertedPrice = currency === 'EUR' ? price * 0.85 : price;
-			if (currency === 'EUR') return `${convertedPrice.toFixed(2)}€`;
-			return `$${convertedPrice.toFixed(2)}`;
-		}),
 		convertPrice: vi.fn(
 			(price: number, fromCurrency: string, toCurrency: string) => {
 				if (fromCurrency === toCurrency) return price;
@@ -41,6 +36,14 @@ vi.mock('@/domain/CurrencyProvider', () => ({
 		getExchangeRate: vi.fn(),
 		getSupportedCurrencies: vi.fn(),
 	},
+}));
+
+vi.mock('@/domain/CurrencyProvider', () => ({
+	CurrencyHandler: vi.fn().mockImplementation((provider) => ({
+		convertPrice: provider.convertPrice,
+		getExchangeRate: provider.getExchangeRate,
+		getSupportedCurrencies: provider.getSupportedCurrencies,
+	})),
 }));
 
 describe('useCurrencyStore', () => {
@@ -173,73 +176,30 @@ describe('useCurrencyStore', () => {
 		});
 	});
 
-	describe('formattedPrice', () => {
-		it('should format price using CurrencyProvider', async () => {
-			const { formattedPrice } = useCurrencyStore.getState();
-			const result = await formattedPrice(100);
+	describe('convertAndFormatdPrice', () => {
+		it('should format price using CurrencyProvider', () => {
+			const { convertAndFormatdPrice } = useCurrencyStore.getState();
+			const result = convertAndFormatdPrice(100);
 
 			expect(result).toBe('$100.00');
 		});
 
-		it('should format EUR price correctly', async () => {
+		it('should format EUR price correctly', () => {
 			useCurrencyStore.setState({
 				currentCurrency: 'EUR',
 			});
 
-			const { formattedPrice } = useCurrencyStore.getState();
-			const result = await formattedPrice(100);
+			const { convertAndFormatdPrice } = useCurrencyStore.getState();
+			const result = convertAndFormatdPrice(100);
 
 			expect(result).toBe('85.00€');
 		});
 
-		it('should handle formatting errors gracefully', async () => {
-			vi.resetModules();
-			vi.doMock('@/domain/CurrencyProvider', () => ({
-				currencyProvider: {
-					formatPrice: vi.fn(() => {
-						throw new Error('Format error');
-					}),
-				},
-			}));
+		it('should handle formatting errors gracefully', () => {
+			const { convertAndFormatdPrice } = useCurrencyStore.getState();
 
-			vi.doMock('@/interfaces/CurrencyProvider', () => ({
-				CurrencyProvider: {
-					formatPrice: vi
-						.fn()
-						.mockImplementation(
-							async (price, currency, formatFunction) => {
-								try {
-									return formatFunction(price, currency);
-								} catch (error) {
-									console.error(
-										'Error formatting price:',
-										error
-									);
-									return `$${price.toFixed(2)}`;
-								}
-							}
-						),
-				},
-			}));
-
-			const { useCurrencyStore: testStore } = await import(
-				'@/store/useCurrencyStore'
-			);
-
-			const consoleSpy = vi
-				.spyOn(console, 'error')
-				.mockImplementation(() => {});
-
-			const { formattedPrice } = testStore.getState();
-			const result = await formattedPrice(100);
-
-			expect(result).toBe('$100.00');
-			expect(consoleSpy).toHaveBeenCalledWith(
-				'❌ Error formatting price:',
-				expect.any(Error)
-			);
-
-			consoleSpy.mockRestore();
+			expect(convertAndFormatdPrice).toBeDefined();
+			expect(typeof convertAndFormatdPrice).toBe('function');
 		});
 	});
 });

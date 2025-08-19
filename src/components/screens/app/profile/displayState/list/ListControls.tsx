@@ -3,15 +3,43 @@ import { Text, TouchableOpacity, View } from 'react-native';
 
 import { Ionicons } from '@expo/vector-icons';
 
-import { useSneakerFilterStore } from '@/store/useSneakerFilterStore';
+import {
+	FilterState,
+	SortOption,
+	SortOrder,
+	UniqueValues,
+} from '@/types/filter';
+import { Sneaker } from '@/types/sneaker';
 
 import FilterSection from './filter/FilterSection';
 import SortButtons from './filter/SortButtons';
 
-export default function ListControls() {
+interface ListControlsProps {
+	uniqueValues: UniqueValues;
+	sortBy: SortOption;
+	sortOrder: SortOrder;
+	showFilters: boolean;
+	filters: FilterState;
+	onToggleSort: (option: SortOption) => void;
+	onToggleFilters: () => void;
+	onUpdateFilter: (filterType: keyof FilterState, values: string[]) => void;
+	onClearFilters: () => void;
+	filteredAndSortedSneakers: Sneaker[];
+}
+
+export default function ListControls({
+	uniqueValues,
+	sortBy,
+	sortOrder,
+	showFilters,
+	filters,
+	onToggleSort,
+	onToggleFilters,
+	onUpdateFilter,
+	onClearFilters,
+	filteredAndSortedSneakers,
+}: ListControlsProps) {
 	const { t } = useTranslation();
-	const { filteredAndSortedSneakers, toggleFilters } =
-		useSneakerFilterStore();
 
 	return (
 		<View className="py-2 bg-background border-b border-gray-200 mb-2">
@@ -22,7 +50,7 @@ export default function ListControls() {
 				</Text>
 				<TouchableOpacity
 					className="flex-row items-center"
-					onPress={toggleFilters}
+					onPress={onToggleFilters}
 				>
 					<Ionicons name="filter" size={16} color="gray" />
 					<Text className="ml-1 text-gray-600">
@@ -31,9 +59,19 @@ export default function ListControls() {
 				</TouchableOpacity>
 			</View>
 
-			<SortButtons />
+			<SortButtons
+				sortBy={sortBy}
+				sortOrder={sortOrder}
+				onToggleSort={onToggleSort}
+			/>
 
-			<FilterSection />
+			<FilterSection
+				showFilters={showFilters}
+				filters={filters}
+				uniqueValues={uniqueValues}
+				onUpdateFilter={onUpdateFilter}
+				onClearFilters={onClearFilters}
+			/>
 		</View>
 	);
 }

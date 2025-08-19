@@ -13,7 +13,7 @@ export class GitHubIssueHandler {
 		private readonly gitHubIssueHandler: GitHubIssueHandlerInterface
 	) {}
 
-	createIssue = async (formData: BugReportFormData) => {
+	create = async (formData: BugReportFormData) => {
 		return this.gitHubIssueHandler
 			.createIssue(formData)
 			.then((response) => {

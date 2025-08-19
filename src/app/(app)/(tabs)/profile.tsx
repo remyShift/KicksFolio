@@ -1,13 +1,13 @@
 import { useState } from 'react';
 
 import ProfileDisplayContainer from '@/components/screens/app/profile/ProfileDisplayContainer';
+import { useModalContext } from '@/components/ui/modals/SneakersModal/hooks/useModalContext';
 import { useSession } from '@/contexts/authContext';
-import { useModalStore } from '@/store/useModalStore';
 import { Sneaker } from '@/types/sneaker';
 
 export default function Profile() {
 	const { user, userSneakers, refreshUserData } = useSession();
-	const { setModalStep, setIsVisible, setCurrentSneaker } = useModalStore();
+	const { openSneakerModal } = useModalContext();
 	const [refreshing, setRefreshing] = useState(false);
 
 	const onRefresh = async () => {
@@ -18,15 +18,8 @@ export default function Profile() {
 		setRefreshing(false);
 	};
 
-	const handleAddSneaker = () => {
-		setModalStep('index');
-		setIsVisible(true);
-	};
-
 	const handleSneakerPress = (sneaker: Sneaker) => {
-		setCurrentSneaker(sneaker);
-		setModalStep('view');
-		setIsVisible(true);
+		openSneakerModal(sneaker);
 	};
 
 	if (!user) {
@@ -40,7 +33,6 @@ export default function Profile() {
 			refreshing={refreshing}
 			onRefresh={onRefresh}
 			onSneakerPress={handleSneakerPress}
-			onAddSneaker={handleAddSneaker}
 			showBackButton={false}
 		/>
 	);

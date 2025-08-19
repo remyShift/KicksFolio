@@ -1,15 +1,31 @@
 import { useTranslation } from 'react-i18next';
 import { Text, TouchableOpacity, View } from 'react-native';
 
-import { useSneakerFilterStore } from '@/store/useSneakerFilterStore';
 import { FilterState } from '@/types/filter';
 
 import FilterGroup from './FilterGroup';
 
-export default function FilterSection() {
+interface FilterSectionProps {
+	showFilters: boolean;
+	filters: FilterState;
+	uniqueValues: {
+		brands: string[];
+		sizes: string[];
+		conditions: string[];
+		statuses: string[];
+	};
+	onUpdateFilter: (filterType: keyof FilterState, values: string[]) => void;
+	onClearFilters: () => void;
+}
+
+export default function FilterSection({
+	showFilters,
+	filters,
+	uniqueValues,
+	onUpdateFilter,
+	onClearFilters,
+}: FilterSectionProps) {
 	const { t } = useTranslation();
-	const { showFilters, filters, uniqueValues, updateFilter, clearFilters } =
-		useSneakerFilterStore();
 
 	if (!showFilters) return null;
 
@@ -27,9 +43,9 @@ export default function FilterSection() {
 		const stateKey = stateKeyMap[filterKey];
 
 		if (value === undefined) {
-			updateFilter(stateKey, []);
+			onUpdateFilter(stateKey, []);
 		} else {
-			updateFilter(stateKey, [value.toString()]);
+			onUpdateFilter(stateKey, [value.toString()]);
 		}
 	};
 
@@ -73,9 +89,9 @@ export default function FilterSection() {
 				<Text className="text-base font-semibold text-gray-800">
 					{t('collection.filters.title')}
 				</Text>
-				<TouchableOpacity onPress={clearFilters}>
+				<TouchableOpacity onPress={onClearFilters}>
 					<Text className="text-primary text-sm font-medium">
-						{t('collection.filters.clear')}
+						{t('collection.filters.clearAll')}
 					</Text>
 				</TouchableOpacity>
 			</View>

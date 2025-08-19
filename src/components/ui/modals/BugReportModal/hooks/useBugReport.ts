@@ -11,7 +11,7 @@ const useBugReport = () => {
 	const { setErrorMsg, setIsLoading, resetStore, formData } =
 		useBugReportStore();
 
-	const gitHub = new GitHubIssueHandler(gitHubProxy);
+	const gitHubIssueHandler = new GitHubIssueHandler(gitHubProxy);
 
 	const validateForm = (): boolean => {
 		if (!formData.title.trim()) {
@@ -38,8 +38,8 @@ const useBugReport = () => {
 		setIsLoading(true);
 		setErrorMsg('');
 
-		gitHub
-			.createIssue(formData)
+		gitHubIssueHandler
+			.create(formData)
 			.then((result) => {
 				showSuccessToast(
 					t('settings.bugReport.success.title'),

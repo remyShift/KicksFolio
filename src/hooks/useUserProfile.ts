@@ -6,10 +6,10 @@ import { router } from 'expo-router';
 
 import { useSession } from '@/contexts/authContext';
 import { FollowerHandler } from '@/domain/FollowerHandler';
-import { UserSearch } from '@/domain/UserSearch';
+import { UserLookup } from '@/domain/UserLookup';
 import useToast from '@/hooks/ui/useToast';
 import { followerProxy } from '@/tech/proxy/FollowerProxy';
-import { userSearchProxy } from '@/tech/proxy/UserSearchProxy';
+import { userLookupProxy } from '@/tech/proxy/UserLookupProxy';
 import { Sneaker } from '@/types/sneaker';
 import { SearchUser } from '@/types/user';
 
@@ -47,7 +47,7 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 	const lastLoadedForRef = useRef<string | null>(null);
 
 	const followerHandler = new FollowerHandler(followerProxy);
-	const userSearch = new UserSearch(userSearchProxy);
+	const userLookup = new UserLookup(userLookupProxy);
 
 	const loadUserProfile = useCallback(
 		async (showRefresh: boolean = false) => {
@@ -78,8 +78,8 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 			}
 
 			return Promise.all([
-				userSearch.getUserProfile(userId, currentUser?.id ?? ''),
-				userSearch.getUserSneakers(userId),
+				userLookup.getProfile(userId, currentUser?.id ?? ''),
+				userLookup.getSneakers(userId),
 			])
 				.then(([userSearch, sneakers]) => {
 					if (userSearch) {
@@ -119,8 +119,8 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 		setIsFollowLoading(true);
 
 		const followAction = userProfile.userSearch.is_following
-			? followerHandler.unfollowUser(userProfile.userSearch.id)
-			: followerHandler.followUser(userProfile.userSearch.id);
+			? followerHandler.unfollow(userProfile.userSearch.id)
+			: followerHandler.follow(userProfile.userSearch.id);
 
 		try {
 			await followAction;

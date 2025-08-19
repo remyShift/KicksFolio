@@ -1,5 +1,3 @@
-import { useEffect } from 'react';
-
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
@@ -7,51 +5,28 @@ import BackButton from '@/components/ui/buttons/BackButton';
 import DeleteButton from '@/components/ui/buttons/DeleteButton';
 import EditButton from '@/components/ui/buttons/EditButton';
 import NextButton from '@/components/ui/buttons/NextButton';
+import { useModalNavigation } from '@/components/ui/modals/SneakersModal/hooks/useModalNavigation';
 import { useSession } from '@/contexts/authContext';
 import { useModalStore } from '@/store/useModalStore';
-import { Sneaker } from '@/types/sneaker';
 
 import { useModalFooterActions } from '../hooks/useModalFooterActions';
 
 export const ModalFooter = () => {
 	const { t } = useTranslation();
 	const { modalStep, currentSneaker } = useModalStore();
+	const { user } = useSession();
 
-	const { user, userSneakers } = useSession();
 	const {
 		handleBackAction,
 		handleNextAction,
 		handleEditAction,
 		handleDeleteAction,
-		setNextSneaker,
-		setPrevSneaker,
 		isLoading,
 	} = useModalFooterActions();
 
+	useModalNavigation();
+
 	if (!user) return null;
-
-	useEffect(() => {
-		if (modalStep === 'view' && userSneakers && currentSneaker) {
-			const currentIndex = userSneakers.findIndex(
-				(s: Sneaker) => s.id === currentSneaker.id
-			);
-
-			if (currentIndex !== -1) {
-				const nextIndex = (currentIndex + 1) % userSneakers.length;
-				setNextSneaker(userSneakers[nextIndex]);
-
-				const prevIndex =
-					(currentIndex - 1 + userSneakers.length) %
-					userSneakers.length;
-				setPrevSneaker(userSneakers[prevIndex]);
-			}
-		}
-
-		return () => {
-			setNextSneaker(null);
-			setPrevSneaker(null);
-		};
-	}, [currentSneaker, modalStep, userSneakers]);
 
 	return (
 		<View className="justify-end items-start w-full pb-6">

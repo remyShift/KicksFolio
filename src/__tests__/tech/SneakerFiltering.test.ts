@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import { sneakerFilteringProvider } from '@/d/SneakerFiltering';
+import { SneakerFilterInterface } from '@/domain/SneakerFilterInterface';
 import { FilterState } from '@/types/filter';
 import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
 
@@ -92,10 +93,11 @@ describe('SneakerFiltering', () => {
 				statuses: [],
 			};
 
-			const result = sneakerFilteringProvider.filterSneakers(
+			const result = SneakerFilterInterface.filterSneakers(
 				mockSneakers,
 				filters,
-				'EU'
+				'EU',
+				sneakerFilteringProvider.filterSneakers
 			);
 
 			expect(result).toHaveLength(3);
@@ -109,10 +111,11 @@ describe('SneakerFiltering', () => {
 				conditions: [],
 			};
 
-			const result = sneakerFilteringProvider.filterSneakers(
+			const result = SneakerFilterInterface.filterSneakers(
 				mockSneakers,
 				filters,
-				'EU'
+				'EU',
+				sneakerFilteringProvider.filterSneakers
 			);
 
 			expect(result).toHaveLength(1);
@@ -126,10 +129,11 @@ describe('SneakerFiltering', () => {
 				conditions: [],
 			};
 
-			const result = sneakerFilteringProvider.filterSneakers(
+			const result = SneakerFilterInterface.filterSneakers(
 				mockSneakers,
 				filters,
-				'EU'
+				'EU',
+				sneakerFilteringProvider.filterSneakers
 			);
 
 			expect(result).toHaveLength(1);
@@ -143,10 +147,11 @@ describe('SneakerFiltering', () => {
 				conditions: [],
 			};
 
-			const result = sneakerFilteringProvider.filterSneakers(
+			const result = SneakerFilterInterface.filterSneakers(
 				mockSneakers,
 				filters,
-				'US'
+				'US',
+				sneakerFilteringProvider.filterSneakers
 			);
 
 			expect(result).toHaveLength(1);
@@ -160,10 +165,11 @@ describe('SneakerFiltering', () => {
 				conditions: ['9'],
 			};
 
-			const result = sneakerFilteringProvider.filterSneakers(
+			const result = SneakerFilterInterface.filterSneakers(
 				mockSneakers,
 				filters,
-				'EU'
+				'EU',
+				sneakerFilteringProvider.filterSneakers
 			);
 
 			expect(result).toHaveLength(1);
@@ -178,10 +184,11 @@ describe('SneakerFiltering', () => {
 				statuses: ['Rocking'],
 			};
 
-			const result = sneakerFilteringProvider.filterSneakers(
+			const result = SneakerFilterInterface.filterSneakers(
 				mockSneakers,
 				filters,
-				'EU'
+				'EU',
+				sneakerFilteringProvider.filterSneakers
 			);
 
 			expect(result).toHaveLength(1);
@@ -195,10 +202,11 @@ describe('SneakerFiltering', () => {
 				conditions: ['8', '9'],
 			};
 
-			const result = sneakerFilteringProvider.filterSneakers(
+			const result = SneakerFilterInterface.filterSneakers(
 				mockSneakers,
 				filters,
-				'EU'
+				'EU',
+				sneakerFilteringProvider.filterSneakers
 			);
 
 			expect(result).toHaveLength(2);
@@ -220,10 +228,11 @@ describe('SneakerFiltering', () => {
 				conditions: [],
 			};
 
-			const result = sneakerFilteringProvider.filterSneakers(
+			const result = SneakerFilterInterface.filterSneakers(
 				mockSneakers,
 				filters,
-				'EU'
+				'EU',
+				sneakerFilteringProvider.filterSneakers
 			);
 
 			expect(result).toHaveLength(0);
@@ -232,11 +241,12 @@ describe('SneakerFiltering', () => {
 
 	describe('sortSneakers', () => {
 		it('should sort sneakers by name (ascending)', () => {
-			const result = sneakerFilteringProvider.sortSneakers(
+			const result = SneakerFilterInterface.sortSneakers(
 				mockSneakers,
 				'name',
 				'asc',
-				'EU'
+				'EU',
+				sneakerFilteringProvider.sortSneakers
 			);
 
 			expect(result).toHaveLength(3);
@@ -246,11 +256,12 @@ describe('SneakerFiltering', () => {
 		});
 
 		it('should sort sneakers by name (descending)', () => {
-			const result = sneakerFilteringProvider.sortSneakers(
+			const result = SneakerFilterInterface.sortSneakers(
 				mockSneakers,
 				'name',
 				'desc',
-				'EU'
+				'EU',
+				sneakerFilteringProvider.sortSneakers
 			);
 
 			expect(result).toHaveLength(3);
@@ -260,11 +271,12 @@ describe('SneakerFiltering', () => {
 		});
 
 		it('should sort sneakers by brand (ascending)', () => {
-			const result = sneakerFilteringProvider.sortSneakers(
+			const result = SneakerFilterInterface.sortSneakers(
 				mockSneakers,
 				'brand',
 				'asc',
-				'EU'
+				'EU',
+				sneakerFilteringProvider.sortSneakers
 			);
 
 			expect(result).toHaveLength(3);
@@ -274,11 +286,12 @@ describe('SneakerFiltering', () => {
 		});
 
 		it('should sort sneakers by size EU (ascending)', () => {
-			const result = sneakerFilteringProvider.sortSneakers(
+			const result = SneakerFilterInterface.sortSneakers(
 				mockSneakers,
 				'size',
 				'asc',
-				'EU'
+				'EU',
+				sneakerFilteringProvider.sortSneakers
 			);
 
 			expect(result).toHaveLength(3);
@@ -288,11 +301,12 @@ describe('SneakerFiltering', () => {
 		});
 
 		it('should sort sneakers by size US (ascending)', () => {
-			const result = sneakerFilteringProvider.sortSneakers(
+			const result = SneakerFilterInterface.sortSneakers(
 				mockSneakers,
 				'size',
 				'asc',
-				'US'
+				'US',
+				sneakerFilteringProvider.sortSneakers
 			);
 
 			expect(result).toHaveLength(3);
@@ -302,11 +316,12 @@ describe('SneakerFiltering', () => {
 		});
 
 		it('should sort sneakers by condition (ascending)', () => {
-			const result = sneakerFilteringProvider.sortSneakers(
+			const result = SneakerFilterInterface.sortSneakers(
 				mockSneakers,
 				'condition',
 				'asc',
-				'EU'
+				'EU',
+				sneakerFilteringProvider.sortSneakers
 			);
 
 			expect(result).toHaveLength(3);
@@ -316,11 +331,12 @@ describe('SneakerFiltering', () => {
 		});
 
 		it('should sort sneakers by value (price_paid) (ascending)', () => {
-			const result = sneakerFilteringProvider.sortSneakers(
+			const result = SneakerFilterInterface.sortSneakers(
 				mockSneakers,
 				'value',
 				'asc',
-				'EU'
+				'EU',
+				sneakerFilteringProvider.sortSneakers
 			);
 
 			expect(result).toHaveLength(3);
@@ -333,11 +349,12 @@ describe('SneakerFiltering', () => {
 			const originalLength = mockSneakers.length;
 			const originalFirst = mockSneakers[0].model;
 
-			sneakerFilteringProvider.sortSneakers(
+			SneakerFilterInterface.sortSneakers(
 				mockSneakers,
 				'name',
 				'desc',
-				'EU'
+				'EU',
+				sneakerFilteringProvider.sortSneakers
 			);
 
 			expect(mockSneakers).toHaveLength(originalLength);
@@ -347,52 +364,61 @@ describe('SneakerFiltering', () => {
 
 	describe('getUniqueValues', () => {
 		it('should return unique brands sorted alphabetically', () => {
-			const result = sneakerFilteringProvider.getUniqueValues(
+			const result = SneakerFilterInterface.getUniqueValues(
 				mockSneakers,
-				'EU'
+				'EU',
+				sneakerFilteringProvider.getUniqueValues
 			);
 
 			expect(result.brands).toEqual(['Adidas', 'Jordan', 'Nike']);
 		});
 
 		it('should return unique sizes (EU) sorted numerically', () => {
-			const result = sneakerFilteringProvider.getUniqueValues(
+			const result = SneakerFilterInterface.getUniqueValues(
 				mockSneakers,
-				'EU'
+				'EU',
+				sneakerFilteringProvider.getUniqueValues
 			);
 
 			expect(result.sizes).toEqual(['41', '42', '43']);
 		});
 
 		it('should return unique sizes (US) sorted numerically', () => {
-			const result = sneakerFilteringProvider.getUniqueValues(
+			const result = SneakerFilterInterface.getUniqueValues(
 				mockSneakers,
-				'US'
+				'US',
+				sneakerFilteringProvider.getUniqueValues
 			);
 
 			expect(result.sizes).toEqual(['8', '8.5', '9']);
 		});
 
 		it('should return unique conditions sorted by highest first', () => {
-			const result = sneakerFilteringProvider.getUniqueValues(
+			const result = SneakerFilterInterface.getUniqueValues(
 				mockSneakers,
-				'EU'
+				'EU',
+				sneakerFilteringProvider.getUniqueValues
 			);
 
 			expect(result.conditions).toEqual(['9', '8', '7']);
 		});
 
 		it('should return unique statuses sorted alphabetically', () => {
-			const result = sneakerFilteringProvider.getUniqueValues(
+			const result = SneakerFilterInterface.getUniqueValues(
 				mockSneakers,
-				'EU'
+				'EU',
+				sneakerFilteringProvider.getUniqueValues
 			);
 
 			expect(result.statuses).toEqual(['Rocking', 'Selling', 'Stocking']);
 		});
 
 		it('should handle empty sneakers array', () => {
-			const result = sneakerFilteringProvider.getUniqueValues([], 'EU');
+			const result = SneakerFilterInterface.getUniqueValues(
+				[],
+				'EU',
+				sneakerFilteringProvider.getUniqueValues
+			);
 
 			expect(result.brands).toEqual([]);
 			expect(result.sizes).toEqual([]);
@@ -414,9 +440,10 @@ describe('SneakerFiltering', () => {
 				},
 			];
 
-			const result = sneakerFilteringProvider.getUniqueValues(
+			const result = SneakerFilterInterface.getUniqueValues(
 				sneakersWithNulls,
-				'EU'
+				'EU',
+				sneakerFilteringProvider.getUniqueValues
 			);
 
 			expect(result.brands).toEqual(['Adidas', 'Jordan', 'Nike']);

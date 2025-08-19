@@ -6,17 +6,17 @@ import { vi } from 'vitest';
 import { useUserProfile } from '@/hooks/useUserProfile';
 import { SearchUser } from '@/types/user';
 
-vi.mock('@/interfaces/UserSearch', () => ({
-	UserSearch: {
-		getUserProfile: vi.fn(),
-		getUserSneakers: vi.fn(),
+vi.mock('@/tech/proxy/UserLookupProxy', () => ({
+	userLookupProxy: {
+		getProfile: vi.fn(),
+		getSneakers: vi.fn(),
 	},
 }));
 
-vi.mock('@/interfaces/FollowerHandler', () => ({
-	FollowerHandler: {
-		followUser: vi.fn(),
-		unfollowUser: vi.fn(),
+vi.mock('@/tech/proxy/FollowerProxy', () => ({
+	followerProxy: {
+		follow: vi.fn(),
+		unfollow: vi.fn(),
 	},
 }));
 
@@ -73,14 +73,15 @@ vi.mock('react-i18next', () => ({
 }));
 
 describe('useUserProfile', () => {
-	let UserSearch: any;
-	let FollowerHandler: any;
+	let userLookupProxy: any;
+	let followerProxy: any;
 
 	beforeEach(async () => {
 		vi.clearAllMocks();
-		UserSearch = (await import('@/domain/UserSearch')).UserSearch;
-		FollowerHandler = (await import('@/domain/FollowerHandler'))
-			.FollowerHandler;
+		userLookupProxy = (await import('@/tech/proxy/UserLookupProxy'))
+			.userLookupProxy;
+		followerProxy = (await import('@/tech/proxy/FollowerProxy'))
+			.followerProxy;
 	});
 
 	it('should initialize with correct default values', () => {
@@ -117,8 +118,8 @@ describe('useUserProfile', () => {
 				},
 			];
 
-			UserSearch.getUserProfile.mockResolvedValue(mockUserProfile);
-			UserSearch.getUserSneakers.mockResolvedValue(mockSneakers);
+			userLookupProxy.getProfile.mockResolvedValue(mockUserProfile);
+			userLookupProxy.getSneakers.mockResolvedValue(mockSneakers);
 
 			const { result } = renderHook(() => useUserProfile('test-user-id'));
 
@@ -134,8 +135,8 @@ describe('useUserProfile', () => {
 		});
 
 		it('should handle user not found', async () => {
-			UserSearch.getUserProfile.mockResolvedValue(null);
-			UserSearch.getUserSneakers.mockResolvedValue([]);
+			userLookupProxy.getProfile.mockResolvedValue(null);
+			userLookupProxy.getSneakers.mockResolvedValue([]);
 
 			renderHook(() => useUserProfile('nonexistent-user-id'));
 
@@ -153,8 +154,8 @@ describe('useUserProfile', () => {
 
 		it('should handle load errors gracefully', async () => {
 			const mockError = new Error('Load failed');
-			UserSearch.getUserProfile.mockRejectedValue(mockError);
-			UserSearch.getUserSneakers.mockRejectedValue(mockError);
+			userLookupProxy.getProfile.mockRejectedValue(mockError);
+			userLookupProxy.getSneakers.mockRejectedValue(mockError);
 
 			const consoleSpy = vi
 				.spyOn(console, 'error')
@@ -193,9 +194,9 @@ describe('useUserProfile', () => {
 				sneakers: [],
 			};
 
-			UserSearch.getUserProfile.mockResolvedValue(mockUserProfile);
-			UserSearch.getUserSneakers.mockResolvedValue([]);
-			FollowerHandler.followUser.mockResolvedValue(true);
+			userLookupProxy.getProfile.mockResolvedValue(mockUserProfile);
+			userLookupProxy.getSneakers.mockResolvedValue([]);
+			followerProxy.follow.mockResolvedValue(true);
 			mockRefreshFollowingUsers.mockResolvedValue(undefined);
 			mockRefreshUserData.mockResolvedValue(undefined);
 
@@ -209,10 +210,7 @@ describe('useUserProfile', () => {
 				await result.current.handleFollowToggle();
 			});
 
-			expect(FollowerHandler.followUser).toHaveBeenCalledWith(
-				'test-user-id',
-				expect.any(Function)
-			);
+			expect(followerProxy.follow).toHaveBeenCalledWith('test-user-id');
 			expect(mockToast.showSuccessToast).toHaveBeenCalledWith(
 				'Followed',
 				'You followed testuser'
@@ -238,9 +236,9 @@ describe('useUserProfile', () => {
 				sneakers: [],
 			};
 
-			UserSearch.getUserProfile.mockResolvedValue(mockUserProfile);
-			UserSearch.getUserSneakers.mockResolvedValue([]);
-			FollowerHandler.unfollowUser.mockResolvedValue(true);
+			userLookupProxy.getProfile.mockResolvedValue(mockUserProfile);
+			userLookupProxy.getSneakers.mockResolvedValue([]);
+			followerProxy.unfollow.mockResolvedValue(true);
 			mockRefreshFollowingUsers.mockResolvedValue(undefined);
 			mockRefreshUserData.mockResolvedValue(undefined);
 
@@ -254,10 +252,7 @@ describe('useUserProfile', () => {
 				await result.current.handleFollowToggle();
 			});
 
-			expect(FollowerHandler.unfollowUser).toHaveBeenCalledWith(
-				'test-user-id',
-				expect.any(Function)
-			);
+			expect(followerProxy.unfollow).toHaveBeenCalledWith('test-user-id');
 			expect(mockToast.showSuccessToast).toHaveBeenCalledWith(
 				'Unfollowed',
 				'You unfollowed testuser'
@@ -284,9 +279,9 @@ describe('useUserProfile', () => {
 			};
 
 			const mockError = new Error('Follow failed');
-			UserSearch.getUserProfile.mockResolvedValue(mockUserProfile);
-			UserSearch.getUserSneakers.mockResolvedValue([]);
-			FollowerHandler.followUser.mockRejectedValue(mockError);
+			userLookupProxy.getProfile.mockResolvedValue(mockUserProfile);
+			userLookupProxy.getSneakers.mockResolvedValue([]);
+			followerProxy.follow.mockRejectedValue(mockError);
 
 			const consoleSpy = vi
 				.spyOn(console, 'error')
@@ -321,8 +316,8 @@ describe('useUserProfile', () => {
 				await result.current.handleFollowToggle();
 			});
 
-			expect(FollowerHandler.followUser).not.toHaveBeenCalled();
-			expect(FollowerHandler.unfollowUser).not.toHaveBeenCalled();
+			expect(followerProxy.follow).not.toHaveBeenCalled();
+			expect(followerProxy.unfollow).not.toHaveBeenCalled();
 		});
 	});
 
@@ -340,8 +335,8 @@ describe('useUserProfile', () => {
 				sneakers: [],
 			};
 
-			UserSearch.getUserProfile.mockResolvedValue(mockUserProfile);
-			UserSearch.getUserSneakers.mockResolvedValue([]);
+			userLookupProxy.getProfile.mockResolvedValue(mockUserProfile);
+			userLookupProxy.getSneakers.mockResolvedValue([]);
 
 			const { result } = renderHook(() => useUserProfile('test-user-id'));
 
@@ -349,15 +344,15 @@ describe('useUserProfile', () => {
 				await result.current.refreshUserProfile();
 			});
 
-			expect(UserSearch.getUserProfile).toHaveBeenCalled();
-			expect(UserSearch.getUserSneakers).toHaveBeenCalled();
+			expect(userLookupProxy.getProfile).toHaveBeenCalled();
+			expect(userLookupProxy.getSneakers).toHaveBeenCalled();
 			expect(result.current.refreshing).toBe(false);
 		});
 
 		it('should handle refresh errors gracefully', async () => {
 			const mockError = new Error('Refresh failed');
-			UserSearch.getUserProfile.mockRejectedValue(mockError);
-			UserSearch.getUserSneakers.mockRejectedValue(mockError);
+			userLookupProxy.getProfile.mockRejectedValue(mockError);
+			userLookupProxy.getSneakers.mockRejectedValue(mockError);
 
 			const consoleSpy = vi
 				.spyOn(console, 'error')
@@ -382,8 +377,8 @@ describe('useUserProfile', () => {
 		it('should not load profile if userId is undefined', () => {
 			renderHook(() => useUserProfile(undefined));
 
-			expect(UserSearch.getUserProfile).not.toHaveBeenCalled();
-			expect(UserSearch.getUserSneakers).not.toHaveBeenCalled();
+			expect(userLookupProxy.getProfile).not.toHaveBeenCalled();
+			expect(userLookupProxy.getSneakers).not.toHaveBeenCalled();
 		});
 	});
 });

@@ -1,12 +1,12 @@
 import { supabase } from '@/config/supabase/supabase';
-import { UserSearchInterface } from '@/domain/UserSearch';
+import { UserLookupInterface } from '@/domain/UserLookup';
 import { Sneaker } from '@/types/sneaker';
 import { SearchUser, SearchUsersResponse } from '@/types/user';
 
-export class UserSearchProxy implements UserSearchInterface {
+export class UserLookupProxy implements UserLookupInterface {
 	private static readonly PAGE_SIZE = 20;
 
-	async searchUsers(
+	async search(
 		searchTerm: string,
 		currentUserId: string,
 		page: number = 0
@@ -20,22 +20,20 @@ export class UserSearchProxy implements UserSearchInterface {
 				};
 			}
 
-			return this.searchUsersDirectSQL(
-				searchTerm,
-				currentUserId,
-				page
-			).then((res) => {
-				return res;
-			});
+			return this.searchDirectSQL(searchTerm, currentUserId, page).then(
+				(res) => {
+					return res;
+				}
+			);
 		});
 	}
 
-	private async searchUsersDirectSQL(
+	private async searchDirectSQL(
 		searchTerm: string,
 		currentUserId: string,
 		page: number = 0
 	): Promise<SearchUsersResponse> {
-		const offset = page * UserSearchProxy.PAGE_SIZE;
+		const offset = page * UserLookupProxy.PAGE_SIZE;
 		const searchPattern = `%${searchTerm.trim().toLowerCase()}%`;
 
 		const { data: users, error } = await supabase
@@ -55,20 +53,17 @@ export class UserSearchProxy implements UserSearchInterface {
 				`username.ilike.${searchPattern},first_name.ilike.${searchPattern},last_name.ilike.${searchPattern}`
 			)
 			.neq('id', currentUserId)
-			.range(offset, offset + UserSearchProxy.PAGE_SIZE);
+			.range(offset, offset + UserLookupProxy.PAGE_SIZE);
 
 		if (error) {
-			console.error(
-				'[UserSearchProvider] searchUsersDirectSQL:error',
-				error
-			);
+			console.error('[UserLookupProxy] searchDirectSQL:error', error);
 			throw error;
 		}
 
 		const usersList = users || [];
-		const hasMore = usersList.length > UserSearchProxy.PAGE_SIZE;
+		const hasMore = usersList.length > UserLookupProxy.PAGE_SIZE;
 		const actualUsers = hasMore
-			? usersList.slice(0, UserSearchProxy.PAGE_SIZE)
+			? usersList.slice(0, UserLookupProxy.PAGE_SIZE)
 			: usersList;
 
 		const enrichedUsers = await Promise.all(
@@ -134,7 +129,7 @@ export class UserSearchProxy implements UserSearchInterface {
 		};
 	}
 
-	async getUserProfile(
+	async getProfile(
 		userId: string,
 		currentUserId: string
 	): Promise<SearchUser | null> {
@@ -157,10 +152,7 @@ export class UserSearchProxy implements UserSearchInterface {
 				.single();
 
 			if (error || !user) {
-				console.warn(
-					'[UserSearchProvider] getUserProfile:not-found',
-					error
-				);
+				console.warn('[UserLookupProxy] getProfile:not-found', error);
 				return null;
 			}
 
@@ -211,7 +203,7 @@ export class UserSearchProxy implements UserSearchInterface {
 		}
 	}
 
-	async getUserSneakers(userId: string): Promise<Sneaker[]> {
+	async getSneakers(userId: string): Promise<Sneaker[]> {
 		try {
 			const { data: sneakers, error } = await supabase
 				.from('sneakers')
@@ -238,7 +230,7 @@ export class UserSearchProxy implements UserSearchInterface {
 					} = sneaker;
 					return {
 						...sneakerWithoutTimestamps,
-						images: UserSearchProxy.parseImages(sneaker.images),
+						images: UserLookupProxy.parseImages(sneaker.images),
 					} as Sneaker;
 				}) || [];
 			return result;
@@ -320,4 +312,4 @@ export class UserSearchProxy implements UserSearchInterface {
 	}
 }
 
-export const userSearchProxy = new UserSearchProxy();
+export const userLookupProxy = new UserLookupProxy();

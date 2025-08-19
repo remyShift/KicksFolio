@@ -1,5 +1,7 @@
 import { RefreshControl, ScrollView } from 'react-native';
 
+import { useSession } from '@/contexts/authContext';
+import { useModalStore } from '@/store/useModalStore';
 import { Sneaker } from '@/types/sneaker';
 import { SearchUser, User } from '@/types/user';
 
@@ -12,8 +14,7 @@ interface ProfileDisplayContainerProps {
 	userSneakers: Sneaker[];
 	refreshing: boolean;
 	onRefresh: () => Promise<void>;
-	onSneakerPress: (sneaker: Sneaker) => void;
-	onAddSneaker?: () => void;
+	onSneakerPress?: (sneaker: Sneaker) => void;
 	showBackButton?: boolean;
 }
 
@@ -26,9 +27,19 @@ export default function ProfileDisplayContainer(
 		refreshing,
 		onRefresh,
 		onSneakerPress,
-		onAddSneaker,
 		showBackButton = false,
 	} = props;
+
+	const { setModalStep, setIsVisible } = useModalStore();
+	const { user: currentUser } = useSession();
+
+	const handleAddSneaker = () => {
+		setModalStep('index');
+		setIsVisible(true);
+	};
+
+	const isOwner = currentUser?.id === user.id;
+
 	if (!userSneakers || userSneakers.length === 0) {
 		return (
 			<ScrollView
@@ -44,27 +55,35 @@ export default function ProfileDisplayContainer(
 					/>
 				}
 			>
-				<ProfileHeader
-					user={user}
-					userSneakers={[]}
-					showBackButton={showBackButton}
-				/>
+				<ProfileHeader user={user} showBackButton={showBackButton} />
 				<EmptySneakersState
-					onAddPress={onAddSneaker || (() => {})}
-					showAddButton={!!onAddSneaker}
+					onAddPress={handleAddSneaker}
+					showAddButton={isOwner}
 				/>
 			</ScrollView>
 		);
 	}
 
 	return (
-		<DualViewContainer
-			user={user}
-			userSneakers={userSneakers}
-			refreshing={refreshing}
-			onRefresh={onRefresh}
-			onSneakerPress={onSneakerPress}
-			showBackButton={showBackButton}
-		/>
+		<ScrollView
+			className="flex-1 mt-16"
+			testID="scroll-view"
+			refreshControl={
+				<RefreshControl
+					refreshing={refreshing}
+					onRefresh={onRefresh}
+					tintColor="#FF6B6B"
+					progressViewOffset={60}
+					testID="refresh-control"
+				/>
+			}
+		>
+			<ProfileHeader user={user} showBackButton={showBackButton} />
+			<DualViewContainer
+				user={user}
+				userSneakers={userSneakers}
+				onSneakerPress={onSneakerPress}
+			/>
+		</ScrollView>
 	);
 }

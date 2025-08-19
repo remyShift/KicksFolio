@@ -1,62 +1,71 @@
+import { memo, useMemo } from 'react';
+
 import { useTranslation } from 'react-i18next';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Text, View } from 'react-native';
 
-import { Image } from 'expo-image';
-
-import EmptySneakerImage from '@/components/ui/placeholders/EmptySneakerImage';
+import OptimizedSneakerImage from '@/components/ui/images/OptimizedSneakerImage';
 import SizeDisplay from '@/components/ui/text/SizeDisplay';
 import { useSession } from '@/contexts/authContext';
+import { useCurrencyStore } from '@/store/useCurrencyStore';
 import { Sneaker } from '@/types/sneaker';
 
 interface SneakerListItemProps {
 	sneaker: Sneaker;
-	onPress: (sneaker: Sneaker) => void;
 	showOwnerInfo?: boolean;
 }
 
-export default function SneakerListItem({
+function SneakerListItem({
 	sneaker,
-	onPress,
 	showOwnerInfo = false,
 }: SneakerListItemProps) {
 	const { user } = useSession();
 	const { t } = useTranslation();
-	const isOwner = sneaker.owner?.id === user?.id;
+	const { convertAndFormatdPrice } = useCurrencyStore();
+
+	const isOwner = useMemo(() => {
+		return sneaker.owner?.id === user?.id;
+	}, [sneaker.owner?.id, user?.id]);
+
+	const formattedPrice = useMemo(() => {
+		if (!sneaker.estimated_value) return null;
+		return convertAndFormatdPrice(sneaker.estimated_value);
+	}, [sneaker.estimated_value, convertAndFormatdPrice]);
+
+	const ownerInfo = useMemo(() => {
+		if (!sneaker.owner || !showOwnerInfo) return null;
+
+		return (
+			<View className="flex-row items-center gap-1">
+				<Text className="text-sm text-gray-500">
+					{t('collection.cards.ownedBy')}
+				</Text>
+				<Text className="text-sm text-primary">
+					{isOwner
+						? t('collection.cards.me')
+						: `@${sneaker.owner.username}`}
+				</Text>
+			</View>
+		);
+	}, [sneaker.owner, showOwnerInfo, isOwner, t]);
+
+	const conditionText = useMemo(() => {
+		return sneaker.condition ? `${sneaker.condition}/10` : 'N/A';
+	}, [sneaker.condition]);
 
 	return (
-		<TouchableOpacity
-			className="bg-white py-2 px-4 border border-gray-100 mb-1"
-			onPress={() => onPress(sneaker)}
-			activeOpacity={0.7}
-			hitSlop={{
-				top: 5,
-				bottom: 5,
-				left: 5,
-				right: 5,
-			}}
-		>
+		<View className="bg-white py-2 px-4 border border-gray-100">
 			<View
 				className="flex-row justify-between items-center gap-3"
 				pointerEvents="none"
 			>
-				{sneaker.images?.[0]?.uri ? (
-					<Image
-						source={{
-							uri: sneaker.images[0].uri,
-						}}
-						style={{
-							width: 80,
-							height: 80,
-							borderRadius: 8,
-							backgroundColor: 'transparent',
-						}}
-						contentFit="contain"
-						cachePolicy="memory-disk"
-						testID="sneaker-image"
-					/>
-				) : (
-					<EmptySneakerImage />
-				)}
+				<OptimizedSneakerImage
+					imageUri={sneaker.images?.[0]?.uri}
+					width={80}
+					height={80}
+					borderRadius={8}
+					contentFit="contain"
+					priority="low"
+				/>
 
 				<View className="flex-1">
 					<Text
@@ -64,35 +73,51 @@ export default function SneakerListItem({
 						numberOfLines={1}
 						ellipsizeMode="tail"
 					>
-						{String(sneaker.model || '')}
+						{sneaker.model}
 					</Text>
-					<View className="flex-row items-center gap-2 mt-1">
+					<View className="flex-row items-center gap-1 mt-1">
 						<Text className="text-sm text-gray-600">
-							{String(sneaker.brand || '')}
+							{sneaker.brand} -
 						</Text>
 						<SizeDisplay
 							sneaker={sneaker}
 							className="text-sm text-gray-500"
 						/>
+						{formattedPrice && (
+							<Text className="text-sm text-gray-500">
+								- {formattedPrice}
+							</Text>
+						)}
 					</View>
 					<Text className="text-sm text-gray-500">
-						Condition:{' '}
-						{sneaker.condition ? `${sneaker.condition}/10` : 'N/A'}
+						Condition: {conditionText}
 					</Text>
-					{sneaker.owner && showOwnerInfo && (
-						<View className="flex-row items-center gap-1">
-							<Text className="text-sm text-gray-500">
-								{t('collection.cards.ownedBy')}
-							</Text>
-							<Text className="text-sm text-primary">
-								{isOwner
-									? t('collection.cards.me')
-									: `@${sneaker.owner.username}`}
-							</Text>
-						</View>
-					)}
+					{ownerInfo}
 				</View>
 			</View>
-		</TouchableOpacity>
+		</View>
 	);
 }
+
+export default memo(SneakerListItem, (prevProps, nextProps) => {
+	// Optimisation de la comparaison pour éviter les re-rendus inutiles
+	if (prevProps.sneaker.id !== nextProps.sneaker.id) return false;
+	if (prevProps.sneaker.model !== nextProps.sneaker.model) return false;
+	if (prevProps.sneaker.brand !== nextProps.sneaker.brand) return false;
+	if (prevProps.sneaker.condition !== nextProps.sneaker.condition)
+		return false;
+	if (prevProps.sneaker.estimated_value !== nextProps.sneaker.estimated_value)
+		return false;
+	if (
+		prevProps.sneaker.images?.[0]?.uri !==
+		nextProps.sneaker.images?.[0]?.uri
+	)
+		return false;
+	if (prevProps.sneaker.owner?.id !== nextProps.sneaker.owner?.id)
+		return false;
+	if (prevProps.sneaker.owner?.username !== nextProps.sneaker.owner?.username)
+		return false;
+	if (prevProps.showOwnerInfo !== nextProps.showOwnerInfo) return false;
+
+	return true;
+});

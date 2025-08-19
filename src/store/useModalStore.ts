@@ -22,6 +22,8 @@ interface ModalStore {
 	modalStep: ModalStep;
 	isVisible: boolean;
 	currentSneaker: Sneaker | null;
+	nextSneaker: Sneaker | null;
+	prevSneaker: Sneaker | null;
 	sneakerToAdd: SneakerFormData | null;
 	fetchedSneaker: FetchedSneaker | null;
 	sneakerSKU: string;
@@ -42,6 +44,8 @@ interface ModalStore {
 	setModalStep: (step: ModalStep) => void;
 	setIsVisible: (isVisible: boolean) => void;
 	setCurrentSneaker: (sneaker: Sneaker | null) => void;
+	setNextSneaker: (sneaker: Sneaker | null) => void;
+	setPrevSneaker: (sneaker: Sneaker | null) => void;
 	setSneakerToAdd: (sneaker: SneakerFormData | null) => void;
 	setFetchedSneaker: (sneaker: FetchedSneaker | null) => void;
 	setSneakerSKU: (sku: string) => void;
@@ -67,6 +71,8 @@ export const useModalStore = create<ModalStore>((set) => ({
 	modalStep: 'index' as ModalStep,
 	isVisible: false,
 	currentSneaker: null,
+	nextSneaker: null,
+	prevSneaker: null,
 	sneakerToAdd: null,
 	fetchedSneaker: null,
 	sneakerSKU: '',
@@ -78,9 +84,21 @@ export const useModalStore = create<ModalStore>((set) => ({
 	validateForm: null,
 	clearFormErrors: null,
 
-	setModalStep: (step) => set({ modalStep: step }),
-	setIsVisible: (isVisible) => set({ isVisible }),
-	setCurrentSneaker: (sneaker) => set({ currentSneaker: sneaker }),
+	setModalStep: (step) => {
+		set({ modalStep: step });
+	},
+	setIsVisible: (isVisible) => {
+		set({ isVisible });
+	},
+	setCurrentSneaker: (sneaker) => {
+		set({ currentSneaker: sneaker });
+	},
+	setNextSneaker: (sneaker) => {
+		set({ nextSneaker: sneaker });
+	},
+	setPrevSneaker: (sneaker) => {
+		set({ prevSneaker: sneaker });
+	},
 	setSneakerToAdd: (sneaker) => set({ sneakerToAdd: sneaker }),
 	setFetchedSneaker: (sneaker) => set({ fetchedSneaker: sneaker }),
 	setSneakerSKU: (sku) => set({ sneakerSKU: sku }),
@@ -91,16 +109,20 @@ export const useModalStore = create<ModalStore>((set) => ({
 	setIsLoading: (isLoading) => set({ isLoading }),
 	setValidateForm: (fn) => set({ validateForm: fn }),
 	setClearFormErrors: (fn) => set({ clearFormErrors: fn }),
-	resetModalData: () =>
+	resetModalData: () => {
 		set({
+			currentSneaker: null,
+			nextSneaker: null,
+			prevSneaker: null,
+			modalStep: 'index',
 			sneakerToAdd: null,
 			fetchedSneaker: null,
-			currentSneaker: null,
 			errorMsg: '',
 			sneakerSKU: '',
 			estimatedValue: null,
 			gender: null,
 			sku: null,
 			isLoading: false,
-		}),
+		});
+	},
 }));

@@ -18,7 +18,7 @@ export default function useWishlist() {
 		setIsLoading: (isLoading: boolean) => void
 	) => {
 		wishlist
-			.addToWishlist(sneakerId)
+			.add(sneakerId)
 			.then(() => {
 				showSuccessToast(
 					t('social.wishlist.messages.added.title'),
@@ -45,7 +45,7 @@ export default function useWishlist() {
 		setIsLoading: (isLoading: boolean) => void
 	) => {
 		wishlist
-			.removeFromWishlist(sneakerId)
+			.remove(sneakerId)
 			.then(() => {
 				showSuccessToast(
 					t('social.wishlist.messages.removed.title'),
@@ -71,9 +71,9 @@ export default function useWishlist() {
 		setIsWishlisted: (isWishlisted: boolean) => void
 	) => {
 		wishlist
-			.isInWishlist(sneakerId)
-			.then((isInWishlist) => {
-				setIsWishlisted(isInWishlist);
+			.contains(sneakerId)
+			.then((isIn) => {
+				setIsWishlisted(isIn);
 			})
 			.catch((error) => {
 				console.error('Error checking wishlist status:', error);

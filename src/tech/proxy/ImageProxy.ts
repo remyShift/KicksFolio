@@ -1,7 +1,7 @@
 import * as FileSystem from 'expo-file-system';
 
 import { supabase } from '@/config/supabase/supabase';
-import { ImageHandlerInterface } from '@/domain/ImageHandler';
+import { ImageStorageInterface } from '@/domain/ImageStorage';
 import {
 	ImageInfo,
 	ImageUploadOptions,
@@ -10,15 +10,15 @@ import {
 	UploadResult,
 } from '@/types/image';
 
-class ImageProxy implements ImageHandlerInterface {
-	async uploadImage(
+class ImageStorageProxy implements ImageStorageInterface {
+	async upload(
 		imageUri: string,
 		options: ImageUploadOptions
 	): Promise<UploadResult> {
 		try {
 			const { bucket, userId, entityId, quality = 0.8 } = options;
 
-			const validation = await this.validateImageUri(imageUri);
+			const validation = await this.validateUri(imageUri);
 			if (!validation.isValid) {
 				return {
 					success: false,
@@ -81,7 +81,7 @@ class ImageProxy implements ImageHandlerInterface {
 		sneakerId: string
 	): Promise<UploadResult[]> {
 		const uploadPromises = images.map((image) =>
-			this.uploadImage(image.uri, {
+			this.upload(image.uri, {
 				bucket: 'sneakers',
 				userId,
 				entityId: sneakerId,
@@ -95,13 +95,13 @@ class ImageProxy implements ImageHandlerInterface {
 		imageUri: string,
 		userId: string
 	): Promise<UploadResult> {
-		return this.uploadImage(imageUri, {
+		return this.upload(imageUri, {
 			bucket: 'profiles',
 			userId,
 		});
 	}
 
-	async deleteImage(
+	async delete(
 		bucket: 'sneakers' | 'profiles',
 		filePath: string
 	): Promise<boolean> {
@@ -204,7 +204,7 @@ class ImageProxy implements ImageHandlerInterface {
 		return imageUri;
 	}
 
-	async validateImageUri(imageUri: string): Promise<ImageValidationResult> {
+	async validateUri(imageUri: string): Promise<ImageValidationResult> {
 		const imageInfo = await FileSystem.getInfoAsync(imageUri);
 
 		if (!imageInfo.exists) {
@@ -232,7 +232,7 @@ class ImageProxy implements ImageHandlerInterface {
 		};
 	}
 
-	async getImageInfo(imageUri: string): Promise<ImageInfo> {
+	async getInfo(imageUri: string): Promise<ImageInfo> {
 		const info = await FileSystem.getInfoAsync(imageUri);
 		const fileSize = 'size' in info ? info.size : undefined;
 
@@ -242,7 +242,7 @@ class ImageProxy implements ImageHandlerInterface {
 		};
 	}
 
-	async migrateImageFromUrl(
+	async migrate(
 		sourceUrl: string,
 		options: ImageUploadOptions
 	): Promise<UploadResult> {
@@ -313,7 +313,7 @@ class ImageProxy implements ImageHandlerInterface {
 		}
 	}
 
-	async deleteUserFolder(
+	async deleteUser(
 		bucket: 'sneakers' | 'profiles',
 		userId: string
 	): Promise<boolean> {
@@ -354,14 +354,8 @@ class ImageProxy implements ImageHandlerInterface {
 
 	async deleteAllUserFiles(userId: string): Promise<boolean> {
 		try {
-			const sneakersResult = await this.deleteUserFolder(
-				'sneakers',
-				userId
-			);
-			const profilesResult = await this.deleteUserFolder(
-				'profiles',
-				userId
-			);
+			const sneakersResult = await this.deleteUser('sneakers', userId);
+			const profilesResult = await this.deleteUser('profiles', userId);
 
 			return sneakersResult && profilesResult;
 		} catch (error) {
@@ -370,10 +364,7 @@ class ImageProxy implements ImageHandlerInterface {
 		}
 	}
 
-	async deleteSneakerImages(
-		userId: string,
-		sneakerId: string
-	): Promise<boolean> {
+	async deleteSneaker(userId: string, sneakerId: string): Promise<boolean> {
 		return supabase.storage
 			.from('sneakers')
 			.list(`${userId}/${sneakerId}`)
@@ -411,7 +402,7 @@ class ImageProxy implements ImageHandlerInterface {
 			});
 	}
 
-	async processAndUploadSneakerImages(
+	async processAndUploadSneaker(
 		images: Array<{ uri: string; id?: string }>,
 		userId: string,
 		sneakerId: string
@@ -429,7 +420,7 @@ class ImageProxy implements ImageHandlerInterface {
 				img.uri.startsWith('/data/user/') ||
 				(!img.uri.startsWith('http') && !img.uri.includes('supabase'))
 			) {
-				const uploadResult = await this.uploadImage(img.uri, {
+				const uploadResult = await this.upload(img.uri, {
 					bucket: 'sneakers',
 					userId,
 					entityId: sneakerId,
@@ -449,14 +440,11 @@ class ImageProxy implements ImageHandlerInterface {
 				img.uri.startsWith('https://') &&
 				!img.uri.includes('supabase')
 			) {
-				const migrationResult = await this.migrateImageFromUrl(
-					img.uri,
-					{
-						bucket: 'sneakers',
-						userId,
-						entityId: sneakerId,
-					}
-				);
+				const migrationResult = await this.migrate(img.uri, {
+					bucket: 'sneakers',
+					userId,
+					entityId: sneakerId,
+				});
 
 				if (
 					migrationResult.success &&
@@ -482,7 +470,7 @@ class ImageProxy implements ImageHandlerInterface {
 		return processedImages;
 	}
 
-	async deleteSpecificSneakerImage(
+	async deleteSpecificSneaker(
 		userId: string,
 		sneakerId: string,
 		fileName: string
@@ -511,4 +499,4 @@ class ImageProxy implements ImageHandlerInterface {
 	}
 }
 
-export const imageProxy = new ImageProxy();
+export const imageStorageProxy = new ImageStorageProxy();

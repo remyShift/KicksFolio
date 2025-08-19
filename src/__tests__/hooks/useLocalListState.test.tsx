@@ -15,11 +15,11 @@ const mockSneakerFiltering = vi.hoisted(() => ({
 	sortSneakers: vi.fn(),
 }));
 
-vi.mock('@/domain/SneakerFiltering', () => ({
+vi.mock('@/d/SneakerFiltering', () => ({
 	sneakerFilteringProvider: mockSneakerFiltering,
 }));
 
-vi.mock('@/interfaces/SneakerFilterInterface', () => ({
+vi.mock('@/domain/SneakerFilterInterface', () => ({
 	SneakerFilterInterface: {
 		getUniqueValues: vi.fn((sneakers, currentUnit, fn) =>
 			fn(sneakers, currentUnit)

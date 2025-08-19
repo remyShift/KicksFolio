@@ -1,7 +1,6 @@
 import { Currency } from '@/types/currency';
 
-export interface CurrencyProviderInterface {
-	formatPrice(price: number, currency: Currency): string;
+export interface CurrencyHandlerInterface {
 	convertPrice(
 		price: number,
 		fromCurrency: Currency,
@@ -11,14 +10,10 @@ export interface CurrencyProviderInterface {
 	getSupportedCurrencies(): Currency[];
 }
 
-export class CurrencyProvider {
-	constructor(private readonly currencyProvider: CurrencyProviderInterface) {}
+export class CurrencyHandler {
+	constructor(private readonly currencyProvider: CurrencyHandlerInterface) {}
 
-	formatPrice = async (price: number, currency: Currency) => {
-		return this.currencyProvider.formatPrice(price, currency);
-	};
-
-	convertPrice = async (
+	convertPrice = (
 		price: number,
 		fromCurrency: Currency,
 		toCurrency: Currency
@@ -30,7 +25,7 @@ export class CurrencyProvider {
 		);
 	};
 
-	getExchangeRate = async (currency: Currency) => {
+	getExchangeRate = (currency: Currency) => {
 		try {
 			return this.currencyProvider.getExchangeRate(currency);
 		} catch (error) {
@@ -39,7 +34,7 @@ export class CurrencyProvider {
 		}
 	};
 
-	getSupportedCurrencies = async () => {
+	getSupportedCurrencies = () => {
 		try {
 			return this.currencyProvider.getSupportedCurrencies();
 		} catch (error) {

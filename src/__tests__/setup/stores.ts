@@ -45,15 +45,20 @@ jest.mock('@/store/useModalStore', () => ({
 		setEstimatedValue: jest.fn(),
 		setGender: jest.fn(),
 		setSku: jest.fn(),
-		resetModal: jest.fn(),
 	}),
 }));
 
 jest.mock('@/store/useCurrencyStore', () => ({
 	useCurrencyStore: () => ({
-		currency: 'EUR',
+		currentCurrency: 'EUR',
+		isInitialized: true,
+		currencyHandler: {
+			convertPrice: jest.fn((price) => price),
+		},
 		setCurrency: jest.fn(),
-		formattedPrice: jest.fn((price) => `€${price}`),
+		initializeCurrency: jest.fn(),
+		getCurrentCurrency: jest.fn().mockReturnValue('EUR'),
+		convertAndFormatdPrice: jest.fn((price) => `€${price.toFixed(2)}`),
 	}),
 }));
 
@@ -73,4 +78,15 @@ jest.mock('@/store/useLanguageStore', () => ({
 			subscribe: jest.fn().mockReturnValue(() => {}),
 		}
 	),
+}));
+
+jest.mock('@/store/useViewDisplayStateStore', () => ({
+	useViewDisplayStateStore: () => ({
+		viewDisplayState: 'card' as const,
+		setViewDisplayState: jest.fn(),
+	}),
+	ViewDisplayState: {
+		Card: 'card',
+		List: 'list',
+	},
 }));

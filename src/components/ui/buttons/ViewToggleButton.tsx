@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+
 import { TouchableOpacity, View } from 'react-native';
 
 import { Ionicons } from '@expo/vector-icons';
@@ -13,11 +15,19 @@ export default function ViewToggleButton() {
 
 	const isCardState = viewDisplayState === ViewDisplayState.Card;
 
+	const handleCardPress = useCallback(() => {
+		setViewDisplayState(ViewDisplayState.Card);
+	}, [setViewDisplayState]);
+
+	const handleListPress = useCallback(() => {
+		setViewDisplayState(ViewDisplayState.List);
+	}, [setViewDisplayState]);
+
 	return (
 		<View className="flex-row bg-gray-100 rounded-lg overflow-hidden absolute right-5">
 			<TouchableOpacity
 				className={`px-4 py-2 ${isCardState ? 'bg-primary' : 'bg-transparent'}`}
-				onPress={() => setViewDisplayState(ViewDisplayState.Card)}
+				onPress={handleCardPress}
 				activeOpacity={0.7}
 				hitSlop={{
 					top: 10,
@@ -35,7 +45,7 @@ export default function ViewToggleButton() {
 
 			<TouchableOpacity
 				className={`px-4 py-2 ${!isCardState ? 'bg-primary' : 'bg-transparent'}`}
-				onPress={() => setViewDisplayState(ViewDisplayState.List)}
+				onPress={handleListPress}
 				activeOpacity={0.7}
 				hitSlop={{
 					top: 10,

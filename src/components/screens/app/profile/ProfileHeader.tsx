@@ -13,15 +13,15 @@ import SettingsButton from './SettingsButton';
 
 interface ProfileHeaderProps {
 	user: User | SearchUser;
-	userSneakers: Sneaker[];
 	showBackButton?: boolean;
 }
 
 export default function ProfileHeader(props: ProfileHeaderProps) {
-	const { user, userSneakers, showBackButton = false } = props;
+	const { user, showBackButton = false } = props;
 	const { t } = useTranslation();
 	const { user: currentUser } = useSession();
 	const isOwnProfile = user.id === currentUser?.id;
+	const { userSneakers } = useSession();
 
 	return (
 		<View className="flex gap-16 mb-8">

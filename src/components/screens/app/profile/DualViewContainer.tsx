@@ -1,7 +1,8 @@
-import { useMemo } from 'react';
+import { useCallback } from 'react';
 
 import { View } from 'react-native';
 
+import { useModalContext } from '@/components/ui/modals/SneakersModal/hooks/useModalContext';
 import {
 	useViewDisplayStateStore,
 	ViewDisplayState,
@@ -16,62 +17,50 @@ import ListDisplay from './displayState/list/ListDisplay';
 interface DualViewContainerProps {
 	user: User | SearchUser;
 	userSneakers: Sneaker[];
-	refreshing: boolean;
-	onRefresh: () => Promise<void>;
-	onSneakerPress: (sneaker: Sneaker) => void;
-	showBackButton?: boolean;
+	onSneakerPress?: (sneaker: Sneaker) => void;
 }
 
 export default function DualViewContainer({
 	user,
 	userSneakers,
-	refreshing,
-	onRefresh,
 	onSneakerPress,
-	showBackButton = false,
 }: DualViewContainerProps) {
 	const { viewDisplayState } = useViewDisplayStateStore();
-
-	const sneakersByBrand = useMemo(() => {
-		if (!userSneakers || userSneakers.length === 0) return {};
-
-		return userSneakers.reduce(
-			(acc, sneaker) => {
-				const normalizedBrand = sneaker.brand.toLowerCase().trim();
-
-				if (!acc[normalizedBrand]) {
-					acc[normalizedBrand] = [];
-				}
-				acc[normalizedBrand].push(sneaker);
-				return acc;
-			},
-			{} as Record<string, Sneaker[]>
-		);
-	}, [userSneakers]);
+	const { openSneakerModal } = useModalContext({
+		contextSneakers: userSneakers,
+	});
 
 	const isCardView = viewDisplayState === ViewDisplayState.Card;
+
+	const handleSneakerPress = useCallback(
+		(sneaker: Sneaker) => {
+			// Utiliser onSneakerPress si fourni, sinon utiliser openSneakerModal
+			if (onSneakerPress) {
+				onSneakerPress(sneaker);
+			} else {
+				openSneakerModal(sneaker);
+			}
+		},
+		[onSneakerPress, openSneakerModal]
+	);
 
 	return (
 		<View className="flex-1">
 			{isCardView ? (
-				<CardDisplay
-					sneakersByBrand={sneakersByBrand}
-					handleSneakerPress={onSneakerPress}
-					refreshing={refreshing}
-					onRefresh={onRefresh}
-					user={user}
-					userSneakers={userSneakers}
-					showBackButton={showBackButton}
-				/>
+				<View className="flex-1">
+					<CardDisplay
+						handleSneakerPress={handleSneakerPress}
+						user={user}
+						userSneakers={userSneakers}
+					/>
+				</View>
 			) : (
-				<ListDisplay
-					userSneakers={userSneakers}
-					handleSneakerPress={onSneakerPress}
-					refreshing={refreshing}
-					onRefresh={onRefresh}
-					user={user}
-					showBackButton={showBackButton}
-				/>
+				<View className="flex-1">
+					<ListDisplay
+						userSneakers={userSneakers}
+						contextUserSneakers={userSneakers}
+					/>
+				</View>
 			)}
 		</View>
 	);

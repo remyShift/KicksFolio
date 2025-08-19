@@ -21,15 +21,9 @@ vi.mock('@/services/ImageService', () => ({
 	},
 }));
 
-vi.mock('@/interfaces/ImageProviderInterface', () => ({
-	ImageProviderInterface: {
-		deleteSpecificSneakerImage: vi.fn(),
-	},
-}));
-
-vi.mock('@/domain/ImageProxy', () => ({
-	imageProvider: {
-		deleteSpecificSneakerImage: vi.fn(),
+vi.mock('@/tech/proxy/ImageProxy', () => ({
+	imageStorageProxy: {
+		deleteSpecificSneaker: vi.fn(),
 	},
 }));
 

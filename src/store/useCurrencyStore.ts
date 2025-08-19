@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 
 import { currencyProvider } from '@/d/CurrencyProvider';
-import { CurrencyProvider } from '@/domain/CurrencyProvider';
+import { CurrencyHandler } from '@/domain/CurrencyProvider';
 import { Currency } from '@/types/currency';
 
 import { useLanguageStore } from './useLanguageStore';
@@ -11,14 +11,18 @@ import { useLanguageStore } from './useLanguageStore';
 interface CurrencyStore {
 	currentCurrency: Currency;
 	isInitialized: boolean;
-	currencyProvider: CurrencyProvider;
+	currencyHandler: CurrencyHandler;
 
 	setCurrency: (currency: Currency) => Promise<void>;
 	initializeCurrency: () => Promise<void>;
 	getCurrentCurrency: () => Currency;
-	formattedPrice: (price: number) => Promise<string>;
-	formattedPriceAsync: (price: number) => Promise<string>;
+	convertAndFormatdPrice: (price: number) => string;
 }
+
+const CURRENCY_SYMBOLS = {
+	USD: '$',
+	EUR: '€',
+} as const;
 
 const CURRENCY_STORAGE_KEY = 'app_currency';
 
@@ -26,7 +30,7 @@ export const useCurrencyStore = create<CurrencyStore>((set, get) => ({
 	currentCurrency: 'USD',
 	isInitialized: false,
 
-	currencyProvider: new CurrencyProvider(currencyProvider),
+	currencyHandler: new CurrencyHandler(currencyProvider),
 
 	setCurrency: async (currency: Currency) => {
 		return AsyncStorage.setItem(CURRENCY_STORAGE_KEY, currency)
@@ -79,27 +83,22 @@ export const useCurrencyStore = create<CurrencyStore>((set, get) => ({
 			});
 	},
 
-	formattedPrice: async (price: number) => {
-		try {
-			return await get().currencyProvider.formatPrice(
-				price,
-				get().currentCurrency
-			);
-		} catch (error) {
-			console.error('❌ Error formatting price:', error);
-			return `$${price.toFixed(2)}`;
-		}
-	},
+	convertAndFormatdPrice: (price: number): string => {
+		const currency = get().currentCurrency;
+		const convertedPrice = get().currencyHandler.convertPrice(
+			price,
+			'USD',
+			currency
+		);
+		const symbol = CURRENCY_SYMBOLS[currency];
 
-	formattedPriceAsync: async (price: number) => {
-		try {
-			return await get().currencyProvider.formatPrice(
-				price,
-				get().currentCurrency
-			);
-		} catch (error) {
-			console.error('❌ Error formatting price:', error);
-			return `$${price.toFixed(2)}`;
+		switch (currency) {
+			case 'USD':
+				return `${symbol}${convertedPrice.toFixed(2)}`;
+			case 'EUR':
+				return `${convertedPrice.toFixed(2)}${symbol}`;
+			default:
+				return `${symbol}${convertedPrice.toFixed(2)}`;
 		}
 	},
 

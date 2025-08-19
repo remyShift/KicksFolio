@@ -1,10 +1,10 @@
 import { FollowingUser, SearchUser } from '@/types/user';
 
 export interface FollowerHandlerInterface {
-	followUser: (followingId: string) => Promise<boolean>;
-	unfollowUser: (followingId: string) => Promise<boolean>;
-	getFollowingUsers: (userId: string) => Promise<FollowingUser[]>;
-	getFollowersOfUser: (userId: string) => Promise<SearchUser[]>;
+	follow: (userToFollowId: string) => Promise<boolean>;
+	unfollow: (userToUnfollowId: string) => Promise<boolean>;
+	getFollowing: (userId: string) => Promise<FollowingUser[]>;
+	getFollowers: (userId: string) => Promise<SearchUser[]>;
 	isFollowing: (followerId: string, followingId: string) => Promise<boolean>;
 	getFollowCounts: (
 		userId: string
@@ -14,9 +14,9 @@ export interface FollowerHandlerInterface {
 export class FollowerHandler {
 	constructor(private readonly followerProvider: FollowerHandlerInterface) {}
 
-	followUser = async (followingId: string) => {
+	follow = async (userToFollowId: string) => {
 		return this.followerProvider
-			.followUser(followingId)
+			.follow(userToFollowId)
 			.then((result) => {
 				return result;
 			})
@@ -29,9 +29,9 @@ export class FollowerHandler {
 			});
 	};
 
-	unfollowUser = async (followingId: string) => {
+	unfollow = async (userToUnfollowId: string) => {
 		return this.followerProvider
-			.unfollowUser(followingId)
+			.unfollow(userToUnfollowId)
 			.then((result) => {
 				return result;
 			})
@@ -44,9 +44,9 @@ export class FollowerHandler {
 			});
 	};
 
-	getFollowingUsers = async (userId: string) => {
+	getFollowing = async (userId: string) => {
 		return this.followerProvider
-			.getFollowingUsers(userId)
+			.getFollowing(userId)
 			.then((users) => {
 				return users;
 			})
@@ -59,9 +59,9 @@ export class FollowerHandler {
 			});
 	};
 
-	getFollowersOfUser = async (userId: string) => {
+	getFollowers = async (userId: string) => {
 		return this.followerProvider
-			.getFollowersOfUser(userId)
+			.getFollowers(userId)
 			.then((users) => {
 				return users;
 			})

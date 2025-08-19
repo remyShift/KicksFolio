@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import { useTranslation } from 'react-i18next';
 import { Alert } from 'react-native';
 
@@ -15,8 +13,6 @@ export const useModalFooterActions = () => {
 	const { t } = useTranslation();
 	const { showSuccessToast, showErrorToast, showInfoToast } = useToast();
 	const { user, refreshUserData } = useSession();
-	const [nextSneaker, setNextSneaker] = useState<Sneaker | null>(null);
-	const [prevSneaker, setPrevSneaker] = useState<Sneaker | null>(null);
 
 	const {
 		modalStep,
@@ -32,6 +28,8 @@ export const useModalFooterActions = () => {
 		setCurrentSneaker,
 		setIsVisible,
 		currentSneaker,
+		nextSneaker,
+		prevSneaker,
 		isLoading,
 		setIsLoading,
 	} = useModalStore();
@@ -313,8 +311,6 @@ export const useModalFooterActions = () => {
 		handleBackAction,
 		handleEditAction,
 		handleDeleteAction,
-		setNextSneaker,
-		setPrevSneaker,
 		isLoading,
 	};
 };

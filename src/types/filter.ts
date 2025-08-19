@@ -14,7 +14,7 @@ export interface FilterState {
 	brands: string[];
 	sizes: string[];
 	conditions: string[];
-	statuses?: string[];
+	statuses: string[];
 }
 
 export interface UniqueValues {

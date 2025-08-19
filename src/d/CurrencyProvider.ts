@@ -1,4 +1,4 @@
-import { CurrencyProviderInterface } from '@/domain/CurrencyProvider';
+import { CurrencyHandlerInterface } from '@/domain/CurrencyProvider';
 import { Currency } from '@/types/currency';
 
 const EXCHANGE_RATES = {
@@ -6,31 +6,7 @@ const EXCHANGE_RATES = {
 	EUR: 0.85,
 } as const;
 
-const CURRENCY_SYMBOLS = {
-	USD: '$',
-	EUR: '€',
-} as const;
-
-export class CurrencyProvider implements CurrencyProviderInterface {
-	formatPrice = (price: number, currency: Currency): string => {
-		try {
-			const convertedPrice = this.convertPrice(price, 'USD', currency);
-			const symbol = CURRENCY_SYMBOLS[currency];
-
-			switch (currency) {
-				case 'USD':
-					return `${symbol}${convertedPrice.toFixed(2)}`;
-				case 'EUR':
-					return `${convertedPrice.toFixed(2)}${symbol}`;
-				default:
-					return `${symbol}${convertedPrice.toFixed(2)}`;
-			}
-		} catch (error) {
-			console.error('Error in formatPrice:', error);
-			return `$${price.toFixed(2)}`;
-		}
-	};
-
+export class CurrencyProvider implements CurrencyHandlerInterface {
 	convertPrice = (
 		price: number,
 		fromCurrency: Currency,
