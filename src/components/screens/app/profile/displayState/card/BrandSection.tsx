@@ -6,18 +6,7 @@ import SneakerCard from '@/components/ui/cards/SneakerCard';
 import BrandTitle from '@/components/ui/text/BrandTitle';
 import { useModalStore } from '@/store/useModalStore';
 import { Sneaker } from '@/types/sneaker';
-
-const brandLogos: Record<string, any> = {
-	nike: require('@/assets/images/brands/nike.png'),
-	adidas: require('@/assets/images/brands/adidas.png'),
-	jordan: require('@/assets/images/brands/jordan.png'),
-	'new balance': require('@/assets/images/brands/newbalance.png'),
-	asics: require('@/assets/images/brands/asics.png'),
-	puma: require('@/assets/images/brands/puma.png'),
-	reebok: require('@/assets/images/brands/reebok.png'),
-	converse: require('@/assets/images/brands/converse.png'),
-	vans: require('@/assets/images/brands/vans.png'),
-};
+import { brandLogos } from '@/validation/utils';
 
 interface BrandSectionProps {
 	brandName: string;

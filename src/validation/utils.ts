@@ -21,6 +21,18 @@ export const sneakerBrandOptions: { label: string; value: SneakerBrand }[] = [
 	{ label: 'Other', value: SneakerBrand.Other },
 ];
 
+export const brandLogos: Record<string, any> = {
+	nike: require('@/assets/images/brands/nike.png'),
+	adidas: require('@/assets/images/brands/adidas.png'),
+	jordan: require('@/assets/images/brands/jordan.png'),
+	'new balance': require('@/assets/images/brands/newbalance.png'),
+	asics: require('@/assets/images/brands/asics.png'),
+	puma: require('@/assets/images/brands/puma.png'),
+	reebok: require('@/assets/images/brands/reebok.png'),
+	converse: require('@/assets/images/brands/converse.png'),
+	vans: require('@/assets/images/brands/vans.png'),
+};
+
 export const validateSneakerSize = (val: string) => {
 	const num = Number(val);
 	const currentUnit = useSizeUnitStore.getState().currentUnit;
