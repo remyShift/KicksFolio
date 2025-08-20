@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { View } from 'react-native';
 
@@ -32,6 +32,7 @@ export default function DualViewContainer({
 
 	const isCardView = viewDisplayState === ViewDisplayState.Card;
 
+	// Optimisation : mémorisation du handleSneakerPress
 	const handleSneakerPress = useCallback(
 		(sneaker: Sneaker) => {
 			if (onSneakerPress) {
@@ -43,24 +44,28 @@ export default function DualViewContainer({
 		[onSneakerPress, openSneakerModal]
 	);
 
+	const cardDisplay = useMemo(
+		() => (
+			<CardDisplay
+				handleSneakerPress={handleSneakerPress}
+				user={user}
+				userSneakers={userSneakers}
+			/>
+		),
+		[handleSneakerPress, user, userSneakers]
+	);
+
+	const listDisplay = useMemo(
+		() => (
+			<ListDisplay
+				userSneakers={userSneakers}
+				contextUserSneakers={userSneakers}
+			/>
+		),
+		[userSneakers]
+	);
+
 	return (
-		<View className="flex-1">
-			{isCardView ? (
-				<View className="flex-1">
-					<CardDisplay
-						handleSneakerPress={handleSneakerPress}
-						user={user}
-						userSneakers={userSneakers}
-					/>
-				</View>
-			) : (
-				<View className="flex-1">
-					<ListDisplay
-						userSneakers={userSneakers}
-						contextUserSneakers={userSneakers}
-					/>
-				</View>
-			)}
-		</View>
+		<View className="flex-1">{isCardView ? cardDisplay : listDisplay}</View>
 	);
 }

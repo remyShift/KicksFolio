@@ -13,7 +13,8 @@ type ViewDisplayStateStore = {
 export const useViewDisplayStateStore = create<ViewDisplayStateStore>(
 	(set) => ({
 		viewDisplayState: ViewDisplayState.Card,
-		setViewDisplayState: (viewDisplayState: ViewDisplayState) =>
-			set({ viewDisplayState }),
+		setViewDisplayState: (viewDisplayState: ViewDisplayState) => {
+			set({ viewDisplayState });
+		},
 	})
 );

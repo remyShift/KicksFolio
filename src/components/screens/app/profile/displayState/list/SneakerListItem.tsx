@@ -52,6 +52,10 @@ function SneakerListItem({
 		return sneaker.condition ? `${sneaker.condition}/10` : 'N/A';
 	}, [sneaker.condition]);
 
+	const imageUri = useMemo(() => {
+		return sneaker.images?.[0]?.uri;
+	}, [sneaker.images]);
+
 	return (
 		<View className="bg-white py-2 px-4 border border-gray-100">
 			<View
@@ -59,7 +63,7 @@ function SneakerListItem({
 				pointerEvents="none"
 			>
 				<OptimizedSneakerImage
-					imageUri={sneaker.images?.[0]?.uri}
+					imageUri={imageUri}
 					width={80}
 					height={80}
 					borderRadius={8}
@@ -101,6 +105,18 @@ function SneakerListItem({
 
 export default memo(SneakerListItem, (prevProps, nextProps) => {
 	if (prevProps.sneaker.id !== nextProps.sneaker.id) return false;
+	if (prevProps.sneaker.model !== nextProps.sneaker.model) return false;
+	if (prevProps.sneaker.brand !== nextProps.sneaker.brand) return false;
+	if (prevProps.sneaker.estimated_value !== nextProps.sneaker.estimated_value)
+		return false;
+	if (prevProps.sneaker.condition !== nextProps.sneaker.condition)
+		return false;
+	if (
+		prevProps.sneaker.images?.[0]?.uri !==
+		nextProps.sneaker.images?.[0]?.uri
+	)
+		return false;
+	if (prevProps.showOwnerInfo !== nextProps.showOwnerInfo) return false;
 
 	return true;
 });

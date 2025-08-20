@@ -26,7 +26,9 @@
     "commit": "cz",
     "madge": "madge --circular --extensions ts,tsx,js,jsx src/",
     "madge:warn": "madge --warning --extensions ts,tsx,js,jsx src/",
-    "madge:image": "madge --image graph.svg src/"
+    "madge:image": "madge --image graph.svg src/",
+    "android": "expo run:android",
+    "ios": "expo run:ios"
   },
   "dependencies": {
     "@expo/config-plugins": "~10.1.1",

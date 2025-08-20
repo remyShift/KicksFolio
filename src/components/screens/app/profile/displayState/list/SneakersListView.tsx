@@ -9,8 +9,7 @@ import { useSwipeOptimization } from '@/hooks/useSwipeOptimization';
 import { Sneaker } from '@/types/sneaker';
 
 import ListControls from './ListControls';
-import SneakerListItem from './SneakerListItem';
-import SwipeActions from './SwipeActions';
+import { SneakerSwipeItemList } from './SneakerSwipeItemList';
 
 interface SneakersListViewProps {
 	sneakers: Sneaker[];
@@ -47,20 +46,12 @@ export default function SneakersListView({
 	const renderSneakerItem = useCallback(
 		({ item }: { item: Sneaker }) => {
 			return (
-				<View className="relative">
-					<SneakerListItem
-						key={item.id}
-						sneaker={item}
-						showOwnerInfo={showOwnerInfo}
-					/>
-					<View className="absolute right-0 top-0 bottom-0 flex-row">
-						<SwipeActions
-							sneaker={item}
-							closeRow={handleCloseRow}
-							userSneakers={userSneakers}
-						/>
-					</View>
-				</View>
+				<SneakerSwipeItemList
+					item={item}
+					showOwnerInfo={showOwnerInfo}
+					userSneakers={userSneakers}
+					onCloseRow={handleCloseRow}
+				/>
 			);
 		},
 		[handleCloseRow, showOwnerInfo, userSneakers]
@@ -102,8 +93,6 @@ export default function SneakersListView({
 		return <View className="h-1" />;
 	}, []);
 
-	// FlashList v2 does not require item size estimates
-
 	return (
 		<FlashList
 			key={listKey}
@@ -114,8 +103,9 @@ export default function SneakersListView({
 			ItemSeparatorComponent={ItemSeparatorComponent}
 			contentContainerStyle={{ paddingTop: 0, paddingBottom: 10 }}
 			showsVerticalScrollIndicator={false}
-			scrollEnabled={false}
-			nestedScrollEnabled={false}
+			scrollEnabled={true}
+			nestedScrollEnabled={true}
+			indicatorStyle="black"
 			keyboardShouldPersistTaps="handled"
 		/>
 	);
