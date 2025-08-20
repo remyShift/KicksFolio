@@ -21,7 +21,7 @@ export function useSwipeOptimization() {
 		return isOpen;
 	}, []);
 
-	const clearOpenRow = useCallback(() => {
+	const closeOpenRow = useCallback(() => {
 		openRowRef.current = null;
 	}, []);
 
@@ -29,6 +29,6 @@ export function useSwipeOptimization() {
 		closeRow,
 		setOpenRow,
 		isRowOpen,
-		clearOpenRow,
+		closeOpenRow,
 	};
 }

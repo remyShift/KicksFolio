@@ -36,7 +36,6 @@ export default function ProfileDisplayContainer(
 
 	const { setModalStep, setIsVisible } = useModalStore();
 	const { user: currentUser } = useSession();
-	const { viewDisplayState } = useViewDisplayStateStore();
 
 	const handleAddSneaker = () => {
 		setModalStep('index');
@@ -44,10 +43,6 @@ export default function ProfileDisplayContainer(
 	};
 
 	const isOwner = currentUser?.id === user.id;
-	const isListView = viewDisplayState === ViewDisplayState.List;
-	const isLargeCollection = userSneakers && userSneakers.length >= 50;
-
-	const shouldUseScrollView = !(isListView && isLargeCollection);
 
 	if (!userSneakers || userSneakers.length === 0) {
 		return (
@@ -70,21 +65,6 @@ export default function ProfileDisplayContainer(
 					showAddButton={isOwner}
 				/>
 			</ScrollView>
-		);
-	}
-
-	if (!shouldUseScrollView) {
-		return (
-			<View className="flex-1 mt-16">
-				<ProfileHeader user={user} showBackButton={showBackButton} />
-				<DualViewContainer
-					user={user}
-					userSneakers={userSneakers}
-					onSneakerPress={onSneakerPress}
-					refreshing={refreshing}
-					onRefresh={onRefresh}
-				/>
-			</View>
 		);
 	}
 

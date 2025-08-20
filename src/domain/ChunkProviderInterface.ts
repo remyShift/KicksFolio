@@ -82,8 +82,8 @@ export class ChunkProvider implements ChunkProviderInterface {
 		const { start, end } = visibleRange;
 		const { chunkSize, bufferSize } = config;
 
-		const bufferedStart = Math.max(0, start - bufferSize);
-		const bufferedEnd = Math.min(totalItems, end + bufferSize);
+		const bufferedStart = Math.max(0, start - bufferSize * chunkSize);
+		const bufferedEnd = Math.min(totalItems, end + bufferSize * chunkSize);
 
 		const startChunkIndex =
 			Math.floor(bufferedStart / chunkSize) * chunkSize;
@@ -130,50 +130,37 @@ export class ChunkProvider implements ChunkProviderInterface {
 			return chunks;
 		}
 
+		console.log(`🧹 [ChunkProvider] Optimisation mémoire:`, {
+			totalChunks: chunks.length,
+			maxChunksInMemory,
+		});
+
+		// Trier les chunks par dernière utilisation
 		const sortedChunks = [...chunks].sort(
+			(a, b) => b.lastAccessed.getTime() - a.lastAccessed.getTime()
+		);
+
+		// Garder les chunks les plus récemment utilisés
+		const chunksToKeep = sortedChunks.slice(0, maxChunksInMemory);
+
+		// Trier par index pour maintenir l'ordre
+		const optimizedChunks = chunksToKeep.sort(
 			(a, b) => a.startIndex - b.startIndex
 		);
 
-		const mostRecentChunk = sortedChunks.reduce((latest, current) =>
-			current.lastAccessed.getTime() > latest.lastAccessed.getTime()
-				? current
-				: latest
-		);
+		console.log(`🧹 [ChunkProvider] Optimisation terminée:`, {
+			kept: optimizedChunks.length,
+			removed: chunks.length - optimizedChunks.length,
+			keptRange:
+				optimizedChunks.length > 0
+					? {
+							start: optimizedChunks[0].startIndex,
+							end: optimizedChunks[optimizedChunks.length - 1]
+								.endIndex,
+						}
+					: null,
+		});
 
-		const recentChunkIndex = sortedChunks.findIndex(
-			(chunk) => chunk.id === mostRecentChunk.id
-		);
-
-		const isNearEnd =
-			recentChunkIndex >=
-			sortedChunks.length - Math.floor(maxChunksInMemory / 2);
-		if (isNearEnd) {
-			return sortedChunks.slice(
-				Math.max(0, sortedChunks.length - maxChunksInMemory)
-			);
-		}
-
-		const halfWindow = Math.floor(maxChunksInMemory / 2);
-		const startIndex = Math.max(0, recentChunkIndex - halfWindow);
-		const endIndex = Math.min(
-			sortedChunks.length,
-			startIndex + maxChunksInMemory
-		);
-
-		const actualWindowSize = endIndex - startIndex;
-		if (actualWindowSize < maxChunksInMemory) {
-			if (startIndex === 0) {
-				return sortedChunks.slice(
-					0,
-					Math.min(sortedChunks.length, maxChunksInMemory)
-				);
-			} else {
-				return sortedChunks.slice(
-					Math.max(0, sortedChunks.length - maxChunksInMemory)
-				);
-			}
-		}
-
-		return sortedChunks.slice(startIndex, endIndex);
+		return optimizedChunks;
 	}
 }

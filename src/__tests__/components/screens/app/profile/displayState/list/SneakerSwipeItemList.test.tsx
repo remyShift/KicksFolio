@@ -3,7 +3,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { fireEvent, render } from '@testing-library/react-native';
 
-import SneakerSwipeItemList from '@/components/screens/app/profile/displayState/list/SneakerSwipeItemList';
+import SwipeableWrapper from '@/components/screens/app/profile/displayState/list/SwipeableWrapper';
 import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
 
 // Mock the hooks
@@ -75,10 +75,10 @@ const renderWithGestureHandler = (component: React.ReactElement) => {
 	);
 };
 
-describe('SneakerSwipeItemList', () => {
+describe('SwipeableWrapper', () => {
 	it('renders correctly with sneaker data', () => {
 		const { getByText } = renderWithGestureHandler(
-			<SneakerSwipeItemList item={mockSneaker} showOwnerInfo={false} />
+			<SwipeableWrapper item={mockSneaker} showOwnerInfo={false} />
 		);
 
 		expect(getByText('Air Jordan 1')).toBeTruthy();
@@ -87,7 +87,7 @@ describe('SneakerSwipeItemList', () => {
 
 	it('shows owner info when showOwnerInfo is true', () => {
 		const { getByText } = renderWithGestureHandler(
-			<SneakerSwipeItemList item={mockSneaker} showOwnerInfo={true} />
+			<SwipeableWrapper item={mockSneaker} showOwnerInfo={true} />
 		);
 
 		// Vérifier que le composant SneakerListItem est rendu avec showOwnerInfo
@@ -96,7 +96,7 @@ describe('SneakerSwipeItemList', () => {
 
 	it('renders SwipeActions component', () => {
 		const { getByTestId } = renderWithGestureHandler(
-			<SneakerSwipeItemList item={mockSneaker} showOwnerInfo={false} />
+			<SwipeableWrapper item={mockSneaker} showOwnerInfo={false} />
 		);
 
 		expect(getByTestId('swipe-actions')).toBeTruthy();
@@ -104,7 +104,7 @@ describe('SneakerSwipeItemList', () => {
 
 	it('shows delete button when user is owner', () => {
 		const { getByTestId } = renderWithGestureHandler(
-			<SneakerSwipeItemList item={mockSneaker} showOwnerInfo={false} />
+			<SwipeableWrapper item={mockSneaker} showOwnerInfo={false} />
 		);
 
 		expect(getByTestId('delete-button')).toBeTruthy();
@@ -113,7 +113,7 @@ describe('SneakerSwipeItemList', () => {
 
 	it('hides delete button when user is not owner', () => {
 		const { queryByTestId, getByTestId } = renderWithGestureHandler(
-			<SneakerSwipeItemList
+			<SwipeableWrapper
 				item={mockOtherUserSneaker}
 				showOwnerInfo={false}
 			/>
@@ -127,7 +127,7 @@ describe('SneakerSwipeItemList', () => {
 		const mockOnCloseRow = jest.fn();
 
 		renderWithGestureHandler(
-			<SneakerSwipeItemList
+			<SwipeableWrapper
 				item={mockSneaker}
 				showOwnerInfo={false}
 				onCloseRow={mockOnCloseRow}

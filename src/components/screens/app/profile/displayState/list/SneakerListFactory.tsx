@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 
-import { RefreshControl, View } from 'react-native';
+import { View } from 'react-native';
 
 import { FlashList } from '@shopify/flash-list';
 
@@ -9,7 +9,7 @@ import { useSneakerFiltering } from '@/hooks/useSneakerFiltering';
 import { Sneaker } from '@/types/sneaker';
 
 import ListControls from './ListControls';
-import SneakerSwipeItemList from './SneakerSwipeItemList';
+import SwipeableWrapper from './SwipeableWrapper';
 
 interface SneakerListFactoryProps {
 	sneakers: Sneaker[];
@@ -36,6 +36,14 @@ export default function SneakerListFactory({
 }: SneakerListFactoryProps) {
 	const shouldUseChunking = sneakers.length >= threshold;
 
+	console.log(`🏭 [SneakerListFactory] Initialisation:`, {
+		sneakersCount: sneakers.length,
+		threshold,
+		shouldUseChunking,
+		chunkSize,
+		bufferSize,
+	});
+
 	const normalStrategy = useSneakerFiltering({ sneakers });
 
 	const chunkedStrategy = useFilteredChunkedSneakers(sneakers, {
@@ -47,7 +55,7 @@ export default function SneakerListFactory({
 
 	const renderItem = useCallback(
 		({ item }: { item: Sneaker }) => (
-			<SneakerSwipeItemList
+			<SwipeableWrapper
 				item={item}
 				showOwnerInfo={showOwnerInfo}
 				userSneakers={userSneakers}
@@ -62,7 +70,17 @@ export default function SneakerListFactory({
 
 	const handleScroll = useCallback(
 		(event: any) => {
-			if (!shouldUseChunking) return;
+			console.log(
+				`🎯 [SneakerListFactory] handleScroll appelé, shouldUseChunking:`,
+				shouldUseChunking
+			);
+
+			if (!shouldUseChunking) {
+				console.log(
+					`🚫 [SneakerListFactory] Chunking désactivé, scroll ignoré`
+				);
+				return;
+			}
 
 			const { contentOffset, layoutMeasurement, contentSize } =
 				event.nativeEvent;
@@ -70,38 +88,77 @@ export default function SneakerListFactory({
 			const viewHeight = layoutMeasurement.height;
 			const contentHeight = contentSize.height;
 
-			const startIndex = Math.floor(scrollY / ESTIMATED_ITEM_HEIGHT);
-			const endIndex = Math.ceil(
-				(scrollY + viewHeight) / ESTIMATED_ITEM_HEIGHT
+			const currentVisibleCount = chunkedStrategy.visibleSneakers.length;
+			const startIndex = Math.max(0, currentVisibleCount - bufferSize);
+			const endIndex = Math.min(
+				chunkedStrategy.totalSneakers,
+				currentVisibleCount + chunkSize * 2
 			);
 
-			const isNearEnd = scrollY + viewHeight >= contentHeight - 100;
-			const extendedEndIndex = isNearEnd
-				? Math.min(
-						chunkedStrategy.totalSneakers,
-						endIndex + chunkSize * 2
-					)
-				: endIndex;
+			const bufferedStartIndex = Math.max(0, startIndex - bufferSize);
+			const bufferedEndIndex = Math.min(
+				chunkedStrategy.totalSneakers,
+				endIndex + bufferSize
+			);
+
+			const isNearEnd = scrollY + viewHeight >= contentHeight - 200;
+
+			console.log(`📜 [SneakerListFactory] Scroll détecté:`, {
+				scrollY,
+				viewHeight,
+				contentHeight,
+				startIndex,
+				endIndex,
+				bufferedStartIndex,
+				bufferedEndIndex,
+				isNearEnd,
+				totalSneakers: chunkedStrategy.totalSneakers,
+				visibleSneakersCount: chunkedStrategy.visibleSneakers.length,
+				loadedChunks: chunkedStrategy.loadedChunks,
+			});
+
+			console.log(
+				`📞 [SneakerListFactory] Appel de chunkedStrategy.onScroll avec:`,
+				{
+					start: bufferedStartIndex,
+					end: bufferedEndIndex,
+				}
+			);
 
 			chunkedStrategy.onScroll({
-				start: startIndex,
-				end: extendedEndIndex,
+				start: bufferedStartIndex,
+				end: bufferedEndIndex,
 			});
 		},
-		[shouldUseChunking, chunkedStrategy, chunkSize]
+		[shouldUseChunking, chunkedStrategy, chunkSize, bufferSize]
 	);
 
 	const handleEndReached = useCallback(() => {
-		if (!shouldUseChunking) return;
+		console.log(
+			`🏁 [SneakerListFactory] handleEndReached appelé, shouldUseChunking:`,
+			shouldUseChunking
+		);
 
-		const currentEnd = Math.ceil(0 / ESTIMATED_ITEM_HEIGHT);
+		if (!shouldUseChunking) {
+			console.log(
+				`🚫 [SneakerListFactory] Chunking désactivé, endReached ignoré`
+			);
+			return;
+		}
+
+		const currentVisibleCount = chunkedStrategy.visibleSneakers.length;
 		const extendedRange = {
-			start: Math.max(0, currentEnd - bufferSize),
+			start: Math.max(0, currentVisibleCount - bufferSize),
 			end: Math.min(
 				chunkedStrategy.totalSneakers,
-				currentEnd + chunkSize * 3
+				currentVisibleCount + chunkSize * 2
 			),
 		};
+
+		console.log(
+			`🏁 [SneakerListFactory] handleEndReached - extendedRange:`,
+			extendedRange
+		);
 
 		chunkedStrategy.onScroll(extendedRange);
 	}, [shouldUseChunking, chunkedStrategy, bufferSize, chunkSize]);
@@ -170,45 +227,45 @@ export default function SneakerListFactory({
 		? chunkedStrategy.visibleSneakers
 		: normalStrategy.filteredAndSortedSneakers;
 
-	const flashListProps = useMemo(
-		() => ({
+	const flashListProps = useMemo(() => {
+		const props = {
 			data: displayData,
 			renderItem,
 			keyExtractor,
 			ListHeaderComponent,
 			onScroll: shouldUseChunking ? handleScroll : undefined,
 			onEndReached: shouldUseChunking ? handleEndReached : undefined,
-			onEndReachedThreshold: shouldUseChunking ? 0.3 : 0.5,
+			onEndReachedThreshold: shouldUseChunking ? 0.1 : 0.5,
 			scrollEventThrottle: shouldUseChunking ? 16 : undefined,
 			removeClippedSubviews: true,
 			estimatedItemSize: ESTIMATED_ITEM_HEIGHT,
-			refreshControl: onRefresh ? (
-				<RefreshControl
-					refreshing={refreshing}
-					onRefresh={onRefresh}
-					tintColor="#FF6B6B"
-					progressViewOffset={60}
-				/>
-			) : undefined,
 			contentContainerStyle: { paddingTop: 0, paddingBottom: 20 },
 			showsVerticalScrollIndicator: false,
 			scrollEnabled: true,
 			nestedScrollEnabled: true,
 			indicatorStyle: 'black' as const,
 			keyboardShouldPersistTaps: 'handled' as const,
-		}),
-		[
-			displayData,
-			renderItem,
-			keyExtractor,
-			ListHeaderComponent,
+		};
+
+		console.log(`📋 [SneakerListFactory] FlashList props:`, {
+			dataLength: displayData.length,
 			shouldUseChunking,
-			handleScroll,
-			handleEndReached,
-			refreshing,
-			onRefresh,
-		]
-	);
+			hasOnScroll: !!props.onScroll,
+			hasOnEndReached: !!props.onEndReached,
+			scrollEventThrottle: props.scrollEventThrottle,
+			scrollEnabled: props.scrollEnabled,
+		});
+
+		return props;
+	}, [
+		displayData,
+		renderItem,
+		keyExtractor,
+		ListHeaderComponent,
+		shouldUseChunking,
+		handleScroll,
+		handleEndReached,
+	]);
 
 	return (
 		<View className="flex-1">
