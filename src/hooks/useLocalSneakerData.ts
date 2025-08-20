@@ -47,21 +47,25 @@ export function useLocalSneakerData(
 			sneakerFilteringProvider.filterSneakers
 		);
 
-		return SneakerFilterInterface.sortSneakers(
+		const result = SneakerFilterInterface.sortSneakers(
 			filteredSneakers,
 			sortBy,
 			sortOrder,
 			currentUnit,
 			sneakerFilteringProvider.sortSneakers
 		);
+
+		return result;
 	}, [sneakers, filters, sortBy, sortOrder, currentUnit]);
 
 	const uniqueValues = useMemo(() => {
-		return SneakerFilterInterface.getUniqueValues(
+		const result = SneakerFilterInterface.getUniqueValues(
 			sneakers,
 			currentUnit,
 			sneakerFilteringProvider.getUniqueValues
 		);
+
+		return result;
 	}, [sneakers, currentUnit]);
 
 	const toggleSort = useCallback(

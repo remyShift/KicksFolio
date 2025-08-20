@@ -1,9 +1,8 @@
-import { memo, useCallback, useMemo } from 'react';
+import { memo, useCallback, useEffect, useMemo } from 'react';
 
-import { useTranslation } from 'react-i18next';
 import { Animated, Dimensions, StyleSheet } from 'react-native';
-import { Text, View } from 'react-native';
-import { PanGestureHandler, State } from 'react-native-gesture-handler';
+import { View } from 'react-native';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 
 import DeleteButton from '@/components/ui/buttons/DeleteButton';
 import EditButton from '@/components/ui/buttons/EditButton';
@@ -29,19 +28,16 @@ function SneakerSwipeItemList({
 	userSneakers,
 	onCloseRow,
 }: SneakerSwipeItemListProps) {
-	const { t } = useTranslation();
 	const { isRowOpen, setOpenRow, closeRow } = useSwipeOptimization();
 
 	const translateX = useMemo(() => new Animated.Value(0), []);
 	const isOpen = useMemo(() => isRowOpen(item.id), [isRowOpen, item.id]);
 
 	const handleEdit = useCallback(() => {
-		// TODO: Implement edit functionality
 		console.log('Edit sneaker:', item.id);
 	}, [item.id]);
 
 	const handleDelete = useCallback(() => {
-		// TODO: Implement delete functionality
 		console.log('Delete sneaker:', item.id);
 	}, [item.id]);
 
@@ -56,18 +52,17 @@ function SneakerSwipeItemList({
 		[translateX]
 	);
 
-	const handleGestureEvent = useCallback(
-		(event: any) => {
-			const { translationX, state } = event.nativeEvent;
-
-			if (state === State.ACTIVE) {
+	const panGesture = useMemo(() => {
+		return Gesture.Pan()
+			.onUpdate((event) => {
 				const newTranslateX = Math.min(
 					0,
-					Math.max(-SWIPE_THRESHOLD * 2, translationX)
+					Math.max(-SWIPE_THRESHOLD * 2, event.translationX)
 				);
 				translateX.setValue(newTranslateX);
-			} else if (state === State.END) {
-				const shouldOpen = translationX < -SWIPE_THRESHOLD;
+			})
+			.onEnd((event) => {
+				const shouldOpen = event.translationX < -SWIPE_THRESHOLD;
 
 				if (shouldOpen) {
 					animateToPosition(-SWIPE_THRESHOLD);
@@ -76,17 +71,14 @@ function SneakerSwipeItemList({
 					animateToPosition(0);
 					closeRow(item.id);
 				}
-			}
-		},
-		[translateX, animateToPosition, setOpenRow, closeRow, item.id]
-	);
+			});
+	}, [translateX, animateToPosition, setOpenRow, closeRow, item.id]);
 
-	// Auto-close when another row opens
-	useMemo(() => {
-		if (!isOpen && translateX._value !== 0) {
+	useEffect(() => {
+		if (!isOpen) {
 			animateToPosition(0);
 		}
-	}, [isOpen, translateX._value, animateToPosition]);
+	}, [isOpen, animateToPosition]);
 
 	const handleSwipeClose = useCallback(() => {
 		animateToPosition(0);
@@ -118,10 +110,7 @@ function SneakerSwipeItemList({
 	return (
 		<View style={styles.container}>
 			{swipeableContent}
-			<PanGestureHandler
-				onGestureEvent={handleGestureEvent}
-				activeOffsetX={[-10, 10]}
-			>
+			<GestureDetector gesture={panGesture}>
 				<Animated.View
 					style={[
 						styles.animatedContainer,
@@ -132,7 +121,7 @@ function SneakerSwipeItemList({
 				>
 					{mainContent}
 				</Animated.View>
-			</PanGestureHandler>
+			</GestureDetector>
 		</View>
 	);
 }
@@ -165,5 +154,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-// Optimisation : export simplifié pour éviter les problèmes de displayName
 export default memo(SneakerSwipeItemList);

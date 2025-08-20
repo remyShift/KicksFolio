@@ -35,13 +35,19 @@ export default function SneakersCardByBrand({
 	const { filteredAndSortedSneakers } = useLocalSneakerData(sneakers);
 
 	const sneakersByBrand = useMemo(() => {
+		const startTime = Date.now();
+
 		if (
 			!filteredAndSortedSneakers ||
 			filteredAndSortedSneakers.length === 0
-		)
+		) {
+			console.log(
+				`⏱️ [SneakersCardByBrand] Groupement rapide (aucune sneaker): ${Date.now() - startTime}ms`
+			);
 			return {};
+		}
 
-		return filteredAndSortedSneakers.reduce(
+		const result = filteredAndSortedSneakers.reduce(
 			(acc, sneaker) => {
 				const normalizedBrand = sneaker.brand.toLowerCase().trim();
 
@@ -53,6 +59,8 @@ export default function SneakersCardByBrand({
 			},
 			{} as Record<string, Sneaker[]>
 		);
+
+		return result;
 	}, [filteredAndSortedSneakers]);
 
 	return (
