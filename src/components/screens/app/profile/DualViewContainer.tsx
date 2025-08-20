@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 
 import { View } from 'react-native';
 
@@ -44,28 +44,21 @@ export default function DualViewContainer({
 		[onSneakerPress, openSneakerModal]
 	);
 
-	const cardDisplay = useMemo(
-		() => (
-			<CardDisplay
-				handleSneakerPress={handleSneakerPress}
-				user={user}
-				userSneakers={userSneakers}
-			/>
-		),
-		[handleSneakerPress, user, userSneakers]
-	);
-
-	const listDisplay = useMemo(
-		() => (
-			<ListDisplay
-				userSneakers={userSneakers}
-				contextUserSneakers={userSneakers}
-			/>
-		),
-		[userSneakers]
-	);
-
+	// Rendu conditionnel pur - React ne rend que le composant nécessaire
 	return (
-		<View className="flex-1">{isCardView ? cardDisplay : listDisplay}</View>
+		<View className="flex-1">
+			{isCardView ? (
+				<CardDisplay
+					handleSneakerPress={handleSneakerPress}
+					user={user}
+					userSneakers={userSneakers}
+				/>
+			) : (
+				<ListDisplay
+					userSneakers={userSneakers}
+					contextUserSneakers={userSneakers}
+				/>
+			)}
+		</View>
 	);
 }

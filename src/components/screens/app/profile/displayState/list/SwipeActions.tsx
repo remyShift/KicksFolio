@@ -10,12 +10,14 @@ interface SwipeActionsProps {
 	sneaker: Sneaker;
 	closeRow: () => void;
 	userSneakers?: Sneaker[];
+	isOwner?: boolean;
 }
 
 export default function SwipeActions({
 	sneaker,
 	closeRow,
 	userSneakers,
+	isOwner = false,
 }: SwipeActionsProps) {
 	const { t } = useTranslation();
 	const { openSneakerModal } = useModalContext({
@@ -60,20 +62,23 @@ export default function SwipeActions({
 
 	return (
 		<View className="flex-row">
-			<TouchableOpacity
-				style={deleteButtonStyle}
-				onPress={handleDelete}
-				activeOpacity={0.7}
-			>
-				<View className="items-center">
-					<View className="w-6 h-6 bg-white rounded-full items-center justify-center mb-1">
-						<View className="w-3 h-0.5 bg-red-500" />
+			{/* Afficher le bouton de suppression seulement si l'utilisateur est le propriétaire */}
+			{isOwner && (
+				<TouchableOpacity
+					style={deleteButtonStyle}
+					onPress={handleDelete}
+					activeOpacity={0.7}
+				>
+					<View className="items-center">
+						<View className="w-6 h-6 bg-white rounded-full items-center justify-center mb-1">
+							<View className="w-3 h-0.5 bg-red-500" />
+						</View>
+						<Text className="text-white text-xs font-medium">
+							{t('collection.actions.delete')}
+						</Text>
 					</View>
-					<Text className="text-white text-xs font-medium">
-						{t('collection.actions.delete')}
-					</Text>
-				</View>
-			</TouchableOpacity>
+				</TouchableOpacity>
+			)}
 
 			<TouchableOpacity
 				style={viewButtonStyle}

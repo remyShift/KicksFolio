@@ -1,7 +1,6 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 
 import { View } from 'react-native';
-import { Swipeable } from 'react-native-gesture-handler';
 
 import { FlashList } from '@shopify/flash-list';
 
@@ -9,8 +8,7 @@ import { useSneakerFiltering } from '@/hooks/useSneakerFiltering';
 import { Sneaker } from '@/types/sneaker';
 
 import ListControls from '../profile/displayState/list/ListControls';
-import SneakerListItem from '../profile/displayState/list/SneakerListItem';
-import WishlistSwipeActions from './WishlistSwipeActions';
+import WishlistSwipeItemList from './WishlistSwipeItemList';
 
 interface WishlistSneakersListViewProps {
 	sneakers: Sneaker[];
@@ -23,6 +21,8 @@ export default function WishlistSneakersListView({
 	onSneakerPress,
 	showOwnerInfo = false,
 }: WishlistSneakersListViewProps) {
+	const [listKey, setListKey] = useState(0);
+
 	const {
 		filteredAndSortedSneakers,
 		uniqueValues,
@@ -36,23 +36,21 @@ export default function WishlistSneakersListView({
 		clearFilters,
 	} = useSneakerFiltering({ sneakers });
 
+	const handleCloseRow = useCallback(() => {
+		setListKey((prev) => prev + 1);
+	}, []);
+
 	const renderSneakerItem = useCallback(
 		({ item }: { item: Sneaker }) => {
 			return (
-				<Swipeable
-					renderRightActions={() => (
-						<WishlistSwipeActions sneaker={item} />
-					)}
-					overshootRight={false}
-				>
-					<SneakerListItem
-						sneaker={item}
-						showOwnerInfo={showOwnerInfo}
-					/>
-				</Swipeable>
+				<WishlistSwipeItemList
+					item={item}
+					showOwnerInfo={showOwnerInfo}
+					onCloseRow={handleCloseRow}
+				/>
 			);
 		},
-		[showOwnerInfo]
+		[handleCloseRow, showOwnerInfo]
 	);
 
 	const renderListHeader = useCallback(() => {
@@ -84,15 +82,26 @@ export default function WishlistSneakersListView({
 
 	return (
 		<FlashList
+			key={listKey}
 			data={filteredAndSortedSneakers}
 			renderItem={renderSneakerItem}
 			keyExtractor={(item) => item.id}
 			ListHeaderComponent={renderListHeader}
-			contentContainerStyle={{ paddingTop: 0 }}
+			contentContainerStyle={{ paddingTop: 0, paddingBottom: 10 }}
 			showsVerticalScrollIndicator={false}
-			scrollEnabled={false}
-			nestedScrollEnabled={false}
+			scrollEnabled={true}
+			nestedScrollEnabled={true}
 			keyboardShouldPersistTaps="handled"
+			estimatedItemSize={100}
+			removeClippedSubviews={true}
+			maxToRenderPerBatch={5}
+			windowSize={5}
+			initialNumToRender={10}
+			onEndReachedThreshold={0.5}
+			maintainVisibleContentPosition={{
+				minIndexForVisible: 0,
+				autoscrollToTopThreshold: 10,
+			}}
 		/>
 	);
 }

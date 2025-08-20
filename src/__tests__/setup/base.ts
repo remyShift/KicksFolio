@@ -37,11 +37,6 @@ jest.mock('expo-font', () => ({
 	loadedNativeFonts: [],
 }));
 
-jest.mock('rn-gesture-swipeable-flatlist', () => ({
-	__esModule: true,
-	default: 'SwipeableFlatList',
-}));
-
 jest.mock('@shopify/flash-list', () => ({
 	__esModule: true,
 	FlashList: 'FlashList',
