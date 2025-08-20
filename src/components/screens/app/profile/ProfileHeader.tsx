@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
-import ViewToggleButton from '@/components/ui/buttons/ViewToggleButton';
+import ToggleDisplayState from '@/components/ui/buttons/ToggleDisplayState';
 import Title from '@/components/ui/text/Title';
 import { useSession } from '@/contexts/authContext';
 import { Sneaker } from '@/types/sneaker';
@@ -36,7 +36,7 @@ export default function ProfileHeader(props: ProfileHeaderProps) {
 			{userSneakers && userSneakers.length > 0 && (
 				<View className="flex-row items-center">
 					<Title content={t('collection.pages.titles.collection')} />
-					<ViewToggleButton />
+					<ToggleDisplayState />
 				</View>
 			)}
 		</View>

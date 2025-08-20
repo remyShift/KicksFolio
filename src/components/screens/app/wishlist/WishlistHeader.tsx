@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
-import ViewToggleButton from '@/components/ui/buttons/ViewToggleButton';
+import ToggleDisplayState from '@/components/ui/buttons/ToggleDisplayState';
 import Title from '@/components/ui/text/Title';
 import { Sneaker } from '@/types/sneaker';
 
@@ -19,7 +19,7 @@ export default function WishlistHeader({
 			{wishlistSneakers && wishlistSneakers.length > 0 && (
 				<View className="flex-row mb-8 items-center">
 					<Title content={t('collection.pages.titles.wishlist')} />
-					<ViewToggleButton />
+					<ToggleDisplayState />
 				</View>
 			)}
 		</View>

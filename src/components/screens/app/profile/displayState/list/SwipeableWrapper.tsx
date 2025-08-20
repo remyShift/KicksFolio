@@ -2,7 +2,7 @@ import { memo, useCallback, useEffect, useMemo } from 'react';
 
 import { Animated, Dimensions, StyleSheet } from 'react-native';
 import { View } from 'react-native';
-import { PanGestureHandler, State } from 'react-native-gesture-handler';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 
 import { useSwipeOptimization } from '@/components/screens/app/profile/displayState/list/hooks/useSwipeOptimization';
 import DeleteButton from '@/components/ui/buttons/DeleteButton';
@@ -54,85 +54,60 @@ function SwipeableWrapper({
 		[translateX]
 	);
 
-	const handleGestureEvent = useCallback(
-		(event: {
-			nativeEvent: {
-				translationX: number;
-				translationY: number;
-				state: number;
-			};
-		}) => {
-			const { translationX, translationY, state } = event.nativeEvent;
+	const panGesture = useMemo(() => {
+		return Gesture.Pan()
+			.onUpdate((event) => {
+				const { translationX, translationY } = event;
 
-			const isHorizontalMovement =
-				Math.abs(translationX) > Math.abs(translationY);
-			const isSignificantHorizontalMovement =
-				Math.abs(translationX) > HORIZONTAL_SWIPE_THRESHOLD;
-			const isSignificantVerticalMovement =
-				Math.abs(translationY) > VERTICAL_SCROLL_THRESHOLD;
+				const isHorizontalMovement =
+					Math.abs(translationX) > Math.abs(translationY);
+				const isSignificantHorizontalMovement =
+					Math.abs(translationX) > HORIZONTAL_SWIPE_THRESHOLD;
+				const isSignificantVerticalMovement =
+					Math.abs(translationY) > VERTICAL_SCROLL_THRESHOLD;
 
-			if (state === State.ACTIVE) {
-				// Si c'est principalement un mouvement vertical, on ne fait rien
-				// pour permettre à la FlashList de gérer le scroll
 				if (isSignificantVerticalMovement && !isHorizontalMovement) {
-					console.log(
-						`✅ [SwipeableWrapper] Scroll vertical détecté, laissant passer pour item ${item.id}`
-					);
 					return;
 				}
 
-				// Si c'est un mouvement horizontal significatif, on gère le swipe
 				if (isSignificantHorizontalMovement) {
 					const newTranslateX = Math.min(
 						0,
 						Math.max(-SWIPE_THRESHOLD * 2, translationX)
 					);
 					translateX.setValue(newTranslateX);
-					console.log(
-						`👆 [SwipeableWrapper] Swipe horizontal pour item ${item.id}:`,
-						{
-							translationX,
-							newTranslateX,
-						}
-					);
 				}
-			} else if (state === State.END) {
-				// Si c'était principalement un mouvement vertical, on ne fait rien
+			})
+			.onEnd((event) => {
+				const { translationX, translationY } = event;
+
+				const isHorizontalMovement =
+					Math.abs(translationX) > Math.abs(translationY);
+				const isSignificantHorizontalMovement =
+					Math.abs(translationX) > HORIZONTAL_SWIPE_THRESHOLD;
+				const isSignificantVerticalMovement =
+					Math.abs(translationY) > VERTICAL_SCROLL_THRESHOLD;
+
 				if (isSignificantVerticalMovement && !isHorizontalMovement) {
-					console.log(
-						`✅ [SwipeableWrapper] Fin du scroll vertical, pas d'action pour item ${item.id}`
-					);
 					return;
 				}
 
-				// Si c'était un mouvement horizontal significatif, on gère l'ouverture/fermeture
 				if (isSignificantHorizontalMovement) {
 					const shouldOpen = translationX < -SWIPE_THRESHOLD;
 
 					if (shouldOpen) {
 						animateToPosition(-SWIPE_THRESHOLD);
 						setOpenRow(item.id);
-						console.log(
-							`🔓 [SwipeableWrapper] Row ouverte pour item ${item.id}`
-						);
 					} else {
 						animateToPosition(0);
 						closeRow(item.id);
-						console.log(
-							`🔒 [SwipeableWrapper] Row fermée pour item ${item.id}`
-						);
 					}
 				} else {
 					animateToPosition(0);
 					closeRow(item.id);
-					console.log(
-						`🔒 [SwipeableWrapper] Row fermée (pas de mouvement significatif) pour item ${item.id}`
-					);
 				}
-			}
-		},
-		[translateX, animateToPosition, setOpenRow, closeRow, item.id]
-	);
+			});
+	}, [translateX, animateToPosition, setOpenRow, closeRow, item.id]);
 
 	useEffect(() => {
 		if (!isOpen) {
@@ -170,17 +145,7 @@ function SwipeableWrapper({
 	return (
 		<View style={styles.container}>
 			{swipeableContent}
-			<PanGestureHandler
-				onGestureEvent={handleGestureEvent}
-				activeOffsetX={[
-					-HORIZONTAL_SWIPE_THRESHOLD,
-					HORIZONTAL_SWIPE_THRESHOLD,
-				]}
-				failOffsetY={[
-					-VERTICAL_SCROLL_THRESHOLD,
-					VERTICAL_SCROLL_THRESHOLD,
-				]}
-			>
+			<GestureDetector gesture={panGesture}>
 				<Animated.View
 					style={[
 						styles.animatedContainer,
@@ -191,7 +156,7 @@ function SwipeableWrapper({
 				>
 					{mainContent}
 				</Animated.View>
-			</PanGestureHandler>
+			</GestureDetector>
 		</View>
 	);
 }

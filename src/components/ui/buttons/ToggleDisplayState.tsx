@@ -9,7 +9,7 @@ import {
 	ViewDisplayState,
 } from '@/store/useViewDisplayStateStore';
 
-export default function ViewToggleButton() {
+export default function ToggleDisplayState() {
 	const { viewDisplayState, setViewDisplayState } =
 		useViewDisplayStateStore();
 
@@ -21,7 +21,7 @@ export default function ViewToggleButton() {
 
 	const cardButtonStyle = useMemo(
 		() => ({
-			backgroundColor: isCardState ? '#3b82f6' : 'transparent',
+			backgroundColor: isCardState ? '#F27329' : 'transparent',
 			paddingHorizontal: 16,
 			paddingVertical: 8,
 		}),
@@ -30,7 +30,7 @@ export default function ViewToggleButton() {
 
 	const listButtonStyle = useMemo(
 		() => ({
-			backgroundColor: !isCardState ? '#3b82f6' : 'transparent',
+			backgroundColor: !isCardState ? '#F27329' : 'transparent',
 			paddingHorizontal: 16,
 			paddingVertical: 8,
 		}),

@@ -130,36 +130,15 @@ export class ChunkProvider implements ChunkProviderInterface {
 			return chunks;
 		}
 
-		console.log(`🧹 [ChunkProvider] Optimisation mémoire:`, {
-			totalChunks: chunks.length,
-			maxChunksInMemory,
-		});
-
-		// Trier les chunks par dernière utilisation
 		const sortedChunks = [...chunks].sort(
 			(a, b) => b.lastAccessed.getTime() - a.lastAccessed.getTime()
 		);
 
-		// Garder les chunks les plus récemment utilisés
 		const chunksToKeep = sortedChunks.slice(0, maxChunksInMemory);
 
-		// Trier par index pour maintenir l'ordre
 		const optimizedChunks = chunksToKeep.sort(
 			(a, b) => a.startIndex - b.startIndex
 		);
-
-		console.log(`🧹 [ChunkProvider] Optimisation terminée:`, {
-			kept: optimizedChunks.length,
-			removed: chunks.length - optimizedChunks.length,
-			keptRange:
-				optimizedChunks.length > 0
-					? {
-							start: optimizedChunks[0].startIndex,
-							end: optimizedChunks[optimizedChunks.length - 1]
-								.endIndex,
-						}
-					: null,
-		});
 
 		return optimizedChunks;
 	}

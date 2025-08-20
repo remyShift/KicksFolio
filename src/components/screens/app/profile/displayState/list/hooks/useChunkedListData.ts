@@ -88,28 +88,15 @@ export function useChunkedListData(
 			filteredAndSortedSneakers.length,
 			finalConfig.threshold
 		);
-		console.log(`🔧 [useChunkedListData] État du chunking:`, {
-			sneakersCount: filteredAndSortedSneakers.length,
-			threshold: finalConfig.threshold,
-			isEnabled: shouldEnable,
-		});
 		return shouldEnable;
 	}, [filteredAndSortedSneakers.length, finalConfig.threshold]);
 
 	useEffect(() => {
 		if (!isChunkingEnabled) {
-			console.log(
-				`🚫 [useChunkedListData] Chunking désactivé, réinitialisation des chunks`
-			);
 			setChunks([]);
 			setLoadedChunkIds(new Set());
 			return;
 		}
-
-		console.log(`🏗️ [useChunkedListData] Initialisation des chunks:`, {
-			sneakersCount: filteredAndSortedSneakers.length,
-			config: finalConfig,
-		});
 
 		const filterHash = chunkProvider.calculateFilterHash(
 			filteredAndSortedSneakers
@@ -127,19 +114,6 @@ export function useChunkedListData(
 			filteredAndSortedSneakers.length,
 			filterHash
 		);
-
-		console.log(`✅ [useChunkedListData] Chunks créés:`, {
-			chunksCount: newChunks.length,
-			filterHash,
-			initialChunkIds,
-			initialRange,
-			chunks: newChunks.map((chunk) => ({
-				id: chunk.id,
-				startIndex: chunk.startIndex,
-				endIndex: chunk.endIndex,
-				sneakersCount: chunk.sneakers.length,
-			})),
-		});
 
 		const updatedChunks = newChunks.map((chunk) => ({
 			...chunk,
@@ -163,16 +137,8 @@ export function useChunkedListData(
 	const onScroll = useCallback(
 		(visibleRange: ChunkRange) => {
 			if (!isChunkingEnabled) {
-				console.log(`🚫 [useChunkedListData] Chunking désactivé`);
 				return;
 			}
-
-			console.log(`🔄 [useChunkedListData] onScroll appelé:`, {
-				visibleRange,
-				totalSneakers: filteredAndSortedSneakers.length,
-				currentLoadedChunks: loadedChunkIds.size,
-				totalChunks: chunks.length,
-			});
 
 			const filterHash = chunkProvider.calculateFilterHash(
 				filteredAndSortedSneakers
@@ -193,39 +159,16 @@ export function useChunkedListData(
 				visibleRange.end >=
 				filteredAndSortedSneakers.length - finalConfig.chunkSize * 2;
 
-			console.log(`📦 [useChunkedListData] Analyse des chunks:`, {
-				filterHash,
-				neededChunkIds,
-				currentLoadedIds,
-				newChunkIds,
-				isNearEnd,
-				visibleRangeEnd: visibleRange.end,
-				totalSneakers: filteredAndSortedSneakers.length,
-				threshold: finalConfig.chunkSize * 2,
-			});
-
 			if (isNearEnd) {
 				const allChunkIds = chunks.map((chunk) => chunk.id);
 				const alreadyAllLoaded = allChunkIds.every((id) =>
 					loadedChunkIds.has(id)
 				);
 				if (!alreadyAllLoaded) {
-					console.log(
-						`🚀 [useChunkedListData] Chargement de tous les chunks restants:`,
-						allChunkIds
-					);
 					setLoadedChunkIds(new Set(allChunkIds));
-				} else {
-					console.log(
-						`✅ [useChunkedListData] Tous les chunks déjà chargés`
-					);
 				}
 			} else {
 				if (newChunkIds.length > 0) {
-					console.log(
-						`📥 [useChunkedListData] Chargement de nouveaux chunks:`,
-						newChunkIds
-					);
 					setLoadedChunkIds((prev) => {
 						const newLoadedChunkIds = new Set(prev);
 						newChunkIds.forEach((chunkId) =>
@@ -252,38 +195,16 @@ export function useChunkedListData(
 						});
 						return changed ? updated : prev;
 					});
-				} else {
-					console.log(
-						`ℹ️ [useChunkedListData] Aucun nouveau chunk à charger`
-					);
 				}
 			}
 
 			if (loadedChunkIds.size > maxChunksInMemory) {
-				console.log(
-					`🧹 [useChunkedListData] Nettoyage mémoire déclenché:`,
-					{
-						currentLoadedChunks: loadedChunkIds.size,
-						maxChunksInMemory,
-					}
-				);
-
 				const optimizedChunks = chunkProvider.optimizeMemory(
 					chunks,
 					maxChunksInMemory
 				);
 				const optimizedIds = new Set(
 					optimizedChunks.map((chunk) => chunk.id)
-				);
-
-				console.log(
-					`🧹 [useChunkedListData] Chunks après optimisation:`,
-					{
-						before: chunks.length,
-						after: optimizedChunks.length,
-						removed: chunks.length - optimizedChunks.length,
-						keptIds: Array.from(optimizedIds),
-					}
 				);
 
 				setChunks(optimizedChunks);
@@ -300,13 +221,6 @@ export function useChunkedListData(
 				) {
 					return prev;
 				}
-				console.log(
-					`📍 [useChunkedListData] Mise à jour de la plage visible:`,
-					{
-						from: prev,
-						to: visibleRange,
-					}
-				);
 				return visibleRange;
 			});
 		},
@@ -346,8 +260,6 @@ export function useChunkedListData(
 
 	const forceMemoryCleanup = useCallback(() => {
 		if (loadedChunkIds.size > maxChunksInMemory) {
-			console.log(`🧹 [useChunkedListData] Nettoyage mémoire forcé`);
-
 			const optimizedChunks = chunkProvider.optimizeMemory(
 				chunks,
 				maxChunksInMemory
@@ -371,9 +283,6 @@ export function useChunkedListData(
 
 		const interval = setInterval(() => {
 			if (loadedChunkIds.size > maxChunksInMemory) {
-				console.log(
-					`🧹 [useChunkedListData] Nettoyage mémoire périodique`
-				);
 				forceMemoryCleanup();
 			}
 		}, 30000);
@@ -388,10 +297,6 @@ export function useChunkedListData(
 
 	const visibleSneakers = useMemo(() => {
 		if (!isChunkingEnabled) {
-			console.log(
-				`📋 [useChunkedListData] Chunking désactivé, retour de tous les sneakers:`,
-				filteredAndSortedSneakers.length
-			);
 			return filteredAndSortedSneakers;
 		}
 
@@ -403,14 +308,6 @@ export function useChunkedListData(
 
 		loadedChunks.forEach((chunk) => {
 			result.push(...chunk.sneakers);
-		});
-
-		console.log(`📋 [useChunkedListData] Sneakers visibles:`, {
-			totalSneakers: filteredAndSortedSneakers.length,
-			visibleSneakers: result.length,
-			loadedChunksCount: loadedChunks.length,
-			totalChunks: chunks.length,
-			loadedChunkIds: Array.from(loadedChunkIds),
 		});
 
 		return result;

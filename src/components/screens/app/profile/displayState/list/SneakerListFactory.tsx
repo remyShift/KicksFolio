@@ -35,15 +35,6 @@ export default function SneakerListFactory({
 	threshold = 50,
 }: SneakerListFactoryProps) {
 	const shouldUseChunking = sneakers.length >= threshold;
-
-	console.log(`🏭 [SneakerListFactory] Initialisation:`, {
-		sneakersCount: sneakers.length,
-		threshold,
-		shouldUseChunking,
-		chunkSize,
-		bufferSize,
-	});
-
 	const normalStrategy = useSneakerFiltering({ sneakers });
 
 	const chunkedStrategy = useChunkedListData(sneakers, {
@@ -70,15 +61,7 @@ export default function SneakerListFactory({
 
 	const handleScroll = useCallback(
 		(event: any) => {
-			console.log(
-				`🎯 [SneakerListFactory] handleScroll appelé, shouldUseChunking:`,
-				shouldUseChunking
-			);
-
 			if (!shouldUseChunking) {
-				console.log(
-					`🚫 [SneakerListFactory] Chunking désactivé, scroll ignoré`
-				);
 				return;
 			}
 
@@ -101,30 +84,6 @@ export default function SneakerListFactory({
 				endIndex + bufferSize
 			);
 
-			const isNearEnd = scrollY + viewHeight >= contentHeight - 200;
-
-			console.log(`📜 [SneakerListFactory] Scroll détecté:`, {
-				scrollY,
-				viewHeight,
-				contentHeight,
-				startIndex,
-				endIndex,
-				bufferedStartIndex,
-				bufferedEndIndex,
-				isNearEnd,
-				totalSneakers: chunkedStrategy.totalSneakers,
-				visibleSneakersCount: chunkedStrategy.visibleSneakers.length,
-				loadedChunks: chunkedStrategy.loadedChunks,
-			});
-
-			console.log(
-				`📞 [SneakerListFactory] Appel de chunkedStrategy.onScroll avec:`,
-				{
-					start: bufferedStartIndex,
-					end: bufferedEndIndex,
-				}
-			);
-
 			chunkedStrategy.onScroll({
 				start: bufferedStartIndex,
 				end: bufferedEndIndex,
@@ -134,15 +93,7 @@ export default function SneakerListFactory({
 	);
 
 	const handleEndReached = useCallback(() => {
-		console.log(
-			`🏁 [SneakerListFactory] handleEndReached appelé, shouldUseChunking:`,
-			shouldUseChunking
-		);
-
 		if (!shouldUseChunking) {
-			console.log(
-				`🚫 [SneakerListFactory] Chunking désactivé, endReached ignoré`
-			);
 			return;
 		}
 
@@ -154,11 +105,6 @@ export default function SneakerListFactory({
 				currentVisibleCount + chunkSize * 2
 			),
 		};
-
-		console.log(
-			`🏁 [SneakerListFactory] handleEndReached - extendedRange:`,
-			extendedRange
-		);
 
 		chunkedStrategy.onScroll(extendedRange);
 	}, [shouldUseChunking, chunkedStrategy, bufferSize, chunkSize]);
@@ -246,15 +192,6 @@ export default function SneakerListFactory({
 			indicatorStyle: 'black' as const,
 			keyboardShouldPersistTaps: 'handled' as const,
 		};
-
-		console.log(`📋 [SneakerListFactory] FlashList props:`, {
-			dataLength: displayData.length,
-			shouldUseChunking,
-			hasOnScroll: !!props.onScroll,
-			hasOnEndReached: !!props.onEndReached,
-			scrollEventThrottle: props.scrollEventThrottle,
-			scrollEnabled: props.scrollEnabled,
-		});
 
 		return props;
 	}, [
