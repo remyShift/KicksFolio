@@ -4,9 +4,9 @@ import { Animated, Dimensions, StyleSheet } from 'react-native';
 import { View } from 'react-native';
 import { PanGestureHandler, State } from 'react-native-gesture-handler';
 
+import { useSwipeOptimization } from '@/components/screens/app/profile/displayState/list/hooks/useSwipeOptimization';
 import DeleteButton from '@/components/ui/buttons/DeleteButton';
 import EditButton from '@/components/ui/buttons/EditButton';
-import { useSwipeOptimization } from '@/hooks/useSwipeOptimization';
 import { Sneaker } from '@/types/sneaker';
 
 import SneakerListItem from './SneakerListItem';

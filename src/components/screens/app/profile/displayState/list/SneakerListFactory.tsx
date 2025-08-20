@@ -4,8 +4,8 @@ import { View } from 'react-native';
 
 import { FlashList } from '@shopify/flash-list';
 
-import { useFilteredChunkedSneakers } from '@/hooks/useFilteredChunkedSneakers';
-import { useSneakerFiltering } from '@/hooks/useSneakerFiltering';
+import { useChunkedListData } from '@/components/screens/app/profile/displayState/list/hooks/useChunkedListData';
+import { useSneakerFiltering } from '@/components/screens/app/profile/displayState/list/hooks/useSneakerFiltering';
 import { Sneaker } from '@/types/sneaker';
 
 import ListControls from './ListControls';
@@ -46,7 +46,7 @@ export default function SneakerListFactory({
 
 	const normalStrategy = useSneakerFiltering({ sneakers });
 
-	const chunkedStrategy = useFilteredChunkedSneakers(sneakers, {
+	const chunkedStrategy = useChunkedListData(sneakers, {
 		chunkSize,
 		bufferSize,
 		threshold,

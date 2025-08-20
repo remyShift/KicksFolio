@@ -13,7 +13,7 @@ interface UseFilteredChunkedSneakersConfig extends Partial<ChunkConfig> {
 	maxChunksInMemory?: number;
 }
 
-interface UseFilteredChunkedSneakersReturn {
+interface UseChunkedListDataReturn {
 	visibleSneakers: Sneaker[];
 	isChunkingEnabled: boolean;
 	totalSneakers: number;
@@ -47,10 +47,10 @@ const DEFAULT_CONFIG: ChunkConfig = {
 	loadTriggerPercent: 75,
 };
 
-export function useFilteredChunkedSneakers(
+export function useChunkedListData(
 	sneakers: Sneaker[],
 	config: UseFilteredChunkedSneakersConfig = {}
-): UseFilteredChunkedSneakersReturn {
+): UseChunkedListDataReturn {
 	const finalConfig = useMemo(
 		() => ({
 			...DEFAULT_CONFIG,
@@ -88,7 +88,7 @@ export function useFilteredChunkedSneakers(
 			filteredAndSortedSneakers.length,
 			finalConfig.threshold
 		);
-		console.log(`🔧 [useFilteredChunkedSneakers] État du chunking:`, {
+		console.log(`🔧 [useChunkedListData] État du chunking:`, {
 			sneakersCount: filteredAndSortedSneakers.length,
 			threshold: finalConfig.threshold,
 			isEnabled: shouldEnable,
@@ -99,20 +99,17 @@ export function useFilteredChunkedSneakers(
 	useEffect(() => {
 		if (!isChunkingEnabled) {
 			console.log(
-				`🚫 [useFilteredChunkedSneakers] Chunking désactivé, réinitialisation des chunks`
+				`🚫 [useChunkedListData] Chunking désactivé, réinitialisation des chunks`
 			);
 			setChunks([]);
 			setLoadedChunkIds(new Set());
 			return;
 		}
 
-		console.log(
-			`🏗️ [useFilteredChunkedSneakers] Initialisation des chunks:`,
-			{
-				sneakersCount: filteredAndSortedSneakers.length,
-				config: finalConfig,
-			}
-		);
+		console.log(`🏗️ [useChunkedListData] Initialisation des chunks:`, {
+			sneakersCount: filteredAndSortedSneakers.length,
+			config: finalConfig,
+		});
 
 		const filterHash = chunkProvider.calculateFilterHash(
 			filteredAndSortedSneakers
@@ -131,7 +128,7 @@ export function useFilteredChunkedSneakers(
 			filterHash
 		);
 
-		console.log(`✅ [useFilteredChunkedSneakers] Chunks créés:`, {
+		console.log(`✅ [useChunkedListData] Chunks créés:`, {
 			chunksCount: newChunks.length,
 			filterHash,
 			initialChunkIds,
@@ -166,13 +163,11 @@ export function useFilteredChunkedSneakers(
 	const onScroll = useCallback(
 		(visibleRange: ChunkRange) => {
 			if (!isChunkingEnabled) {
-				console.log(
-					`🚫 [useFilteredChunkedSneakers] Chunking désactivé`
-				);
+				console.log(`🚫 [useChunkedListData] Chunking désactivé`);
 				return;
 			}
 
-			console.log(`🔄 [useFilteredChunkedSneakers] onScroll appelé:`, {
+			console.log(`🔄 [useChunkedListData] onScroll appelé:`, {
 				visibleRange,
 				totalSneakers: filteredAndSortedSneakers.length,
 				currentLoadedChunks: loadedChunkIds.size,
@@ -198,7 +193,7 @@ export function useFilteredChunkedSneakers(
 				visibleRange.end >=
 				filteredAndSortedSneakers.length - finalConfig.chunkSize * 2;
 
-			console.log(`📦 [useFilteredChunkedSneakers] Analyse des chunks:`, {
+			console.log(`📦 [useChunkedListData] Analyse des chunks:`, {
 				filterHash,
 				neededChunkIds,
 				currentLoadedIds,
@@ -216,19 +211,19 @@ export function useFilteredChunkedSneakers(
 				);
 				if (!alreadyAllLoaded) {
 					console.log(
-						`🚀 [useFilteredChunkedSneakers] Chargement de tous les chunks restants:`,
+						`🚀 [useChunkedListData] Chargement de tous les chunks restants:`,
 						allChunkIds
 					);
 					setLoadedChunkIds(new Set(allChunkIds));
 				} else {
 					console.log(
-						`✅ [useFilteredChunkedSneakers] Tous les chunks déjà chargés`
+						`✅ [useChunkedListData] Tous les chunks déjà chargés`
 					);
 				}
 			} else {
 				if (newChunkIds.length > 0) {
 					console.log(
-						`📥 [useFilteredChunkedSneakers] Chargement de nouveaux chunks:`,
+						`📥 [useChunkedListData] Chargement de nouveaux chunks:`,
 						newChunkIds
 					);
 					setLoadedChunkIds((prev) => {
@@ -259,14 +254,14 @@ export function useFilteredChunkedSneakers(
 					});
 				} else {
 					console.log(
-						`ℹ️ [useFilteredChunkedSneakers] Aucun nouveau chunk à charger`
+						`ℹ️ [useChunkedListData] Aucun nouveau chunk à charger`
 					);
 				}
 			}
 
 			if (loadedChunkIds.size > maxChunksInMemory) {
 				console.log(
-					`🧹 [useFilteredChunkedSneakers] Nettoyage mémoire déclenché:`,
+					`🧹 [useChunkedListData] Nettoyage mémoire déclenché:`,
 					{
 						currentLoadedChunks: loadedChunkIds.size,
 						maxChunksInMemory,
@@ -282,7 +277,7 @@ export function useFilteredChunkedSneakers(
 				);
 
 				console.log(
-					`🧹 [useFilteredChunkedSneakers] Chunks après optimisation:`,
+					`🧹 [useChunkedListData] Chunks après optimisation:`,
 					{
 						before: chunks.length,
 						after: optimizedChunks.length,
@@ -306,7 +301,7 @@ export function useFilteredChunkedSneakers(
 					return prev;
 				}
 				console.log(
-					`📍 [useFilteredChunkedSneakers] Mise à jour de la plage visible:`,
+					`📍 [useChunkedListData] Mise à jour de la plage visible:`,
 					{
 						from: prev,
 						to: visibleRange,
@@ -351,9 +346,7 @@ export function useFilteredChunkedSneakers(
 
 	const forceMemoryCleanup = useCallback(() => {
 		if (loadedChunkIds.size > maxChunksInMemory) {
-			console.log(
-				`🧹 [useFilteredChunkedSneakers] Nettoyage mémoire forcé`
-			);
+			console.log(`🧹 [useChunkedListData] Nettoyage mémoire forcé`);
 
 			const optimizedChunks = chunkProvider.optimizeMemory(
 				chunks,
@@ -379,7 +372,7 @@ export function useFilteredChunkedSneakers(
 		const interval = setInterval(() => {
 			if (loadedChunkIds.size > maxChunksInMemory) {
 				console.log(
-					`🧹 [useFilteredChunkedSneakers] Nettoyage mémoire périodique`
+					`🧹 [useChunkedListData] Nettoyage mémoire périodique`
 				);
 				forceMemoryCleanup();
 			}
@@ -396,7 +389,7 @@ export function useFilteredChunkedSneakers(
 	const visibleSneakers = useMemo(() => {
 		if (!isChunkingEnabled) {
 			console.log(
-				`📋 [useFilteredChunkedSneakers] Chunking désactivé, retour de tous les sneakers:`,
+				`📋 [useChunkedListData] Chunking désactivé, retour de tous les sneakers:`,
 				filteredAndSortedSneakers.length
 			);
 			return filteredAndSortedSneakers;
@@ -412,7 +405,7 @@ export function useFilteredChunkedSneakers(
 			result.push(...chunk.sneakers);
 		});
 
-		console.log(`📋 [useFilteredChunkedSneakers] Sneakers visibles:`, {
+		console.log(`📋 [useChunkedListData] Sneakers visibles:`, {
 			totalSneakers: filteredAndSortedSneakers.length,
 			visibleSneakers: result.length,
 			loadedChunksCount: loadedChunks.length,
