@@ -51,16 +51,7 @@ function BrandSection({
 
 			onBrandScroll(normalizedBrand, scrollX, viewWidth);
 		},
-		[
-			isChunkingEnabled,
-			onBrandScroll,
-			brandName,
-			normalizedBrand,
-			visibleSneakers.length,
-			allSneakers.length,
-			loadedChunks,
-			totalChunks,
-		]
+		[isChunkingEnabled, onBrandScroll, normalizedBrand]
 	);
 
 	const scrollViewProps = useMemo(() => {

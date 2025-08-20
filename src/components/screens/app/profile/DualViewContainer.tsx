@@ -4,6 +4,7 @@ import { View } from 'react-native';
 
 import SneakersCardByBrand from '@/components/screens/app/profile/displayState/card/SneakersCardByBrand';
 import SneakersCardByBrandHybrid from '@/components/screens/app/profile/displayState/card/SneakersCardByBrandHybrid';
+import { DISPLAY_CONFIG } from '@/components/screens/app/profile/displayState/DisplayConfig';
 import SneakerListFactory from '@/components/screens/app/profile/displayState/list/SneakerListFactory';
 import { useModalContext } from '@/components/ui/modals/SneakersModal/hooks/useModalContext';
 import { useLocalSneakerData } from '@/hooks/useLocalSneakerData';
@@ -47,23 +48,12 @@ export default function DualViewContainer({
 		[onSneakerPress, openSneakerModal]
 	);
 
-	const validatedProps = useMemo(() => {
-		if (!userSneakers || !Array.isArray(userSneakers)) {
-			return {
-				userSneakers: [],
-				contextUserSneakers: [],
-			};
-		}
-
-		return {
-			userSneakers,
-			contextUserSneakers: userSneakers,
-		};
+	const validatedSneakers = useMemo(() => {
+		return userSneakers && Array.isArray(userSneakers) ? userSneakers : [];
 	}, [userSneakers]);
 
-	const { userSneakers: validSneakers, contextUserSneakers } = validatedProps;
-
-	const { filteredAndSortedSneakers } = useLocalSneakerData(validSneakers);
+	const { filteredAndSortedSneakers } =
+		useLocalSneakerData(validatedSneakers);
 
 	const sneakersByBrand = useMemo(() => {
 		if (
@@ -87,49 +77,34 @@ export default function DualViewContainer({
 	}, [filteredAndSortedSneakers]);
 
 	const shouldUseHybridChunking = useMemo(() => {
-		const brandsAnalysis = Object.entries(sneakersByBrand).map(
-			([normalizedBrand, sneakers]) => ({
-				brand: sneakers[0]?.brand || normalizedBrand,
-				normalizedBrand,
-				sneakersCount: sneakers.length,
-				needsChunking: sneakers.length >= 20,
-			})
+		return Object.values(sneakersByBrand).some(
+			(sneakers) => sneakers.length >= 20
 		);
-
-		const hasAnyBrandNeedingChunking = brandsAnalysis.some(
-			(brand) => brand.needsChunking
-		);
-
-		return hasAnyBrandNeedingChunking;
-	}, [sneakersByBrand, filteredAndSortedSneakers]);
+	}, [sneakersByBrand]);
 
 	return (
 		<View className="flex-1">
 			{isCardView ? (
 				shouldUseHybridChunking ? (
 					<SneakersCardByBrandHybrid
-						sneakers={validSneakers}
+						sneakers={validatedSneakers}
 						onSneakerPress={handleSneakerPress}
-						chunkSize={10}
-						sneakersThreshold={20}
-						maxSneakersPerBrandInMemory={30}
+						{...DISPLAY_CONFIG.card}
 						showOwnerInfo={false}
 					/>
 				) : (
 					<SneakersCardByBrand
-						sneakers={validSneakers}
+						sneakers={validatedSneakers}
 						onSneakerPress={handleSneakerPress}
 					/>
 				)
 			) : (
 				<SneakerListFactory
-					sneakers={validSneakers}
-					userSneakers={contextUserSneakers}
+					sneakers={validatedSneakers}
+					userSneakers={userSneakers}
 					refreshing={refreshing}
 					onRefresh={onRefresh}
-					chunkSize={10}
-					bufferSize={4}
-					threshold={50}
+					{...DISPLAY_CONFIG.list}
 				/>
 			)}
 		</View>

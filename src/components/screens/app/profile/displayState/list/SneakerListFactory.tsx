@@ -20,6 +20,7 @@ interface SneakerListFactoryProps {
 	chunkSize?: number;
 	bufferSize?: number;
 	threshold?: number;
+	maxChunksInMemory?: number;
 }
 
 const ESTIMATED_ITEM_HEIGHT = 80;
@@ -33,6 +34,7 @@ export default function SneakerListFactory({
 	chunkSize = 10,
 	bufferSize = 4,
 	threshold = 50,
+	maxChunksInMemory = 30,
 }: SneakerListFactoryProps) {
 	const shouldUseChunking = sneakers.length >= threshold;
 	const normalStrategy = useSneakerFiltering({ sneakers });
@@ -41,7 +43,7 @@ export default function SneakerListFactory({
 		chunkSize,
 		bufferSize,
 		threshold,
-		maxChunksInMemory: 30,
+		maxChunksInMemory,
 	});
 
 	const renderItem = useCallback(
@@ -59,17 +61,13 @@ export default function SneakerListFactory({
 		return item.id || Math.random().toString();
 	}, []);
 
-	const handleScroll = useCallback(
+	const handleVerticalScroll = useCallback(
 		(event: any) => {
-			if (!shouldUseChunking) {
-				return;
-			}
+			if (!shouldUseChunking) return;
 
-			const { contentOffset, layoutMeasurement, contentSize } =
-				event.nativeEvent;
+			const { contentOffset, layoutMeasurement } = event.nativeEvent;
 			const scrollY = contentOffset.y;
 			const viewHeight = layoutMeasurement.height;
-			const contentHeight = contentSize.height;
 
 			const currentVisibleCount = chunkedStrategy.visibleSneakers.length;
 			const startIndex = Math.max(0, currentVisibleCount - bufferSize);
@@ -89,13 +87,11 @@ export default function SneakerListFactory({
 				end: bufferedEndIndex,
 			});
 		},
-		[shouldUseChunking, chunkedStrategy, chunkSize, bufferSize]
+		[shouldUseChunking, chunkedStrategy, bufferSize, chunkSize]
 	);
 
 	const handleEndReached = useCallback(() => {
-		if (!shouldUseChunking) {
-			return;
-		}
+		if (!shouldUseChunking) return;
 
 		const currentVisibleCount = chunkedStrategy.visibleSneakers.length;
 		const extendedRange = {
@@ -110,76 +106,47 @@ export default function SneakerListFactory({
 	}, [shouldUseChunking, chunkedStrategy, bufferSize, chunkSize]);
 
 	const ListHeaderComponent = useMemo(() => {
-		if (shouldUseChunking) {
-			const {
-				filteredAndSortedSneakers,
-				uniqueValues,
-				sortBy,
-				sortOrder,
-				showFilters,
-				filters,
-				toggleSort,
-				toggleFilters,
-				updateFilter,
-				clearFilters,
-			} = chunkedStrategy;
+		const strategy = shouldUseChunking ? chunkedStrategy : normalStrategy;
+		const {
+			filteredAndSortedSneakers,
+			uniqueValues,
+			sortBy,
+			sortOrder,
+			showFilters,
+			filters,
+			toggleSort,
+			toggleFilters,
+			updateFilter,
+			clearFilters,
+		} = strategy;
 
-			return (
-				<ListControls
-					filteredAndSortedSneakers={filteredAndSortedSneakers}
-					uniqueValues={uniqueValues}
-					sortBy={sortBy}
-					sortOrder={sortOrder}
-					showFilters={showFilters}
-					filters={filters}
-					onToggleSort={toggleSort}
-					onToggleFilters={toggleFilters}
-					onUpdateFilter={updateFilter}
-					onClearFilters={clearFilters}
-				/>
-			);
-		} else {
-			const {
-				filteredAndSortedSneakers,
-				uniqueValues,
-				sortBy,
-				sortOrder,
-				showFilters,
-				filters,
-				toggleSort,
-				toggleFilters,
-				updateFilter,
-				clearFilters,
-			} = normalStrategy;
-
-			return (
-				<ListControls
-					filteredAndSortedSneakers={filteredAndSortedSneakers}
-					uniqueValues={uniqueValues}
-					sortBy={sortBy}
-					sortOrder={sortOrder}
-					showFilters={showFilters}
-					filters={filters}
-					onToggleSort={toggleSort}
-					onToggleFilters={toggleFilters}
-					onUpdateFilter={updateFilter}
-					onClearFilters={clearFilters}
-				/>
-			);
-		}
+		return (
+			<ListControls
+				filteredAndSortedSneakers={filteredAndSortedSneakers}
+				uniqueValues={uniqueValues}
+				sortBy={sortBy}
+				sortOrder={sortOrder}
+				showFilters={showFilters}
+				filters={filters}
+				onToggleSort={toggleSort}
+				onToggleFilters={toggleFilters}
+				onUpdateFilter={updateFilter}
+				onClearFilters={clearFilters}
+			/>
+		);
 	}, [shouldUseChunking, normalStrategy, chunkedStrategy]);
 
 	const displayData = shouldUseChunking
 		? chunkedStrategy.visibleSneakers
 		: normalStrategy.filteredAndSortedSneakers;
 
-	const flashListProps = useMemo(() => {
-		const props = {
+	const flashListProps = useMemo(
+		() => ({
 			data: displayData,
 			renderItem,
 			keyExtractor,
 			ListHeaderComponent,
-			onScroll: shouldUseChunking ? handleScroll : undefined,
+			onScroll: shouldUseChunking ? handleVerticalScroll : undefined,
 			onEndReached: shouldUseChunking ? handleEndReached : undefined,
 			onEndReachedThreshold: shouldUseChunking ? 0.1 : 0.5,
 			scrollEventThrottle: shouldUseChunking ? 16 : undefined,
@@ -191,18 +158,17 @@ export default function SneakerListFactory({
 			nestedScrollEnabled: true,
 			indicatorStyle: 'black' as const,
 			keyboardShouldPersistTaps: 'handled' as const,
-		};
-
-		return props;
-	}, [
-		displayData,
-		renderItem,
-		keyExtractor,
-		ListHeaderComponent,
-		shouldUseChunking,
-		handleScroll,
-		handleEndReached,
-	]);
+		}),
+		[
+			displayData,
+			renderItem,
+			keyExtractor,
+			ListHeaderComponent,
+			shouldUseChunking,
+			handleVerticalScroll,
+			handleEndReached,
+		]
+	);
 
 	return (
 		<View className="flex-1">

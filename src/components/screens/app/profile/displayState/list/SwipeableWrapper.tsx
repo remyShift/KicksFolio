@@ -14,8 +14,8 @@ import SneakerListItem from './SneakerListItem';
 const { width: screenWidth } = Dimensions.get('window');
 const SWIPE_THRESHOLD = 80;
 const SWIPE_ANIMATION_DURATION = 250;
-const HORIZONTAL_SWIPE_THRESHOLD = 20;
-const VERTICAL_SCROLL_THRESHOLD = 10;
+const HORIZONTAL_SWIPE_THRESHOLD = 50;
+const VERTICAL_SCROLL_THRESHOLD = 30;
 
 interface SwipeableWrapperProps {
 	item: Sneaker;
@@ -36,10 +36,12 @@ function SwipeableWrapper({
 	const isOpen = useMemo(() => isRowOpen(item.id), [isRowOpen, item.id]);
 
 	const handleEdit = useCallback(() => {
+		'worklet';
 		console.log('Edit sneaker:', item.id);
 	}, [item.id]);
 
 	const handleDelete = useCallback(() => {
+		'worklet';
 		console.log('Delete sneaker:', item.id);
 	}, [item.id]);
 
@@ -56,52 +58,31 @@ function SwipeableWrapper({
 
 	const panGesture = useMemo(() => {
 		return Gesture.Pan()
+			.activeOffsetX([
+				-HORIZONTAL_SWIPE_THRESHOLD,
+				HORIZONTAL_SWIPE_THRESHOLD,
+			])
+			.failOffsetY([
+				-VERTICAL_SCROLL_THRESHOLD,
+				VERTICAL_SCROLL_THRESHOLD,
+			])
 			.onUpdate((event) => {
-				const { translationX, translationY } = event;
+				const { translationX } = event;
 
-				const isHorizontalMovement =
-					Math.abs(translationX) > Math.abs(translationY);
-				const isSignificantHorizontalMovement =
-					Math.abs(translationX) > HORIZONTAL_SWIPE_THRESHOLD;
-				const isSignificantVerticalMovement =
-					Math.abs(translationY) > VERTICAL_SCROLL_THRESHOLD;
-
-				if (isSignificantVerticalMovement && !isHorizontalMovement) {
-					return;
-				}
-
-				if (isSignificantHorizontalMovement) {
-					const newTranslateX = Math.min(
-						0,
-						Math.max(-SWIPE_THRESHOLD * 2, translationX)
-					);
-					translateX.setValue(newTranslateX);
-				}
+				const newTranslateX = Math.min(
+					0,
+					Math.max(-SWIPE_THRESHOLD * 2, translationX)
+				);
+				translateX.setValue(newTranslateX);
 			})
 			.onEnd((event) => {
-				const { translationX, translationY } = event;
+				const { translationX } = event;
 
-				const isHorizontalMovement =
-					Math.abs(translationX) > Math.abs(translationY);
-				const isSignificantHorizontalMovement =
-					Math.abs(translationX) > HORIZONTAL_SWIPE_THRESHOLD;
-				const isSignificantVerticalMovement =
-					Math.abs(translationY) > VERTICAL_SCROLL_THRESHOLD;
+				const shouldOpen = translationX < -SWIPE_THRESHOLD;
 
-				if (isSignificantVerticalMovement && !isHorizontalMovement) {
-					return;
-				}
-
-				if (isSignificantHorizontalMovement) {
-					const shouldOpen = translationX < -SWIPE_THRESHOLD;
-
-					if (shouldOpen) {
-						animateToPosition(-SWIPE_THRESHOLD);
-						setOpenRow(item.id);
-					} else {
-						animateToPosition(0);
-						closeRow(item.id);
-					}
+				if (shouldOpen) {
+					animateToPosition(-SWIPE_THRESHOLD);
+					setOpenRow(item.id);
 				} else {
 					animateToPosition(0);
 					closeRow(item.id);

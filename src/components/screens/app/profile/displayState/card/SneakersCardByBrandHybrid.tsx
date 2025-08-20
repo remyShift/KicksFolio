@@ -24,27 +24,26 @@ export default function SneakersCardByBrandHybrid({
 	sneakersThreshold = 20,
 	maxSneakersPerBrandInMemory = 30,
 }: SneakersCardByBrandHybridProps) {
-	const {
-		brandSections,
-		totalBrands,
-		onScroll,
-		onBrandScroll,
-		forceMemoryCleanup,
-	} = useHybridCardData(sneakers, {
-		chunkSize,
-		sneakersThreshold,
-		maxSneakersPerBrandInMemory,
-	});
+	const { brandSections, onScroll, onBrandScroll } = useHybridCardData(
+		sneakers,
+		{
+			chunkSize,
+			sneakersThreshold,
+			maxSneakersPerBrandInMemory,
+		}
+	);
+
+	const hasChunkedBrands = brandSections.some(
+		(section) => section.isChunkingEnabled
+	);
 
 	const handleVerticalScroll = useCallback(
 		(event: any) => {
+			if (!hasChunkedBrands) return;
 			const { contentOffset, layoutMeasurement } = event.nativeEvent;
-			const scrollY = contentOffset.y;
-			const viewHeight = layoutMeasurement.height;
-
-			onScroll(scrollY, viewHeight);
+			onScroll(contentOffset.y, layoutMeasurement.height);
 		},
-		[onScroll, totalBrands, brandSections]
+		[hasChunkedBrands, onScroll]
 	);
 
 	const handleBrandScroll = useCallback(
@@ -54,20 +53,15 @@ export default function SneakersCardByBrandHybrid({
 		[onBrandScroll]
 	);
 
-	const scrollViewProps = useMemo(() => {
-		const hasChunkedBrands = brandSections.some(
-			(section) => section.isChunkingEnabled
-		);
-
-		const props = {
+	const scrollViewProps = useMemo(
+		() => ({
 			onScroll: hasChunkedBrands ? handleVerticalScroll : undefined,
 			scrollEventThrottle: hasChunkedBrands ? 16 : undefined,
 			showsVerticalScrollIndicator: false,
 			contentContainerStyle: { paddingTop: 0, paddingBottom: 20 },
-		};
-
-		return props;
-	}, [handleVerticalScroll, totalBrands, brandSections]);
+		}),
+		[hasChunkedBrands, handleVerticalScroll]
+	);
 
 	return (
 		<ScrollView className="flex-1" {...scrollViewProps}>
