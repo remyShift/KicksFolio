@@ -17,6 +17,7 @@ interface UseUserProfile {
 	userProfile: UserProfileData | null;
 	isFollowLoading: boolean;
 	refreshing: boolean;
+	hasError: boolean;
 
 	handleFollowToggle: () => Promise<void>;
 	refreshUserProfile: () => Promise<void>;
@@ -41,6 +42,7 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 	);
 	const [isFollowLoading, setIsFollowLoading] = useState(false);
 	const [refreshing, setRefreshing] = useState(false);
+	const [hasError, setHasError] = useState(false);
 	const isLoadingRef = useRef(false);
 	const lastLoadedForRef = useRef<string | null>(null);
 
@@ -53,6 +55,7 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 				console.error(
 					'[useUserProfile] loadUserProfile: missing userId'
 				);
+				setHasError(true);
 				return;
 			}
 
@@ -64,6 +67,7 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 			}
 
 			isLoadingRef.current = true;
+			setHasError(false);
 
 			if (showRefresh) {
 				setRefreshing(true);
@@ -79,28 +83,24 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 							userSearch,
 							sneakers: sneakers || [],
 						});
+						setHasError(false);
 					} else {
 						console.warn('[useUserProfile] user not found');
-						showErrorToast(
-							'Utilisateur introuvable',
-							"Cet utilisateur n'existe pas ou n'est plus disponible."
-						);
-						router.back();
+						setHasError(true);
+						setUserProfile(null);
 					}
 				})
 				.catch((error) => {
 					console.error('Error loading user profile:', error);
-					showErrorToast(
-						'Erreur de chargement',
-						'Impossible de charger le profil utilisateur.'
-					);
+					setHasError(true);
+					setUserProfile(null);
 				})
 				.finally(() => {
 					isLoadingRef.current = false;
 					setRefreshing(false);
 				});
 		},
-		[userId, currentUser?.id, showErrorToast]
+		[userId, currentUser?.id]
 	);
 
 	const handleFollowToggle = useCallback(async () => {
@@ -184,6 +184,7 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 		userProfile,
 		isFollowLoading,
 		refreshing,
+		hasError,
 		handleFollowToggle,
 		refreshUserProfile,
 	};

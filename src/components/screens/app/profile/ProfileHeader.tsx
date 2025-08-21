@@ -1,4 +1,4 @@
-import { memo, useMemo } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
@@ -23,6 +23,7 @@ function ProfileHeader(props: ProfileHeaderProps) {
 	const { user, userSneakers = [], showBackButton = false } = props;
 	const { t } = useTranslation();
 	const { user: currentUser } = useSession();
+
 	const isOwnProfile = useMemo(
 		() => user.id === currentUser?.id,
 		[user.id, currentUser?.id]
@@ -38,15 +39,31 @@ function ProfileHeader(props: ProfileHeaderProps) {
 		[isOwnProfile]
 	);
 
+	const hasSneakers = useMemo(
+		() => userSneakers.length > 0,
+		[userSneakers.length]
+	);
+
 	const collectionTitle = useMemo(
 		() =>
-			userSneakers && userSneakers.length > 0 ? (
+			hasSneakers ? (
 				<View className="flex-row items-center">
 					<Title content={t('collection.pages.titles.collection')} />
 					<ToggleDisplayState />
 				</View>
 			) : null,
-		[userSneakers, t]
+		[hasSneakers, t]
+	);
+
+	const profileInfo = useMemo(
+		() => <ProfileInfo user={user} />,
+		[
+			user.id,
+			user.username,
+			user.profile_picture,
+			user.followers_count,
+			user.following_count,
+		]
 	);
 
 	return (
@@ -54,7 +71,7 @@ function ProfileHeader(props: ProfileHeaderProps) {
 			<View className="flex gap-12">
 				{backButton}
 				{settingsButton}
-				<ProfileInfo user={user} />
+				{profileInfo}
 			</View>
 			{collectionTitle}
 		</View>

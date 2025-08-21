@@ -6,7 +6,8 @@
 	"noFollowingUsers": "Aucun utilisateur suivi",
 	"error": {
 		"title": "Erreur de recherche",
-		"message": "Impossible de rechercher des utilisateurs pour le moment"
+		"message": "Impossible de rechercher des utilisateurs pour le moment",
+		"notFound": "Utilisateur non trouvé"
 	},
 	"buttons": {
 		"browse": "Rechercher"

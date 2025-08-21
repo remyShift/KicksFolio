@@ -1,4 +1,4 @@
-import { memo, useMemo } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 
 import { RefreshControl, ScrollView, View } from 'react-native';
 
@@ -35,12 +35,15 @@ export default function ProfileDisplayContainer(
 	const { setModalStep, setIsVisible } = useModalStore();
 	const { user: currentUser } = useSession();
 
-	const handleAddSneaker = () => {
+	const handleAddSneaker = useCallback(() => {
 		setModalStep('index');
 		setIsVisible(true);
-	};
+	}, [setModalStep, setIsVisible]);
 
-	const isOwner = currentUser?.id === user.id;
+	const isOwner = useMemo(
+		() => currentUser?.id === user.id,
+		[currentUser?.id, user.id]
+	);
 
 	const memoizedProfileHeader = useMemo(
 		() => (
@@ -53,6 +56,10 @@ export default function ProfileDisplayContainer(
 		[user.id, user.username, userSneakers, showBackButton]
 	);
 
+	const handleRefresh = useCallback(async () => {
+		await onRefresh();
+	}, [onRefresh]);
+
 	if (!userSneakers || userSneakers.length === 0) {
 		return (
 			<ScrollView
@@ -62,7 +69,7 @@ export default function ProfileDisplayContainer(
 				refreshControl={
 					<RefreshControl
 						refreshing={refreshing}
-						onRefresh={onRefresh}
+						onRefresh={handleRefresh}
 						tintColor="#FF6B6B"
 						progressViewOffset={60}
 						testID="refresh-control"
@@ -86,7 +93,7 @@ export default function ProfileDisplayContainer(
 			refreshControl={
 				<RefreshControl
 					refreshing={refreshing}
-					onRefresh={onRefresh}
+					onRefresh={handleRefresh}
 					tintColor="#FF6B6B"
 					progressViewOffset={60}
 					testID="refresh-control"
@@ -98,7 +105,7 @@ export default function ProfileDisplayContainer(
 				userSneakers={userSneakers}
 				onSneakerPress={onSneakerPress}
 				refreshing={refreshing}
-				onRefresh={onRefresh}
+				onRefresh={handleRefresh}
 			/>
 		</ScrollView>
 	);
