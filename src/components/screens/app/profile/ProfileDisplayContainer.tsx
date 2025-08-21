@@ -1,3 +1,5 @@
+import { memo, useMemo } from 'react';
+
 import { RefreshControl, ScrollView, View } from 'react-native';
 
 import { useSession } from '@/contexts/authContext';
@@ -44,6 +46,11 @@ export default function ProfileDisplayContainer(
 
 	const isOwner = currentUser?.id === user.id;
 
+	const memoizedProfileHeader = useMemo(
+		() => <ProfileHeader user={user} showBackButton={showBackButton} />,
+		[user.id, user.username, showBackButton]
+	);
+
 	if (!userSneakers || userSneakers.length === 0) {
 		return (
 			<ScrollView
@@ -59,7 +66,7 @@ export default function ProfileDisplayContainer(
 					/>
 				}
 			>
-				<ProfileHeader user={user} showBackButton={showBackButton} />
+				{memoizedProfileHeader}
 				<EmptySneakersState
 					onAddPress={handleAddSneaker}
 					showAddButton={isOwner}
@@ -82,9 +89,8 @@ export default function ProfileDisplayContainer(
 				/>
 			}
 		>
-			<ProfileHeader user={user} showBackButton={showBackButton} />
+			{memoizedProfileHeader}
 			<DualViewContainer
-				user={user}
 				userSneakers={userSneakers}
 				onSneakerPress={onSneakerPress}
 				refreshing={refreshing}

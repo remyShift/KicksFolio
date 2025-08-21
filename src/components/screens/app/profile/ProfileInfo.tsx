@@ -1,3 +1,5 @@
+import { memo, useMemo } from 'react';
+
 import { Text, View } from 'react-native';
 
 import { useSession } from '@/contexts/authContext';
@@ -12,7 +14,7 @@ export interface ProfileInfoProps {
 	user: User | SearchUser;
 }
 
-export default function ProfileInfo(props: ProfileInfoProps) {
+function ProfileInfo(props: ProfileInfoProps) {
 	const { user } = props;
 	const { user: currentUser, userSneakers } = useSession();
 
@@ -20,22 +22,29 @@ export default function ProfileInfo(props: ProfileInfoProps) {
 		user.id
 	);
 
-	if (!user) return null;
+	const isOwnProfile = useMemo(
+		() => currentUser?.id === user.id,
+		[currentUser?.id, user.id]
+	);
 
-	const isOwnProfile = currentUser?.id === user.id;
+	const displayUser = useMemo(
+		() => (isOwnProfile ? user : userProfile?.userSearch),
+		[isOwnProfile, user, userProfile?.userSearch]
+	);
 
-	if (!isOwnProfile && !userProfile) {
-		return null;
-	}
+	const displaySneakers = useMemo(
+		() => (isOwnProfile ? userSneakers || [] : userProfile?.sneakers || []),
+		[isOwnProfile, userSneakers, userProfile?.sneakers]
+	);
 
-	const displayUser = isOwnProfile ? user : userProfile?.userSearch;
-	const displaySneakers = isOwnProfile
-		? userSneakers || []
-		: userProfile?.sneakers || [];
+	const shouldRender = useMemo(() => {
+		if (!user) return false;
+		if (!isOwnProfile && !userProfile) return false;
+		if (!displayUser) return false;
+		return true;
+	}, [user, isOwnProfile, userProfile, displayUser]);
 
-	if (!displayUser) {
-		return null;
-	}
+	if (!shouldRender || !displayUser) return null;
 
 	return (
 		<View
@@ -69,3 +78,7 @@ export default function ProfileInfo(props: ProfileInfoProps) {
 		</View>
 	);
 }
+
+export default memo(ProfileInfo, (prevProps, nextProps) => {
+	return prevProps.user.id === nextProps.user.id;
+});
