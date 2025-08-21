@@ -4,7 +4,7 @@ import { View } from 'react-native';
 
 import { FlashList } from '@shopify/flash-list';
 
-import { useSneakerFiltering } from '@/components/screens/app/profile/displayState/list/hooks/useSneakerFiltering';
+import { useSneakerFiltering } from '@/components/screens/app/profile/hooks/useSneakerFiltering';
 import { Sneaker } from '@/types/sneaker';
 
 import ListControls from '../profile/displayState/list/ListControls';

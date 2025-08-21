@@ -6,7 +6,6 @@ import { View } from 'react-native';
 import ToggleDisplayState from '@/components/ui/buttons/ToggleDisplayState';
 import Title from '@/components/ui/text/Title';
 import { useSession } from '@/contexts/authContext';
-import { Sneaker } from '@/types/sneaker';
 import { SearchUser, User } from '@/types/user';
 
 import BackToSearchButton from '../search/BackToSearchButton';

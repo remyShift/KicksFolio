@@ -2,7 +2,7 @@ import { memo, useCallback, useMemo } from 'react';
 
 import { ScrollView, View } from 'react-native';
 
-import { useHybridCardData } from '@/components/screens/app/profile/displayState/card/hooks/useHybridCardData';
+import { useHybridCardData } from '@/components/screens/app/profile/hooks/useHybridCardData';
 import { Sneaker } from '@/types/sneaker';
 
 import BrandSection from './BrandSection';

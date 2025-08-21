@@ -56,6 +56,7 @@ export default function ProfileDisplayContainer(
 			<ScrollView
 				className="flex-1 mt-16"
 				testID="scroll-view"
+				showsVerticalScrollIndicator={false}
 				refreshControl={
 					<RefreshControl
 						refreshing={refreshing}
@@ -79,6 +80,7 @@ export default function ProfileDisplayContainer(
 		<ScrollView
 			className="flex-1 mt-16"
 			testID="scroll-view"
+			showsVerticalScrollIndicator={false}
 			refreshControl={
 				<RefreshControl
 					refreshing={refreshing}

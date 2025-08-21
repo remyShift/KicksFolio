@@ -1,6 +1,6 @@
 import { memo, useCallback, useEffect, useMemo } from 'react';
 
-import { Dimensions, StyleSheet } from 'react-native';
+import { Dimensions } from 'react-native';
 import { View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
@@ -10,7 +10,7 @@ import Animated, {
 	withTiming,
 } from 'react-native-reanimated';
 
-import { useSwipeOptimization } from '@/components/screens/app/profile/displayState/list/hooks/useSwipeOptimization';
+import { useSwipeOptimization } from '@/components/screens/app/profile/hooks/useSwipeOptimization';
 import { useSession } from '@/contexts/authContext';
 import { Sneaker } from '@/types/sneaker';
 
@@ -76,18 +76,22 @@ function SwipeableWrapper({
 				translateX.value = newTranslateX;
 			})
 			.onEnd((event) => {
-				const { translationX } = event;
+				const { translationX, velocityX } = event;
 
-				const shouldOpen = translationX < -(maxOpenWidth / 2);
+				// Décider de l'ouverture basé sur la position ET la vélocité
+				const shouldOpen =
+					translationX < -(maxOpenWidth / 2) || velocityX < -500;
 
 				if (shouldOpen) {
 					translateX.value = withTiming(-maxOpenWidth, {
 						duration: SWIPE_ANIMATION_DURATION,
+						easing: (t) => Math.pow(t, 0.8), // Easing plus naturel
 					});
 					runOnJS(setOpenRow)(item.id);
 				} else {
 					translateX.value = withTiming(0, {
 						duration: SWIPE_ANIMATION_DURATION,
+						easing: (t) => Math.pow(t, 0.8), // Easing plus naturel
 					});
 					runOnJS(closeRow)(item.id);
 				}
@@ -96,15 +100,30 @@ function SwipeableWrapper({
 
 	useEffect(() => {
 		if (!isOpen) {
-			animateToPosition(0);
+			// Animation fluide de fermeture automatique
+			translateX.value = withTiming(0, {
+				duration: SWIPE_ANIMATION_DURATION,
+			});
 		}
-	}, [isOpen, animateToPosition]);
+	}, [isOpen, translateX]);
 
 	const handleSwipeClose = useCallback(() => {
-		animateToPosition(0);
-		closeRow(item.id);
-		onCloseRow?.();
-	}, [animateToPosition, closeRow, item.id, onCloseRow]);
+		// Animation fluide de fermeture
+		translateX.value = withTiming(
+			0,
+			{
+				duration: SWIPE_ANIMATION_DURATION,
+			},
+			(finished) => {
+				if (finished) {
+					runOnJS(closeRow)(item.id);
+					if (onCloseRow) {
+						runOnJS(onCloseRow)();
+					}
+				}
+			}
+		);
+	}, [translateX, closeRow, item.id, onCloseRow]);
 
 	const animatedStyle = useAnimatedStyle(() => ({
 		transform: [{ translateX: translateX.value }],

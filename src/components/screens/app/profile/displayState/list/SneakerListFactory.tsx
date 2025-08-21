@@ -6,7 +6,7 @@ import { FlashList } from '@shopify/flash-list';
 
 import { Sneaker } from '@/types/sneaker';
 
-import { useChunkedListData } from './hooks/useChunkedListData';
+import { useChunkedListData } from '../../hooks/useChunkedListData';
 import ListControls from './ListControls';
 import SwipeableWrapper from './SwipeableWrapper';
 

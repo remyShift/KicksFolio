@@ -1,7 +1,7 @@
 import { act, renderHook } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { useSneakerFiltering } from '@/components/screens/app/profile/displayState/list/hooks/useSneakerFiltering';
+import { useSneakerFiltering } from '@/components/screens/app/profile/hooks/useSneakerFiltering';
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';
 import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
 
