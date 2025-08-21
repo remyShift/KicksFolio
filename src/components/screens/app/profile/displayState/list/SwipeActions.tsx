@@ -61,8 +61,7 @@ export default function SwipeActions({
 	);
 
 	return (
-		<View className="flex-row">
-			{/* Afficher le bouton de suppression seulement si l'utilisateur est le propriétaire */}
+		<View className="flex-row absolute top-0 left-0 right-0 bottom-0 justify-end items-center bg-[#f8f9fa]">
 			{isOwner && (
 				<TouchableOpacity
 					style={deleteButtonStyle}

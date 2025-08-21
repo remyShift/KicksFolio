@@ -1,15 +1,20 @@
 import { memo, useCallback, useEffect, useMemo } from 'react';
 
-import { Animated, Dimensions, StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 import { View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import Animated, {
+	runOnJS,
+	useAnimatedStyle,
+	useSharedValue,
+	withTiming,
+} from 'react-native-reanimated';
 
 import { useSwipeOptimization } from '@/components/screens/app/profile/displayState/list/hooks/useSwipeOptimization';
-import DeleteButton from '@/components/ui/buttons/DeleteButton';
-import EditButton from '@/components/ui/buttons/EditButton';
 import { Sneaker } from '@/types/sneaker';
 
 import SneakerListItem from './SneakerListItem';
+import SwipeActions from './SwipeActions';
 
 const { width: screenWidth } = Dimensions.get('window');
 const SWIPE_THRESHOLD = 80;
@@ -22,6 +27,7 @@ interface SwipeableWrapperProps {
 	showOwnerInfo?: boolean;
 	userSneakers?: Sneaker[];
 	onCloseRow?: () => void;
+	isOwner?: boolean;
 }
 
 function SwipeableWrapper({
@@ -29,39 +35,29 @@ function SwipeableWrapper({
 	showOwnerInfo = false,
 	userSneakers,
 	onCloseRow,
+	isOwner = false,
 }: SwipeableWrapperProps) {
 	const { isRowOpen, setOpenRow, closeRow } = useSwipeOptimization();
 
-	const translateX = useMemo(() => new Animated.Value(0), []);
+	const translateX = useSharedValue(0);
 	const isOpen = useMemo(() => isRowOpen(item.id), [isRowOpen, item.id]);
 
-	const handleEdit = useCallback(() => {
-		'worklet';
-		console.log('Edit sneaker:', item.id);
-	}, [item.id]);
-
-	const handleDelete = useCallback(() => {
-		'worklet';
-		console.log('Delete sneaker:', item.id);
-	}, [item.id]);
+	const maxOpenWidth = useMemo(() => {
+		return isOwner ? SWIPE_THRESHOLD * 2 : SWIPE_THRESHOLD;
+	}, [isOwner]);
 
 	const animateToPosition = useCallback(
 		(toValue: number) => {
-			Animated.timing(translateX, {
-				toValue,
+			translateX.value = withTiming(toValue, {
 				duration: SWIPE_ANIMATION_DURATION,
-				useNativeDriver: true,
-			}).start();
+			});
 		},
 		[translateX]
 	);
 
 	const panGesture = useMemo(() => {
 		return Gesture.Pan()
-			.activeOffsetX([
-				-HORIZONTAL_SWIPE_THRESHOLD,
-				HORIZONTAL_SWIPE_THRESHOLD,
-			])
+			.activeOffsetX([-(maxOpenWidth / 3), maxOpenWidth / 3])
 			.failOffsetY([
 				-VERTICAL_SCROLL_THRESHOLD,
 				VERTICAL_SCROLL_THRESHOLD,
@@ -71,24 +67,28 @@ function SwipeableWrapper({
 
 				const newTranslateX = Math.min(
 					0,
-					Math.max(-SWIPE_THRESHOLD * 2, translationX)
+					Math.max(-maxOpenWidth, translationX)
 				);
-				translateX.setValue(newTranslateX);
+				translateX.value = newTranslateX;
 			})
 			.onEnd((event) => {
 				const { translationX } = event;
 
-				const shouldOpen = translationX < -SWIPE_THRESHOLD;
+				const shouldOpen = translationX < -(maxOpenWidth / 2);
 
 				if (shouldOpen) {
-					animateToPosition(-SWIPE_THRESHOLD);
-					setOpenRow(item.id);
+					translateX.value = withTiming(-maxOpenWidth, {
+						duration: SWIPE_ANIMATION_DURATION,
+					});
+					runOnJS(setOpenRow)(item.id);
 				} else {
-					animateToPosition(0);
-					closeRow(item.id);
+					translateX.value = withTiming(0, {
+						duration: SWIPE_ANIMATION_DURATION,
+					});
+					runOnJS(closeRow)(item.id);
 				}
 			});
-	}, [translateX, animateToPosition, setOpenRow, closeRow, item.id]);
+	}, [translateX, setOpenRow, closeRow, item.id, maxOpenWidth]);
 
 	useEffect(() => {
 		if (!isOpen) {
@@ -102,21 +102,25 @@ function SwipeableWrapper({
 		onCloseRow?.();
 	}, [animateToPosition, closeRow, item.id, onCloseRow]);
 
+	const animatedStyle = useAnimatedStyle(() => ({
+		transform: [{ translateX: translateX.value }],
+	}));
+
 	const swipeableContent = useMemo(
 		() => (
-			<View style={styles.swipeableContent}>
-				<View style={styles.actionButtons}>
-					<EditButton onPressAction={handleEdit} />
-					<DeleteButton onPressAction={handleDelete} />
-				</View>
-			</View>
+			<SwipeActions
+				sneaker={item}
+				closeRow={handleSwipeClose}
+				userSneakers={userSneakers}
+				isOwner={isOwner}
+			/>
 		),
-		[handleEdit, handleDelete]
+		[item, handleSwipeClose, userSneakers, isOwner]
 	);
 
 	const mainContent = useMemo(
 		() => (
-			<View style={styles.mainContent}>
+			<View className="flex-1 bg-white">
 				<SneakerListItem sneaker={item} showOwnerInfo={showOwnerInfo} />
 			</View>
 		),
@@ -124,16 +128,15 @@ function SwipeableWrapper({
 	);
 
 	return (
-		<View style={styles.container}>
+		<View
+			className="flex-1 relative overflow-hidden"
+			style={{ width: screenWidth }}
+		>
 			{swipeableContent}
 			<GestureDetector gesture={panGesture}>
 				<Animated.View
-					style={[
-						styles.animatedContainer,
-						{
-							transform: [{ translateX }],
-						},
-					]}
+					className="flex-1"
+					style={[{ width: screenWidth }, animatedStyle]}
 				>
 					{mainContent}
 				</Animated.View>
@@ -141,33 +144,5 @@ function SwipeableWrapper({
 		</View>
 	);
 }
-
-const styles = StyleSheet.create({
-	container: {
-		position: 'relative',
-		overflow: 'hidden',
-	},
-	swipeableContent: {
-		position: 'absolute',
-		top: 0,
-		left: 0,
-		right: 0,
-		bottom: 0,
-		backgroundColor: '#f8f9fa',
-		justifyContent: 'center',
-		alignItems: 'flex-end',
-		paddingRight: 16,
-	},
-	actionButtons: {
-		flexDirection: 'row',
-		gap: 8,
-	},
-	mainContent: {
-		backgroundColor: 'white',
-	},
-	animatedContainer: {
-		width: screenWidth,
-	},
-});
 
 export default memo(SwipeableWrapper);

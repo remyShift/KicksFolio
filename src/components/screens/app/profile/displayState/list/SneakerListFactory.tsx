@@ -1,13 +1,12 @@
-import { useCallback, useMemo } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 
 import { View } from 'react-native';
 
 import { FlashList } from '@shopify/flash-list';
 
-import { useChunkedListData } from '@/components/screens/app/profile/displayState/list/hooks/useChunkedListData';
-import { useSneakerFiltering } from '@/components/screens/app/profile/displayState/list/hooks/useSneakerFiltering';
 import { Sneaker } from '@/types/sneaker';
 
+import { useChunkedListData } from './hooks/useChunkedListData';
 import ListControls from './ListControls';
 import SwipeableWrapper from './SwipeableWrapper';
 
@@ -25,7 +24,7 @@ interface SneakerListFactoryProps {
 
 const ESTIMATED_ITEM_HEIGHT = 80;
 
-export default function SneakerListFactory({
+function SneakerListFactory({
 	sneakers,
 	userSneakers,
 	showOwnerInfo = false,
@@ -33,27 +32,55 @@ export default function SneakerListFactory({
 	onRefresh,
 	chunkSize = 10,
 	bufferSize = 4,
-	threshold = 50,
+	threshold = 200, // Augmenté pour déclencher plus tôt
 	maxChunksInMemory = 30,
 }: SneakerListFactoryProps) {
-	const shouldUseChunking = sneakers.length >= threshold;
-	const normalStrategy = useSneakerFiltering({ sneakers });
-
-	const chunkedStrategy = useChunkedListData(sneakers, {
+	const chunked = useChunkedListData(sneakers, {
 		chunkSize,
 		bufferSize,
 		threshold,
 		maxChunksInMemory,
 	});
 
+	const normalStrategy = useMemo(
+		() => ({
+			filteredAndSortedSneakers: chunked.visibleSneakers,
+			uniqueValues: chunked.uniqueValues,
+			sortBy: chunked.sortBy,
+			sortOrder: chunked.sortOrder,
+			showFilters: chunked.showFilters,
+			filters: chunked.filters,
+			toggleSort: chunked.toggleSort,
+			toggleFilters: chunked.toggleFilters,
+			updateFilter: chunked.updateFilter,
+			clearFilters: chunked.clearFilters,
+		}),
+		[
+			chunked.visibleSneakers,
+			chunked.uniqueValues,
+			chunked.sortBy,
+			chunked.sortOrder,
+			chunked.showFilters,
+			chunked.filters,
+			chunked.toggleSort,
+			chunked.toggleFilters,
+			chunked.updateFilter,
+			chunked.clearFilters,
+		]
+	);
+
 	const renderItem = useCallback(
-		({ item }: { item: Sneaker }) => (
-			<SwipeableWrapper
-				item={item}
-				showOwnerInfo={showOwnerInfo}
-				userSneakers={userSneakers}
-			/>
-		),
+		({ item, index }: { item: Sneaker; index: number }) => {
+			const result = (
+				<SwipeableWrapper
+					item={item}
+					showOwnerInfo={showOwnerInfo}
+					userSneakers={userSneakers}
+				/>
+			);
+
+			return result;
+		},
 		[showOwnerInfo, userSneakers]
 	);
 
@@ -61,84 +88,87 @@ export default function SneakerListFactory({
 		return item.id || Math.random().toString();
 	}, []);
 
-	const handleVerticalScroll = useCallback(
+	const ListHeaderComponent = useMemo(() => {
+		return (
+			<ListControls
+				uniqueValues={normalStrategy.uniqueValues}
+				sortBy={normalStrategy.sortBy}
+				sortOrder={normalStrategy.sortOrder}
+				showFilters={normalStrategy.showFilters}
+				filters={normalStrategy.filters}
+				onToggleSort={normalStrategy.toggleSort}
+				onToggleFilters={normalStrategy.toggleFilters}
+				onUpdateFilter={normalStrategy.updateFilter}
+				onClearFilters={normalStrategy.clearFilters}
+				filteredAndSortedSneakers={chunked.filteredAndSortedSneakers} // Total réel
+				visibleSneakers={normalStrategy.filteredAndSortedSneakers} // Seulement ceux visibles
+			/>
+		);
+	}, [normalStrategy, chunked.filteredAndSortedSneakers]);
+
+	const displayData = normalStrategy.filteredAndSortedSneakers;
+
+	const handleScroll = useCallback(
 		(event: any) => {
-			if (!shouldUseChunking) return;
-
-			const { contentOffset, layoutMeasurement } = event.nativeEvent;
-			const scrollY = contentOffset.y;
-			const viewHeight = layoutMeasurement.height;
-
-			const currentVisibleCount = chunkedStrategy.visibleSneakers.length;
-			const startIndex = Math.max(0, currentVisibleCount - bufferSize);
-			const endIndex = Math.min(
-				chunkedStrategy.totalSneakers,
-				currentVisibleCount + chunkSize * 2
+			const offsetY = event?.nativeEvent?.contentOffset?.y ?? 0;
+			const viewportH =
+				event?.nativeEvent?.layoutMeasurement?.height ?? 0;
+			const startIndex = Math.max(
+				0,
+				Math.floor(offsetY / ESTIMATED_ITEM_HEIGHT)
+			);
+			const endIndex = Math.ceil(
+				(offsetY + viewportH) / ESTIMATED_ITEM_HEIGHT
 			);
 
-			const bufferedStartIndex = Math.max(0, startIndex - bufferSize);
-			const bufferedEndIndex = Math.min(
-				chunkedStrategy.totalSneakers,
-				endIndex + bufferSize
+			// Calculer si on est proche de la fin pour déclencher le chargement
+			const totalVisible = displayData.length;
+			const isNearEnd = endIndex >= totalVisible - 5; // Déclencher quand il reste 5 items
+
+			console.log(
+				`🔍 [List] onScroll → start:${startIndex}, end:${endIndex}, visible:${totalVisible}, loadedChunks:${chunked.loadedChunks}, nearEnd:${isNearEnd}`
 			);
 
-			chunkedStrategy.onScroll({
-				start: bufferedStartIndex,
-				end: bufferedEndIndex,
-			});
+			if (isNearEnd) {
+				// Étendre la plage pour forcer le chargement des chunks suivants
+				const extendedEnd = endIndex + bufferSize * chunkSize;
+				console.log(
+					`🚀 [List] Chargement déclenché → extendedEnd:${extendedEnd}`
+				);
+				chunked.onScroll({ start: startIndex, end: extendedEnd });
+			} else {
+				chunked.onScroll({ start: startIndex, end: endIndex });
+			}
 		},
-		[shouldUseChunking, chunkedStrategy, bufferSize, chunkSize]
+		[chunked, displayData.length, bufferSize, chunkSize]
+	);
+
+	const handleVisibleIndicesChanged = useCallback(
+		(indices: number[]) => {
+			if (!indices || indices.length === 0) {
+				return;
+			}
+			const start = Math.min(...indices);
+			// Ajouter un buffer pour précharger au-delà de la zone visible
+			const end = Math.max(...indices) + 1 + bufferSize * chunkSize;
+			console.log(
+				`🔍 [List] onVisibleIndicesChanged → start:${start}, end:${end}, indices:${indices.join(',')}, visible:${displayData.length}, loadedChunks:${chunked.loadedChunks}`
+			);
+			chunked.onScroll({ start, end });
+		},
+		[chunked, bufferSize, chunkSize, displayData.length]
 	);
 
 	const handleEndReached = useCallback(() => {
-		if (!shouldUseChunking) return;
-
-		const currentVisibleCount = chunkedStrategy.visibleSneakers.length;
-		const extendedRange = {
-			start: Math.max(0, currentVisibleCount - bufferSize),
-			end: Math.min(
-				chunkedStrategy.totalSneakers,
-				currentVisibleCount + chunkSize * 2
-			),
-		};
-
-		chunkedStrategy.onScroll(extendedRange);
-	}, [shouldUseChunking, chunkedStrategy, bufferSize, chunkSize]);
-
-	const ListHeaderComponent = useMemo(() => {
-		const strategy = shouldUseChunking ? chunkedStrategy : normalStrategy;
-		const {
-			filteredAndSortedSneakers,
-			uniqueValues,
-			sortBy,
-			sortOrder,
-			showFilters,
-			filters,
-			toggleSort,
-			toggleFilters,
-			updateFilter,
-			clearFilters,
-		} = strategy;
-
-		return (
-			<ListControls
-				filteredAndSortedSneakers={filteredAndSortedSneakers}
-				uniqueValues={uniqueValues}
-				sortBy={sortBy}
-				sortOrder={sortOrder}
-				showFilters={showFilters}
-				filters={filters}
-				onToggleSort={toggleSort}
-				onToggleFilters={toggleFilters}
-				onUpdateFilter={updateFilter}
-				onClearFilters={clearFilters}
-			/>
+		// Forcer un préchargement supplémentaire quand on atteint la fin
+		const totalLoaded = displayData.length;
+		const simulatedStart = Math.max(0, totalLoaded - 2 * chunkSize);
+		const simulatedEnd = totalLoaded + bufferSize * chunkSize;
+		console.log(
+			`🚀 [List] onEndReached → FORCE chargement → simulate start:${simulatedStart}, end:${simulatedEnd}, visible:${displayData.length}, loadedChunks:${chunked.loadedChunks}`
 		);
-	}, [shouldUseChunking, normalStrategy, chunkedStrategy]);
-
-	const displayData = shouldUseChunking
-		? chunkedStrategy.visibleSneakers
-		: normalStrategy.filteredAndSortedSneakers;
+		chunked.onScroll({ start: simulatedStart, end: simulatedEnd });
+	}, [chunked, displayData.length, bufferSize, chunkSize]);
 
 	const flashListProps = useMemo(
 		() => ({
@@ -146,12 +176,18 @@ export default function SneakerListFactory({
 			renderItem,
 			keyExtractor,
 			ListHeaderComponent,
-			onScroll: shouldUseChunking ? handleVerticalScroll : undefined,
-			onEndReached: shouldUseChunking ? handleEndReached : undefined,
-			onEndReachedThreshold: shouldUseChunking ? 0.1 : 0.5,
-			scrollEventThrottle: shouldUseChunking ? 16 : undefined,
+			onScroll: handleScroll,
+			onVisibleIndicesChanged: handleVisibleIndicesChanged,
+			onEndReached: handleEndReached,
+			onEndReachedThreshold: 0.5,
+			scrollEventThrottle: 16,
 			removeClippedSubviews: true,
 			estimatedItemSize: ESTIMATED_ITEM_HEIGHT,
+			initialNumToRender: 5,
+			maxToRenderPerBatch: 5,
+			windowSize: 3,
+			updateCellsBatchingPeriod: 100,
+			disableVirtualization: false,
 			contentContainerStyle: { paddingTop: 0, paddingBottom: 20 },
 			showsVerticalScrollIndicator: false,
 			scrollEnabled: true,
@@ -164,9 +200,8 @@ export default function SneakerListFactory({
 			renderItem,
 			keyExtractor,
 			ListHeaderComponent,
-			shouldUseChunking,
-			handleVerticalScroll,
-			handleEndReached,
+			handleScroll,
+			handleVisibleIndicesChanged,
 		]
 	);
 
@@ -176,3 +211,22 @@ export default function SneakerListFactory({
 		</View>
 	);
 }
+
+export default memo(SneakerListFactory, (prevProps, nextProps) => {
+	const propsChanged = {
+		sneakers: prevProps.sneakers !== nextProps.sneakers,
+		userSneakers: prevProps.userSneakers !== nextProps.userSneakers,
+		showOwnerInfo: prevProps.showOwnerInfo !== nextProps.showOwnerInfo,
+		refreshing: prevProps.refreshing !== nextProps.refreshing,
+		onRefresh: prevProps.onRefresh !== nextProps.onRefresh,
+		chunkSize: prevProps.chunkSize !== nextProps.chunkSize,
+		bufferSize: prevProps.bufferSize !== nextProps.bufferSize,
+		threshold: prevProps.threshold !== nextProps.threshold,
+		maxChunksInMemory:
+			prevProps.maxChunksInMemory !== nextProps.maxChunksInMemory,
+	};
+
+	const hasChanges = Object.values(propsChanged).some(Boolean);
+
+	return !hasChanges;
+});

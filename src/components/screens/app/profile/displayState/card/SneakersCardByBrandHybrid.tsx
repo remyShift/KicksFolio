@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 
 import { ScrollView, View } from 'react-native';
 
@@ -16,7 +16,7 @@ interface SneakersCardByBrandHybridProps {
 	maxSneakersPerBrandInMemory?: number;
 }
 
-export default function SneakersCardByBrandHybrid({
+function SneakersCardByBrandHybrid({
 	sneakers,
 	onSneakerPress,
 	showOwnerInfo = false,
@@ -24,6 +24,9 @@ export default function SneakersCardByBrandHybrid({
 	sneakersThreshold = 20,
 	maxSneakersPerBrandInMemory = 30,
 }: SneakersCardByBrandHybridProps) {
+	console.log(
+		`🔄 [SneakersCardByBrandHybrid] Render avec ${sneakers.length} sneakers`
+	);
 	const { brandSections, onScroll, onBrandScroll } = useHybridCardData(
 		sneakers,
 		{
@@ -85,3 +88,31 @@ export default function SneakersCardByBrandHybrid({
 		</ScrollView>
 	);
 }
+
+export default memo(SneakersCardByBrandHybrid, (prevProps, nextProps) => {
+	// Debug : identifier quelles props changent
+	const propsChanged = {
+		sneakers: prevProps.sneakers !== nextProps.sneakers,
+		onSneakerPress: prevProps.onSneakerPress !== nextProps.onSneakerPress,
+		showOwnerInfo: prevProps.showOwnerInfo !== nextProps.showOwnerInfo,
+		chunkSize: prevProps.chunkSize !== nextProps.chunkSize,
+		sneakersThreshold:
+			prevProps.sneakersThreshold !== nextProps.sneakersThreshold,
+		maxSneakersPerBrandInMemory:
+			prevProps.maxSneakersPerBrandInMemory !==
+			nextProps.maxSneakersPerBrandInMemory,
+	};
+
+	const hasChanges = Object.values(propsChanged).some(Boolean);
+	if (hasChanges) {
+		console.log(
+			'🔄 [SneakersCardByBrandHybrid memo] Props qui ont changé:',
+			Object.entries(propsChanged)
+				.filter(([, changed]) => changed)
+				.map(([prop]) => prop)
+		);
+	}
+
+	// Retourner true = pas de re-render, false = re-render
+	return !hasChanges;
+});

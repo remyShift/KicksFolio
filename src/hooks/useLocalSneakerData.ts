@@ -40,6 +40,7 @@ export function useLocalSneakerData(
 	});
 
 	const filteredAndSortedSneakers = useMemo(() => {
+		const startTime = performance.now();
 		const filteredSneakers = SneakerFilterInterface.filterSneakers(
 			sneakers,
 			filters,
@@ -54,7 +55,10 @@ export function useLocalSneakerData(
 			currentUnit,
 			sneakerFilteringProvider.sortSneakers
 		);
-
+		const endTime = performance.now();
+		console.log(
+			`🔍 [useLocalSneakerData] Filtrage + tri: ${(endTime - startTime).toFixed(2)}ms, sneakers: ${sneakers.length} → ${result.length}`
+		);
 		return result;
 	}, [sneakers, filters, sortBy, sortOrder, currentUnit]);
 

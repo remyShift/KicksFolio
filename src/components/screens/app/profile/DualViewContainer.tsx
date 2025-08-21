@@ -13,10 +13,8 @@ import {
 	ViewDisplayState,
 } from '@/store/useViewDisplayStateStore';
 import { Sneaker } from '@/types/sneaker';
-import { User } from '@/types/user';
 
 interface DualViewContainerProps {
-	user: User;
 	userSneakers: Sneaker[];
 	onSneakerPress?: (sneaker: Sneaker) => void;
 	refreshing?: boolean;
@@ -24,7 +22,6 @@ interface DualViewContainerProps {
 }
 
 export default function DualViewContainer({
-	user,
 	userSneakers,
 	onSneakerPress,
 	refreshing,
@@ -56,14 +53,7 @@ export default function DualViewContainer({
 		useLocalSneakerData(validatedSneakers);
 
 	const sneakersByBrand = useMemo(() => {
-		if (
-			!filteredAndSortedSneakers ||
-			filteredAndSortedSneakers.length === 0
-		) {
-			return {};
-		}
-
-		return filteredAndSortedSneakers.reduce(
+		const result = filteredAndSortedSneakers.reduce(
 			(acc, sneaker) => {
 				const normalizedBrand = sneaker.brand.toLowerCase().trim();
 				if (!acc[normalizedBrand]) {
@@ -74,12 +64,15 @@ export default function DualViewContainer({
 			},
 			{} as Record<string, Sneaker[]>
 		);
+
+		return result;
 	}, [filteredAndSortedSneakers]);
 
 	const shouldUseHybridChunking = useMemo(() => {
-		return Object.values(sneakersByBrand).some(
+		const result = Object.values(sneakersByBrand).some(
 			(sneakers) => sneakers.length >= 20
 		);
+		return result;
 	}, [sneakersByBrand]);
 
 	return (
@@ -100,11 +93,14 @@ export default function DualViewContainer({
 				)
 			) : (
 				<SneakerListFactory
-					sneakers={validatedSneakers}
+					sneakers={filteredAndSortedSneakers}
 					userSneakers={userSneakers}
 					refreshing={refreshing}
 					onRefresh={onRefresh}
-					{...DISPLAY_CONFIG.list}
+					chunkSize={DISPLAY_CONFIG.list.chunkSize}
+					bufferSize={DISPLAY_CONFIG.list.bufferSize}
+					threshold={DISPLAY_CONFIG.list.threshold}
+					maxChunksInMemory={DISPLAY_CONFIG.list.maxChunksInMemory}
 				/>
 			)}
 		</View>

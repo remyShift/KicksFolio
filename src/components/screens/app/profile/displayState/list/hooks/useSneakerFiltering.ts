@@ -126,16 +126,30 @@ export function useSneakerFiltering({
 		});
 	}, []);
 
-	return {
-		filteredAndSortedSneakers,
-		uniqueValues,
-		sortBy,
-		sortOrder,
-		showFilters,
-		filters,
-		toggleSort,
-		toggleFilters,
-		updateFilter,
-		clearFilters,
-	};
+	return useMemo(
+		() => ({
+			filteredAndSortedSneakers,
+			uniqueValues,
+			sortBy,
+			sortOrder,
+			showFilters,
+			filters,
+			toggleSort,
+			toggleFilters,
+			updateFilter,
+			clearFilters,
+		}),
+		[
+			filteredAndSortedSneakers,
+			uniqueValues,
+			sortBy,
+			sortOrder,
+			showFilters,
+			filters,
+			toggleSort,
+			toggleFilters,
+			updateFilter,
+			clearFilters,
+		]
+	);
 }

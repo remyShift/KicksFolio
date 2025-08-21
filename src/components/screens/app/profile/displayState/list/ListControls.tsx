@@ -25,6 +25,7 @@ interface ListControlsProps {
 	onUpdateFilter: (filterType: keyof FilterState, values: string[]) => void;
 	onClearFilters: () => void;
 	filteredAndSortedSneakers: Sneaker[];
+	visibleSneakers?: Sneaker[];
 }
 
 export default function ListControls({
@@ -38,6 +39,7 @@ export default function ListControls({
 	onUpdateFilter,
 	onClearFilters,
 	filteredAndSortedSneakers,
+	visibleSneakers,
 }: ListControlsProps) {
 	const { t } = useTranslation();
 
@@ -47,6 +49,14 @@ export default function ListControls({
 				<Text className="text-lg font-semibold">
 					{filteredAndSortedSneakers.length} sneaker
 					{filteredAndSortedSneakers.length > 1 ? 's' : ''}
+					{visibleSneakers &&
+						visibleSneakers.length !==
+							filteredAndSortedSneakers.length && (
+							<Text className="text-sm text-gray-500">
+								{' '}
+								({visibleSneakers.length} visibles)
+							</Text>
+						)}
 				</Text>
 				<TouchableOpacity
 					className="flex-row items-center"
