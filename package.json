@@ -40,7 +40,7 @@
     "@react-native-community/hooks": "^3.0.0",
     "@react-navigation/bottom-tabs": "^7.0.0",
     "@react-navigation/native": "^7.0.0",
-    "@shopify/flash-list": "^2.0.2",
+    "@shopify/flash-list": "1.7.6",
     "@supabase/supabase-js": "^2.50.0",
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",
     "base64-arraybuffer": "^1.0.2",

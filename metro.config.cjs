@@ -19,6 +19,10 @@ config.transformer = {
 	unstable_allowRequireContext: true,
 };
 
-module.exports = wrapWithReanimatedMetroConfig(
-	withNativeWind(config, { input: './src/styles/global.css' })
-);
+config.resolver.platforms = ['ios', 'android', 'native', 'web'];
+
+const nativeWindConfig = withNativeWind(config, {
+	input: './src/styles/global.css',
+});
+
+module.exports = wrapWithReanimatedMetroConfig(nativeWindConfig);
