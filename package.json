@@ -5,6 +5,7 @@
   "version": "1.0.0",
   "scripts": {
     "start": "expo start --clear",
+    "prebuild": "expo prebuild --clean --platform all",
     "build:all": "eas build --platform all --profile production --clear-cache",
     "build:ios": "eas build --platform ios --profile production --clear-cache",
     "build:android": "eas build --platform android --profile production --clear-cache",
