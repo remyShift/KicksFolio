@@ -21,7 +21,6 @@ const { width: screenWidth } = Dimensions.get('window');
 const BUTTON_WIDTH = 80;
 const BUTTON_GAP = 8;
 const SWIPE_ANIMATION_DURATION = 250;
-const HORIZONTAL_SWIPE_THRESHOLD = 50;
 const VERTICAL_SCROLL_THRESHOLD = 30;
 
 interface SwipeableWrapperProps {
@@ -47,7 +46,7 @@ function SwipeableWrapper({
 	const maxOpenWidth = useMemo(() => {
 		const buttonCount = isOwner ? 2 : 1;
 		const width =
-			buttonCount * BUTTON_WIDTH + (buttonCount - 1) * BUTTON_GAP + 8;
+			buttonCount * BUTTON_WIDTH + (buttonCount - 1) * BUTTON_GAP;
 		return width;
 	}, [isOwner]);
 

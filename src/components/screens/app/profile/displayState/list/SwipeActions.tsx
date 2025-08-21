@@ -1,9 +1,12 @@
 import { useCallback, useMemo } from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Text, TouchableOpacity, View } from 'react-native';
 
 import { useModalContext } from '@/components/ui/modals/SneakersModal/hooks/useModalContext';
+import { useSneakerAPI } from '@/components/ui/modals/SneakersModal/hooks/useSneakerAPI';
+import { useSession } from '@/contexts/authContext';
+import useToast from '@/hooks/ui/useToast';
 import { Sneaker } from '@/types/sneaker';
 
 interface SwipeActionsProps {
@@ -20,6 +23,9 @@ export default function SwipeActions({
 	isOwner = false,
 }: SwipeActionsProps) {
 	const { t } = useTranslation();
+	const { showSuccessToast, showErrorToast, showInfoToast } = useToast();
+	const { refreshUserData } = useSession();
+	const { handleSneakerDelete } = useSneakerAPI();
 
 	const { openSneakerModal } = useModalContext({
 		contextSneakers: userSneakers,
@@ -31,9 +37,58 @@ export default function SwipeActions({
 	}, [sneaker, openSneakerModal, closeRow]);
 
 	const handleDelete = useCallback(() => {
-		// todo: delete sneaker
-		closeRow();
-	}, [closeRow]);
+		Alert.alert(
+			t('alert.titles.deleteSneaker'),
+			t('alert.descriptions.deleteSneaker'),
+			[
+				{
+					text: t('alert.choices.cancel'),
+					style: 'cancel',
+				},
+				{
+					text: t('alert.choices.delete'),
+					style: 'destructive',
+					onPress: () => {
+						showInfoToast(
+							t('collection.messages.deleting.title'),
+							t('collection.messages.deleting.description')
+						);
+
+						handleSneakerDelete(sneaker.id)
+							.then(() => {
+								refreshUserData();
+								closeRow();
+							})
+							.then(() => {
+								showSuccessToast(
+									t('collection.messages.deleted.title'),
+									t('collection.messages.deleted.description')
+								);
+							})
+							.catch(() => {
+								showErrorToast(
+									t(
+										'collection.messages.deletionFailed.title'
+									),
+									t(
+										'collection.messages.deletionFailed.description'
+									)
+								);
+							});
+					},
+				},
+			]
+		);
+	}, [
+		sneaker.id,
+		closeRow,
+		t,
+		showInfoToast,
+		showSuccessToast,
+		showErrorToast,
+		handleSneakerDelete,
+		refreshUserData,
+	]);
 
 	const actionButtonStyle = useMemo(
 		() => ({
@@ -62,7 +117,7 @@ export default function SwipeActions({
 	);
 
 	return (
-		<View className="flex-row absolute top-0 left-0 right-0 bottom-0 justify-end items-center bg-[#f8f9fa] gap-2">
+		<View className="flex-row absolute top-0 left-0 right-0 bottom-0 justify-end items-center bg-[#f8f9fa] gap-1">
 			{isOwner && (
 				<TouchableOpacity
 					style={deleteButtonStyle}
