@@ -32,7 +32,7 @@ function SneakerListFactory({
 	onRefresh,
 	chunkSize = 10,
 	bufferSize = 4,
-	threshold = 200, // Augmenté pour déclencher plus tôt
+	threshold = 200,
 	maxChunksInMemory = 30,
 }: SneakerListFactoryProps) {
 	const chunked = useChunkedListData(sneakers, {
@@ -100,8 +100,8 @@ function SneakerListFactory({
 				onToggleFilters={normalStrategy.toggleFilters}
 				onUpdateFilter={normalStrategy.updateFilter}
 				onClearFilters={normalStrategy.clearFilters}
-				filteredAndSortedSneakers={chunked.filteredAndSortedSneakers} // Total réel
-				visibleSneakers={normalStrategy.filteredAndSortedSneakers} // Seulement ceux visibles
+				filteredAndSortedSneakers={chunked.filteredAndSortedSneakers}
+				visibleSneakers={normalStrategy.filteredAndSortedSneakers}
 			/>
 		);
 	}, [normalStrategy, chunked.filteredAndSortedSneakers]);
@@ -121,20 +121,11 @@ function SneakerListFactory({
 				(offsetY + viewportH) / ESTIMATED_ITEM_HEIGHT
 			);
 
-			// Calculer si on est proche de la fin pour déclencher le chargement
 			const totalVisible = displayData.length;
-			const isNearEnd = endIndex >= totalVisible - 5; // Déclencher quand il reste 5 items
-
-			console.log(
-				`🔍 [List] onScroll → start:${startIndex}, end:${endIndex}, visible:${totalVisible}, loadedChunks:${chunked.loadedChunks}, nearEnd:${isNearEnd}`
-			);
+			const isNearEnd = endIndex >= totalVisible - 5;
 
 			if (isNearEnd) {
-				// Étendre la plage pour forcer le chargement des chunks suivants
 				const extendedEnd = endIndex + bufferSize * chunkSize;
-				console.log(
-					`🚀 [List] Chargement déclenché → extendedEnd:${extendedEnd}`
-				);
 				chunked.onScroll({ start: startIndex, end: extendedEnd });
 			} else {
 				chunked.onScroll({ start: startIndex, end: endIndex });
@@ -149,24 +140,16 @@ function SneakerListFactory({
 				return;
 			}
 			const start = Math.min(...indices);
-			// Ajouter un buffer pour précharger au-delà de la zone visible
 			const end = Math.max(...indices) + 1 + bufferSize * chunkSize;
-			console.log(
-				`🔍 [List] onVisibleIndicesChanged → start:${start}, end:${end}, indices:${indices.join(',')}, visible:${displayData.length}, loadedChunks:${chunked.loadedChunks}`
-			);
 			chunked.onScroll({ start, end });
 		},
 		[chunked, bufferSize, chunkSize, displayData.length]
 	);
 
 	const handleEndReached = useCallback(() => {
-		// Forcer un préchargement supplémentaire quand on atteint la fin
 		const totalLoaded = displayData.length;
 		const simulatedStart = Math.max(0, totalLoaded - 2 * chunkSize);
 		const simulatedEnd = totalLoaded + bufferSize * chunkSize;
-		console.log(
-			`🚀 [List] onEndReached → FORCE chargement → simulate start:${simulatedStart}, end:${simulatedEnd}, visible:${displayData.length}, loadedChunks:${chunked.loadedChunks}`
-		);
 		chunked.onScroll({ start: simulatedStart, end: simulatedEnd });
 	}, [chunked, displayData.length, bufferSize, chunkSize]);
 

@@ -20,6 +20,7 @@ export default function SwipeActions({
 	isOwner = false,
 }: SwipeActionsProps) {
 	const { t } = useTranslation();
+
 	const { openSneakerModal } = useModalContext({
 		contextSneakers: userSneakers,
 	});
@@ -61,7 +62,7 @@ export default function SwipeActions({
 	);
 
 	return (
-		<View className="flex-row absolute top-0 left-0 right-0 bottom-0 justify-end items-center bg-[#f8f9fa]">
+		<View className="flex-row absolute top-0 left-0 right-0 bottom-0 justify-end items-center bg-[#f8f9fa] gap-2">
 			{isOwner && (
 				<TouchableOpacity
 					style={deleteButtonStyle}

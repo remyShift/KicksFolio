@@ -11,13 +11,15 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { useSwipeOptimization } from '@/components/screens/app/profile/displayState/list/hooks/useSwipeOptimization';
+import { useSession } from '@/contexts/authContext';
 import { Sneaker } from '@/types/sneaker';
 
 import SneakerListItem from './SneakerListItem';
 import SwipeActions from './SwipeActions';
 
 const { width: screenWidth } = Dimensions.get('window');
-const SWIPE_THRESHOLD = 80;
+const BUTTON_WIDTH = 80;
+const BUTTON_GAP = 8;
 const SWIPE_ANIMATION_DURATION = 250;
 const HORIZONTAL_SWIPE_THRESHOLD = 50;
 const VERTICAL_SCROLL_THRESHOLD = 30;
@@ -27,7 +29,6 @@ interface SwipeableWrapperProps {
 	showOwnerInfo?: boolean;
 	userSneakers?: Sneaker[];
 	onCloseRow?: () => void;
-	isOwner?: boolean;
 }
 
 function SwipeableWrapper({
@@ -35,15 +36,19 @@ function SwipeableWrapper({
 	showOwnerInfo = false,
 	userSneakers,
 	onCloseRow,
-	isOwner = false,
 }: SwipeableWrapperProps) {
+	const { user: currentUser } = useSession();
+	const isOwner = currentUser?.id === item.user_id;
 	const { isRowOpen, setOpenRow, closeRow } = useSwipeOptimization();
 
 	const translateX = useSharedValue(0);
 	const isOpen = useMemo(() => isRowOpen(item.id), [isRowOpen, item.id]);
 
 	const maxOpenWidth = useMemo(() => {
-		return isOwner ? SWIPE_THRESHOLD * 2 : SWIPE_THRESHOLD;
+		const buttonCount = isOwner ? 2 : 1;
+		const width =
+			buttonCount * BUTTON_WIDTH + (buttonCount - 1) * BUTTON_GAP + 8;
+		return width;
 	}, [isOwner]);
 
 	const animateToPosition = useCallback(

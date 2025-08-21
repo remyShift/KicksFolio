@@ -11,6 +11,7 @@ export function useSwipeOptimization() {
 
 	const setOpenRow = useCallback((rowId: string) => {
 		if (openRowRef.current && openRowRef.current !== rowId) {
+			openRowRef.current = null;
 		}
 		openRowRef.current = rowId;
 	}, []);
