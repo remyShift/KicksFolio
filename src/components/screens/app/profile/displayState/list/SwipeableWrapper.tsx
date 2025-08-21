@@ -50,15 +50,6 @@ function SwipeableWrapper({
 		return width;
 	}, [isOwner]);
 
-	const animateToPosition = useCallback(
-		(toValue: number) => {
-			translateX.value = withTiming(toValue, {
-				duration: SWIPE_ANIMATION_DURATION,
-			});
-		},
-		[translateX]
-	);
-
 	const panGesture = useMemo(() => {
 		return Gesture.Pan()
 			.activeOffsetX([-(maxOpenWidth / 3), maxOpenWidth / 3])
@@ -78,20 +69,19 @@ function SwipeableWrapper({
 			.onEnd((event) => {
 				const { translationX, velocityX } = event;
 
-				// Décider de l'ouverture basé sur la position ET la vélocité
 				const shouldOpen =
 					translationX < -(maxOpenWidth / 2) || velocityX < -500;
 
 				if (shouldOpen) {
 					translateX.value = withTiming(-maxOpenWidth, {
 						duration: SWIPE_ANIMATION_DURATION,
-						easing: (t) => Math.pow(t, 0.8), // Easing plus naturel
+						easing: (t) => Math.pow(t, 0.8),
 					});
 					runOnJS(setOpenRow)(item.id);
 				} else {
 					translateX.value = withTiming(0, {
 						duration: SWIPE_ANIMATION_DURATION,
-						easing: (t) => Math.pow(t, 0.8), // Easing plus naturel
+						easing: (t) => Math.pow(t, 0.8),
 					});
 					runOnJS(closeRow)(item.id);
 				}
@@ -100,7 +90,6 @@ function SwipeableWrapper({
 
 	useEffect(() => {
 		if (!isOpen) {
-			// Animation fluide de fermeture automatique
 			translateX.value = withTiming(0, {
 				duration: SWIPE_ANIMATION_DURATION,
 			});
@@ -108,7 +97,6 @@ function SwipeableWrapper({
 	}, [isOpen, translateX]);
 
 	const handleSwipeClose = useCallback(() => {
-		// Animation fluide de fermeture
 		translateX.value = withTiming(
 			0,
 			{

@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react';
 
 import { ScrollView, View } from 'react-native';
 
-import { useChunkedCardData } from '@/components/screens/app/profile/displayState/card/hooks/useChunkedCardData';
+import { useChunkedCardData } from '@/components/screens/app/profile/hooks/useChunkedCardData';
 import SneakerCard from '@/components/ui/cards/SneakerCard';
 import BrandTitle from '@/components/ui/text/BrandTitle';
 import { useModalStore } from '@/store/useModalStore';

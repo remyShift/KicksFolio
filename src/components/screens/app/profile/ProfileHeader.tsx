@@ -6,6 +6,7 @@ import { View } from 'react-native';
 import ToggleDisplayState from '@/components/ui/buttons/ToggleDisplayState';
 import Title from '@/components/ui/text/Title';
 import { useSession } from '@/contexts/authContext';
+import { Sneaker } from '@/types/sneaker';
 import { SearchUser, User } from '@/types/user';
 
 import BackToSearchButton from '../search/BackToSearchButton';
@@ -14,18 +15,18 @@ import SettingsButton from './SettingsButton';
 
 interface ProfileHeaderProps {
 	user: User | SearchUser;
+	userSneakers?: Sneaker[];
 	showBackButton?: boolean;
 }
 
 function ProfileHeader(props: ProfileHeaderProps) {
-	const { user, showBackButton = false } = props;
+	const { user, userSneakers = [], showBackButton = false } = props;
 	const { t } = useTranslation();
 	const { user: currentUser } = useSession();
 	const isOwnProfile = useMemo(
 		() => user.id === currentUser?.id,
 		[user.id, currentUser?.id]
 	);
-	const { userSneakers } = useSession();
 
 	const backButton = useMemo(
 		() => (showBackButton ? <BackToSearchButton /> : null),
@@ -64,6 +65,7 @@ export default memo(ProfileHeader, (prevProps, nextProps) => {
 	return (
 		prevProps.user.id === nextProps.user.id &&
 		prevProps.user.username === nextProps.user.username &&
-		prevProps.showBackButton === nextProps.showBackButton
+		prevProps.showBackButton === nextProps.showBackButton &&
+		prevProps.userSneakers?.length === nextProps.userSneakers?.length
 	);
 });

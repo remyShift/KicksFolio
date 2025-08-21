@@ -15,7 +15,6 @@ import { SearchUser } from '@/types/user';
 
 interface UseUserProfile {
 	userProfile: UserProfileData | null;
-	isLoading: boolean;
 	isFollowLoading: boolean;
 	refreshing: boolean;
 
@@ -40,7 +39,6 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 	const [userProfile, setUserProfile] = useState<UserProfileData | null>(
 		null
 	);
-	const [isLoading, setIsLoading] = useState(true);
 	const [isFollowLoading, setIsFollowLoading] = useState(false);
 	const [refreshing, setRefreshing] = useState(false);
 	const isLoadingRef = useRef(false);
@@ -69,12 +67,6 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 
 			if (showRefresh) {
 				setRefreshing(true);
-			} else {
-				if (!userProfile) {
-					setIsLoading(true);
-				} else {
-					setRefreshing(true);
-				}
 			}
 
 			return Promise.all([
@@ -105,11 +97,10 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 				})
 				.finally(() => {
 					isLoadingRef.current = false;
-					setIsLoading(false);
 					setRefreshing(false);
 				});
 		},
-		[userId, currentUser?.id, showErrorToast, userProfile]
+		[userId, currentUser?.id, showErrorToast]
 	);
 
 	const handleFollowToggle = useCallback(async () => {
@@ -189,11 +180,8 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 		}
 	}, [userId, currentUser?.id]);
 
-	useEffect(() => {}, [isLoading, refreshing, isFollowLoading, userProfile]);
-
 	return {
 		userProfile,
-		isLoading,
 		isFollowLoading,
 		refreshing,
 		handleFollowToggle,

@@ -4,10 +4,6 @@ import { RefreshControl, ScrollView, View } from 'react-native';
 
 import { useSession } from '@/contexts/authContext';
 import { useModalStore } from '@/store/useModalStore';
-import {
-	useViewDisplayStateStore,
-	ViewDisplayState,
-} from '@/store/useViewDisplayStateStore';
 import { Sneaker } from '@/types/sneaker';
 import { SearchUser, User } from '@/types/user';
 
@@ -47,8 +43,14 @@ export default function ProfileDisplayContainer(
 	const isOwner = currentUser?.id === user.id;
 
 	const memoizedProfileHeader = useMemo(
-		() => <ProfileHeader user={user} showBackButton={showBackButton} />,
-		[user.id, user.username, showBackButton]
+		() => (
+			<ProfileHeader
+				user={user}
+				userSneakers={userSneakers}
+				showBackButton={showBackButton}
+			/>
+		),
+		[user.id, user.username, userSneakers, showBackButton]
 	);
 
 	if (!userSneakers || userSneakers.length === 0) {

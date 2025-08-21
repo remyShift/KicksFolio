@@ -14,24 +14,13 @@ export default function UserProfileScreen() {
 	const { t } = useTranslation();
 	const [refreshing, setRefreshing] = useState(false);
 
-	const { userProfile, isLoading, refreshUserProfile } =
-		useUserProfile(userId);
+	const { userProfile, refreshUserProfile } = useUserProfile(userId);
 
 	const contextSneakers = useMemo(() => {
 		return userProfile?.sneakers || [];
 	}, [userProfile?.sneakers]);
 
 	useModalNavigation({ contextSneakers });
-
-	if (isLoading) {
-		return (
-			<View className="flex-1 bg-background pt-32 items-center justify-center">
-				<Text className="font-open-sans text-gray-500">
-					{t('ui.loading')}
-				</Text>
-			</View>
-		);
-	}
 
 	if (!userProfile) {
 		return (
