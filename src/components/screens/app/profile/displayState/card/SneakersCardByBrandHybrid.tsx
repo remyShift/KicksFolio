@@ -24,9 +24,6 @@ function SneakersCardByBrandHybrid({
 	sneakersThreshold = 20,
 	maxSneakersPerBrandInMemory = 30,
 }: SneakersCardByBrandHybridProps) {
-	console.log(
-		`🔄 [SneakersCardByBrandHybrid] Render avec ${sneakers.length} sneakers`
-	);
 	const { brandSections, onScroll, onBrandScroll } = useHybridCardData(
 		sneakers,
 		{
@@ -90,7 +87,6 @@ function SneakersCardByBrandHybrid({
 }
 
 export default memo(SneakersCardByBrandHybrid, (prevProps, nextProps) => {
-	// Debug : identifier quelles props changent
 	const propsChanged = {
 		sneakers: prevProps.sneakers !== nextProps.sneakers,
 		onSneakerPress: prevProps.onSneakerPress !== nextProps.onSneakerPress,
@@ -104,15 +100,6 @@ export default memo(SneakersCardByBrandHybrid, (prevProps, nextProps) => {
 	};
 
 	const hasChanges = Object.values(propsChanged).some(Boolean);
-	if (hasChanges) {
-		console.log(
-			'🔄 [SneakersCardByBrandHybrid memo] Props qui ont changé:',
-			Object.entries(propsChanged)
-				.filter(([, changed]) => changed)
-				.map(([prop]) => prop)
-		);
-	}
 
-	// Retourner true = pas de re-render, false = re-render
 	return !hasChanges;
 });

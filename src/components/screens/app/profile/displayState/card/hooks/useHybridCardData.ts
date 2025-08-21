@@ -43,10 +43,6 @@ export function useHybridCardData(
 	sneakers: Sneaker[],
 	config: UseHybridCardDataConfig = {}
 ): UseHybridCardDataReturn {
-	console.log(
-		`🔄 [useHybridCardData] Hook appelé avec ${sneakers.length} sneakers`
-	);
-
 	const finalConfig = useMemo(
 		() => ({
 			...DEFAULT_CONFIG,
@@ -76,7 +72,6 @@ export function useHybridCardData(
 	}, [sneakers]);
 
 	useEffect(() => {
-		const startTime = performance.now();
 		const newBrandSections: BrandChunkData[] = [];
 
 		Object.entries(sneakersByBrand).forEach(
@@ -116,10 +111,6 @@ export function useHybridCardData(
 		);
 
 		setBrandSections(newBrandSections);
-		const endTime = performance.now();
-		console.log(
-			`🔍 [useHybridCardData] Initialisation brandSections: ${(endTime - startTime).toFixed(2)}ms, brands: ${newBrandSections.length}`
-		);
 	}, [sneakersByBrand, finalConfig.chunkSize, finalConfig.sneakersThreshold]);
 
 	const onBrandScroll = useCallback(
