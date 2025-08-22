@@ -21,11 +21,11 @@ export interface SneakerHandlerInterface {
 		currentUnit?: SizeUnit
 	) => Promise<Sneaker>;
 	update: (
-		id: string,
+		collectionId: string,
 		updates: Partial<Sneaker & { size?: number }>,
 		currentUnit?: SizeUnit
 	) => Promise<Sneaker>;
-	delete: (id: string) => Promise<void>;
+	delete: (collectionId: string) => Promise<void>;
 	searchBySku: (sku: string) => Promise<SkuSearchResponse>;
 	searchByBarcode: (barcode: string) => Promise<SkuSearchResponse>;
 }
@@ -69,12 +69,12 @@ export class SneakerHandler {
 	};
 
 	update = async (
-		id: string,
+		collectionId: string,
 		updates: Partial<Sneaker & { size?: number }>,
 		currentUnit: SizeUnit = 'EU'
 	) => {
 		return this.sneakerProxy
-			.update(id, updates, currentUnit)
+			.update(collectionId, updates, currentUnit)
 			.then((sneaker) => {
 				return sneaker;
 			})
@@ -87,9 +87,9 @@ export class SneakerHandler {
 			});
 	};
 
-	delete = async (id: string) => {
+	delete = async (collectionId: string) => {
 		return this.sneakerProxy
-			.delete(id)
+			.delete(collectionId)
 			.then(() => {
 				return;
 			})
