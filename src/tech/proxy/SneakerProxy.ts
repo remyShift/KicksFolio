@@ -51,40 +51,8 @@ class SneakerProxy implements SneakerHandlerInterface {
 					images: SneakerProxy.parseImages(collection.images),
 				} as Sneaker;
 
-				console.log(
-					`🔍 [SneakerProxy] Transformed collection ${index + 1} for user ${userId}:`,
-					{
-						originalCollectionId: collection.id,
-						sneakerId: sneaker_id,
-						finalId: transformedSneaker.id,
-						brand: transformedSneaker.brand,
-						model: transformedSneaker.model,
-						user_id: transformedSneaker.user_id,
-					}
-				);
-
 				return transformedSneaker;
 			}) || [];
-
-		// Check for duplicate IDs in the result
-		const ids = result.map((s) => s.id);
-		const duplicateIds = ids.filter(
-			(id, index) => ids.indexOf(id) !== index
-		);
-		if (duplicateIds.length > 0) {
-			console.error(
-				`❌ [SneakerProxy] DUPLICATE IDs detected for user ${userId}:`,
-				{
-					duplicateIds: [...new Set(duplicateIds)],
-					totalSneakers: result.length,
-					uniqueIds: [...new Set(ids)].length,
-				}
-			);
-		}
-
-		console.log(
-			`✅ [SneakerProxy] Returning ${result.length} sneakers for user ${userId}, unique IDs: ${[...new Set(ids)].length}`
-		);
 
 		return result;
 	}

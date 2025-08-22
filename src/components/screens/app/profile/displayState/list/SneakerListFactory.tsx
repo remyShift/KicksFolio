@@ -85,7 +85,8 @@ function SneakerListFactory({
 	);
 
 	const keyExtractor = useCallback((item: Sneaker) => {
-		return item.id || Math.random().toString();
+		const key = item.id || Math.random().toString();
+		return key;
 	}, []);
 
 	const ListHeaderComponent = useMemo(() => {
@@ -134,18 +135,6 @@ function SneakerListFactory({
 		[chunked, displayData.length, bufferSize, chunkSize]
 	);
 
-	const handleVisibleIndicesChanged = useCallback(
-		(indices: number[]) => {
-			if (!indices || indices.length === 0) {
-				return;
-			}
-			const start = Math.min(...indices);
-			const end = Math.max(...indices) + 1 + bufferSize * chunkSize;
-			chunked.onScroll({ start, end });
-		},
-		[chunked, bufferSize, chunkSize, displayData.length]
-	);
-
 	const handleEndReached = useCallback(() => {
 		const totalLoaded = displayData.length;
 		const simulatedStart = Math.max(0, totalLoaded - 2 * chunkSize);
@@ -153,44 +142,26 @@ function SneakerListFactory({
 		chunked.onScroll({ start: simulatedStart, end: simulatedEnd });
 	}, [chunked, displayData.length, bufferSize, chunkSize]);
 
-	const flashListProps = useMemo(
-		() => ({
-			data: displayData,
-			renderItem,
-			keyExtractor,
-			ListHeaderComponent,
-			onScroll: handleScroll,
-			onVisibleIndicesChanged: handleVisibleIndicesChanged,
-			onEndReached: handleEndReached,
-			onEndReachedThreshold: 0.5,
-			scrollEventThrottle: 16,
-			removeClippedSubviews: true,
-			estimatedItemSize: ESTIMATED_ITEM_HEIGHT,
-			initialNumToRender: 5,
-			maxToRenderPerBatch: 5,
-			windowSize: 3,
-			updateCellsBatchingPeriod: 100,
-			disableVirtualization: false,
-			contentContainerStyle: { paddingTop: 0, paddingBottom: 20 },
-			showsVerticalScrollIndicator: false,
-			scrollEnabled: true,
-			nestedScrollEnabled: true,
-			indicatorStyle: 'black' as const,
-			keyboardShouldPersistTaps: 'handled' as const,
-		}),
-		[
-			displayData,
-			renderItem,
-			keyExtractor,
-			ListHeaderComponent,
-			handleScroll,
-			handleVisibleIndicesChanged,
-		]
-	);
-
 	return (
 		<View className="flex-1">
-			<FlashList {...flashListProps} />
+			<FlashList
+				data={displayData}
+				renderItem={renderItem}
+				keyExtractor={keyExtractor}
+				ListHeaderComponent={ListHeaderComponent}
+				onScroll={handleScroll}
+				onEndReached={handleEndReached}
+				onEndReachedThreshold={0.5}
+				scrollEventThrottle={16}
+				removeClippedSubviews={true}
+				estimatedItemSize={ESTIMATED_ITEM_HEIGHT}
+				contentContainerStyle={{ paddingTop: 0, paddingBottom: 20 }}
+				showsVerticalScrollIndicator={false}
+				scrollEnabled={true}
+				nestedScrollEnabled={true}
+				indicatorStyle="black"
+				keyboardShouldPersistTaps="handled"
+			/>
 		</View>
 	);
 }

@@ -1,7 +1,5 @@
 import { useCallback, useState } from 'react';
 
-import { View } from 'react-native';
-
 import { FlashList } from '@shopify/flash-list';
 
 import { useSneakerFiltering } from '@/components/screens/app/profile/hooks/useSneakerFiltering';
@@ -94,9 +92,6 @@ export default function WishlistSneakersListView({
 			keyboardShouldPersistTaps="handled"
 			estimatedItemSize={100}
 			removeClippedSubviews={true}
-			maxToRenderPerBatch={5}
-			windowSize={5}
-			initialNumToRender={10}
 			onEndReachedThreshold={0.5}
 			maintainVisibleContentPosition={{
 				minIndexForVisible: 0,

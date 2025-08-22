@@ -106,49 +106,16 @@ function BrandSection({
 				brandLogo={brandLogos[normalizedBrand]}
 			/>
 			<ScrollView {...scrollViewProps}>
-				{visibleSneakers.map((sneaker, index) => {
-					console.log(
-						`🔑 [BrandSection] Rendering sneaker ${index} for brand ${brandName}:`,
-						{
-							id: sneaker.id,
-							user_id: sneaker.user_id,
-							brand: sneaker.brand,
-							model: sneaker.model,
-							key: sneaker.id,
-						}
-					);
-
-					// Check for duplicates
-					const duplicates = visibleSneakers.filter(
-						(s) => s.id === sneaker.id
-					);
-					if (duplicates.length > 1) {
-						console.error(
-							`❌ [BrandSection] DUPLICATE KEY DETECTED for brand ${brandName}:`,
-							{
-								duplicateId: sneaker.id,
-								count: duplicates.length,
-								allDuplicates: duplicates.map((d) => ({
-									id: d.id,
-									user_id: d.user_id,
-									brand: d.brand,
-									model: d.model,
-								})),
-							}
-						);
-					}
-
-					return (
-						<SneakerCard
-							key={`${sneaker.user_id}-${sneaker.id}-${index}`}
-							setModalVisible={() => onSneakerPress(sneaker)}
-							sneaker={sneaker}
-							setSneaker={(s) => onSneakerPress(s)}
-							setModalStep={setModalStep}
-							showOwnerInfo={showOwnerInfo}
-						/>
-					);
-				})}
+				{visibleSneakers.map((sneaker, index) => (
+					<SneakerCard
+						key={sneaker.id}
+						setModalVisible={() => onSneakerPress(sneaker)}
+						sneaker={sneaker}
+						setSneaker={(s) => onSneakerPress(s)}
+						setModalStep={setModalStep}
+						showOwnerInfo={showOwnerInfo}
+					/>
+				))}
 				{isChunkingEnabled &&
 					visibleSneakers.length < allSneakers.length && (
 						<View className="w-32 h-32 bg-gray-100 rounded-lg flex items-center justify-center">
