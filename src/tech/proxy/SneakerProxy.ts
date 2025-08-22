@@ -9,23 +9,84 @@ import { sneakerBrandOptions } from '@/validation/utils';
 class SneakerProxy implements SneakerHandlerInterface {
 	async getByUserId(userId: string): Promise<Sneaker[]> {
 		const { data, error } = await supabase
-			.from('sneakers')
-			.select('*')
+			.from('collections')
+			.select(
+				`
+				*,
+				sneakers (
+					id,
+					brand,
+					model,
+					gender,
+					sku,
+					description
+				)
+			`
+			)
 			.eq('user_id', userId)
 			.order('created_at', { ascending: false });
 
 		if (error) throw error;
 
-		return (
-			data?.map((sneaker) => {
-				const { created_at, updated_at, ...sneakerWithoutTimestamps } =
-					sneaker;
-				return {
-					...sneakerWithoutTimestamps,
-					images: SneakerProxy.parseImages(sneaker.images),
+		const result =
+			data?.map((collection, index) => {
+				const {
+					created_at,
+					updated_at,
+					sneakers,
+					sneaker_id,
+					user_id,
+					...collectionData
+				} = collection;
+				const sneakerData = sneakers as any;
+
+				const { id: sneakerModelId, ...sneakerDataWithoutId } =
+					sneakerData;
+
+				const transformedSneaker = {
+					id: collection.id, // This is the collection ID - must stay as final ID
+					user_id: collection.user_id,
+					...collectionData,
+					...sneakerDataWithoutId, // Spread sneaker data WITHOUT the id field
+					images: SneakerProxy.parseImages(collection.images),
 				} as Sneaker;
-			}) || []
+
+				console.log(
+					`🔍 [SneakerProxy] Transformed collection ${index + 1} for user ${userId}:`,
+					{
+						originalCollectionId: collection.id,
+						sneakerId: sneaker_id,
+						finalId: transformedSneaker.id,
+						brand: transformedSneaker.brand,
+						model: transformedSneaker.model,
+						user_id: transformedSneaker.user_id,
+					}
+				);
+
+				return transformedSneaker;
+			}) || [];
+
+		// Check for duplicate IDs in the result
+		const ids = result.map((s) => s.id);
+		const duplicateIds = ids.filter(
+			(id, index) => ids.indexOf(id) !== index
 		);
+		if (duplicateIds.length > 0) {
+			console.error(
+				`❌ [SneakerProxy] DUPLICATE IDs detected for user ${userId}:`,
+				{
+					duplicateIds: [...new Set(duplicateIds)],
+					totalSneakers: result.length,
+					uniqueIds: [...new Set(ids)].length,
+				}
+			);
+		}
+
+		console.log(
+			`✅ [SneakerProxy] Returning ${result.length} sneakers for user ${userId}, unique IDs: ${[...new Set(ids)].length}`
+		);
+
+		return result;
 	}
 
 	private static parseImages(images: any): { id: string; uri: string }[] {
@@ -132,39 +193,120 @@ class SneakerProxy implements SneakerHandlerInterface {
 			}
 		}
 
-		const { size, ...sneakerDataWithoutSize } = sneakerData;
+		const {
+			size,
+			brand,
+			model,
+			gender,
+			sku,
+			description,
+			images,
+			...collectionData
+		} = sneakerData;
 
-		const sneakerWithUser = {
-			...sneakerDataWithoutSize,
-			size_eu,
-			size_us,
-			user_id: user.id,
-		};
+		// First, find or create the sneaker
+		let sneakerId: string;
 
-		const { data, error } = await supabase
+		// Try to find existing sneaker by brand, model, and sku
+		const { data: existingSneaker } = await supabase
 			.from('sneakers')
-			.insert([sneakerWithUser])
-			.select()
+			.select('id')
+			.eq('brand', brand)
+			.eq('model', model)
+			.eq('gender', gender)
+			.eq('sku', sku || '')
 			.single();
 
-		if (error) {
-			throw error;
+		if (existingSneaker) {
+			sneakerId = existingSneaker.id;
+		} else {
+			// Create new sneaker
+			const { data: newSneaker, error: sneakerError } = await supabase
+				.from('sneakers')
+				.insert([
+					{
+						brand,
+						model,
+						gender,
+						sku,
+						description,
+					},
+				])
+				.select('id')
+				.single();
+
+			if (sneakerError) throw sneakerError;
+			if (!newSneaker) throw new Error('Failed to create sneaker');
+
+			sneakerId = newSneaker.id;
 		}
 
-		if (!data) return data;
+		// Create collection entry
+		const collectionEntry = {
+			user_id: user.id,
+			sneaker_id: sneakerId,
+			size_eu,
+			size_us,
+			images,
+			...collectionData,
+		};
 
-		const { created_at, updated_at, ...sneakerWithoutTimestamps } = data;
+		const { data: collection, error: collectionError } = await supabase
+			.from('collections')
+			.insert([collectionEntry])
+			.select(
+				`
+				*,
+				sneakers (
+					id,
+					brand,
+					model,
+					gender,
+					sku,
+					description
+				)
+			`
+			)
+			.single();
+
+		if (collectionError) throw collectionError;
+		if (!collection) throw new Error('Failed to create collection');
+
+		const {
+			created_at,
+			updated_at,
+			sneakers,
+			sneaker_id,
+			user_id,
+			...collectionDataResult
+		} = collection;
+		const sneakerDataResult = sneakers as any;
+
 		return {
-			...sneakerWithoutTimestamps,
-			images: SneakerProxy.parseImages(data.images),
+			id: collection.id,
+			user_id: collection.user_id,
+			...collectionDataResult,
+			...sneakerDataResult,
+			images: SneakerProxy.parseImages(collection.images),
 		} as Sneaker;
 	}
 
 	async update(
-		id: string,
+		collectionId: string,
 		updates: Partial<Sneaker & { size?: number }>,
 		currentUnit?: SizeUnit
 	): Promise<Sneaker> {
+		const {
+			brand,
+			model,
+			gender,
+			sku,
+			description,
+			size,
+			...collectionUpdates
+		} = updates;
+
+		// Handle size conversion if needed
 		if (updates.size) {
 			let size_eu: number, size_us: number;
 
@@ -176,6 +318,8 @@ class SneakerProxy implements SneakerHandlerInterface {
 				);
 				size_eu = result.size_eu;
 				size_us = result.size_us;
+				collectionUpdates.size_eu = size_eu;
+				collectionUpdates.size_us = size_us;
 			} catch (error) {
 				console.error('❌ Size conversion error:', error);
 				if (error instanceof Error) {
@@ -186,54 +330,141 @@ class SneakerProxy implements SneakerHandlerInterface {
 					throw new Error('Erreur de conversion de taille inconnue');
 				}
 			}
-
-			const { size, ...updatesWithoutSize } = updates;
-			updates = {
-				...updatesWithoutSize,
-				size_eu,
-				size_us,
-			};
 		}
 
+		// Update collection data
+		if (Object.keys(collectionUpdates).length > 0) {
+			const { error: collectionError } = await supabase
+				.from('collections')
+				.update(collectionUpdates)
+				.eq('id', collectionId);
+
+			if (collectionError) throw collectionError;
+		}
+
+		// Update sneaker data if needed
+		if (
+			brand ||
+			model ||
+			gender ||
+			sku !== undefined ||
+			description !== undefined
+		) {
+			// Get current collection to find sneaker_id
+			const { data: collection, error: getError } = await supabase
+				.from('collections')
+				.select('sneaker_id')
+				.eq('id', collectionId)
+				.single();
+
+			if (getError) throw getError;
+			if (!collection) throw new Error('Collection not found');
+
+			const sneakerUpdates: any = {};
+			if (brand) sneakerUpdates.brand = brand;
+			if (model) sneakerUpdates.model = model;
+			if (gender) sneakerUpdates.gender = gender;
+			if (sku !== undefined) sneakerUpdates.sku = sku;
+			if (description !== undefined)
+				sneakerUpdates.description = description;
+
+			const { error: sneakerError } = await supabase
+				.from('sneakers')
+				.update(sneakerUpdates)
+				.eq('id', collection.sneaker_id);
+
+			if (sneakerError) throw sneakerError;
+		}
+
+		// Get updated collection with sneaker data
 		const { data, error } = await supabase
-			.from('sneakers')
-			.update(updates)
-			.eq('id', id)
-			.select()
+			.from('collections')
+			.select(
+				`
+				*,
+				sneakers (
+					id,
+					brand,
+					model,
+					gender,
+					sku,
+					description
+				)
+			`
+			)
+			.eq('id', collectionId)
 			.single();
 
 		if (error) throw error;
+		if (!data) throw new Error('Updated collection not found');
 
-		if (!data) return data;
+		const {
+			created_at,
+			updated_at,
+			sneakers,
+			sneaker_id,
+			user_id,
+			...collectionData
+		} = data;
+		const sneakerData = sneakers as any;
 
-		const { created_at, updated_at, ...sneakerWithoutTimestamps } = data;
 		return {
-			...sneakerWithoutTimestamps,
+			id: data.id,
+			user_id: data.user_id,
+			...collectionData,
+			...sneakerData,
 			images: SneakerProxy.parseImages(data.images),
 		} as Sneaker;
 	}
 
-	async delete(id: string) {
-		const { error } = await supabase.from('sneakers').delete().eq('id', id);
+	async delete(collectionId: string) {
+		const { error } = await supabase
+			.from('collections')
+			.delete()
+			.eq('id', collectionId);
 
 		if (error) throw error;
 	}
 
-	async updateWishlist(id: string, wishlist: boolean) {
+	async updateWishlist(collectionId: string, wishlist: boolean) {
 		const { data, error } = await supabase
-			.from('sneakers')
+			.from('collections')
 			.update({ wishlist })
-			.eq('id', id)
-			.select()
+			.eq('id', collectionId)
+			.select(
+				`
+				*,
+				sneakers (
+					id,
+					brand,
+					model,
+					gender,
+					sku,
+					description
+				)
+			`
+			)
 			.single();
 
 		if (error) throw error;
 
 		if (!data) return data;
 
-		const { created_at, updated_at, ...sneakerWithoutTimestamps } = data;
+		const {
+			created_at,
+			updated_at,
+			sneakers,
+			sneaker_id,
+			user_id,
+			...collectionData
+		} = data;
+		const sneakerData = sneakers as any;
+
 		return {
-			...sneakerWithoutTimestamps,
+			id: data.id,
+			user_id: data.user_id,
+			...collectionData,
+			...sneakerData,
 			images: SneakerProxy.parseImages(data.images),
 		} as Sneaker;
 	}
@@ -252,7 +483,7 @@ class SneakerProxy implements SneakerHandlerInterface {
 		const response = await fetch(imageUri);
 		const blob = await response.blob();
 
-		const { data, error } = await supabase.storage
+		const { error } = await supabase.storage
 			.from('sneakers')
 			.upload(fileName, blob);
 
