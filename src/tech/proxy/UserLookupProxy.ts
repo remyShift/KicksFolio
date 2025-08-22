@@ -205,9 +205,21 @@ export class UserLookupProxy implements UserLookupInterface {
 
 	async getSneakers(userId: string): Promise<Sneaker[]> {
 		try {
-			const { data: sneakers, error } = await supabase
-				.from('sneakers')
-				.select('*')
+			const { data: collections, error } = await supabase
+				.from('collections')
+				.select(
+					`
+					*,
+					sneakers (
+						id,
+						brand,
+						model,
+						gender,
+						sku,
+						description
+					)
+				`
+				)
 				.eq('user_id', userId)
 				.order('created_at', {
 					ascending: false,
@@ -222,17 +234,28 @@ export class UserLookupProxy implements UserLookupInterface {
 			}
 
 			const result =
-				sneakers?.map((sneaker) => {
+				collections?.map((collection) => {
 					const {
 						created_at,
 						updated_at,
-						...sneakerWithoutTimestamps
-					} = sneaker;
+						sneakers,
+						sneaker_id,
+						user_id,
+						...collectionData
+					} = collection;
+					const sneakerData = sneakers as any;
+					const { id: sneakerModelId, ...sneakerDataWithoutId } =
+						sneakerData;
+
 					return {
-						...sneakerWithoutTimestamps,
-						images: UserLookupProxy.parseImages(sneaker.images),
+						id: collection.id, // Collection ID must be the final ID
+						user_id: collection.user_id,
+						...collectionData,
+						...sneakerDataWithoutId, // Spread sneaker data WITHOUT the id field
+						images: UserLookupProxy.parseImages(collection.images),
 					} as Sneaker;
 				}) || [];
+
 			return result;
 		} catch (error) {
 			console.error(
