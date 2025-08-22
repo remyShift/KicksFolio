@@ -248,10 +248,11 @@ export class UserLookupProxy implements UserLookupInterface {
 						sneakerData;
 
 					return {
-						id: collection.id, // Collection ID must be the final ID
+						id: collection.id,
+						sneaker_id: sneakerData.id,
 						user_id: collection.user_id,
 						...collectionData,
-						...sneakerDataWithoutId, // Spread sneaker data WITHOUT the id field
+						...sneakerDataWithoutId,
 						images: UserLookupProxy.parseImages(collection.images),
 					} as Sneaker;
 				}) || [];

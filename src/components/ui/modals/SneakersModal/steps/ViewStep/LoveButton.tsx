@@ -16,8 +16,9 @@ export default function LoveButton({ sneaker }: { sneaker: Sneaker }) {
 		useWishlist();
 
 	useEffect(() => {
-		checkWishlistStatus(sneaker.id, setIsWishlisted);
-	}, [sneaker.id]);
+		const wishlistId = sneaker.sneaker_id || sneaker.id;
+		checkWishlistStatus(wishlistId, setIsWishlisted);
+	}, [sneaker.sneaker_id, sneaker.id]);
 
 	const handlePress = async () => {
 		if (isLoading) return;
@@ -27,10 +28,12 @@ export default function LoveButton({ sneaker }: { sneaker: Sneaker }) {
 
 		setIsWishlisted(newWishlistStatus);
 
+		const wishlistId = sneaker.sneaker_id || sneaker.id;
+
 		if (newWishlistStatus) {
-			addToWishList(sneaker.id, setIsWishlisted, setIsLoading);
+			addToWishList(wishlistId, setIsWishlisted, setIsLoading);
 		} else {
-			removeFromWishList(sneaker.id, setIsWishlisted, setIsLoading);
+			removeFromWishList(wishlistId, setIsWishlisted, setIsLoading);
 		}
 	};
 

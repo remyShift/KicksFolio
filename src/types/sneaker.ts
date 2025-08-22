@@ -41,6 +41,7 @@ export type SneakerOwner = {
 
 export type Sneaker = {
 	id: string;
+	sneaker_id?: string;
 	user_id: string;
 	model: string;
 	brand: SneakerBrand;

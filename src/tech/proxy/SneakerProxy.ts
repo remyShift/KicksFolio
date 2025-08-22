@@ -44,10 +44,11 @@ class SneakerProxy implements SneakerHandlerInterface {
 					sneakerData;
 
 				const transformedSneaker = {
-					id: collection.id, // This is the collection ID - must stay as final ID
+					id: collection.id,
+					sneaker_id: sneakerData.id,
 					user_id: collection.user_id,
 					...collectionData,
-					...sneakerDataWithoutId, // Spread sneaker data WITHOUT the id field
+					...sneakerDataWithoutId,
 					images: SneakerProxy.parseImages(collection.images),
 				} as Sneaker;
 
@@ -172,10 +173,8 @@ class SneakerProxy implements SneakerHandlerInterface {
 			...collectionData
 		} = sneakerData;
 
-		// First, find or create the sneaker
 		let sneakerId: string;
 
-		// Try to find existing sneaker by brand, model, and sku
 		const { data: existingSneaker } = await supabase
 			.from('sneakers')
 			.select('id')
@@ -188,7 +187,6 @@ class SneakerProxy implements SneakerHandlerInterface {
 		if (existingSneaker) {
 			sneakerId = existingSneaker.id;
 		} else {
-			// Create new sneaker
 			const { data: newSneaker, error: sneakerError } = await supabase
 				.from('sneakers')
 				.insert([
@@ -209,7 +207,6 @@ class SneakerProxy implements SneakerHandlerInterface {
 			sneakerId = newSneaker.id;
 		}
 
-		// Create collection entry
 		const collectionEntry = {
 			user_id: user.id,
 			sneaker_id: sneakerId,
@@ -252,6 +249,7 @@ class SneakerProxy implements SneakerHandlerInterface {
 
 		return {
 			id: collection.id,
+			sneaker_id: sneakerDataResult.id,
 			user_id: collection.user_id,
 			...collectionDataResult,
 			...sneakerDataResult,
@@ -274,7 +272,6 @@ class SneakerProxy implements SneakerHandlerInterface {
 			...collectionUpdates
 		} = updates;
 
-		// Handle size conversion if needed
 		if (updates.size) {
 			let size_eu: number, size_us: number;
 
@@ -300,7 +297,6 @@ class SneakerProxy implements SneakerHandlerInterface {
 			}
 		}
 
-		// Update collection data
 		if (Object.keys(collectionUpdates).length > 0) {
 			const { error: collectionError } = await supabase
 				.from('collections')
@@ -310,7 +306,6 @@ class SneakerProxy implements SneakerHandlerInterface {
 			if (collectionError) throw collectionError;
 		}
 
-		// Update sneaker data if needed
 		if (
 			brand ||
 			model ||
@@ -318,7 +313,6 @@ class SneakerProxy implements SneakerHandlerInterface {
 			sku !== undefined ||
 			description !== undefined
 		) {
-			// Get current collection to find sneaker_id
 			const { data: collection, error: getError } = await supabase
 				.from('collections')
 				.select('sneaker_id')
@@ -344,7 +338,6 @@ class SneakerProxy implements SneakerHandlerInterface {
 			if (sneakerError) throw sneakerError;
 		}
 
-		// Get updated collection with sneaker data
 		const { data, error } = await supabase
 			.from('collections')
 			.select(
@@ -378,6 +371,7 @@ class SneakerProxy implements SneakerHandlerInterface {
 
 		return {
 			id: data.id,
+			sneaker_id: sneakerData.id,
 			user_id: data.user_id,
 			...collectionData,
 			...sneakerData,
@@ -430,6 +424,7 @@ class SneakerProxy implements SneakerHandlerInterface {
 
 		return {
 			id: data.id,
+			sneaker_id: sneakerData.id,
 			user_id: data.user_id,
 			...collectionData,
 			...sneakerData,
