@@ -2,9 +2,9 @@ import { Sneaker } from '@/types/sneaker';
 import { WishlistItem } from '@/types/wishlist';
 
 export interface WishlistInterface {
-	add: (sneakerId: string) => Promise<WishlistItem>;
-	remove: (sneakerId: string) => Promise<void>;
-	contains: (sneakerId: string) => Promise<boolean>;
+	add: (collectionId: string) => Promise<WishlistItem>;
+	remove: (collectionId: string) => Promise<void>;
+	contains: (collectionId: string) => Promise<boolean>;
 	getByUserId: (userId: string) => Promise<Sneaker[]>;
 	getBySneakerId: (sneakerId: string) => Promise<any[]>;
 }
@@ -12,9 +12,9 @@ export interface WishlistInterface {
 export class Wishlist {
 	constructor(private readonly wishlistProxy: WishlistInterface) {}
 
-	add = async (sneakerId: string) => {
+	add = async (collectionId: string) => {
 		return this.wishlistProxy
-			.add(sneakerId)
+			.add(collectionId)
 			.then((result) => {
 				return result;
 			})
@@ -24,9 +24,9 @@ export class Wishlist {
 			});
 	};
 
-	remove = async (sneakerId: string) => {
+	remove = async (collectionId: string) => {
 		return this.wishlistProxy
-			.remove(sneakerId)
+			.remove(collectionId)
 			.then(() => {
 				return;
 			})
@@ -36,9 +36,9 @@ export class Wishlist {
 			});
 	};
 
-	contains = async (sneakerId: string) => {
+	contains = async (collectionId: string) => {
 		return this.wishlistProxy
-			.contains(sneakerId)
+			.contains(collectionId)
 			.then((result) => {
 				return result;
 			})
