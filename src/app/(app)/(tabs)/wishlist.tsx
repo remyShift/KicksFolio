@@ -69,6 +69,8 @@ export default function Wishlist() {
 			<WishlistDualViewContainer
 				wishlistSneakers={wishlistSneakers}
 				onSneakerPress={handleSneakerPress}
+				refreshing={refreshing}
+				onRefresh={onRefresh}
 			/>
 		</ScrollView>
 	);

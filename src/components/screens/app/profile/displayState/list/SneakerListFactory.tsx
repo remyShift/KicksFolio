@@ -8,7 +8,7 @@ import { Sneaker } from '@/types/sneaker';
 
 import { useChunkedListData } from '../../hooks/useChunkedListData';
 import ListControls from './ListControls';
-import SwipeableWrapper from './SwipeableWrapper';
+import ProfileSwipeableWrapper from './SwipeableWrapper';
 
 interface SneakerListFactoryProps {
 	sneakers: Sneaker[];
@@ -72,7 +72,7 @@ function SneakerListFactory({
 	const renderItem = useCallback(
 		({ item, index }: { item: Sneaker; index: number }) => {
 			const result = (
-				<SwipeableWrapper
+				<ProfileSwipeableWrapper
 					item={item}
 					showOwnerInfo={showOwnerInfo}
 					userSneakers={userSneakers}
