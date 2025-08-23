@@ -205,9 +205,7 @@ export const useSneakerAPI = () => {
 					fetchedImage: fetchedImage || undefined,
 				};
 
-				return sneakerHandler.create(sneakerToAdd, currentUnit);
-			})
-			.then(async (createdSneaker: Sneaker) => {
+				// Traiter les images AVANT de créer la sneaker
 				return imageHandler
 					.processAndUploadSneaker(
 						formData.images.map((img) => ({
@@ -215,38 +213,28 @@ export const useSneakerAPI = () => {
 							id: img.id,
 						})),
 						user.id,
-						createdSneaker.id
+						'temp' // ID temporaire, sera remplacé après création
 					)
 					.then((processedImages: SneakerPhoto[]) => {
-						if (processedImages.length > 0) {
-							return sneakerHandler.update(
-								createdSneaker.id,
-								{
-									images: processedImages.map((img) => ({
-										id: img.id,
-										uri: img.uri,
-									})),
-								},
-								currentUnit
+						if (processedImages.length === 0) {
+							throw new Error(
+								'Image processing returned no images'
 							);
 						}
 
-						return sneakerHandler
-							.delete(createdSneaker.id)
-							.then(() => {
-								return Promise.reject(
-									new Error(
-										'Image processing returned no images; creation rolled back'
-									)
-								);
-							});
-					})
-					.catch((error: Error) => {
-						return sneakerHandler
-							.delete(createdSneaker.id)
-							.then(() => {
-								throw error;
-							});
+						// Créer la sneaker avec les images déjà traitées
+						const sneakerWithImages = {
+							...sneakerToAdd,
+							images: processedImages.map((img) => ({
+								id: img.id,
+								uri: img.uri,
+							})),
+						};
+
+						return sneakerHandler.create(
+							sneakerWithImages,
+							currentUnit
+						);
 					});
 			})
 			.then((response: Sneaker) => {
@@ -276,13 +264,13 @@ export const useSneakerAPI = () => {
 				return response;
 			})
 			.catch((error: Error) => {
-				console.error('error', error);
+				console.error('❌ handleAddSneaker error:', error);
+				callbacks?.setErrorMsg?.(
+					error.message || 'Failed to add sneaker'
+				);
 				showErrorToast(
 					t('collection.modal.form.errors.sneaker.error'),
 					t('collection.modal.form.errors.sneaker.errorDescription')
-				);
-				callbacks?.setErrorMsg(
-					`An error occurred while submitting the sneaker: ${error}`
 				);
 				throw error;
 			});

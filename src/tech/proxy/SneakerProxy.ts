@@ -257,7 +257,7 @@ class SneakerProxy implements SneakerHandlerInterface {
 			sneaker_id: sneakerId,
 			size_eu,
 			size_us,
-			images,
+			images: images || [],
 			...collectionData,
 		};
 
@@ -308,6 +308,30 @@ class SneakerProxy implements SneakerHandlerInterface {
 		updates: Partial<Sneaker & { size?: number }>,
 		currentUnit?: SizeUnit
 	): Promise<Sneaker> {
+		// First, verify the collection exists
+		const { data: existingCollection, error: checkError } = await supabase
+			.from('collections')
+			.select('id, sneaker_id')
+			.eq('id', collectionId)
+			.single();
+
+		if (checkError) {
+			console.error(
+				'❌ SneakerHandler.update: Collection check failed:',
+				checkError
+			);
+			if (checkError.code === 'PGRST116') {
+				throw new Error(
+					`Collection not found with id: ${collectionId}`
+				);
+			}
+			throw checkError;
+		}
+
+		if (!existingCollection) {
+			throw new Error(`Collection not found with id: ${collectionId}`);
+		}
+
 		const {
 			brand,
 			model,
@@ -403,7 +427,54 @@ class SneakerProxy implements SneakerHandlerInterface {
 			.eq('id', collectionId)
 			.single();
 
-		if (error) throw error;
+		if (error) {
+			console.error('❌ SneakerHandler.update: Error occurred:', error);
+			// Si la collection n'existe pas, on essaie de la récupérer directement
+			if (error.code === 'PGRST116') {
+				const { data: retryData, error: retryError } = await supabase
+					.from('collections')
+					.select(
+						`
+						*,
+						sneakers (
+							id,
+							brand,
+							model,
+							gender,
+							sku,
+							description,
+							image
+						)
+					`
+					)
+					.eq('id', collectionId)
+					.maybeSingle();
+
+				if (retryError) {
+					console.error(
+						'❌ SneakerHandler.update: Retry failed:',
+						retryError
+					);
+					throw retryError;
+				}
+
+				if (!retryData) {
+					throw new Error(
+						`Collection not found with id: ${collectionId}`
+					);
+				}
+
+				return {
+					id: retryData.id,
+					sneaker_id: retryData.sneakers?.id,
+					user_id: retryData.user_id,
+					...retryData,
+					...retryData.sneakers,
+					images: SneakerProxy.parseImages(retryData.images),
+				} as Sneaker;
+			}
+			throw error;
+		}
 		if (!data) throw new Error('Updated collection not found');
 
 		const {
