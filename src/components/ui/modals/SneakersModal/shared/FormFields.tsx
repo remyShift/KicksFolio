@@ -97,13 +97,13 @@ export const FormFields = ({
 				/>
 
 				<FormSelectInput
-					name="status"
+					name="status_id"
 					control={control}
 					placeholder={t('collection.modal.form.placeholders.status')}
 					options={sneakerStatusOptions}
-					onFocus={() => handleFieldFocus('status')}
-					error={getFieldErrorWrapper('status')}
-					testID="status"
+					onFocus={() => handleFieldFocus('status_id')}
+					error={getFieldErrorWrapper('status_id')}
+					testID="status_id"
 				/>
 			</View>
 

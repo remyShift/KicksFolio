@@ -57,7 +57,11 @@ export const FormDetailsStep = () => {
 			return {
 				model: sneakerToAdd?.model || '',
 				brand: sneakerToAdd?.brand || SneakerBrand.null,
-				status: sneakerToAdd?.status || SneakerStatus.null,
+				status_id:
+					typeof sneakerToAdd?.status_id === 'number'
+						? sneakerToAdd.status_id.toString()
+						: sneakerToAdd?.status_id ||
+							SneakerStatus.ROCKING.toString(),
 				size: sneakerToAdd?.size || currentSneakerSize,
 				condition: sneakerToAdd?.condition || '',
 				price_paid: sneakerToAdd?.price_paid || '',
@@ -66,7 +70,7 @@ export const FormDetailsStep = () => {
 				ds: sneakerToAdd?.ds || false,
 				is_women: sneakerToAdd?.is_women || false,
 				images: sneakerToAdd?.images || [],
-			} as SneakerFormData;
+			};
 		},
 		[]
 	);
@@ -93,7 +97,7 @@ export const FormDetailsStep = () => {
 		fieldNames: [
 			'model',
 			'brand',
-			'status',
+			'status_id',
 			'size',
 			'condition',
 			'price_paid',

@@ -9,6 +9,7 @@ import {
 } from 'react-hook-form';
 
 import { useModalStore } from '@/store/useModalStore';
+import { SneakerStatus } from '@/types/sneaker';
 import { SneakerFormData } from '@/validation/sneaker';
 
 export const useFormValidation = (
@@ -54,7 +55,7 @@ export const useFormValidation = (
 				isFormValid = !!(
 					currentFormData?.model &&
 					currentFormData?.brand &&
-					currentFormData?.status &&
+					currentFormData?.status_id &&
 					currentFormData?.size &&
 					currentFormData?.images?.length > 0
 				);
@@ -79,7 +80,14 @@ export const useFormValidation = (
 			const finalData = {
 				model: updatedFormValues.model || '',
 				brand: updatedFormValues.brand || 'Other',
-				status: updatedFormValues.status || '',
+				status_id:
+					typeof updatedFormValues.status_id === 'number'
+						? updatedFormValues.status_id
+						: parseInt(
+								updatedFormValues.status_id ||
+									SneakerStatus.ROCKING.toString(),
+								10
+							),
 				size: updatedFormValues.size || '',
 				condition: updatedFormValues.condition || '',
 				price_paid: updatedFormValues.price_paid || '',
@@ -88,7 +96,7 @@ export const useFormValidation = (
 				ds: updatedFormValues.ds || false,
 				is_women: updatedFormValues.is_women || false,
 				images: updatedFormValues.images,
-			} as SneakerFormData;
+			};
 
 			setSneakerToAdd(finalData);
 			return {
@@ -105,7 +113,7 @@ export const useFormValidation = (
 			const firstError =
 				getErrorSafe('model') ||
 				getErrorSafe('brand') ||
-				getErrorSafe('status') ||
+				getErrorSafe('status_id') ||
 				getErrorSafe('size') ||
 				getErrorSafe('condition') ||
 				getErrorSafe('price_paid') ||

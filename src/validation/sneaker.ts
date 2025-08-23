@@ -38,9 +38,8 @@ export const createSneakerSchema = () => {
 			.enum(Object.values(SneakerBrand) as [string, ...string[]])
 			.transform((val) => val as SneakerBrand),
 		status_id: z
-			.number()
-			.min(1)
-			.max(3)
+			.string()
+			.transform((val) => parseInt(val, 10))
 			.refine(
 				(val) =>
 					[

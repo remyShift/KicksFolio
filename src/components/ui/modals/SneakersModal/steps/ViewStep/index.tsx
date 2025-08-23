@@ -12,6 +12,7 @@ import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import SizeDisplay from '@/components/ui/text/SizeDisplay';
 import { useCurrencyStore } from '@/store/useCurrencyStore';
 import { useModalStore } from '@/store/useModalStore';
+import { sneakerStatusOptions } from '@/validation/utils';
 
 export const ViewStep = () => {
 	const { currentSneaker } = useModalStore();
@@ -33,6 +34,13 @@ export const ViewStep = () => {
 		currentSneaker.gender === 'women'
 			? `${currentSneaker.model} - WMNS`
 			: currentSneaker.model;
+
+	const getStatusLabel = (statusId: number): string => {
+		const statusOption = sneakerStatusOptions.find(
+			(option) => parseInt(option.value) === statusId
+		);
+		return statusOption ? statusOption.label : 'Unknown';
+	};
 
 	return (
 		<View className="flex-1 gap-4">
@@ -106,7 +114,9 @@ export const ViewStep = () => {
 						</Text>
 						<View className="w-4/5">
 							<Text className="font-open-sans-bold text-lg text-center">
-								{currentSneaker.status.toUpperCase()}
+								{getStatusLabel(
+									currentSneaker.status_id
+								).toUpperCase()}
 							</Text>
 						</View>
 					</View>

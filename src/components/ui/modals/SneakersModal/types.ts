@@ -16,7 +16,7 @@ export type InputType =
 	| 'brand'
 	| 'size'
 	| 'condition'
-	| 'status'
+	| 'status_id'
 	| 'pricePaid'
 	| 'sku';
 

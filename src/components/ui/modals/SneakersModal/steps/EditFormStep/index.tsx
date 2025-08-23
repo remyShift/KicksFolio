@@ -66,7 +66,7 @@ export const EditFormStep = () => {
 		fieldNames: [
 			'model',
 			'brand',
-			'status',
+			'status_id',
 			'size',
 			'condition',
 			'price_paid',
@@ -79,10 +79,12 @@ export const EditFormStep = () => {
 				sneakerToAdd?.brand ||
 				currentSneaker?.brand ||
 				SneakerBrand.null,
-			status:
-				sneakerToAdd?.status ||
-				currentSneaker?.status ||
-				SneakerStatus.null,
+			status_id:
+				(typeof sneakerToAdd?.status_id === 'number'
+					? sneakerToAdd.status_id.toString()
+					: sneakerToAdd?.status_id) ||
+				currentSneaker?.status_id?.toString() ||
+				SneakerStatus.ROCKING.toString(),
 			size: displaySize.toString(),
 			condition: currentSneaker?.condition
 				? String(currentSneaker.condition)
@@ -100,7 +102,7 @@ export const EditFormStep = () => {
 			const updatedSneaker = {
 				model: data.model,
 				brand: data.brand,
-				status: data.status,
+				status_id: data.status_id,
 				size: data.size,
 				condition: data.condition,
 				price_paid: data.price_paid,
@@ -122,7 +124,9 @@ export const EditFormStep = () => {
 			const initData = {
 				model: currentSneaker.model || '',
 				brand: currentSneaker.brand || '',
-				status: currentSneaker.status || '',
+				status_id:
+					currentSneaker.status_id?.toString() ||
+					SneakerStatus.ROCKING.toString(),
 				size: displaySize.toString(),
 				condition: currentSneaker.condition.toString() || '',
 				price_paid: currentSneaker.price_paid?.toString() || '',
@@ -132,10 +136,11 @@ export const EditFormStep = () => {
 				images: sneakerToAdd?.images || currentSneaker.images || [],
 			};
 
-			reset(initData as SneakerFormData);
+			reset(initData);
 
 			if (!sneakerToAdd) {
-				setSneakerToAdd(initData as SneakerFormData);
+				// The schema will transform the string status_id to number during validation
+				setSneakerToAdd(initData);
 			}
 		}
 	}, [currentSneaker, displaySize, reset]);
