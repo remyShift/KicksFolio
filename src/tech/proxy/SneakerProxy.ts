@@ -19,7 +19,8 @@ class SneakerProxy implements SneakerHandlerInterface {
 					model,
 					gender,
 					sku,
-					description
+					description,
+					image
 				)
 			`
 			)
@@ -29,7 +30,7 @@ class SneakerProxy implements SneakerHandlerInterface {
 		if (error) throw error;
 
 		const result =
-			data?.map((collection, index) => {
+			data?.map((collection) => {
 				const {
 					created_at,
 					updated_at,
@@ -43,13 +44,33 @@ class SneakerProxy implements SneakerHandlerInterface {
 				const { id: sneakerModelId, ...sneakerDataWithoutId } =
 					sneakerData;
 
+				const parsedCollectionImages = SneakerProxy.parseImages(
+					collection.images
+				);
+
+				let finalImages = parsedCollectionImages;
+				if (finalImages.length === 0 && sneakerData.image) {
+					let actualUri = sneakerData.image;
+					try {
+						const parsedImage = JSON.parse(sneakerData.image);
+						actualUri = parsedImage.uri || sneakerData.image;
+					} catch (error) {
+						console.warn(
+							`🔧 sneaker.image is not JSON for ${sneakerData.model}, using as-is:`,
+							sneakerData.image
+						);
+					}
+
+					finalImages = [{ id: 'api-image', uri: actualUri }];
+				}
+
 				const transformedSneaker = {
 					id: collection.id,
 					sneaker_id: sneakerData.id,
 					user_id: collection.user_id,
 					...collectionData,
 					...sneakerDataWithoutId,
-					images: SneakerProxy.parseImages(collection.images),
+					images: finalImages,
 				} as Sneaker;
 
 				return transformedSneaker;
@@ -59,7 +80,9 @@ class SneakerProxy implements SneakerHandlerInterface {
 	}
 
 	private static parseImages(images: any): { id: string; uri: string }[] {
-		if (!images) return [];
+		if (!images) {
+			return [];
+		}
 
 		if (
 			Array.isArray(images) &&
@@ -67,14 +90,15 @@ class SneakerProxy implements SneakerHandlerInterface {
 			typeof images[0] === 'object' &&
 			(images[0].uri || images[0].url)
 		) {
-			return images.map((img: any) => ({
+			const result = images.map((img: any) => ({
 				id: img.id || '',
 				uri: img.uri || img.url || '',
 			}));
+			return result;
 		}
 
 		if (Array.isArray(images)) {
-			return images.map((img) => {
+			const result = images.map((img, index) => {
 				if (typeof img === 'string') {
 					try {
 						const parsed = JSON.parse(img);
@@ -95,31 +119,35 @@ class SneakerProxy implements SneakerHandlerInterface {
 					uri: img.uri || img.url || '',
 				};
 			});
+			return result;
 		}
 
 		if (typeof images === 'string') {
 			try {
 				const parsed = JSON.parse(images);
 				if (Array.isArray(parsed)) {
-					return parsed.map((img: any) => ({
+					const result = parsed.map((img: any) => ({
 						id: img.id || '',
 						uri: img.uri || img.url || '',
 					}));
+					return result;
 				}
-				return [
+				const result = [
 					{
 						id: parsed.id || '',
 						uri: parsed.uri || parsed.url || '',
 					},
 				];
+				return result;
 			} catch (error) {
 				console.warn('Erreur parsing images JSON string:', error);
-				return [
+				const result = [
 					{
 						id: '',
 						uri: images,
 					},
 				];
+				return result;
 			}
 		}
 
@@ -129,6 +157,7 @@ class SneakerProxy implements SneakerHandlerInterface {
 	async create(
 		sneakerData: Omit<Sneaker, 'id' | 'user_id' | 'size_eu' | 'size_us'> & {
 			size: number;
+			fetchedImage?: string;
 		},
 		currentUnit?: SizeUnit
 	): Promise<Sneaker> {
@@ -170,6 +199,7 @@ class SneakerProxy implements SneakerHandlerInterface {
 			sku,
 			description,
 			images,
+			fetchedImage,
 			...collectionData
 		} = sneakerData;
 
@@ -177,7 +207,7 @@ class SneakerProxy implements SneakerHandlerInterface {
 
 		const { data: existingSneaker } = await supabase
 			.from('sneakers')
-			.select('id')
+			.select('id, image')
 			.eq('brand', brand)
 			.eq('model', model)
 			.eq('gender', gender)
@@ -186,6 +216,20 @@ class SneakerProxy implements SneakerHandlerInterface {
 
 		if (existingSneaker) {
 			sneakerId = existingSneaker.id;
+
+			if (!existingSneaker.image && sneakerData.fetchedImage) {
+				const { error: updateError } = await supabase
+					.from('sneakers')
+					.update({ image: sneakerData.fetchedImage })
+					.eq('id', existingSneaker.id);
+
+				if (updateError) {
+					console.warn(
+						'Failed to update sneaker image:',
+						updateError
+					);
+				}
+			}
 		} else {
 			const { data: newSneaker, error: sneakerError } = await supabase
 				.from('sneakers')
@@ -196,6 +240,7 @@ class SneakerProxy implements SneakerHandlerInterface {
 						gender,
 						sku,
 						description,
+						image: sneakerData.fetchedImage || null,
 					},
 				])
 				.select('id')
@@ -228,7 +273,8 @@ class SneakerProxy implements SneakerHandlerInterface {
 					model,
 					gender,
 					sku,
-					description
+					description,
+					image
 				)
 			`
 			)
@@ -349,7 +395,8 @@ class SneakerProxy implements SneakerHandlerInterface {
 					model,
 					gender,
 					sku,
-					description
+					description,
+					image
 				)
 			`
 			)
@@ -402,7 +449,8 @@ class SneakerProxy implements SneakerHandlerInterface {
 					model,
 					gender,
 					sku,
-					description
+					description,
+					image
 				)
 			`
 			)
@@ -508,7 +556,6 @@ class SneakerProxy implements SneakerHandlerInterface {
 					],
 				};
 
-				console.log('SKU search successful:', dataWithoutBrandName);
 				return dataWithoutBrandName;
 			})
 			.catch((err) => {
@@ -572,7 +619,6 @@ class SneakerProxy implements SneakerHandlerInterface {
 					],
 				};
 
-				console.log('Barcode search successful:', dataWithoutBrandName);
 				return dataWithoutBrandName;
 			})
 			.catch((err) => {

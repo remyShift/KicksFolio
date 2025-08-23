@@ -20,6 +20,8 @@ interface SneakerListFactoryProps {
 	bufferSize?: number;
 	threshold?: number;
 	maxChunksInMemory?: number;
+	customSwipeActions?: React.ComponentType<any>;
+	customMainContent?: React.ComponentType<any>;
 }
 
 const ESTIMATED_ITEM_HEIGHT = 80;
@@ -34,6 +36,8 @@ function SneakerListFactory({
 	bufferSize = 4,
 	threshold = 200,
 	maxChunksInMemory = 30,
+	customSwipeActions,
+	customMainContent,
 }: SneakerListFactoryProps) {
 	const chunked = useChunkedListData(sneakers, {
 		chunkSize,
@@ -76,12 +80,14 @@ function SneakerListFactory({
 					item={item}
 					showOwnerInfo={showOwnerInfo}
 					userSneakers={userSneakers}
+					customSwipeActions={customSwipeActions}
+					customMainContent={customMainContent}
 				/>
 			);
 
 			return result;
 		},
-		[showOwnerInfo, userSneakers]
+		[showOwnerInfo, userSneakers, customSwipeActions, customMainContent]
 	);
 
 	const keyExtractor = useCallback((item: Sneaker) => {

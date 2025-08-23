@@ -86,31 +86,61 @@ export class WishlistProxy implements WishlistInterface {
 	}
 
 	async getByUserId(userId: string): Promise<Sneaker[]> {
-		const { data, error } = await supabase
+		const { data: wishlistData, error: wishlistError } = await supabase
 			.from('wishlists')
-			.select(
-				`
-				id,
-				created_at,
-				sneakers!inner (
-					id,
-					brand,
-					model,
-					gender,
-					sku,
-					description
-				)
-			`
-			)
+			.select('id, created_at, sneaker_id')
 			.eq('user_id', userId)
 			.order('created_at', { ascending: false });
 
-		if (error) throw error;
+		if (wishlistError) {
+			console.error(
+				'❌ WishlistProxy.getByUserId - wishlist error:',
+				wishlistError
+			);
+			throw wishlistError;
+		}
+
+		if (!wishlistData || wishlistData.length === 0) {
+			return [];
+		}
+
+		const sneakerIds = wishlistData.map((item) => item.sneaker_id);
+
+		const { data: sneakersData, error: sneakersError } = await supabase
+			.from('sneakers')
+			.select('id, brand, model, gender, sku, description, image')
+			.in('id', sneakerIds);
+
+		if (sneakersError) {
+			console.error(
+				'❌ WishlistProxy.getByUserId - sneakers error:',
+				sneakersError
+			);
+			throw sneakersError;
+		}
+
+		const sneakersMap = new Map();
+		sneakersData?.forEach((sneaker) => {
+			sneakersMap.set(sneaker.id, sneaker);
+		});
+
+		const data = wishlistData
+			.map((wishlistItem) => ({
+				id: wishlistItem.id,
+				created_at: wishlistItem.created_at,
+				sneakers: [sneakersMap.get(wishlistItem.sneaker_id)],
+			}))
+			.filter((item) => item.sneakers[0]);
+
 		if (!data) return [];
 
-		return data
-			.map(WishlistProxy.transformWishlistToSneaker)
+		const result = data
+			.map((item, index) => {
+				return WishlistProxy.transformWishlistToSneaker(item);
+			})
 			.filter((sneaker): sneaker is Sneaker => sneaker !== null);
+
+		return result;
 	}
 
 	async getBySneakerId(sneakerId: string) {
@@ -140,13 +170,28 @@ export class WishlistProxy implements WishlistInterface {
 		wishlistItem: Record<string, any>
 	): Sneaker | null {
 		try {
-			const sneaker = wishlistItem?.sneakers;
+			const sneaker = wishlistItem?.sneakers?.[0];
 
 			if (!sneaker?.id) {
 				console.warn('🔍 WishlistProxy: Missing sneaker data:', {
 					sneaker: !!sneaker?.id,
 				});
 				return null;
+			}
+
+			let wishlistImages: { id: string; uri: string }[] = [];
+			if (sneaker.image) {
+				let actualUri = sneaker.image;
+				try {
+					const parsedImage = JSON.parse(sneaker.image);
+					actualUri = parsedImage.uri || sneaker.image;
+				} catch (error) {
+					console.warn(
+						`🔧 Wishlist sneaker.image is not JSON for ${sneaker.model}, using as-is:`,
+						sneaker.image
+					);
+				}
+				wishlistImages = [{ id: 'api', uri: actualUri }];
 			}
 
 			const transformedSneaker = {
@@ -164,7 +209,7 @@ export class WishlistProxy implements WishlistInterface {
 				status: 'rocking' as SneakerStatus,
 				price_paid: 0,
 				estimated_value: 0,
-				images: [],
+				images: wishlistImages,
 				og_box: false,
 				ds: false,
 			};

@@ -24,19 +24,16 @@ interface SwipeableWrapperProps {
 	showOwnerInfo?: boolean;
 	userSneakers?: Sneaker[];
 	onCloseRow?: () => void;
-	// Props pour personnaliser les actions
 	customSwipeActions?: React.ComponentType<{
 		sneaker: Sneaker;
 		closeRow: () => void;
 		userSneakers?: Sneaker[];
 		isOwner?: boolean;
 	}>;
-	// Props pour personnaliser le contenu principal
 	customMainContent?: React.ComponentType<{
 		sneaker: Sneaker;
 		showOwnerInfo?: boolean;
 	}>;
-	// Props pour personnaliser la logique d'ownership
 	getIsOwner?: (item: Sneaker) => boolean;
 }
 
@@ -54,12 +51,10 @@ function SwipeableWrapper({
 	const translateX = useSharedValue(0);
 	const isOpen = useMemo(() => isRowOpen(item.id), [isRowOpen, item.id]);
 
-	// Utiliser la fonction personnalisée ou la logique par défaut
 	const isOwner = useMemo(() => {
 		if (getIsOwner) {
 			return getIsOwner(item);
 		}
-		// Logique par défaut - à implémenter selon le contexte
 		return false;
 	}, [getIsOwner, item]);
 
@@ -137,7 +132,6 @@ function SwipeableWrapper({
 		transform: [{ translateX: translateX.value }],
 	}));
 
-	// Utiliser les composants personnalisés ou les composants par défaut
 	const SwipeActionsComponent = customSwipeActions;
 	const MainContentComponent = customMainContent;
 
@@ -162,7 +156,10 @@ function SwipeableWrapper({
 
 	const mainContent = useMemo(
 		() => (
-			<View className="flex-1 bg-white">
+			<View
+				className="flex-1 bg-white"
+				style={{ backgroundColor: '#ffffff', flex: 1 }}
+			>
 				<MainContentComponent
 					sneaker={item}
 					showOwnerInfo={showOwnerInfo}
@@ -181,7 +178,14 @@ function SwipeableWrapper({
 			<GestureDetector gesture={panGesture}>
 				<Animated.View
 					className="flex-1"
-					style={[{ width: screenWidth }, animatedStyle]}
+					style={[
+						{
+							width: screenWidth,
+							backgroundColor: '#ffffff',
+							flex: 1,
+						},
+						animatedStyle,
+					]}
 				>
 					{mainContent}
 				</Animated.View>

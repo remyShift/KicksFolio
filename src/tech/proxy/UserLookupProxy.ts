@@ -216,7 +216,8 @@ export class UserLookupProxy implements UserLookupInterface {
 						model,
 						gender,
 						sku,
-						description
+						description,
+						image
 					)
 				`
 				)
@@ -234,7 +235,7 @@ export class UserLookupProxy implements UserLookupInterface {
 			}
 
 			const result =
-				collections?.map((collection) => {
+				collections?.map((collection, index) => {
 					const {
 						created_at,
 						updated_at,
@@ -244,17 +245,40 @@ export class UserLookupProxy implements UserLookupInterface {
 						...collectionData
 					} = collection;
 					const sneakerData = sneakers as any;
+
 					const { id: sneakerModelId, ...sneakerDataWithoutId } =
 						sneakerData;
 
-					return {
+					const parsedCollectionImages = UserLookupProxy.parseImages(
+						collection.images
+					);
+
+					let finalImages = parsedCollectionImages;
+					if (finalImages.length === 0 && sneakerData.image) {
+						let actualUri = sneakerData.image;
+						try {
+							const parsedImage = JSON.parse(sneakerData.image);
+							actualUri = parsedImage.uri || sneakerData.image;
+						} catch (error) {
+							console.warn(
+								`🔧 UserLookup sneaker.image is not JSON for ${sneakerData.model}, using as-is:`,
+								sneakerData.image
+							);
+						}
+
+						finalImages = [{ id: 'api-image', uri: actualUri }];
+					}
+
+					const sneaker = {
 						id: collection.id,
 						sneaker_id: sneakerData.id,
 						user_id: collection.user_id,
 						...collectionData,
 						...sneakerDataWithoutId,
-						images: UserLookupProxy.parseImages(collection.images),
+						images: finalImages,
 					} as Sneaker;
+
+					return sneaker;
 				}) || [];
 
 			return result;

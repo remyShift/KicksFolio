@@ -147,7 +147,8 @@ export const useSneakerAPI = () => {
 		callbacks?: Callbacks,
 		estimatedValue?: number | null,
 		gender?: string | null,
-		sku?: string | null
+		sku?: string | null,
+		fetchedImage?: string | null
 	) => {
 		if (!user) {
 			callbacks?.setErrorMsg(
@@ -185,7 +186,7 @@ export const useSneakerAPI = () => {
 				const sneakerToAdd: Omit<
 					Sneaker,
 					'id' | 'user_id' | 'size_eu' | 'size_us'
-				> & { size: number } = {
+				> & { size: number; fetchedImage?: string } = {
 					model: validatedData.model,
 					brand: validatedData.brand,
 					status: validatedData.status,
@@ -201,6 +202,7 @@ export const useSneakerAPI = () => {
 					sku: sku || '',
 					og_box: validatedData.og_box || false,
 					ds: validatedData.ds || false,
+					fetchedImage: fetchedImage || undefined,
 				};
 
 				return sneakerHandler.create(sneakerToAdd, currentUnit);

@@ -12,6 +12,8 @@ interface ProfileSwipeableWrapperProps {
 	showOwnerInfo?: boolean;
 	userSneakers?: Sneaker[];
 	onCloseRow?: () => void;
+	customSwipeActions?: React.ComponentType<any>;
+	customMainContent?: React.ComponentType<any>;
 }
 
 function ProfileSwipeableWrapper({
@@ -19,6 +21,8 @@ function ProfileSwipeableWrapper({
 	showOwnerInfo = false,
 	userSneakers,
 	onCloseRow,
+	customSwipeActions,
+	customMainContent,
 }: ProfileSwipeableWrapperProps) {
 	const { user: currentUser } = useSession();
 
@@ -33,8 +37,8 @@ function ProfileSwipeableWrapper({
 			showOwnerInfo={showOwnerInfo}
 			userSneakers={userSneakers}
 			onCloseRow={onCloseRow}
-			customSwipeActions={SwipeActions}
-			customMainContent={SneakerListItem}
+			customSwipeActions={customSwipeActions || SwipeActions}
+			customMainContent={customMainContent || SneakerListItem}
 			getIsOwner={getIsOwner}
 		/>
 	);

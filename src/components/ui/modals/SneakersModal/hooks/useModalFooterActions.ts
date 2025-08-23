@@ -20,6 +20,7 @@ export const useModalFooterActions = () => {
 		setModalStep,
 		setErrorMsg,
 		setFetchedSneaker,
+		fetchedSneaker,
 		estimatedValue,
 		gender,
 		sku,
@@ -180,7 +181,8 @@ export const useModalFooterActions = () => {
 									},
 									estimatedValue,
 									gender,
-									sku
+									sku,
+									fetchedSneaker?.image?.uri
 								);
 							} else {
 								setErrorMsg(result.errorMsg);

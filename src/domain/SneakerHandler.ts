@@ -17,6 +17,7 @@ export interface SneakerHandlerInterface {
 	create: (
 		sneakerData: Omit<Sneaker, 'id' | 'user_id' | 'size_eu' | 'size_us'> & {
 			size: number;
+			fetchedImage?: string;
 		},
 		currentUnit?: SizeUnit
 	) => Promise<Sneaker>;
@@ -51,6 +52,7 @@ export class SneakerHandler {
 	create = async (
 		sneakerData: Omit<Sneaker, 'id' | 'user_id' | 'size_eu' | 'size_us'> & {
 			size: number;
+			fetchedImage?: string;
 		},
 		currentUnit: SizeUnit = 'EU'
 	) => {

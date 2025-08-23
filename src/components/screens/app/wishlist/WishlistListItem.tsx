@@ -12,13 +12,9 @@ import { brandLogos } from '@/validation/utils';
 
 interface WishlistListItemProps {
 	sneaker: Sneaker;
-	showOwnerInfo?: boolean;
 }
 
-function WishlistListItem({
-	sneaker,
-	showOwnerInfo = false,
-}: WishlistListItemProps) {
+function WishlistListItem({ sneaker }: WishlistListItemProps) {
 	const { t } = useTranslation();
 	const { showSuccessToast, showErrorToast } = useToast();
 
@@ -41,16 +37,53 @@ function WishlistListItem({
 	const brandLogo = brandLogos[sneaker.brand?.toLowerCase()];
 
 	return (
-		<View className="flex-row items-center py-3 px-4 bg-white border-b border-gray-100">
-			<View className="w-16 h-16 mr-4 rounded-lg overflow-hidden bg-gray-100">
+		<View
+			className="flex-row items-center py-3 px-4 bg-white border-b border-gray-100"
+			style={{ backgroundColor: '#ffffff', minHeight: 80 }}
+		>
+			<View
+				className="w-16 h-16 mr-4 rounded-lg overflow-hidden bg-gray-100"
+				style={{
+					width: 64,
+					height: 64,
+					backgroundColor: '#f3f4f6',
+					borderRadius: 8,
+					overflow: 'hidden',
+				}}
+			>
 				{sneaker.images && sneaker.images.length > 0 ? (
 					<Image
 						source={{ uri: sneaker.images[0].uri }}
 						className="w-full h-full"
 						contentFit="cover"
+						placeholder={require('@/assets/images/placeholder-sneaker.png')}
+						placeholderContentFit="cover"
+						onError={(error) => {
+							console.error(
+								`❌ WishlistListItem image error for ${sneaker.model}:`,
+								error
+							);
+							console.error(
+								'❌ Failed URI:',
+								sneaker.images[0].uri
+							);
+							console.error(
+								'❌ Full error details:',
+								JSON.stringify(error, null, 2)
+							);
+						}}
+						style={{
+							width: '100%',
+							height: '100%',
+							backgroundColor: '#f3f4f6',
+						}}
 					/>
 				) : (
-					<View className="w-full h-full bg-gray-100" />
+					<Image
+						source={require('@/assets/images/placeholder-sneaker.png')}
+						className="w-full h-full"
+						contentFit="cover"
+					/>
 				)}
 			</View>
 

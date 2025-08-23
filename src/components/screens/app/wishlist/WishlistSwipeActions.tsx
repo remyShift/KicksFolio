@@ -3,24 +3,38 @@ import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Text, TouchableOpacity, View } from 'react-native';
 
-import { useModalStore } from '@/store/useModalStore';
+import useToast from '@/hooks/ui/useToast';
+import { wishlist } from '@/services/wishlist';
 import { Sneaker } from '@/types/sneaker';
 
 interface WishlistSwipeActionsProps {
 	sneaker: Sneaker;
+	closeRow: () => void;
 }
 
 export default function WishlistSwipeActions({
 	sneaker,
+	closeRow,
 }: WishlistSwipeActionsProps) {
 	const { t } = useTranslation();
-	const { setCurrentSneaker, setModalStep, setIsVisible } = useModalStore();
+	const { showSuccessToast, showErrorToast } = useToast();
 
-	const handleSneakerPress = useCallback(() => {
-		setCurrentSneaker(sneaker);
-		setModalStep('view');
-		setIsVisible(true);
-	}, [sneaker, setCurrentSneaker, setModalStep, setIsVisible]);
+	const handleRemoveFromWishlist = useCallback(async () => {
+		try {
+			await wishlist.remove(sneaker.id);
+			showSuccessToast(
+				t('wishlist.messages.removed.title'),
+				t('wishlist.messages.removed.description')
+			);
+			closeRow();
+		} catch (error) {
+			console.error('Failed to remove from wishlist:', error);
+			showErrorToast(
+				t('wishlist.messages.removeFailed.title'),
+				t('wishlist.messages.removeFailed.description')
+			);
+		}
+	}, [sneaker.id, showSuccessToast, showErrorToast, t, closeRow]);
 
 	const actionButtonStyle = useMemo(
 		() => ({
@@ -32,10 +46,10 @@ export default function WishlistSwipeActions({
 		[]
 	);
 
-	const viewButtonStyle = useMemo(
+	const deleteButtonStyle = useMemo(
 		() => ({
 			...actionButtonStyle,
-			backgroundColor: '#3b82f6',
+			backgroundColor: '#dc2626',
 		}),
 		[actionButtonStyle]
 	);
@@ -43,16 +57,18 @@ export default function WishlistSwipeActions({
 	return (
 		<View className="flex-row absolute top-0 left-0 right-0 bottom-0 justify-end items-center bg-[#f8f9fa] gap-1">
 			<TouchableOpacity
-				style={viewButtonStyle}
-				onPress={handleSneakerPress}
+				style={deleteButtonStyle}
+				onPress={handleRemoveFromWishlist}
 				activeOpacity={0.7}
 			>
 				<View className="items-center">
 					<View className="w-6 h-6 bg-white rounded-full items-center justify-center mb-1">
-						<View className="w-3 h-3 border-2 border-blue-500 rounded-sm" />
+						<Text className="text-red-600 text-sm font-bold">
+							×
+						</Text>
 					</View>
 					<Text className="text-white text-xs font-medium">
-						{t('collection.actions.view')}
+						{t('wishlist.remove')}
 					</Text>
 				</View>
 			</TouchableOpacity>
