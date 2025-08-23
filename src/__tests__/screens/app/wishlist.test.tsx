@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react-native';
 
 import Wishlist from '@/app/(app)/(tabs)/wishlist';
 import { useSession } from '@/contexts/authContext';
-import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
+import { BrandId, Sneaker, SneakerStatus } from '@/types/sneaker';
 
 describe('Wishlist', () => {
 	const mockWishlistSneakers: Sneaker[] = [
@@ -10,7 +10,7 @@ describe('Wishlist', () => {
 			id: '1',
 			user_id: 'user1',
 			model: 'Air Max 1',
-			brand: SneakerBrand.Nike,
+			brand_id: BrandId.Nike,
 			size_us: 10,
 			size_eu: 44,
 			condition: 9,

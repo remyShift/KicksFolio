@@ -16,8 +16,9 @@ class SneakerFiltering implements SneakerFilterProviderInterface {
 		let filteredSneakers = [...sneakers];
 
 		if (filters.brands.length > 0) {
-			filteredSneakers = filteredSneakers.filter((sneaker) =>
-				filters.brands.includes(sneaker.brand)
+			filteredSneakers = filteredSneakers.filter(
+				(sneaker) =>
+					sneaker.brand && filters.brands.includes(sneaker.brand.name)
 			);
 		}
 
@@ -62,7 +63,9 @@ class SneakerFiltering implements SneakerFilterProviderInterface {
 					comparison = a.model.localeCompare(b.model);
 					break;
 				case 'brand':
-					comparison = a.brand.localeCompare(b.brand);
+					comparison = (a.brand?.name || '').localeCompare(
+						b.brand?.name || ''
+					);
 					break;
 				case 'size':
 					const sizeA = currentUnit === 'US' ? a.size_us : a.size_eu;
@@ -92,7 +95,9 @@ class SneakerFiltering implements SneakerFilterProviderInterface {
 	): UniqueValues {
 		const brands = [
 			...new Set(
-				sneakers.map((sneaker) => sneaker.brand).filter(Boolean)
+				sneakers
+					.map((sneaker) => sneaker.brand?.name)
+					.filter((name): name is string => Boolean(name))
 			),
 		].sort();
 
@@ -106,7 +111,7 @@ class SneakerFiltering implements SneakerFilterProviderInterface {
 								: sneaker.size_eu;
 						return size?.toString();
 					})
-					.filter(Boolean)
+					.filter((size): size is string => Boolean(size))
 			),
 		].sort((a, b) => Number(a) - Number(b));
 
@@ -114,13 +119,17 @@ class SneakerFiltering implements SneakerFilterProviderInterface {
 			...new Set(
 				sneakers
 					.map((sneaker) => sneaker.condition?.toString())
-					.filter(Boolean)
+					.filter((condition): condition is string =>
+						Boolean(condition)
+					)
 			),
 		].sort((a, b) => Number(b) - Number(a));
 
 		const statuses = [
 			...new Set(
-				sneakers.map((sneaker) => sneaker.status_id).filter(Boolean)
+				sneakers
+					.map((sneaker) => sneaker.status_id)
+					.filter((status): status is number => Boolean(status))
 			),
 		].sort((a, b) => a - b);
 

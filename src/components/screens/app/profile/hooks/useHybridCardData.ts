@@ -60,7 +60,8 @@ export function useHybridCardData(
 
 		return sneakers.reduce(
 			(acc: Record<string, Sneaker[]>, sneaker: Sneaker) => {
-				const normalizedBrand = sneaker.brand.toLowerCase().trim();
+				const normalizedBrand =
+					sneaker.brand?.name?.toLowerCase().trim() || 'unknown';
 				if (!acc[normalizedBrand]) {
 					acc[normalizedBrand] = [];
 				}
@@ -76,7 +77,7 @@ export function useHybridCardData(
 
 		Object.entries(sneakersByBrand).forEach(
 			([normalizedBrand, sneakers]) => {
-				const brandName = sneakers[0]?.brand || normalizedBrand;
+				const brandName = sneakers[0]?.brand?.name || normalizedBrand;
 				const shouldUseChunking =
 					sneakers.length >= finalConfig.sneakersThreshold;
 

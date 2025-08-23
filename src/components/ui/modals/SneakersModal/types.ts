@@ -1,5 +1,5 @@
 import { SneakerPhoto } from '@/types/image';
-import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
+import { Sneaker } from '@/types/sneaker';
 
 export type ModalStep =
 	| 'index'
@@ -13,7 +13,7 @@ export type ModalStep =
 
 export type InputType =
 	| 'name'
-	| 'brand'
+	| 'brand_id'
 	| 'size'
 	| 'condition'
 	| 'status_id'
@@ -49,31 +49,6 @@ export interface ValidationErrors {
 export interface ValidationError {
 	field: string;
 	message: string;
-}
-
-export interface SneakerFormData {
-	model: string;
-	brand:
-		| SneakerBrand.Nike
-		| SneakerBrand.Adidas
-		| SneakerBrand.Converse
-		| SneakerBrand.NewBalance
-		| SneakerBrand.Puma
-		| SneakerBrand.Jordan
-		| SneakerBrand.Asics
-		| SneakerBrand.Reebok
-		| SneakerBrand.Vans
-		| SneakerBrand.Other
-		| SneakerBrand.null;
-	status_id: number;
-	size: string;
-	condition: string;
-	images: SneakerPhoto[];
-	price_paid?: string;
-	description?: string;
-	og_box?: boolean;
-	ds?: boolean;
-	is_women?: boolean;
 }
 
 export interface ValidationResult {

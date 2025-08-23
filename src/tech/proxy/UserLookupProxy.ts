@@ -212,12 +212,16 @@ export class UserLookupProxy implements UserLookupInterface {
 					*,
 					sneakers (
 						id,
-						brand,
+						brand_id,
 						model,
 						gender,
 						sku,
 						description,
-						image
+						image,
+						brands (
+							id,
+							name
+						)
 					)
 				`
 				)
@@ -246,8 +250,11 @@ export class UserLookupProxy implements UserLookupInterface {
 					} = collection;
 					const sneakerData = sneakers as any;
 
-					const { id: sneakerModelId, ...sneakerDataWithoutId } =
-						sneakerData;
+					const {
+						id: sneakerModelId,
+						brands,
+						...sneakerDataWithoutId
+					} = sneakerData;
 
 					const parsedCollectionImages = UserLookupProxy.parseImages(
 						collection.images
@@ -275,6 +282,7 @@ export class UserLookupProxy implements UserLookupInterface {
 						user_id: collection.user_id,
 						...collectionData,
 						...sneakerDataWithoutId,
+						brand: brands || null,
 						images: finalImages,
 					} as Sneaker;
 

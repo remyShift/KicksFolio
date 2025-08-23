@@ -1,4 +1,4 @@
-import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
+import { BrandId, Sneaker, SneakerStatus } from '@/types/sneaker';
 
 export const mockSneakers: Sneaker[] = [
 	{
@@ -7,7 +7,7 @@ export const mockSneakers: Sneaker[] = [
 		price_paid: 100,
 		status_id: SneakerStatus.ROCKING,
 		model: 'Sneaker 1',
-		brand: SneakerBrand.Nike,
+		brand_id: BrandId.Nike,
 		sku: '1234567890',
 		size_eu: 45,
 		size_us: 10.5,
@@ -19,8 +19,6 @@ export const mockSneakers: Sneaker[] = [
 			},
 		],
 		description: null,
-		created_at: '',
-		updated_at: '',
 		estimated_value: 120,
 	},
 ];

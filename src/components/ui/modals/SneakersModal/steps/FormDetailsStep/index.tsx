@@ -17,7 +17,7 @@ import { useFormController } from '@/hooks/form/useFormController';
 import { useSizeConversion } from '@/hooks/useSizeConversion';
 import { useModalStore } from '@/store/useModalStore';
 import { SneakerPhoto } from '@/types/image';
-import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
+import { BrandId, Sneaker, SneakerStatus } from '@/types/sneaker';
 import { createSneakerSchema, SneakerFormData } from '@/validation/sneaker';
 
 import { useFormValidation } from '../../hooks/useFormValidation';
@@ -56,12 +56,12 @@ export const FormDetailsStep = () => {
 		) => {
 			return {
 				model: sneakerToAdd?.model || '',
-				brand: sneakerToAdd?.brand || SneakerBrand.null,
+				brand_id:
+					sneakerToAdd?.brand_id?.toString() ||
+					BrandId.Other.toString(),
 				status_id:
-					typeof sneakerToAdd?.status_id === 'number'
-						? sneakerToAdd.status_id.toString()
-						: sneakerToAdd?.status_id ||
-							SneakerStatus.ROCKING.toString(),
+					sneakerToAdd?.status_id?.toString() ||
+					SneakerStatus.ROCKING.toString(),
 				size: sneakerToAdd?.size || currentSneakerSize,
 				condition: sneakerToAdd?.condition || '',
 				price_paid: sneakerToAdd?.price_paid || '',
@@ -96,7 +96,7 @@ export const FormDetailsStep = () => {
 		schema: createSneakerSchema(),
 		fieldNames: [
 			'model',
-			'brand',
+			'brand_id',
 			'status_id',
 			'size',
 			'condition',

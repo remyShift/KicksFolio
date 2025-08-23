@@ -69,7 +69,8 @@ export const ViewStep = () => {
 					</View>
 					<View className="flex-row items-center gap-2">
 						<Text className="font-open-sans-bold-italic text-base">
-							{currentSneaker.brand.toUpperCase()}
+							{currentSneaker.brand?.name?.toUpperCase() ||
+								'Unknown'}
 						</Text>
 
 						{currentSneaker.sku && (

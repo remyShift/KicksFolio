@@ -17,7 +17,7 @@ import { useFormController } from '@/hooks/form/useFormController';
 import { useSizeConversion } from '@/hooks/useSizeConversion';
 import { useModalStore } from '@/store/useModalStore';
 import { SneakerPhoto } from '@/types/image';
-import { SneakerBrand, SneakerStatus } from '@/types/sneaker';
+import { BrandId, SneakerStatus } from '@/types/sneaker';
 import { createSneakerSchema, SneakerFormData } from '@/validation/sneaker';
 
 import { useFormValidation } from '../../hooks/useFormValidation';
@@ -65,7 +65,7 @@ export const EditFormStep = () => {
 		schema: createSneakerSchema(),
 		fieldNames: [
 			'model',
-			'brand',
+			'brand_id',
 			'status_id',
 			'size',
 			'condition',
@@ -75,14 +75,12 @@ export const EditFormStep = () => {
 		authErrorMsg: errorMsg,
 		defaultValues: {
 			model: currentSneaker?.model || '',
-			brand:
-				sneakerToAdd?.brand ||
-				currentSneaker?.brand ||
-				SneakerBrand.null,
+			brand_id:
+				sneakerToAdd?.brand_id?.toString() ||
+				currentSneaker?.brand_id?.toString() ||
+				BrandId.Other.toString(),
 			status_id:
-				(typeof sneakerToAdd?.status_id === 'number'
-					? sneakerToAdd.status_id.toString()
-					: sneakerToAdd?.status_id) ||
+				sneakerToAdd?.status_id?.toString() ||
 				currentSneaker?.status_id?.toString() ||
 				SneakerStatus.ROCKING.toString(),
 			size: displaySize.toString(),
@@ -101,7 +99,7 @@ export const EditFormStep = () => {
 		onSubmit: async (data) => {
 			const updatedSneaker = {
 				model: data.model,
-				brand: data.brand,
+				brand_id: data.brand_id,
 				status_id: data.status_id,
 				size: data.size,
 				condition: data.condition,
@@ -123,7 +121,9 @@ export const EditFormStep = () => {
 		if (currentSneaker) {
 			const initData = {
 				model: currentSneaker.model || '',
-				brand: currentSneaker.brand || '',
+				brand_id:
+					currentSneaker.brand_id?.toString() ||
+					BrandId.Other.toString(),
 				status_id:
 					currentSneaker.status_id?.toString() ||
 					SneakerStatus.ROCKING.toString(),
@@ -139,7 +139,6 @@ export const EditFormStep = () => {
 			reset(initData);
 
 			if (!sneakerToAdd) {
-				// The schema will transform the string status_id to number during validation
 				setSneakerToAdd(initData);
 			}
 		}

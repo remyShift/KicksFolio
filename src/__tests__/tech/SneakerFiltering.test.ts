@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { sneakerFilteringProvider } from '@/d/SneakerFiltering';
 import { SneakerFilterInterface } from '@/domain/SneakerFilterInterface';
 import { FilterState } from '@/types/filter';
-import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
+import { BrandId, Sneaker, SneakerStatus } from '@/types/sneaker';
 
 describe('SneakerFiltering', () => {
 	const mockSneakers: Sneaker[] = [
@@ -11,7 +11,7 @@ describe('SneakerFiltering', () => {
 			id: '1',
 			user_id: 'user1',
 			model: 'Air Jordan 1',
-			brand: SneakerBrand.Jordan,
+			brand_id: BrandId.Jordan,
 			size_eu: 42,
 			size_us: 8.5,
 			condition: 9,
@@ -36,7 +36,7 @@ describe('SneakerFiltering', () => {
 			id: '2',
 			user_id: 'user2',
 			model: 'Air Max 90',
-			brand: SneakerBrand.Nike,
+			brand_id: BrandId.Nike,
 			size_eu: 43,
 			size_us: 9,
 			condition: 8,
@@ -61,7 +61,7 @@ describe('SneakerFiltering', () => {
 			id: '3',
 			user_id: 'user3',
 			model: 'Stan Smith',
-			brand: SneakerBrand.Adidas,
+			brand_id: BrandId.Adidas,
 			size_eu: 41,
 			size_us: 8,
 			condition: 7,
@@ -109,6 +109,7 @@ describe('SneakerFiltering', () => {
 				brands: ['Jordan'],
 				sizes: [],
 				conditions: [],
+				statuses: [],
 			};
 
 			const result = SneakerFilterInterface.filterSneakers(
@@ -119,7 +120,7 @@ describe('SneakerFiltering', () => {
 			);
 
 			expect(result).toHaveLength(1);
-			expect(result[0].brand).toBe(SneakerBrand.Jordan);
+			expect(result[0].brand_id).toBe(BrandId.Jordan);
 		});
 
 		it('should filter sneakers by size (EU)', () => {
@@ -127,6 +128,7 @@ describe('SneakerFiltering', () => {
 				brands: [],
 				sizes: ['42'],
 				conditions: [],
+				statuses: [],
 			};
 
 			const result = SneakerFilterInterface.filterSneakers(
@@ -145,6 +147,7 @@ describe('SneakerFiltering', () => {
 				brands: [],
 				sizes: ['8.5'],
 				conditions: [],
+				statuses: [],
 			};
 
 			const result = SneakerFilterInterface.filterSneakers(
@@ -163,6 +166,7 @@ describe('SneakerFiltering', () => {
 				brands: [],
 				sizes: [],
 				conditions: ['9'],
+				statuses: [],
 			};
 
 			const result = SneakerFilterInterface.filterSneakers(
@@ -181,7 +185,7 @@ describe('SneakerFiltering', () => {
 				brands: [],
 				sizes: [],
 				conditions: [],
-				statuses: ['Rocking'],
+				statuses: [SneakerStatus.ROCKING],
 			};
 
 			const result = SneakerFilterInterface.filterSneakers(
@@ -200,6 +204,7 @@ describe('SneakerFiltering', () => {
 				brands: ['Nike', 'Jordan'],
 				sizes: ['42', '43'],
 				conditions: ['8', '9'],
+				statuses: [],
 			};
 
 			const result = SneakerFilterInterface.filterSneakers(
@@ -211,7 +216,9 @@ describe('SneakerFiltering', () => {
 
 			expect(result).toHaveLength(2);
 			expect(
-				result.every((s) => ['Nike', 'Jordan'].includes(s.brand))
+				result.every((s) =>
+					[BrandId.Nike, BrandId.Jordan].includes(s.brand_id)
+				)
 			).toBe(true);
 			expect(result.every((s) => [42, 43].includes(s.size_eu))).toBe(
 				true
@@ -226,6 +233,7 @@ describe('SneakerFiltering', () => {
 				brands: ['nonexistent'],
 				sizes: [],
 				conditions: [],
+				statuses: [],
 			};
 
 			const result = SneakerFilterInterface.filterSneakers(
@@ -280,9 +288,9 @@ describe('SneakerFiltering', () => {
 			);
 
 			expect(result).toHaveLength(3);
-			expect(result[0].brand).toBe(SneakerBrand.Adidas);
-			expect(result[1].brand).toBe(SneakerBrand.Jordan);
-			expect(result[2].brand).toBe(SneakerBrand.Nike);
+			expect(result[0].brand_id).toBe(BrandId.Adidas);
+			expect(result[1].brand_id).toBe(BrandId.Jordan);
+			expect(result[2].brand_id).toBe(BrandId.Nike);
 		});
 
 		it('should sort sneakers by size EU (ascending)', () => {

@@ -81,7 +81,7 @@ function SneakerListItem({
 					</Text>
 					<View className="flex-row items-center gap-1 mt-1">
 						<Text className="text-sm text-gray-600">
-							{sneaker.brand} -
+							{sneaker.brand?.name || 'Unknown'} -
 						</Text>
 						<SizeDisplay
 							sneaker={sneaker}

@@ -16,7 +16,8 @@ export function useDisplayStrategy(sneakers: Sneaker[]) {
 
 		return filteredAndSortedSneakers.reduce(
 			(acc, sneaker) => {
-				const normalizedBrand = sneaker.brand.toLowerCase().trim();
+				const normalizedBrand =
+					sneaker.brand?.name?.toLowerCase().trim() || 'unknown';
 				if (!acc[normalizedBrand]) {
 					acc[normalizedBrand] = [];
 				}
@@ -30,7 +31,7 @@ export function useDisplayStrategy(sneakers: Sneaker[]) {
 	const brandAnalysis = useMemo(() => {
 		return Object.entries(sneakersByBrand).map(
 			([normalizedBrand, sneakers]) => ({
-				brand: sneakers[0]?.brand || normalizedBrand,
+				brand: sneakers[0]?.brand?.name || normalizedBrand,
 				normalizedBrand,
 				sneakersCount: sneakers.length,
 				needsChunking: sneakers.length >= 20,

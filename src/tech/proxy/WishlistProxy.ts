@@ -1,6 +1,6 @@
 import { supabase } from '@/config/supabase/supabase';
 import { WishlistInterface } from '@/domain/Wishlist';
-import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
+import { BrandId, Sneaker, SneakerStatus } from '@/types/sneaker';
 
 export class WishlistProxy implements WishlistInterface {
 	async add(sneakerId: string) {
@@ -108,7 +108,21 @@ export class WishlistProxy implements WishlistInterface {
 
 		const { data: sneakersData, error: sneakersError } = await supabase
 			.from('sneakers')
-			.select('id, brand, model, gender, sku, description, image')
+			.select(
+				`
+				id, 
+				brand_id, 
+				model, 
+				gender, 
+				sku, 
+				description, 
+				image,
+				brands (
+					id,
+					name
+				)
+			`
+			)
 			.in('id', sneakerIds);
 
 		if (sneakersError) {
@@ -197,7 +211,8 @@ export class WishlistProxy implements WishlistInterface {
 			const transformedSneaker = {
 				id: String(sneaker.id),
 				model: String(sneaker.model || ''),
-				brand: sneaker.brand as SneakerBrand,
+				brand_id: sneaker.brand_id || BrandId.Other,
+				brand: sneaker.brands || null,
 				description: sneaker.description || '',
 				sku: String(sneaker.sku || ''),
 				gender: String(sneaker.gender || ''),
@@ -206,7 +221,7 @@ export class WishlistProxy implements WishlistInterface {
 				size_eu: 0,
 				size_us: 0,
 				condition: 0,
-				status: 'rocking' as SneakerStatus,
+				status_id: SneakerStatus.ROCKING,
 				price_paid: 0,
 				estimated_value: 0,
 				images: wishlistImages,

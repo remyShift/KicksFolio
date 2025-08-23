@@ -1,6 +1,11 @@
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';
-import { SneakerBrand } from '@/types/sneaker';
+import {
+	BrandId,
+	getBrandIdByName as getBrandIdByNameFromTypes,
+} from '@/types/sneaker';
 import { SneakerStatus } from '@/types/sneaker';
+
+export const getBrandIdByName = getBrandIdByNameFromTypes;
 
 export const sneakerStatusOptions = [
 	{ label: 'Stocking', value: SneakerStatus.STOCKING.toString() },
@@ -8,17 +13,17 @@ export const sneakerStatusOptions = [
 	{ label: 'Selling', value: SneakerStatus.SELLING.toString() },
 ];
 
-export const sneakerBrandOptions: { label: string; value: SneakerBrand }[] = [
-	{ label: 'Nike', value: SneakerBrand.Nike },
-	{ label: 'Adidas', value: SneakerBrand.Adidas },
-	{ label: 'Puma', value: SneakerBrand.Puma },
-	{ label: 'Vans', value: SneakerBrand.Vans },
-	{ label: 'Converse', value: SneakerBrand.Converse },
-	{ label: 'Jordan', value: SneakerBrand.Jordan },
-	{ label: 'New Balance', value: SneakerBrand.NewBalance },
-	{ label: 'Asics', value: SneakerBrand.Asics },
-	{ label: 'Reebok', value: SneakerBrand.Reebok },
-	{ label: 'Other', value: SneakerBrand.Other },
+export const sneakerBrandOptions: { label: string; value: string }[] = [
+	{ label: 'Nike', value: BrandId.Nike.toString() },
+	{ label: 'Adidas', value: BrandId.Adidas.toString() },
+	{ label: 'Puma', value: BrandId.Puma.toString() },
+	{ label: 'Vans', value: BrandId.Vans.toString() },
+	{ label: 'Converse', value: BrandId.Converse.toString() },
+	{ label: 'Jordan', value: BrandId.Jordan.toString() },
+	{ label: 'New Balance', value: BrandId.NewBalance.toString() },
+	{ label: 'Asics', value: BrandId.Asics.toString() },
+	{ label: 'Reebok', value: BrandId.Reebok.toString() },
+	{ label: 'Other', value: BrandId.Other.toString() },
 ];
 
 export const brandLogos: Record<string, any> = {

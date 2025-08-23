@@ -87,13 +87,13 @@ export const FormFields = ({
 
 			<View className="flex flex-row gap-1" style={{ zIndex: 10 }}>
 				<FormSelectInput
-					name="brand"
+					name="brand_id"
 					control={control}
 					placeholder={t('collection.modal.form.placeholders.brand')}
 					options={sneakerBrandOptions}
-					onFocus={() => handleFieldFocus('brand')}
-					error={getFieldErrorWrapper('brand')}
-					testID="brand"
+					onFocus={() => handleFieldFocus('brand_id')}
+					error={getFieldErrorWrapper('brand_id')}
+					testID="brand_id"
 				/>
 
 				<FormSelectInput

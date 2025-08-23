@@ -1,14 +1,14 @@
 import { act, renderHook } from '@testing-library/react';
 
 import { useSneakerFilterStore } from '@/store/useSneakerFilterStore';
-import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
+import { BrandId, Sneaker, SneakerStatus } from '@/types/sneaker';
 
 describe('useSneakerFilterStore', () => {
 	const mockSneakers: Sneaker[] = [
 		{
 			id: '1',
 			model: 'Air Force 1',
-			brand: SneakerBrand.Nike,
+			brand_id: BrandId.Nike,
 			size_eu: 42,
 			size_us: 8.5,
 			condition: 8,
@@ -21,7 +21,7 @@ describe('useSneakerFilterStore', () => {
 		{
 			id: '2',
 			model: 'Stan Smith',
-			brand: SneakerBrand.Adidas,
+			brand_id: BrandId.Adidas,
 			size_eu: 43,
 			size_us: 8.5,
 			condition: 9,
@@ -147,8 +147,8 @@ describe('useSneakerFilterStore', () => {
 
 			expect(result.current.filters.brands).toEqual(['Nike']);
 			expect(result.current.filteredAndSortedSneakers.length).toBe(1);
-			expect(result.current.filteredAndSortedSneakers[0].brand).toBe(
-				'Nike'
+			expect(result.current.filteredAndSortedSneakers[0].brand_id).toBe(
+				BrandId.Nike
 			);
 		});
 	});

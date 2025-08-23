@@ -57,7 +57,8 @@ export function useChunkedCardData(
 
 		return sneakers.reduce(
 			(acc, sneaker) => {
-				const normalizedBrand = sneaker.brand.toLowerCase().trim();
+				const normalizedBrand =
+					sneaker.brand?.name?.toLowerCase().trim() || 'unknown';
 				if (!acc[normalizedBrand]) {
 					acc[normalizedBrand] = [];
 				}
@@ -71,7 +72,7 @@ export function useChunkedCardData(
 	const allBrands = useMemo(() => {
 		const brands = Object.entries(sneakersByBrand).map(
 			([normalizedBrand, sneakers]) => ({
-				brandName: sneakers[0]?.brand || normalizedBrand,
+				brandName: sneakers[0]?.brand?.name || normalizedBrand,
 				normalizedBrand,
 				sneakers,
 				isLoaded: false,

@@ -4,7 +4,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { fireEvent, render } from '@testing-library/react-native';
 
 import SwipeableWrapper from '@/components/screens/app/profile/displayState/list/SwipeableWrapper';
-import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
+import { BrandId, Sneaker, SneakerStatus } from '@/types/sneaker';
 
 // Mock the hooks
 jest.mock('@/hooks/useSwipeOptimization', () => ({
@@ -51,7 +51,7 @@ const mockSneaker: Sneaker = {
 	id: '1',
 	user_id: 'current-user-id', // Même ID que l'utilisateur actuel pour tester isOwner = true
 	model: 'Air Jordan 1',
-	brand: SneakerBrand.Nike,
+	brand_id: BrandId.Nike,
 	size_eu: 42,
 	size_us: 9,
 	condition: 8,

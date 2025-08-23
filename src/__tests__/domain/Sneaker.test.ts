@@ -4,7 +4,7 @@ import {
 	SneakerHandler,
 	SneakerHandlerInterface,
 } from '@/domain/SneakerHandler';
-import { SneakerBrand, SneakerStatus } from '@/types/sneaker';
+import { BrandId, SneakerStatus } from '@/types/sneaker';
 import { SizeUnit } from '@/types/sneaker';
 import { Sneaker } from '@/types/sneaker';
 
@@ -35,7 +35,7 @@ describe('SneakerHandler', () => {
 	});
 
 	const mockSneakerData = {
-		brand: SneakerBrand.Nike,
+		brand_id: BrandId.Nike,
 		model: 'Air Max 90',
 		status_id: SneakerStatus.STOCKING,
 		size: 42,
@@ -52,7 +52,7 @@ describe('SneakerHandler', () => {
 
 	const mockSneaker: Sneaker = {
 		id: '123',
-		brand: SneakerBrand.Nike,
+		brand_id: BrandId.Nike,
 		model: 'Air Max 90',
 		size_eu: 42,
 		size_us: 8.5,

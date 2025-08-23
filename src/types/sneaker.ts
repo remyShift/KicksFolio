@@ -1,17 +1,21 @@
 import { SneakerPhoto } from './image';
 
-export enum SneakerBrand {
-	Nike = 'Nike',
-	Adidas = 'Adidas',
-	Converse = 'Converse',
-	NewBalance = 'New Balance',
-	Puma = 'Puma',
-	Jordan = 'Jordan',
-	Asics = 'Asics',
-	Reebok = 'Reebok',
-	Vans = 'Vans',
-	Other = 'Other',
-	null = 'null',
+export interface Brand {
+	id: number;
+	name: string;
+}
+
+export enum BrandId {
+	Nike = 1,
+	Adidas = 2,
+	Converse = 3,
+	NewBalance = 4,
+	Puma = 5,
+	Jordan = 6,
+	Asics = 7,
+	Reebok = 8,
+	Vans = 9,
+	Other = 10,
 }
 
 export type SizeUnit = 'US' | 'EU';
@@ -43,7 +47,8 @@ export type Sneaker = {
 	sneaker_id?: string;
 	user_id: string;
 	model: string;
-	brand: SneakerBrand;
+	brand_id: number;
+	brand?: Brand;
 	sku?: string;
 	price_paid?: number;
 	size_eu: number;
@@ -59,4 +64,30 @@ export type Sneaker = {
 	gender?: string;
 	og_box?: boolean;
 	ds?: boolean;
+};
+
+export const getBrandIdByName = (brandName: string): number => {
+	switch (brandName) {
+		case 'Nike':
+			return BrandId.Nike;
+		case 'Adidas':
+			return BrandId.Adidas;
+		case 'Converse':
+			return BrandId.Converse;
+		case 'New Balance':
+			return BrandId.NewBalance;
+		case 'Puma':
+			return BrandId.Puma;
+		case 'Jordan':
+			return BrandId.Jordan;
+		case 'Asics':
+			return BrandId.Asics;
+		case 'Reebok':
+			return BrandId.Reebok;
+		case 'Vans':
+			return BrandId.Vans;
+		case 'Other':
+		default:
+			return BrandId.Other;
+	}
 };

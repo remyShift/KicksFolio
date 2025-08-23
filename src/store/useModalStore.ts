@@ -1,14 +1,12 @@
 import { create } from 'zustand';
 
-import {
-	ModalStep,
-	SneakerFormData,
-} from '@/components/ui/modals/SneakersModal/types';
-import { Sneaker, SneakerBrand } from '@/types/sneaker';
+import { ModalStep } from '@/components/ui/modals/SneakersModal/types';
+import { Sneaker } from '@/types/sneaker';
+import { SneakerFormData } from '@/validation/sneaker';
 
 export interface FetchedSneaker {
 	model: string;
-	brand: SneakerBrand;
+	brand: string;
 	description: string;
 	image: {
 		uri: string;

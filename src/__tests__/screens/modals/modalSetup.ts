@@ -1,5 +1,5 @@
 import { FetchedSneaker } from '@/store/useModalStore';
-import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
+import { BrandId, Sneaker, SneakerStatus } from '@/types/sneaker';
 
 export const mockSneaker: Sneaker = {
 	id: '1',
@@ -7,7 +7,7 @@ export const mockSneaker: Sneaker = {
 	price_paid: 150,
 	status_id: SneakerStatus.ROCKING,
 	model: 'Air Max 1',
-	brand: SneakerBrand.Nike,
+	brand_id: BrandId.Nike,
 	size_eu: 45,
 	size_us: 10.5,
 	images: [
@@ -18,14 +18,12 @@ export const mockSneaker: Sneaker = {
 	],
 	description: 'A classic sneaker',
 	condition: 9,
-	created_at: '2024-01-01',
-	updated_at: '2024-01-01',
 	estimated_value: 200,
 };
 
 export const mockFetchedSneaker: FetchedSneaker = {
 	model: 'Air Max 1 x Patta',
-	brand: SneakerBrand.Nike,
+	brand: 'Nike',
 	estimated_value: 200,
 	sku: '1234567890',
 	description: 'Limited edition collaboration',

@@ -15,12 +15,16 @@ class SneakerProxy implements SneakerHandlerInterface {
 				*,
 				sneakers (
 					id,
-					brand,
+					brand_id,
 					model,
 					gender,
 					sku,
 					description,
-					image
+					image,
+					brands (
+						id,
+						name
+					)
 				)
 			`
 			)
@@ -40,9 +44,14 @@ class SneakerProxy implements SneakerHandlerInterface {
 					...collectionData
 				} = collection;
 				const sneakerData = sneakers as any;
-
-				const { id: sneakerModelId, ...sneakerDataWithoutId } =
+				const { brands: updateBrands, ...updateSneakerData } =
 					sneakerData;
+
+				const {
+					id: sneakerModelId,
+					brands,
+					...sneakerDataWithoutId
+				} = sneakerData;
 
 				const parsedCollectionImages = SneakerProxy.parseImages(
 					collection.images
@@ -70,6 +79,7 @@ class SneakerProxy implements SneakerHandlerInterface {
 					user_id: collection.user_id,
 					...collectionData,
 					...sneakerDataWithoutId,
+					brand: brands || null,
 					images: finalImages,
 				} as Sneaker;
 
@@ -193,7 +203,7 @@ class SneakerProxy implements SneakerHandlerInterface {
 
 		const {
 			size,
-			brand,
+			brand_id,
 			model,
 			gender,
 			sku,
@@ -208,7 +218,7 @@ class SneakerProxy implements SneakerHandlerInterface {
 		const { data: existingSneaker } = await supabase
 			.from('sneakers')
 			.select('id, image')
-			.eq('brand', brand)
+			.eq('brand_id', brand_id)
 			.eq('model', model)
 			.eq('gender', gender)
 			.eq('sku', sku || '')
@@ -235,7 +245,7 @@ class SneakerProxy implements SneakerHandlerInterface {
 				.from('sneakers')
 				.insert([
 					{
-						brand,
+						brand_id,
 						model,
 						gender,
 						sku,
@@ -269,12 +279,16 @@ class SneakerProxy implements SneakerHandlerInterface {
 				*,
 				sneakers (
 					id,
-					brand,
+					brand_id,
 					model,
 					gender,
 					sku,
 					description,
-					image
+					image,
+					brands (
+						id,
+						name
+					)
 				)
 			`
 			)
@@ -292,13 +306,15 @@ class SneakerProxy implements SneakerHandlerInterface {
 			...collectionDataResult
 		} = collection;
 		const sneakerDataResult = sneakers as any;
+		const { brands, ...sneakerDataWithoutBrands } = sneakerDataResult;
 
 		return {
 			id: collection.id,
 			sneaker_id: sneakerDataResult.id,
 			user_id: collection.user_id,
 			...collectionDataResult,
-			...sneakerDataResult,
+			...sneakerDataWithoutBrands,
+			brand: brands || null,
 			images: SneakerProxy.parseImages(collection.images),
 		} as Sneaker;
 	}
@@ -333,7 +349,7 @@ class SneakerProxy implements SneakerHandlerInterface {
 		}
 
 		const {
-			brand,
+			brand_id,
 			model,
 			gender,
 			sku,
@@ -377,7 +393,7 @@ class SneakerProxy implements SneakerHandlerInterface {
 		}
 
 		if (
-			brand ||
+			brand_id ||
 			model ||
 			gender ||
 			sku !== undefined ||
@@ -393,7 +409,7 @@ class SneakerProxy implements SneakerHandlerInterface {
 			if (!collection) throw new Error('Collection not found');
 
 			const sneakerUpdates: any = {};
-			if (brand) sneakerUpdates.brand = brand;
+			if (brand_id) sneakerUpdates.brand_id = brand_id;
 			if (model) sneakerUpdates.model = model;
 			if (gender) sneakerUpdates.gender = gender;
 			if (sku !== undefined) sneakerUpdates.sku = sku;
@@ -415,12 +431,16 @@ class SneakerProxy implements SneakerHandlerInterface {
 				*,
 				sneakers (
 					id,
-					brand,
+					brand_id,
 					model,
 					gender,
 					sku,
 					description,
-					image
+					image,
+					brands (
+						id,
+						name
+					)
 				)
 			`
 			)
@@ -438,12 +458,16 @@ class SneakerProxy implements SneakerHandlerInterface {
 						*,
 						sneakers (
 							id,
-							brand,
+							brand_id,
 							model,
 							gender,
 							sku,
 							description,
-							image
+							image,
+							brands (
+								id,
+								name
+							)
 						)
 					`
 					)
@@ -464,12 +488,15 @@ class SneakerProxy implements SneakerHandlerInterface {
 					);
 				}
 
+				const { brands: retryBrands, ...retrySneakerData } =
+					retryData.sneakers;
 				return {
 					id: retryData.id,
 					sneaker_id: retryData.sneakers?.id,
 					user_id: retryData.user_id,
 					...retryData,
-					...retryData.sneakers,
+					...retrySneakerData,
+					brand: retryBrands || null,
 					images: SneakerProxy.parseImages(retryData.images),
 				} as Sneaker;
 			}
@@ -486,13 +513,15 @@ class SneakerProxy implements SneakerHandlerInterface {
 			...collectionData
 		} = data;
 		const sneakerData = sneakers as any;
+		const { brands: updateBrands, ...updateSneakerData } = sneakerData;
 
 		return {
 			id: data.id,
 			sneaker_id: sneakerData.id,
 			user_id: data.user_id,
 			...collectionData,
-			...sneakerData,
+			...updateSneakerData,
+			brand: updateBrands || null,
 			images: SneakerProxy.parseImages(data.images),
 		} as Sneaker;
 	}
@@ -516,12 +545,16 @@ class SneakerProxy implements SneakerHandlerInterface {
 				*,
 				sneakers (
 					id,
-					brand,
+					brand_id,
 					model,
 					gender,
 					sku,
 					description,
-					image
+					image,
+					brands (
+						id,
+						name
+					)
 				)
 			`
 			)
@@ -540,13 +573,15 @@ class SneakerProxy implements SneakerHandlerInterface {
 			...collectionData
 		} = data;
 		const sneakerData = sneakers as any;
+		const { brands: updateBrands, ...updateSneakerData } = sneakerData;
 
 		return {
 			id: data.id,
 			sneaker_id: sneakerData.id,
 			user_id: data.user_id,
 			...collectionData,
-			...sneakerData,
+			...updateSneakerData,
+			brand: updateBrands || null,
 			images: SneakerProxy.parseImages(data.images),
 		} as Sneaker;
 	}
@@ -610,7 +645,7 @@ class SneakerProxy implements SneakerHandlerInterface {
 
 				const sneakerBrand = sneakerBrandOptions.find(
 					(brand) =>
-						brand.value.toLocaleLowerCase() ===
+						brand.label.toLocaleLowerCase() ===
 						result.brand.toLowerCase()
 				);
 
@@ -672,7 +707,7 @@ class SneakerProxy implements SneakerHandlerInterface {
 
 				const sneakerBrand = sneakerBrandOptions.find(
 					(brand) =>
-						brand.value.toLocaleLowerCase() ===
+						brand.label.toLocaleLowerCase() ===
 						result.brand.toLowerCase()
 				);
 

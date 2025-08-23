@@ -33,7 +33,8 @@ export default function SneakersCardByBrand({
 
 		const result = filteredAndSortedSneakers.reduce(
 			(acc, sneaker) => {
-				const normalizedBrand = sneaker.brand.toLowerCase().trim();
+				const normalizedBrand =
+					sneaker.brand?.name?.toLowerCase().trim() || 'unknown';
 
 				if (!acc[normalizedBrand]) {
 					acc[normalizedBrand] = [];
@@ -52,7 +53,7 @@ export default function SneakersCardByBrand({
 			{Object.entries(sneakersByBrand).map(
 				([normalizedBrand, sneakers]) => {
 					const originalBrandName =
-						sneakers[0]?.brand || normalizedBrand;
+						sneakers[0]?.brand?.name || normalizedBrand;
 
 					return (
 						<View key={normalizedBrand} className="flex-1">

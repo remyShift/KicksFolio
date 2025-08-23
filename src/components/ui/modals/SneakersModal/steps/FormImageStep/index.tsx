@@ -10,7 +10,7 @@ import { useFormController } from '@/hooks/form/useFormController';
 import { useSizeConversion } from '@/hooks/useSizeConversion';
 import { useModalStore } from '@/store/useModalStore';
 import { SneakerPhoto } from '@/types/image';
-import { SneakerBrand, SneakerStatus } from '@/types/sneaker';
+import { BrandId, getBrandIdByName, SneakerStatus } from '@/types/sneaker';
 import { createSneakerSchema, SneakerFormData } from '@/validation/sneaker';
 
 export const FormImageStep = () => {
@@ -55,14 +55,12 @@ export const FormImageStep = () => {
 			authErrorMsg: errorMsg,
 			defaultValues: {
 				model: sneakerToAdd?.model || currentSneaker?.model || '',
-				brand:
-					sneakerToAdd?.brand ||
-					currentSneaker?.brand ||
-					SneakerBrand.Nike,
+				brand_id:
+					sneakerToAdd?.brand_id?.toString() ||
+					currentSneaker?.brand_id?.toString(),
 				status_id:
-					sneakerToAdd?.status_id ||
-					currentSneaker?.status_id ||
-					SneakerStatus.STOCKING,
+					sneakerToAdd?.status_id?.toString() ||
+					currentSneaker?.status_id?.toString(),
 				size: sneakerToAdd?.size || currentSneakerSize,
 				condition:
 					sneakerToAdd?.condition ||
@@ -103,8 +101,8 @@ export const FormImageStep = () => {
 
 			const formData = {
 				model: fetchedSneaker.model || '',
-				brand: fetchedSneaker.brand,
-				status_id: SneakerStatus.STOCKING,
+				brand_id: getBrandIdByName(fetchedSneaker.brand).toString(),
+				status_id: SneakerStatus.STOCKING.toString(),
 				size: '',
 				condition: '',
 				price_paid: '',
@@ -136,8 +134,8 @@ export const FormImageStep = () => {
 		if (currentSneaker && !fetchedSneaker && isEditMode && !sneakerToAdd) {
 			const currentData = {
 				model: currentSneaker.model || '',
-				brand: currentSneaker.brand || SneakerBrand.Nike,
-				status_id: currentSneaker.status_id || SneakerStatus.STOCKING,
+				brand_id: currentSneaker.brand_id.toString(),
+				status_id: currentSneaker.status_id.toString(),
 				size: currentSneakerSize,
 				condition: currentSneaker.condition?.toString() || '',
 				price_paid: currentSneaker.price_paid?.toString() || '',
@@ -171,9 +169,8 @@ export const FormImageStep = () => {
 					useModalStore.getState().sneakerToAdd;
 				const currentData = currentSneakerToAdd || {
 					model: currentSneaker?.model || '',
-					brand: currentSneaker?.brand || SneakerBrand.Nike,
-					status_id:
-						currentSneaker?.status_id || SneakerStatus.STOCKING,
+					brand_id: (currentSneaker?.brand_id || 1).toString(),
+					status_id: (currentSneaker?.status_id || 1).toString(),
 					size: currentSneakerSize,
 					condition: currentSneaker?.condition?.toString() || '',
 					price_paid: currentSneaker?.price_paid?.toString() || '',
@@ -205,14 +202,14 @@ export const FormImageStep = () => {
 		) {
 			const formData = {
 				model: currentSneakerToAdd.model || currentSneaker?.model || '',
-				brand:
-					currentSneakerToAdd.brand ||
-					currentSneaker?.brand ||
-					SneakerBrand.Nike,
+				brand_id:
+					currentSneakerToAdd.brand_id?.toString() ||
+					currentSneaker?.brand_id?.toString() ||
+					'1',
 				status_id:
-					currentSneakerToAdd.status_id ||
-					currentSneaker?.status_id ||
-					SneakerStatus.STOCKING,
+					currentSneakerToAdd.status_id?.toString() ||
+					currentSneaker?.status_id?.toString() ||
+					'1',
 				size: currentSneakerToAdd.size || currentSneakerSize,
 				condition:
 					currentSneakerToAdd.condition ||

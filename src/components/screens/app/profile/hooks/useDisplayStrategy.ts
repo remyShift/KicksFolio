@@ -27,7 +27,8 @@ export function useDisplayStrategy(sneakers: Sneaker[]) {
 
 		return filteredAndSortedSneakers.reduce(
 			(acc, sneaker) => {
-				const normalizedBrand = sneaker.brand.toLowerCase().trim();
+				const normalizedBrand =
+					sneaker.brand?.name?.toLowerCase().trim() || 'unknown';
 				if (!acc[normalizedBrand]) {
 					acc[normalizedBrand] = [];
 				}

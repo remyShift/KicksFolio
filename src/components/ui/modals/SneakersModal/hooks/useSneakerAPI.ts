@@ -11,9 +11,12 @@ import { useSizeUnitStore } from '@/store/useSizeUnitStore';
 import { imageStorageProxy } from '@/tech/proxy/ImageProxy';
 import { sneakerProxy } from '@/tech/proxy/SneakerProxy';
 import { SneakerPhoto } from '@/types/image';
-import { Sneaker, SneakerBrand } from '@/types/sneaker';
-import { createSneakerSchema, SneakerFormData } from '@/validation/sneaker';
-import { sneakerBrandOptions } from '@/validation/utils';
+import { Sneaker } from '@/types/sneaker';
+import {
+	createSneakerSchema,
+	SneakerFormData,
+	ValidatedSneakerData,
+} from '@/validation/sneaker';
 
 import { ModalStep } from '../types';
 
@@ -49,11 +52,12 @@ export const useSneakerAPI = () => {
 		return new Promise<{
 			isValid: boolean;
 			errors: { [key: string]: string };
+			validatedData?: ValidatedSneakerData;
 		}>((resolve) => {
 			const validationData = {
 				images: formData.images,
 				model: formData.model,
-				brand: formData.brand,
+				brand_id: formData.brand_id,
 				status_id: formData.status_id,
 				size: formData.size.toString(),
 				condition: formData.condition.toString(),
@@ -70,6 +74,7 @@ export const useSneakerAPI = () => {
 				resolve({
 					isValid: true,
 					errors: {},
+					validatedData: parseResult.data,
 				});
 			} else {
 				const errors: {
@@ -112,15 +117,9 @@ export const useSneakerAPI = () => {
 				) {
 					const responseResult = response.results[0];
 
-					const sneakerBrand = sneakerBrandOptions.find(
-						(brand) =>
-							brand.value.toLowerCase() ===
-							responseResult.brand.toLowerCase()
-					);
-
 					const transformedSneaker: FetchedSneaker = {
 						model: responseResult.title || '',
-						brand: sneakerBrand?.value || SneakerBrand.Other,
+						brand: responseResult.brand || 'Other',
 						sku: sku.toUpperCase(),
 						description: responseResult.description || '',
 						gender: responseResult.gender || '',
@@ -169,26 +168,14 @@ export const useSneakerAPI = () => {
 					return Promise.reject('Validation failed');
 				}
 
-				const validatedData = createSneakerSchema().parse({
-					images: formData.images,
-					model: formData.model,
-					brand: formData.brand,
-					status_id: formData.status_id,
-					size: formData.size.toString(),
-					condition: formData.condition.toString(),
-					price_paid: formData.price_paid || undefined,
-					description: formData.description || undefined,
-					og_box: formData.og_box || false,
-					ds: formData.ds || false,
-					is_women: formData.is_women || false,
-				});
+				const validatedData = validationResult.validatedData!;
 
 				const sneakerToAdd: Omit<
 					Sneaker,
 					'id' | 'user_id' | 'size_eu' | 'size_us'
 				> & { size: number; fetchedImage?: string } = {
 					model: validatedData.model,
-					brand: validatedData.brand,
+					brand_id: validatedData.brand_id,
 					status_id: validatedData.status_id,
 					size: parseFloat(validatedData.size),
 					condition: parseInt(validatedData.condition),
@@ -298,19 +285,7 @@ export const useSneakerAPI = () => {
 					return Promise.reject('Validation failed');
 				}
 
-				const validatedData = createSneakerSchema().parse({
-					images: formData.images,
-					model: formData.model,
-					brand: formData.brand,
-					status_id: formData.status_id,
-					size: formData.size.toString(),
-					condition: formData.condition.toString(),
-					price_paid: formData.price_paid || undefined,
-					description: formData.description || undefined,
-					og_box: formData.og_box || false,
-					ds: formData.ds || false,
-					is_women: formData.is_women || false,
-				});
+				const validatedData = validationResult.validatedData!;
 
 				const processedImages =
 					await imageHandler.processAndUploadSneaker(
@@ -328,7 +303,7 @@ export const useSneakerAPI = () => {
 					}
 				> = {
 					model: validatedData.model,
-					brand: validatedData.brand,
+					brand_id: validatedData.brand_id,
 					status_id: validatedData.status_id,
 					size: parseFloat(validatedData.size),
 					condition: parseInt(validatedData.condition),
@@ -464,15 +439,9 @@ export const useSneakerAPI = () => {
 				) {
 					const responseResult = response.results[0];
 
-					const sneakerBrand = sneakerBrandOptions.find(
-						(brand) =>
-							brand.value.toLowerCase() ===
-							responseResult.brand.toLowerCase()
-					);
-
 					const transformedSneaker: FetchedSneaker = {
 						model: responseResult.title || '',
-						brand: sneakerBrand?.value || SneakerBrand.Other,
+						brand: responseResult.brand || 'Other',
 						sku: responseResult.sku.toUpperCase(),
 						description: responseResult.description || '',
 						gender: responseResult.gender || '',

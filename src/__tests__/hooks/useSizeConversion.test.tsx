@@ -2,7 +2,7 @@ import { renderHook } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { useSizeConversion } from '@/hooks/useSizeConversion';
-import { Sneaker, SneakerBrand, SneakerStatus } from '@/types/sneaker';
+import { BrandId, Sneaker, SneakerStatus } from '@/types/sneaker';
 
 vi.mock('@/store/useSizeUnitStore', () => ({
 	useSizeUnitStore: vi.fn(() => ({
@@ -43,7 +43,7 @@ describe('useSizeConversion', () => {
 	const mockSneaker: Sneaker = {
 		id: '1',
 		model: 'Air Max 90',
-		brand: SneakerBrand.Nike,
+		brand_id: BrandId.Nike,
 		size_eu: 42,
 		size_us: 8.5,
 		condition: 9,
@@ -51,8 +51,6 @@ describe('useSizeConversion', () => {
 		price_paid: 150,
 		estimated_value: 200,
 		user_id: 'user-1',
-		created_at: '2023-01-01',
-		updated_at: '2023-01-01',
 		images: [],
 		description: '',
 		sku: '',

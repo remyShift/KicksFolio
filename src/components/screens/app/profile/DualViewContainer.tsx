@@ -55,7 +55,8 @@ export default function DualViewContainer({
 	const sneakersByBrand = useMemo(() => {
 		const result = filteredAndSortedSneakers.reduce(
 			(acc, sneaker) => {
-				const normalizedBrand = sneaker.brand.toLowerCase().trim();
+				const normalizedBrand =
+					sneaker.brand?.name?.toLowerCase().trim() || 'unknown';
 				if (!acc[normalizedBrand]) {
 					acc[normalizedBrand] = [];
 				}
@@ -95,8 +96,6 @@ export default function DualViewContainer({
 				<SneakerListFactory
 					sneakers={filteredAndSortedSneakers}
 					userSneakers={userSneakers}
-					refreshing={refreshing}
-					onRefresh={onRefresh}
 					chunkSize={DISPLAY_CONFIG.list.chunkSize}
 					bufferSize={DISPLAY_CONFIG.list.bufferSize}
 					threshold={DISPLAY_CONFIG.list.threshold}

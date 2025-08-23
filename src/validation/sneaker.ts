@@ -2,7 +2,7 @@ import { t } from 'i18next';
 import { z } from 'zod';
 
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';
-import { SneakerBrand, SneakerStatus } from '@/types/sneaker';
+import { BrandId, SneakerStatus } from '@/types/sneaker';
 
 import { validateSneakerSize } from './utils';
 import { sneakerBrandOptions } from './utils';
@@ -30,13 +30,19 @@ export const createSneakerSchema = () => {
 						val
 							.toLowerCase()
 							.split(' ')
-							.includes(option.value.toLowerCase())
+							.includes(option.label.toLowerCase())
 					),
 				t('collection.modal.form.errors.model.brandInModel')
 			),
-		brand: z
-			.enum(Object.values(SneakerBrand) as [string, ...string[]])
-			.transform((val) => val as SneakerBrand),
+		brand_id: z
+			.union([z.string(), z.number()])
+			.transform((val) =>
+				typeof val === 'string' ? parseInt(val, 10) : val
+			)
+			.refine(
+				(val) => Object.values(BrandId).includes(val),
+				'Invalid brand ID'
+			),
 		status_id: z
 			.union([z.string(), z.number()])
 			.transform((val) =>
@@ -92,4 +98,22 @@ export const createSneakerSchema = () => {
 	});
 };
 
-export type SneakerFormData = z.infer<ReturnType<typeof createSneakerSchema>>;
+// Type pour les données de formulaire (avant validation/transformation)
+export interface SneakerFormData {
+	model: string;
+	brand_id: string; // String dans les formulaires
+	status_id: string; // String dans les formulaires
+	size: string;
+	condition: string;
+	images: { id?: string; uri: string; alt?: string }[];
+	price_paid?: string;
+	description?: string;
+	og_box?: boolean;
+	ds?: boolean;
+	is_women?: boolean;
+}
+
+// Type pour les données validées (après transformation)
+export type ValidatedSneakerData = z.infer<
+	ReturnType<typeof createSneakerSchema>
+>;

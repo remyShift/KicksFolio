@@ -27,7 +27,7 @@ function WishlistListItem({ sneaker }: WishlistListItemProps) {
 
 				<View className="flex-1 mr-4">
 					<Text className="text-base font-semibold text-gray-900 mb-1">
-						{sneaker.brand} - {sneaker.model}
+						{sneaker.brand?.name || 'Unknown'} - {sneaker.model}
 					</Text>
 
 					<Text className="text-xs text-gray-500">
