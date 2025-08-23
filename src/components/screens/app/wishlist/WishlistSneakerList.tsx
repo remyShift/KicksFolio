@@ -6,13 +6,15 @@ import { FlashList } from '@shopify/flash-list';
 
 import SneakersCardByBrand from '@/components/screens/app/profile/displayState/card/SneakersCardByBrand';
 import { useModalContext } from '@/components/ui/modals/SneakersModal/hooks/useModalContext';
+import { useLocalSneakerData } from '@/hooks/useLocalSneakerData';
 import {
 	useViewDisplayStateStore,
 	ViewDisplayState,
 } from '@/store/useViewDisplayStateStore';
 import { Sneaker } from '@/types/sneaker';
 
-import WishlistListItem from './WishlistListItem';
+import ListControls from '../profile/displayState/list/ListControls';
+import WishlistSwipeableItem from './WishlistSwipeableItem';
 
 interface WishlistSneakerListProps {
 	sneakers: Sneaker[];
@@ -34,6 +36,19 @@ export default function WishlistSneakerList({
 
 	const isCardView = viewDisplayState === ViewDisplayState.Card;
 
+	const {
+		filteredAndSortedSneakers,
+		uniqueValues,
+		sortBy,
+		sortOrder,
+		showFilters,
+		filters,
+		toggleSort,
+		toggleFilters,
+		updateFilter,
+		clearFilters,
+	} = useLocalSneakerData(sneakers);
+
 	const handleSneakerPress = useCallback(
 		(sneaker: Sneaker) => {
 			if (onSneakerPress) {
@@ -46,16 +61,49 @@ export default function WishlistSneakerList({
 	);
 
 	const validatedSneakers = useMemo(() => {
-		return sneakers && Array.isArray(sneakers) ? sneakers : [];
-	}, [sneakers]);
+		return filteredAndSortedSneakers &&
+			Array.isArray(filteredAndSortedSneakers)
+			? filteredAndSortedSneakers
+			: [];
+	}, [filteredAndSortedSneakers]);
 
 	const renderItem = useCallback(({ item }: { item: Sneaker }) => {
 		return (
 			<View className="bg-white border-b border-gray-100">
-				<WishlistListItem sneaker={item} />
+				<WishlistSwipeableItem sneaker={item} />
 			</View>
 		);
 	}, []);
+
+	const ListHeaderComponent = useMemo(() => {
+		return (
+			<ListControls
+				uniqueValues={uniqueValues}
+				sortBy={sortBy}
+				sortOrder={sortOrder}
+				showFilters={showFilters}
+				filters={filters}
+				onToggleSort={toggleSort}
+				onToggleFilters={toggleFilters}
+				onUpdateFilter={updateFilter}
+				onClearFilters={clearFilters}
+				filteredAndSortedSneakers={filteredAndSortedSneakers}
+				visibleSneakers={validatedSneakers}
+			/>
+		);
+	}, [
+		uniqueValues,
+		sortBy,
+		sortOrder,
+		showFilters,
+		filters,
+		toggleSort,
+		toggleFilters,
+		updateFilter,
+		clearFilters,
+		filteredAndSortedSneakers,
+		validatedSneakers,
+	]);
 
 	const keyExtractor = useCallback((item: Sneaker) => {
 		return item.id || Math.random().toString();
@@ -64,6 +112,19 @@ export default function WishlistSneakerList({
 	if (isCardView) {
 		return (
 			<View className="flex-1">
+				<ListControls
+					uniqueValues={uniqueValues}
+					sortBy={sortBy}
+					sortOrder={sortOrder}
+					showFilters={showFilters}
+					filters={filters}
+					onToggleSort={toggleSort}
+					onToggleFilters={toggleFilters}
+					onUpdateFilter={updateFilter}
+					onClearFilters={clearFilters}
+					filteredAndSortedSneakers={filteredAndSortedSneakers}
+					visibleSneakers={validatedSneakers}
+				/>
 				<SneakersCardByBrand
 					sneakers={validatedSneakers}
 					onSneakerPress={handleSneakerPress}
@@ -79,6 +140,7 @@ export default function WishlistSneakerList({
 				data={validatedSneakers}
 				renderItem={renderItem}
 				keyExtractor={keyExtractor}
+				ListHeaderComponent={ListHeaderComponent}
 				estimatedItemSize={ESTIMATED_ITEM_HEIGHT}
 				contentContainerStyle={{ paddingTop: 0, paddingBottom: 20 }}
 				showsVerticalScrollIndicator={false}

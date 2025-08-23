@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Text, TouchableOpacity, View } from 'react-native';
 
 import useToast from '@/hooks/ui/useToast';
 import { wishlist } from '@/services/wishlist';
@@ -36,6 +36,24 @@ export default function WishlistSwipeActions({
 		}
 	}, [sneaker.id, showSuccessToast, showErrorToast, t, closeRow]);
 
+	const handleDelete = useCallback(() => {
+		Alert.alert(
+			t('alert.titles.deleteWishlist'),
+			t('alert.descriptions.deleteWishlist'),
+			[
+				{
+					text: t('alert.choices.cancel'),
+					style: 'cancel',
+				},
+				{
+					text: t('alert.choices.delete'),
+					style: 'destructive',
+					onPress: handleRemoveFromWishlist,
+				},
+			]
+		);
+	}, [t, handleRemoveFromWishlist]);
+
 	const actionButtonStyle = useMemo(
 		() => ({
 			justifyContent: 'center' as const,
@@ -58,17 +76,15 @@ export default function WishlistSwipeActions({
 		<View className="flex-row absolute top-0 left-0 right-0 bottom-0 justify-end items-center bg-[#f8f9fa] gap-1">
 			<TouchableOpacity
 				style={deleteButtonStyle}
-				onPress={handleRemoveFromWishlist}
+				onPress={handleDelete}
 				activeOpacity={0.7}
 			>
 				<View className="items-center">
 					<View className="w-6 h-6 bg-white rounded-full items-center justify-center mb-1">
-						<Text className="text-red-600 text-sm font-bold">
-							×
-						</Text>
+						<View className="w-3 h-0.5 bg-red-500" />
 					</View>
 					<Text className="text-white text-xs font-medium">
-						{t('wishlist.remove')}
+						{t('collection.actions.delete')}
 					</Text>
 				</View>
 			</TouchableOpacity>

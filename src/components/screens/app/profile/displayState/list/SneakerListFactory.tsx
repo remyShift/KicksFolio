@@ -14,8 +14,6 @@ interface SneakerListFactoryProps {
 	sneakers: Sneaker[];
 	userSneakers?: Sneaker[];
 	showOwnerInfo?: boolean;
-	refreshing?: boolean;
-	onRefresh?: () => Promise<void>;
 	chunkSize?: number;
 	bufferSize?: number;
 	threshold?: number;
@@ -30,8 +28,6 @@ function SneakerListFactory({
 	sneakers,
 	userSneakers,
 	showOwnerInfo = false,
-	refreshing = false,
-	onRefresh,
 	chunkSize = 10,
 	bufferSize = 4,
 	threshold = 200,
@@ -177,8 +173,6 @@ export default memo(SneakerListFactory, (prevProps, nextProps) => {
 		sneakers: prevProps.sneakers !== nextProps.sneakers,
 		userSneakers: prevProps.userSneakers !== nextProps.userSneakers,
 		showOwnerInfo: prevProps.showOwnerInfo !== nextProps.showOwnerInfo,
-		refreshing: prevProps.refreshing !== nextProps.refreshing,
-		onRefresh: prevProps.onRefresh !== nextProps.onRefresh,
 		chunkSize: prevProps.chunkSize !== nextProps.chunkSize,
 		bufferSize: prevProps.bufferSize !== nextProps.bufferSize,
 		threshold: prevProps.threshold !== nextProps.threshold,

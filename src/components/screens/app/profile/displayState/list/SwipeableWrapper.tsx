@@ -26,7 +26,6 @@ function ProfileSwipeableWrapper({
 }: ProfileSwipeableWrapperProps) {
 	const { user: currentUser } = useSession();
 
-	// Logique d'ownership pour le profil
 	const getIsOwner = (sneaker: Sneaker) => {
 		return currentUser?.id === sneaker.user_id;
 	};
