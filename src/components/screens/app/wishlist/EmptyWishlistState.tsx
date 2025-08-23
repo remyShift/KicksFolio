@@ -6,7 +6,10 @@ import Title from '@/components/ui/text/Title';
 export default function EmptyWishlistState() {
 	const { t } = useTranslation();
 	return (
-		<View className="flex-1 gap-8 items-center justify-center h-96  w-full">
+		<View
+			className="flex-1 gap-8 items-center justify-center h-96  w-full"
+			testID="empty-wishlist-container"
+		>
 			<Title
 				content={t('social.wishlist.empty.title')}
 				isTextCenter={true}

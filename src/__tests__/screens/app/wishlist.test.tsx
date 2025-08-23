@@ -102,6 +102,6 @@ describe('Wishlist', () => {
 		const scrollView = screen.getByTestId('wishlist-scroll-view');
 		expect(scrollView).toBeOnTheScreen();
 
-		expect(scrollView.props.scrollEnabled).toBe(true);
+		expect(scrollView.props.refreshControl).toBeDefined();
 	});
 });

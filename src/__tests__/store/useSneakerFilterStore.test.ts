@@ -53,6 +53,7 @@ describe('useSneakerFilterStore', () => {
 				brands: [],
 				sizes: [],
 				conditions: [],
+				statuses: [],
 			});
 			expect(result.current.filteredAndSortedSneakers).toEqual([]);
 		});
@@ -171,6 +172,7 @@ describe('useSneakerFilterStore', () => {
 				brands: [],
 				sizes: [],
 				conditions: [],
+				statuses: [],
 			});
 			expect(result.current.filteredAndSortedSneakers).toHaveLength(
 				mockSneakers.length

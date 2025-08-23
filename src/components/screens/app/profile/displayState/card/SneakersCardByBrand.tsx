@@ -48,7 +48,7 @@ export default function SneakersCardByBrand({
 	}, [filteredAndSortedSneakers]);
 
 	return (
-		<View className="flex-1 gap-4 pb-4">
+		<View className="flex-1 gap-4 pb-4" testID="card-view-container">
 			{Object.entries(sneakersByBrand).map(
 				([normalizedBrand, sneakers]) => {
 					const originalBrandName =

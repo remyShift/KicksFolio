@@ -88,9 +88,9 @@ describe('useUserProfile', () => {
 		const { result } = renderHook(() => useUserProfile('test-user-id'));
 
 		expect(result.current.userProfile).toBeNull();
-		expect(result.current.isLoading).toBe(true);
 		expect(result.current.isFollowLoading).toBe(false);
 		expect(result.current.refreshing).toBe(false);
+		expect(result.current.hasError).toBe(false);
 	});
 
 	describe('loadUserProfile', () => {
@@ -131,25 +131,23 @@ describe('useUserProfile', () => {
 				userSearch: mockUserProfile,
 				sneakers: mockSneakers,
 			});
-			expect(result.current.isLoading).toBe(false);
+			expect(result.current.hasError).toBe(false);
 		});
 
 		it('should handle user not found', async () => {
 			userLookupProxy.getProfile.mockResolvedValue(null);
 			userLookupProxy.getSneakers.mockResolvedValue([]);
 
-			renderHook(() => useUserProfile('nonexistent-user-id'));
+			const { result } = renderHook(() =>
+				useUserProfile('nonexistent-user-id')
+			);
 
 			await act(async () => {
 				await new Promise((resolve) => setTimeout(resolve, 0));
 			});
 
-			expect(mockToast.showErrorToast).toHaveBeenCalledWith(
-				'Utilisateur introuvable',
-				"Cet utilisateur n'existe pas ou n'est plus disponible."
-			);
-			const { router } = await import('expo-router');
-			expect(router.back).toHaveBeenCalled();
+			expect(result.current.hasError).toBe(true);
+			expect(result.current.userProfile).toBeNull();
 		});
 
 		it('should handle load errors gracefully', async () => {
@@ -161,7 +159,7 @@ describe('useUserProfile', () => {
 				.spyOn(console, 'error')
 				.mockImplementation(() => {});
 
-			renderHook(() => useUserProfile('test-user-id'));
+			const { result } = renderHook(() => useUserProfile('test-user-id'));
 
 			await act(async () => {
 				await new Promise((resolve) => setTimeout(resolve, 0));
@@ -171,10 +169,8 @@ describe('useUserProfile', () => {
 				'Error loading user profile:',
 				mockError
 			);
-			expect(mockToast.showErrorToast).toHaveBeenCalledWith(
-				'Erreur de chargement',
-				'Impossible de charger le profil utilisateur.'
-			);
+			expect(result.current.hasError).toBe(true);
+			expect(result.current.userProfile).toBeNull();
 
 			consoleSpy.mockRestore();
 		});
