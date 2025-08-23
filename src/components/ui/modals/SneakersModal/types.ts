@@ -65,11 +65,7 @@ export interface SneakerFormData {
 		| SneakerBrand.Vans
 		| SneakerBrand.Other
 		| SneakerBrand.null;
-	status:
-		| SneakerStatus.Stocking
-		| SneakerStatus.Rocking
-		| SneakerStatus.Selling
-		| SneakerStatus.null;
+	status_id: number;
 	size: string;
 	condition: string;
 	images: SneakerPhoto[];

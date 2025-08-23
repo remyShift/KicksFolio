@@ -37,7 +37,7 @@ describe('SneakerHandler', () => {
 	const mockSneakerData = {
 		brand: SneakerBrand.Nike,
 		model: 'Air Max 90',
-		status: SneakerStatus.Stocking,
+		status_id: SneakerStatus.STOCKING,
 		size: 42,
 		condition: 9,
 		images: [],
@@ -59,7 +59,7 @@ describe('SneakerHandler', () => {
 		condition: 9,
 		estimated_value: 200,
 		description: 'Great sneaker',
-		status: SneakerStatus.Stocking,
+		status_id: SneakerStatus.STOCKING,
 		images: [{ id: '1', uri: 'test-uri' }],
 		user_id: 'user-123',
 		price_paid: 150,

@@ -19,7 +19,7 @@ interface SneakerFilterStore {
 		brands: string[];
 		sizes: string[];
 		conditions: string[];
-		statuses: string[];
+		statuses: number[];
 	};
 
 	setSneakers: (sneakers: Sneaker[]) => void;
@@ -41,6 +41,7 @@ export const useSneakerFilterStore = create<SneakerFilterStore>((set, get) => ({
 		brands: [],
 		sizes: [],
 		conditions: [],
+		statuses: [],
 	},
 
 	currentUnit: useSizeUnitStore.getState().currentUnit,
@@ -92,6 +93,7 @@ export const useSneakerFilterStore = create<SneakerFilterStore>((set, get) => ({
 				brands: [],
 				sizes: [],
 				conditions: [],
+				statuses: [],
 			},
 		});
 		get()._updateDerivedData();

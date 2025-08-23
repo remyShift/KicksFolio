@@ -28,7 +28,7 @@ interface UseChunkedListDataReturn {
 		brands: string[];
 		sizes: string[];
 		conditions: string[];
-		statuses: string[];
+		statuses: number[];
 	};
 	sortBy: any;
 	sortOrder: any;

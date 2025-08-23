@@ -47,7 +47,7 @@ describe('useSizeConversion', () => {
 		size_eu: 42,
 		size_us: 8.5,
 		condition: 9,
-		status: SneakerStatus.Stocking,
+		status_id: SneakerStatus.STOCKING,
 		price_paid: 150,
 		estimated_value: 200,
 		user_id: 'user-1',

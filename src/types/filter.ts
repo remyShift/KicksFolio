@@ -7,19 +7,19 @@ export interface Filter {
 	brand?: SneakerBrand;
 	size?: number;
 	condition?: number;
-	status?: SneakerStatus;
+	status_id?: number;
 }
 
 export interface FilterState {
 	brands: string[];
 	sizes: string[];
 	conditions: string[];
-	statuses: string[];
+	statuses: number[];
 }
 
 export interface UniqueValues {
 	brands: string[];
 	sizes: string[];
 	conditions: string[];
-	statuses: string[];
+	statuses: number[];
 }

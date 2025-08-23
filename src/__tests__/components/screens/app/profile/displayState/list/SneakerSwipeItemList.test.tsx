@@ -55,7 +55,7 @@ const mockSneaker: Sneaker = {
 	size_eu: 42,
 	size_us: 9,
 	condition: 8,
-	status: SneakerStatus.Stocking,
+	status_id: SneakerStatus.STOCKING,
 	description: 'Test sneaker',
 	images: [],
 	estimated_value: 150,

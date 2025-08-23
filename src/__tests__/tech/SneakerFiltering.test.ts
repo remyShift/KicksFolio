@@ -15,7 +15,7 @@ describe('SneakerFiltering', () => {
 			size_eu: 42,
 			size_us: 8.5,
 			condition: 9,
-			status: SneakerStatus.Stocking,
+			status_id: SneakerStatus.STOCKING,
 			price_paid: 200,
 			description: 'Great condition',
 			images: [],
@@ -40,7 +40,7 @@ describe('SneakerFiltering', () => {
 			size_eu: 43,
 			size_us: 9,
 			condition: 8,
-			status: SneakerStatus.Rocking,
+			status_id: SneakerStatus.ROCKING,
 			price_paid: 150,
 			description: 'Good condition',
 			images: [],
@@ -65,7 +65,7 @@ describe('SneakerFiltering', () => {
 			size_eu: 41,
 			size_us: 8,
 			condition: 7,
-			status: SneakerStatus.Selling,
+			status_id: SneakerStatus.SELLING,
 			price_paid: 80,
 			description: 'Used condition',
 			images: [],
@@ -192,7 +192,7 @@ describe('SneakerFiltering', () => {
 			);
 
 			expect(result).toHaveLength(1);
-			expect(result[0].status).toBe(SneakerStatus.Rocking);
+			expect(result[0].status_id).toBe(SneakerStatus.ROCKING);
 		});
 
 		it('should apply multiple filters', () => {
@@ -410,7 +410,7 @@ describe('SneakerFiltering', () => {
 				sneakerFilteringProvider.getUniqueValues
 			);
 
-			expect(result.statuses).toEqual(['Rocking', 'Selling', 'Stocking']);
+			expect(result.statuses).toEqual([1, 2, 3]);
 		});
 
 		it('should handle empty sneakers array', () => {
@@ -436,7 +436,7 @@ describe('SneakerFiltering', () => {
 					size_eu: null as any,
 					size_us: null as any,
 					condition: null as any,
-					status: null as any,
+					status_id: null as any,
 				},
 			];
 
@@ -449,7 +449,7 @@ describe('SneakerFiltering', () => {
 			expect(result.brands).toEqual(['Adidas', 'Jordan', 'Nike']);
 			expect(result.sizes).toEqual(['41', '42', '43']);
 			expect(result.conditions).toEqual(['9', '8', '7']);
-			expect(result.statuses).toEqual(['Rocking', 'Selling', 'Stocking']);
+			expect(result.statuses).toEqual([1, 2, 3]);
 		});
 	});
 });

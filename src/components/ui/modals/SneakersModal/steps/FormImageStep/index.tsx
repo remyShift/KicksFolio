@@ -59,10 +59,10 @@ export const FormImageStep = () => {
 					sneakerToAdd?.brand ||
 					currentSneaker?.brand ||
 					SneakerBrand.Nike,
-				status:
-					sneakerToAdd?.status ||
-					currentSneaker?.status ||
-					SneakerStatus.Stocking,
+				status_id:
+					sneakerToAdd?.status_id ||
+					currentSneaker?.status_id ||
+					SneakerStatus.STOCKING,
 				size: sneakerToAdd?.size || currentSneakerSize,
 				condition:
 					sneakerToAdd?.condition ||
@@ -104,7 +104,7 @@ export const FormImageStep = () => {
 			const formData = {
 				model: fetchedSneaker.model || '',
 				brand: fetchedSneaker.brand,
-				status: SneakerStatus.Stocking,
+				status_id: SneakerStatus.STOCKING,
 				size: '',
 				condition: '',
 				price_paid: '',
@@ -137,7 +137,7 @@ export const FormImageStep = () => {
 			const currentData = {
 				model: currentSneaker.model || '',
 				brand: currentSneaker.brand || SneakerBrand.Nike,
-				status: currentSneaker.status || SneakerStatus.Stocking,
+				status_id: currentSneaker.status_id || SneakerStatus.STOCKING,
 				size: currentSneakerSize,
 				condition: currentSneaker.condition?.toString() || '',
 				price_paid: currentSneaker.price_paid?.toString() || '',
@@ -172,7 +172,8 @@ export const FormImageStep = () => {
 				const currentData = currentSneakerToAdd || {
 					model: currentSneaker?.model || '',
 					brand: currentSneaker?.brand || SneakerBrand.Nike,
-					status: currentSneaker?.status || SneakerStatus.Stocking,
+					status_id:
+						currentSneaker?.status_id || SneakerStatus.STOCKING,
 					size: currentSneakerSize,
 					condition: currentSneaker?.condition?.toString() || '',
 					price_paid: currentSneaker?.price_paid?.toString() || '',
@@ -208,10 +209,10 @@ export const FormImageStep = () => {
 					currentSneakerToAdd.brand ||
 					currentSneaker?.brand ||
 					SneakerBrand.Nike,
-				status:
-					currentSneakerToAdd.status ||
-					currentSneaker?.status ||
-					SneakerStatus.Stocking,
+				status_id:
+					currentSneakerToAdd.status_id ||
+					currentSneaker?.status_id ||
+					SneakerStatus.STOCKING,
 				size: currentSneakerToAdd.size || currentSneakerSize,
 				condition:
 					currentSneakerToAdd.condition ||

@@ -5,7 +5,7 @@ export const mockSneakers: Sneaker[] = [
 		id: '1',
 		user_id: '1',
 		price_paid: 100,
-		status: SneakerStatus.Rocking,
+		status_id: SneakerStatus.ROCKING,
 		model: 'Sneaker 1',
 		brand: SneakerBrand.Nike,
 		sku: '1234567890',

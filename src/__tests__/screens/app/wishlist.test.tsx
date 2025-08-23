@@ -15,7 +15,7 @@ describe('Wishlist', () => {
 			size_eu: 44,
 			condition: 9,
 			price_paid: 150,
-			status: SneakerStatus.Rocking,
+			status_id: SneakerStatus.ROCKING,
 			images: [
 				{
 					id: '1',

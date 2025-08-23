@@ -12,7 +12,7 @@ interface UseLocalSneakerDataReturn {
 		brands: string[];
 		sizes: string[];
 		conditions: string[];
-		statuses: string[];
+		statuses: number[];
 	};
 	sortBy: SortOption;
 	sortOrder: SortOrder;

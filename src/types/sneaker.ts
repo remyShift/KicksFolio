@@ -25,10 +25,9 @@ export interface SizeMapping {
 }
 
 export enum SneakerStatus {
-	Stocking = 'Stocking',
-	Rocking = 'Rocking',
-	Selling = 'Selling',
-	null = 'null',
+	ROCKING = 1,
+	SELLING = 2,
+	STOCKING = 3,
 }
 
 export type SneakerOwner = {
@@ -50,7 +49,7 @@ export type Sneaker = {
 	size_eu: number;
 	size_us: number;
 	condition: number;
-	status: SneakerStatus;
+	status_id: number;
 	description: string | null;
 	images: SneakerPhoto[];
 	estimated_value?: number;

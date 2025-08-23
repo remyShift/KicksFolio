@@ -5,7 +5,7 @@ export const mockSneaker: Sneaker = {
 	id: '1',
 	user_id: '1',
 	price_paid: 150,
-	status: SneakerStatus.Rocking,
+	status_id: SneakerStatus.ROCKING,
 	model: 'Air Max 1',
 	brand: SneakerBrand.Nike,
 	size_eu: 45,

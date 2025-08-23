@@ -37,9 +37,19 @@ export const createSneakerSchema = () => {
 		brand: z
 			.enum(Object.values(SneakerBrand) as [string, ...string[]])
 			.transform((val) => val as SneakerBrand),
-		status: z
-			.enum(Object.values(SneakerStatus) as [string, ...string[]])
-			.transform((val) => val as SneakerStatus),
+		status_id: z
+			.number()
+			.min(1)
+			.max(3)
+			.refine(
+				(val) =>
+					[
+						SneakerStatus.ROCKING,
+						SneakerStatus.SELLING,
+						SneakerStatus.STOCKING,
+					].includes(val),
+				'Invalid status ID'
+			),
 		size: z
 			.string()
 			.min(1, t('collection.modal.form.errors.size.min'))

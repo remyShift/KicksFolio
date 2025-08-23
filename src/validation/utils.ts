@@ -3,9 +3,9 @@ import { SneakerBrand } from '@/types/sneaker';
 import { SneakerStatus } from '@/types/sneaker';
 
 export const sneakerStatusOptions = [
-	{ label: 'Stocking', value: SneakerStatus.Stocking },
-	{ label: 'Rocking', value: SneakerStatus.Rocking },
-	{ label: 'Selling', value: SneakerStatus.Selling },
+	{ label: 'Stocking', value: SneakerStatus.STOCKING },
+	{ label: 'Rocking', value: SneakerStatus.ROCKING },
+	{ label: 'Selling', value: SneakerStatus.SELLING },
 ];
 
 export const sneakerBrandOptions: { label: string; value: SneakerBrand }[] = [

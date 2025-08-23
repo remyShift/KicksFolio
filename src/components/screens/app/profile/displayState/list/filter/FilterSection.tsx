@@ -12,7 +12,7 @@ interface FilterSectionProps {
 		brands: string[];
 		sizes: string[];
 		conditions: string[];
-		statuses: string[];
+		statuses: number[];
 	};
 	onUpdateFilter: (filterType: keyof FilterState, values: string[]) => void;
 	onClearFilters: () => void;
@@ -79,7 +79,7 @@ export default function FilterSection({
 	}));
 
 	const statusOptions = uniqueValues.statuses.map((status) => ({
-		label: status.charAt(0).toUpperCase() + status.slice(1),
+		label: status.toString(),
 		value: status,
 	}));
 

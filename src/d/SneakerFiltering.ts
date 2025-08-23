@@ -39,7 +39,7 @@ class SneakerFiltering implements SneakerFilterProviderInterface {
 
 		if (filters.statuses && filters.statuses.length > 0) {
 			filteredSneakers = filteredSneakers.filter((sneaker) =>
-				filters.statuses!.includes(sneaker.status)
+				filters.statuses!.includes(sneaker.status_id)
 			);
 		}
 
@@ -120,9 +120,9 @@ class SneakerFiltering implements SneakerFilterProviderInterface {
 
 		const statuses = [
 			...new Set(
-				sneakers.map((sneaker) => sneaker.status).filter(Boolean)
+				sneakers.map((sneaker) => sneaker.status_id).filter(Boolean)
 			),
-		].sort();
+		].sort((a, b) => a - b);
 
 		return {
 			brands,
