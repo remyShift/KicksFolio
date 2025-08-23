@@ -112,19 +112,6 @@ export default function WishlistSneakerList({
 	if (isCardView) {
 		return (
 			<View className="flex-1">
-				<ListControls
-					uniqueValues={uniqueValues}
-					sortBy={sortBy}
-					sortOrder={sortOrder}
-					showFilters={showFilters}
-					filters={filters}
-					onToggleSort={toggleSort}
-					onToggleFilters={toggleFilters}
-					onUpdateFilter={updateFilter}
-					onClearFilters={clearFilters}
-					filteredAndSortedSneakers={filteredAndSortedSneakers}
-					visibleSneakers={validatedSneakers}
-				/>
 				<SneakersCardByBrand
 					sneakers={validatedSneakers}
 					onSneakerPress={handleSneakerPress}
