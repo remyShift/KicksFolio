@@ -1,10 +1,10 @@
-import { SneakerBrand, SneakerStatus } from './sneaker';
+import { SneakerStatus } from './sneaker';
 
 export type SortOption = 'name' | 'brand' | 'size' | 'condition' | 'value';
 export type SortOrder = 'asc' | 'desc';
 
 export interface Filter {
-	brand?: SneakerBrand;
+	brand?: string;
 	size?: number;
 	condition?: number;
 	status_id?: number;

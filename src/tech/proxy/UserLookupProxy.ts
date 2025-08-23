@@ -1,7 +1,13 @@
 import { supabase } from '@/config/supabase/supabase';
 import { UserLookupInterface } from '@/domain/UserLookup';
+import { DbCollectionWithSneaker, DbUser } from '@/types/database';
 import { Sneaker } from '@/types/sneaker';
 import { SearchUser, SearchUsersResponse } from '@/types/user';
+import {
+	mapDbCollectionToSneaker,
+	mapDbUserToSearchUser,
+	mapSupabaseCount,
+} from '@/utils/mappers';
 
 export class UserLookupProxy implements UserLookupInterface {
 	private static readonly PAGE_SIZE = 20;
@@ -67,7 +73,8 @@ export class UserLookupProxy implements UserLookupInterface {
 			: usersList;
 
 		const enrichedUsers = await Promise.all(
-			actualUsers.map(async (user: any) => {
+			actualUsers.map(async (user) => {
+				const dbUser = user as DbUser;
 				return Promise.all([
 					supabase
 						.from('followers')
@@ -75,19 +82,19 @@ export class UserLookupProxy implements UserLookupInterface {
 							count: 'exact',
 							head: true,
 						})
-						.eq('following_id', user.id),
+						.eq('following_id', dbUser.id),
 					supabase
 						.from('followers')
 						.select('*', {
 							count: 'exact',
 							head: true,
 						})
-						.eq('follower_id', user.id),
+						.eq('follower_id', dbUser.id),
 					supabase
 						.from('followers')
 						.select('id')
 						.eq('follower_id', currentUserId)
-						.eq('following_id', user.id)
+						.eq('following_id', dbUser.id)
 						.single(),
 				])
 					.then(
@@ -96,28 +103,21 @@ export class UserLookupProxy implements UserLookupInterface {
 							followingResult,
 							isFollowingResult,
 						]) => {
-							return {
-								...user,
-								followers_count: followersResult.error
-									? 0
-									: Number(followersResult.count || 0),
-								following_count: followingResult.error
-									? 0
-									: Number(followingResult.count || 0),
-								is_following:
-									!isFollowingResult.error &&
-									!!isFollowingResult.data,
-							};
+							return mapDbUserToSearchUser(
+								dbUser,
+								mapSupabaseCount(followersResult),
+								mapSupabaseCount(followingResult),
+								!isFollowingResult.error &&
+									!!isFollowingResult.data
+							);
 						}
 					)
 					.catch((error) => {
-						console.warn(`Error enriching user ${user.id}:`, error);
-						return {
-							...user,
-							followers_count: 0,
-							following_count: 0,
-							is_following: false,
-						};
+						console.warn(
+							`Error enriching user ${dbUser.id}:`,
+							error
+						);
+						return mapDbUserToSearchUser(dbUser, 0, 0, false);
 					});
 			})
 		);
@@ -134,7 +134,7 @@ export class UserLookupProxy implements UserLookupInterface {
 		currentUserId: string
 	): Promise<SearchUser | null> {
 		try {
-			const { data: user, error } = await supabase
+			const { data: dbUser, error } = await supabase
 				.from('users')
 				.select(
 					`
@@ -151,7 +151,7 @@ export class UserLookupProxy implements UserLookupInterface {
 				.eq('id', userId)
 				.single();
 
-			if (error || !user) {
+			if (error || !dbUser) {
 				console.warn('[UserLookupProxy] getProfile:not-found', error);
 				return null;
 			}
@@ -180,22 +180,13 @@ export class UserLookupProxy implements UserLookupInterface {
 						.single(),
 				]);
 
-			const finalFollowersCount = followersResult.error
-				? 0
-				: followersResult.count || 0;
-			const finalFollowingCount = followingResult.error
-				? 0
-				: followingResult.count || 0;
-			const isFollowing =
-				!isFollowingResult.error && !!isFollowingResult.data;
+			const result = mapDbUserToSearchUser(
+				dbUser as DbUser,
+				mapSupabaseCount(followersResult),
+				mapSupabaseCount(followingResult),
+				!isFollowingResult.error && !!isFollowingResult.data
+			);
 
-			const result = {
-				...user,
-				followers_count: finalFollowersCount,
-				following_count: finalFollowingCount,
-				is_following: isFollowing,
-				sneakers: [],
-			};
 			return result;
 		} catch (error) {
 			console.warn(`Error getting user profile ${userId}:`, error);
@@ -239,55 +230,9 @@ export class UserLookupProxy implements UserLookupInterface {
 			}
 
 			const result =
-				collections?.map((collection, index) => {
-					const {
-						created_at,
-						updated_at,
-						sneakers,
-						sneaker_id,
-						user_id,
-						...collectionData
-					} = collection;
-					const sneakerData = sneakers as any;
-
-					const {
-						id: sneakerModelId,
-						brands,
-						...sneakerDataWithoutId
-					} = sneakerData;
-
-					const parsedCollectionImages = UserLookupProxy.parseImages(
-						collection.images
-					);
-
-					let finalImages = parsedCollectionImages;
-					if (finalImages.length === 0 && sneakerData.image) {
-						let actualUri = sneakerData.image;
-						try {
-							const parsedImage = JSON.parse(sneakerData.image);
-							actualUri = parsedImage.uri || sneakerData.image;
-						} catch (error) {
-							console.warn(
-								`🔧 UserLookup sneaker.image is not JSON for ${sneakerData.model}, using as-is:`,
-								sneakerData.image
-							);
-						}
-
-						finalImages = [{ id: 'api-image', uri: actualUri }];
-					}
-
-					const sneaker = {
-						id: collection.id,
-						sneaker_id: sneakerData.id,
-						user_id: collection.user_id,
-						...collectionData,
-						...sneakerDataWithoutId,
-						brand: brands || null,
-						images: finalImages,
-					} as Sneaker;
-
-					return sneaker;
-				}) || [];
+				collections?.map((dbCollection: DbCollectionWithSneaker) =>
+					mapDbCollectionToSneaker(dbCollection)
+				) || [];
 
 			return result;
 		} catch (error) {
@@ -297,74 +242,6 @@ export class UserLookupProxy implements UserLookupInterface {
 			);
 			return [];
 		}
-	}
-
-	private static parseImages(images: any): { id: string; uri: string }[] {
-		if (!images) return [];
-
-		if (
-			Array.isArray(images) &&
-			images.length > 0 &&
-			typeof images[0] === 'object' &&
-			(images[0].uri || images[0].url)
-		) {
-			return images.map((img: any) => ({
-				id: img.id || '',
-				uri: img.uri || img.url || '',
-			}));
-		}
-
-		if (Array.isArray(images)) {
-			return images.map((img) => {
-				if (typeof img === 'string') {
-					try {
-						const parsed = JSON.parse(img);
-						return {
-							id: parsed.id || '',
-							uri: parsed.uri || parsed.url || '',
-						};
-					} catch (error) {
-						console.warn('Error parsing image JSON:', error);
-						return {
-							id: '',
-							uri: img,
-						};
-					}
-				}
-				return {
-					id: img.id || '',
-					uri: img.uri || img.url || '',
-				};
-			});
-		}
-
-		if (typeof images === 'string') {
-			try {
-				const parsed = JSON.parse(images);
-				if (Array.isArray(parsed)) {
-					return parsed.map((img: any) => ({
-						id: img.id || '',
-						uri: img.uri || img.url || '',
-					}));
-				}
-				return [
-					{
-						id: parsed.id || '',
-						uri: parsed.uri || parsed.url || '',
-					},
-				];
-			} catch (error) {
-				console.warn('Error parsing images JSON string:', error);
-				return [
-					{
-						id: '',
-						uri: images,
-					},
-				];
-			}
-		}
-
-		return [];
 	}
 }
 

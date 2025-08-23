@@ -3,7 +3,9 @@ import { t } from 'i18next';
 import { supabase } from '@/config/supabase/supabase';
 import { sneakerSizeConverter } from '@/d/SneakerSizeConverter';
 import { SneakerHandlerInterface } from '@/domain/SneakerHandler';
+import { DbCollectionWithSneaker } from '@/types/database';
 import { GenderType, SizeUnit, Sneaker } from '@/types/sneaker';
+import { mapDbCollectionToSneaker } from '@/utils/mappers';
 import { sneakerBrandOptions } from '@/validation/utils';
 
 class SneakerProxy implements SneakerHandlerInterface {
@@ -34,134 +36,11 @@ class SneakerProxy implements SneakerHandlerInterface {
 		if (error) throw error;
 
 		const result =
-			data?.map((collection) => {
-				const {
-					created_at,
-					updated_at,
-					sneakers,
-					sneaker_id,
-					user_id,
-					...collectionData
-				} = collection;
-				const sneakerData = sneakers as any;
-				const { brands: updateBrands, ...updateSneakerData } =
-					sneakerData;
-
-				const {
-					id: sneakerModelId,
-					brands,
-					...sneakerDataWithoutId
-				} = sneakerData;
-
-				const parsedCollectionImages = SneakerProxy.parseImages(
-					collection.images
-				);
-
-				let finalImages = parsedCollectionImages;
-				if (finalImages.length === 0 && sneakerData.image) {
-					let actualUri = sneakerData.image;
-					try {
-						const parsedImage = JSON.parse(sneakerData.image);
-						actualUri = parsedImage.uri || sneakerData.image;
-					} catch (error) {
-						console.warn(
-							`🔧 sneaker.image is not JSON for ${sneakerData.model}, using as-is:`,
-							sneakerData.image
-						);
-					}
-
-					finalImages = [{ id: 'api-image', uri: actualUri }];
-				}
-
-				const transformedSneaker = {
-					id: collection.id,
-					sneaker_id: sneakerData.id,
-					user_id: collection.user_id,
-					...collectionData,
-					...sneakerDataWithoutId,
-					brand: brands || null,
-					images: finalImages,
-				} as Sneaker;
-
-				return transformedSneaker;
-			}) || [];
+			data?.map((dbCollection: DbCollectionWithSneaker) =>
+				mapDbCollectionToSneaker(dbCollection)
+			) || [];
 
 		return result;
-	}
-
-	private static parseImages(images: any): { id: string; uri: string }[] {
-		if (!images) {
-			return [];
-		}
-
-		if (
-			Array.isArray(images) &&
-			images.length > 0 &&
-			typeof images[0] === 'object' &&
-			(images[0].uri || images[0].url)
-		) {
-			const result = images.map((img: any) => ({
-				id: img.id || '',
-				uri: img.uri || img.url || '',
-			}));
-			return result;
-		}
-
-		if (Array.isArray(images)) {
-			const result = images.map((img, index) => {
-				if (typeof img === 'string') {
-					try {
-						const parsed = JSON.parse(img);
-						return {
-							id: parsed.id || '',
-							uri: parsed.uri || parsed.url || '',
-						};
-					} catch (error) {
-						console.warn('Erreur parsing image JSON:', error);
-						return {
-							id: '',
-							uri: img,
-						};
-					}
-				}
-				return {
-					id: img.id || '',
-					uri: img.uri || img.url || '',
-				};
-			});
-			return result;
-		}
-
-		if (typeof images === 'string') {
-			try {
-				const parsed = JSON.parse(images);
-				if (Array.isArray(parsed)) {
-					const result = parsed.map((img: any) => ({
-						id: img.id || '',
-						uri: img.uri || img.url || '',
-					}));
-					return result;
-				}
-				const result = [
-					{
-						id: parsed.id || '',
-						uri: parsed.uri || parsed.url || '',
-					},
-				];
-				return result;
-			} catch (error) {
-				console.warn('Erreur parsing images JSON string:', error);
-				const result = [
-					{
-						id: '',
-						uri: images,
-					},
-				];
-				return result;
-			}
-		}
-
-		return [];
 	}
 
 	async create(
@@ -297,26 +176,7 @@ class SneakerProxy implements SneakerHandlerInterface {
 		if (collectionError) throw collectionError;
 		if (!collection) throw new Error('Failed to create collection');
 
-		const {
-			created_at,
-			updated_at,
-			sneakers,
-			sneaker_id,
-			user_id,
-			...collectionDataResult
-		} = collection;
-		const sneakerDataResult = sneakers as any;
-		const { brands, ...sneakerDataWithoutBrands } = sneakerDataResult;
-
-		return {
-			id: collection.id,
-			sneaker_id: sneakerDataResult.id,
-			user_id: collection.user_id,
-			...collectionDataResult,
-			...sneakerDataWithoutBrands,
-			brand: brands || null,
-			images: SneakerProxy.parseImages(collection.images),
-		} as Sneaker;
+		return mapDbCollectionToSneaker(collection as DbCollectionWithSneaker);
 	}
 
 	async update(
@@ -408,7 +268,13 @@ class SneakerProxy implements SneakerHandlerInterface {
 			if (getError) throw getError;
 			if (!collection) throw new Error('Collection not found');
 
-			const sneakerUpdates: any = {};
+			const sneakerUpdates: Partial<{
+				brand_id: number;
+				model: string;
+				gender: string;
+				sku: string;
+				description: string;
+			}> = {};
 			if (brand_id) sneakerUpdates.brand_id = brand_id;
 			if (model) sneakerUpdates.model = model;
 			if (gender) sneakerUpdates.gender = gender;
@@ -488,42 +354,15 @@ class SneakerProxy implements SneakerHandlerInterface {
 					);
 				}
 
-				const { brands: retryBrands, ...retrySneakerData } =
-					retryData.sneakers;
-				return {
-					id: retryData.id,
-					sneaker_id: retryData.sneakers?.id,
-					user_id: retryData.user_id,
-					...retryData,
-					...retrySneakerData,
-					brand: retryBrands || null,
-					images: SneakerProxy.parseImages(retryData.images),
-				} as Sneaker;
+				return mapDbCollectionToSneaker(
+					retryData as DbCollectionWithSneaker
+				);
 			}
 			throw error;
 		}
 		if (!data) throw new Error('Updated collection not found');
 
-		const {
-			created_at,
-			updated_at,
-			sneakers,
-			sneaker_id,
-			user_id,
-			...collectionData
-		} = data;
-		const sneakerData = sneakers as any;
-		const { brands: updateBrands, ...updateSneakerData } = sneakerData;
-
-		return {
-			id: data.id,
-			sneaker_id: sneakerData.id,
-			user_id: data.user_id,
-			...collectionData,
-			...updateSneakerData,
-			brand: updateBrands || null,
-			images: SneakerProxy.parseImages(data.images),
-		} as Sneaker;
+		return mapDbCollectionToSneaker(data as DbCollectionWithSneaker);
 	}
 
 	async delete(collectionId: string) {
@@ -564,26 +403,7 @@ class SneakerProxy implements SneakerHandlerInterface {
 
 		if (!data) return data;
 
-		const {
-			created_at,
-			updated_at,
-			sneakers,
-			sneaker_id,
-			user_id,
-			...collectionData
-		} = data;
-		const sneakerData = sneakers as any;
-		const { brands: updateBrands, ...updateSneakerData } = sneakerData;
-
-		return {
-			id: data.id,
-			sneaker_id: sneakerData.id,
-			user_id: data.user_id,
-			...collectionData,
-			...updateSneakerData,
-			brand: updateBrands || null,
-			images: SneakerProxy.parseImages(data.images),
-		} as Sneaker;
+		return mapDbCollectionToSneaker(data as DbCollectionWithSneaker);
 	}
 
 	async uploadImage(sneakerId: string, imageUri: string) {

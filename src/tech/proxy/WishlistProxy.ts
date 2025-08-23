@@ -1,6 +1,8 @@
 import { supabase } from '@/config/supabase/supabase';
 import { WishlistInterface } from '@/domain/Wishlist';
-import { BrandId, Sneaker, SneakerStatus } from '@/types/sneaker';
+import { DbWishlistWithSneaker } from '@/types/database';
+import { Sneaker } from '@/types/sneaker';
+import { mapDbWishlistToSneaker } from '@/utils/mappers';
 
 export class WishlistProxy implements WishlistInterface {
 	async add(sneakerId: string) {
@@ -138,20 +140,18 @@ export class WishlistProxy implements WishlistInterface {
 			sneakersMap.set(sneaker.id, sneaker);
 		});
 
-		const data = wishlistData
+		const dbWishlistItems: DbWishlistWithSneaker[] = wishlistData
 			.map((wishlistItem) => ({
-				id: wishlistItem.id,
-				created_at: wishlistItem.created_at,
-				sneakers: [sneakersMap.get(wishlistItem.sneaker_id)],
+				...wishlistItem,
+				user_id: userId,
+				sneakers: sneakersMap.get(wishlistItem.sneaker_id),
 			}))
-			.filter((item) => item.sneakers[0]);
+			.filter((item) => item.sneakers);
 
-		if (!data) return [];
+		if (!dbWishlistItems) return [];
 
-		const result = data
-			.map((item, index) => {
-				return WishlistProxy.transformWishlistToSneaker(item);
-			})
+		const result = dbWishlistItems
+			.map(mapDbWishlistToSneaker)
 			.filter((sneaker): sneaker is Sneaker => sneaker !== null);
 
 		return result;
@@ -178,65 +178,6 @@ export class WishlistProxy implements WishlistInterface {
 
 		if (error) throw error;
 		return data || [];
-	}
-
-	private static transformWishlistToSneaker(
-		wishlistItem: Record<string, any>
-	): Sneaker | null {
-		try {
-			const sneaker = wishlistItem?.sneakers?.[0];
-
-			if (!sneaker?.id) {
-				console.warn('🔍 WishlistProxy: Missing sneaker data:', {
-					sneaker: !!sneaker?.id,
-				});
-				return null;
-			}
-
-			let wishlistImages: { id: string; uri: string }[] = [];
-			if (sneaker.image) {
-				let actualUri = sneaker.image;
-				try {
-					const parsedImage = JSON.parse(sneaker.image);
-					actualUri = parsedImage.uri || sneaker.image;
-				} catch (error) {
-					console.warn(
-						`🔧 Wishlist sneaker.image is not JSON for ${sneaker.model}, using as-is:`,
-						sneaker.image
-					);
-				}
-				wishlistImages = [{ id: 'api', uri: actualUri }];
-			}
-
-			const transformedSneaker = {
-				id: String(sneaker.id),
-				model: String(sneaker.model || ''),
-				brand_id: sneaker.brand_id || BrandId.Other,
-				brand: sneaker.brands || null,
-				description: sneaker.description || '',
-				sku: String(sneaker.sku || ''),
-				gender: String(sneaker.gender || ''),
-				wishlist_added_at: String(wishlistItem.created_at),
-				user_id: '',
-				size_eu: 0,
-				size_us: 0,
-				condition: 0,
-				status_id: SneakerStatus.ROCKING,
-				price_paid: 0,
-				estimated_value: 0,
-				images: wishlistImages,
-				og_box: false,
-				ds: false,
-			};
-
-			return transformedSneaker;
-		} catch (error) {
-			console.error(
-				'❌ WishlistProxy: Error transforming wishlist item:',
-				error
-			);
-			return null;
-		}
 	}
 }
 

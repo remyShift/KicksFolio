@@ -78,7 +78,7 @@ export class FollowerProxy implements FollowerHandlerInterface {
 				if (!data || data.length === 0) return [];
 
 				return Promise.all(
-					data.map((follow: any) => {
+					data.map((follow) => {
 						const user = follow.users;
 						if (!user) return null;
 
@@ -106,6 +106,7 @@ export class FollowerProxy implements FollowerHandlerInterface {
 									last_name: user.last_name,
 									profile_picture: user.profile_picture,
 									is_following: true,
+									// Supabase count can be returned as string, explicit conversion needed
 									followers_count: Number(
 										followersResult.count || 0
 									),
@@ -168,7 +169,7 @@ export class FollowerProxy implements FollowerHandlerInterface {
 				if (!data || data.length === 0) return [];
 
 				return Promise.all(
-					data.map((follow: any) => {
+					data.map((follow) => {
 						const user = follow.users;
 						if (!user) return null;
 
@@ -209,6 +210,7 @@ export class FollowerProxy implements FollowerHandlerInterface {
 										is_following:
 											!isFollowingResult.error &&
 											!!isFollowingResult.data,
+										// Supabase count can be returned as string, explicit conversion needed
 										followers_count: Number(
 											followersResult.count || 0
 										),
@@ -282,6 +284,7 @@ export class FollowerProxy implements FollowerHandlerInterface {
 				.eq('follower_id', userId),
 		]).then(([followersResult, followingResult]) => {
 			return {
+				// Supabase count can be returned as string, explicit conversion needed
 				followers: Number(followersResult.count || 0),
 				following: Number(followingResult.count || 0),
 			};
