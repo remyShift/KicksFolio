@@ -184,7 +184,6 @@ class SneakerProxy implements SneakerHandlerInterface {
 		updates: Partial<Sneaker & { size?: number }>,
 		currentUnit?: SizeUnit
 	): Promise<Sneaker> {
-		// First, verify the collection exists
 		const { data: existingCollection, error: checkError } = await supabase
 			.from('collections')
 			.select('id, sneaker_id')
@@ -279,7 +278,7 @@ class SneakerProxy implements SneakerHandlerInterface {
 			if (model) sneakerUpdates.model = model;
 			if (gender) sneakerUpdates.gender = gender;
 			if (sku !== undefined) sneakerUpdates.sku = sku;
-			if (description !== undefined)
+			if (description !== undefined && description !== null)
 				sneakerUpdates.description = description;
 
 			const { error: sneakerError } = await supabase
@@ -315,7 +314,6 @@ class SneakerProxy implements SneakerHandlerInterface {
 
 		if (error) {
 			console.error('❌ SneakerHandler.update: Error occurred:', error);
-			// Si la collection n'existe pas, on essaie de la récupérer directement
 			if (error.code === 'PGRST116') {
 				const { data: retryData, error: retryError } = await supabase
 					.from('collections')

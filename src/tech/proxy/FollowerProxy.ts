@@ -1,6 +1,17 @@
 import { supabase } from '@/config/supabase/supabase';
 import { FollowerHandlerInterface } from '@/domain/FollowerHandler';
+import { DbUser } from '@/types/database';
 import { FollowingUser, SearchUser } from '@/types/user';
+
+type SelectedUserData = Pick<
+	DbUser,
+	'id' | 'username' | 'first_name' | 'last_name' | 'profile_picture'
+>;
+
+interface FollowerData {
+	created_at: string;
+	users: SelectedUserData[];
+}
 
 export class FollowerProxy implements FollowerHandlerInterface {
 	async follow(userToFollowId: string): Promise<boolean> {
@@ -78,8 +89,8 @@ export class FollowerProxy implements FollowerHandlerInterface {
 				if (!data || data.length === 0) return [];
 
 				return Promise.all(
-					data.map((follow) => {
-						const user = follow.users;
+					data.map((follow: FollowerData) => {
+						const user = follow.users[0];
 						if (!user) return null;
 
 						return Promise.all([
@@ -106,7 +117,6 @@ export class FollowerProxy implements FollowerHandlerInterface {
 									last_name: user.last_name,
 									profile_picture: user.profile_picture,
 									is_following: true,
-									// Supabase count can be returned as string, explicit conversion needed
 									followers_count: Number(
 										followersResult.count || 0
 									),
@@ -169,8 +179,8 @@ export class FollowerProxy implements FollowerHandlerInterface {
 				if (!data || data.length === 0) return [];
 
 				return Promise.all(
-					data.map((follow) => {
-						const user = follow.users;
+					data.map((follow: FollowerData) => {
+						const user = follow.users[0];
 						if (!user) return null;
 
 						return Promise.all([
@@ -210,7 +220,6 @@ export class FollowerProxy implements FollowerHandlerInterface {
 										is_following:
 											!isFollowingResult.error &&
 											!!isFollowingResult.data,
-										// Supabase count can be returned as string, explicit conversion needed
 										followers_count: Number(
 											followersResult.count || 0
 										),
@@ -284,7 +293,6 @@ export class FollowerProxy implements FollowerHandlerInterface {
 				.eq('follower_id', userId),
 		]).then(([followersResult, followingResult]) => {
 			return {
-				// Supabase count can be returned as string, explicit conversion needed
 				followers: Number(followersResult.count || 0),
 				following: Number(followingResult.count || 0),
 			};

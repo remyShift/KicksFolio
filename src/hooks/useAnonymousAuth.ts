@@ -10,11 +10,9 @@ export const useAnonymousAuth = () => {
 			} = await supabase.auth.getSession();
 
 			if (session?.user) {
-				// User is already authenticated (anonymous or regular)
 				return session.user;
 			}
 
-			// Sign in anonymously
 			const { data, error } = await supabase.auth.signInAnonymously();
 
 			if (error) {

@@ -192,7 +192,6 @@ export const useSneakerAPI = () => {
 					fetchedImage: fetchedImage || undefined,
 				};
 
-				// Traiter les images AVANT de créer la sneaker
 				return imageHandler
 					.processAndUploadSneaker(
 						formData.images.map((img) => ({
@@ -200,7 +199,7 @@ export const useSneakerAPI = () => {
 							id: img.id,
 						})),
 						user.id,
-						'temp' // ID temporaire, sera remplacé après création
+						'temp'
 					)
 					.then((processedImages: SneakerPhoto[]) => {
 						if (processedImages.length === 0) {
@@ -209,7 +208,6 @@ export const useSneakerAPI = () => {
 							);
 						}
 
-						// Créer la sneaker avec les images déjà traitées
 						const sneakerWithImages = {
 							...sneakerToAdd,
 							images: processedImages.map((img) => ({

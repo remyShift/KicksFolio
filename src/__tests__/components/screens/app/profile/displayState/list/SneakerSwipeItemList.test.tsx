@@ -1,12 +1,11 @@
-import { View } from 'react-native';
+import { Button, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-import { fireEvent, render } from '@testing-library/react-native';
+import { render } from '@testing-library/react-native';
 
 import SwipeableWrapper from '@/components/screens/app/profile/displayState/list/SwipeableWrapper';
 import { BrandId, Sneaker, SneakerStatus } from '@/types/sneaker';
 
-// Mock the hooks
 jest.mock('@/hooks/useSwipeOptimization', () => ({
 	useSwipeOptimization: () => ({
 		isRowOpen: jest.fn(() => false),
@@ -15,14 +14,12 @@ jest.mock('@/hooks/useSwipeOptimization', () => ({
 	}),
 }));
 
-// Mock the auth context
 jest.mock('@/contexts/authContext', () => ({
 	useSession: () => ({
 		user: { id: 'current-user-id' },
 	}),
 }));
 
-// Mock the SwipeActions component
 jest.mock(
 	'@/components/screens/app/profile/displayState/list/SwipeActions',
 	() => {
@@ -39,8 +36,10 @@ jest.mock(
 		}) {
 			return (
 				<View testID="swipe-actions">
-					{isOwner && <button testID="delete-button">Delete</button>}
-					<button testID="view-button">View</button>
+					{isOwner && (
+						<Button title="Delete" testID="delete-button" />
+					)}
+					<Button title="View" testID="view-button" />
 				</View>
 			);
 		};
@@ -49,7 +48,7 @@ jest.mock(
 
 const mockSneaker: Sneaker = {
 	id: '1',
-	user_id: 'current-user-id', // Même ID que l'utilisateur actuel pour tester isOwner = true
+	user_id: 'current-user-id',
 	model: 'Air Jordan 1',
 	brand_id: BrandId.Nike,
 	size_eu: 42,
@@ -64,7 +63,7 @@ const mockSneaker: Sneaker = {
 const mockOtherUserSneaker: Sneaker = {
 	...mockSneaker,
 	id: '2',
-	user_id: 'other-user-id', // ID différent pour tester isOwner = false
+	user_id: 'other-user-id',
 };
 
 const renderWithGestureHandler = (component: React.ReactElement) => {
@@ -90,7 +89,6 @@ describe('SwipeableWrapper', () => {
 			<SwipeableWrapper item={mockSneaker} showOwnerInfo={true} />
 		);
 
-		// Vérifier que le composant SneakerListItem est rendu avec showOwnerInfo
 		expect(getByText('Air Jordan 1')).toBeTruthy();
 	});
 
@@ -134,8 +132,6 @@ describe('SwipeableWrapper', () => {
 			/>
 		);
 
-		// The onCloseRow is called internally when swipe gestures are handled
-		// This test ensures the prop is properly passed
 		expect(mockOnCloseRow).toBeDefined();
 	});
 });

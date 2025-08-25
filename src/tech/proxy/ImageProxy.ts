@@ -407,7 +407,6 @@ class ImageStorageProxy implements ImageStorageInterface {
 		userId: string,
 		sneakerId: string
 	): Promise<SneakerPhoto[]> {
-		// Si sneakerId est 'temp', utiliser un ID temporaire unique
 		const effectiveSneakerId =
 			sneakerId === 'temp' ? `temp_${Date.now()}` : sneakerId;
 		if (!images || images.length === 0) {

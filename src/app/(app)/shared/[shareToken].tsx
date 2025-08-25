@@ -72,7 +72,6 @@ export default function SharedCollectionScreen() {
 	}
 
 	const handleRefresh = async () => {
-		// Refresh shared collection data
 		if (shareToken) {
 			try {
 				const data = await shareHandler.getSharedCollection(shareToken);

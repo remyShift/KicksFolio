@@ -98,11 +98,10 @@ export const createSneakerSchema = () => {
 	});
 };
 
-// Type pour les données de formulaire (avant validation/transformation)
 export interface SneakerFormData {
 	model: string;
-	brand_id: string; // String dans les formulaires
-	status_id: string; // String dans les formulaires
+	brand_id: string;
+	status_id: string;
 	size: string;
 	condition: string;
 	images: { id?: string; uri: string; alt?: string }[];
@@ -113,7 +112,6 @@ export interface SneakerFormData {
 	is_women?: boolean;
 }
 
-// Type pour les données validées (après transformation)
 export type ValidatedSneakerData = z.infer<
 	ReturnType<typeof createSneakerSchema>
 >;
