@@ -1,79 +1,85 @@
-// Database-specific types matching the exact Postgres schema
-// These types represent the raw data structure from the database
-
 export interface DbBrand {
-	id: number; // integer, auto-incremented
-	name: string; // varchar, NOT NULL, UNIQUE
+	id: number;
+	name: string;
 }
 
 export interface DbUser {
-	id: string; // uuid, primary key
-	email: string; // varchar, NOT NULL, UNIQUE
-	password_hash: string | null; // varchar, nullable
-	username: string; // varchar, NOT NULL, UNIQUE
-	first_name: string; // varchar, NOT NULL
-	last_name: string; // varchar, NOT NULL
-	sneaker_size: number; // numeric, NOT NULL, CHECK constraint
-	profile_picture: string | null; // varchar, nullable
-	reset_password_token: string | null; // varchar, nullable, UNIQUE
-	reset_password_sent_at: string | null; // timestamp with time zone, nullable
-	created_at: string; // timestamp with time zone, DEFAULT now()
-	updated_at: string; // timestamp with time zone, DEFAULT now()
-	instagram_username: string | null; // varchar, nullable
-	social_media_visibility: boolean; // boolean, DEFAULT true
+	id: string;
+	email: string;
+	password_hash: string | null;
+	username: string;
+	first_name: string;
+	last_name: string;
+	sneaker_size: number;
+	profile_picture: string | null;
+	reset_password_token: string | null;
+	reset_password_sent_at: string | null;
+	created_at: string;
+	updated_at: string;
+	instagram_username: string | null;
+	social_media_visibility: boolean;
 }
 
 export interface DbSneaker {
-	id: string; // uuid, primary key
-	model: string; // varchar, NOT NULL
-	gender: 'men' | 'women'; // text, CHECK constraint
-	sku: string | null; // varchar, nullable
-	description: string | null; // text, nullable
-	created_at: string; // timestamp with time zone, DEFAULT now()
-	updated_at: string; // timestamp with time zone, DEFAULT now()
-	image: string | null; // text, nullable
-	brand_id: number | null; // integer, foreign key to brands.id
+	id: string;
+	model: string;
+	gender: 'men' | 'women';
+	sku: string | null;
+	description: string | null;
+	created_at: string;
+	updated_at: string;
+	image: string | null;
+	brand_id: number | null;
 }
 
 export interface DbCollection {
-	id: string; // uuid, primary key
-	user_id: string; // uuid, NOT NULL, foreign key to users.id
-	sneaker_id: string; // uuid, NOT NULL, foreign key to sneakers.id
-	size_eu: number; // numeric, NOT NULL, CHECK constraint
-	size_us: number; // numeric, NOT NULL, CHECK constraint
-	og_box: boolean | null; // boolean, nullable
-	ds: boolean | null; // boolean, nullable
-	purchase_date: string | null; // date, nullable
-	price_paid: number | null; // numeric, nullable
-	condition: number; // integer, NOT NULL, CHECK constraint (1-10)
-	estimated_value: number | null; // numeric, nullable
-	images: string[]; // text[], DEFAULT ARRAY[]::text[]
-	wishlist: boolean; // boolean, NOT NULL, DEFAULT false
-	created_at: string; // timestamp with time zone, DEFAULT now()
-	updated_at: string; // timestamp with time zone, DEFAULT now()
-	status_id: number | null; // integer, foreign key to statuses.id
+	id: string;
+	user_id: string;
+	sneaker_id: string;
+	size_eu: number;
+	size_us: number;
+	og_box: boolean | null;
+	ds: boolean | null;
+	purchase_date: string | null;
+	price_paid: number | null;
+	condition: number;
+	estimated_value: number | null;
+	images: string[];
+	wishlist: boolean;
+	created_at: string;
+	updated_at: string;
+	status_id: number | null;
 }
 
 export interface DbStatus {
-	id: number; // integer, auto-incremented
-	name: string; // varchar, NOT NULL, UNIQUE
+	id: number;
+	name: string;
 }
 
 export interface DbFollower {
-	id: string; // uuid, primary key
-	follower_id: string; // uuid, NOT NULL, foreign key to users.id
-	following_id: string; // uuid, NOT NULL, foreign key to users.id
-	created_at: string; // timestamp with time zone, DEFAULT now()
+	id: string;
+	follower_id: string;
+	following_id: string;
+	created_at: string;
 }
 
 export interface DbWishlist {
-	id: string; // uuid, primary key
-	user_id: string | null; // uuid, foreign key to users.id
-	sneaker_id: string | null; // uuid, foreign key to sneakers.id
-	created_at: string; // timestamp without time zone, DEFAULT now()
+	id: string;
+	user_id: string | null;
+	sneaker_id: string | null;
+	created_at: string;
 }
 
-// Joint query result types (what Supabase returns with joins)
+export interface DbSharedCollection {
+	id: string;
+	user_id: string;
+	share_token: string;
+	filters: object;
+	is_active: boolean;
+	created_at: string;
+	updated_at: string;
+}
+
 export interface DbCollectionWithSneaker extends DbCollection {
 	sneakers: DbSneaker & {
 		brands: DbBrand | null;
@@ -90,8 +96,7 @@ export interface DbWishlistWithSneaker extends DbWishlist {
 	};
 }
 
-// Supabase-specific types for count queries
 export interface SupabaseCountResult {
-	count: number | string | null; // Supabase can return count as string or number
+	count: number | string | null;
 	error: any;
 }
