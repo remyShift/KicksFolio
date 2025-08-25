@@ -2,10 +2,20 @@ import { Pressable } from 'react-native';
 
 import Feather from '@expo/vector-icons/Feather';
 
-export default function ShareButton() {
+interface ShareButtonProps {
+	onPress: () => void;
+	size?: number;
+	color?: string;
+}
+
+export default function ShareButton({
+	onPress,
+	size = 20,
+	color = 'black',
+}: ShareButtonProps) {
 	return (
-		<Pressable>
-			<Feather name="share" size={20} color="black" />
+		<Pressable onPress={onPress}>
+			<Feather name="share" size={size} color={color} />
 		</Pressable>
 	);
 }

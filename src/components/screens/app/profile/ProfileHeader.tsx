@@ -3,6 +3,7 @@ import { memo, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
+import ShareButton from '@/components/ui/buttons/ShareButton';
 import ToggleDisplayState from '@/components/ui/buttons/ToggleDisplayState';
 import Title from '@/components/ui/text/Title';
 import { useSession } from '@/contexts/authContext';
@@ -17,10 +18,16 @@ interface ProfileHeaderProps {
 	user: User | SearchUser;
 	userSneakers?: Sneaker[];
 	showBackButton?: boolean;
+	onSharePress?: () => void;
 }
 
 function ProfileHeader(props: ProfileHeaderProps) {
-	const { user, userSneakers = [], showBackButton = false } = props;
+	const {
+		user,
+		userSneakers = [],
+		showBackButton = false,
+		onSharePress,
+	} = props;
 	const { t } = useTranslation();
 	const { user: currentUser } = useSession();
 
@@ -44,15 +51,28 @@ function ProfileHeader(props: ProfileHeaderProps) {
 		[userSneakers.length]
 	);
 
+	const shareButton = useMemo(
+		() =>
+			isOwnProfile && hasSneakers && onSharePress ? (
+				<ShareButton onPress={onSharePress} />
+			) : null,
+		[isOwnProfile, hasSneakers, onSharePress]
+	);
+
 	const collectionTitle = useMemo(
 		() =>
 			hasSneakers ? (
-				<View className="flex-row items-center">
-					<Title content={t('collection.pages.titles.collection')} />
-					<ToggleDisplayState />
+				<View className="flex-row items-center justify-between">
+					<View className="flex-row items-center">
+						<Title
+							content={t('collection.pages.titles.collection')}
+						/>
+						<ToggleDisplayState />
+					</View>
+					{shareButton}
 				</View>
 			) : null,
-		[hasSneakers, t]
+		[hasSneakers, t, shareButton]
 	);
 
 	const profileInfo = useMemo(
