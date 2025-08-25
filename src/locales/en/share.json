@@ -1,0 +1,27 @@
+{
+  "title": "Share Collection",
+  "description": "Share your collection of {{count}} sneakers with filters",
+  "filters": {
+    "title": "Apply Filters",
+    "clear": "Clear Filters"
+  },
+  "create": "Create Share Link",
+  "copy": "Copy Link",
+  "success": {
+    "title": "Link Created!",
+    "created": "Share link created successfully",
+    "description": "Your collection can now be viewed by anyone with this link",
+    "copied": "Link copied to clipboard!"
+  },
+  "error": {
+    "title": "Error",
+    "createFailed": "Failed to create share link",
+    "copyFailed": "Failed to copy to clipboard"
+  },
+  "shared": {
+    "loading": "Loading shared collection...",
+    "error": {
+      "notFound": "Shared collection not found or expired"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "title": "Partager la Collection",
+  "description": "Partagez votre collection de {{count}} sneakers avec des filtres",
+  "filters": {
+    "title": "Appliquer des Filtres",
+    "clear": "Effacer les Filtres"
+  },
+  "create": "Créer le Lien de Partage",
+  "copy": "Copier le Lien",
+  "success": {
+    "title": "Lien Créé !",
+    "created": "Lien de partage créé avec succès",
+    "description": "Votre collection peut maintenant être vue par toute personne ayant ce lien",
+    "copied": "Lien copié dans le presse-papiers !"
+  },
+  "error": {
+    "title": "Erreur",
+    "createFailed": "Échec de la création du lien de partage",
+    "copyFailed": "Échec de la copie dans le presse-papiers"
+  },
+  "shared": {
+    "loading": "Chargement de la collection partagée...",
+    "error": {
+      "notFound": "Collection partagée introuvable ou expirée"
+    }
+  }
+}
