@@ -53,7 +53,9 @@ class ShareProxy implements ShareHandlerInterface {
 			.select('share_token')
 			.single();
 
-		if (error) throw error;
+		if (error) {
+			throw error;
+		}
 
 		const url = this.buildShareUrl(data.share_token);
 

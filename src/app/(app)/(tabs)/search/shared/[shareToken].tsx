@@ -31,97 +31,10 @@ export default function SharedCollectionScreen() {
 		return collectionData?.sneakers_data || [];
 	}, [collectionData?.sneakers_data]);
 
-	useModalNavigation({ contextSneakers });
-
-	useEffect(() => {
-		async function loadSharedCollection() {
-			if (!shareToken) {
-				setError('Invalid share link');
-				setLoading(false);
-				return;
-			}
-
-			try {
-				await ensureAnonymousAuth();
-				const data = await shareHandler.getSharedCollection(shareToken);
-				setCollectionData(data);
-			} catch (err) {
-				console.error('Failed to load shared collection:', err);
-				setError('Failed to load collection');
-			} finally {
-				setLoading(false);
-			}
-		}
-
-		loadSharedCollection();
-	}, [shareToken, ensureAnonymousAuth]);
-
-	if (loading) {
-		return (
-			<View className="flex-1 bg-background pt-32 items-center justify-center">
-				<ActivityIndicator size="large" color="black" />
-				<Text className="font-open-sans text-gray-500 mt-4">
-					{t('share.shared.loading')}
-				</Text>
-			</View>
-		);
-	}
-
-	if (error || !collectionData) {
-		return (
-			<View className="flex-1 bg-background pt-32 items-center justify-center">
-				<Text className="font-open-sans text-gray-500 text-center">
-					{error || t('share.shared.error.notFound')}
-				</Text>
-			</View>
-		);
-	}
-
-	const handleRefresh = async () => {
-		if (shareToken) {
-			try {
-				const data = await shareHandler.getSharedCollection(shareToken);
-				setCollectionData(data);
-			} catch (err) {
-				console.error('Failed to refresh shared collection:', err);
-			}
-		}
-	};
-
-	if (isAuthenticated) {
-		return (
-			<ProfileDisplayContainer
-				user={collectionData.user_data}
-				userSneakers={collectionData.sneakers_data}
-				refreshing={loading}
-				onRefresh={handleRefresh}
-				showBackButton={true}
-				showSettingsButton={false}
-			/>
-		);
-	}
-
-	return (
-		<SharedCollectionForAnonymous
-			collectionData={collectionData}
-			loading={loading}
-			onRefresh={handleRefresh}
-		/>
-	);
-}
-
-function SharedCollectionForAnonymous({
-	collectionData,
-	loading,
-	onRefresh,
-}: {
-	collectionData: SharedCollectionData;
-	loading: boolean;
-	onRefresh: () => Promise<void>;
-}) {
-	const { t } = useTranslation();
-
+	// Appliquer les filtres pour tous les utilisateurs
 	const filteredSneakers = useMemo(() => {
+		if (!collectionData) return [];
+
 		const filters = collectionData.filters;
 
 		if (
@@ -165,8 +78,99 @@ function SharedCollectionForAnonymous({
 
 			return matches;
 		});
-	}, [collectionData.sneakers_data, collectionData.filters]);
+	}, [collectionData?.sneakers_data, collectionData?.filters]);
 
+	useModalNavigation({ contextSneakers });
+
+	useEffect(() => {
+		async function loadSharedCollection() {
+			if (!shareToken) {
+				setError('Invalid share link');
+				setLoading(false);
+				return;
+			}
+
+			try {
+				await ensureAnonymousAuth();
+				const data = await shareHandler.getSharedCollection(shareToken);
+				setCollectionData(data);
+			} catch (err) {
+				console.error('Failed to load shared collection:', err);
+				setError('Failed to load collection');
+			} finally {
+				setLoading(false);
+			}
+		}
+
+		loadSharedCollection();
+	}, [shareToken, ensureAnonymousAuth]);
+
+	const handleRefresh = async () => {
+		if (shareToken) {
+			try {
+				const data = await shareHandler.getSharedCollection(shareToken);
+				setCollectionData(data);
+			} catch (err) {
+				console.error('Failed to refresh shared collection:', err);
+			}
+		}
+	};
+
+	if (loading) {
+		return (
+			<View className="flex-1 bg-background pt-32 items-center justify-center">
+				<ActivityIndicator size="large" color="black" />
+				<Text className="font-open-sans text-gray-500 mt-4">
+					{t('share.shared.loading')}
+				</Text>
+			</View>
+		);
+	}
+
+	if (error || !collectionData) {
+		return (
+			<View className="flex-1 bg-background pt-32 items-center justify-center">
+				<Text className="font-open-sans text-gray-500 text-center">
+					{error || t('share.shared.error.notFound')}
+				</Text>
+			</View>
+		);
+	}
+
+	if (isAuthenticated) {
+		return (
+			<ProfileDisplayContainer
+				user={collectionData.user_data}
+				userSneakers={filteredSneakers}
+				refreshing={loading}
+				onRefresh={handleRefresh}
+				showBackButton={true}
+				showSettingsButton={false}
+			/>
+		);
+	}
+
+	return (
+		<SharedCollectionForAnonymous
+			collectionData={collectionData}
+			loading={loading}
+			onRefresh={handleRefresh}
+			filteredSneakers={filteredSneakers}
+		/>
+	);
+}
+
+function SharedCollectionForAnonymous({
+	collectionData,
+	loading,
+	onRefresh,
+	filteredSneakers,
+}: {
+	collectionData: SharedCollectionData;
+	loading: boolean;
+	onRefresh: () => Promise<void>;
+	filteredSneakers: any[];
+}) {
 	return (
 		<>
 			<AnonymousUserMessage />

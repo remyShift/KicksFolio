@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo } from 'react';
+import { memo, useCallback, useEffect, useMemo } from 'react';
 
 import { View } from 'react-native';
 
@@ -20,6 +20,7 @@ interface SneakerListFactoryProps {
 	maxChunksInMemory?: number;
 	customSwipeActions?: React.ComponentType<any>;
 	customMainContent?: React.ComponentType<any>;
+	onFiltersChange?: (filters: any) => void;
 }
 
 const ESTIMATED_ITEM_HEIGHT = 80;
@@ -34,6 +35,7 @@ function SneakerListFactory({
 	maxChunksInMemory = 30,
 	customSwipeActions,
 	customMainContent,
+	onFiltersChange,
 }: SneakerListFactoryProps) {
 	const chunked = useChunkedListData(sneakers, {
 		chunkSize,
@@ -41,6 +43,16 @@ function SneakerListFactory({
 		threshold,
 		maxChunksInMemory,
 	});
+
+	// Synchroniser les filtres avec le parent
+	useEffect(() => {
+		if (onFiltersChange) {
+			onFiltersChange({
+				filters: chunked.filters,
+				uniqueValues: chunked.uniqueValues,
+			});
+		}
+	}, [chunked.filters, chunked.uniqueValues, onFiltersChange]);
 
 	const normalStrategy = useMemo(
 		() => ({

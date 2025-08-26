@@ -110,6 +110,7 @@ export default function DualViewContainer({
 					bufferSize={DISPLAY_CONFIG.list.bufferSize}
 					threshold={DISPLAY_CONFIG.list.threshold}
 					maxChunksInMemory={DISPLAY_CONFIG.list.maxChunksInMemory}
+					onFiltersChange={onFiltersChange}
 				/>
 			)}
 		</View>

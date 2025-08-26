@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo, useState } from 'react';
+import { memo, useCallback, useMemo, useRef, useState } from 'react';
 
 import { RefreshControl, ScrollView, Share } from 'react-native';
 
@@ -46,12 +46,20 @@ export default function ProfileDisplayContainer(
 		uniqueValues: any;
 	} | null>(null);
 
+	// Ref pour stocker les filtres actuels (pour éviter les problèmes de timing)
+	const currentFiltersRef = useRef<{
+		filters: FilterState;
+		uniqueValues: any;
+	} | null>(null);
+
 	const handleFiltersChange = useCallback(
 		(filtersData: any) => {
 			if (isAnonymousUser) {
 				return;
 			}
+
 			setCurrentFilters(filtersData);
+			currentFiltersRef.current = filtersData;
 		},
 		[isAnonymousUser]
 	);
@@ -60,12 +68,13 @@ export default function ProfileDisplayContainer(
 
 	const handleNativeShare = useCallback(async () => {
 		try {
-			const filtersToUse = currentFilters?.filters || {
-				brands: [],
-				sizes: [],
-				conditions: [],
-				statuses: [],
-			};
+			const filtersToUse = currentFiltersRef.current?.filters ||
+				currentFilters?.filters || {
+					brands: [],
+					sizes: [],
+					conditions: [],
+					statuses: [],
+				};
 
 			const response = await createShareLink(filtersToUse);
 
