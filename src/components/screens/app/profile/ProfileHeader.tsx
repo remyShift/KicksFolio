@@ -68,8 +68,8 @@ function ProfileHeader(props: ProfileHeaderProps) {
 							content={t('collection.pages.titles.collection')}
 						/>
 						<ToggleDisplayState />
+						{shareButton}
 					</View>
-					{shareButton}
 				</View>
 			) : null,
 		[hasSneakers, t, shareButton]

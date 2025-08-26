@@ -6,6 +6,7 @@ import ShareCollectionModal from '@/components/ui/modals/ShareCollectionModal';
 import { useSession } from '@/contexts/authContext';
 import { useShareCollection } from '@/hooks/useShareCollection';
 import { useModalStore } from '@/store/useModalStore';
+import { FilterState } from '@/types/filter';
 import { Sneaker } from '@/types/sneaker';
 import { SearchUser, User } from '@/types/user';
 
@@ -44,6 +45,13 @@ export default function ProfileDisplayContainer(
 
 	const { modalState, toggleModal, createShareLink, copyToClipboard } =
 		useShareCollection(user.id);
+
+	const handleCreateShare = useCallback(
+		async (filters: FilterState) => {
+			await createShareLink(filters);
+		},
+		[createShareLink]
+	);
 
 	const handleAddSneaker = useCallback(() => {
 		setModalStep('index');
@@ -136,7 +144,7 @@ export default function ProfileDisplayContainer(
 					userSneakers={userSneakers}
 					uniqueValues={uniqueValues}
 					onClose={toggleModal}
-					onCreateShare={createShareLink}
+					onCreateShare={handleCreateShare}
 					onCopyToClipboard={copyToClipboard}
 				/>
 			)}

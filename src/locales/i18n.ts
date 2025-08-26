@@ -10,6 +10,7 @@ import enCollection from './en/collection.json';
 import enNavigation from './en/navigation.json';
 import enSearch from './en/search.json';
 import enSettings from './en/settings.json';
+import enShare from './en/share.json';
 import enSocial from './en/social.json';
 import enUi from './en/ui.json';
 import frAlert from './fr/alert.json';
@@ -18,6 +19,7 @@ import frCollection from './fr/collection.json';
 import frNavigation from './fr/navigation.json';
 import frSearch from './fr/search.json';
 import frSettings from './fr/settings.json';
+import frShare from './fr/share.json';
 import frSocial from './fr/social.json';
 import frUi from './fr/ui.json';
 
@@ -32,6 +34,7 @@ const resources = {
 			navigation: enNavigation,
 			ui: enUi,
 			search: enSearch,
+			share: enShare,
 		},
 	},
 	fr: {
@@ -44,6 +47,7 @@ const resources = {
 			navigation: frNavigation,
 			ui: frUi,
 			search: frSearch,
+			share: frShare,
 		},
 	},
 };
