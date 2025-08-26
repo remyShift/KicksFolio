@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 
 import { View } from 'react-native';
 
@@ -19,6 +19,7 @@ interface DualViewContainerProps {
 	onSneakerPress?: (sneaker: Sneaker) => void;
 	refreshing?: boolean;
 	onRefresh?: () => Promise<void>;
+	onFiltersChange?: (filters: any) => void;
 }
 
 export default function DualViewContainer({
@@ -26,6 +27,7 @@ export default function DualViewContainer({
 	onSneakerPress,
 	refreshing,
 	onRefresh,
+	onFiltersChange,
 }: DualViewContainerProps) {
 	const { viewDisplayState } = useViewDisplayStateStore();
 	const { openSneakerModal } = useModalContext({
@@ -49,8 +51,14 @@ export default function DualViewContainer({
 		return userSneakers && Array.isArray(userSneakers) ? userSneakers : [];
 	}, [userSneakers]);
 
-	const { filteredAndSortedSneakers } =
+	const { filteredAndSortedSneakers, filters, uniqueValues } =
 		useLocalSneakerData(validatedSneakers);
+
+	useEffect(() => {
+		if (onFiltersChange) {
+			onFiltersChange({ filters, uniqueValues });
+		}
+	}, [filters, uniqueValues, onFiltersChange]);
 
 	const sneakersByBrand = useMemo(() => {
 		const result = filteredAndSortedSneakers.reduce(

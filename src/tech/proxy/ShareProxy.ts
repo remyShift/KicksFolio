@@ -16,7 +16,8 @@ class ShareProxy implements ShareHandlerInterface {
 	}
 
 	private buildShareUrl(shareToken: string): string {
-		return `kicksfolio://shared/${shareToken}`;
+		// Utiliser une URL web qui peut rediriger vers l'app
+		return `https://kicksfolio.app/shared/${shareToken}`;
 	}
 
 	async createShareLink(
@@ -40,18 +41,12 @@ class ShareProxy implements ShareHandlerInterface {
 
 		const { data, error } = await supabase
 			.from('shared_collections')
-			.upsert(
-				{
-					user_id: userId,
-					share_token: shareToken,
-					filters: filters,
-					is_active: true,
-					updated_at: new Date().toISOString(),
-				},
-				{
-					onConflict: 'user_id',
-				}
-			)
+			.insert({
+				user_id: userId,
+				share_token: shareToken,
+				filters: filters,
+				is_active: true,
+			})
 			.select('share_token')
 			.single();
 

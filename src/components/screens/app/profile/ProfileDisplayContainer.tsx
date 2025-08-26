@@ -1,8 +1,7 @@
-import { memo, useCallback, useMemo } from 'react';
+import { memo, useCallback, useMemo, useState } from 'react';
 
-import { RefreshControl, ScrollView, View } from 'react-native';
+import { RefreshControl, ScrollView, Share } from 'react-native';
 
-import ShareCollectionModal from '@/components/ui/modals/ShareCollectionModal';
 import { useSession } from '@/contexts/authContext';
 import { useShareCollection } from '@/hooks/useShareCollection';
 import { useModalStore } from '@/store/useModalStore';
@@ -10,7 +9,6 @@ import { FilterState } from '@/types/filter';
 import { Sneaker } from '@/types/sneaker';
 import { SearchUser, User } from '@/types/user';
 
-import { useSneakerFiltering } from '../profile/hooks/useSneakerFiltering';
 import EmptySneakersState from './displayState/EmptySneakersState';
 import DualViewContainer from './DualViewContainer';
 import ProfileHeader from './ProfileHeader';
@@ -39,19 +37,72 @@ export default function ProfileDisplayContainer(
 	const { setModalStep, setIsVisible } = useModalStore();
 	const { user: currentUser } = useSession();
 
-	const { uniqueValues, filters } = useSneakerFiltering({
-		sneakers: userSneakers,
-	});
+	const [currentFilters, setCurrentFilters] = useState<{
+		filters: FilterState;
+		uniqueValues: any;
+	} | null>(null);
 
-	const { modalState, toggleModal, createShareLink, copyToClipboard } =
-		useShareCollection(user.id);
+	const handleFiltersChange = useCallback((filtersData: any) => {
+		setCurrentFilters(filtersData);
+	}, []);
 
-	const handleCreateShare = useCallback(
-		async (filters: FilterState) => {
-			await createShareLink(filters);
-		},
-		[createShareLink]
-	);
+	const { createShareLink } = useShareCollection(user.id);
+
+	const handleNativeShare = useCallback(async () => {
+		try {
+			// Utiliser les filtres actuels ou filtres vides si pas disponibles
+			const filtersToUse = currentFilters?.filters || {
+				brands: [],
+				sizes: [],
+				conditions: [],
+				statuses: [],
+			};
+
+			// Créer le lien avec les filtres actuels
+			const response = await createShareLink(filtersToUse);
+
+			// Calculer le nombre de sneakers filtrées
+			const filteredCount = userSneakers.filter((sneaker) => {
+				// Si aucun filtre, retourner toutes les sneakers (sauf wishlist)
+				if (
+					!filtersToUse.brands.length &&
+					!filtersToUse.sizes.length &&
+					!filtersToUse.conditions.length &&
+					!filtersToUse.statuses.length
+				) {
+					return !sneaker.wishlist;
+				}
+
+				// Appliquer les filtres (logique basique)
+				let matches = true;
+				if (filtersToUse.brands.length > 0) {
+					matches =
+						matches &&
+						filtersToUse.brands.includes(sneaker.brand?.name || '');
+				}
+				return matches && !sneaker.wishlist;
+			});
+
+			const hasFilters =
+				filtersToUse.brands.length > 0 ||
+				filtersToUse.sizes.length > 0 ||
+				filtersToUse.conditions.length > 0 ||
+				filtersToUse.statuses.length > 0;
+
+			const filterDescription = hasFilters
+				? `Filtered collection (${filteredCount.length} sneakers)`
+				: `Complete collection (${filteredCount.length} sneakers)`;
+
+			// Ouvrir le menu de partage natif
+			await Share.share({
+				message: `Check out @${user.username}'s sneaker collection on KicksFolio! 🔥\n\n${filterDescription}`,
+				url: response.url,
+				title: `@${user.username}'s Sneaker Collection - KicksFolio`,
+			});
+		} catch (error) {
+			console.error('Error sharing collection:', error);
+		}
+	}, [currentFilters, createShareLink]);
 
 	const handleAddSneaker = useCallback(() => {
 		setModalStep('index');
@@ -69,7 +120,7 @@ export default function ProfileDisplayContainer(
 				user={user}
 				userSneakers={userSneakers}
 				showBackButton={showBackButton}
-				onSharePress={isOwner ? toggleModal : undefined}
+				onSharePress={isOwner ? handleNativeShare : undefined}
 			/>
 		),
 		[
@@ -78,7 +129,7 @@ export default function ProfileDisplayContainer(
 			userSneakers,
 			showBackButton,
 			isOwner,
-			toggleModal,
+			handleNativeShare,
 		]
 	);
 
@@ -133,22 +184,9 @@ export default function ProfileDisplayContainer(
 					onSneakerPress={onSneakerPress}
 					refreshing={refreshing}
 					onRefresh={handleRefresh}
+					onFiltersChange={handleFiltersChange}
 				/>
 			</ScrollView>
-
-			{isOwner && (
-				<ShareCollectionModal
-					isVisible={modalState.isVisible}
-					isLoading={modalState.isLoading}
-					shareUrl={modalState.shareUrl}
-					userSneakers={userSneakers}
-					uniqueValues={uniqueValues}
-					initialFilters={filters}
-					onClose={toggleModal}
-					onCreateShare={handleCreateShare}
-					onCopyToClipboard={copyToClipboard}
-				/>
-			)}
 		</>
 	);
 }
