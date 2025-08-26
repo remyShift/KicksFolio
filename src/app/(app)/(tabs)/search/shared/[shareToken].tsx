@@ -93,6 +93,7 @@ export default function SharedCollectionScreen() {
 			try {
 				await ensureAnonymousAuth();
 				const data = await shareHandler.getSharedCollection(shareToken);
+
 				setCollectionData(data);
 			} catch (err) {
 				console.error('Failed to load shared collection:', err);

@@ -68,17 +68,57 @@ class ShareProxy implements ShareHandlerInterface {
 	async getSharedCollection(
 		shareToken: string
 	): Promise<SharedCollectionData> {
-		const { data, error } = await supabase.rpc('get_shared_collection', {
-			token: shareToken,
-		});
+		// Récupérer d'abord les informations de base de la collection partagée
+		const { data: sharedData, error: sharedError } = await supabase.rpc(
+			'get_shared_collection',
+			{
+				token: shareToken,
+			}
+		);
 
-		if (error) throw error;
+		if (sharedError) throw sharedError;
 
-		if (!data || data.length === 0) {
+		if (!sharedData || sharedData.length === 0) {
 			throw new Error('Shared collection not found');
 		}
 
-		const result = data[0];
+		const result = sharedData[0];
+
+		// Récupérer les données de base de l'utilisateur
+		const { data: completeUserData, error: userError } = await supabase
+			.from('users')
+			.select(
+				'id, username, first_name, last_name, profile_picture, instagram_username, social_media_visibility'
+			)
+			.eq('id', result.user_data.id)
+			.single();
+
+		if (userError) throw userError;
+
+		// Calculer les compteurs de followers/following
+		const [followersResult, followingResult] = await Promise.all([
+			supabase
+				.from('followers')
+				.select('*', {
+					count: 'exact',
+					head: true,
+				})
+				.eq('following_id', result.user_data.id),
+			supabase
+				.from('followers')
+				.select('*', {
+					count: 'exact',
+					head: true,
+				})
+				.eq('follower_id', result.user_data.id),
+		]);
+
+		const followersCount = followersResult.error
+			? 0
+			: followersResult.count || 0;
+		const followingCount = followingResult.error
+			? 0
+			: followingResult.count || 0;
 
 		const sneakers =
 			result.sneakers_data?.map((item: any) =>
@@ -114,21 +154,22 @@ class ShareProxy implements ShareHandlerInterface {
 				})
 			) || [];
 
+		const userData = {
+			id: completeUserData.id,
+			username: completeUserData.username,
+			first_name: completeUserData.first_name,
+			last_name: completeUserData.last_name,
+			profile_picture: completeUserData.profile_picture,
+			is_following: false,
+			followers_count: followersCount,
+			following_count: followingCount,
+			instagram_username: completeUserData.instagram_username,
+			social_media_visibility: completeUserData.social_media_visibility,
+			sneakers: sneakers,
+		};
+
 		return {
-			user_data: {
-				id: result.user_data.id,
-				username: result.user_data.username,
-				first_name: result.user_data.first_name,
-				last_name: result.user_data.last_name,
-				profile_picture: result.user_data.profile_picture,
-				is_following: false,
-				followers_count: 0,
-				following_count: 0,
-				instagram_username: result.user_data.instagram_username,
-				social_media_visibility:
-					result.user_data.social_media_visibility,
-				sneakers: sneakers,
-			},
+			user_data: userData,
 			sneakers_data: sneakers,
 			filters: result.filters || {
 				brands: [],
