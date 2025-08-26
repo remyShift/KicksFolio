@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import {
@@ -23,6 +23,7 @@ interface ShareCollectionModalProps {
 	shareUrl: string | null;
 	userSneakers: Sneaker[];
 	uniqueValues: UniqueValues;
+	initialFilters?: FilterState;
 	onClose: () => void;
 	onCreateShare: (filters: FilterState) => Promise<void>;
 	onCopyToClipboard: () => Promise<void>;
@@ -34,17 +35,26 @@ export default function ShareCollectionModal({
 	shareUrl,
 	userSneakers,
 	uniqueValues,
+	initialFilters,
 	onClose,
 	onCreateShare,
 	onCopyToClipboard,
 }: ShareCollectionModalProps) {
 	const { t } = useTranslation();
-	const [tempFilters, setTempFilters] = useState<FilterState>({
-		brands: [],
-		sizes: [],
-		conditions: [],
-		statuses: [],
-	});
+	const [tempFilters, setTempFilters] = useState<FilterState>(
+		initialFilters || {
+			brands: [],
+			sizes: [],
+			conditions: [],
+			statuses: [],
+		}
+	);
+
+	useEffect(() => {
+		if (isVisible && initialFilters) {
+			setTempFilters(initialFilters);
+		}
+	}, [isVisible, initialFilters]);
 
 	const updateTempFilter = useCallback(
 		(filterType: keyof FilterState, values: string[]) => {

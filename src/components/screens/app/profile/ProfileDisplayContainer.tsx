@@ -39,7 +39,7 @@ export default function ProfileDisplayContainer(
 	const { setModalStep, setIsVisible } = useModalStore();
 	const { user: currentUser } = useSession();
 
-	const { uniqueValues } = useSneakerFiltering({
+	const { uniqueValues, filters } = useSneakerFiltering({
 		sneakers: userSneakers,
 	});
 
@@ -143,6 +143,7 @@ export default function ProfileDisplayContainer(
 					shareUrl={modalState.shareUrl}
 					userSneakers={userSneakers}
 					uniqueValues={uniqueValues}
+					initialFilters={filters}
 					onClose={toggleModal}
 					onCreateShare={handleCreateShare}
 					onCopyToClipboard={copyToClipboard}
