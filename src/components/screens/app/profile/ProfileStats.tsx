@@ -13,6 +13,7 @@ interface ProfileStatsProps {
 	isOwnProfile: boolean;
 	handleFollowToggle?: () => Promise<void>;
 	isFollowLoading: boolean;
+	isAnonymousUser?: boolean;
 }
 
 export default function ProfileStats(props: ProfileStatsProps) {
@@ -23,6 +24,7 @@ export default function ProfileStats(props: ProfileStatsProps) {
 		isOwnProfile = false,
 		handleFollowToggle,
 		isFollowLoading = false,
+		isAnonymousUser = false,
 	} = props;
 	const { t } = useTranslation();
 	const { convertAndFormatdPrice } = useCurrencyStore();
@@ -87,7 +89,7 @@ export default function ProfileStats(props: ProfileStatsProps) {
 				</Text>
 			</View>
 
-			{!isOwnProfile && handleFollowToggle && (
+			{!isOwnProfile && handleFollowToggle && !isAnonymousUser && (
 				<FollowButton
 					onPressAction={handleFollowToggle}
 					backgroundColor={buttonColor}

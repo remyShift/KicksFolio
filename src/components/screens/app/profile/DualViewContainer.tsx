@@ -20,6 +20,7 @@ interface DualViewContainerProps {
 	refreshing?: boolean;
 	onRefresh?: () => Promise<void>;
 	onFiltersChange?: (filters: any) => void;
+	isAnonymousUser?: boolean;
 }
 
 export default function DualViewContainer({
@@ -28,6 +29,7 @@ export default function DualViewContainer({
 	refreshing,
 	onRefresh,
 	onFiltersChange,
+	isAnonymousUser = false,
 }: DualViewContainerProps) {
 	const { viewDisplayState } = useViewDisplayStateStore();
 	const { openSneakerModal } = useModalContext({
@@ -55,10 +57,10 @@ export default function DualViewContainer({
 		useLocalSneakerData(validatedSneakers);
 
 	useEffect(() => {
-		if (onFiltersChange) {
+		if (onFiltersChange && !isAnonymousUser) {
 			onFiltersChange({ filters, uniqueValues });
 		}
-	}, [filters, uniqueValues, onFiltersChange]);
+	}, [filters, uniqueValues, onFiltersChange, isAnonymousUser]);
 
 	const sneakersByBrand = useMemo(() => {
 		const result = filteredAndSortedSneakers.reduce(

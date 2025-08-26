@@ -23,5 +23,7 @@
     "error": {
       "notFound": "Collection partagée introuvable ou expirée"
     }
-  }
+  },
+  "connectToAccess": "Connectez-vous pour accéder à toutes les fonctionnalités",
+  "connectNow": "Se connecter maintenant"
 }

@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { Alert } from 'react-native';
 
 import { Tabs } from 'expo-router';
 
@@ -7,13 +8,19 @@ import Feather from '@expo/vector-icons/Feather';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import TabAddButton from '@/components/ui/buttons/TabAddButton';
+import { useSession } from '@/contexts/authContext';
 import { useModalStore } from '@/store/useModalStore';
 
 export default function TabLayout() {
 	const { t } = useTranslation();
 	const { setIsVisible, setModalStep } = useModalStore();
+	const { user: currentUser } = useSession();
 
 	const handleAddPress = () => {
+		if (!currentUser) {
+			Alert.alert('Vous devez être connecté pour ajouter un modèle.');
+			return;
+		}
 		setModalStep('barcode');
 		setIsVisible(true);
 	};
@@ -43,6 +50,16 @@ export default function TabLayout() {
 						<Ionicons name="home-outline" size={25} color={color} />
 					),
 				}}
+				listeners={{
+					tabPress: (e) => {
+						if (!currentUser) {
+							e.preventDefault();
+							Alert.alert(
+								'Vous devez être connecté pour accéder à cette page.'
+							);
+						}
+					},
+				}}
 			/>
 			<Tabs.Screen
 				name="search"
@@ -51,6 +68,13 @@ export default function TabLayout() {
 					tabBarIcon: ({ color }) => (
 						<Feather name="search" size={25} color={color} />
 					),
+				}}
+				listeners={{
+					tabPress: (e) => {
+						if (!currentUser) {
+							e.preventDefault();
+						}
+					},
 				}}
 			/>
 			<Tabs.Screen
@@ -76,6 +100,13 @@ export default function TabLayout() {
 						<AntDesign name="hearto" size={25} color={color} />
 					),
 				}}
+				listeners={{
+					tabPress: (e) => {
+						if (!currentUser) {
+							e.preventDefault();
+						}
+					},
+				}}
 			/>
 			<Tabs.Screen
 				name="profile"
@@ -84,6 +115,19 @@ export default function TabLayout() {
 					tabBarIcon: ({ color }) => (
 						<Feather name="user" size={25} color={color} />
 					),
+				}}
+				listeners={{
+					tabPress: (e) => {
+						if (!currentUser) {
+							e.preventDefault();
+						}
+					},
+				}}
+			/>
+			<Tabs.Screen
+				name="shared"
+				options={{
+					href: null,
 				}}
 			/>
 		</Tabs>

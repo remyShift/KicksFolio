@@ -20,6 +20,7 @@ interface ProfileDisplayContainerProps {
 	onRefresh: () => Promise<void>;
 	onSneakerPress?: (sneaker: Sneaker) => void;
 	showBackButton?: boolean;
+	isAnonymousUser?: boolean;
 }
 
 export default function ProfileDisplayContainer(
@@ -32,6 +33,7 @@ export default function ProfileDisplayContainer(
 		onRefresh,
 		onSneakerPress,
 		showBackButton = false,
+		isAnonymousUser = false,
 	} = props;
 
 	const { setModalStep, setIsVisible } = useModalStore();
@@ -42,15 +44,20 @@ export default function ProfileDisplayContainer(
 		uniqueValues: any;
 	} | null>(null);
 
-	const handleFiltersChange = useCallback((filtersData: any) => {
-		setCurrentFilters(filtersData);
-	}, []);
+	const handleFiltersChange = useCallback(
+		(filtersData: any) => {
+			if (isAnonymousUser) {
+				return;
+			}
+			setCurrentFilters(filtersData);
+		},
+		[isAnonymousUser]
+	);
 
 	const { createShareLink } = useShareCollection(user.id);
 
 	const handleNativeShare = useCallback(async () => {
 		try {
-			// Utiliser les filtres actuels ou filtres vides si pas disponibles
 			const filtersToUse = currentFilters?.filters || {
 				brands: [],
 				sizes: [],
@@ -58,12 +65,9 @@ export default function ProfileDisplayContainer(
 				statuses: [],
 			};
 
-			// Créer le lien avec les filtres actuels
 			const response = await createShareLink(filtersToUse);
 
-			// Calculer le nombre de sneakers filtrées
 			const filteredCount = userSneakers.filter((sneaker) => {
-				// Si aucun filtre, retourner toutes les sneakers (sauf wishlist)
 				if (
 					!filtersToUse.brands.length &&
 					!filtersToUse.sizes.length &&
@@ -73,7 +77,6 @@ export default function ProfileDisplayContainer(
 					return !sneaker.wishlist;
 				}
 
-				// Appliquer les filtres (logique basique)
 				let matches = true;
 				if (filtersToUse.brands.length > 0) {
 					matches =
@@ -93,54 +96,46 @@ export default function ProfileDisplayContainer(
 				? `Filtered collection (${filteredCount.length} sneakers)`
 				: `Complete collection (${filteredCount.length} sneakers)`;
 
-			// Ouvrir le menu de partage natif
 			await Share.share({
-				message: `Check out @${user.username}'s sneaker collection on KicksFolio! 🔥\n\n${filterDescription}\n\n${response.url}`,
-				title: `@${user.username}'s Sneaker Collection - KicksFolio`,
+				message: `Check out this sneaker collection: ${response.url}`,
+				title: filterDescription,
 			});
 		} catch (error) {
 			console.error('Error sharing collection:', error);
 		}
-	}, [currentFilters, createShareLink]);
+	}, [currentFilters, createShareLink, userSneakers]);
 
 	const handleAddSneaker = useCallback(() => {
 		setModalStep('index');
 		setIsVisible(true);
 	}, [setModalStep, setIsVisible]);
 
-	const isOwner = useMemo(
-		() => currentUser?.id === user.id,
-		[currentUser?.id, user.id]
-	);
-
-	const memoizedProfileHeader = useMemo(
-		() => (
+	const memoizedProfileHeader = useMemo(() => {
+		return (
 			<ProfileHeader
 				user={user}
 				userSneakers={userSneakers}
 				showBackButton={showBackButton}
-				onSharePress={isOwner ? handleNativeShare : undefined}
+				onSharePress={handleNativeShare}
+				isAnonymousUser={isAnonymousUser}
 			/>
-		),
-		[
-			user.id,
-			user.username,
-			userSneakers,
-			showBackButton,
-			isOwner,
-			handleNativeShare,
-		]
-	);
+		);
+	}, [
+		user,
+		userSneakers,
+		showBackButton,
+		handleNativeShare,
+		isAnonymousUser,
+	]);
 
 	const handleRefresh = useCallback(async () => {
 		await onRefresh();
 	}, [onRefresh]);
 
-	if (!userSneakers || userSneakers.length === 0) {
+	if (userSneakers.length === 0) {
 		return (
 			<ScrollView
 				className="flex-1 mt-16"
-				testID="scroll-view"
 				showsVerticalScrollIndicator={false}
 				refreshControl={
 					<RefreshControl
@@ -153,10 +148,7 @@ export default function ProfileDisplayContainer(
 				}
 			>
 				{memoizedProfileHeader}
-				<EmptySneakersState
-					onAddPress={handleAddSneaker}
-					showAddButton={isOwner}
-				/>
+				<EmptySneakersState onAddPress={handleAddSneaker} />
 			</ScrollView>
 		);
 	}
@@ -184,6 +176,7 @@ export default function ProfileDisplayContainer(
 					refreshing={refreshing}
 					onRefresh={handleRefresh}
 					onFiltersChange={handleFiltersChange}
+					isAnonymousUser={isAnonymousUser}
 				/>
 			</ScrollView>
 		</>

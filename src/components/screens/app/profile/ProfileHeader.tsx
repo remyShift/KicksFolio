@@ -19,6 +19,7 @@ interface ProfileHeaderProps {
 	userSneakers?: Sneaker[];
 	showBackButton?: boolean;
 	onSharePress?: () => void;
+	isAnonymousUser?: boolean;
 }
 
 function ProfileHeader(props: ProfileHeaderProps) {
@@ -27,7 +28,8 @@ function ProfileHeader(props: ProfileHeaderProps) {
 		userSneakers = [],
 		showBackButton = false,
 		onSharePress,
-	} = props;
+		isAnonymousUser = false,
+	}: ProfileHeaderProps = props;
 	const { t } = useTranslation();
 	const { user: currentUser } = useSession();
 
@@ -42,8 +44,8 @@ function ProfileHeader(props: ProfileHeaderProps) {
 	);
 
 	const settingsButton = useMemo(
-		() => (isOwnProfile ? <SettingsButton /> : null),
-		[isOwnProfile]
+		() => (isOwnProfile && !isAnonymousUser ? <SettingsButton /> : null),
+		[isOwnProfile, isAnonymousUser]
 	);
 
 	const hasSneakers = useMemo(
@@ -53,10 +55,10 @@ function ProfileHeader(props: ProfileHeaderProps) {
 
 	const shareButton = useMemo(
 		() =>
-			isOwnProfile && hasSneakers && onSharePress ? (
+			isOwnProfile && hasSneakers && onSharePress && !isAnonymousUser ? (
 				<ShareButton onPress={onSharePress} />
 			) : null,
-		[isOwnProfile, hasSneakers, onSharePress]
+		[isOwnProfile, hasSneakers, onSharePress, isAnonymousUser]
 	);
 
 	const collectionTitle = useMemo(
@@ -76,13 +78,14 @@ function ProfileHeader(props: ProfileHeaderProps) {
 	);
 
 	const profileInfo = useMemo(
-		() => <ProfileInfo user={user} />,
+		() => <ProfileInfo user={user} isAnonymousUser={isAnonymousUser} />,
 		[
 			user.id,
 			user.username,
 			user.profile_picture,
 			user.followers_count,
 			user.following_count,
+			isAnonymousUser,
 		]
 	);
 
@@ -102,7 +105,12 @@ export default memo(ProfileHeader, (prevProps, nextProps) => {
 	return (
 		prevProps.user.id === nextProps.user.id &&
 		prevProps.user.username === nextProps.user.username &&
+		prevProps.user.profile_picture === nextProps.user.profile_picture &&
+		prevProps.user.followers_count === nextProps.user.followers_count &&
+		prevProps.user.following_count === nextProps.user.following_count &&
+		(prevProps.userSneakers?.length || 0) ===
+			(nextProps.userSneakers?.length || 0) &&
 		prevProps.showBackButton === nextProps.showBackButton &&
-		prevProps.userSneakers?.length === nextProps.userSneakers?.length
+		prevProps.isAnonymousUser === nextProps.isAnonymousUser
 	);
 });

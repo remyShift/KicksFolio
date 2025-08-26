@@ -23,5 +23,7 @@
     "error": {
       "notFound": "Shared collection not found or expired"
     }
-  }
+  },
+  "connectToAccess": "Connect to access all features",
+  "connectNow": "Connect now"
 }

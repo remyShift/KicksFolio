@@ -12,10 +12,11 @@ import SocialMediaLinks from './SocialMediaLinks';
 
 export interface ProfileInfoProps {
 	user: User | SearchUser;
+	isAnonymousUser?: boolean;
 }
 
 function ProfileInfo(props: ProfileInfoProps) {
-	const { user } = props;
+	const { user, isAnonymousUser = false } = props;
 	const { user: currentUser, userSneakers } = useSession();
 
 	const { userProfile, handleFollowToggle, isFollowLoading } = useUserProfile(
@@ -74,11 +75,19 @@ function ProfileInfo(props: ProfileInfoProps) {
 				isOwnProfile={isOwnProfile}
 				handleFollowToggle={handleFollowToggle}
 				isFollowLoading={isFollowLoading}
+				isAnonymousUser={isAnonymousUser}
 			/>
 		</View>
 	);
 }
 
 export default memo(ProfileInfo, (prevProps, nextProps) => {
-	return prevProps.user.id === nextProps.user.id;
+	return (
+		prevProps.user.id === nextProps.user.id &&
+		prevProps.user.username === nextProps.user.username &&
+		prevProps.user.profile_picture === nextProps.user.profile_picture &&
+		prevProps.user.followers_count === nextProps.user.followers_count &&
+		prevProps.user.following_count === nextProps.user.following_count &&
+		prevProps.isAnonymousUser === nextProps.isAnonymousUser
+	);
 });
