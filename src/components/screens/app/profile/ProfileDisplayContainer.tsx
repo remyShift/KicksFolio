@@ -97,8 +97,8 @@ export default function ProfileDisplayContainer(
 				: `Complete collection (${filteredCount.length} sneakers)`;
 
 			await Share.share({
-				message: `Check out this sneaker collection: ${response.url}`,
-				title: filterDescription,
+				message: `Check out @${user.username}'s sneaker collection on KicksFolio! 🔥\n\n${filterDescription}\n\n${response.url}`,
+				title: `@${user.username}'s Sneaker Collection - KicksFolio`,
 			});
 		} catch (error) {
 			console.error('Error sharing collection:', error);

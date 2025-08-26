@@ -16,8 +16,11 @@ class ShareProxy implements ShareHandlerInterface {
 	}
 
 	private buildShareUrl(shareToken: string): string {
-		// GitHub Pages: URL avec paramètre (plus compatible)
 		return `https://share.kicksfolio.com/shared.html?token=${shareToken}`;
+	}
+
+	private buildInternalShareUrl(shareToken: string): string {
+		return `/search/shared/${shareToken}`;
 	}
 
 	async createShareLink(

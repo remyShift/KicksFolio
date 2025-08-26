@@ -23,6 +23,12 @@ export default function SearchLayout() {
 					headerShown: false,
 				}}
 			/>
+			<Stack.Screen
+				name="shared"
+				options={{
+					headerShown: false,
+				}}
+			/>
 		</Stack>
 	);
 }

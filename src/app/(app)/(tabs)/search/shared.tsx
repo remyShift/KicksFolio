@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Text, View } from 'react-native';
 
-import { router, useLocalSearchParams } from 'expo-router';
+import { router, useSegments } from 'expo-router';
 
 import ProfileDisplayContainer from '@/components/screens/app/profile/ProfileDisplayContainer';
 import { useModalNavigation } from '@/components/ui/modals/SneakersModal/hooks/useModalNavigation';
@@ -13,7 +13,8 @@ import { useAnonymousAuth } from '@/hooks/useAnonymousAuth';
 import { SharedCollectionData } from '@/types/sharing';
 
 export default function SharedCollectionScreen() {
-	const { shareToken } = useLocalSearchParams<{ shareToken: string }>();
+	const segments = useSegments();
+	const shareToken = segments[segments.length - 1];
 	const { t } = useTranslation();
 	const [collectionData, setCollectionData] =
 		useState<SharedCollectionData | null>(null);

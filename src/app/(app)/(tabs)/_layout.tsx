@@ -124,12 +124,6 @@ export default function TabLayout() {
 					},
 				}}
 			/>
-			<Tabs.Screen
-				name="shared"
-				options={{
-					href: null,
-				}}
-			/>
 		</Tabs>
 	);
 }

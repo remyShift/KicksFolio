@@ -55,7 +55,7 @@
             {
               "scheme": "https",
               "host": "share.kicksfolio.com",
-              "pathPrefix": "/shared"
+              "pathPrefix": "/search/shared"
             }
           ],
           "category": [
