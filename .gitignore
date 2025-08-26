@@ -9,10 +9,12 @@ dist/
 web-build/
 expo-env.d.ts
 
+github-pages-share/
+
 # Environment variables
 .env
 
-.claude
+.claude/
 
 # Native
 *.orig.*
