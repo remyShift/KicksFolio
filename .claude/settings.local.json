@@ -3,7 +3,10 @@
     "allow": [
       "Bash(npx tsc:*)",
       "Bash(npm run typecheck:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(git add:*)",
+      "Bash(git -C /Users/remy_mac/Desktop/KicksFolio/github-pages-share add .)",
+      "Bash(git -C /Users/remy_mac/Desktop/KicksFolio/github-pages-share commit -m \"Initial commit: KicksFolio share pages\")"
     ],
     "deny": [],
     "ask": []

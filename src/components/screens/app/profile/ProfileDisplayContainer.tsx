@@ -95,8 +95,7 @@ export default function ProfileDisplayContainer(
 
 			// Ouvrir le menu de partage natif
 			await Share.share({
-				message: `Check out @${user.username}'s sneaker collection on KicksFolio! 🔥\n\n${filterDescription}`,
-				url: response.url,
+				message: `Check out @${user.username}'s sneaker collection on KicksFolio! 🔥\n\n${filterDescription}\n\n${response.url}`,
 				title: `@${user.username}'s Sneaker Collection - KicksFolio`,
 			});
 		} catch (error) {

@@ -17,7 +17,7 @@
       "supportsTablet": false,
       "bundleIdentifier": "app.kicksfolio",
       "associatedDomains": [
-        "applinks:kicksfolio.app"
+        "applinks:share.kicksfolio.com"
       ],
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
@@ -41,6 +41,21 @@
             {
               "scheme": "kicksfolio",
               "host": "*"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        },
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "share.kicksfolio.com",
+              "pathPrefix": "/shared"
             }
           ],
           "category": [

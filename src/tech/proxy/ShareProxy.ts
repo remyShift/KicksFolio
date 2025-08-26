@@ -16,8 +16,8 @@ class ShareProxy implements ShareHandlerInterface {
 	}
 
 	private buildShareUrl(shareToken: string): string {
-		// Utiliser une URL web qui peut rediriger vers l'app
-		return `https://kicksfolio.app/shared/${shareToken}`;
+		// GitHub Pages: URL avec paramètre (plus compatible)
+		return `https://share.kicksfolio.com/shared.html?token=${shareToken}`;
 	}
 
 	async createShareLink(
