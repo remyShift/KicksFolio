@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Text, View } from 'react-native';
 
-import { router, useSegments } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 
 import ProfileDisplayContainer from '@/components/screens/app/profile/ProfileDisplayContainer';
 import { useModalNavigation } from '@/components/ui/modals/SneakersModal/hooks/useModalNavigation';
@@ -13,8 +13,7 @@ import { useAnonymousAuth } from '@/hooks/useAnonymousAuth';
 import { SharedCollectionData } from '@/types/sharing';
 
 export default function SharedCollectionScreen() {
-	const segments = useSegments();
-	const shareToken = segments[segments.length - 1];
+	const { shareToken } = useLocalSearchParams<{ shareToken: string }>();
 	const { t } = useTranslation();
 	const [collectionData, setCollectionData] =
 		useState<SharedCollectionData | null>(null);
@@ -62,7 +61,7 @@ export default function SharedCollectionScreen() {
 			<View className="flex-1 bg-background pt-32 items-center justify-center">
 				<ActivityIndicator size="large" color="black" />
 				<Text className="font-open-sans text-gray-500 mt-4">
-					{t('shared.loading')}
+					{t('share.shared.loading')}
 				</Text>
 			</View>
 		);
@@ -72,7 +71,7 @@ export default function SharedCollectionScreen() {
 		return (
 			<View className="flex-1 bg-background pt-32 items-center justify-center">
 				<Text className="font-open-sans text-gray-500 text-center">
-					{error || t('shared.error.notFound')}
+					{error || t('share.shared.error.notFound')}
 				</Text>
 			</View>
 		);
@@ -96,7 +95,8 @@ export default function SharedCollectionScreen() {
 				userSneakers={collectionData.sneakers_data}
 				refreshing={loading}
 				onRefresh={handleRefresh}
-				showBackButton={false}
+				showBackButton={true}
+				showSettingsButton={false}
 			/>
 		);
 	}
@@ -176,8 +176,9 @@ function SharedCollectionForAnonymous({
 				userSneakers={filteredSneakers}
 				refreshing={loading}
 				onRefresh={onRefresh}
-				showBackButton={false}
+				showBackButton={true}
 				isAnonymousUser={true}
+				showSettingsButton={true}
 			/>
 		</>
 	);
@@ -193,13 +194,13 @@ function AnonymousUserMessage() {
 	return (
 		<View className="bg-primary/10 p-4 mx-4 mt-4 rounded-lg">
 			<Text className="font-open-sans text-sm text-primary text-center mb-2">
-				{t('shared.connectToAccess')}
+				{t('share.connectToAccess')}
 			</Text>
 			<Text
 				className="font-open-sans-bold text-sm text-primary text-center underline"
 				onPress={handleLoginPress}
 			>
-				{t('shared.connectNow')}
+				{t('share.connectNow')}
 			</Text>
 		</View>
 	);

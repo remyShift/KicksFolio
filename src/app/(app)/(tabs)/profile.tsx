@@ -34,6 +34,7 @@ export default function Profile() {
 			onRefresh={onRefresh}
 			onSneakerPress={handleSneakerPress}
 			showBackButton={false}
+			showSettingsButton={true}
 		/>
 	);
 }

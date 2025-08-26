@@ -21,6 +21,7 @@ interface ProfileDisplayContainerProps {
 	onSneakerPress?: (sneaker: Sneaker) => void;
 	showBackButton?: boolean;
 	isAnonymousUser?: boolean;
+	showSettingsButton?: boolean;
 }
 
 export default function ProfileDisplayContainer(
@@ -34,6 +35,7 @@ export default function ProfileDisplayContainer(
 		onSneakerPress,
 		showBackButton = false,
 		isAnonymousUser = false,
+		showSettingsButton = false,
 	} = props;
 
 	const { setModalStep, setIsVisible } = useModalStore();
@@ -118,6 +120,7 @@ export default function ProfileDisplayContainer(
 				showBackButton={showBackButton}
 				onSharePress={handleNativeShare}
 				isAnonymousUser={isAnonymousUser}
+				showSettingsButton={showSettingsButton}
 			/>
 		);
 	}, [
@@ -126,6 +129,7 @@ export default function ProfileDisplayContainer(
 		showBackButton,
 		handleNativeShare,
 		isAnonymousUser,
+		showSettingsButton,
 	]);
 
 	const handleRefresh = useCallback(async () => {

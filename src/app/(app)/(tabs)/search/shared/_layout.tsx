@@ -1,9 +1,8 @@
 import { Stack } from 'expo-router';
 
-export default function SearchLayout() {
+export default function SharedLayout() {
 	return (
 		<Stack
-			initialRouteName="index"
 			screenOptions={{
 				headerShown: false,
 				contentStyle: {
@@ -12,13 +11,7 @@ export default function SearchLayout() {
 			}}
 		>
 			<Stack.Screen
-				name="index"
-				options={{
-					headerShown: false,
-				}}
-			/>
-			<Stack.Screen
-				name="[userId]"
+				name="[shareToken]"
 				options={{
 					headerShown: false,
 				}}

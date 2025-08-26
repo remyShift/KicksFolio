@@ -20,6 +20,7 @@ interface ProfileHeaderProps {
 	showBackButton?: boolean;
 	onSharePress?: () => void;
 	isAnonymousUser?: boolean;
+	showSettingsButton?: boolean;
 }
 
 function ProfileHeader(props: ProfileHeaderProps) {
@@ -29,6 +30,7 @@ function ProfileHeader(props: ProfileHeaderProps) {
 		showBackButton = false,
 		onSharePress,
 		isAnonymousUser = false,
+		showSettingsButton = false,
 	}: ProfileHeaderProps = props;
 	const { t } = useTranslation();
 	const { user: currentUser } = useSession();
@@ -44,8 +46,8 @@ function ProfileHeader(props: ProfileHeaderProps) {
 	);
 
 	const settingsButton = useMemo(
-		() => (isOwnProfile && !isAnonymousUser ? <SettingsButton /> : null),
-		[isOwnProfile, isAnonymousUser]
+		() => (showSettingsButton ? <SettingsButton /> : null),
+		[showSettingsButton]
 	);
 
 	const hasSneakers = useMemo(
