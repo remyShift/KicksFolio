@@ -243,7 +243,10 @@ export function SessionProvider({ children }: PropsWithChildren) {
 				return followingWithSneakers;
 			})
 			.catch((error) => {
-				console.error('Error loading following users:', error);
+				console.error(
+					'❌ AuthContext.loadFollowingUsers - Error loading following users:',
+					error
+				);
 				setFollowingUsers([]);
 				storageProvider.setItem('followingUsers', []);
 				return [];

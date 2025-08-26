@@ -64,93 +64,100 @@ export class FollowerProxy implements FollowerHandlerInterface {
 	}
 
 	async getFollowing(userId: string): Promise<FollowingUser[]> {
-		return supabase
+		const followersResult = await supabase
 			.from('followers')
-			.select(
-				`
-                created_at,
-                users!followers_following_id_fkey (
-                    id,
-                    username,
-                    first_name,
-                    last_name,
-                    profile_picture
-                )
-            `
-			)
+			.select('id, follower_id, following_id, created_at')
 			.eq('follower_id', userId)
-			.order('created_at', { ascending: false })
-			.then(({ data, error }) => {
-				if (error) {
-					console.error('Error fetching following users:', error);
-					throw error;
+			.order('created_at', { ascending: false });
+
+		if (followersResult.error) {
+			console.error('Error fetching followers:', followersResult.error);
+			throw followersResult.error;
+		}
+
+		if (!followersResult.data || followersResult.data.length === 0) {
+			return [];
+		}
+
+		const followingIds = followersResult.data.map((f) => f.following_id);
+		const usersResult = await supabase
+			.from('users')
+			.select('id, username, first_name, last_name, profile_picture')
+			.in('id', followingIds);
+
+		if (usersResult.error) {
+			console.error('Error fetching users:', usersResult.error);
+			throw usersResult.error;
+		}
+
+		if (!usersResult.data) {
+			return [];
+		}
+
+		return Promise.all(
+			followersResult.data.map(async (follow) => {
+				const user = usersResult.data!.find(
+					(u) => u.id === follow.following_id
+				);
+				if (!user) {
+					console.warn(
+						`⚠️ FollowerProxy.getFollowing - No user found for following_id: ${follow.following_id}`
+					);
+					return null;
 				}
 
-				if (!data || data.length === 0) return [];
-
-				return Promise.all(
-					data.map((follow: FollowerData) => {
-						const user = follow.users[0];
-						if (!user) return null;
-
-						return Promise.all([
-							supabase
-								.from('followers')
-								.select('*', {
-									count: 'exact',
-									head: true,
-								})
-								.eq('following_id', user.id),
-							supabase
-								.from('followers')
-								.select('*', {
-									count: 'exact',
-									head: true,
-								})
-								.eq('follower_id', user.id),
-						])
-							.then(([followersResult, followingResult]) => {
-								return {
-									id: user.id,
-									username: user.username,
-									first_name: user.first_name,
-									last_name: user.last_name,
-									profile_picture: user.profile_picture,
-									is_following: true,
-									followers_count: Number(
-										followersResult.count || 0
-									),
-									following_count: Number(
-										followingResult.count || 0
-									),
-									followed_at: follow.created_at,
-								};
-							})
-							.catch((userError) => {
-								console.warn(
-									`Error processing user ${user.id}:`,
-									userError
-								);
-								return {
-									id: user.id,
-									username: user.username,
-									first_name: user.first_name,
-									last_name: user.last_name,
-									profile_picture: user.profile_picture,
-									is_following: true,
-									followers_count: 0,
-									following_count: 0,
-									followed_at: follow.created_at,
-								};
-							});
+				return Promise.all([
+					supabase
+						.from('followers')
+						.select('*', {
+							count: 'exact',
+							head: true,
+						})
+						.eq('following_id', user.id),
+					supabase
+						.from('followers')
+						.select('*', {
+							count: 'exact',
+							head: true,
+						})
+						.eq('follower_id', user.id),
+				])
+					.then(([followersResult, followingResult]) => {
+						return {
+							id: user.id,
+							username: user.username,
+							first_name: user.first_name,
+							last_name: user.last_name,
+							profile_picture: user.profile_picture,
+							is_following: true,
+							followers_count: Number(followersResult.count || 0),
+							following_count: Number(followingResult.count || 0),
+							followed_at: follow.created_at,
+						};
 					})
-				);
+					.catch((userError) => {
+						console.warn(
+							`Error processing user ${user.id}:`,
+							userError
+						);
+						return {
+							id: user.id,
+							username: user.username,
+							first_name: user.first_name,
+							last_name: user.last_name,
+							profile_picture: user.profile_picture,
+							is_following: true,
+							followers_count: 0,
+							following_count: 0,
+							followed_at: follow.created_at,
+						};
+					});
 			})
-			.then((followingUsers) => {
-				return followingUsers.filter(
-					(user) => user !== null
-				) as FollowingUser[];
-			});
+		).then((followingUsers) => {
+			return followingUsers.filter(
+				(user) => user !== null
+			) as FollowingUser[];
+		});
 	}
 
 	async getFollowers(userId: string): Promise<SearchUser[]> {
