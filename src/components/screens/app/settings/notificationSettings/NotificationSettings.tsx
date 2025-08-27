@@ -17,7 +17,8 @@ import NotificationToggle from './NotificationToggle';
 export default function NotificationSettings() {
 	const { t } = useTranslation();
 	const { showSuccessToast, showErrorToast } = useToast();
-	const { hasPermission, checkPermissions } = usePushNotifications();
+	const { hasPermission, checkPermissions, permissionsChecked } =
+		usePushNotifications();
 	const { settings, isLoading, toggleFollowingAdditions } =
 		useNotificationSettings();
 
@@ -44,6 +45,8 @@ export default function NotificationSettings() {
 	};
 
 	useEffect(() => {
+		checkPermissions();
+
 		const handleAppStateChange = (nextAppState: string) => {
 			if (nextAppState === 'active') {
 				checkPermissions();

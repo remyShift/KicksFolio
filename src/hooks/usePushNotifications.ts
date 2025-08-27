@@ -23,6 +23,8 @@ export const usePushNotifications = () => {
 	const [permission, setPermission] = useState<string>('undetermined');
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [error, setError] = useState<string | null>(null);
+	const [permissionsChecked, setPermissionsChecked] =
+		useState<boolean>(false);
 
 	const registerForPushNotificationsAsync = useCallback(async () => {
 		try {
@@ -116,9 +118,11 @@ export const usePushNotifications = () => {
 		try {
 			const { status } = await Notifications.getPermissionsAsync();
 			setPermission(status);
+			setPermissionsChecked(true);
 			return status === 'granted';
 		} catch (err) {
 			console.error('Error checking permissions:', err);
+			setPermissionsChecked(true);
 			return false;
 		}
 	}, []);
@@ -131,6 +135,10 @@ export const usePushNotifications = () => {
 		}
 	}, []);
 
+	useEffect(() => {
+		checkPermissions();
+	}, [checkPermissions]);
+
 	return {
 		expoPushToken,
 		permission,
@@ -141,5 +149,6 @@ export const usePushNotifications = () => {
 		checkPermissions,
 		setBadgeCount,
 		hasPermission: permission === 'granted',
+		permissionsChecked,
 	};
 };
