@@ -17,8 +17,7 @@ import NotificationToggle from './NotificationToggle';
 export default function NotificationSettings() {
 	const { t } = useTranslation();
 	const { showSuccessToast, showErrorToast } = useToast();
-	const { hasPermission, checkPermissions, permissionsChecked } =
-		usePushNotifications();
+	const { hasPermission, checkPermissions } = usePushNotifications();
 	const { settings, isLoading, toggleFollowingAdditions } =
 		useNotificationSettings();
 
