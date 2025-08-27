@@ -35,7 +35,6 @@ export const useModalFooterActions = () => {
 		setIsLoading,
 	} = useModalStore();
 
-	// Permettre l'accès aux utilisateurs anonymes pour la visualisation uniquement
 	const isAnonymous = !user || user.is_anonymous;
 
 	const {
@@ -127,7 +126,6 @@ export const useModalFooterActions = () => {
 	};
 
 	const handleNextAction = () => {
-		// Empêcher les actions d'ajout/édition pour les utilisateurs anonymes
 		if (
 			isAnonymous &&
 			[
@@ -296,7 +294,6 @@ export const useModalFooterActions = () => {
 			case 'view':
 				if (nextSneaker) {
 					if (isAnonymous) {
-						// Navigation simple pour les utilisateurs anonymes
 						setCurrentSneaker(nextSneaker);
 					} else {
 						handleNext(nextSneaker, setCurrentSneaker);
@@ -337,7 +334,6 @@ export const useModalFooterActions = () => {
 			case 'view':
 				if (prevSneaker) {
 					if (isAnonymous) {
-						// Navigation simple pour les utilisateurs anonymes
 						setCurrentSneaker(prevSneaker);
 					} else {
 						handlePrevious(prevSneaker, setCurrentSneaker);

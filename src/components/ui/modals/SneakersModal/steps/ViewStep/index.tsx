@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { useTranslation } from 'react-i18next';
 import { ScrollView, Text, View } from 'react-native';
 
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
@@ -16,6 +17,7 @@ import { useModalStore } from '@/store/useModalStore';
 import { sneakerStatusOptions } from '@/validation/utils';
 
 export const ViewStep = () => {
+	const { t } = useTranslation();
 	const { currentSneaker } = useModalStore();
 	const { user } = useSession();
 	const [errorMsg, setErrorMsg] = useState('');
@@ -103,7 +105,7 @@ export const ViewStep = () => {
 				<View className="flex-row items-center w-full border-t-2 border-gray-300">
 					<View className="flex-col items-center p-2 gap-1 w-1/3 border-r-2 border-gray-300">
 						<Text className="font-open-sans text-center text-sm">
-							Size
+							{t('collection.fields.size')}
 						</Text>
 						<View className="w-4/5">
 							<SizeDisplay
@@ -115,7 +117,7 @@ export const ViewStep = () => {
 
 					<View className="flex-col items-center p-2 gap-1 w-1/3 border-r-2 border-gray-300">
 						<Text className="font-open-sans text-center text-sm">
-							Status
+							{t('collection.fields.status')}
 						</Text>
 						<View className="w-4/5">
 							<Text className="font-open-sans-bold text-lg text-center">
@@ -128,7 +130,7 @@ export const ViewStep = () => {
 
 					<View className="flex-col items-center p-2 gap-1 w-1/3">
 						<Text className="font-open-sans text-center text-sm">
-							Value
+							{t('collection.fields.value')}
 						</Text>
 						<View className="w-4/5">
 							<Text className="font-open-sans-bold text-lg text-center">
@@ -150,10 +152,13 @@ export const ViewStep = () => {
 					}}
 					className="bg-white/60 rounded-md p-2 mt-2"
 				>
-					<Text className="font-open-sans-bold">Description :</Text>
+					<Text className="font-open-sans-bold">
+						{t('collection.fields.description')}
+					</Text>
 					<ScrollView
 						style={{
 							flex: 1,
+							backgroundColor: 'white',
 						}}
 						showsVerticalScrollIndicator={true}
 						indicatorStyle="black"

@@ -44,7 +44,6 @@ function SneakerListFactory({
 		maxChunksInMemory,
 	});
 
-	// Synchroniser les filtres avec le parent
 	useEffect(() => {
 		if (onFiltersChange) {
 			onFiltersChange({

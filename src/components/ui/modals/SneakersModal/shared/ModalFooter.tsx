@@ -26,7 +26,6 @@ export const ModalFooter = () => {
 
 	useModalNavigation();
 
-	// Pour les utilisateurs anonymes, afficher seulement les contrôles de visualisation
 	const isAnonymous = !user || user.is_anonymous;
 
 	return (
