@@ -74,7 +74,6 @@ export const usePushNotifications = () => {
 		} catch (err) {
 			console.error('Error registering for push notifications:', err);
 
-			// More specific error handling for iOS provisioning issues
 			const errorMessage =
 				err instanceof Error ? err.message : 'Unknown error';
 			if (
