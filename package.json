@@ -19,7 +19,6 @@
     "test:hooks": "vitest run __tests__/hooks",
     "test:components": "jest --verbose __tests__/screens",
     "test:coverage": "jest --coverage --verbose && vitest run --coverage",
-    "lint": "expo lint",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "format:staged": "prettier --write",
