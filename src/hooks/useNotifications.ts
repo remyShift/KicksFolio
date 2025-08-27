@@ -23,7 +23,6 @@ export const useNotifications = () => {
 					await notificationHandler.getNotifications(limit, offset);
 
 				if (offset === 0) {
-					// Group notifications to avoid duplicates in the same time window
 					const groupedNotifications =
 						groupNotificationsByWindow(fetchedNotifications);
 					setNotifications(groupedNotifications);
@@ -136,13 +135,15 @@ export const useNotifications = () => {
 		await Promise.all([fetchNotifications(20, 0), fetchUnreadCount()]);
 	}, [fetchNotifications, fetchUnreadCount]);
 
-	useEffect(() => {
+	const startPolling = useCallback(() => {
 		fetchUnreadCount();
-
 		const interval = setInterval(fetchUnreadCount, 30000);
-
-		return () => clearInterval(interval);
+		return interval;
 	}, [fetchUnreadCount]);
+
+	const stopPolling = useCallback((interval: NodeJS.Timeout) => {
+		clearInterval(interval);
+	}, []);
 
 	return {
 		notifications,
@@ -155,5 +156,7 @@ export const useNotifications = () => {
 		deleteNotification,
 		refreshNotifications,
 		fetchUnreadCount,
+		startPolling,
+		stopPolling,
 	};
 };

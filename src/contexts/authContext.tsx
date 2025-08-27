@@ -51,12 +51,19 @@ export function SessionProvider({ children }: PropsWithChildren) {
 		refresh_token: string;
 	} | null>(null);
 
-	const { unreadCount, refreshNotifications, fetchUnreadCount } =
-		useNotifications();
+	const {
+		unreadCount,
+		refreshNotifications,
+		fetchUnreadCount,
+		startPolling,
+		stopPolling,
+	} = useNotifications();
 	const { registerForPushNotifications, setBadgeCount, hasPermission } =
 		usePushNotifications();
 
 	const [user, setUser] = useState<User | null>(null);
+	const [notificationPolling, setNotificationPolling] =
+		useState<NodeJS.Timeout | null>(null);
 	const [userSneakers, setUserSneakers] = useState<Sneaker[] | null>(null);
 	const [wishlistSneakers, setWishlistSneakers] = useState<Sneaker[] | null>(
 		null
@@ -219,6 +226,9 @@ export function SessionProvider({ children }: PropsWithChildren) {
 			await registerForPushNotifications();
 
 			await refreshNotifications();
+
+			const interval = startPolling();
+			setNotificationPolling(interval);
 		} catch (error) {
 			console.warn('Failed to initialize notifications:', error);
 		}
@@ -437,6 +447,11 @@ export function SessionProvider({ children }: PropsWithChildren) {
 		setResetTokens(null);
 
 		setBadgeCount(0);
+
+		if (notificationPolling) {
+			stopPolling(notificationPolling);
+			setNotificationPolling(null);
+		}
 
 		storageProvider.clearSessionData();
 	};
