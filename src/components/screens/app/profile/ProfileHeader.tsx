@@ -83,7 +83,13 @@ function ProfileHeader(props: ProfileHeaderProps) {
 	);
 
 	const profileInfo = useMemo(
-		() => <ProfileInfo user={user} isAnonymousUser={isAnonymousUser} />,
+		() => (
+			<ProfileInfo
+				user={user}
+				isAnonymousUser={isAnonymousUser}
+				overrideSneakers={userSneakers}
+			/>
+		),
 		[
 			user.id,
 			user.username,
@@ -91,6 +97,7 @@ function ProfileHeader(props: ProfileHeaderProps) {
 			user.followers_count,
 			user.following_count,
 			isAnonymousUser,
+			userSneakers,
 		]
 	);
 

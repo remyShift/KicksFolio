@@ -13,10 +13,11 @@ import SocialMediaLinks from './SocialMediaLinks';
 export interface ProfileInfoProps {
 	user: User | SearchUser;
 	isAnonymousUser?: boolean;
+	overrideSneakers?: any[];
 }
 
 function ProfileInfo(props: ProfileInfoProps) {
-	const { user, isAnonymousUser = false } = props;
+	const { user, isAnonymousUser = false, overrideSneakers } = props;
 	const { user: currentUser, userSneakers } = useSession();
 
 	const { userProfile, handleFollowToggle, isFollowLoading } = useUserProfile(
@@ -34,8 +35,10 @@ function ProfileInfo(props: ProfileInfoProps) {
 	);
 
 	const displaySneakers = useMemo(
-		() => (isOwnProfile ? userSneakers || [] : userProfile?.sneakers || []),
-		[isOwnProfile, userSneakers, userProfile?.sneakers]
+		() =>
+			overrideSneakers ||
+			(isOwnProfile ? userSneakers || [] : userProfile?.sneakers || []),
+		[overrideSneakers, isOwnProfile, userSneakers, userProfile?.sneakers]
 	);
 
 	const shouldRender = useMemo(() => {
@@ -88,6 +91,8 @@ export default memo(ProfileInfo, (prevProps, nextProps) => {
 		prevProps.user.profile_picture === nextProps.user.profile_picture &&
 		prevProps.user.followers_count === nextProps.user.followers_count &&
 		prevProps.user.following_count === nextProps.user.following_count &&
-		prevProps.isAnonymousUser === nextProps.isAnonymousUser
+		prevProps.isAnonymousUser === nextProps.isAnonymousUser &&
+		(prevProps.overrideSneakers?.length || 0) ===
+			(nextProps.overrideSneakers?.length || 0)
 	);
 });
