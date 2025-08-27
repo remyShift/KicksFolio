@@ -6,6 +6,7 @@ export interface CurrencyHandlerInterface {
 		fromCurrency: Currency,
 		toCurrency: Currency
 	): number;
+	formatPrice(price: number, currency: Currency): string;
 	getExchangeRate(currency: Currency): number;
 	getSupportedCurrencies(): Currency[];
 }

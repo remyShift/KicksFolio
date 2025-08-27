@@ -1,6 +1,6 @@
 import { vi } from 'vitest';
 
-import { UserInfo } from '@/tech/proxy/AuthProxy';
+import { UserInfo } from '@/types/user';
 
 export const mockSupabaseUser: UserInfo = {
 	id: 'test-user-id',

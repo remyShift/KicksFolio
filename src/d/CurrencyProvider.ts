@@ -32,6 +32,16 @@ export class CurrencyProvider implements CurrencyHandlerInterface {
 		return priceInUSD * EXCHANGE_RATES[toCurrency];
 	};
 
+	formatPrice = (price: number, currency: Currency): string => {
+		if (currency === 'USD') {
+			return `$${price.toFixed(2)}`;
+		}
+		if (currency === 'EUR') {
+			return `${price.toFixed(2)}€`;
+		}
+		return `${price.toFixed(2)}`;
+	};
+
 	getExchangeRate = (currency: Currency): number => {
 		return EXCHANGE_RATES[currency] || 1;
 	};
