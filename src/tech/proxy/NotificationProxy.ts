@@ -1,6 +1,6 @@
 import { supabase } from '@/config/supabase/supabase';
 import { NotificationHandlerInterface } from '@/domain/NotificationHandler';
-import { DbNotification, DbPushToken } from '@/types/database';
+import { DbNotification } from '@/types/database';
 import {
 	Notification,
 	NotificationData,
@@ -22,13 +22,11 @@ export class NotificationProxy implements NotificationHandlerInterface {
 			throw new Error('User not authenticated');
 		}
 
-		// Deactivate existing tokens for this user
 		await supabase
 			.from('push_tokens')
 			.update({ is_active: false })
 			.eq('user_id', user.id);
 
-		// Insert new token
 		const { error } = await supabase.from('push_tokens').insert([
 			{
 				user_id: user.id,
@@ -39,7 +37,6 @@ export class NotificationProxy implements NotificationHandlerInterface {
 		]);
 
 		if (error) {
-			// If token already exists, update it
 			if (error.code === '23505') {
 				const { error: updateError } = await supabase
 					.from('push_tokens')
@@ -256,8 +253,6 @@ export class NotificationProxy implements NotificationHandlerInterface {
 		type: NotificationType,
 		data: NotificationData
 	): Promise<void> {
-		// This will be handled by the Supabase Edge Function
-		// We call it from here to trigger the notification sending process
 		const { error } = await supabase.functions.invoke(
 			'send-follow-notifications',
 			{

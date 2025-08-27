@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { NotificationHandler } from '@/domain/NotificationHandler';
 import { notificationProxy } from '@/tech/proxy/NotificationProxy';
-import { Notification, NotificationSettings } from '@/types/notification';
+import { Notification } from '@/types/notification';
 
 const notificationHandler = new NotificationHandler(notificationProxy);
 
@@ -57,7 +57,6 @@ export const useNotifications = () => {
 			try {
 				await notificationHandler.markAsRead(notificationIds);
 
-				// Update local state
 				setNotifications((prev) =>
 					prev.map((notification) =>
 						notificationIds.includes(notification.id)
@@ -66,7 +65,6 @@ export const useNotifications = () => {
 					)
 				);
 
-				// Update unread count
 				await fetchUnreadCount();
 			} catch (err) {
 				console.error('Error marking notifications as read:', err);
@@ -84,7 +82,6 @@ export const useNotifications = () => {
 		try {
 			await notificationHandler.markAllAsRead();
 
-			// Update local state
 			setNotifications((prev) =>
 				prev.map((notification) => ({ ...notification, is_read: true }))
 			);
@@ -105,14 +102,12 @@ export const useNotifications = () => {
 			try {
 				await notificationHandler.deleteNotification(notificationId);
 
-				// Update local state
 				setNotifications((prev) =>
 					prev.filter(
 						(notification) => notification.id !== notificationId
 					)
 				);
 
-				// Update unread count
 				await fetchUnreadCount();
 			} catch (err) {
 				console.error('Error deleting notification:', err);
@@ -130,7 +125,6 @@ export const useNotifications = () => {
 		await Promise.all([fetchNotifications(20, 0), fetchUnreadCount()]);
 	}, [fetchNotifications, fetchUnreadCount]);
 
-	// Auto-refresh unread count periodically
 	useEffect(() => {
 		fetchUnreadCount();
 

@@ -42,7 +42,6 @@ export const useNotificationSettings = () => {
 					newSettings
 				);
 
-				// Update local state
 				setSettings((prev) => ({ ...prev, ...newSettings }));
 			} catch (err) {
 				console.error('Error updating notification settings:', err);
@@ -72,7 +71,6 @@ export const useNotificationSettings = () => {
 		[updateSettings]
 	);
 
-	// Fetch settings on mount
 	useEffect(() => {
 		fetchSettings();
 	}, [fetchSettings]);

@@ -51,7 +51,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
 		refresh_token: string;
 	} | null>(null);
 
-	// Notification hooks
 	const { unreadCount, refreshNotifications, fetchUnreadCount } =
 		useNotifications();
 	const { registerForPushNotifications, setBadgeCount, hasPermission } =
@@ -217,17 +216,14 @@ export function SessionProvider({ children }: PropsWithChildren) {
 
 	const initializeNotifications = async () => {
 		try {
-			// Register for push notifications if user has permission or request permission
 			await registerForPushNotifications();
 
-			// Refresh notifications to get current count
 			await refreshNotifications();
 		} catch (error) {
 			console.warn('Failed to initialize notifications:', error);
 		}
 	};
 
-	// Update app badge when unread count changes
 	useEffect(() => {
 		if (user && hasPermission) {
 			setBadgeCount(unreadCount);

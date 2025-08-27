@@ -24,7 +24,6 @@ export default function NotificationSettings() {
 	const handlePushNotificationToggle = async (enabled: boolean) => {
 		try {
 			if (enabled && !hasPermission) {
-				// Request permission first if enabling
 				const token = await registerForPushNotifications();
 				if (!token) {
 					showErrorToast(

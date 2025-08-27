@@ -65,7 +65,6 @@ serve(async (req: Request) => {
 
 		console.log(`Processing notification for user: ${senderId}`);
 
-		// Get user info for the sender
 		const { data: senderData, error: senderError } = await supabase
 			.from('users')
 			.select('username, profile_picture')
@@ -77,7 +76,6 @@ serve(async (req: Request) => {
 			return new Response('Sender not found', { status: 404 });
 		}
 
-		// Get followers of the sender with notification settings enabled
 		const { data: followers, error: followersError } = await supabase
 			.from('followers')
 			.select(
@@ -103,7 +101,6 @@ serve(async (req: Request) => {
 			return new Response('No followers', { status: 200 });
 		}
 
-		// Filter followers with notifications enabled
 		const notifiableFollowers = (followers as Follower[]).filter(
 			(f: Follower) =>
 				f.users?.push_notifications_enabled &&
@@ -115,7 +112,6 @@ serve(async (req: Request) => {
 			return new Response('No notifiable followers', { status: 200 });
 		}
 
-		// Check for recent sneaker additions within the batching window
 		const windowStart = new Date();
 		windowStart.setHours(windowStart.getHours() - BATCHING_WINDOW_HOURS);
 
@@ -151,7 +147,6 @@ serve(async (req: Request) => {
 			return new Response('No recent collections', { status: 200 });
 		}
 
-		// Determine notification type and content
 		const sneakerCount = recentCollections.length;
 		let title: string;
 		let body: string;
@@ -161,7 +156,6 @@ serve(async (req: Request) => {
 		let notificationData: any;
 
 		if (sneakerCount >= MIN_SNEAKERS_FOR_BATCH) {
-			// Multiple sneakers notification
 			notificationType = 'multiple_sneakers_added';
 			title = `${senderData.username} a ajouté des sneakers!`;
 			body = `${senderData.username} vient d'ajouter ${sneakerCount} paires à sa collection. Viens vite les voir!`;
@@ -182,7 +176,6 @@ serve(async (req: Request) => {
 					})),
 			};
 		} else {
-			// Single sneaker notification
 			const latestSneaker = (recentCollections as Collection[])[0];
 			notificationType = 'single_sneaker_added';
 			title = `${senderData.username} a ajouté une sneaker!`;
@@ -203,7 +196,6 @@ serve(async (req: Request) => {
 			};
 		}
 
-		// Get push tokens for all notifiable followers
 		const followerIds = notifiableFollowers.map(
 			(f: Follower) => f.follower_id
 		);
@@ -223,7 +215,6 @@ serve(async (req: Request) => {
 			return new Response('No active push tokens', { status: 200 });
 		}
 
-		// Send push notifications
 		const pushPromises = (pushTokens as PushToken[]).map(
 			async (tokenData: PushToken) => {
 				const pushPayload = {
@@ -252,7 +243,6 @@ serve(async (req: Request) => {
 					return false;
 				}
 
-				// Store notification in database
 				await supabase.from('notifications').insert([
 					{
 						recipient_id: tokenData.user_id,

@@ -12,6 +12,7 @@ interface SettingsMenuItemProps {
 	textColor?: string;
 	testID?: string;
 	rightElement?: ReactNode;
+	subtitle?: string;
 }
 
 export default function SettingsMenuItem({
@@ -22,6 +23,7 @@ export default function SettingsMenuItem({
 	textColor,
 	testID,
 	rightElement,
+	subtitle,
 }: SettingsMenuItemProps) {
 	return (
 		<TouchableOpacity
@@ -41,6 +43,14 @@ export default function SettingsMenuItem({
 					>
 						{label}
 					</Text>
+					{subtitle && (
+						<Text
+							className="font-open-sans-regular text-sm"
+							style={{ color: textColor }}
+						>
+							{subtitle}
+						</Text>
+					)}
 				</View>
 				{rightElement ? (
 					rightElement

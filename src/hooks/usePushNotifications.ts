@@ -8,12 +8,13 @@ import { notificationProxy } from '@/tech/proxy/NotificationProxy';
 
 const notificationHandler = new NotificationHandler(notificationProxy);
 
-// Configure notification behavior
 Notifications.setNotificationHandler({
 	handleNotification: async () => ({
 		shouldShowAlert: true,
 		shouldPlaySound: true,
 		shouldSetBadge: true,
+		shouldShowBanner: true,
+		shouldShowList: true,
 	}),
 });
 
@@ -33,12 +34,10 @@ export const usePushNotifications = () => {
 				return null;
 			}
 
-			// Check existing permissions
 			const { status: existingStatus } =
 				await Notifications.getPermissionsAsync();
 			let finalStatus = existingStatus;
 
-			// Request permissions if not already granted
 			if (existingStatus !== 'granted') {
 				const { status } =
 					await Notifications.requestPermissionsAsync();
@@ -52,7 +51,6 @@ export const usePushNotifications = () => {
 				return null;
 			}
 
-			// Get push token
 			const token = (
 				await Notifications.getExpoPushTokenAsync({
 					projectId: process.env.EXPO_PUBLIC_PROJECT_ID,
@@ -62,10 +60,9 @@ export const usePushNotifications = () => {
 			if (token) {
 				setExpoPushToken(token);
 
-				// Register token with backend
 				await notificationHandler.registerPushToken(
 					token,
-					Device.osName
+					Device.osName ?? 'unknown'
 				);
 
 				console.log('✅ Push token registered:', token);
@@ -114,7 +111,6 @@ export const usePushNotifications = () => {
 		}
 	}, []);
 
-	// Initialize push notifications on mount
 	useEffect(() => {
 		checkPermissions().then((hasPermission) => {
 			if (hasPermission) {
@@ -123,7 +119,6 @@ export const usePushNotifications = () => {
 		});
 	}, [checkPermissions, registerForPushNotificationsAsync]);
 
-	// Set up badge count from unread notifications
 	const setBadgeCount = useCallback(async (count: number) => {
 		try {
 			await Notifications.setBadgeCountAsync(count);
