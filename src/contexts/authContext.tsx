@@ -17,6 +17,8 @@ import { FollowerHandler } from '@/domain/FollowerHandler';
 import { SneakerHandler } from '@/domain/SneakerHandler';
 import { UserLookup } from '@/domain/UserLookup';
 import { Wishlist } from '@/domain/Wishlist';
+import { useNotifications } from '@/hooks/useNotifications';
+import { usePushNotifications } from '@/hooks/usePushNotifications';
 import { storageProvider } from '@/services/StorageService';
 import { authProxy } from '@/tech/proxy/AuthProxy';
 import { followerProxy } from '@/tech/proxy/FollowerProxy';
@@ -48,6 +50,12 @@ export function SessionProvider({ children }: PropsWithChildren) {
 		access_token: string;
 		refresh_token: string;
 	} | null>(null);
+
+	// Notification hooks
+	const { unreadCount, refreshNotifications, fetchUnreadCount } =
+		useNotifications();
+	const { registerForPushNotifications, setBadgeCount, hasPermission } =
+		usePushNotifications();
 
 	const [user, setUser] = useState<User | null>(null);
 	const [userSneakers, setUserSneakers] = useState<Sneaker[] | null>(null);
@@ -207,6 +215,25 @@ export function SessionProvider({ children }: PropsWithChildren) {
 			});
 	};
 
+	const initializeNotifications = async () => {
+		try {
+			// Register for push notifications if user has permission or request permission
+			await registerForPushNotifications();
+
+			// Refresh notifications to get current count
+			await refreshNotifications();
+		} catch (error) {
+			console.warn('Failed to initialize notifications:', error);
+		}
+	};
+
+	// Update app badge when unread count changes
+	useEffect(() => {
+		if (user && hasPermission) {
+			setBadgeCount(unreadCount);
+		}
+	}, [unreadCount, user, hasPermission, setBadgeCount]);
+
 	const loadFollowingUsers = async (userId: string) => {
 		return followerHandler
 			.getFollowing(userId)
@@ -272,6 +299,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
 						return Promise.all([
 							loadUserSneakers(userWithUrl),
 							loadFollowingUsers(userWithUrl.id),
+							initializeNotifications(),
 						]);
 					} else if (attempt < maxRetries) {
 						console.log(
@@ -439,6 +467,8 @@ export function SessionProvider({ children }: PropsWithChildren) {
 				followingUsers,
 				setFollowingUsers,
 				refreshFollowingUsers,
+				unreadNotificationCount: unreadCount,
+				refreshNotifications: fetchUnreadCount,
 			}}
 		>
 			{children}

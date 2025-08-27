@@ -1,0 +1,154 @@
+import { useCallback, useEffect, useState } from 'react';
+
+import { NotificationHandler } from '@/domain/NotificationHandler';
+import { notificationProxy } from '@/tech/proxy/NotificationProxy';
+import { Notification, NotificationSettings } from '@/types/notification';
+
+const notificationHandler = new NotificationHandler(notificationProxy);
+
+export const useNotifications = () => {
+	const [notifications, setNotifications] = useState<Notification[]>([]);
+	const [unreadCount, setUnreadCount] = useState<number>(0);
+	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [error, setError] = useState<string | null>(null);
+
+	const fetchNotifications = useCallback(
+		async (limit: number = 20, offset: number = 0) => {
+			try {
+				setIsLoading(true);
+				setError(null);
+
+				const fetchedNotifications =
+					await notificationHandler.getNotifications(limit, offset);
+
+				if (offset === 0) {
+					setNotifications(fetchedNotifications);
+				} else {
+					setNotifications((prev) => [
+						...prev,
+						...fetchedNotifications,
+					]);
+				}
+			} catch (err) {
+				console.error('Error fetching notifications:', err);
+				setError(
+					err instanceof Error
+						? err.message
+						: 'Failed to fetch notifications'
+				);
+			} finally {
+				setIsLoading(false);
+			}
+		},
+		[]
+	);
+
+	const fetchUnreadCount = useCallback(async () => {
+		try {
+			const count = await notificationHandler.getUnreadCount();
+			setUnreadCount(count);
+		} catch (err) {
+			console.error('Error fetching unread count:', err);
+		}
+	}, []);
+
+	const markAsRead = useCallback(
+		async (notificationIds: string[]) => {
+			try {
+				await notificationHandler.markAsRead(notificationIds);
+
+				// Update local state
+				setNotifications((prev) =>
+					prev.map((notification) =>
+						notificationIds.includes(notification.id)
+							? { ...notification, is_read: true }
+							: notification
+					)
+				);
+
+				// Update unread count
+				await fetchUnreadCount();
+			} catch (err) {
+				console.error('Error marking notifications as read:', err);
+				setError(
+					err instanceof Error
+						? err.message
+						: 'Failed to mark as read'
+				);
+			}
+		},
+		[fetchUnreadCount]
+	);
+
+	const markAllAsRead = useCallback(async () => {
+		try {
+			await notificationHandler.markAllAsRead();
+
+			// Update local state
+			setNotifications((prev) =>
+				prev.map((notification) => ({ ...notification, is_read: true }))
+			);
+
+			setUnreadCount(0);
+		} catch (err) {
+			console.error('Error marking all notifications as read:', err);
+			setError(
+				err instanceof Error
+					? err.message
+					: 'Failed to mark all as read'
+			);
+		}
+	}, []);
+
+	const deleteNotification = useCallback(
+		async (notificationId: string) => {
+			try {
+				await notificationHandler.deleteNotification(notificationId);
+
+				// Update local state
+				setNotifications((prev) =>
+					prev.filter(
+						(notification) => notification.id !== notificationId
+					)
+				);
+
+				// Update unread count
+				await fetchUnreadCount();
+			} catch (err) {
+				console.error('Error deleting notification:', err);
+				setError(
+					err instanceof Error
+						? err.message
+						: 'Failed to delete notification'
+				);
+			}
+		},
+		[fetchUnreadCount]
+	);
+
+	const refreshNotifications = useCallback(async () => {
+		await Promise.all([fetchNotifications(20, 0), fetchUnreadCount()]);
+	}, [fetchNotifications, fetchUnreadCount]);
+
+	// Auto-refresh unread count periodically
+	useEffect(() => {
+		fetchUnreadCount();
+
+		const interval = setInterval(fetchUnreadCount, 30000); // Refresh every 30 seconds
+
+		return () => clearInterval(interval);
+	}, [fetchUnreadCount]);
+
+	return {
+		notifications,
+		unreadCount,
+		isLoading,
+		error,
+		fetchNotifications,
+		markAsRead,
+		markAllAsRead,
+		deleteNotification,
+		refreshNotifications,
+		fetchUnreadCount,
+	};
+};

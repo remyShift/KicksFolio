@@ -46,7 +46,8 @@
 		"app": "Paramètres de l'application",
 		"sizeUnit": "Affichage des tailles",
 		"currency": "Devise",
-		"reportBug": "Signaler un bug"
+		"reportBug": "Signaler un bug",
+		"notifications": "Notifications"
 	},
 	"sizeUnit": {
 		"title": "Affichage des tailles modifié.",
@@ -125,5 +126,21 @@
 			"description": "Une erreur est survenue lors de l'envoi du rapport.",
 			"createFailed": "Impossible de créer le rapport de bug."
 		}
+	},
+	"notifications": {
+		"pushNotifications": "Notifications Push",
+		"pushDescription": "Recevoir des notifications quand les personnes que vous suivez ajoutent des sneakers",
+		"followingAdditions": "Activité des Abonnements",
+		"followingDescription": "Notifications pour les ajouts de sneakers par les utilisateurs que vous suivez",
+		"pushTitle": "Notifications Push",
+		"pushEnabled": "Les notifications push ont été activées.",
+		"pushDisabled": "Les notifications push ont été désactivées.",
+		"followingTitle": "Notifications de Suivi",
+		"followingEnabled": "Notifications d'activité des abonnements activées.",
+		"followingDisabled": "Notifications d'activité des abonnements désactivées.",
+		"permissionRequired": "Permission Requise",
+		"permissionDescription": "Veuillez autoriser les notifications dans les paramètres de votre appareil pour activer les notifications push.",
+		"error": "Erreur de Paramètres",
+		"errorDescription": "Une erreur est survenue lors de la mise à jour des paramètres de notification."
 	}
 } 

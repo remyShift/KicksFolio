@@ -3,6 +3,7 @@ import { Alert, View } from 'react-native';
 
 import AccountSettings from '@/components/screens/app/settings/accountSettings/AccountSettings';
 import AppSettings from '@/components/screens/app/settings/appSettings/AppSettings';
+import NotificationSettings from '@/components/screens/app/settings/notificationSettings/NotificationSettings';
 import SettingsHeader from '@/components/screens/app/settings/SettingsHeader';
 import SettingsMenuItem from '@/components/screens/app/settings/shared/SettingsMenuItem';
 import { useSession } from '@/contexts/authContext';
@@ -63,6 +64,7 @@ export default function Settings() {
 			<SettingsHeader />
 			<View className="flex-1 gap-10" testID="settings-content">
 				<AccountSettings />
+				<NotificationSettings />
 				<AppSettings />
 				<SettingsMenuItem
 					icon="trash-outline"

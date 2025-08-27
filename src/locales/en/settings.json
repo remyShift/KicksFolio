@@ -46,7 +46,8 @@
 		"app": "App Settings",
 		"sizeUnit": "Size display",
 		"currency": "Currency",
-		"reportBug": "Report a bug"
+		"reportBug": "Report a bug",
+		"notifications": "Notifications"
 	},
 	"sizeUnit": {
 		"title": "Size display changed.",
@@ -124,5 +125,21 @@
 			"description": "An error occurred while sending the report.",
 			"createFailed": "Unable to create bug report."
 		}
+	},
+	"notifications": {
+		"pushNotifications": "Push Notifications",
+		"pushDescription": "Get notified when people you follow add sneakers",
+		"followingAdditions": "Following Activity",
+		"followingDescription": "Notifications for sneaker additions by users you follow",
+		"pushTitle": "Push Notifications",
+		"pushEnabled": "Push notifications have been enabled.",
+		"pushDisabled": "Push notifications have been disabled.",
+		"followingTitle": "Following Notifications",
+		"followingEnabled": "Following activity notifications enabled.",
+		"followingDisabled": "Following activity notifications disabled.",
+		"permissionRequired": "Permission Required",
+		"permissionDescription": "Please allow notifications in your device settings to enable push notifications.",
+		"error": "Settings Error",
+		"errorDescription": "An error occurred while updating notification settings."
 	}
 } 

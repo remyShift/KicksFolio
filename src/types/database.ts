@@ -18,6 +18,8 @@ export interface DbUser {
 	updated_at: string;
 	instagram_username: string | null;
 	social_media_visibility: boolean;
+	push_notifications_enabled: boolean;
+	following_additions_enabled: boolean;
 }
 
 export interface DbSneaker {
@@ -94,6 +96,28 @@ export interface DbWishlistWithSneaker extends DbWishlist {
 	sneakers: DbSneaker & {
 		brands: DbBrand | null;
 	};
+}
+
+export interface DbNotification {
+	id: string;
+	recipient_id: string;
+	type: 'single_sneaker_added' | 'multiple_sneakers_added';
+	data: object;
+	title: string;
+	body: string;
+	is_read: boolean;
+	created_at: string;
+	updated_at: string;
+}
+
+export interface DbPushToken {
+	id: string;
+	user_id: string;
+	expo_token: string;
+	device_id: string | null;
+	is_active: boolean;
+	created_at: string;
+	updated_at: string;
 }
 
 export interface SupabaseCountResult {

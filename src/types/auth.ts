@@ -23,6 +23,8 @@ export interface AuthContextType {
 		SetStateAction<FollowingUserWithSneakers[] | null>
 	>;
 	refreshFollowingUsers: () => Promise<void>;
+	unreadNotificationCount: number;
+	refreshNotifications: () => Promise<void>;
 }
 
 export interface UserData {
