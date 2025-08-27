@@ -1,4 +1,4 @@
-import { Pressable } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 
 import Feather from '@expo/vector-icons/Feather';
 
@@ -14,11 +14,11 @@ export default function ShareButton({
 	color = 'black',
 }: ShareButtonProps) {
 	return (
-		<Pressable
+		<TouchableOpacity
 			onPress={onPress}
-			className="bg-red-500 p-2 rounded-lg absolute left-60"
+			className="p-4 absolute right-10 top-1  z-50"
 		>
 			<Feather name="share" size={size} color={color} />
-		</Pressable>
+		</TouchableOpacity>
 	);
 }

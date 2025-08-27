@@ -103,8 +103,13 @@ export default function SharedCollectionScreen() {
 
 				setCollectionData(data);
 			} catch (err) {
-				console.error('Failed to load shared collection:', err);
-				setError('Failed to load collection');
+				if (err instanceof Error && err.message.includes('not found')) {
+					console.warn('Shared collection not found:', shareToken);
+					setError('Collection not found or expired');
+				} else {
+					console.error('Failed to load shared collection:', err);
+					setError('Failed to load collection');
+				}
 			} finally {
 				setLoading(false);
 			}

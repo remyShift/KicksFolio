@@ -3,6 +3,7 @@ import { memo, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
+import SettingsButton from '@/components/ui/buttons/SettingsButton';
 import ShareButton from '@/components/ui/buttons/ShareButton';
 import ToggleDisplayState from '@/components/ui/buttons/ToggleDisplayState';
 import Title from '@/components/ui/text/Title';
@@ -12,7 +13,6 @@ import { SearchUser, User } from '@/types/user';
 
 import BackToSearchButton from '../search/BackToSearchButton';
 import ProfileInfo from './ProfileInfo';
-import SettingsButton from './SettingsButton';
 
 interface ProfileHeaderProps {
 	user: User | SearchUser;
@@ -21,6 +21,7 @@ interface ProfileHeaderProps {
 	onSharePress?: () => void;
 	isAnonymousUser?: boolean;
 	showSettingsButton?: boolean;
+	isSharedCollection?: boolean;
 }
 
 function ProfileHeader(props: ProfileHeaderProps) {
@@ -31,6 +32,7 @@ function ProfileHeader(props: ProfileHeaderProps) {
 		onSharePress,
 		isAnonymousUser = false,
 		showSettingsButton = false,
+		isSharedCollection = false,
 	}: ProfileHeaderProps = props;
 	const { t } = useTranslation();
 	const { user: currentUser } = useSession();
@@ -60,10 +62,20 @@ function ProfileHeader(props: ProfileHeaderProps) {
 
 	const shareButton = useMemo(
 		() =>
-			isOwnProfile && hasSneakers && onSharePress && !isAnonymousUser ? (
+			isOwnProfile &&
+			hasSneakers &&
+			onSharePress &&
+			!isAnonymousUser &&
+			!isSharedCollection ? (
 				<ShareButton onPress={onSharePress} />
 			) : null,
-		[isOwnProfile, hasSneakers, onSharePress, isAnonymousUser]
+		[
+			isOwnProfile,
+			hasSneakers,
+			onSharePress,
+			isAnonymousUser,
+			isSharedCollection,
+		]
 	);
 
 	const collectionTitle = useMemo(
@@ -75,7 +87,6 @@ function ProfileHeader(props: ProfileHeaderProps) {
 							content={t('collection.pages.titles.collection')}
 						/>
 						<ToggleDisplayState />
-						{shareButton}
 					</View>
 				</View>
 			) : null,
@@ -105,6 +116,7 @@ function ProfileHeader(props: ProfileHeaderProps) {
 		<View className="flex gap-16 mb-8">
 			<View className="flex gap-12">
 				{backButton}
+				{shareButton}
 				{settingsButton}
 				{profileInfo}
 			</View>

@@ -142,13 +142,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
 			data: { subscription },
 		} = supabase.auth.onAuthStateChange(async (event, session) => {
 			if (session?.user && !session.user.is_anonymous) {
-				if (event === 'SIGNED_IN') {
-					setTimeout(() => {
-						initializeUserData(session.user.id);
-					}, 500);
-				} else {
-					await initializeUserData(session.user.id);
-				}
+				await initializeUserData(session.user.id);
 			} else {
 				clearUserData();
 			}
@@ -260,8 +254,8 @@ export function SessionProvider({ children }: PropsWithChildren) {
 	};
 
 	const initializeUserData = async (userId: string) => {
-		const maxRetries = 3;
-		const retryDelay = 1000;
+		const maxRetries = 2;
+		const retryDelay = 800;
 
 		const getUserWithRetries = async (attempt: number): Promise<any> => {
 			return auth
@@ -280,34 +274,40 @@ export function SessionProvider({ children }: PropsWithChildren) {
 							loadFollowingUsers(userWithUrl.id),
 						]);
 					} else if (attempt < maxRetries) {
+						console.log(
+							`User data not ready, retrying... (attempt ${attempt + 1})`
+						);
 						return new Promise((resolve) => {
 							setTimeout(() => {
 								resolve(getUserWithRetries(attempt + 1));
 							}, retryDelay);
 						});
 					} else {
-						throw new Error(
-							'User not found after multiple attempts'
-						);
+						console.warn('User not found after multiple attempts');
+						return Promise.resolve();
 					}
 				})
 				.catch((error: any) => {
 					if (attempt < maxRetries && error.code === 'PGRST116') {
+						console.log(
+							`Database sync pending, retrying... (attempt ${attempt + 1})`
+						);
 						return new Promise((resolve) => {
 							setTimeout(() => {
 								resolve(getUserWithRetries(attempt + 1));
 							}, retryDelay);
 						});
 					} else {
-						throw error;
+						console.error(
+							`Authentication error after ${attempt + 1} attempts:`,
+							error
+						);
+						return Promise.resolve();
 					}
 				});
 		};
 
-		getUserWithRetries(0).catch((error) => {
-			console.error('Error initializing user data:', error);
-			clearUserData();
-		});
+		await getUserWithRetries(0);
 	};
 
 	const refreshUserData = async () => {

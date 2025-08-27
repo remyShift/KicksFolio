@@ -25,6 +25,7 @@ export function SharedCollectionForAnonymous({
 				isAnonymousUser={true}
 				showSettingsButton={true}
 				showAnonymousMessage={true}
+				isSharedCollection={true}
 			/>
 		</View>
 	);

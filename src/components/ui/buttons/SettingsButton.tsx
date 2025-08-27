@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { Pressable, View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 
 import { router } from 'expo-router';
 
@@ -23,13 +23,13 @@ export default function SettingsButton({
 
 	return (
 		<View testID="profile-header">
-			<Pressable
+			<TouchableOpacity
 				className="p-4 absolute right-0 -top-0  z-50"
 				onPress={handleMenuPress}
 				testID="menu-button"
 			>
 				<SimpleLineIcons name="settings" size={24} color="black" />
-			</Pressable>
+			</TouchableOpacity>
 		</View>
 	);
 }

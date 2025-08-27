@@ -26,6 +26,7 @@ interface ProfileDisplayContainerProps {
 	isAnonymousUser?: boolean;
 	showSettingsButton?: boolean;
 	showAnonymousMessage?: boolean;
+	isSharedCollection?: boolean;
 }
 
 export default function ProfileDisplayContainer(
@@ -41,6 +42,7 @@ export default function ProfileDisplayContainer(
 		isAnonymousUser = false,
 		showSettingsButton = false,
 		showAnonymousMessage = false,
+		isSharedCollection = false,
 	} = props;
 
 	const { setModalStep, setIsVisible } = useModalStore();
@@ -125,6 +127,7 @@ export default function ProfileDisplayContainer(
 				onSharePress={handleNativeShare}
 				isAnonymousUser={isAnonymousUser}
 				showSettingsButton={showSettingsButton}
+				isSharedCollection={isSharedCollection}
 			/>
 		);
 	}, [
@@ -134,6 +137,7 @@ export default function ProfileDisplayContainer(
 		handleNativeShare,
 		isAnonymousUser,
 		showSettingsButton,
+		isSharedCollection,
 	]);
 
 	const handleRefresh = useCallback(async () => {

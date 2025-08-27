@@ -139,6 +139,7 @@ export default function SharedCollectionScreen() {
 			onRefresh={handleRefresh}
 			showBackButton={true}
 			showSettingsButton={false}
+			isSharedCollection={true}
 		/>
 	);
 }
