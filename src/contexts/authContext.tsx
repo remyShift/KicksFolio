@@ -227,6 +227,8 @@ export function SessionProvider({ children }: PropsWithChildren) {
 	useEffect(() => {
 		if (user && hasPermission) {
 			setBadgeCount(unreadCount);
+		} else if (!user) {
+			setBadgeCount(0);
 		}
 	}, [unreadCount, user, hasPermission, setBadgeCount]);
 
@@ -433,6 +435,8 @@ export function SessionProvider({ children }: PropsWithChildren) {
 		setWishlistSneakers(null);
 		setFollowingUsers(null);
 		setResetTokens(null);
+
+		setBadgeCount(0);
 
 		storageProvider.clearSessionData();
 	};

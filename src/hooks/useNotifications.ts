@@ -52,7 +52,14 @@ export const useNotifications = () => {
 			const count = await notificationHandler.getUnreadCount();
 			setUnreadCount(count);
 		} catch (err) {
-			console.error('Error fetching unread count:', err);
+			if (
+				err instanceof Error &&
+				err.message.includes('User not authenticated')
+			) {
+				setUnreadCount(0);
+			} else {
+				console.error('Error fetching unread count:', err);
+			}
 		}
 	}, []);
 
@@ -132,7 +139,7 @@ export const useNotifications = () => {
 	useEffect(() => {
 		fetchUnreadCount();
 
-		const interval = setInterval(fetchUnreadCount, 30000); // Refresh every 30 seconds
+		const interval = setInterval(fetchUnreadCount, 30000);
 
 		return () => clearInterval(interval);
 	}, [fetchUnreadCount]);

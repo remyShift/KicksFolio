@@ -124,14 +124,6 @@ export const usePushNotifications = () => {
 		}
 	}, []);
 
-	useEffect(() => {
-		checkPermissions().then((hasPermission) => {
-			if (hasPermission) {
-				registerForPushNotificationsAsync();
-			}
-		});
-	}, [checkPermissions, registerForPushNotificationsAsync]);
-
 	const setBadgeCount = useCallback(async (count: number) => {
 		try {
 			await Notifications.setBadgeCountAsync(count);
