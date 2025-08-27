@@ -1,8 +1,5 @@
 import { Notification, NotificationType } from '@/types/notification';
 
-/**
- * Groups notifications by sender and type, keeping only the most recent one per user per hour
- */
 export const groupNotificationsByWindow = (
 	notifications: Notification[]
 ): Notification[] => {
@@ -20,20 +17,16 @@ export const groupNotificationsByWindow = (
 				notification.type === NotificationType.SINGLE_SNEAKER_ADDED ||
 				notification.type === NotificationType.MULTIPLE_SNEAKERS_ADDED
 			) {
-				// Extract sender ID from notification data
 				const senderId = notification.data.user_id;
 				if (!senderId) return;
 
-				// Create time window key (hour precision)
 				const notificationTime = new Date(notification.created_at);
 				const windowKey = `${senderId}-${Math.floor(notificationTime.getTime() / (windowSizeHours * 60 * 60 * 1000))}`;
 
-				// Keep only the most recent notification per window
 				if (!grouped.has(windowKey)) {
 					grouped.set(windowKey, notification);
 				}
 			} else {
-				// Keep non-sneaker notifications as-is
 				grouped.set(notification.id, notification);
 			}
 		});
@@ -44,9 +37,6 @@ export const groupNotificationsByWindow = (
 	);
 };
 
-/**
- * Formats notification title and body for display
- */
 export const formatNotificationContent = (notification: Notification) => {
 	const { type, data } = notification;
 
@@ -82,9 +72,6 @@ export const formatNotificationContent = (notification: Notification) => {
 	};
 };
 
-/**
- * Checks if a notification is from a followed user adding sneakers
- */
 export const isSneakerAdditionNotification = (
 	notification: Notification
 ): boolean => {
@@ -94,9 +81,6 @@ export const isSneakerAdditionNotification = (
 	);
 };
 
-/**
- * Gets the time window start for a given date (hour precision)
- */
 export const getNotificationWindow = (date: Date): Date => {
 	const window = new Date(date);
 	window.setMinutes(0, 0, 0);
