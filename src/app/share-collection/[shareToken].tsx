@@ -87,6 +87,15 @@ export default function SharedCollectionScreen() {
 	useModalNavigation({ contextSneakers });
 
 	useEffect(() => {
+		// Si l'utilisateur est déjà connecté, redirection immédiate
+		if (currentUser) {
+			router.replace(
+				`/(app)/(tabs)/search/shared-collection/${shareToken}`
+			);
+			return;
+		}
+
+		// Pour les utilisateurs anonymes uniquement
 		async function loadSharedCollection() {
 			if (!shareToken) {
 				setError('Invalid share link');
@@ -108,7 +117,7 @@ export default function SharedCollectionScreen() {
 		}
 
 		loadSharedCollection();
-	}, [shareToken, ensureAnonymousAuth]);
+	}, [shareToken, ensureAnonymousAuth, currentUser]);
 
 	const handleRefresh = async () => {
 		if (shareToken) {
@@ -120,6 +129,11 @@ export default function SharedCollectionScreen() {
 			}
 		}
 	};
+
+	// Pas de loading screen pour les utilisateurs connectés (redirection immédiate)
+	if (currentUser) {
+		return null;
+	}
 
 	if (loading) {
 		return (
@@ -142,19 +156,7 @@ export default function SharedCollectionScreen() {
 		);
 	}
 
-	if (isAuthenticated) {
-		return (
-			<ProfileDisplayContainer
-				user={collectionData.user_data}
-				userSneakers={filteredSneakers}
-				refreshing={loading}
-				onRefresh={handleRefresh}
-				showBackButton={true}
-				showSettingsButton={false}
-			/>
-		);
-	}
-
+	// Cette route est uniquement pour les utilisateurs anonymes
 	return (
 		<SharedCollectionForAnonymous
 			collectionData={collectionData}

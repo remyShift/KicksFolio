@@ -3,8 +3,10 @@ import { memo, useCallback, useMemo, useRef, useState } from 'react';
 import { RefreshControl, ScrollView, Share } from 'react-native';
 
 import { useSession } from '@/contexts/authContext';
+import { sneakerFilteringProvider } from '@/d/SneakerFiltering';
 import { useShareCollection } from '@/hooks/useShareCollection';
 import { useModalStore } from '@/store/useModalStore';
+import { useSizeUnitStore } from '@/store/useSizeUnitStore';
 import { FilterState } from '@/types/filter';
 import { Sneaker } from '@/types/sneaker';
 import { SearchUser, User } from '@/types/user';
@@ -64,6 +66,7 @@ export default function ProfileDisplayContainer(
 	);
 
 	const { createShareLink } = useShareCollection(user.id);
+	const { currentUnit } = useSizeUnitStore();
 
 	const handleNativeShare = useCallback(async () => {
 		try {
@@ -77,24 +80,15 @@ export default function ProfileDisplayContainer(
 
 			const response = await createShareLink(filtersToUse);
 
-			const filteredCount = userSneakers.filter((sneaker) => {
-				if (
-					!filtersToUse.brands.length &&
-					!filtersToUse.sizes.length &&
-					!filtersToUse.conditions.length &&
-					!filtersToUse.statuses.length
-				) {
-					return !sneaker.wishlist;
-				}
-
-				let matches = true;
-				if (filtersToUse.brands.length > 0) {
-					matches =
-						matches &&
-						filtersToUse.brands.includes(sneaker.brand?.name || '');
-				}
-				return matches && !sneaker.wishlist;
-			});
+			// Utiliser le système de filtrage existant pour obtenir le bon nombre
+			const sneakersWithoutWishlist = userSneakers.filter(
+				(sneaker) => !sneaker.wishlist
+			);
+			const filteredCount = sneakerFilteringProvider.filterSneakers(
+				sneakersWithoutWishlist,
+				filtersToUse,
+				currentUnit
+			);
 
 			const hasFilters =
 				filtersToUse.brands.length > 0 ||
@@ -113,7 +107,7 @@ export default function ProfileDisplayContainer(
 		} catch (error) {
 			console.error('Error sharing collection:', error);
 		}
-	}, [currentFilters, createShareLink, userSneakers]);
+	}, [currentFilters, createShareLink, userSneakers, currentUnit]);
 
 	const handleAddSneaker = useCallback(() => {
 		setModalStep('index');
