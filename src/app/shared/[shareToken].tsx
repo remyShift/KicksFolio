@@ -185,9 +185,9 @@ function SharedCollectionForAnonymous({
 				userSneakers={filteredSneakers}
 				refreshing={loading}
 				onRefresh={onRefresh}
-				showBackButton={true}
+				showBackButton={false}
 				isAnonymousUser={true}
-				showSettingsButton={true}
+				showSettingsButton={false}
 			/>
 		</>
 	);

@@ -6,7 +6,9 @@
       "Bash(grep:*)",
       "Bash(git add:*)",
       "Bash(git -C /Users/remy_mac/Desktop/KicksFolio/github-pages-share add .)",
-      "Bash(git -C /Users/remy_mac/Desktop/KicksFolio/github-pages-share commit -m \"Initial commit: KicksFolio share pages\")"
+      "Bash(git -C /Users/remy_mac/Desktop/KicksFolio/github-pages-share commit -m \"Initial commit: KicksFolio share pages\")",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
     ],
     "deny": [],
     "ask": []

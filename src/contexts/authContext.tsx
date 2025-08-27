@@ -141,7 +141,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
 		const {
 			data: { subscription },
 		} = supabase.auth.onAuthStateChange(async (event, session) => {
-			if (session?.user) {
+			if (session?.user && !session.user.is_anonymous) {
 				await initializeUserData(session.user.id);
 			} else {
 				clearUserData();
@@ -154,7 +154,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
 			const {
 				data: { session },
 			} = await supabase.auth.getSession();
-			if (session?.user) {
+			if (session?.user && !session.user.is_anonymous) {
 				return auth.getCurrentUser().catch((error: any) => {
 					if (error.code === 'PGRST116') {
 						return supabase.auth.signOut().then(() => {
