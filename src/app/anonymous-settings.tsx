@@ -37,8 +37,7 @@ export default function AnonymousSettings() {
 						{t('share.connectToAccess')}
 					</Text>
 					<Text className="font-open-sans text-primary text-center text-sm">
-						Créez un compte pour sauvegarder vos préférences et
-						accéder à toutes les fonctionnalités
+						{t('share.connectToAccessDescription')}
 					</Text>
 				</View>
 

@@ -25,5 +25,6 @@
     }
   },
   "connectToAccess": "Connectez-vous pour accéder à toutes les fonctionnalités",
-  "connectNow": "Se connecter maintenant"
+  "connectNow": "Se connecter maintenant",
+  "connectToAccessDescription": "Créez un compte pour sauvegarder vos préférences et accéder à toutes les fonctionnalités"
 }
