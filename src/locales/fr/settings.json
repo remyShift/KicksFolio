@@ -129,9 +129,7 @@
 	},
 	"notifications": {
 		"pushNotifications": "Notifications Push",
-		"pushDescription": "Recevoir des notifications quand les personnes que vous suivez ajoutent des sneakers",
 		"followingAdditions": "Activité des Abonnements",
-		"followingDescription": "Notifications pour les ajouts de sneakers par les utilisateurs que vous suivez",
 		"pushTitle": "Notifications Push",
 		"pushEnabled": "Les notifications push ont été activées.",
 		"pushDisabled": "Les notifications push ont été désactivées.",
@@ -141,6 +139,9 @@
 		"permissionRequired": "Permission Requise",
 		"permissionDescription": "Veuillez autoriser les notifications dans les paramètres de votre appareil pour activer les notifications push.",
 		"error": "Erreur de Paramètres",
-		"errorDescription": "Une erreur est survenue lors de la mise à jour des paramètres de notification."
+		"errorDescription": "Une erreur est survenue lors de la mise à jour des paramètres de notification.",
+		"systemEnabled": "Activées",
+		"systemDisabled": "Désactivées",
+		"openAppSettings": "Ouvrir les paramètres de l'app"
 	}
 } 

@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Alert, View } from 'react-native';
+import { Alert, ScrollView, View } from 'react-native';
 
 import AccountSettings from '@/components/screens/app/settings/accountSettings/AccountSettings';
 import AppSettings from '@/components/screens/app/settings/appSettings/AppSettings';
@@ -60,21 +60,30 @@ export default function Settings() {
 	};
 
 	return (
-		<View className="flex-1 bg-white px-4" testID="settings-container">
-			<SettingsHeader />
-			<View className="flex-1 gap-10" testID="settings-content">
-				<AccountSettings />
-				<NotificationSettings />
-				<AppSettings />
-				<SettingsMenuItem
-					icon="trash-outline"
-					label={t('settings.titles.deleteAccount')}
-					onPress={handleDeleteAccount}
-					color="#dc2626"
-					textColor="#dc2626"
-					testID="delete-account"
-				/>
+		<View className="flex-1 bg-white" testID="settings-container">
+			<View className="px-4">
+				<SettingsHeader />
 			</View>
+			<ScrollView
+				className="flex-1 px-4"
+				contentContainerStyle={{ flexGrow: 1, paddingBottom: 32 }}
+				showsVerticalScrollIndicator={false}
+				testID="settings-content"
+			>
+				<View className="gap-10">
+					<AccountSettings />
+					<NotificationSettings />
+					<AppSettings />
+					<SettingsMenuItem
+						icon="trash-outline"
+						label={t('settings.titles.deleteAccount')}
+						onPress={handleDeleteAccount}
+						color="#dc2626"
+						textColor="#dc2626"
+						testID="delete-account"
+					/>
+				</View>
+			</ScrollView>
 		</View>
 	);
 }

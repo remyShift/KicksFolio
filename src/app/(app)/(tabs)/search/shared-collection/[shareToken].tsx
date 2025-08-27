@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 
-import { useLocalSearchParams } from 'expo-router';
+import { View } from 'react-native';
+
+import { router, useLocalSearchParams } from 'expo-router';
 
 import ProfileDisplayContainer from '@/components/screens/app/profile/ProfileDisplayContainer';
 import SharedCollectionError from '@/components/screens/share-collection/SharedCollectionError';
@@ -12,6 +14,7 @@ import { SharedCollectionData } from '@/types/sharing';
 
 export default function SharedCollectionScreen() {
 	const { shareToken } = useLocalSearchParams<{ shareToken: string }>();
+
 	const [collectionData, setCollectionData] =
 		useState<SharedCollectionData | null>(null);
 	const [loading, setLoading] = useState(true);
@@ -25,9 +28,11 @@ export default function SharedCollectionScreen() {
 
 	useEffect(() => {
 		async function loadSharedCollection() {
-			if (!shareToken) {
-				setError('Invalid share link');
-				setLoading(false);
+			if (!shareToken || shareToken === 'undefined') {
+				console.warn(
+					'📍 SharedCollection: No valid shareToken provided, redirecting to home'
+				);
+				router.replace('/(app)/(tabs)');
 				return;
 			}
 
@@ -71,14 +76,16 @@ export default function SharedCollectionScreen() {
 	}
 
 	return (
-		<ProfileDisplayContainer
-			user={collectionData.user_data}
-			userSneakers={filteredSneakers}
-			refreshing={loading}
-			onRefresh={handleRefresh}
-			showBackButton={true}
-			showSettingsButton={false}
-			isSharedCollection={true}
-		/>
+		<View className="flex-1 bg-background">
+			<ProfileDisplayContainer
+				user={collectionData.user_data}
+				userSneakers={filteredSneakers}
+				refreshing={loading}
+				onRefresh={handleRefresh}
+				showBackButton={true}
+				showSettingsButton={false}
+				isSharedCollection={true}
+			/>
+		</View>
 	);
 }

@@ -84,7 +84,6 @@ serve(async (req: Request) => {
         users!followers_follower_id_fkey (
           id,
           username,
-          push_notifications_enabled,
           following_additions_enabled
         )
       `
@@ -102,9 +101,7 @@ serve(async (req: Request) => {
 		}
 
 		const notifiableFollowers = (followers as Follower[]).filter(
-			(f: Follower) =>
-				f.users?.push_notifications_enabled &&
-				f.users?.following_additions_enabled
+			(f: Follower) => f.users?.following_additions_enabled
 		);
 
 		if (notifiableFollowers.length === 0) {
@@ -217,7 +214,6 @@ serve(async (req: Request) => {
 
 		const pushPromises = (pushTokens as PushToken[]).map(
 			async (tokenData: PushToken) => {
-				// Check if we already sent a notification to this user in the current window
 				const { data: existingNotification } = await supabase
 					.from('notifications')
 					.select('id, created_at')
@@ -257,9 +253,7 @@ serve(async (req: Request) => {
 					return false;
 				}
 
-				// Update existing notification or create new one
 				if (existingNotification) {
-					// Update the existing notification with latest data
 					await supabase
 						.from('notifications')
 						.update({
@@ -268,7 +262,6 @@ serve(async (req: Request) => {
 							title,
 							body,
 							updated_at: new Date().toISOString(),
-							// Keep is_read status as it was
 						})
 						.eq('id', existingNotification.id);
 
@@ -276,7 +269,6 @@ serve(async (req: Request) => {
 						`Updated existing notification for user ${tokenData.user_id}`
 					);
 				} else {
-					// Create new notification
 					await supabase.from('notifications').insert([
 						{
 							recipient_id: tokenData.user_id,

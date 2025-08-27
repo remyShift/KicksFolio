@@ -57,13 +57,6 @@ export const useNotificationSettings = () => {
 		[]
 	);
 
-	const togglePushNotifications = useCallback(
-		async (enabled: boolean) => {
-			await updateSettings({ push_notifications_enabled: enabled });
-		},
-		[updateSettings]
-	);
-
 	const toggleFollowingAdditions = useCallback(
 		async (enabled: boolean) => {
 			await updateSettings({ following_additions_enabled: enabled });
@@ -80,7 +73,6 @@ export const useNotificationSettings = () => {
 		isLoading,
 		error,
 		updateSettings,
-		togglePushNotifications,
 		toggleFollowingAdditions,
 		refreshSettings: fetchSettings,
 	};

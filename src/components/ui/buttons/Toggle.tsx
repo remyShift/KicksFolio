@@ -46,7 +46,7 @@ export default function Toggle({
 	return (
 		<View className="flex-row items-center" testID={testID}>
 			<Pressable
-				className={`w-24 h-8 rounded-full bg-gray-300 relative flex-row items-center justify-between ${px ? `px-${px}` : 'px-4'}`}
+				className={`w-24 h-8 rounded-full bg-gray-200 relative flex-row items-center justify-between ${px ? `px-${px}` : 'px-4'}`}
 				onPress={handlePress}
 			>
 				<Text

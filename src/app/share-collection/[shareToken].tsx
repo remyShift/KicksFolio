@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 
+import { View } from 'react-native';
+
 import { router, useLocalSearchParams } from 'expo-router';
 
 import SneakersModalWrapper from '@/components/screens/app/SneakersModalWrapper';
@@ -15,6 +17,7 @@ import { SharedCollectionData } from '@/types/sharing';
 
 export default function SharedCollectionScreen() {
 	const { shareToken } = useLocalSearchParams<{ shareToken: string }>();
+
 	const [collectionData, setCollectionData] =
 		useState<SharedCollectionData | null>(null);
 	const [loading, setLoading] = useState(true);
@@ -31,9 +34,16 @@ export default function SharedCollectionScreen() {
 
 	useEffect(() => {
 		if (currentUser && !currentUser.is_anonymous) {
-			router.replace(
-				`/(app)/(tabs)/search/shared-collection/${shareToken}`
-			);
+			if (shareToken && shareToken !== 'undefined') {
+				router.replace(
+					`/(app)/(tabs)/search/shared-collection/${shareToken}`
+				);
+			} else {
+				console.warn(
+					'📍 ShareCollection: No valid shareToken for authenticated user, redirecting to home'
+				);
+				router.replace('/(app)/(tabs)');
+			}
 			return;
 		}
 
@@ -94,7 +104,7 @@ export default function SharedCollectionScreen() {
 	}
 
 	return (
-		<>
+		<View className="flex-1 bg-background">
 			<SharedCollectionForAnonymous
 				collectionData={collectionData}
 				loading={loading}
@@ -102,6 +112,6 @@ export default function SharedCollectionScreen() {
 				filteredSneakers={filteredSneakers}
 			/>
 			<SneakersModalWrapper />
-		</>
+		</View>
 	);
 }

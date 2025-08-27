@@ -18,7 +18,6 @@ export interface DbUser {
 	updated_at: string;
 	instagram_username: string | null;
 	social_media_visibility: boolean;
-	push_notifications_enabled: boolean;
 	following_additions_enabled: boolean;
 }
 

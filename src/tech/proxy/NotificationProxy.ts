@@ -201,23 +201,18 @@ export class NotificationProxy implements NotificationHandlerInterface {
 			throw new Error('User not authenticated');
 		}
 
-		const updateData: Record<string, boolean> = {};
-		if (settings.push_notifications_enabled !== undefined) {
-			updateData.push_notifications_enabled =
-				settings.push_notifications_enabled;
-		}
 		if (settings.following_additions_enabled !== undefined) {
-			updateData.following_additions_enabled =
-				settings.following_additions_enabled;
-		}
+			const { error } = await supabase
+				.from('users')
+				.update({
+					following_additions_enabled:
+						settings.following_additions_enabled,
+				})
+				.eq('id', user.id);
 
-		const { error } = await supabase
-			.from('users')
-			.update(updateData)
-			.eq('id', user.id);
-
-		if (error) {
-			throw error;
+			if (error) {
+				throw error;
+			}
 		}
 	}
 
@@ -233,7 +228,7 @@ export class NotificationProxy implements NotificationHandlerInterface {
 
 		const { data, error } = await supabase
 			.from('users')
-			.select('push_notifications_enabled, following_additions_enabled')
+			.select('following_additions_enabled')
 			.eq('id', user.id)
 			.single();
 
@@ -242,7 +237,7 @@ export class NotificationProxy implements NotificationHandlerInterface {
 		}
 
 		return {
-			push_notifications_enabled: data.push_notifications_enabled ?? true,
+			push_notifications_enabled: true,
 			following_additions_enabled:
 				data.following_additions_enabled ?? true,
 		};

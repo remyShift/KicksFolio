@@ -1,5 +1,9 @@
+import { useEffect } from 'react';
+
 import { useTranslation } from 'react-i18next';
-import { Switch } from 'react-native';
+import { AppState, Linking, Platform } from 'react-native';
+
+import Constants from 'expo-constants';
 
 import useToast from '@/hooks/ui/useToast';
 import { useNotificationSettings } from '@/hooks/useNotificationSettings';
@@ -8,50 +12,62 @@ import { usePushNotifications } from '@/hooks/usePushNotifications';
 import SettingsCategory from '../shared/SettingsCategory';
 import SettingsMenuItem from '../shared/SettingsMenuItem';
 import Spacer from '../shared/Spacer';
+import NotificationToggle from './NotificationToggle';
 
 export default function NotificationSettings() {
 	const { t } = useTranslation();
 	const { showSuccessToast, showErrorToast } = useToast();
-	const { hasPermission, registerForPushNotifications } =
-		usePushNotifications();
-	const {
-		settings,
-		isLoading,
-		togglePushNotifications,
-		toggleFollowingAdditions,
-	} = useNotificationSettings();
+	const { hasPermission, checkPermissions } = usePushNotifications();
+	const { settings, isLoading, toggleFollowingAdditions } =
+		useNotificationSettings();
 
-	const handlePushNotificationToggle = async (enabled: boolean) => {
+	const handleOpenSystemSettings = async () => {
 		try {
-			if (enabled && !hasPermission) {
-				const token = await registerForPushNotifications();
-				if (!token) {
-					showErrorToast(
-						t('settings.notifications.permissionRequired'),
-						t('settings.notifications.permissionDescription')
-					);
-					return;
-				}
-			}
+			const appSettingsUrl =
+				Platform.OS === 'ios'
+					? 'app-settings:'
+					: `package:${Constants.expoConfig?.ios?.bundleIdentifier || 'app.kicksfolio'}`;
 
-			await togglePushNotifications(enabled);
-			showSuccessToast(
-				t('settings.notifications.pushTitle'),
-				enabled
-					? t('settings.notifications.pushEnabled')
-					: t('settings.notifications.pushDisabled')
-			);
+			await Linking.openURL(appSettingsUrl);
 		} catch (error) {
-			console.error('Error toggling push notifications:', error);
-			showErrorToast(
-				t('settings.notifications.error'),
-				t('settings.notifications.errorDescription')
-			);
+			console.error('Error opening app settings:', error);
+			try {
+				await Linking.openSettings();
+			} catch (fallbackError) {
+				console.error('Error opening system settings:', fallbackError);
+				showErrorToast(
+					t('settings.notifications.error'),
+					t('settings.notifications.errorDescription')
+				);
+			}
 		}
 	};
 
+	useEffect(() => {
+		const handleAppStateChange = (nextAppState: string) => {
+			if (nextAppState === 'active') {
+				checkPermissions();
+			}
+		};
+
+		const subscription = AppState.addEventListener(
+			'change',
+			handleAppStateChange
+		);
+		return () => subscription?.remove();
+	}, [checkPermissions]);
+
 	const handleFollowingAdditionsToggle = async (enabled: boolean) => {
 		try {
+			const hasSystemPermission = await checkPermissions();
+			if (!hasSystemPermission) {
+				showErrorToast(
+					t('settings.notifications.permissionRequired'),
+					t('settings.notifications.permissionDescription')
+				);
+				return;
+			}
+
 			await toggleFollowingAdditions(enabled);
 			showSuccessToast(
 				t('settings.notifications.followingTitle'),
@@ -72,21 +88,12 @@ export default function NotificationSettings() {
 		<SettingsCategory title={t('settings.titles.notifications')}>
 			<SettingsMenuItem
 				icon="notifications-outline"
-				label={t('settings.notifications.pushNotifications')}
-				subtitle={t('settings.notifications.pushDescription')}
-				rightElement={
-					<Switch
-						value={settings.push_notifications_enabled}
-						onValueChange={handlePushNotificationToggle}
-						disabled={isLoading}
-						trackColor={{ false: '#767577', true: '#81b0ff' }}
-						thumbColor={
-							settings.push_notifications_enabled
-								? '#f5dd4b'
-								: '#f4f3f4'
-						}
-					/>
-				}
+				label={`${t('settings.notifications.pushNotifications')} ${
+					hasPermission
+						? `(${t('settings.notifications.systemEnabled')})`
+						: `(${t('settings.notifications.systemDisabled')})`
+				}`}
+				onPress={handleOpenSystemSettings}
 				testID="push-notifications"
 			/>
 
@@ -95,20 +102,12 @@ export default function NotificationSettings() {
 			<SettingsMenuItem
 				icon="heart-outline"
 				label={t('settings.notifications.followingAdditions')}
-				subtitle={t('settings.notifications.followingDescription')}
 				rightElement={
-					<Switch
-						value={settings.following_additions_enabled}
-						onValueChange={handleFollowingAdditionsToggle}
-						disabled={
-							isLoading || !settings.push_notifications_enabled
-						}
-						trackColor={{ false: '#767577', true: '#81b0ff' }}
-						thumbColor={
-							settings.following_additions_enabled
-								? '#f5dd4b'
-								: '#f4f3f4'
-						}
+					<NotificationToggle
+						currentValue={settings.following_additions_enabled}
+						onToggle={handleFollowingAdditionsToggle}
+						disabled={isLoading || !hasPermission}
+						testID="following-additions"
 					/>
 				}
 				testID="following-additions"

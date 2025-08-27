@@ -128,9 +128,7 @@
 	},
 	"notifications": {
 		"pushNotifications": "Push Notifications",
-		"pushDescription": "Get notified when people you follow add sneakers",
 		"followingAdditions": "Following Activity",
-		"followingDescription": "Notifications for sneaker additions by users you follow",
 		"pushTitle": "Push Notifications",
 		"pushEnabled": "Push notifications have been enabled.",
 		"pushDisabled": "Push notifications have been disabled.",
@@ -140,6 +138,9 @@
 		"permissionRequired": "Permission Required",
 		"permissionDescription": "Please allow notifications in your device settings to enable push notifications.",
 		"error": "Settings Error",
-		"errorDescription": "An error occurred while updating notification settings."
+		"errorDescription": "An error occurred while updating notification settings.",
+		"systemEnabled": "Enabled",
+		"systemDisabled": "Disabled",
+		"openAppSettings": "Open app settings"
 	}
 } 
