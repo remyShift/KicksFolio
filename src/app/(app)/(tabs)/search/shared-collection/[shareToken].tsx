@@ -1,78 +1,25 @@
-import { useEffect, useMemo, useState } from 'react';
-
-import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Text, View } from 'react-native';
+import { useEffect, useState } from 'react';
 
 import { useLocalSearchParams } from 'expo-router';
 
 import ProfileDisplayContainer from '@/components/screens/app/profile/ProfileDisplayContainer';
+import SharedCollectionError from '@/components/screens/share-collection/SharedCollectionError';
+import { useSharedCollectionFilters } from '@/components/screens/share-collection/SharedCollectionFilters';
+import SharedCollectionLoader from '@/components/screens/share-collection/SharedCollectionLoader';
 import { useModalNavigation } from '@/components/ui/modals/SneakersModal/hooks/useModalNavigation';
 import { shareHandler } from '@/d/Share';
 import { SharedCollectionData } from '@/types/sharing';
 
 export default function SharedCollectionScreen() {
 	const { shareToken } = useLocalSearchParams<{ shareToken: string }>();
-	const { t } = useTranslation();
 	const [collectionData, setCollectionData] =
 		useState<SharedCollectionData | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 
-	const contextSneakers = useMemo(() => {
-		return collectionData?.sneakers_data || [];
-	}, [collectionData?.sneakers_data]);
-
-	const filteredSneakers = useMemo(() => {
-		if (!collectionData) return [];
-
-		const filters = collectionData.filters;
-
-		if (
-			!filters ||
-			(!filters.brands?.length &&
-				!filters.sizes?.length &&
-				!filters.conditions?.length &&
-				!filters.statuses?.length)
-		) {
-			return collectionData.sneakers_data;
-		}
-
-		return collectionData.sneakers_data.filter((sneaker) => {
-			let matches = true;
-
-			if (filters.brands?.length > 0) {
-				matches =
-					matches &&
-					filters.brands.includes(sneaker.brand?.name || '');
-			}
-
-			if (filters.sizes?.length > 0) {
-				const sizeEU = sneaker.size_eu?.toString();
-				const sizeUS = sneaker.size_us?.toString();
-				matches =
-					matches &&
-					(filters.sizes.includes(sizeEU) ||
-						filters.sizes.includes(sizeUS));
-			}
-
-			if (filters.conditions?.length > 0) {
-				matches =
-					matches &&
-					filters.conditions.includes(sneaker.condition?.toString());
-			}
-
-			if (filters.statuses?.length > 0) {
-				const selectedStatuses = filters.statuses.map((s) =>
-					s.toString()
-				);
-				matches =
-					matches &&
-					selectedStatuses.includes(sneaker.status_id?.toString());
-			}
-
-			return matches;
-		});
-	}, [collectionData?.sneakers_data, collectionData?.filters]);
+	const { filteredSneakers, contextSneakers } = useSharedCollectionFilters({
+		collectionData,
+	});
 
 	useModalNavigation({ contextSneakers });
 
@@ -111,23 +58,15 @@ export default function SharedCollectionScreen() {
 	};
 
 	if (loading) {
-		return (
-			<View className="flex-1 bg-background pt-32 items-center justify-center">
-				<ActivityIndicator size="large" color="black" />
-				<Text className="font-open-sans text-gray-500 mt-4">
-					{t('share.shared.loading')}
-				</Text>
-			</View>
-		);
+		return <SharedCollectionLoader />;
 	}
 
 	if (error || !collectionData) {
 		return (
-			<View className="flex-1 bg-background pt-32 items-center justify-center">
-				<Text className="font-open-sans text-gray-500 text-center">
-					{error || t('share.shared.error.notFound')}
-				</Text>
-			</View>
+			<SharedCollectionError
+				error={error || undefined}
+				isAuthenticated={true}
+			/>
 		);
 	}
 
