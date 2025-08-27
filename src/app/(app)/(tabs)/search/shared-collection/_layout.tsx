@@ -5,9 +5,6 @@ export default function SharedLayout() {
 		<Stack
 			screenOptions={{
 				headerShown: false,
-				contentStyle: {
-					backgroundColor: '#ECECEC',
-				},
 			}}
 		>
 			<Stack.Screen

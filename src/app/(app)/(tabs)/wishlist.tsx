@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 
+import { View } from 'react-native';
+
 import WishlistContainer from '@/components/screens/app/wishlist/WishlistContainer';
 import { useSession } from '@/contexts/authContext';
 
@@ -24,5 +26,9 @@ export default function Wishlist() {
 		}
 	};
 
-	return <WishlistContainer refreshing={refreshing} onRefresh={onRefresh} />;
+	return (
+		<View className="flex-1 bg-background">
+			<WishlistContainer refreshing={refreshing} onRefresh={onRefresh} />
+		</View>
+	);
 }

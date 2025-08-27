@@ -6,9 +6,6 @@ export default function SearchLayout() {
 			initialRouteName="index"
 			screenOptions={{
 				headerShown: false,
-				contentStyle: {
-					backgroundColor: '#ECECEC',
-				},
 			}}
 		>
 			<Stack.Screen

@@ -19,7 +19,7 @@ const gradientVariants = {
 
 export default function ModernBackground({
 	children,
-	variant = 'subtle',
+	variant = 'brand',
 	style,
 }: ModernBackgroundProps) {
 	const colors = gradientVariants[variant];
@@ -44,7 +44,7 @@ export function SimpleModernBackground({
 	style?: ViewStyle;
 }) {
 	return (
-		<View className="flex-1 bg-bg-background" style={style}>
+		<View className="flex-1" style={style}>
 			{children}
 		</View>
 	);

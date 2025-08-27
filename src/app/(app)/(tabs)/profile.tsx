@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import { View } from 'react-native';
+
 import ProfileDisplayContainer from '@/components/screens/app/profile/ProfileDisplayContainer';
 import { useModalContext } from '@/components/ui/modals/SneakersModal/hooks/useModalContext';
 import { useSession } from '@/contexts/authContext';
@@ -27,14 +29,16 @@ export default function Profile() {
 	}
 
 	return (
-		<ProfileDisplayContainer
-			user={user}
-			userSneakers={userSneakers || []}
-			refreshing={refreshing}
-			onRefresh={onRefresh}
-			onSneakerPress={handleSneakerPress}
-			showBackButton={false}
-			showSettingsButton={true}
-		/>
+		<View className="flex-1 bg-background">
+			<ProfileDisplayContainer
+				user={user}
+				userSneakers={userSneakers || []}
+				refreshing={refreshing}
+				onRefresh={onRefresh}
+				onSneakerPress={handleSneakerPress}
+				showBackButton={false}
+				showSettingsButton={true}
+			/>
+		</View>
 	);
 }

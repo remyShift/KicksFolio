@@ -15,7 +15,7 @@ export default function SettingsButton({
 }: SettingsButtonProps) {
 	const handleMenuPress = useCallback(() => {
 		if (isAnonymousUser) {
-			router.push('/anonymous-settings');
+			router.push('/share-collection/anonymous-settings');
 		} else {
 			router.push('/settings');
 		}

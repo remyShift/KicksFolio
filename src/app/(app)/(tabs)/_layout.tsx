@@ -38,7 +38,7 @@ export default function TabLayout() {
 					paddingHorizontal: 15,
 				},
 				sceneStyle: {
-					backgroundColor: '#ECECEC',
+					backgroundColor: '#F8FAFC',
 				},
 			}}
 		>

@@ -52,7 +52,7 @@ function RootNavigator() {
 			</Stack.Protected>
 
 			<Stack.Screen name="share-collection/[shareToken]" />
-			<Stack.Screen name="anonymous-settings" />
+			<Stack.Screen name="share-collection/anonymous-settings" />
 
 			<Stack.Protected guard={!!user}>
 				<Stack.Screen name="(app)" />
