@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Text, TouchableOpacity, View } from 'react-native';
 
 import { FilterState } from '@/types/filter';
+import { SneakerStatus } from '@/types/sneaker';
 
 import FilterGroup from './FilterGroup';
 
@@ -26,6 +27,12 @@ export default function FilterSection({
 	onClearFilters,
 }: FilterSectionProps) {
 	const { t } = useTranslation();
+
+	const STATUS_LABELS: Record<number, string> = {
+		[SneakerStatus.ROCKING]: 'ROCKING',
+		[SneakerStatus.SELLING]: 'SELLING',
+		[SneakerStatus.STOCKING]: 'STOCKING',
+	};
 
 	if (!showFilters) return null;
 
@@ -79,8 +86,8 @@ export default function FilterSection({
 	}));
 
 	const statusOptions = uniqueValues.statuses.map((status) => ({
-		label: status.toString(),
-		value: status,
+		label: STATUS_LABELS[status] ?? status.toString(),
+		value: status.toString(),
 	}));
 
 	return (

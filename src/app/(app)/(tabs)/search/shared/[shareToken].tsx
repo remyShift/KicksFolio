@@ -72,8 +72,12 @@ export default function SharedCollectionScreen() {
 			}
 
 			if (filters.statuses?.length > 0) {
+				const selectedStatuses = filters.statuses.map((s) =>
+					s.toString()
+				);
 				matches =
-					matches && filters.statuses.includes(sneaker.status_id);
+					matches &&
+					selectedStatuses.includes(sneaker.status_id?.toString());
 			}
 
 			return matches;

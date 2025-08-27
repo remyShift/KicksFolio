@@ -39,8 +39,9 @@ class SneakerFiltering implements SneakerFilterProviderInterface {
 		}
 
 		if (filters.statuses && filters.statuses.length > 0) {
+			const selectedStatuses = filters.statuses.map((s) => s.toString());
 			filteredSneakers = filteredSneakers.filter((sneaker) =>
-				filters.statuses!.includes(sneaker.status_id)
+				selectedStatuses.includes(sneaker.status_id?.toString())
 			);
 		}
 
