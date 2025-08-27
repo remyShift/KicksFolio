@@ -72,7 +72,6 @@
         "android.permission.WAKE_LOCK",
         "com.google.android.c2dm.permission.RECEIVE"
       ],
-      "googleServicesFile": "./google-services.json",
       "edgeToEdgeEnabled": true
     },
     "web": {
