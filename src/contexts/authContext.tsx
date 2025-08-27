@@ -156,7 +156,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
 			} = await supabase.auth.getSession();
 			if (session?.user && !session.user.is_anonymous) {
 				return auth.getCurrentUser().catch((error: any) => {
-					if (error.code === 'PGRST116') {
+					if (error) {
 						return supabase.auth.signOut().then(() => {
 							clearUserData();
 						});

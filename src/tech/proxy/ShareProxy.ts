@@ -20,7 +20,7 @@ class ShareProxy implements ShareHandlerInterface {
 	}
 
 	private buildInternalShareUrl(shareToken: string): string {
-		return `/shared/${shareToken}`;
+		return `/share-collection/${shareToken}`;
 	}
 
 	async createShareLink(
@@ -68,7 +68,6 @@ class ShareProxy implements ShareHandlerInterface {
 	async getSharedCollection(
 		shareToken: string
 	): Promise<SharedCollectionData> {
-		// Récupérer d'abord les informations de base de la collection partagée
 		const { data: sharedData, error: sharedError } = await supabase.rpc(
 			'get_shared_collection',
 			{
@@ -84,7 +83,6 @@ class ShareProxy implements ShareHandlerInterface {
 
 		const result = sharedData[0];
 
-		// Récupérer les données de base de l'utilisateur
 		const { data: completeUserData, error: userError } = await supabase
 			.from('users')
 			.select(
@@ -95,7 +93,6 @@ class ShareProxy implements ShareHandlerInterface {
 
 		if (userError) throw userError;
 
-		// Calculer les compteurs de followers/following
 		const [followersResult, followingResult] = await Promise.all([
 			supabase
 				.from('followers')
