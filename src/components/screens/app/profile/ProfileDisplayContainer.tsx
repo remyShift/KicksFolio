@@ -46,7 +46,6 @@ export default function ProfileDisplayContainer(
 		uniqueValues: any;
 	} | null>(null);
 
-	// Ref pour stocker les filtres actuels (pour éviter les problèmes de timing)
 	const currentFiltersRef = useRef<{
 		filters: FilterState;
 		uniqueValues: any;

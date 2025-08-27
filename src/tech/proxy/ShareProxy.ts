@@ -20,7 +20,7 @@ class ShareProxy implements ShareHandlerInterface {
 	}
 
 	private buildInternalShareUrl(shareToken: string): string {
-		return `/search/shared/${shareToken}`;
+		return `/shared/${shareToken}`;
 	}
 
 	async createShareLink(
