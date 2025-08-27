@@ -17,6 +17,7 @@ export type User = {
 	social_media_visibility?: boolean;
 	followers_count?: number;
 	following_count?: number;
+	is_anonymous?: boolean;
 };
 
 export interface SearchUser {

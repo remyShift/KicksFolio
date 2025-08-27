@@ -6,10 +6,20 @@ import { router } from 'expo-router';
 
 import { SimpleLineIcons } from '@expo/vector-icons';
 
-export default function SettingsButton() {
+interface SettingsButtonProps {
+	isAnonymousUser?: boolean;
+}
+
+export default function SettingsButton({
+	isAnonymousUser = false,
+}: SettingsButtonProps) {
 	const handleMenuPress = useCallback(() => {
-		router.push('/settings');
-	}, []);
+		if (isAnonymousUser) {
+			router.push('/anonymous-settings');
+		} else {
+			router.push('/settings');
+		}
+	}, [isAnonymousUser]);
 
 	return (
 		<View testID="profile-header">

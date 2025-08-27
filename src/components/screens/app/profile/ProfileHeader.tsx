@@ -46,8 +46,11 @@ function ProfileHeader(props: ProfileHeaderProps) {
 	);
 
 	const settingsButton = useMemo(
-		() => (showSettingsButton ? <SettingsButton /> : null),
-		[showSettingsButton]
+		() =>
+			showSettingsButton ? (
+				<SettingsButton isAnonymousUser={isAnonymousUser} />
+			) : null,
+		[showSettingsButton, isAnonymousUser]
 	);
 
 	const hasSneakers = useMemo(

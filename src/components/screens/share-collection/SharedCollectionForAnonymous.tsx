@@ -3,8 +3,6 @@ import { View } from 'react-native';
 import ProfileDisplayContainer from '@/components/screens/app/profile/ProfileDisplayContainer';
 import { SharedCollectionData } from '@/types/sharing';
 
-import { AnonymousUserMessage } from './AnonymousUserMessage';
-
 export function SharedCollectionForAnonymous({
 	collectionData,
 	loading,
@@ -25,7 +23,7 @@ export function SharedCollectionForAnonymous({
 				onRefresh={onRefresh}
 				showBackButton={false}
 				isAnonymousUser={true}
-				showSettingsButton={false}
+				showSettingsButton={true}
 				showAnonymousMessage={true}
 			/>
 		</View>
