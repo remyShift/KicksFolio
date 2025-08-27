@@ -13,10 +13,7 @@
       },
       "ios": {
         "resourceClass": "m-medium",
-        "simulator": true,
-        "capabilities": {
-          "push-notifications": true
-        }
+        "simulator": true
       }
     },
     "preview": {
@@ -26,10 +23,7 @@
         "gradleCommand": ":app:assembleRelease"
       },
       "ios": {
-        "resourceClass": "m-medium",
-        "capabilities": {
-          "push-notifications": true
-        }
+        "resourceClass": "m-medium"
       }
     },
     "production": {
@@ -39,10 +33,7 @@
         "gradleCommand": ":app:bundleRelease"
       },
       "ios": {
-        "resourceClass": "m-medium",
-        "capabilities": {
-          "push-notifications": true
-        }
+        "resourceClass": "m-medium"
       }
     },
     "debug-prod": {
