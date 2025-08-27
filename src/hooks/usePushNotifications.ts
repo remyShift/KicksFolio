@@ -30,6 +30,7 @@ export const usePushNotifications = () => {
 			setError(null);
 
 			if (!Device.isDevice) {
+				console.warn('Push notifications require a physical device');
 				setError('Must use physical device for Push Notifications');
 				return null;
 			}
@@ -72,11 +73,23 @@ export const usePushNotifications = () => {
 			return null;
 		} catch (err) {
 			console.error('Error registering for push notifications:', err);
-			setError(
-				err instanceof Error
-					? err.message
-					: 'Failed to register for push notifications'
-			);
+
+			// More specific error handling for iOS provisioning issues
+			const errorMessage =
+				err instanceof Error ? err.message : 'Unknown error';
+			if (
+				errorMessage.includes('aps-environment') ||
+				errorMessage.includes('provisioning')
+			) {
+				setError(
+					'Push notifications require proper iOS provisioning profile. Please build with EAS Development.'
+				);
+				console.warn(
+					'💡 Solution: Run "eas build --platform ios --profile development"'
+				);
+			} else {
+				setError(errorMessage);
+			}
 			return null;
 		} finally {
 			setIsLoading(false);

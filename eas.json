@@ -12,7 +12,11 @@
         "buildType": "apk"
       },
       "ios": {
-        "resourceClass": "m-medium"
+        "resourceClass": "m-medium",
+        "simulator": true,
+        "capabilities": {
+          "push-notifications": true
+        }
       }
     },
     "preview": {
@@ -22,7 +26,10 @@
         "gradleCommand": ":app:assembleRelease"
       },
       "ios": {
-        "resourceClass": "m-medium"
+        "resourceClass": "m-medium",
+        "capabilities": {
+          "push-notifications": true
+        }
       }
     },
     "production": {
@@ -32,14 +39,20 @@
         "gradleCommand": ":app:bundleRelease"
       },
       "ios": {
-        "resourceClass": "m-medium"
+        "resourceClass": "m-medium",
+        "capabilities": {
+          "push-notifications": true
+        }
       }
     },
     "debug-prod": {
       "distribution": "internal",
       "ios": {
         "buildConfiguration": "Release",
-        "resourceClass": "m-medium"
+        "resourceClass": "m-medium",
+        "capabilities": {
+          "push-notifications": true
+        }
       }
     }
   },

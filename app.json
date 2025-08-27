@@ -66,8 +66,13 @@
       ],
       "permissions": [
         "android.permission.RECORD_AUDIO",
-        "android.permission.CAMERA"
+        "android.permission.CAMERA",
+        "android.permission.RECEIVE_BOOT_COMPLETED",
+        "android.permission.VIBRATE",
+        "android.permission.WAKE_LOCK",
+        "com.google.android.c2dm.permission.RECEIVE"
       ],
+      "googleServicesFile": "./google-services.json",
       "edgeToEdgeEnabled": true
     },
     "web": {
@@ -114,6 +119,16 @@
           "imageWidth": 600,
           "imageHeight": 600,
           "backgroundColor": "#F27329"
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./src/assets/images/icon.png",
+          "color": "#F27329",
+          "sounds": [
+            "./src/assets/sounds/notification.wav"
+          ]
         }
       ],
       "expo-font",

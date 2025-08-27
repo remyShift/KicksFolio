@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { NotificationHandler } from '@/domain/NotificationHandler';
 import { notificationProxy } from '@/tech/proxy/NotificationProxy';
 import { Notification } from '@/types/notification';
+import { groupNotificationsByWindow } from '@/utils/notificationHelpers';
 
 const notificationHandler = new NotificationHandler(notificationProxy);
 
@@ -22,12 +23,15 @@ export const useNotifications = () => {
 					await notificationHandler.getNotifications(limit, offset);
 
 				if (offset === 0) {
-					setNotifications(fetchedNotifications);
+					// Group notifications to avoid duplicates in the same time window
+					const groupedNotifications =
+						groupNotificationsByWindow(fetchedNotifications);
+					setNotifications(groupedNotifications);
 				} else {
-					setNotifications((prev) => [
-						...prev,
-						...fetchedNotifications,
-					]);
+					setNotifications((prev) => {
+						const combined = [...prev, ...fetchedNotifications];
+						return groupNotificationsByWindow(combined);
+					});
 				}
 			} catch (err) {
 				console.error('Error fetching notifications:', err);

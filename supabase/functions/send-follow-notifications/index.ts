@@ -217,6 +217,20 @@ serve(async (req: Request) => {
 
 		const pushPromises = (pushTokens as PushToken[]).map(
 			async (tokenData: PushToken) => {
+				// Check if we already sent a notification to this user in the current window
+				const { data: existingNotification } = await supabase
+					.from('notifications')
+					.select('id, created_at')
+					.eq('recipient_id', tokenData.user_id)
+					.in('type', [
+						'single_sneaker_added',
+						'multiple_sneakers_added',
+					])
+					.gte('created_at', windowStart.toISOString())
+					.order('created_at', { ascending: false })
+					.limit(1)
+					.maybeSingle();
+
 				const pushPayload = {
 					to: tokenData.expo_token,
 					title,
@@ -243,16 +257,41 @@ serve(async (req: Request) => {
 					return false;
 				}
 
-				await supabase.from('notifications').insert([
-					{
-						recipient_id: tokenData.user_id,
-						type: notificationType,
-						data: notificationData,
-						title,
-						body,
-						is_read: false,
-					},
-				]);
+				// Update existing notification or create new one
+				if (existingNotification) {
+					// Update the existing notification with latest data
+					await supabase
+						.from('notifications')
+						.update({
+							type: notificationType,
+							data: notificationData,
+							title,
+							body,
+							updated_at: new Date().toISOString(),
+							// Keep is_read status as it was
+						})
+						.eq('id', existingNotification.id);
+
+					console.log(
+						`Updated existing notification for user ${tokenData.user_id}`
+					);
+				} else {
+					// Create new notification
+					await supabase.from('notifications').insert([
+						{
+							recipient_id: tokenData.user_id,
+							type: notificationType,
+							data: notificationData,
+							title,
+							body,
+							is_read: false,
+						},
+					]);
+
+					console.log(
+						`Created new notification for user ${tokenData.user_id}`
+					);
+				}
 
 				return true;
 			}
@@ -265,16 +304,17 @@ serve(async (req: Request) => {
 		).length;
 
 		console.log(
-			`Sent ${successCount} notifications out of ${pushTokens.length} attempts`
+			`Processed ${successCount} notifications out of ${pushTokens.length} attempts (${sneakerCount} sneakers, type: ${notificationType})`
 		);
 
 		return new Response(
 			JSON.stringify({
 				success: true,
-				sentCount: successCount,
+				processedCount: successCount,
 				totalFollowers: notifiableFollowers.length,
 				sneakerCount,
 				notificationType,
+				windowStart: windowStart.toISOString(),
 			}),
 			{
 				headers: { 'Content-Type': 'application/json' },
