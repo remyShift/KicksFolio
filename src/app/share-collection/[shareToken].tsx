@@ -83,7 +83,7 @@ export default function SharedCollectionScreen() {
 	useModalNavigation({ contextSneakers });
 
 	useEffect(() => {
-		if (currentUser) {
+		if (currentUser && !currentUser.is_anonymous) {
 			router.replace(
 				`/(app)/(tabs)/search/shared-collection/${shareToken}`
 			);
@@ -124,7 +124,7 @@ export default function SharedCollectionScreen() {
 		}
 	};
 
-	if (currentUser) {
+	if (currentUser && !currentUser.is_anonymous) {
 		return null;
 	}
 

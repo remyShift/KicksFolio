@@ -125,7 +125,14 @@ export default function LoginForm() {
 		if (isLoggingIn && user && !isLoading) {
 			setIsLoggingIn(false);
 			const userName = user.first_name || user.username || '';
-			router.replace('/(app)/(tabs)');
+
+			const redirectSource = params.redirectSource as string;
+			if (redirectSource === 'share-collection') {
+				router.replace('/(app)/(tabs)');
+			} else {
+				router.replace('/(app)/(tabs)');
+			}
+
 			showSuccessToast(
 				t('auth.login.welcomeBack', {
 					name: userName,
@@ -133,7 +140,14 @@ export default function LoginForm() {
 				t('auth.login.gladToSeeYou')
 			);
 		}
-	}, [isLoggingIn, user, isLoading, showSuccessToast, t]);
+	}, [
+		isLoggingIn,
+		user,
+		isLoading,
+		showSuccessToast,
+		t,
+		params.redirectSource,
+	]);
 
 	return (
 		<KeyboardAwareScrollView

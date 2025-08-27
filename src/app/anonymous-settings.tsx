@@ -11,7 +11,17 @@ export default function AnonymousSettings() {
 	const { t } = useTranslation();
 
 	const handleLogin = () => {
-		router.push('/(auth)/login');
+		router.push({
+			pathname: '/(auth)/login',
+			params: { redirectSource: 'share-collection' },
+		});
+	};
+
+	const handleSignUp = () => {
+		router.push({
+			pathname: '/(auth)/(signup)/sign-up',
+			params: { redirectSource: 'share-collection' },
+		});
 	};
 
 	return (
@@ -38,6 +48,14 @@ export default function AnonymousSettings() {
 					icon="log-in-outline"
 					label={t('auth.buttons.login')}
 					onPress={handleLogin}
+					color="#F27329"
+					textColor="#F27329"
+					testID="login-button"
+				/>
+				<SettingsMenuItem
+					icon="log-in-outline"
+					label={t('auth.buttons.signUp')}
+					onPress={handleSignUp}
 					color="#F27329"
 					textColor="#F27329"
 					testID="login-button"

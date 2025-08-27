@@ -142,7 +142,13 @@ export function SessionProvider({ children }: PropsWithChildren) {
 			data: { subscription },
 		} = supabase.auth.onAuthStateChange(async (event, session) => {
 			if (session?.user && !session.user.is_anonymous) {
-				await initializeUserData(session.user.id);
+				if (event === 'SIGNED_IN') {
+					setTimeout(() => {
+						initializeUserData(session.user.id);
+					}, 500);
+				} else {
+					await initializeUserData(session.user.id);
+				}
 			} else {
 				clearUserData();
 			}

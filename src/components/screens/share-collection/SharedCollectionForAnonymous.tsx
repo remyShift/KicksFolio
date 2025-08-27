@@ -15,7 +15,7 @@ export function SharedCollectionForAnonymous({
 	filteredSneakers: any[];
 }) {
 	return (
-		<View className="flex-1 bg-background pt-12">
+		<View className="flex-1 bg-background">
 			<ProfileDisplayContainer
 				user={collectionData.user_data}
 				userSneakers={filteredSneakers}
