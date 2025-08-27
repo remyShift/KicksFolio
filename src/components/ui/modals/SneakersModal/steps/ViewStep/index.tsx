@@ -10,14 +10,18 @@ import { ConditionBar } from '@/components/ui/indicators/ConditionBar';
 import LoveButton from '@/components/ui/modals/SneakersModal/steps/ViewStep/LoveButton';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import SizeDisplay from '@/components/ui/text/SizeDisplay';
+import { useSession } from '@/contexts/authContext';
 import { useCurrencyStore } from '@/store/useCurrencyStore';
 import { useModalStore } from '@/store/useModalStore';
 import { sneakerStatusOptions } from '@/validation/utils';
 
 export const ViewStep = () => {
 	const { currentSneaker } = useModalStore();
+	const { user } = useSession();
 	const [errorMsg, setErrorMsg] = useState('');
 	const { convertAndFormatdPrice } = useCurrencyStore();
+
+	const isAnonymous = !user || user.is_anonymous;
 
 	if (!currentSneaker) {
 		return null;
@@ -92,7 +96,7 @@ export const ViewStep = () => {
 					</View>
 				</View>
 
-				<LoveButton sneaker={currentSneaker} />
+				{!isAnonymous && <LoveButton sneaker={currentSneaker} />}
 			</View>
 
 			<View className="flex gap-2">

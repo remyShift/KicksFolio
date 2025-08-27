@@ -35,9 +35,8 @@ export const useModalFooterActions = () => {
 		setIsLoading,
 	} = useModalStore();
 
-	if (!user) {
-		throw new Error('User is not authenticated');
-	}
+	// Permettre l'accès aux utilisateurs anonymes pour la visualisation uniquement
+	const isAnonymous = !user || user.is_anonymous;
 
 	const {
 		handleSkuSearch,
@@ -49,10 +48,24 @@ export const useModalFooterActions = () => {
 	} = useSneakerAPI();
 
 	const handleEditAction = () => {
+		if (isAnonymous) {
+			showErrorToast(
+				'Action non autorisée',
+				'Connectez-vous pour modifier des sneakers'
+			);
+			return;
+		}
 		setModalStep('editForm');
 	};
 
 	const handleDeleteAction = (sneakerToDelete: Sneaker | null = null) => {
+		if (isAnonymous) {
+			showErrorToast(
+				'Action non autorisée',
+				'Connectez-vous pour supprimer des sneakers'
+			);
+			return;
+		}
 		if (sneakerToDelete?.id || currentSneaker?.id) {
 			Alert.alert(
 				t('alert.titles.deleteSneaker'),
@@ -114,6 +127,25 @@ export const useModalFooterActions = () => {
 	};
 
 	const handleNextAction = () => {
+		// Empêcher les actions d'ajout/édition pour les utilisateurs anonymes
+		if (
+			isAnonymous &&
+			[
+				'index',
+				'sku',
+				'addFormImages',
+				'addFormDetails',
+				'editFormImages',
+				'editForm',
+			].includes(modalStep)
+		) {
+			showErrorToast(
+				'Action non autorisée',
+				'Connectez-vous pour ajouter ou modifier des sneakers'
+			);
+			return;
+		}
+
 		switch (modalStep) {
 			case 'index':
 				setErrorMsg('');
@@ -263,7 +295,12 @@ export const useModalFooterActions = () => {
 				break;
 			case 'view':
 				if (nextSneaker) {
-					handleNext(nextSneaker, setCurrentSneaker);
+					if (isAnonymous) {
+						// Navigation simple pour les utilisateurs anonymes
+						setCurrentSneaker(nextSneaker);
+					} else {
+						handleNext(nextSneaker, setCurrentSneaker);
+					}
 				} else {
 					setIsVisible(false);
 				}
@@ -299,7 +336,12 @@ export const useModalFooterActions = () => {
 				break;
 			case 'view':
 				if (prevSneaker) {
-					handlePrevious(prevSneaker, setCurrentSneaker);
+					if (isAnonymous) {
+						// Navigation simple pour les utilisateurs anonymes
+						setCurrentSneaker(prevSneaker);
+					} else {
+						handlePrevious(prevSneaker, setCurrentSneaker);
+					}
 				} else {
 					resetModalData();
 					setIsVisible(false);

@@ -26,11 +26,12 @@ export const ModalFooter = () => {
 
 	useModalNavigation();
 
-	if (!user) return null;
+	// Pour les utilisateurs anonymes, afficher seulement les contrôles de visualisation
+	const isAnonymous = !user || user.is_anonymous;
 
 	return (
 		<View className="justify-end items-start w-full pb-6">
-			{modalStep === 'sku' && (
+			{!isAnonymous && modalStep === 'sku' && (
 				<View className="flex-row justify-between w-full">
 					<BackButton onPressAction={handleBackAction} />
 					<NextButton
@@ -45,12 +46,12 @@ export const ModalFooter = () => {
 					/>
 				</View>
 			)}
-			{modalStep === 'barcode' && (
+			{!isAnonymous && modalStep === 'barcode' && (
 				<View className="flex-row justify-between w-full">
 					<BackButton onPressAction={handleBackAction} />
 				</View>
 			)}
-			{modalStep === 'addFormImages' && (
+			{!isAnonymous && modalStep === 'addFormImages' && (
 				<View className="flex-row justify-between w-full">
 					<BackButton onPressAction={handleBackAction} />
 					<NextButton
@@ -65,7 +66,7 @@ export const ModalFooter = () => {
 					/>
 				</View>
 			)}
-			{modalStep === 'addFormDetails' && (
+			{!isAnonymous && modalStep === 'addFormDetails' && (
 				<View className="flex-row justify-between w-full">
 					<BackButton onPressAction={handleBackAction} />
 					<NextButton
@@ -80,7 +81,7 @@ export const ModalFooter = () => {
 					/>
 				</View>
 			)}
-			{modalStep === 'editFormImages' && (
+			{!isAnonymous && modalStep === 'editFormImages' && (
 				<View className="flex-row justify-between w-full">
 					<BackButton onPressAction={handleBackAction} />
 					<NextButton
@@ -95,7 +96,7 @@ export const ModalFooter = () => {
 					/>
 				</View>
 			)}
-			{modalStep === 'editForm' && (
+			{!isAnonymous && modalStep === 'editForm' && (
 				<View className="flex-row justify-between w-full">
 					<View className="flex flex-row gap-3">
 						<BackButton onPressAction={handleBackAction} />
@@ -121,13 +122,16 @@ export const ModalFooter = () => {
 				<View className="flex-row justify-between w-full">
 					<View className="flex flex-row gap-3">
 						<BackButton onPressAction={handleBackAction} />
-						{(currentSneaker!.owner?.id === user.id ||
-							currentSneaker!.user_id === user.id) && (
-							<EditButton
-								onPressAction={handleEditAction}
-								testID="edit-button"
-							/>
-						)}
+						{!isAnonymous &&
+							currentSneaker &&
+							user &&
+							(currentSneaker.owner?.id === user.id ||
+								currentSneaker.user_id === user.id) && (
+								<EditButton
+									onPressAction={handleEditAction}
+									testID="edit-button"
+								/>
+							)}
 					</View>
 
 					<NextButton

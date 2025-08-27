@@ -5,7 +5,8 @@ import { ActivityIndicator, Text, View } from 'react-native';
 
 import { router, useLocalSearchParams } from 'expo-router';
 
-import ProfileDisplayContainer from '@/components/screens/app/profile/ProfileDisplayContainer';
+import SneakersModalWrapper from '@/components/screens/app/SneakersModalWrapper';
+import { SharedCollectionForAnonymous } from '@/components/screens/share-collection/SharedCollectionForAnonymous';
 import { useModalNavigation } from '@/components/ui/modals/SneakersModal/hooks/useModalNavigation';
 import { useSession } from '@/contexts/authContext';
 import { shareHandler } from '@/d/Share';
@@ -23,15 +24,10 @@ export default function SharedCollectionScreen() {
 	const { ensureAnonymousAuth } = useAnonymousAuth();
 	const { user: currentUser } = useSession();
 
-	const isAuthenticated = useMemo(() => {
-		return !!currentUser;
-	}, [currentUser]);
-
 	const contextSneakers = useMemo(() => {
 		return collectionData?.sneakers_data || [];
 	}, [collectionData?.sneakers_data]);
 
-	// Appliquer les filtres pour tous les utilisateurs
 	const filteredSneakers = useMemo(() => {
 		if (!collectionData) return [];
 
@@ -87,7 +83,6 @@ export default function SharedCollectionScreen() {
 	useModalNavigation({ contextSneakers });
 
 	useEffect(() => {
-		// Si l'utilisateur est déjà connecté, redirection immédiate
 		if (currentUser) {
 			router.replace(
 				`/(app)/(tabs)/search/shared-collection/${shareToken}`
@@ -95,7 +90,6 @@ export default function SharedCollectionScreen() {
 			return;
 		}
 
-		// Pour les utilisateurs anonymes uniquement
 		async function loadSharedCollection() {
 			if (!shareToken) {
 				setError('Invalid share link');
@@ -130,7 +124,6 @@ export default function SharedCollectionScreen() {
 		}
 	};
 
-	// Pas de loading screen pour les utilisateurs connectés (redirection immédiate)
 	if (currentUser) {
 		return null;
 	}
@@ -156,63 +149,15 @@ export default function SharedCollectionScreen() {
 		);
 	}
 
-	// Cette route est uniquement pour les utilisateurs anonymes
-	return (
-		<SharedCollectionForAnonymous
-			collectionData={collectionData}
-			loading={loading}
-			onRefresh={handleRefresh}
-			filteredSneakers={filteredSneakers}
-		/>
-	);
-}
-
-function SharedCollectionForAnonymous({
-	collectionData,
-	loading,
-	onRefresh,
-	filteredSneakers,
-}: {
-	collectionData: SharedCollectionData;
-	loading: boolean;
-	onRefresh: () => Promise<void>;
-	filteredSneakers: any[];
-}) {
 	return (
 		<>
-			<AnonymousUserMessage />
-
-			<ProfileDisplayContainer
-				user={collectionData.user_data}
-				userSneakers={filteredSneakers}
-				refreshing={loading}
-				onRefresh={onRefresh}
-				showBackButton={false}
-				isAnonymousUser={true}
-				showSettingsButton={false}
+			<SharedCollectionForAnonymous
+				collectionData={collectionData}
+				loading={loading}
+				onRefresh={handleRefresh}
+				filteredSneakers={filteredSneakers}
 			/>
+			<SneakersModalWrapper />
 		</>
-	);
-}
-
-function AnonymousUserMessage() {
-	const { t } = useTranslation();
-
-	const handleLoginPress = () => {
-		router.push('/(auth)/login');
-	};
-
-	return (
-		<View className="bg-primary/10 p-4 mx-4 mt-4 rounded-lg">
-			<Text className="font-open-sans text-sm text-primary text-center mb-2">
-				{t('share.connectToAccess')}
-			</Text>
-			<Text
-				className="font-open-sans-bold text-sm text-primary text-center underline"
-				onPress={handleLoginPress}
-			>
-				{t('share.connectNow')}
-			</Text>
-		</View>
 	);
 }

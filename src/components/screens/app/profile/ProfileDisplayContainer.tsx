@@ -11,6 +11,7 @@ import { FilterState } from '@/types/filter';
 import { Sneaker } from '@/types/sneaker';
 import { SearchUser, User } from '@/types/user';
 
+import { AnonymousUserMessage } from '../../share-collection/AnonymousUserMessage';
 import EmptySneakersState from './displayState/EmptySneakersState';
 import DualViewContainer from './DualViewContainer';
 import ProfileHeader from './ProfileHeader';
@@ -24,6 +25,7 @@ interface ProfileDisplayContainerProps {
 	showBackButton?: boolean;
 	isAnonymousUser?: boolean;
 	showSettingsButton?: boolean;
+	showAnonymousMessage?: boolean;
 }
 
 export default function ProfileDisplayContainer(
@@ -38,6 +40,7 @@ export default function ProfileDisplayContainer(
 		showBackButton = false,
 		isAnonymousUser = false,
 		showSettingsButton = false,
+		showAnonymousMessage = false,
 	} = props;
 
 	const { setModalStep, setIsVisible } = useModalStore();
@@ -80,7 +83,6 @@ export default function ProfileDisplayContainer(
 
 			const response = await createShareLink(filtersToUse);
 
-			// Utiliser le système de filtrage existant pour obtenir le bon nombre
 			const sneakersWithoutWishlist = userSneakers.filter(
 				(sneaker) => !sneaker.wishlist
 			);
@@ -176,6 +178,7 @@ export default function ProfileDisplayContainer(
 				}
 			>
 				{memoizedProfileHeader}
+				{showAnonymousMessage && <AnonymousUserMessage />}
 				<DualViewContainer
 					userSneakers={userSneakers}
 					onSneakerPress={onSneakerPress}

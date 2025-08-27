@@ -3,11 +3,10 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Text, View } from 'react-native';
 
-import { router, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 
 import ProfileDisplayContainer from '@/components/screens/app/profile/ProfileDisplayContainer';
 import { useModalNavigation } from '@/components/ui/modals/SneakersModal/hooks/useModalNavigation';
-import { useSession } from '@/contexts/authContext';
 import { shareHandler } from '@/d/Share';
 import { SharedCollectionData } from '@/types/sharing';
 
@@ -19,13 +18,10 @@ export default function SharedCollectionScreen() {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 
-	const { user: currentUser } = useSession();
-
 	const contextSneakers = useMemo(() => {
 		return collectionData?.sneakers_data || [];
 	}, [collectionData?.sneakers_data]);
 
-	// Appliquer les filtres pour tous les utilisateurs
 	const filteredSneakers = useMemo(() => {
 		if (!collectionData) return [];
 
@@ -135,7 +131,6 @@ export default function SharedCollectionScreen() {
 		);
 	}
 
-	// Cette route est uniquement pour les utilisateurs authentifiés
 	return (
 		<ProfileDisplayContainer
 			user={collectionData.user_data}
