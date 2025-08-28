@@ -158,7 +158,7 @@ export default function LoginForm() {
 				flexGrow: 1,
 				padding: 8,
 			}}
-			bottomOffset={10}
+			bottomOffset={15}
 		>
 			<View className="flex-1 justify-center items-center gap-12 mt-20">
 				<PageTitle content={t('auth.titles.login')} />

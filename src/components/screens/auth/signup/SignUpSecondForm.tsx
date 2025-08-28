@@ -31,7 +31,7 @@ export default function SignUpSecondForm() {
 	const firstNameInputRef = useRef<TextInput>(null);
 
 	const { currentUnit } = useSizeUnitStore();
-	const { signUp } = useAuth();
+	const { signUp, errorMsg, clearError } = useAuth();
 	const { showSuccessToast } = useToast();
 
 	const {
@@ -103,8 +103,8 @@ export default function SignUpSecondForm() {
 						}}
 					>
 						<ErrorMsg
-							content={displayedError}
-							display={displayedError !== ''}
+							content={errorMsg || displayedError}
+							display={errorMsg !== '' || displayedError !== ''}
 						/>
 					</View>
 					<FormImageInput
