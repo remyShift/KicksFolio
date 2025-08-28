@@ -6,11 +6,13 @@ import { useSession } from '@/contexts/authContext';
 import { ImageStorage } from '@/domain/ImageStorage';
 import { SneakerHandler } from '@/domain/SneakerHandler';
 import useToast from '@/hooks/ui/useToast';
+import { useNotifications } from '@/hooks/useNotifications';
 import { FetchedSneaker } from '@/store/useModalStore';
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';
 import { imageStorageProxy } from '@/tech/proxy/ImageProxy';
 import { sneakerProxy } from '@/tech/proxy/SneakerProxy';
 import { SneakerPhoto } from '@/types/image';
+import { NotificationType } from '@/types/notification';
 import { Sneaker } from '@/types/sneaker';
 import {
 	createSneakerSchema,
@@ -44,6 +46,7 @@ export const useSneakerAPI = () => {
 	const { showSuccessToast, showErrorToast } = useToast();
 	const { t } = useTranslation();
 	const { currentUnit } = useSizeUnitStore();
+	const { sendNotificationToFollowers } = useNotifications();
 
 	const imageHandler = new ImageStorage(imageStorageProxy);
 	const sneakerHandler = new SneakerHandler(sneakerProxy);
@@ -244,15 +247,64 @@ export const useSneakerAPI = () => {
 							)}`,
 							t('collection.modal.form.success.addedDescription')
 						);
+
+						if (user?.id && sneakerWithAltText.id) {
+							sendNotificationToFollowers(
+								user.id,
+								NotificationType.SINGLE_SNEAKER_ADDED,
+								{
+									type: NotificationType.SINGLE_SNEAKER_ADDED,
+									sneaker: {
+										id: sneakerWithAltText.id,
+										model: sneakerWithAltText.model,
+										brand_name: 'Unknown',
+										image: sneakerWithAltText.images?.[0]
+											?.uri,
+									},
+									user_id: user.id,
+									username: user.username || '',
+									user_avatar: user.profile_picture,
+								}
+							).catch((error) => {
+								console.warn(
+									'Failed to send notifications:',
+									error
+								);
+							});
+						}
 					});
 				}
 				return response;
 			})
-			.catch((error: Error) => {
+			.catch((error) => {
 				console.error('❌ handleAddSneaker error:', error);
-				callbacks?.setErrorMsg?.(
-					error.message || 'Failed to add sneaker'
-				);
+
+				let errorMessage = 'Failed to add sneaker';
+
+				if (typeof error === 'string') {
+					errorMessage = error;
+				} else if (error?.message) {
+					errorMessage = error.message;
+				} else if (error?.details) {
+					errorMessage = error.details;
+				} else if (error?.hint) {
+					errorMessage = error.hint;
+				} else if (error?.code) {
+					const pgErrors: { [key: string]: string } = {
+						'42703':
+							'Erreur de configuration de la base de données',
+						'23505': 'Cette sneaker existe déjà',
+						'23503': 'Données manquantes ou invalides',
+						'42P01': 'Erreur de structure de base de données',
+					};
+					errorMessage =
+						pgErrors[error.code] ||
+						`Erreur de base de données (${error.code})`;
+				} else if (typeof error === 'object') {
+					errorMessage = JSON.stringify(error);
+				}
+
+				callbacks?.setErrorMsg?.(errorMessage);
 				showErrorToast(
 					t('collection.modal.form.errors.sneaker.error'),
 					t('collection.modal.form.errors.sneaker.errorDescription')

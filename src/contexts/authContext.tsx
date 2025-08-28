@@ -57,6 +57,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
 		fetchUnreadCount,
 		startPolling,
 		stopPolling,
+		markAllAsRead,
 	} = useNotifications();
 	const { registerForPushNotifications, setBadgeCount, hasPermission } =
 		usePushNotifications();
@@ -485,6 +486,13 @@ export function SessionProvider({ children }: PropsWithChildren) {
 				sneakers: userSneakers,
 				followingUsers: followingUsers,
 			});
+		} else if (appState === 'active' && user) {
+			try {
+				await markAllAsRead();
+				await fetchUnreadCount();
+			} catch (error) {
+				console.warn('Failed to mark notifications as read:', error);
+			}
 		}
 	};
 

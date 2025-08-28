@@ -2,7 +2,11 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { NotificationHandler } from '@/domain/NotificationHandler';
 import { notificationProxy } from '@/tech/proxy/NotificationProxy';
-import { Notification } from '@/types/notification';
+import {
+	Notification,
+	NotificationData,
+	NotificationType,
+} from '@/types/notification';
 import { groupNotificationsByWindow } from '@/utils/notificationHelpers';
 
 const notificationHandler = new NotificationHandler(notificationProxy);
@@ -147,6 +151,26 @@ export const useNotifications = () => {
 		clearInterval(interval);
 	}, []);
 
+	const sendNotificationToFollowers = useCallback(
+		async (
+			senderId: string,
+			type: NotificationType,
+			data: NotificationData
+		) => {
+			try {
+				await notificationHandler.sendNotificationToFollowers(
+					senderId,
+					type,
+					data
+				);
+			} catch (error) {
+				console.warn('Failed to send notifications:', error);
+				throw error;
+			}
+		},
+		[]
+	);
+
 	return {
 		notifications,
 		unreadCount,
@@ -160,5 +184,6 @@ export const useNotifications = () => {
 		fetchUnreadCount,
 		startPolling,
 		stopPolling,
+		sendNotificationToFollowers,
 	};
 };
