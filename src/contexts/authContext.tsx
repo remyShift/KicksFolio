@@ -352,7 +352,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
 							`Authentication error after ${attempt + 1} attempts:`,
 							error
 						);
-						// Don't throw error, just resolve to avoid breaking the flow
 						return Promise.resolve();
 					}
 				});
