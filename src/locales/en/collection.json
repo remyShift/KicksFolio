@@ -142,10 +142,12 @@
 					"min": "Please enter a valid price."
 				},
 				"sku": {
-					"required": "Please enter a SKU."
+					"required": "Please enter a SKU.",
+					"notFound": "No data found for this SKU."
 				},
 				"barcode": {
-					"required": "Please scan a barcode."
+					"required": "Please scan a barcode.",
+					"notFound": "No data found for this barcode."
 				},
 				"user": {
 					"required": "No user authenticated"

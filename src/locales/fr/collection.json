@@ -142,10 +142,12 @@
 					"min": "Veuillez entrer un prix valide."
 				},
 				"sku": {
-					"required": "Veuillez entrer un SKU."
+					"required": "Veuillez entrer un SKU.",
+					"notFound": "Aucune donnée trouvée pour ce SKU."
 				},
 				"barcode": {
-					"required": "Veuillez scanner un code-barres."
+					"required": "Veuillez scanner un code-barres.",
+					"notFound": "Aucune donnée trouvée pour ce code-barres."
 				},
 				"user": {
 					"required": "Aucun utilisateur authentifié"

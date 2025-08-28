@@ -137,9 +137,16 @@ export const useSneakerAPI = () => {
 				return response;
 			})
 			.catch((error: Error) => {
-				callbacks.setErrorMsg(
-					error.message || 'An error occurred during SKU search'
-				);
+				if (error.message.includes('Aucune donnée trouvée')) {
+					callbacks.setErrorMsg(
+						t('collection.modal.form.errors.sku.notFound') ||
+							'No data found for this SKU'
+					);
+				} else {
+					callbacks.setErrorMsg(
+						error.message || 'An error occurred during SKU search'
+					);
+				}
 				throw error;
 			});
 	};
@@ -506,9 +513,17 @@ export const useSneakerAPI = () => {
 				return response;
 			})
 			.catch((error: Error) => {
-				callbacks.setErrorMsg(
-					error.message || 'An error occurred during barcode search'
-				);
+				if (error.message.includes('Aucune donnée trouvée')) {
+					callbacks.setErrorMsg(
+						t('collection.modal.form.errors.barcode.notFound') ||
+							'No data found for this barcode'
+					);
+				} else {
+					callbacks.setErrorMsg(
+						error.message ||
+							'An error occurred during barcode search'
+					);
+				}
 				throw error;
 			});
 	};
