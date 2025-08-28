@@ -51,14 +51,28 @@ export const useAuth = () => {
 									.then((updatedUser) => {
 										setUser(updatedUser as any);
 										return response;
+									})
+									.catch((error) => {
+										console.warn(
+											'Failed to update profile picture, but signup succeeded:',
+											error
+										);
+										return response;
 									});
 							} else {
-								console.error(
+								console.warn(
 									'❌ useAuth.signUp: Failed to upload profile picture:',
 									uploadResult.error
 								);
 								return response;
 							}
+						})
+						.catch((error) => {
+							console.warn(
+								'Failed to upload profile picture, but signup succeeded:',
+								error
+							);
+							return response;
 						});
 				}
 				return response;
@@ -71,6 +85,7 @@ export const useAuth = () => {
 				return false;
 			})
 			.catch((error) => {
+				console.error('❌ useAuth.signUp: Error occurred:', error);
 				setErrorMsg(`${t('auth.error.signUp')} : ${error.message}`);
 				return false;
 			});

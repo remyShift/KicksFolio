@@ -223,8 +223,17 @@ export function SessionProvider({ children }: PropsWithChildren) {
 
 	const initializeNotifications = async () => {
 		try {
-			await registerForPushNotifications();
+			const {
+				data: { user },
+			} = await supabase.auth.getUser();
+			if (!user) {
+				console.log(
+					'Skipping notification initialization: no authenticated user'
+				);
+				return;
+			}
 
+			await registerForPushNotifications();
 			await refreshNotifications();
 
 			const interval = startPolling();
@@ -289,8 +298,8 @@ export function SessionProvider({ children }: PropsWithChildren) {
 	};
 
 	const initializeUserData = async (userId: string) => {
-		const maxRetries = 2;
-		const retryDelay = 800;
+		const maxRetries = 3;
+		const retryDelay = 1000;
 
 		const getUserWithRetries = async (attempt: number): Promise<any> => {
 			return auth
@@ -324,7 +333,12 @@ export function SessionProvider({ children }: PropsWithChildren) {
 					}
 				})
 				.catch((error: any) => {
-					if (attempt < maxRetries && error.code === 'PGRST116') {
+					if (
+						attempt < maxRetries &&
+						(error.code === 'PGRST116' ||
+							error.message?.includes('No user found') ||
+							error.message?.includes('0 rows'))
+					) {
 						console.log(
 							`Database sync pending, retrying... (attempt ${attempt + 1})`
 						);
@@ -338,6 +352,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
 							`Authentication error after ${attempt + 1} attempts:`,
 							error
 						);
+						// Don't throw error, just resolve to avoid breaking the flow
 						return Promise.resolve();
 					}
 				});
@@ -383,14 +398,22 @@ export function SessionProvider({ children }: PropsWithChildren) {
 				await loadFollowingUsers(userWithUrl.id);
 			})
 			.catch((error) => {
-				console.error(
-					'❌ refreshUserData: Error refreshing user data:',
-					error
-				);
-				setUserSneakers([]);
-				setWishlistSneakers([]);
-				storageProvider.setSneakersData([]);
-				storageProvider.setItem('wishlistSneakers', []);
+				if (
+					!error.message?.includes('No user found') &&
+					!error.message?.includes('0 rows') &&
+					error.code !== 'PGRST116'
+				) {
+					console.error(
+						'❌ refreshUserData: Error refreshing user data:',
+						error
+					);
+				}
+				if (error.code !== 'PGRST116') {
+					setUserSneakers([]);
+					setWishlistSneakers([]);
+					storageProvider.setSneakersData([]);
+					storageProvider.setItem('wishlistSneakers', []);
+				}
 			});
 	};
 

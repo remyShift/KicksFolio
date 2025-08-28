@@ -23,25 +23,51 @@ export class AuthProxy implements AuthProviderInterface {
 			throw result.error;
 		}
 
-		const { data: user, error: userError } = await supabase
-			.from('users')
-			.insert([
-				{
-					id: result.data.user?.id,
-					email: email,
-					username: userData.username,
-					first_name: userData.first_name,
-					last_name: userData.last_name,
-					sneaker_size: userData.sneaker_size,
-					profile_picture: userData.profile_picture,
-				},
-			])
-			.select()
-			.single();
+		const maxRetries = 5;
+		const retryDelay = 1000;
+		let user = null;
+		let userError = null;
 
-		if (userError) {
+		for (let attempt = 0; attempt < maxRetries; attempt++) {
+			try {
+				const { data: userData, error } = await supabase
+					.from('users')
+					.select('*')
+					.eq('id', result.data.user?.id)
+					.single();
+
+				if (!error && userData) {
+					user = userData;
+					break;
+				}
+
+				if (attempt < maxRetries - 1) {
+					console.log(
+						`User not ready, retrying... (attempt ${attempt + 1})`
+					);
+					await new Promise((resolve) =>
+						setTimeout(resolve, retryDelay)
+					);
+				} else {
+					userError = error;
+				}
+			} catch (error) {
+				if (attempt < maxRetries - 1) {
+					console.log(
+						`User not ready, retrying... (attempt ${attempt + 1})`
+					);
+					await new Promise((resolve) =>
+						setTimeout(resolve, retryDelay)
+					);
+				} else {
+					userError = error;
+				}
+			}
+		}
+
+		if (userError || !user) {
 			await supabase.auth.signOut();
-			throw userError;
+			throw userError || new Error('Failed to create user in database');
 		}
 
 		return { ...result.data, user };
@@ -88,13 +114,50 @@ export class AuthProxy implements AuthProviderInterface {
 		if (error) throw error;
 		if (!user) throw new Error('No user found');
 
-		const { data: userData, error: userError } = await supabase
-			.from('users')
-			.select('*')
-			.eq('id', user.id)
-			.single();
+		const maxRetries = 3;
+		const retryDelay = 500;
+		let userData = null;
+		let userError = null;
+
+		for (let attempt = 0; attempt < maxRetries; attempt++) {
+			try {
+				const { data, error } = await supabase
+					.from('users')
+					.select('*')
+					.eq('id', user.id)
+					.single();
+
+				if (!error && data) {
+					userData = data;
+					break;
+				}
+
+				if (attempt < maxRetries - 1) {
+					console.log(
+						`User data not ready, retrying... (attempt ${attempt + 1})`
+					);
+					await new Promise((resolve) =>
+						setTimeout(resolve, retryDelay)
+					);
+				} else {
+					userError = error;
+				}
+			} catch (error) {
+				if (attempt < maxRetries - 1) {
+					console.log(
+						`User data not ready, retrying... (attempt ${attempt + 1})`
+					);
+					await new Promise((resolve) =>
+						setTimeout(resolve, retryDelay)
+					);
+				} else {
+					userError = error;
+				}
+			}
+		}
 
 		if (userError) throw userError;
+		if (!userData) throw new Error('User data not found in database');
 
 		const [followersResult, followingResult] = await Promise.all([
 			supabase

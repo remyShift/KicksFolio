@@ -53,7 +53,9 @@ export const useNotifications = () => {
 		} catch (err) {
 			if (
 				err instanceof Error &&
-				err.message.includes('User not authenticated')
+				(err.message.includes('User not authenticated') ||
+					err.message.includes('No user found') ||
+					err.message.includes('0 rows'))
 			) {
 				setUnreadCount(0);
 			} else {
