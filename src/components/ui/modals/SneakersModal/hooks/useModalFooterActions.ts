@@ -156,6 +156,12 @@ export const useModalFooterActions = () => {
 					setErrorMsg(t('collection.modal.form.errors.sku.required'));
 					return;
 				}
+
+				if (fetchedSneaker) {
+					setModalStep('addFormImages');
+					return;
+				}
+
 				showInfoToast(
 					t('collection.messages.searching.title'),
 					t('collection.messages.searching.description')
@@ -212,7 +218,11 @@ export const useModalFooterActions = () => {
 									estimatedValue,
 									gender,
 									sku,
-									fetchedSneaker?.image?.uri
+									useModalStore
+										.getState()
+										.sneakerToAdd?.images?.find(
+											(img) => img.id === ''
+										)?.uri
 								);
 							} else {
 								setErrorMsg(result.errorMsg);

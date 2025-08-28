@@ -102,7 +102,7 @@ class ImageStorageProxy implements ImageStorageInterface {
 	}
 
 	async delete(
-		bucket: 'sneakers' | 'profiles',
+		bucket: 'sneakers' | 'profiles' | 'sneakers-reference',
 		filePath: string
 	): Promise<boolean> {
 		try {
@@ -182,7 +182,7 @@ class ImageStorageProxy implements ImageStorageInterface {
 	}
 
 	async getSignedUrl(
-		bucket: 'sneakers' | 'profiles',
+		bucket: 'sneakers' | 'profiles' | 'sneakers-reference',
 		filePath: string,
 		expiresIn: number = 3600
 	): Promise<string | null> {
@@ -314,7 +314,7 @@ class ImageStorageProxy implements ImageStorageInterface {
 	}
 
 	async deleteUser(
-		bucket: 'sneakers' | 'profiles',
+		bucket: 'sneakers' | 'profiles' | 'sneakers-reference',
 		userId: string
 	): Promise<boolean> {
 		return supabase.storage

@@ -3,6 +3,7 @@ import { t } from 'i18next';
 import { supabase } from '@/config/supabase/supabase';
 import { sneakerSizeConverter } from '@/d/SneakerSizeConverter';
 import { SneakerHandlerInterface } from '@/domain/SneakerHandler';
+import { imageStorageProxy } from '@/tech/proxy/ImageProxy';
 import { DbCollectionWithSneaker } from '@/types/database';
 import { GenderType, SizeUnit, Sneaker } from '@/types/sneaker';
 import { mapDbCollectionToSneaker } from '@/utils/mappers';
@@ -107,38 +108,95 @@ class SneakerProxy implements SneakerHandlerInterface {
 			sneakerId = existingSneaker.id;
 
 			if (!existingSneaker.image && sneakerData.fetchedImage) {
-				const { error: updateError } = await supabase
-					.from('sneakers')
-					.update({ image: sneakerData.fetchedImage })
-					.eq('id', existingSneaker.id);
+				const downloadedImage = await this.uploadFetchedImage(
+					existingSneaker.id,
+					sneakerData.fetchedImage
+				);
+
+				const imageJson = JSON.stringify(downloadedImage);
+
+				const { data: updatedSneaker, error: updateError } =
+					await supabase
+						.from('sneakers')
+						.update({ image: imageJson })
+						.eq('id', existingSneaker.id)
+						.select('*');
 
 				if (updateError) {
 					console.warn(
-						'Failed to update sneaker image:',
+						'❌ Failed to update sneaker image:',
 						updateError
 					);
 				}
 			}
 		} else {
-			const { data: newSneaker, error: sneakerError } = await supabase
-				.from('sneakers')
-				.insert([
-					{
-						brand_id,
-						model,
-						gender,
-						sku,
-						description,
-						image: sneakerData.fetchedImage || null,
-					},
-				])
-				.select('id')
-				.single();
+			if (sneakerData.fetchedImage) {
+				const { data: tempSneaker, error: tempError } = await supabase
+					.from('sneakers')
+					.insert([
+						{
+							brand_id,
+							model,
+							gender,
+							sku,
+							description,
+							image: null,
+						},
+					])
+					.select('id')
+					.single();
 
-			if (sneakerError) throw sneakerError;
-			if (!newSneaker) throw new Error('Failed to create sneaker');
+				if (tempError) throw tempError;
+				if (!tempSneaker) throw new Error('Failed to create sneaker');
 
-			sneakerId = newSneaker.id;
+				sneakerId = tempSneaker.id;
+
+				const downloadedImage = await this.uploadFetchedImage(
+					tempSneaker.id,
+					sneakerData.fetchedImage
+				);
+				const imageToStore = JSON.stringify(downloadedImage);
+
+				const { data: updatedSneaker, error: updateError } =
+					await supabase
+						.from('sneakers')
+						.update({ image: imageToStore })
+						.eq('id', tempSneaker.id);
+
+				if (updateError) {
+					console.error(
+						'❌ Failed to update sneaker with image:',
+						updateError
+					);
+					throw updateError;
+				}
+
+				const { data: verifyData } = await supabase
+					.from('sneakers')
+					.select('image')
+					.eq('id', tempSneaker.id)
+					.single();
+			} else {
+				const { data: newSneaker, error: sneakerError } = await supabase
+					.from('sneakers')
+					.insert([
+						{
+							brand_id,
+							model,
+							gender,
+							sku,
+							description,
+							image: null,
+						},
+					])
+					.select('id')
+					.single();
+
+				if (sneakerError) throw sneakerError;
+				if (!newSneaker) throw new Error('Failed to create sneaker');
+
+				sneakerId = newSneaker.id;
+			}
 		}
 
 		const collectionEntry = {
@@ -429,6 +487,40 @@ class SneakerProxy implements SneakerHandlerInterface {
 			.getPublicUrl(fileName);
 
 		return urlData.publicUrl;
+	}
+
+	async uploadFetchedImage(
+		sneakerId: string,
+		imageUrl: string
+	): Promise<{ id: string; uri: string }> {
+		const {
+			data: { user },
+			error: authError,
+		} = await supabase.auth.getUser();
+
+		if (authError) throw authError;
+		if (!user) throw new Error('No user found');
+
+		const uploadResult = await imageStorageProxy.migrate(imageUrl, {
+			bucket: 'sneakers-reference',
+			userId: sneakerId,
+			entityId: undefined,
+		});
+
+		if (
+			!uploadResult.success ||
+			!uploadResult.url ||
+			!uploadResult.fileName
+		) {
+			throw new Error(
+				uploadResult.error || 'Failed to upload fetched image'
+			);
+		}
+
+		return {
+			id: uploadResult.fileName,
+			uri: uploadResult.url,
+		};
 	}
 
 	async searchBySku(sku: string) {

@@ -195,7 +195,7 @@ export const useSneakerAPI = () => {
 						: undefined,
 					description: validatedData.description || '',
 					estimated_value: estimatedValue || 0,
-					gender: formData.is_women ? 'women' : 'men',
+					gender: gender || (formData.is_women ? 'women' : 'men'),
 					sku: sku || '',
 					og_box: validatedData.og_box || false,
 					ds: validatedData.ds || false,
@@ -247,7 +247,6 @@ export const useSneakerAPI = () => {
 					callbacks.setCurrentSneaker?.(sneakerWithAltText);
 					callbacks.setModalStep('view');
 					refreshUserSneakers().then(() => {
-						console.log('sneaker added', sneakerWithAltText);
 						showSuccessToast(
 							`➕ ${sneakerWithAltText.model} ${t(
 								'collection.modal.form.success.added'
@@ -303,12 +302,14 @@ export const useSneakerAPI = () => {
 						'23505': 'Cette sneaker existe déjà',
 						'23503': 'Données manquantes ou invalides',
 						'42P01': 'Erreur de structure de base de données',
+						PGRST116: "Erreur lors de la sauvegarde de l'image",
 					};
 					errorMessage =
 						pgErrors[error.code] ||
 						`Erreur de base de données (${error.code})`;
 				} else if (typeof error === 'object') {
-					errorMessage = JSON.stringify(error);
+					errorMessage =
+						"Une erreur inattendue est survenue lors de l'ajout de la sneaker";
 				}
 
 				callbacks?.setErrorMsg?.(errorMessage);

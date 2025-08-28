@@ -6,7 +6,7 @@ export interface UploadResult {
 }
 
 export interface ImageUploadOptions {
-	bucket: 'sneakers' | 'profiles';
+	bucket: 'sneakers' | 'profiles' | 'sneakers-reference';
 	userId: string;
 	entityId?: string;
 	quality?: number;

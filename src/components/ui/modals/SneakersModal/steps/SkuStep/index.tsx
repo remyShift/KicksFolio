@@ -55,6 +55,7 @@ export const SkuStep = () => {
 
 	const onSubmit = (data: SkuFormValues) => {
 		setSneakerSKU(data.sku);
+
 		handleSkuSearch(data.sku, {
 			setFetchedSneaker,
 			setModalStep,
