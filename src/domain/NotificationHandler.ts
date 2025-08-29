@@ -29,6 +29,10 @@ export interface NotificationHandlerInterface {
 		type: NotificationType,
 		data: NotificationData
 	) => Promise<void>;
+	sendFollowNotification: (
+		followerId: string,
+		followingId: string
+	) => Promise<void>;
 }
 
 export class NotificationHandler {
@@ -200,6 +204,26 @@ export class NotificationHandler {
 			.catch((error) => {
 				console.error(
 					'❌ NotificationHandler.sendNotificationToFollowers: Error occurred:',
+					error
+				);
+				throw error;
+			});
+	};
+
+	sendFollowNotification = async (
+		followerId: string,
+		followingId: string
+	) => {
+		return this.notificationProvider
+			.sendFollowNotification(followerId, followingId)
+			.then(() => {
+				console.log(
+					'✅ NotificationHandler: Follow notification sent successfully'
+				);
+			})
+			.catch((error) => {
+				console.error(
+					'❌ NotificationHandler.sendFollowNotification: Error occurred:',
 					error
 				);
 				throw error;

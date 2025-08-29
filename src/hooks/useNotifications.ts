@@ -171,6 +171,21 @@ export const useNotifications = () => {
 		[]
 	);
 
+	const sendFollowNotification = useCallback(
+		async (followerId: string, followingId: string) => {
+			try {
+				await notificationHandler.sendFollowNotification(
+					followerId,
+					followingId
+				);
+			} catch (error) {
+				console.warn('Failed to send follow notification:', error);
+				throw error;
+			}
+		},
+		[]
+	);
+
 	return {
 		notifications,
 		unreadCount,
@@ -185,5 +200,6 @@ export const useNotifications = () => {
 		startPolling,
 		stopPolling,
 		sendNotificationToFollowers,
+		sendFollowNotification,
 	};
 };

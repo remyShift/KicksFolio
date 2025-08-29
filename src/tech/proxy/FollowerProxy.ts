@@ -305,6 +305,17 @@ export class FollowerProxy implements FollowerHandlerInterface {
 			};
 		});
 	}
+
+	async sendFollowNotification(
+		followerId: string,
+		followingId: string
+	): Promise<void> {
+		const { notificationProxy } = await import('./NotificationProxy');
+		return notificationProxy.sendFollowNotification(
+			followerId,
+			followingId
+		);
+	}
 }
 
 export const followerProxy = new FollowerProxy();

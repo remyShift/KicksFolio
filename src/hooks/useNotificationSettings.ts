@@ -10,6 +10,7 @@ export const useNotificationSettings = () => {
 	const [settings, setSettings] = useState<NotificationSettings>({
 		push_notifications_enabled: true,
 		following_additions_enabled: true,
+		new_followers_enabled: true,
 	});
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [error, setError] = useState<string | null>(null);
@@ -64,6 +65,13 @@ export const useNotificationSettings = () => {
 		[updateSettings]
 	);
 
+	const toggleNewFollowers = useCallback(
+		async (enabled: boolean) => {
+			await updateSettings({ new_followers_enabled: enabled });
+		},
+		[updateSettings]
+	);
+
 	useEffect(() => {
 		fetchSettings();
 	}, [fetchSettings]);
@@ -74,6 +82,7 @@ export const useNotificationSettings = () => {
 		error,
 		updateSettings,
 		toggleFollowingAdditions,
+		toggleNewFollowers,
 		refreshSettings: fetchSettings,
 	};
 };

@@ -201,13 +201,24 @@ export class NotificationProxy implements NotificationHandlerInterface {
 			throw new Error('User not authenticated');
 		}
 
+		const updateData: Partial<{
+			following_additions_enabled: boolean;
+			new_followers_enabled: boolean;
+		}> = {};
+
 		if (settings.following_additions_enabled !== undefined) {
+			updateData.following_additions_enabled =
+				settings.following_additions_enabled;
+		}
+
+		if (settings.new_followers_enabled !== undefined) {
+			updateData.new_followers_enabled = settings.new_followers_enabled;
+		}
+
+		if (Object.keys(updateData).length > 0) {
 			const { error } = await supabase
 				.from('users')
-				.update({
-					following_additions_enabled:
-						settings.following_additions_enabled,
-				})
+				.update(updateData)
 				.eq('id', user.id);
 
 			if (error) {
@@ -228,7 +239,7 @@ export class NotificationProxy implements NotificationHandlerInterface {
 
 		const { data, error } = await supabase
 			.from('users')
-			.select('following_additions_enabled')
+			.select('following_additions_enabled, new_followers_enabled')
 			.eq('id', user.id)
 			.single();
 
@@ -240,6 +251,7 @@ export class NotificationProxy implements NotificationHandlerInterface {
 			push_notifications_enabled: true,
 			following_additions_enabled:
 				data.following_additions_enabled ?? true,
+			new_followers_enabled: data.new_followers_enabled ?? true,
 		};
 	}
 
@@ -261,6 +273,93 @@ export class NotificationProxy implements NotificationHandlerInterface {
 
 		if (error) {
 			throw error;
+		}
+	}
+
+	async sendFollowNotification(
+		followerId: string,
+		followingId: string
+	): Promise<void> {
+		const { data: followerData, error: followerError } = await supabase
+			.from('users')
+			.select('username, profile_picture, new_followers_enabled')
+			.eq('id', followingId)
+			.single();
+
+		if (followerError || !followerData) {
+			throw new Error('User not found');
+		}
+
+		if (!followerData.new_followers_enabled) {
+			return;
+		}
+
+		const { data: followingUserData, error: followingUserError } =
+			await supabase
+				.from('users')
+				.select('username, profile_picture')
+				.eq('id', followerId)
+				.single();
+
+		if (followingUserError || !followingUserData) {
+			throw new Error('Follower not found');
+		}
+
+		const { error: notificationError } = await supabase
+			.from('notifications')
+			.insert([
+				{
+					recipient_id: followingId,
+					type: 'user_followed',
+					data: {
+						type: 'user_followed',
+						follower_id: followerId,
+						follower_username: followingUserData.username,
+						follower_avatar: followingUserData.profile_picture,
+					},
+					title: `${followingUserData.username} a commencé à vous suivre`,
+					body: `${followingUserData.username} a commencé à vous suivre.`,
+				},
+			]);
+
+		if (notificationError) {
+			throw notificationError;
+		}
+
+		const { data: pushTokens, error: tokensError } = await supabase
+			.from('push_tokens')
+			.select('expo_token')
+			.eq('user_id', followingId)
+			.eq('is_active', true);
+
+		if (tokensError || !pushTokens || pushTokens.length === 0) {
+			return;
+		}
+
+		const expoPushTokens = pushTokens.map((token) => token.expo_token);
+
+		const messages = expoPushTokens.map((token) => ({
+			to: token,
+			title: `${followingUserData.username} a commencé à vous suivre`,
+			body: `${followingUserData.username} a commencé à vous suivre.`,
+			data: {
+				type: 'user_followed',
+				follower_id: followerId,
+				follower_username: followingUserData.username,
+			},
+			sound: 'default',
+		}));
+
+		const response = await fetch('https://exp.host/--/api/v2/push/send', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(messages),
+		});
+
+		if (!response.ok) {
+			console.warn('Failed to send push notification for follow');
 		}
 	}
 }

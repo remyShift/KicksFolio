@@ -1,6 +1,7 @@
 export enum NotificationType {
 	SINGLE_SNEAKER_ADDED = 'single_sneaker_added',
 	MULTIPLE_SNEAKERS_ADDED = 'multiple_sneakers_added',
+	USER_FOLLOWED = 'user_followed',
 }
 
 export interface NotificationSneakerInfo {
@@ -27,9 +28,17 @@ export interface MultipleSneakersNotificationData {
 	sneakers?: NotificationSneakerInfo[];
 }
 
+export interface UserFollowedNotificationData {
+	type: NotificationType.USER_FOLLOWED;
+	follower_id: string;
+	follower_username: string;
+	follower_avatar?: string;
+}
+
 export type NotificationData =
 	| SingleSneakerNotificationData
-	| MultipleSneakersNotificationData;
+	| MultipleSneakersNotificationData
+	| UserFollowedNotificationData;
 
 export interface Notification {
 	id: string;
@@ -65,4 +74,5 @@ export interface PushNotificationPayload {
 export interface NotificationSettings {
 	push_notifications_enabled: boolean;
 	following_additions_enabled: boolean;
+	new_followers_enabled: boolean;
 }
