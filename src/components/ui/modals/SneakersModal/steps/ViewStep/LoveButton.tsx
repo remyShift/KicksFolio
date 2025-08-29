@@ -83,7 +83,7 @@ export default function LoveButton({ sneaker }: { sneaker: Sneaker }) {
 
 	return (
 		<Pressable
-			className="bg-white p-3 rounded-md flex items-center justify-center"
+			className="bg-white border border-gray-200 p-3 rounded-md flex items-center justify-center"
 			onPress={handlePress}
 			disabled={isLoading}
 		>
