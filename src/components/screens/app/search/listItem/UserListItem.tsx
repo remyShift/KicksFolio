@@ -30,7 +30,7 @@ export default function UserListItem({
 		>
 			<UserAvatar searchUser={searchUser} />
 			<UserInfo searchUser={searchUser} />
-			<UserActions searchUser={searchUser} />
+			<UserActions />
 		</TouchableOpacity>
 	);
 }

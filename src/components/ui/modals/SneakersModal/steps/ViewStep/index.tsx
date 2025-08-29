@@ -69,22 +69,22 @@ export const ViewStep = () => {
 						testID="sneaker-display-name"
 						className="flex-row items-center gap-1 text-wrap w-[95%]"
 					>
-						<Text className="font-open-sans-bold text-lg">
+						<Text className="font-open-sans-bold text-lg text-gray-900">
 							{sneakerModel}
 						</Text>
 					</View>
 					<View className="flex-row items-center gap-2">
-						<Text className="font-open-sans-bold-italic text-base">
+						<Text className="font-open-sans-bold-italic text-base text-gray-900">
 							{currentSneaker.brand?.name?.toUpperCase() ||
 								'Unknown'}
 						</Text>
 
 						{currentSneaker.sku && (
 							<View className="flex-row items-center gap-1">
-								<Text className="font-open-sans-bold text-sm">
+								<Text className="font-open-sans-bold text-sm text-gray-900">
 									|
 								</Text>
-								<Text className="font-open-sans-bold text-sm">
+								<Text className="font-open-sans-bold text-sm text-gray-900">
 									{currentSneaker.sku.toUpperCase()}
 								</Text>
 							</View>
@@ -104,23 +104,23 @@ export const ViewStep = () => {
 			<View className="flex gap-2">
 				<View className="flex-row items-center w-full border-t-2 border-gray-200">
 					<View className="flex-col items-center p-2 gap-1 w-1/3 border-r-2 border-gray-200">
-						<Text className="font-open-sans text-center text-sm">
+						<Text className="font-open-sans text-center text-sm text-gray-900">
 							{t('collection.fields.size')}
 						</Text>
 						<View className="w-4/5">
 							<SizeDisplay
 								sneaker={currentSneaker}
-								className="font-open-sans-bold text-lg text-center"
+								className="font-open-sans-bold text-lg text-center text-gray-900"
 							/>
 						</View>
 					</View>
 
 					<View className="flex-col items-center p-2 gap-1 w-1/3 border-r-2 border-gray-200">
-						<Text className="font-open-sans text-center text-sm">
+						<Text className="font-open-sans text-center text-sm text-gray-900">
 							{t('collection.fields.status')}
 						</Text>
 						<View className="w-4/5">
-							<Text className="font-open-sans-bold text-lg text-center">
+							<Text className="font-open-sans-bold text-lg text-center text-gray-900">
 								{getStatusLabel(
 									currentSneaker.status_id
 								).toUpperCase()}
@@ -129,11 +129,11 @@ export const ViewStep = () => {
 					</View>
 
 					<View className="flex-col items-center p-2 gap-1 w-1/3">
-						<Text className="font-open-sans text-center text-sm">
+						<Text className="font-open-sans text-center text-sm text-gray-900">
 							{t('collection.fields.value')}
 						</Text>
 						<View className="w-4/5">
-							<Text className="font-open-sans-bold text-lg text-center">
+							<Text className="font-open-sans-bold text-lg text-center text-gray-900">
 								{currentSneaker.estimated_value
 									? convertAndFormatdPrice(
 											currentSneaker.estimated_value
@@ -152,7 +152,7 @@ export const ViewStep = () => {
 					}}
 					className="bg-white/60 rounded-md p-2 mt-2"
 				>
-					<Text className="font-open-sans-bold">
+					<Text className="font-open-sans-bold text-gray-900">
 						{t('collection.fields.description')}
 					</Text>
 					<ScrollView
@@ -163,7 +163,7 @@ export const ViewStep = () => {
 						showsVerticalScrollIndicator={true}
 						indicatorStyle="black"
 					>
-						<Text className="font-open-sans text-sm">
+						<Text className="font-open-sans text-sm text-gray-900">
 							{currentSneaker.description ||
 								'No description available'}
 						</Text>

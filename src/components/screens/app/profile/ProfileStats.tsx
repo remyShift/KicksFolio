@@ -51,7 +51,7 @@ export default function ProfileStats(props: ProfileStatsProps) {
 			<View className="flex-row gap-2">
 				<View className="p-3 rounded-lg">
 					<Text
-						className="font-open-sans-bold text-xl"
+						className="font-open-sans-bold text-xl text-gray-900"
 						testID="sneakers-count"
 					>
 						{sneakersCount}
@@ -62,7 +62,7 @@ export default function ProfileStats(props: ProfileStatsProps) {
 				</View>
 
 				<View className="p-3 rounded-lg">
-					<Text className="font-open-sans-bold text-xl">
+					<Text className="font-open-sans-bold text-xl text-gray-900">
 						{user.followers_count}
 					</Text>
 					<Text className="font-open-sans text-base">
@@ -71,7 +71,7 @@ export default function ProfileStats(props: ProfileStatsProps) {
 				</View>
 
 				<View className="p-3 rounded-lg">
-					<Text className="font-open-sans-bold text-xl">
+					<Text className="font-open-sans-bold text-xl text-gray-900">
 						{user.following_count}
 					</Text>
 					<Text className="font-open-sans text-base">
@@ -81,7 +81,7 @@ export default function ProfileStats(props: ProfileStatsProps) {
 			</View>
 
 			<View className="p-3 rounded-lg">
-				<Text className="font-open-sans-bold text-xl">
+				<Text className="font-open-sans-bold text-xl text-gray-900">
 					{convertAndFormatdPrice(totalValue)}
 				</Text>
 				<Text className="font-open-sans text-base">

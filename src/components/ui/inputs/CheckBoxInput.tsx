@@ -34,7 +34,9 @@ export default function CheckBoxInput({
 
 	return (
 		<View className="flex-row items-center gap-2">
-			<Text className={`font-open-sans-semibold text-md`}>{label}</Text>
+			<Text className={`font-open-sans-semibold text-md text-gray-900`}>
+				{label}
+			</Text>
 
 			<Pressable
 				onPress={handleCheck}

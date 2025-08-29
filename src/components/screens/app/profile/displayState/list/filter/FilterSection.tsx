@@ -93,7 +93,7 @@ export default function FilterSection({
 	return (
 		<View className="px-4 py-2 bg-gray-50 border border-gray-200 rounded mx-4 mb-2">
 			<View className="flex-row justify-between items-center mb-3">
-				<Text className="text-base font-semibold text-gray-800">
+				<Text className="text-base font-semibold text-gray-900">
 					{t('collection.filters.title')}
 				</Text>
 				<TouchableOpacity onPress={onClearFilters}>

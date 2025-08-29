@@ -16,7 +16,7 @@ export default function PageLink({
 	return (
 		<View className="flex flex-row gap-1 w-full justify-center items-center">
 			{textBeforeLink && (
-				<Text className="font-open-sans-bold text-sm">
+				<Text className="font-open-sans-bold text-sm text-gray-900">
 					{textBeforeLink}
 				</Text>
 			)}

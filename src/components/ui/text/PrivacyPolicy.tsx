@@ -8,7 +8,7 @@ export default function PrivacyPolicy() {
 
 	return (
 		<View className="flex justify-center items-center bg-background pb-10">
-			<Text className="font-open-sans-bold text-xs">
+			<Text className="font-open-sans-bold text-xs text-gray-900">
 				{t('auth.data-privacy.title')}
 			</Text>
 			<Link

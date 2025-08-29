@@ -269,7 +269,7 @@ export const BugReportModal: React.FC = () => {
 						/>
 
 						<View className="mb-4">
-							<Text className="text-lg font-semibold mb-2 text-gray-800">
+							<Text className="text-lg font-semibold mb-2 text-gray-900">
 								{t('settings.bugReport.fields.priority.label')}
 							</Text>
 							<View className="flex-row gap-4">

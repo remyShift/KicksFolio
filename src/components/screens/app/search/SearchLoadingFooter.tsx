@@ -18,7 +18,7 @@ export default function SearchLoadingFooter({
 
 	return (
 		<View className="py-4 items-center">
-			<Text className="font-open-sans text-gray-500">
+			<Text className="font-open-sans text-gray-700">
 				{t('ui.loading')}
 			</Text>
 		</View>

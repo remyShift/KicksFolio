@@ -88,7 +88,7 @@ export const BarcodeStep = () => {
 	if (hasPermission === null) {
 		return (
 			<View className="flex-1 justify-center items-center">
-				<Text className="font-open-sans-bold text-lg">
+				<Text className="font-open-sans-bold text-lg text-gray-900">
 					{t('collection.modal.barcode.requesting')}
 				</Text>
 			</View>
@@ -98,10 +98,10 @@ export const BarcodeStep = () => {
 	if (hasPermission === false) {
 		return (
 			<View className="flex-1 justify-center items-center gap-4">
-				<Text className="font-open-sans-bold text-lg text-center px-6">
+				<Text className="font-open-sans-bold text-lg text-center px-6 text-gray-900">
 					{t('collection.modal.barcode.noPermission')}
 				</Text>
-				<Text className="font-open-sans-bold text-sm text-center px-6">
+				<Text className="font-open-sans-bold text-sm text-center px-6 text-gray-900">
 					{t('collection.modal.barcode.enablePermission')}
 				</Text>
 			</View>

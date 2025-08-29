@@ -87,7 +87,7 @@ export default function SneakerCard({
 
 					<View className="flex flex-row justify-between items-center px-1">
 						<Text
-							className="font-open-sans-bold text-lg flex-1 mr-2 flex-shrink"
+							className="font-open-sans-bold text-lg flex-1 mr-2 flex-shrink text-gray-900"
 							numberOfLines={1}
 							ellipsizeMode="tail"
 						>

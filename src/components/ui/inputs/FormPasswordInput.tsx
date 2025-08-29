@@ -43,7 +43,9 @@ const FormPasswordInput = forwardRef<TextInput, FormPasswordInputProps<any>>(
 
 		return (
 			<View className="w-full flex flex-col gap-2">
-				<Text className="font-open-sans-bold text-lg">{label}</Text>
+				<Text className="font-open-sans-bold text-lg text-gray-900">
+					{label}
+				</Text>
 				{description && (
 					<Text className="font-open-sans text-sm text-gray-500">
 						{description}

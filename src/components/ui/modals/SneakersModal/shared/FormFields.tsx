@@ -158,7 +158,7 @@ export const FormFields = ({
 
 				<View className="flex-row items-center w-full border-t-2 border-gray-200">
 					<View className="flex-1 flex-col items-center px-2 gap-1 border-r-2 border-gray-200">
-						<Text className="text-base font-open-sans-semibold mt-2">
+						<Text className="text-base font-open-sans-semibold mt-2 text-gray-900">
 							{t('collection.fields.size')}*
 						</Text>
 						<FormTextInput
@@ -179,7 +179,7 @@ export const FormFields = ({
 					</View>
 
 					<View className="flex-1 flex-col items-center px-4 gap-1 border-r-2 border-gray-200">
-						<Text className="text-base font-open-sans-semibold mt-2">
+						<Text className="text-base font-open-sans-semibold mt-2 text-gray-900">
 							{t('collection.fields.condition')}*
 						</Text>
 						<FormTextInput
@@ -199,7 +199,7 @@ export const FormFields = ({
 					</View>
 
 					<View className="flex-1 flex-col items-center px-4 gap-1">
-						<Text className="text-base font-open-sans-semibold mt-2">
+						<Text className="text-base font-open-sans-semibold mt-2 text-gray-900">
 							{t('collection.fields.price_paid')}
 						</Text>
 						<FormTextInput

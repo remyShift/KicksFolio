@@ -168,7 +168,7 @@ export const EditFormStep = () => {
 			<View className="flex-1 gap-4">
 				<View className="mb-4">
 					<View className="flex-row justify-between items-center mb-2">
-						<Text className="font-open-sans-bold text-base">
+						<Text className="font-open-sans-bold text-base text-gray-900">
 							{t('collection.modal.titles.selectedImages')}
 						</Text>
 						<Pressable

@@ -27,7 +27,7 @@ export default function SortButtons({
 	const { t } = useTranslation();
 	return (
 		<View className="flex-row flex-wrap gap-2 mb-2 px-4">
-			<Text className="text-sm font-medium text-gray-700 mr-2">
+			<Text className="text-sm font-medium text-gray-900 mr-2">
 				{t('collection.filters.sortBy')}
 			</Text>
 			{SORT_OPTIONS.map(({ key, label }) => (
@@ -37,7 +37,7 @@ export default function SortButtons({
 					onPress={() => onToggleSort(key)}
 				>
 					<Text
-						className={`text-xs ${sortBy === key ? 'text-white' : 'text-gray-700'}`}
+						className={`text-xs ${sortBy === key ? 'text-white' : 'text-gray-900'}`}
 					>
 						{t(label)}
 					</Text>

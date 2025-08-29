@@ -75,7 +75,9 @@ export default function FormSelectInput<T extends FieldValues>({
 			style={{ zIndex: isOpen ? 99999 : 1 }}
 		>
 			{label && (
-				<Text className="font-open-sans-bold text-lg">{label}</Text>
+				<Text className="font-open-sans-bold text-lg text-gray-900">
+					{label}
+				</Text>
 			)}
 			<Controller
 				name={name}
@@ -96,7 +98,7 @@ export default function FormSelectInput<T extends FieldValues>({
 								testID={`${testID}-input`}
 							>
 								<Text
-									className={`font-open-sans-bold-italic text-base ${selectedOption ? 'text-black' : 'text-gray-400'}`}
+									className={`font-open-sans-bold-italic text-base ${selectedOption ? 'text-gray-900' : 'text-gray-400'}`}
 									testID={`${testID}-input-value`}
 								>
 									{selectedOption
@@ -142,7 +144,7 @@ export default function FormSelectInput<T extends FieldValues>({
 												)
 											}
 										>
-											<Text className="font-open-sans-bold-italic">
+											<Text className="font-open-sans-bold-italic text-gray-900">
 												{option.label.toUpperCase()}
 											</Text>
 										</Pressable>

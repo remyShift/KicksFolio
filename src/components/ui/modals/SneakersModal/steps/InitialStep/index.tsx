@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Pressable, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import MainButton from '@/components/ui/buttons/MainButton';
 import { useModalStore } from '@/store/useModalStore';
@@ -21,7 +21,7 @@ export const InitialStep = ({ userSneakersLength = 0 }: InitialStepProps) => {
 			<Text className="font-actonia text-primary text-4xl text-center">
 				{indexTitle}
 			</Text>
-			<Text className="font-open-sans-bold text-xl text-center">
+			<Text className="font-open-sans-bold text-xl text-center text-gray-900">
 				{t('collection.modal.descriptions.howProceed')}
 			</Text>
 			<View className="flex justify-center items-center gap-8">
@@ -31,7 +31,7 @@ export const InitialStep = ({ userSneakersLength = 0 }: InitialStepProps) => {
 						onPressAction={() => setModalStep('sku')}
 						content={t('collection.modal.buttons.bySearch')}
 					/>
-					<Text className="font-open-sans-bold text-sm text-center">
+					<Text className="font-open-sans-bold text-sm text-center text-gray-900">
 						{t('collection.modal.descriptions.bySearch')}
 					</Text>
 				</View>
@@ -41,7 +41,7 @@ export const InitialStep = ({ userSneakersLength = 0 }: InitialStepProps) => {
 						onPressAction={() => setModalStep('barcode')}
 						content={t('collection.modal.buttons.byBarcode')}
 					/>
-					<Text className="font-open-sans-bold text-sm text-center">
+					<Text className="font-open-sans-bold text-sm text-center text-gray-900">
 						{t('collection.modal.descriptions.byBarcode')}
 					</Text>
 				</View>
@@ -51,7 +51,7 @@ export const InitialStep = ({ userSneakersLength = 0 }: InitialStepProps) => {
 						onPressAction={() => setModalStep('addFormImages')}
 						content={t('collection.modal.buttons.manually')}
 					/>
-					<Text className="font-open-sans-bold text-sm text-center">
+					<Text className="font-open-sans-bold text-sm text-center text-gray-900">
 						{t('collection.modal.descriptions.manually')}
 					</Text>
 				</View>

@@ -1,17 +1,8 @@
-import { useTranslation } from 'react-i18next';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
 import { Feather } from '@expo/vector-icons';
 
-import { SearchUser } from '@/types/user';
-
-interface UserActionsProps {
-	searchUser: SearchUser;
-}
-
-export default function UserActions({ searchUser }: UserActionsProps) {
-	const { t } = useTranslation();
-
+export default function UserActions() {
 	return (
 		<View className="items-center">
 			<Feather name="chevron-right" size={20} color="#666" />

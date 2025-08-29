@@ -17,7 +17,7 @@ export default function Title({
 				{displayContent.toUpperCase()}
 			</Text>
 			<Text
-				className={`font-syne-extrabold text-lg ${isTextCenter ? 'text-center' : ''}`}
+				className={`font-syne-extrabold text-lg ${isTextCenter ? 'text-center' : ''} text-gray-900`}
 				testID={`${testID}-title`}
 			>
 				{displayContent}

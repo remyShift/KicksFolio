@@ -128,7 +128,7 @@ export default function SocialMediaForm() {
 					/>
 
 					<View className="flex-row items-center justify-between gap-4">
-						<Text className="font-open-sans text-base">
+						<Text className="font-open-sans text-base text-gray-900">
 							{t('settings.socialMedia.visibility')}
 						</Text>
 						<Switch
@@ -147,7 +147,7 @@ export default function SocialMediaForm() {
 						/>
 					</View>
 
-					<Text className="font-open-sans text-xs">
+					<Text className="font-open-sans text-xs text-gray-900">
 						{t('settings.socialMedia.visibilityDescription')}
 					</Text>
 

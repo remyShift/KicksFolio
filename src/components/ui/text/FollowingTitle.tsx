@@ -18,7 +18,7 @@ export default function FollowingTitle({
 			</Text>
 			<View className="flex flex-row justify-between items-center px-6">
 				<View className="flex gap-0">
-					<Text className="font-syne-extrabold text-lg leading-none">
+					<Text className="font-syne-extrabold text-lg leading-none text-gray-900">
 						@{content}
 					</Text>
 				</View>

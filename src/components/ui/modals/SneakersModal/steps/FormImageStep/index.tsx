@@ -244,7 +244,7 @@ export const FormImageStep = () => {
 	return (
 		<View className="flex-1 p-4">
 			<View className="mb-6">
-				<Text className="font-open-sans-bold text-xl text-center mb-2">
+				<Text className="font-open-sans-bold text-xl text-center mb-2 text-gray-900">
 					{currentSneaker
 						? t('collection.modal.titles.editImages')
 						: t('collection.modal.titles.addImages')}

@@ -17,7 +17,7 @@ export default function FilterButton({
 			onPress={onPress}
 		>
 			<Text
-				className={`text-sm ${isActive ? 'text-white' : 'text-gray-700'}`}
+				className={`text-sm ${isActive ? 'text-white' : 'text-gray-500'}`}
 			>
 				{label}
 			</Text>

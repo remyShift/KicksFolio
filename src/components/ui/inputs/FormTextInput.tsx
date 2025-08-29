@@ -63,7 +63,9 @@ const FormTextInput = forwardRef<TextInput, FormTextInputProps<any>>(
 		return (
 			<View className="flex flex-col gap-2 w-full">
 				{label && (
-					<Text className="font-open-sans-bold text-lg">{label}</Text>
+					<Text className="font-open-sans-bold text-lg text-gray-900">
+						{label}
+					</Text>
 				)}
 				<Controller
 					name={name}

@@ -52,7 +52,7 @@ export const ConditionBar = ({ sneaker }: { sneaker: Sneaker }) => {
 			</View>
 
 			<View className="bg-white flex-row items-center justify-center p-1 px-3 rounded-r-md min-w-14">
-				<Text className="font-open-sans-bold text-sm text-center">
+				<Text className="font-open-sans-bold text-sm text-center text-gray-900">
 					{conditionDisplay}
 				</Text>
 			</View>

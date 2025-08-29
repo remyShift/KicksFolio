@@ -15,7 +15,7 @@ export default function BrandTitle({
 				{content.toUpperCase()}
 			</Text>
 			<View className="flex flex-row justify-between items-center">
-				<Text className="font-syne-extrabold text-lg">
+				<Text className="font-syne-extrabold text-lg text-gray-900">
 					{content.toUpperCase()}
 				</Text>
 				<Image

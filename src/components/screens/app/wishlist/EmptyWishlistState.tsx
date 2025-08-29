@@ -14,7 +14,7 @@ export default function EmptyWishlistState() {
 				content={t('social.wishlist.empty.title')}
 				isTextCenter={true}
 			/>
-			<Text className="font-open-sans text-base text-center px-8">
+			<Text className="font-open-sans text-base text-center px-8 text-gray-900">
 				{t('social.wishlist.empty.description')}
 			</Text>
 		</View>

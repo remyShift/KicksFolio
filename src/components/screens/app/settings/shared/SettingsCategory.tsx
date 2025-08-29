@@ -11,7 +11,9 @@ export default function SettingsCategory({
 }: SettingsCategoryProps) {
 	return (
 		<View className="gap-1">
-			<Text className="text-base font-open-sans-bold">{title}</Text>
+			<Text className="text-base font-open-sans-bold text-gray-900">
+				{title}
+			</Text>
 			<View className="justify-center items-center rounded-xl bg-background/100">
 				{children}
 			</View>

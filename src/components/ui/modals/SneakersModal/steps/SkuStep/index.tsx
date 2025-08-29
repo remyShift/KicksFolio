@@ -76,7 +76,7 @@ export const SkuStep = () => {
 		>
 			<View className="w-full justify-center items-center gap-12 mt-10">
 				<View className="flex-row items-center">
-					<Text className="font-open-sans-bold text-xl text-center px-6">
+					<Text className="font-open-sans-bold text-xl text-center px-6 text-gray-900">
 						{t('collection.modal.titles.skuStep')}
 					</Text>
 					<Link
@@ -102,7 +102,7 @@ export const SkuStep = () => {
 					/>
 				</View>
 
-				<Text className="font-open-sans-bold text-sm text-center px-6">
+				<Text className="font-open-sans-bold text-sm text-center px-6 text-gray-900">
 					{t('collection.modal.descriptions.skuNote')}
 				</Text>
 			</View>
