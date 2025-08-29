@@ -378,7 +378,10 @@ class ImageStorageProxy implements ImageStorageInterface {
 			.list(folderPath)
 			.then(({ data: files, error: listError }) => {
 				if (listError) {
-					console.error('Error listing sneaker images:', listError);
+					console.error(
+						'❌ Error listing sneaker images:',
+						listError
+					);
 					return false;
 				}
 
@@ -396,7 +399,7 @@ class ImageStorageProxy implements ImageStorageInterface {
 					.then(({ error: deleteError }) => {
 						if (deleteError) {
 							console.error(
-								'Error deleting sneaker images:',
+								'❌ Error deleting sneaker images:',
 								deleteError
 							);
 							return false;
@@ -405,7 +408,7 @@ class ImageStorageProxy implements ImageStorageInterface {
 					});
 			})
 			.catch((error) => {
-				console.error('Error in deleteSneakerImages:', error);
+				console.error('❌ Error in deleteSneakerImages:', error);
 				return false;
 			});
 	}

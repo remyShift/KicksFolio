@@ -27,6 +27,7 @@ export interface SneakerHandlerInterface {
 		currentUnit?: SizeUnit
 	) => Promise<Sneaker>;
 	delete: (collectionId: string) => Promise<void>;
+	getReferenceImage: (collectionId: string) => Promise<string | null>;
 	searchBySku: (sku: string) => Promise<SkuSearchResponse>;
 	searchByBarcode: (barcode: string) => Promise<SkuSearchResponse>;
 }
@@ -98,6 +99,21 @@ export class SneakerHandler {
 			.catch((error) => {
 				console.error(
 					'❌ SneakerHandler.delete: Error occurred:',
+					error
+				);
+				throw error;
+			});
+	};
+
+	getReferenceImage = async (collectionId: string) => {
+		return this.sneakerProxy
+			.getReferenceImage(collectionId)
+			.then((imageUri) => {
+				return imageUri;
+			})
+			.catch((error) => {
+				console.error(
+					'❌ SneakerHandler.getReferenceImage: Error occurred:',
 					error
 				);
 				throw error;

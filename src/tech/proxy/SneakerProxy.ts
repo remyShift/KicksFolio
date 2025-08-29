@@ -430,6 +430,34 @@ class SneakerProxy implements SneakerHandlerInterface {
 		if (error) throw error;
 	}
 
+	async getReferenceImage(collectionId: string): Promise<string | null> {
+		const { data: existingCollection, error } = await supabase
+			.from('collections')
+			.select(
+				`
+				*,
+				sneakers (
+					image
+				)
+			`
+			)
+			.eq('id', collectionId)
+			.single();
+
+		if (error) throw error;
+
+		if (!existingCollection?.sneakers?.image) {
+			return null;
+		}
+
+		try {
+			const parsedImage = JSON.parse(existingCollection.sneakers.image);
+			return parsedImage.uri || existingCollection.sneakers.image;
+		} catch {
+			return existingCollection.sneakers.image;
+		}
+	}
+
 	async updateWishlist(collectionId: string, wishlist: boolean) {
 		const { data, error } = await supabase
 			.from('collections')

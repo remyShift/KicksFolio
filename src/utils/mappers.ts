@@ -60,7 +60,6 @@ export const mapDbWishlistToSneaker = (
 
 	const dbSneaker = dbWishlistItem.sneakers;
 	const images = parseDbImages([], dbSneaker.image);
-	// Pour la wishlist, on a seulement l'image de référence
 	const orderedImages = SneakerImageHandler.orderImages(images);
 
 	return {

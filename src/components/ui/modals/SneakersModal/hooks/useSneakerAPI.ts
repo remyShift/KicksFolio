@@ -205,15 +205,19 @@ export const useSneakerAPI = () => {
 				return sneakerHandler
 					.create(sneakerToAdd, currentUnit)
 					.then((createdSneaker: Sneaker) => {
-						if (formData.images.length > 0) {
+						const personalImages = formData.images.filter(
+							(img) => img.uri !== fetchedImage
+						);
+
+						if (personalImages.length > 0) {
 							return imageHandler
 								.processAndUploadSneaker(
-									formData.images.map((img) => ({
+									personalImages.map((img) => ({
 										uri: img.uri,
 										id: img.id,
 									})),
 									user.id,
-									createdSneaker.sneaker_id!
+									createdSneaker.id
 								)
 								.then((processedImages: SneakerPhoto[]) => {
 									return sneakerHandler.update(
@@ -348,15 +352,25 @@ export const useSneakerAPI = () => {
 
 				const validatedData = validationResult.validatedData!;
 
+				// Récupérer l'image de référence via la couche domain
+				const referenceImageUri =
+					await sneakerHandler.getReferenceImage(sneakerId);
+
+				const personalImages = formData.images.filter(
+					(img) => img.uri !== referenceImageUri
+				);
+
 				const processedImages =
-					await imageHandler.processAndUploadSneaker(
-						formData.images.map((img) => ({
-							uri: img.uri,
-							id: img.id,
-						})),
-						user.id,
-						sneakerId
-					);
+					personalImages.length > 0
+						? await imageHandler.processAndUploadSneaker(
+								personalImages.map((img) => ({
+									uri: img.uri,
+									id: img.id,
+								})),
+								user.id,
+								sneakerId
+							)
+						: [];
 
 				const sneakerUpdates: Partial<
 					Sneaker & {
@@ -458,20 +472,10 @@ export const useSneakerAPI = () => {
 			return Promise.reject('No session token');
 		}
 
-		const collectionToDelete = userSneakers?.find(
-			(s) => s.id === collectionId
-		);
-
 		return sneakerHandler
 			.delete(collectionId)
 			.then(async () => {
-				if (collectionToDelete?.sneaker_id) {
-					await imageHandler.deleteSneaker(
-						user.id,
-						collectionToDelete.sneaker_id
-					);
-				}
-
+				await imageHandler.deleteSneaker(user.id, collectionId);
 				return refreshUserSneakers();
 			})
 			.then(() => {
