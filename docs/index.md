@@ -1,64 +1,62 @@
-# KicksFolio Privacy Policy
+# KicksFolio Legal Documentation
 
-Last update : 05/01/2025
+Welcome to KicksFolio's official legal documentation portal. Here you can find all the important legal information regarding the use of our sneaker collection management application.
 
-## 1. Collected data
+## About KicksFolio
 
-KicksFolio collect the following data :
+KicksFolio is a comprehensive mobile application for sneaker enthusiasts to manage, track, and showcase their sneaker collections. Built with React Native and Expo, KicksFolio provides a modern, intuitive platform for sneaker collectors to organize their collections, connect with other enthusiasts, and discover new releases.
 
--   Email
--   Photos from the library
--   Access to the camera
+## Legal Documents
 
-## 2. Data usage
+### [Privacy Policy](./privacy-policy)
+Our Privacy Policy explains how we collect, use, store, and protect your personal information when you use KicksFolio. This includes details about:
+- What data we collect and why
+- How we use your information
+- Your rights and controls over your data
+- Security measures we implement
+- How to contact us with privacy concerns
 
-These data are used for :
+### [Terms of Use](./terms-of-use)
+Our Terms of Use outline the rules, guidelines, and legal agreements that govern your use of KicksFolio. This covers:
+- Acceptable use policies
+- Content guidelines and restrictions
+- User responsibilities and prohibited behaviors
+- Account management and termination
+- Intellectual property rights
 
--   User authentication
--   Sneakers collection management
--   Sneakers photos taking
--   Application access security
+## Key Information
 
-## 3. Storage and security
+- **Last Updated**: August 29, 2025
+- **Minimum Age**: 13 years old
+- **Governing Law**: French Law
+- **Contact**: contact@kicksfolio.com
 
-The data are stored securely via :
+## App Features Covered
 
--   SecureStore and LocalStorage from Expo for mobile devices :
+Our legal documents address all KicksFolio features including:
+- **Collection Management**: Personal sneaker collections with photos and data
+- **Social Features**: Following other collectors, sharing collections, activity feeds
+- **Wishlist**: Managing desired sneakers for future purchases
+- **Search & Discovery**: Finding other users and sneaker information
+- **Push Notifications**: Real-time updates for social interactions
+- **Multi-language Support**: English and French localization
+- **Data Security**: JWT authentication, Row Level Security, encrypted storage
 
-    -   The authentication token
-    -   User information
-    -   Collection data
-    -   Sneakers data
+## Questions?
 
-The data security is ensured by :
+If you have any questions about our Privacy Policy or Terms of Use, please don't hesitate to contact us:
 
--   Native encrypted storage on iOS and Android
--   Authentication with JWT token
--   Automatic token validity check
--   Automatic data cleaning when logging out
--   Secure synchronization with the backend
--   Access protection
+- **Email**: contact@kicksfolio.com
+- **Response Time**: Within 72 hours
+- **Subject Line**: Please include "Legal Question" for faster processing
 
-Data retention :
+## Updates
 
--   The data are kept as long as the user is active
--   Automatic deletion when logging out
--   The user can request the deletion of their data at any time
+We may update these legal documents from time to time. When we make significant changes, we'll notify you through the app or via email. Your continued use of KicksFolio after such changes means you accept the updated terms.
 
-Data protection :
+---
 
--   Passwords are never stored locally
--   Biometric data is handled by the native system
--   Permissions (camera, photos) are explicitly requested
--   Navigation data is temporary
+*These documents reflect our commitment to transparency, user privacy, and creating a safe, respectful community for all sneaker enthusiasts.*
 
-Data transfer :
-
--   Secure communication with the backend via HTTPS
--   No data transfer to third parties
--   Data hosting in France
--   RGPD compliance
-
-## 4. Data deletion
-
-The user can request the deletion of their data at any time.
+**KicksFolio Team**  
+*Flex Smarter. Collect Better.*
