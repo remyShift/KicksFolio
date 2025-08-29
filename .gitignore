@@ -16,7 +16,7 @@ github-pages-share/
 
 .claude/
 
-# db/
+db/
 
 # Native
 *.orig.*
