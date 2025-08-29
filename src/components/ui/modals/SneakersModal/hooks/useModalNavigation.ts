@@ -20,11 +20,7 @@ export const useModalNavigation = ({
 	const getSneakersForNavigation = useCallback(() => {
 		if (!currentSneaker) return null;
 
-		if (
-			contextSneakers &&
-			contextSneakers.length > 0 &&
-			currentSneaker.user_id !== userSneakers?.[0]?.user_id
-		) {
+		if (contextSneakers && contextSneakers.length > 0) {
 			return contextSneakers;
 		}
 
@@ -46,12 +42,15 @@ export const useModalNavigation = ({
 
 				if (currentIndex !== -1) {
 					const nextIndex = (currentIndex + 1) % sneakersToUse.length;
-					setNextSneaker(sneakersToUse[nextIndex]);
-
 					const prevIndex =
 						(currentIndex - 1 + sneakersToUse.length) %
 						sneakersToUse.length;
-					setPrevSneaker(sneakersToUse[prevIndex]);
+
+					const nextSneaker = sneakersToUse[nextIndex];
+					const prevSneaker = sneakersToUse[prevIndex];
+
+					setNextSneaker(nextSneaker);
+					setPrevSneaker(prevSneaker);
 
 					lastProcessedSneakerId.current = currentSneaker.id;
 				}

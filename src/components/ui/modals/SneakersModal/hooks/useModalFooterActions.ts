@@ -35,7 +35,7 @@ export const useModalFooterActions = () => {
 		setIsLoading,
 	} = useModalStore();
 
-	const isAnonymous = !user || user.is_anonymous;
+	const isAnonymous = !user || user.is_anonymous === true;
 
 	const {
 		handleSkuSearch,
@@ -308,9 +308,8 @@ export const useModalFooterActions = () => {
 					} else {
 						handleNext(nextSneaker, setCurrentSneaker);
 					}
-				} else {
-					setIsVisible(false);
 				}
+
 				break;
 		}
 	};
@@ -348,9 +347,6 @@ export const useModalFooterActions = () => {
 					} else {
 						handlePrevious(prevSneaker, setCurrentSneaker);
 					}
-				} else {
-					resetModalData();
-					setIsVisible(false);
 				}
 				break;
 		}
