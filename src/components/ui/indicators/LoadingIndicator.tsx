@@ -18,7 +18,7 @@ export default function LoadingIndicator({
 	return (
 		<View className="flex-1 justify-center items-center">
 			<View
-				className={`${sizeClasses[size]} border-2 border-gray-300 border-t-blue-500 rounded-full animate-spin`}
+				className={`${sizeClasses[size]} border-2 border-gray-200 border-t-blue-500 rounded-full animate-spin`}
 			/>
 			{message && (
 				<Text className="mt-2 text-gray-600 text-sm">{message}</Text>

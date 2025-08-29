@@ -156,8 +156,8 @@ export const FormFields = ({
 					</View>
 				</View>
 
-				<View className="flex-row items-center w-full border-t-2 border-gray-300">
-					<View className="flex-1 flex-col items-center px-2 gap-1 border-r-2 border-gray-300">
+				<View className="flex-row items-center w-full border-t-2 border-gray-200">
+					<View className="flex-1 flex-col items-center px-2 gap-1 border-r-2 border-gray-200">
 						<Text className="text-base font-open-sans-semibold mt-2">
 							{t('collection.fields.size')}*
 						</Text>
@@ -178,7 +178,7 @@ export const FormFields = ({
 						/>
 					</View>
 
-					<View className="flex-1 flex-col items-center px-4 gap-1 border-r-2 border-gray-300">
+					<View className="flex-1 flex-col items-center px-4 gap-1 border-r-2 border-gray-200">
 						<Text className="text-base font-open-sans-semibold mt-2">
 							{t('collection.fields.condition')}*
 						</Text>

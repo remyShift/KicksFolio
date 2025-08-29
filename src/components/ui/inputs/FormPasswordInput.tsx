@@ -90,12 +90,12 @@ const FormPasswordInput = forwardRef<TextInput, FormPasswordInputProps<any>>(
 									returnKeyType={
 										onSubmitEditing ? 'done' : 'next'
 									}
-									className={`bg-white rounded-md p-3 w-full font-open-sans-bold ${
+									className={`bg-white border-2 rounded-md p-3 w-full font-open-sans-bold ${
 										error
-											? 'border-2 border-red-500'
+											? 'border-red-500'
 											: isFocused
-												? 'border-2 border-orange-500'
-												: ''
+												? 'border-orange-500'
+												: 'border-gray-200'
 									}`}
 								/>
 								<TouchableOpacity

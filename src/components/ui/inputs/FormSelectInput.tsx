@@ -90,7 +90,7 @@ export default function FormSelectInput<T extends FieldValues>({
 							<Pressable
 								onPress={toggleDropdown}
 								className={`bg-white p-2 font-open-sans-bold flex-row justify-between items-center
-                                    ${isOpen ? 'border-2 border-primary rounded-t-md' : 'rounded-md border-2 border-gray-300'}
+                                    ${isOpen ? 'border-2 border-primary rounded-t-md' : 'rounded-md border-2 border-gray-200'}
                                     ${error ? 'border-2 border-red-500' : ''}
                                 `}
 								testID={`${testID}-input`}

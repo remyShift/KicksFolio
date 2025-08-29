@@ -111,7 +111,6 @@ export const BugReportModal: React.FC = () => {
 			onRequestClose={handleClose}
 		>
 			<View className="flex-1 bg-background">
-				{/* Header */}
 				<View className="flex-row items-center justify-center p-5 pl-12 border-b bg-white border-gray-200">
 					<View className="absolute left-4">
 						<BackButton onPressAction={handleClose} />
@@ -122,7 +121,6 @@ export const BugReportModal: React.FC = () => {
 					<View className="w-8" />
 				</View>
 
-				{/* Info Box */}
 				<View className="bg-blue-50 p-4 rounded-b-lg border border-blue-200">
 					<View className="flex-row items-start">
 						<Ionicons
@@ -136,7 +134,6 @@ export const BugReportModal: React.FC = () => {
 					</View>
 				</View>
 
-				{/* Form */}
 				<KeyboardAwareScrollView
 					ref={scrollViewRef}
 					className="flex-1"
@@ -148,13 +145,11 @@ export const BugReportModal: React.FC = () => {
 					bottomOffset={10}
 				>
 					<View className="flex flex-col gap-6 px-4">
-						{/* Error Message */}
 						<ErrorMsg
 							content={displayedError}
 							display={displayedError ? true : false}
 						/>
 
-						{/* Title */}
 						<FormTextInput
 							ref={titleInputRef}
 							name="title"
@@ -174,7 +169,6 @@ export const BugReportModal: React.FC = () => {
 							testID="bug-title"
 						/>
 
-						{/* Description */}
 						<FormTextInput
 							ref={descriptionInputRef}
 							name="description"
@@ -197,7 +191,6 @@ export const BugReportModal: React.FC = () => {
 							testID="bug-description"
 						/>
 
-						{/* Steps to Reproduce */}
 						<FormTextInput
 							ref={stepsInputRef}
 							name="stepsToReproduce"
@@ -223,7 +216,6 @@ export const BugReportModal: React.FC = () => {
 							testID="bug-steps"
 						/>
 
-						{/* Expected Behavior */}
 						<FormTextInput
 							ref={expectedInputRef}
 							name="expectedBehavior"
@@ -249,7 +241,6 @@ export const BugReportModal: React.FC = () => {
 							testID="bug-expected"
 						/>
 
-						{/* Actual Behavior */}
 						<FormTextInput
 							ref={actualInputRef}
 							name="actualBehavior"
@@ -274,7 +265,6 @@ export const BugReportModal: React.FC = () => {
 							testID="bug-actual"
 						/>
 
-						{/* Priority Selection */}
 						<View className="mb-4">
 							<Text className="text-lg font-semibold mb-2 text-gray-800">
 								{t('settings.bugReport.fields.priority.label')}
@@ -290,7 +280,7 @@ export const BugReportModal: React.FC = () => {
 
 									const buttonClasses = isSelected
 										? `${colors.bg} ${colors.border}`
-										: 'bg-white border-gray-300';
+										: 'bg-white border-gray-200';
 
 									const textClasses = isSelected
 										? colors.text

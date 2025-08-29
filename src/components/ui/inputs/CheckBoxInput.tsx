@@ -45,7 +45,7 @@ export default function CheckBoxInput({
 					className={`w-8 h-8 border-2 rounded-md items-center justify-center ${
 						isChecked
 							? 'bg-primary border-primary'
-							: 'bg-white border-gray-300'
+							: 'bg-white border-gray-200'
 					} ${disabled ? 'opacity-50' : ''}`}
 				>
 					{isChecked && (

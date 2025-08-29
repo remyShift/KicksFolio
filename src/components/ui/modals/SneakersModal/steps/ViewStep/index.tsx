@@ -102,8 +102,8 @@ export const ViewStep = () => {
 			</View>
 
 			<View className="flex gap-2">
-				<View className="flex-row items-center w-full border-t-2 border-gray-300">
-					<View className="flex-col items-center p-2 gap-1 w-1/3 border-r-2 border-gray-300">
+				<View className="flex-row items-center w-full border-t-2 border-gray-200">
+					<View className="flex-col items-center p-2 gap-1 w-1/3 border-r-2 border-gray-200">
 						<Text className="font-open-sans text-center text-sm">
 							{t('collection.fields.size')}
 						</Text>
@@ -115,7 +115,7 @@ export const ViewStep = () => {
 						</View>
 					</View>
 
-					<View className="flex-col items-center p-2 gap-1 w-1/3 border-r-2 border-gray-300">
+					<View className="flex-col items-center p-2 gap-1 w-1/3 border-r-2 border-gray-200">
 						<Text className="font-open-sans text-center text-sm">
 							{t('collection.fields.status')}
 						</Text>

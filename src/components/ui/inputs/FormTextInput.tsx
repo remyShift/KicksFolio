@@ -126,14 +126,14 @@ const FormTextInput = forwardRef<TextInput, FormTextInputProps<any>>(
 									height: textInputHeight,
 								}}
 								accessibilityLabel={accessibilityLabel || label}
-								className={`rounded-md p-2 w-full font-open-sans-semibold ${
+								className={`rounded-md p-2 border-2 w-full font-open-sans-semibold ${
 									!editable
-										? 'bg-gray-100 border-2 border-gray-300 text-gray-500'
+										? 'bg-gray-100 border-gray-200 text-gray-500'
 										: error
-											? 'bg-white border-2 border-red-500'
+											? 'bg-white border-red-500'
 											: isFocused
-												? 'bg-white border-2 border-orange-500'
-												: 'bg-white'
+												? 'bg-white border-orange-500'
+												: 'bg-white border-gray-200'
 								}`}
 								testID={`${testID}-input`}
 								editable={editable}
