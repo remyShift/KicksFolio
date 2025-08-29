@@ -110,6 +110,20 @@ export default function AppSettings() {
 				onPress={() =>
 					Linking.openURL('https://remyshift.github.io/KicksFolio/')
 				}
+				testID="privacy-policy"
+			/>
+
+			<Spacer />
+
+			<SettingsMenuItem
+				icon="document-text-outline"
+				label={t('auth.data-privacy.termsOfUse')}
+				onPress={() =>
+					Linking.openURL(
+						'https://remyshift.github.io/KicksFolio/terms-of-use'
+					)
+				}
+				testID="terms-of-use"
 			/>
 		</SettingsCategory>
 	);
