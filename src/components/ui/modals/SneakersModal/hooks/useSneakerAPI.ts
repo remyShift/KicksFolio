@@ -202,34 +202,37 @@ export const useSneakerAPI = () => {
 					fetchedImage: fetchedImage || undefined,
 				};
 
-				return imageHandler
-					.processAndUploadSneaker(
-						formData.images.map((img) => ({
-							uri: img.uri,
-							id: img.id,
-						})),
-						user.id,
-						'temp'
-					)
-					.then((processedImages: SneakerPhoto[]) => {
-						if (processedImages.length === 0) {
-							throw new Error(
-								'Image processing returned no images'
-							);
+				return sneakerHandler
+					.create(sneakerToAdd, currentUnit)
+					.then((createdSneaker: Sneaker) => {
+						if (formData.images.length > 0) {
+							return imageHandler
+								.processAndUploadSneaker(
+									formData.images.map((img) => ({
+										uri: img.uri,
+										id: img.id,
+									})),
+									user.id,
+									createdSneaker.sneaker_id!
+								)
+								.then((processedImages: SneakerPhoto[]) => {
+									return sneakerHandler.update(
+										createdSneaker.id,
+										{
+											images: processedImages.map(
+												(img) => ({
+													id: img.id,
+													uri: img.uri,
+													type: 'personal',
+												})
+											),
+										},
+										currentUnit
+									);
+								});
+						} else {
+							return createdSneaker;
 						}
-
-						const sneakerWithImages = {
-							...sneakerToAdd,
-							images: processedImages.map((img) => ({
-								id: img.id,
-								uri: img.uri,
-							})),
-						};
-
-						return sneakerHandler.create(
-							sneakerWithImages,
-							currentUnit
-						);
 					});
 			})
 			.then((response: Sneaker) => {
@@ -368,6 +371,7 @@ export const useSneakerAPI = () => {
 					images: processedImages.map((img) => ({
 						id: img.id,
 						uri: img.uri,
+						type: 'personal',
 					})),
 					price_paid: validatedData.price_paid
 						? parseFloat(validatedData.price_paid)
@@ -449,15 +453,24 @@ export const useSneakerAPI = () => {
 		setCurrentSneaker(prevSneaker);
 	};
 
-	const handleSneakerDelete = async (sneakerId: string) => {
+	const handleSneakerDelete = async (collectionId: string) => {
 		if (!user) {
 			return Promise.reject('No session token');
 		}
 
+		const collectionToDelete = userSneakers?.find(
+			(s) => s.id === collectionId
+		);
+
 		return sneakerHandler
-			.delete(sneakerId)
+			.delete(collectionId)
 			.then(async () => {
-				await imageHandler.deleteSneaker(user.id, sneakerId);
+				if (collectionToDelete?.sneaker_id) {
+					await imageHandler.deleteSneaker(
+						user.id,
+						collectionToDelete.sneaker_id
+					);
+				}
 
 				return refreshUserSneakers();
 			})

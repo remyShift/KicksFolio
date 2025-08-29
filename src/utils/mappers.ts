@@ -1,3 +1,4 @@
+import { SneakerImageHandler } from '@/domain/SneakerImageHandler';
 import {
 	DbCollectionWithSneaker,
 	DbUser,
@@ -21,6 +22,7 @@ export const mapDbCollectionToSneaker = (
 	const { sneakers: dbSneaker, ...collectionData } = dbCollection;
 
 	const images = parseDbImages(collectionData.images, dbSneaker.image);
+	const orderedImages = SneakerImageHandler.orderImages(images);
 
 	return {
 		id: collectionData.id,
@@ -36,7 +38,7 @@ export const mapDbCollectionToSneaker = (
 		condition: collectionData.condition,
 		status_id: collectionData.status_id || SneakerStatus.ROCKING,
 		description: dbSneaker.description || '',
-		images,
+		images: orderedImages,
 		estimated_value: collectionData.estimated_value || 0,
 		wishlist: collectionData.wishlist,
 		gender: dbSneaker.gender || '',
@@ -58,6 +60,8 @@ export const mapDbWishlistToSneaker = (
 
 	const dbSneaker = dbWishlistItem.sneakers;
 	const images = parseDbImages([], dbSneaker.image);
+	// Pour la wishlist, on a seulement l'image de référence
+	const orderedImages = SneakerImageHandler.orderImages(images);
 
 	return {
 		id: dbSneaker.id,
@@ -75,7 +79,7 @@ export const mapDbWishlistToSneaker = (
 		status_id: SneakerStatus.ROCKING,
 		price_paid: 0,
 		estimated_value: 0,
-		images,
+		images: orderedImages,
 		og_box: false,
 		ds: false,
 	};
@@ -124,45 +128,59 @@ export const mapDbUserToUser = (dbUser: DbUser): User => {
 function parseDbImages(
 	imagesArray: string[],
 	sneakerImage?: string | null
-): { id: string; uri: string }[] {
+): { id: string; uri: string; type?: 'reference' | 'personal' }[] {
+	const images: {
+		id: string;
+		uri: string;
+		type?: 'reference' | 'personal';
+	}[] = [];
+
+	if (sneakerImage) {
+		try {
+			const parsedReferenceImage = JSON.parse(sneakerImage);
+			images.push({
+				id: parsedReferenceImage.id || 'reference-image',
+				uri: parsedReferenceImage.uri || sneakerImage,
+				type: 'reference',
+			});
+		} catch (error) {
+			images.push({
+				id: 'reference-image',
+				uri: sneakerImage,
+				type: 'reference',
+			});
+		}
+	}
+
 	if (imagesArray && imagesArray.length > 0) {
-		const parsedImages = imagesArray
+		const parsedPersonalImages = imagesArray
 			.map((img, index) => {
 				if (typeof img === 'string') {
 					try {
 						const parsed = JSON.parse(img);
 						return {
-							id: parsed.id || index.toString(),
+							id: parsed.id || `personal-${index}`,
 							uri: parsed.uri || parsed.url || img,
+							type: 'personal' as const,
 						};
 					} catch (error) {
 						return {
-							id: index.toString(),
+							id: `personal-${index}`,
 							uri: img,
+							type: 'personal' as const,
 						};
 					}
 				}
 				return {
-					id: index.toString(),
+					id: `personal-${index}`,
 					uri: img,
+					type: 'personal' as const,
 				};
 			})
 			.filter((img) => img.uri);
 
-		if (parsedImages.length > 0) return parsedImages;
+		images.push(...parsedPersonalImages);
 	}
 
-	if (sneakerImage) {
-		let actualUri = sneakerImage;
-		try {
-			const parsedImage = JSON.parse(sneakerImage);
-			actualUri = parsedImage.uri || sneakerImage;
-		} catch (error) {
-			console.error('Error parsing sneaker image:', error);
-		}
-
-		return [{ id: 'api-image', uri: actualUri }];
-	}
-
-	return [];
+	return images;
 }

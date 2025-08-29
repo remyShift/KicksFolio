@@ -249,9 +249,15 @@ class ImageStorageProxy implements ImageStorageInterface {
 		try {
 			const { bucket, userId, entityId } = options;
 			const timestamp = Date.now();
-			const fileName = entityId
-				? `${userId}/${entityId}/${timestamp}.jpg`
-				: `${userId}/${timestamp}.jpg`;
+
+			let fileName: string;
+			if (bucket === 'sneakers-reference') {
+				fileName = `${userId}/image_${timestamp}.jpg`;
+			} else {
+				fileName = entityId
+					? `${userId}/${entityId}/${timestamp}.jpg`
+					: `${userId}/${timestamp}.jpg`;
+			}
 
 			const downloadResult = await FileSystem.downloadAsync(
 				sourceUrl,
@@ -365,9 +371,11 @@ class ImageStorageProxy implements ImageStorageInterface {
 	}
 
 	async deleteSneaker(userId: string, sneakerId: string): Promise<boolean> {
+		const folderPath = `${userId}/${sneakerId}`;
+
 		return supabase.storage
 			.from('sneakers')
-			.list(`${userId}/${sneakerId}`)
+			.list(folderPath)
 			.then(({ data: files, error: listError }) => {
 				if (listError) {
 					console.error('Error listing sneaker images:', listError);
@@ -379,7 +387,7 @@ class ImageStorageProxy implements ImageStorageInterface {
 				}
 
 				const filePaths = files.map(
-					(file) => `${userId}/${sneakerId}/${file.name}`
+					(file) => `${folderPath}/${file.name}`
 				);
 
 				return supabase.storage

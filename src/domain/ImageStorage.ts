@@ -20,12 +20,15 @@ export interface ImageStorageInterface {
 
 	uploadProfileImage(imageUri: string, userId: string): Promise<UploadResult>;
 
-	delete(bucket: 'sneakers' | 'profiles', filePath: string): Promise<boolean>;
+	delete(
+		bucket: 'sneakers' | 'profiles' | 'sneakers-reference',
+		filePath: string
+	): Promise<boolean>;
 
 	extractFilePathFromUrl(url: string, bucket: string): string | null;
 
 	getSignedUrl(
-		bucket: 'sneakers' | 'profiles',
+		bucket: 'sneakers' | 'profiles' | 'sneakers-reference',
 		filePath: string,
 		expiresIn?: number
 	): Promise<string | null>;
@@ -40,7 +43,7 @@ export interface ImageStorageInterface {
 	): Promise<UploadResult>;
 
 	deleteUser(
-		bucket: 'sneakers' | 'profiles',
+		bucket: 'sneakers' | 'profiles' | 'sneakers-reference',
 		userId: string
 	): Promise<boolean>;
 
@@ -163,7 +166,7 @@ export class ImageStorage {
 	};
 
 	delete = async (
-		bucket: 'sneakers' | 'profiles',
+		bucket: 'sneakers' | 'profiles' | 'sneakers-reference',
 		filePath: string
 	): Promise<boolean> => {
 		console.log(
@@ -202,7 +205,7 @@ export class ImageStorage {
 	};
 
 	getSignedUrl = async (
-		bucket: 'sneakers' | 'profiles',
+		bucket: 'sneakers' | 'profiles' | 'sneakers-reference',
 		filePath: string,
 		expiresIn: number = 3600
 	): Promise<string | null> => {
@@ -281,7 +284,7 @@ export class ImageStorage {
 	};
 
 	deleteUser = async (
-		bucket: 'sneakers' | 'profiles',
+		bucket: 'sneakers' | 'profiles' | 'sneakers-reference',
 		userId: string
 	): Promise<boolean> => {
 		return Promise.resolve()

@@ -29,4 +29,5 @@ export type SneakerPhoto = {
 	id?: string;
 	uri: string;
 	alt?: string;
+	type?: 'reference' | 'personal';
 };
