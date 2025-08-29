@@ -200,10 +200,23 @@ export class UserLookupProxy implements UserLookupInterface {
 				.from('collections')
 				.select(
 					`
-					*,
+					id,
+					sneaker_id,
+					size_eu,
+					size_us,
+					og_box,
+					ds,
+					purchase_date,
+					price_paid,
+					condition,
+					estimated_value,
+					images,
+					wishlist,
+					created_at,
+					updated_at,
+					status_id,
 					sneakers (
 						id,
-						brand_id,
 						model,
 						gender,
 						sku,
@@ -230,7 +243,7 @@ export class UserLookupProxy implements UserLookupInterface {
 			}
 
 			const result =
-				collections?.map((dbCollection: DbCollectionWithSneaker) =>
+				collections?.map((dbCollection: any) =>
 					mapDbCollectionToSneaker(dbCollection)
 				) || [];
 

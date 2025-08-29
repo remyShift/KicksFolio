@@ -63,13 +63,15 @@ export default function UserProfileScreen() {
 		const { userSearch, sneakers } = userProfile;
 
 		return (
-			<ProfileDisplayContainer
-				user={userSearch}
-				userSneakers={sneakers || []}
-				refreshing={refreshing}
-				onRefresh={onRefresh}
-				showBackButton={true}
-			/>
+			<View className="flex-1 bg-background">
+				<ProfileDisplayContainer
+					user={userSearch}
+					userSneakers={sneakers || []}
+					refreshing={refreshing}
+					onRefresh={onRefresh}
+					showBackButton={true}
+				/>
+			</View>
 		);
 	}
 

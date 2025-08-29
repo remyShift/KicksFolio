@@ -79,10 +79,11 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 			])
 				.then(([userSearch, sneakers]) => {
 					if (userSearch) {
-						setUserProfile({
+						const profileData = {
 							userSearch,
 							sneakers: sneakers || [],
-						});
+						};
+						setUserProfile(profileData);
 						setHasError(false);
 					} else {
 						console.warn('[useUserProfile] user not found');
