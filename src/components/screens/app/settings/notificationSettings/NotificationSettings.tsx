@@ -18,8 +18,12 @@ export default function NotificationSettings() {
 	const { t } = useTranslation();
 	const { showSuccessToast, showErrorToast } = useToast();
 	const { hasPermission, checkPermissions } = usePushNotifications();
-	const { settings, isLoading, toggleFollowingAdditions } =
-		useNotificationSettings();
+	const {
+		settings,
+		isLoading,
+		toggleFollowingAdditions,
+		toggleNewFollowers,
+	} = useNotificationSettings();
 
 	const handleOpenSystemSettings = async () => {
 		try {
@@ -86,6 +90,33 @@ export default function NotificationSettings() {
 		}
 	};
 
+	const handleNewFollowersToggle = async (enabled: boolean) => {
+		try {
+			const hasSystemPermission = await checkPermissions();
+			if (!hasSystemPermission) {
+				showErrorToast(
+					t('settings.notifications.permissionRequired'),
+					t('settings.notifications.permissionDescription')
+				);
+				return;
+			}
+
+			await toggleNewFollowers(enabled);
+			showSuccessToast(
+				t('settings.notifications.newFollowersTitle'),
+				enabled
+					? t('settings.notifications.newFollowersEnabled')
+					: t('settings.notifications.newFollowersDisabled')
+			);
+		} catch (error) {
+			console.error('Error toggling new followers:', error);
+			showErrorToast(
+				t('settings.notifications.error'),
+				t('settings.notifications.errorDescription')
+			);
+		}
+	};
+
 	return (
 		<SettingsCategory title={t('settings.titles.notifications')}>
 			<SettingsMenuItem
@@ -113,6 +144,20 @@ export default function NotificationSettings() {
 					/>
 				}
 				testID="following-additions"
+			/>
+
+			<SettingsMenuItem
+				icon="people-outline"
+				label={t('settings.notifications.newFollowers')}
+				rightElement={
+					<NotificationToggle
+						currentValue={settings.new_followers_enabled}
+						onToggle={handleNewFollowersToggle}
+						disabled={isLoading || !hasPermission}
+						testID="new-followers"
+					/>
+				}
+				testID="new-followers"
 			/>
 		</SettingsCategory>
 	);
