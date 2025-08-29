@@ -160,7 +160,10 @@ export default function ProfileDisplayContainer(
 				}
 			>
 				{memoizedProfileHeader}
-				<EmptySneakersState onAddPress={handleAddSneaker} />
+				<EmptySneakersState
+					onAddPress={handleAddSneaker}
+					showAddButton={user.id === currentUser?.id}
+				/>
 			</ScrollView>
 		);
 	}

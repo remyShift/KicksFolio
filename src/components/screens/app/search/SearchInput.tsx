@@ -1,19 +1,28 @@
+import { useState } from 'react';
+
 import { useTranslation } from 'react-i18next';
 import { TextInput, View } from 'react-native';
-
-import { Feather } from '@expo/vector-icons';
 
 import { useUserSearch } from '@/hooks/useUserSearch';
 
 export default function SearchInput() {
 	const { t } = useTranslation();
 	const { searchTerm, handleSearchChange } = useUserSearch();
+	const [isFocused, setIsFocused] = useState(false);
 
 	return (
 		<View className="px-4">
 			<TextInput
-				className="bg-white border border-gray-200 rounded-lg p-3 font-open-sans text-base placeholder:text-gray-300"
+				className={`bg-white border border-gray-200 rounded-lg p-3 font-open-sans text-base placeholder:text-gray-300 ${
+					isFocused ? 'border-primary' : ''
+				}`}
 				placeholder={t('search.inputPlaceholder')}
+				onFocus={() => {
+					setIsFocused(true);
+				}}
+				onBlur={() => {
+					setIsFocused(false);
+				}}
 				value={searchTerm}
 				returnKeyType="search"
 				onSubmitEditing={() => handleSearchChange(searchTerm)}
@@ -22,9 +31,6 @@ export default function SearchInput() {
 				autoCorrect={false}
 				testID="search-input"
 			/>
-			<View className="absolute right-7 top-3">
-				<Feather name="search" size={20} color="#666" />
-			</View>
 		</View>
 	);
 }
