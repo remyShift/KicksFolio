@@ -67,7 +67,7 @@ export const ViewStep = () => {
 				<View className="flex gap-0">
 					<View
 						testID="sneaker-display-name"
-						className="flex-row items-center gap-1 text-wrap w-[95%]"
+						className="flex-row items-center gap-1 text-wrap"
 					>
 						<Text className="font-open-sans-bold text-lg text-gray-900">
 							{sneakerModel}

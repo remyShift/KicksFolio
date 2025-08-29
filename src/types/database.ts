@@ -100,7 +100,7 @@ export interface DbWishlistWithSneaker extends DbWishlist {
 export interface DbNotification {
 	id: string;
 	recipient_id: string;
-	type: 'single_sneaker_added' | 'multiple_sneakers_added';
+	type: 'single_sneaker_added' | 'multiple_sneakers_added' | 'user_followed';
 	data: object;
 	title: string;
 	body: string;

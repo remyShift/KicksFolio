@@ -358,8 +358,21 @@ export class NotificationProxy implements NotificationHandlerInterface {
 			body: JSON.stringify(messages),
 		});
 
+		console.log('📱 Push notification response status:', response.status);
+		console.log('📱 Push notification response headers:', response.headers);
+
+		const responseText = await response.text();
+		console.log('📱 Push notification response body:', responseText);
+
 		if (!response.ok) {
 			console.warn('Failed to send push notification for follow');
+			console.error('📱 Push notification error details:', {
+				status: response.status,
+				statusText: response.statusText,
+				body: responseText,
+			});
+		} else {
+			console.log('✅ Push notification sent successfully');
 		}
 	}
 }
