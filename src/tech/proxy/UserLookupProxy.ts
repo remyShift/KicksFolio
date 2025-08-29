@@ -196,22 +196,6 @@ export class UserLookupProxy implements UserLookupInterface {
 
 	async getSneakers(userId: string): Promise<Sneaker[]> {
 		try {
-			console.log(
-				`[UserLookupProxy] Fetching sneakers for user: ${userId}`
-			);
-
-			// Test direct query to see if collections exist for this user
-			const { data: collectionsCount, error: countError } = await supabase
-				.from('collections')
-				.select('id', { count: 'exact', head: true })
-				.eq('user_id', userId);
-
-			console.log(
-				`[UserLookupProxy] Collections count for user ${userId}:`,
-				collectionsCount
-			);
-			console.log(`[UserLookupProxy] Count error:`, countError);
-
 			const { data: collections, error } = await supabase
 				.from('collections')
 				.select(
@@ -245,26 +229,10 @@ export class UserLookupProxy implements UserLookupInterface {
 				return [];
 			}
 
-			console.log(`[UserLookupProxy] Raw collections data:`, collections);
-			console.log(
-				`[UserLookupProxy] Number of collections found:`,
-				collections?.length || 0
-			);
-
 			const result =
-				collections?.map((dbCollection: DbCollectionWithSneaker) => {
-					console.log(
-						`[UserLookupProxy] Processing collection:`,
-						dbCollection
-					);
-					return mapDbCollectionToSneaker(dbCollection);
-				}) || [];
-
-			console.log(`[UserLookupProxy] Final sneakers result:`, result);
-			console.log(
-				`[UserLookupProxy] Number of sneakers mapped:`,
-				result.length
-			);
+				collections?.map((dbCollection: DbCollectionWithSneaker) =>
+					mapDbCollectionToSneaker(dbCollection)
+				) || [];
 
 			return result;
 		} catch (error) {

@@ -14,8 +14,6 @@ export default function UserProfileScreen() {
 	const { t } = useTranslation();
 	const [refreshing, setRefreshing] = useState(false);
 
-	console.log('[UserProfileScreen] userId received:', userId);
-
 	const { userProfile, hasError, refreshUserProfile } =
 		useUserProfile(userId);
 
@@ -64,10 +62,6 @@ export default function UserProfileScreen() {
 
 		const { userSearch, sneakers } = userProfile;
 
-		console.log(
-			'[UserProfileScreen] About to render ProfileDisplayContainer with sneakers:',
-			sneakers
-		);
 		return (
 			<ProfileDisplayContainer
 				user={userSearch}

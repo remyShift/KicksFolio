@@ -60,30 +60,28 @@ export default function Settings() {
 	};
 
 	return (
-		<View className="flex-1 bg-white" testID="settings-container">
+		<ScrollView
+			className="flex-1 px-4 bg-white"
+			contentContainerStyle={{ flexGrow: 1, paddingBottom: 32 }}
+			showsVerticalScrollIndicator={false}
+			testID="settings-container"
+		>
 			<View className="px-4">
 				<SettingsHeader />
 			</View>
-			<ScrollView
-				className="flex-1 px-4"
-				contentContainerStyle={{ flexGrow: 1, paddingBottom: 32 }}
-				showsVerticalScrollIndicator={false}
-				testID="settings-content"
-			>
-				<View className="gap-10">
-					<AccountSettings />
-					<NotificationSettings />
-					<AppSettings />
-					<SettingsMenuItem
-						icon="trash-outline"
-						label={t('settings.titles.deleteAccount')}
-						onPress={handleDeleteAccount}
-						color="#dc2626"
-						textColor="#dc2626"
-						testID="delete-account"
-					/>
-				</View>
-			</ScrollView>
-		</View>
+			<View className="gap-4" testID="settings-content">
+				<AccountSettings />
+				<NotificationSettings />
+				<AppSettings />
+				<SettingsMenuItem
+					icon="trash-outline"
+					label={t('settings.titles.deleteAccount')}
+					onPress={handleDeleteAccount}
+					color="#dc2626"
+					textColor="#dc2626"
+					testID="delete-account"
+				/>
+			</View>
+		</ScrollView>
 	);
 }

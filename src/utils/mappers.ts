@@ -19,23 +19,12 @@ export const mapSupabaseCount = (countResult: SupabaseCountResult): number => {
 export const mapDbCollectionToSneaker = (
 	dbCollection: DbCollectionWithSneaker
 ): Sneaker => {
-	console.log('[mapDbCollectionToSneaker] Input:', dbCollection);
-
 	const { sneakers: dbSneaker, ...collectionData } = dbCollection;
-
-	console.log(
-		'[mapDbCollectionToSneaker] Extracted sneaker data:',
-		dbSneaker
-	);
-	console.log(
-		'[mapDbCollectionToSneaker] Extracted collection data:',
-		collectionData
-	);
 
 	const images = parseDbImages(collectionData.images, dbSneaker.image);
 	const orderedImages = SneakerImageHandler.orderImages(images);
 
-	const result = {
+	return {
 		id: collectionData.id,
 		sneaker_id: dbSneaker.id,
 		user_id: collectionData.user_id,
@@ -56,9 +45,6 @@ export const mapDbCollectionToSneaker = (
 		og_box: collectionData.og_box || false,
 		ds: collectionData.ds || false,
 	};
-
-	console.log('[mapDbCollectionToSneaker] Result:', result);
-	return result;
 };
 
 export const mapDbWishlistToSneaker = (
