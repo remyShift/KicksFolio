@@ -13,6 +13,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
+import EditImagesButton from '@/components/ui/buttons/EditImagesButton';
 import { useFormController } from '@/hooks/form/useFormController';
 import { useSizeConversion } from '@/hooks/useSizeConversion';
 import { useModalStore } from '@/store/useModalStore';
@@ -149,19 +150,7 @@ export const FormDetailsStep = () => {
 						<Text className="font-open-sans-bold text-base">
 							{t('collection.modal.titles.selectedImages')}
 						</Text>
-						<Pressable
-							onPress={handleEditImages}
-							className="flex-row items-center gap-2 bg-gray-100 px-3 py-1 rounded-md"
-						>
-							<MaterialIcons
-								name="edit"
-								size={16}
-								color="#F27329"
-							/>
-							<Text className="font-open-sans-bold text-sm text-primary">
-								{t('collection.modal.buttons.editImages')}
-							</Text>
-						</Pressable>
+						<EditImagesButton handleEditImages={handleEditImages} />
 					</View>
 
 					{sneakerToAdd?.images && sneakerToAdd.images.length > 0 ? (
