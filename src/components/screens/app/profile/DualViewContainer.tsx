@@ -32,8 +32,11 @@ export default function DualViewContainer({
 	isAnonymousUser = false,
 }: DualViewContainerProps) {
 	const { viewDisplayState } = useViewDisplayStateStore();
+	const { filteredAndSortedSneakers } = useLocalSneakerData(
+		userSneakers && Array.isArray(userSneakers) ? userSneakers : []
+	);
 	const { openSneakerModal } = useModalContext({
-		contextSneakers: userSneakers,
+		contextSneakers: filteredAndSortedSneakers,
 	});
 
 	const isCardView = viewDisplayState === ViewDisplayState.Card;
@@ -53,8 +56,7 @@ export default function DualViewContainer({
 		return userSneakers && Array.isArray(userSneakers) ? userSneakers : [];
 	}, [userSneakers]);
 
-	const { filteredAndSortedSneakers, filters, uniqueValues } =
-		useLocalSneakerData(validatedSneakers);
+	const { filters, uniqueValues } = useLocalSneakerData(validatedSneakers);
 
 	useEffect(() => {
 		if (onFiltersChange && !isAnonymousUser) {
@@ -63,7 +65,7 @@ export default function DualViewContainer({
 	}, [filters, uniqueValues, onFiltersChange, isAnonymousUser]);
 
 	const sneakersByBrand = useMemo(() => {
-		const result = filteredAndSortedSneakers.reduce(
+		const result = validatedSneakers.reduce(
 			(acc, sneaker) => {
 				const normalizedBrand =
 					sneaker.brand?.name?.toLowerCase().trim() || 'unknown';
@@ -77,7 +79,7 @@ export default function DualViewContainer({
 		);
 
 		return result;
-	}, [filteredAndSortedSneakers]);
+	}, [validatedSneakers]);
 
 	const shouldUseHybridChunking = useMemo(() => {
 		const result = Object.values(sneakersByBrand).some(
@@ -104,7 +106,7 @@ export default function DualViewContainer({
 				)
 			) : (
 				<SneakerListFactory
-					sneakers={filteredAndSortedSneakers}
+					sneakers={validatedSneakers}
 					userSneakers={userSneakers}
 					chunkSize={DISPLAY_CONFIG.list.chunkSize}
 					bufferSize={DISPLAY_CONFIG.list.bufferSize}

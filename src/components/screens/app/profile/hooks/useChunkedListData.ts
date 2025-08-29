@@ -127,7 +127,7 @@ export function useChunkedListData(
 		setLoadedChunkIds(new Set(initialChunkIds));
 		setCurrentVisibleRange(initialRange);
 	}, [
-		filteredAndSortedSneakers.length,
+		filteredAndSortedSneakers,
 		isChunkingEnabled,
 		finalConfig.chunkSize,
 		finalConfig.bufferSize,
