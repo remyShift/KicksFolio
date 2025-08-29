@@ -95,14 +95,15 @@ class SneakerProxy implements SneakerHandlerInterface {
 
 		let sneakerId: string;
 
-		const { data: existingSneaker } = await supabase
+		const { data: existingSneaker, error: searchError } = await supabase
 			.from('sneakers')
 			.select('id, image')
-			.eq('brand_id', brand_id)
-			.eq('model', model)
-			.eq('gender', gender)
 			.eq('sku', sku || '')
-			.single();
+			.maybeSingle();
+
+		if (searchError && searchError.code !== 'PGRST116') {
+			throw searchError;
+		}
 
 		if (existingSneaker) {
 			sneakerId = existingSneaker.id;
