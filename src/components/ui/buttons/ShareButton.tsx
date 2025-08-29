@@ -10,13 +10,13 @@ interface ShareButtonProps {
 
 export default function ShareButton({
 	onPress,
-	size = 20,
+	size = 21,
 	color = 'black',
 }: ShareButtonProps) {
 	return (
 		<TouchableOpacity
 			onPress={onPress}
-			className="p-4 absolute right-10 top-1  z-50"
+			className="p-4 absolute right-10 top-0.5  z-50"
 		>
 			<Feather name="share" size={size} color={color} />
 		</TouchableOpacity>

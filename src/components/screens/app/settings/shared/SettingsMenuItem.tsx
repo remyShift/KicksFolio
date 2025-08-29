@@ -19,7 +19,7 @@ export default function SettingsMenuItem({
 	label,
 	onPress,
 	color = '#666',
-	textColor,
+	textColor = 'black',
 	testID,
 	rightElement,
 }: SettingsMenuItemProps) {
