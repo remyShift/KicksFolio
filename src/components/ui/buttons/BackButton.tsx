@@ -11,7 +11,7 @@ export default function BackButton({
 }) {
 	return (
 		<Pressable
-			className={`${backgroundColor} p-3 rounded-md flex items-center justify-center`}
+			className={`${backgroundColor} p-3 rounded-md flex items-center justify-center border border-gray-200`}
 			onPress={() => {
 				onPressAction();
 			}}
