@@ -64,7 +64,7 @@ export const ViewStep = () => {
 			)}
 
 			<View className="flex-row justify-between items-center">
-				<View className="flex gap-0">
+				<View className="flex gap-0 w-[87%]">
 					<View
 						testID="sneaker-display-name"
 						className="flex-row items-center gap-1 text-wrap"
