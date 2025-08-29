@@ -59,6 +59,10 @@
 		"deletionFailed": {
 			"title": "❌ Échec de suppression",
 			"description": "La sneaker n'a pas pu être supprimée."
+		},
+		"error": {
+			"title": "❌ Erreur",
+			"description": "Une erreur s'est produite lors de la recherche."
 		}
 	},
 	"modal": {

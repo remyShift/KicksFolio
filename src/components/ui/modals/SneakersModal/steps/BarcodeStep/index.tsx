@@ -28,7 +28,7 @@ export const BarcodeStep = () => {
 	} = useModalStore();
 
 	const { handleBarcodeSearch } = useSneakerAPI();
-	const { showInfoToast, showSuccessToast } = useToast();
+	const { showInfoToast, showSuccessToast, showErrorToast } = useToast();
 
 	useEffect(() => {
 		const getCameraPermissions = async () => {
@@ -43,6 +43,7 @@ export const BarcodeStep = () => {
 	const handleBarcodeScanned = ({ data }: { data: string }) => {
 		if (scanned || isLoading) return;
 
+		console.log('🔍 Barcode scanned:', data);
 		setScanned(true);
 		setSneakerSKU(data);
 		setErrorMsg('');
@@ -60,9 +61,22 @@ export const BarcodeStep = () => {
 			setErrorMsg,
 		})
 			.then(() => {
+				console.log('✅ Barcode search successful');
 				showSuccessToast(
 					t('collection.messages.found.title'),
 					t('collection.messages.found.description')
+				);
+			})
+			.catch((error) => {
+				console.log(
+					'❌ Barcode search error caught in BarcodeStep:',
+					error
+				);
+				console.log('❌ Error message:', error.message);
+
+				showErrorToast(
+					t('collection.messages.error.title'),
+					t('collection.messages.error.description')
 				);
 			})
 			.finally(() => {
@@ -133,12 +147,6 @@ export const BarcodeStep = () => {
 						{t('collection.modal.barcode.description')}
 					</Text>
 				</View>
-
-				{errorMsg && (
-					<View className="mt-2">
-						<ErrorMsg content={errorMsg} display={!!errorMsg} />
-					</View>
-				)}
 			</View>
 
 			<View className="absolute inset-0 items-center justify-center z-10 top-0 left-0 right-0 bottom-0">
@@ -157,12 +165,15 @@ export const BarcodeStep = () => {
 						<View className="absolute bottom-0 right-0 w-6 h-6 border-b-4 border-r-4 border-white rounded-br-lg" />
 					</View>
 
-					<View className="absolute -bottom-16 left-0 right-0">
-						<Text className="font-open-sans-bold text-white text-center bg-black/50 px-4 py-2 rounded-lg">
-							{isLoading
-								? t('collection.messages.searching.description')
-								: t('collection.modal.barcode.instruction')}
-						</Text>
+					<View className="absolute -bottom-20 left-0 right-0">
+						{errorMsg && (
+							<View className="bg-black/50 px-4 py-2 rounded-lg">
+								<ErrorMsg
+									content={errorMsg}
+									display={!!errorMsg}
+								/>
+							</View>
+						)}
 					</View>
 				</View>
 			</View>

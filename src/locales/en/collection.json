@@ -59,6 +59,10 @@
 		"deletionFailed": {
 			"title": "❌ Sneaker deletion failed !",
 			"description": "The sneaker could not be deleted."
+		},
+		"error": {
+			"title": "❌ Error",
+			"description": "An error occurred during the search."
 		}
 	},
 	"modal": {

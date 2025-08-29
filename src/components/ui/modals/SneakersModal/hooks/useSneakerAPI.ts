@@ -531,16 +531,19 @@ export const useSneakerAPI = () => {
 				return response;
 			})
 			.catch((error: Error) => {
-				if (error.message.includes('Aucune donnée trouvée')) {
-					callbacks.setErrorMsg(
+				if (
+					error.message.includes('No data found for this barcode') ||
+					error.message.includes('Aucune donnée trouvée')
+				) {
+					const errorMessage =
 						t('collection.modal.form.errors.barcode.notFound') ||
-							'No data found for this barcode'
-					);
+						'No data found for this barcode';
+					callbacks.setErrorMsg(errorMessage);
 				} else {
-					callbacks.setErrorMsg(
+					const errorMessage =
 						error.message ||
-							'An error occurred during barcode search'
-					);
+						'An error occurred during barcode search';
+					callbacks.setErrorMsg(errorMessage);
 				}
 				throw error;
 			});

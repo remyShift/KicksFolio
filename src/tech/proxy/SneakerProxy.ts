@@ -616,7 +616,7 @@ class SneakerProxy implements SneakerHandlerInterface {
 			})
 			.then(({ data, error }) => {
 				if (!data.data) {
-					throw t('collection.modal.barcode.noData');
+					throw new Error('No data found for this barcode');
 				}
 
 				const response = data.data;

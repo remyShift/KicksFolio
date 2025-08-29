@@ -100,7 +100,9 @@ export const useModalStore = create<ModalStore>((set) => ({
 	setSneakerToAdd: (sneaker) => set({ sneakerToAdd: sneaker }),
 	setFetchedSneaker: (sneaker) => set({ fetchedSneaker: sneaker }),
 	setSneakerSKU: (sku) => set({ sneakerSKU: sku }),
-	setErrorMsg: (error) => set({ errorMsg: error }),
+	setErrorMsg: (error) => {
+		set({ errorMsg: error });
+	},
 	setEstimatedValue: (value) => set({ estimatedValue: value }),
 	setGender: (gender) => set({ gender }),
 	setSku: (sku) => set({ sku }),
