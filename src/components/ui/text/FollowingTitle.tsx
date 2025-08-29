@@ -27,9 +27,11 @@ export default function FollowingTitle({
 					<Image
 						source={userAvatar}
 						style={{
-							width: 24,
-							height: 24,
-							borderRadius: 3,
+							width: 32,
+							height: 32,
+							borderRadius: 20,
+							borderWidth: 1,
+							borderColor: '#F27329',
 						}}
 						contentFit="contain"
 						contentPosition="center"
