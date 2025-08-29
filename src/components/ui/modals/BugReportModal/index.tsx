@@ -113,7 +113,10 @@ export const BugReportModal: React.FC = () => {
 			<View className="flex-1 bg-background">
 				<View className="flex-row items-center justify-center p-5 pl-12 border-b bg-white border-gray-200">
 					<View className="absolute left-4">
-						<BackButton onPressAction={handleClose} />
+						<BackButton
+							onPressAction={handleClose}
+							border={false}
+						/>
 					</View>
 					<Text className="text-xl font-bold text-gray-900 text-center">
 						{t('settings.bugReport.modal.title')}

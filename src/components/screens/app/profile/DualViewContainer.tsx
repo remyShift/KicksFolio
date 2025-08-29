@@ -50,7 +50,19 @@ export default function DualViewContainer({
 	);
 
 	const validatedSneakers = useMemo(() => {
-		return userSneakers && Array.isArray(userSneakers) ? userSneakers : [];
+		console.log('[DualViewContainer] userSneakers received:', userSneakers);
+		console.log(
+			'[DualViewContainer] userSneakers type:',
+			typeof userSneakers
+		);
+		console.log(
+			'[DualViewContainer] userSneakers is array:',
+			Array.isArray(userSneakers)
+		);
+		const result =
+			userSneakers && Array.isArray(userSneakers) ? userSneakers : [];
+		console.log('[DualViewContainer] validatedSneakers result:', result);
+		return result;
 	}, [userSneakers]);
 
 	const { filteredAndSortedSneakers, filters, uniqueValues } =

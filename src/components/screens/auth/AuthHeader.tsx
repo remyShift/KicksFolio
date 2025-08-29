@@ -23,6 +23,7 @@ export default function AuthHeader({ page }: AuthHeaderProps) {
 							: router.push(page.routerBack)
 					}
 					backgroundColor="bg-transparent"
+					border={false}
 				/>
 			</View>
 			<PageTitle content={page.title} />

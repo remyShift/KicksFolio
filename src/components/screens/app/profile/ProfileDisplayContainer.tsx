@@ -183,14 +183,22 @@ export default function ProfileDisplayContainer(
 			>
 				{memoizedProfileHeader}
 				{showAnonymousMessage && <AnonymousUserMessage />}
-				<DualViewContainer
-					userSneakers={userSneakers}
-					onSneakerPress={onSneakerPress}
-					refreshing={refreshing}
-					onRefresh={handleRefresh}
-					onFiltersChange={handleFiltersChange}
-					isAnonymousUser={isAnonymousUser}
-				/>
+				{(() => {
+					console.log(
+						'[ProfileDisplayContainer] About to render DualViewContainer with userSneakers:',
+						userSneakers
+					);
+					return (
+						<DualViewContainer
+							userSneakers={userSneakers}
+							onSneakerPress={onSneakerPress}
+							refreshing={refreshing}
+							onRefresh={handleRefresh}
+							onFiltersChange={handleFiltersChange}
+							isAnonymousUser={isAnonymousUser}
+						/>
+					);
+				})()}
 			</ScrollView>
 		</>
 	);

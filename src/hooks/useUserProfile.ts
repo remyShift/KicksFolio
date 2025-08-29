@@ -78,6 +78,15 @@ export const useUserProfile = (userId: string | undefined): UseUserProfile => {
 				userLookup.getSneakers(userId),
 			])
 				.then(([userSearch, sneakers]) => {
+					console.log('[useUserProfile] Profile data received:', {
+						userSearch,
+						sneakers,
+					});
+					console.log(
+						'[useUserProfile] Sneakers count:',
+						sneakers?.length || 0
+					);
+
 					if (userSearch) {
 						setUserProfile({
 							userSearch,

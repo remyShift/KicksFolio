@@ -19,6 +19,7 @@ export default function SettingsHeader() {
 							? router.back()
 							: router.dismissTo('/(app)/(tabs)/profile')
 					}
+					border={false}
 				/>
 			</View>
 		</View>

@@ -5,13 +5,17 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 export default function BackButton({
 	onPressAction,
 	backgroundColor = 'bg-white',
+	border = true,
 }: {
 	onPressAction: () => void;
 	backgroundColor?: string;
+	border?: boolean;
 }) {
 	return (
 		<Pressable
-			className={`${backgroundColor} p-3 rounded-md flex items-center justify-center border border-gray-200`}
+			className={`${backgroundColor} p-3 rounded-md flex items-center justify-center ${
+				border ? 'border border-gray-200' : ''
+			}`}
 			onPress={() => {
 				onPressAction();
 			}}
