@@ -9,7 +9,9 @@
 		"back": "Retour",
 		"browse": "Parcourir",
 		"confirm": "Confirmer",
-		"close": "Fermer"
+		"close": "Fermer",
+		"follow": "Suivre",
+		"unfollow": "Se désabonner"
 	},
 	"loading": "Chargement...",
 	"labels": {

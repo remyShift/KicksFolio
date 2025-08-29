@@ -9,7 +9,9 @@
 		"back": "Back",
 		"browse": "Browse",
 		"confirm": "Confirm",
-		"close": "Close"
+		"close": "Close",
+		"follow": "Follow",
+		"unfollow": "Unfollow"
 	},
 	"loading": "Loading...",
 	"labels": {
