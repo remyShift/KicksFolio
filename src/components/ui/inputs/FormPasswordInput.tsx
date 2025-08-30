@@ -104,7 +104,7 @@ const FormPasswordInput = forwardRef<TextInput, FormPasswordInputProps<any>>(
 									onPress={() =>
 										setIsPasswordVisible(!isPasswordVisible)
 									}
-									className="absolute right-4 top-3"
+									className="absolute right-4 top-1/2 -translate-y-1/2"
 								>
 									<Ionicons
 										name={
