@@ -92,7 +92,7 @@ const FormPasswordInput = forwardRef<TextInput, FormPasswordInputProps<any>>(
 									returnKeyType={
 										onSubmitEditing ? 'done' : 'next'
 									}
-									className={`bg-white border-2 rounded-md p-3 w-full font-open-sans-bold ${
+									className={`bg-white border-2 rounded-md p-3 w-full font-open-sans-bold text-gray-900 ${
 										error
 											? 'border-red-500'
 											: isFocused

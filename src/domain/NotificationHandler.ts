@@ -130,7 +130,7 @@ export class NotificationHandler {
 				return count;
 			})
 			.catch((error) => {
-				console.error(
+				console.warn(
 					'❌ NotificationHandler.getUnreadCount: Error occurred:',
 					error
 				);
