@@ -1,11 +1,11 @@
 import SignUpFirstForm from '@/components/screens/auth/signup/SignUpFirstForm';
-import PrivacyPolicy from '@/components/ui/links/PrivacyPolicy';
+import LegalData from '@/components/ui/text/LegalData';
 
 export default function SignUp() {
 	return (
 		<>
 			<SignUpFirstForm />
-			<PrivacyPolicy />
+			<LegalData />
 		</>
 	);
 }

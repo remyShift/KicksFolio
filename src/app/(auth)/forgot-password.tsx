@@ -1,11 +1,11 @@
 import ForgotPasswordForm from '@/components/screens/auth/forgotPassword/ForgotPasswordForm';
-import PrivacyPolicy from '@/components/ui/links/PrivacyPolicy';
+import LegalData from '@/components/ui/text/LegalData';
 
 export default function ForgotPassword() {
 	return (
 		<>
 			<ForgotPasswordForm />
-			<PrivacyPolicy />
+			<LegalData />
 		</>
 	);
 }

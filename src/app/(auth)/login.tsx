@@ -1,11 +1,11 @@
 import LoginForm from '@/components/screens/auth/login/LoginForm';
-import PrivacyPolicy from '@/components/ui/links/PrivacyPolicy';
+import LegalData from '@/components/ui/text/LegalData';
 
 export default function Login() {
 	return (
 		<>
 			<LoginForm />
-			<PrivacyPolicy />
+			<LegalData />
 		</>
 	);
 }
