@@ -3,6 +3,9 @@ import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Text, TouchableOpacity, View } from 'react-native';
 
+import Entypo from '@expo/vector-icons/build/Entypo';
+import Feather from '@expo/vector-icons/build/Feather';
+
 import { useModalContext } from '@/components/ui/modals/SneakersModal/hooks/useModalContext';
 import { useSneakerAPI } from '@/components/ui/modals/SneakersModal/hooks/useSneakerAPI';
 import { useSession } from '@/contexts/authContext';
@@ -125,9 +128,7 @@ export default function SwipeActions({
 					activeOpacity={0.7}
 				>
 					<View className="items-center">
-						<View className="w-6 h-6 bg-white rounded-full items-center justify-center mb-1">
-							<View className="w-3 h-0.5 bg-red-500" />
-						</View>
+						<Feather name="trash-2" size={24} color="white" />
 						<Text className="text-white text-xs font-medium">
 							{t('collection.actions.delete')}
 						</Text>
@@ -141,9 +142,7 @@ export default function SwipeActions({
 				activeOpacity={0.7}
 			>
 				<View className="items-center">
-					<View className="w-6 h-6 bg-white rounded-full items-center justify-center mb-1">
-						<View className="w-3 h-3 border-2 border-blue-500 rounded-sm" />
-					</View>
+					<Entypo name="eye" size={24} color="white" />
 					<Text className="text-white text-xs font-medium">
 						{t('collection.actions.view')}
 					</Text>
