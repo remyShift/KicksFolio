@@ -18,12 +18,14 @@ export default function SneakerCard({
 	setModalVisible,
 	setSneaker,
 	showOwnerInfo = false,
+	onPress,
 }: {
 	sneaker: Sneaker;
 	setModalStep: (step: ModalStep) => void;
 	setModalVisible: (visible: boolean) => void;
 	setSneaker: (sneaker: Sneaker) => void;
 	showOwnerInfo?: boolean;
+	onPress?: (sneaker: Sneaker) => void;
 }) {
 	const { user } = useSession();
 	const { t } = useTranslation();
@@ -34,9 +36,13 @@ export default function SneakerCard({
 			<Pressable
 				className="bg-white rounded-md p-3 gap-2 w-80"
 				onPress={() => {
-					setSneaker(sneaker);
-					setModalStep('view');
-					setModalVisible(true);
+					if (onPress) {
+						onPress(sneaker);
+					} else {
+						setSneaker(sneaker);
+						setModalStep('view');
+						setModalVisible(true);
+					}
 				}}
 				testID="sneaker-card"
 				hitSlop={{

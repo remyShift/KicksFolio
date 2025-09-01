@@ -8,9 +8,13 @@ import WishlistSwipeActions from './WishlistSwipeActions';
 
 interface WishlistSwipeableItemProps {
 	sneaker: Sneaker;
+	wishlistSneakers?: Sneaker[];
 }
 
-function WishlistSwipeableItem({ sneaker }: WishlistSwipeableItemProps) {
+function WishlistSwipeableItem({
+	sneaker,
+	wishlistSneakers,
+}: WishlistSwipeableItemProps) {
 	const getIsOwner = () => {
 		return false;
 	};
@@ -19,7 +23,7 @@ function WishlistSwipeableItem({ sneaker }: WishlistSwipeableItemProps) {
 		<SwipeableWrapper
 			item={sneaker}
 			showOwnerInfo={false}
-			userSneakers={[sneaker]}
+			userSneakers={wishlistSneakers}
 			customSwipeActions={WishlistSwipeActions}
 			customMainContent={WishlistListItem}
 			getIsOwner={getIsOwner}

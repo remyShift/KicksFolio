@@ -10,6 +10,7 @@ import { FormImageStep } from './steps/FormImageStep';
 import { InitialStep } from './steps/InitialStep';
 import { SkuStep } from './steps/SkuStep';
 import { ViewStep } from './steps/ViewStep';
+import { WishlistViewStep } from './steps/WishlistViewStep';
 
 export const SneakersModal = () => {
 	const modalStep = useModalStore((state) => state.modalStep);
@@ -38,6 +39,10 @@ export const SneakersModal = () => {
 				{modalStep === 'editForm' && <EditFormStep />}
 
 				{modalStep === 'view' && currentSneaker && <ViewStep />}
+
+				{modalStep === 'wishlist-view' && currentSneaker && (
+					<WishlistViewStep />
+				)}
 			</View>
 
 			<ModalFooter />

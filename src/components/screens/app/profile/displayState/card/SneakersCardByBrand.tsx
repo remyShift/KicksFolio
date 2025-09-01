@@ -66,6 +66,7 @@ export default function SneakersCardByBrand({
 										setSneaker={(s) => onSneakerPress(s)}
 										setModalStep={setModalStep}
 										showOwnerInfo={showOwnerInfo}
+										onPress={onSneakerPress}
 									/>
 								))}
 							</ScrollView>

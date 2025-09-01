@@ -9,7 +9,8 @@ export type ModalStep =
 	| 'addFormDetails'
 	| 'editForm'
 	| 'editFormImages'
-	| 'view';
+	| 'view'
+	| 'wishlist-view';
 
 export type InputType =
 	| 'name'

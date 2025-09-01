@@ -11,19 +11,32 @@ interface UseModalContextProps {
 export const useModalContext = ({
 	contextSneakers,
 }: UseModalContextProps = {}) => {
-	// Retour aux sélecteurs individuels pour éviter la boucle infinie
 	const setCurrentSneaker = useModalStore((state) => state.setCurrentSneaker);
 	const setModalStep = useModalStore((state) => state.setModalStep);
 	const setIsVisible = useModalStore((state) => state.setIsVisible);
 	const resetModalData = useModalStore((state) => state.resetModalData);
 
+	const isWishlistSneaker = useCallback((sneaker: Sneaker) => {
+		return (
+			sneaker.wishlist === true ||
+			sneaker.wishlist_added_at != null ||
+			(sneaker.condition == null &&
+				sneaker.status_id == null &&
+				sneaker.size_eu == null &&
+				sneaker.size_us == null)
+		);
+	}, []);
+
 	const openSneakerModal = useCallback(
 		(sneaker: Sneaker) => {
 			setCurrentSneaker(sneaker);
-			setModalStep('view');
+			const modalStep = isWishlistSneaker(sneaker)
+				? 'wishlist-view'
+				: 'view';
+			setModalStep(modalStep);
 			setIsVisible(true);
 		},
-		[setCurrentSneaker, setModalStep, setIsVisible]
+		[setCurrentSneaker, setModalStep, setIsVisible, isWishlistSneaker]
 	);
 
 	const openModalForNewSneaker = useCallback(() => {

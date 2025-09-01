@@ -67,13 +67,19 @@ export default function WishlistSneakerList({
 			: [];
 	}, [filteredAndSortedSneakers]);
 
-	const renderItem = useCallback(({ item }: { item: Sneaker }) => {
-		return (
-			<View className="bg-white border-b border-gray-100">
-				<WishlistSwipeableItem sneaker={item} />
-			</View>
-		);
-	}, []);
+	const renderItem = useCallback(
+		({ item }: { item: Sneaker }) => {
+			return (
+				<View className="bg-white border-b border-gray-100">
+					<WishlistSwipeableItem
+						sneaker={item}
+						wishlistSneakers={validatedSneakers}
+					/>
+				</View>
+			);
+		},
+		[validatedSneakers]
+	);
 
 	const ListHeaderComponent = useMemo(() => {
 		return (

@@ -3,19 +3,25 @@ import { Text, View } from 'react-native';
 import { Sneaker } from '@/types/sneaker';
 
 export const ConditionBar = ({ sneaker }: { sneaker: Sneaker }) => {
-	const segments = Array.from({ length: sneaker.condition }, (_, i) => i);
-	const conditionDisplay = sneaker.ds ? 'DS' : `${sneaker.condition}/10`;
+	if (!sneaker || sneaker.condition == null) {
+		return null;
+	}
+
+	const condition = Number(sneaker.condition) || 0;
+	const segments = Array.from({ length: condition }, (_, i) => i);
+	const conditionDisplay = sneaker.ds ? 'DS' : `${condition}/10`;
 
 	return (
 		<View className="flex-row w-screen gap-4">
 			<View className="bg-white flex-row justify-between p-1 px-2 rounded-l-md w-3/4">
 				<View className="flex-row w-full justify-between">
 					<View className="flex-row w-full">
-						{segments.length && (
+						{segments.length > 0 && (
 							<View className="bg-primary w-3 h-full"></View>
 						)}
 
 						{segments.length <= 10 &&
+							segments.length > 0 &&
 							segments.map((_, index) => (
 								<View
 									key={index}

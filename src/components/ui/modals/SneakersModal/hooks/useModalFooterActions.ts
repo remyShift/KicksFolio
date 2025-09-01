@@ -302,6 +302,7 @@ export const useModalFooterActions = () => {
 				}
 				break;
 			case 'view':
+			case 'wishlist-view':
 				if (nextSneaker) {
 					if (isAnonymous) {
 						setCurrentSneaker(nextSneaker);
@@ -341,6 +342,7 @@ export const useModalFooterActions = () => {
 				setModalStep('view');
 				break;
 			case 'view':
+			case 'wishlist-view':
 				if (prevSneaker) {
 					if (isAnonymous) {
 						setCurrentSneaker(prevSneaker);

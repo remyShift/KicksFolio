@@ -44,7 +44,10 @@ export const useModalNavigation = ({
 	}, [currentSneaker, viewDisplayState, filteredAndSortedSneakers]);
 
 	useEffect(() => {
-		if (modalStep === 'view' && currentSneaker) {
+		if (
+			(modalStep === 'view' || modalStep === 'wishlist-view') &&
+			currentSneaker
+		) {
 			if (lastProcessedSneakerId.current === currentSneaker.id) {
 				return;
 			}
@@ -74,7 +77,7 @@ export const useModalNavigation = ({
 		}
 
 		return () => {
-			if (modalStep !== 'view') {
+			if (modalStep !== 'view' && modalStep !== 'wishlist-view') {
 				setNextSneaker(null);
 				setPrevSneaker(null);
 				lastProcessedSneakerId.current = null;

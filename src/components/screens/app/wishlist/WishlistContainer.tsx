@@ -2,8 +2,8 @@ import { useCallback, useMemo } from 'react';
 
 import { RefreshControl, ScrollView } from 'react-native';
 
+import { useModalContext } from '@/components/ui/modals/SneakersModal/hooks/useModalContext';
 import { useSession } from '@/contexts/authContext';
-import { useModalStore } from '@/store/useModalStore';
 import { Sneaker } from '@/types/sneaker';
 
 import EmptyWishlistState from './EmptyWishlistState';
@@ -20,16 +20,6 @@ export default function WishlistContainer({
 	onRefresh,
 }: WishlistContainerProps) {
 	const { wishlistSneakers } = useSession();
-	const { setModalStep, setIsVisible, setCurrentSneaker } = useModalStore();
-
-	const handleSneakerPress = useCallback(
-		(sneaker: Sneaker) => {
-			setCurrentSneaker(sneaker);
-			setModalStep('view');
-			setIsVisible(true);
-		},
-		[setCurrentSneaker, setModalStep, setIsVisible]
-	);
 
 	const validatedSneakers = useMemo(() => {
 		if (wishlistSneakers === null) {
@@ -40,6 +30,17 @@ export default function WishlistContainer({
 			? wishlistSneakers
 			: [];
 	}, [wishlistSneakers]);
+
+	const { openSneakerModal } = useModalContext({
+		contextSneakers: validatedSneakers,
+	});
+
+	const handleSneakerPress = useCallback(
+		(sneaker: Sneaker) => {
+			openSneakerModal(sneaker);
+		},
+		[openSneakerModal]
+	);
 
 	if (!validatedSneakers.length) {
 		return (
