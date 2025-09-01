@@ -3,6 +3,8 @@ import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Text, TouchableOpacity, View } from 'react-native';
 
+import Feather from '@expo/vector-icons/build/Feather';
+
 import useToast from '@/hooks/ui/useToast';
 import { wishlist } from '@/services/wishlist';
 import { Sneaker } from '@/types/sneaker';
@@ -80,9 +82,7 @@ export default function WishlistSwipeActions({
 				activeOpacity={0.7}
 			>
 				<View className="items-center">
-					<View className="w-6 h-6 bg-white rounded-full items-center justify-center mb-1">
-						<View className="w-3 h-0.5 bg-red-500" />
-					</View>
+					<Feather name="trash-2" size={24} color="white" />
 					<Text className="text-white text-xs font-medium">
 						{t('collection.actions.delete')}
 					</Text>
