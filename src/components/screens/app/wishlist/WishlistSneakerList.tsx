@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { FlashList } from '@shopify/flash-list';
 
@@ -13,7 +13,6 @@ import {
 } from '@/store/useViewDisplayStateStore';
 import { Sneaker } from '@/types/sneaker';
 
-import ListControls from '../profile/displayState/list/ListControls';
 import WishlistSwipeableItem from './WishlistSwipeableItem';
 
 interface WishlistSneakerListProps {
@@ -36,18 +35,7 @@ export default function WishlistSneakerList({
 
 	const isCardView = viewDisplayState === ViewDisplayState.Card;
 
-	const {
-		filteredAndSortedSneakers,
-		uniqueValues,
-		sortBy,
-		sortOrder,
-		showFilters,
-		filters,
-		toggleSort,
-		toggleFilters,
-		updateFilter,
-		clearFilters,
-	} = useLocalSneakerData(sneakers);
+	const { filteredAndSortedSneakers } = useLocalSneakerData(sneakers);
 
 	const handleSneakerPress = useCallback(
 		(sneaker: Sneaker) => {
@@ -82,34 +70,21 @@ export default function WishlistSneakerList({
 	);
 
 	const ListHeaderComponent = useMemo(() => {
+		if (isCardView) {
+			return null;
+		}
+
 		return (
-			<ListControls
-				uniqueValues={uniqueValues}
-				sortBy={sortBy}
-				sortOrder={sortOrder}
-				showFilters={showFilters}
-				filters={filters}
-				onToggleSort={toggleSort}
-				onToggleFilters={toggleFilters}
-				onUpdateFilter={updateFilter}
-				onClearFilters={clearFilters}
-				filteredAndSortedSneakers={filteredAndSortedSneakers}
-				visibleSneakers={validatedSneakers}
-			/>
+			<View className="py-2 bg-background border-b border-gray-200 mb-2">
+				<View className="flex-row justify-between items-center mb-3 px-4">
+					<Text className="text-lg font-semibold">
+						{validatedSneakers.length} sneaker
+						{validatedSneakers.length > 1 ? 's' : ''} en wishlist
+					</Text>
+				</View>
+			</View>
 		);
-	}, [
-		uniqueValues,
-		sortBy,
-		sortOrder,
-		showFilters,
-		filters,
-		toggleSort,
-		toggleFilters,
-		updateFilter,
-		clearFilters,
-		filteredAndSortedSneakers,
-		validatedSneakers,
-	]);
+	}, [isCardView, validatedSneakers.length]);
 
 	const keyExtractor = useCallback((item: Sneaker) => {
 		return item.id || Math.random().toString();

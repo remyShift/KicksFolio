@@ -352,7 +352,6 @@ export const useSneakerAPI = () => {
 
 				const validatedData = validationResult.validatedData!;
 
-				// Récupérer l'image de référence via la couche domain
 				const referenceImageUri =
 					await sneakerHandler.getReferenceImage(sneakerId);
 
