@@ -138,6 +138,12 @@ export const ModalFooter = () => {
 					<NextSneakerButton onPressAction={handleNextAction} />
 				</View>
 			)}
+			{modalStep === 'wishlist-view' && (
+				<View className="flex-row justify-between w-full">
+					<BackButton onPressAction={handleBackAction} />
+					<NextSneakerButton onPressAction={handleNextAction} />
+				</View>
+			)}
 		</View>
 	);
 };

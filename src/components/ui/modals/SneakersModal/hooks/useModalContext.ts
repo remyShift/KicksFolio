@@ -14,6 +14,9 @@ export const useModalContext = ({
 	const setCurrentSneaker = useModalStore((state) => state.setCurrentSneaker);
 	const setModalStep = useModalStore((state) => state.setModalStep);
 	const setIsVisible = useModalStore((state) => state.setIsVisible);
+	const setContextSneakers = useModalStore(
+		(state) => state.setContextSneakers
+	);
 	const resetModalData = useModalStore((state) => state.resetModalData);
 
 	const isWishlistSneaker = useCallback((sneaker: Sneaker) => {
@@ -29,6 +32,7 @@ export const useModalContext = ({
 
 	const openSneakerModal = useCallback(
 		(sneaker: Sneaker) => {
+			setContextSneakers(contextSneakers || null);
 			setCurrentSneaker(sneaker);
 			const modalStep = isWishlistSneaker(sneaker)
 				? 'wishlist-view'
@@ -36,7 +40,14 @@ export const useModalContext = ({
 			setModalStep(modalStep);
 			setIsVisible(true);
 		},
-		[setCurrentSneaker, setModalStep, setIsVisible, isWishlistSneaker]
+		[
+			setCurrentSneaker,
+			setModalStep,
+			setIsVisible,
+			setContextSneakers,
+			contextSneakers,
+			isWishlistSneaker,
+		]
 	);
 
 	const openModalForNewSneaker = useCallback(() => {

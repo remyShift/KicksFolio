@@ -22,6 +22,7 @@ interface ModalStore {
 	currentSneaker: Sneaker | null;
 	nextSneaker: Sneaker | null;
 	prevSneaker: Sneaker | null;
+	contextSneakers: Sneaker[] | null;
 	sneakerToAdd: SneakerFormData | null;
 	fetchedSneaker: FetchedSneaker | null;
 	sneakerSKU: string;
@@ -44,6 +45,7 @@ interface ModalStore {
 	setCurrentSneaker: (sneaker: Sneaker | null) => void;
 	setNextSneaker: (sneaker: Sneaker | null) => void;
 	setPrevSneaker: (sneaker: Sneaker | null) => void;
+	setContextSneakers: (sneakers: Sneaker[] | null) => void;
 	setSneakerToAdd: (sneaker: SneakerFormData | null) => void;
 	setFetchedSneaker: (sneaker: FetchedSneaker | null) => void;
 	setSneakerSKU: (sku: string) => void;
@@ -71,6 +73,7 @@ export const useModalStore = create<ModalStore>((set, get) => ({
 	currentSneaker: null,
 	nextSneaker: null,
 	prevSneaker: null,
+	contextSneakers: null,
 	sneakerToAdd: null,
 	fetchedSneaker: null,
 	sneakerSKU: '',
@@ -100,6 +103,9 @@ export const useModalStore = create<ModalStore>((set, get) => ({
 	setPrevSneaker: (sneaker) => {
 		set({ prevSneaker: sneaker });
 	},
+	setContextSneakers: (sneakers) => {
+		set({ contextSneakers: sneakers });
+	},
 	setSneakerToAdd: (sneaker) => set({ sneakerToAdd: sneaker }),
 	setFetchedSneaker: (sneaker) => set({ fetchedSneaker: sneaker }),
 	setSneakerSKU: (sku) => set({ sneakerSKU: sku }),
@@ -118,6 +124,7 @@ export const useModalStore = create<ModalStore>((set, get) => ({
 			currentSneaker: null,
 			nextSneaker: null,
 			prevSneaker: null,
+			contextSneakers: null,
 			modalStep: 'index',
 			sneakerToAdd: null,
 			fetchedSneaker: null,

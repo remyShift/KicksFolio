@@ -102,7 +102,7 @@ export const WishlistViewStep = () => {
 			<View className="flex gap-2">
 				<View
 					style={{
-						minHeight: 150,
+						minHeight: 250,
 					}}
 					className="bg-white/60 rounded-md p-2 mt-2"
 				>
@@ -123,16 +123,6 @@ export const WishlistViewStep = () => {
 								'No description available'}
 						</Text>
 					</ScrollView>
-				</View>
-
-				<View className="bg-orange-100 rounded-md p-3 mt-2">
-					<Text className="font-open-sans-bold text-orange-800 text-center">
-						💫{' '}
-						{t(
-							'wishlist.viewNote',
-							'This sneaker is in your wishlist'
-						)}
-					</Text>
 				</View>
 			</View>
 		</View>

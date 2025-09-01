@@ -19,15 +19,22 @@ export const useModalNavigation = ({
 }: UseModalNavigationProps = {}) => {
 	const { userSneakers } = useSession();
 	const { viewDisplayState } = useViewDisplayStateStore();
-	const { modalStep, currentSneaker, setNextSneaker, setPrevSneaker } =
-		useModalStore();
+	const {
+		modalStep,
+		currentSneaker,
+		contextSneakers: storeContextSneakers,
+		setNextSneaker,
+		setPrevSneaker,
+	} = useModalStore();
 
 	const lastProcessedSneakerId = useRef<string | null>(null);
 
 	const baseSneakers =
-		contextSneakers && contextSneakers.length > 0
-			? contextSneakers
-			: userSneakers || [];
+		storeContextSneakers && storeContextSneakers.length > 0
+			? storeContextSneakers
+			: contextSneakers && contextSneakers.length > 0
+				? contextSneakers
+				: userSneakers || [];
 
 	const { filteredAndSortedSneakers } = useLocalSneakerData(baseSneakers);
 
