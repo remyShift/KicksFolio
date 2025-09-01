@@ -65,7 +65,7 @@ interface ModalStore {
 	resetModalData: () => void;
 }
 
-export const useModalStore = create<ModalStore>((set) => ({
+export const useModalStore = create<ModalStore>((set, get) => ({
 	modalStep: 'index' as ModalStep,
 	isVisible: false,
 	currentSneaker: null,

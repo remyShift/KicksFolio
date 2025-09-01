@@ -11,8 +11,11 @@ interface UseModalContextProps {
 export const useModalContext = ({
 	contextSneakers,
 }: UseModalContextProps = {}) => {
-	const { setCurrentSneaker, setModalStep, setIsVisible, resetModalData } =
-		useModalStore();
+	// Retour aux sélecteurs individuels pour éviter la boucle infinie
+	const setCurrentSneaker = useModalStore((state) => state.setCurrentSneaker);
+	const setModalStep = useModalStore((state) => state.setModalStep);
+	const setIsVisible = useModalStore((state) => state.setIsVisible);
+	const resetModalData = useModalStore((state) => state.resetModalData);
 
 	const openSneakerModal = useCallback(
 		(sneaker: Sneaker) => {
