@@ -12,9 +12,13 @@ import { SkuStep } from './steps/SkuStep';
 import { ViewStep } from './steps/ViewStep';
 
 export const SneakersModal = () => {
-	const { modalStep, isVisible, currentSneaker } = useModalStore();
+	const modalStep = useModalStore((state) => state.modalStep);
+	const isVisible = useModalStore((state) => state.isVisible);
+	const currentSneaker = useModalStore((state) => state.currentSneaker);
 
-	if (!isVisible) return null;
+	if (!isVisible) {
+		return null;
+	}
 
 	return (
 		<View className="flex-1" testID="sneakers-modal">

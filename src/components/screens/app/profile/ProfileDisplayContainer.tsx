@@ -1,5 +1,6 @@
 import { memo, useCallback, useMemo, useRef, useState } from 'react';
 
+import { unstable_batchedUpdates } from 'react-native';
 import { RefreshControl, ScrollView, Share } from 'react-native';
 
 import { useSession } from '@/contexts/authContext';
@@ -45,7 +46,8 @@ export default function ProfileDisplayContainer(
 		isSharedCollection = false,
 	} = props;
 
-	const { setModalStep, setIsVisible } = useModalStore();
+	const setModalStep = useModalStore((state) => state.setModalStep);
+	const setIsVisible = useModalStore((state) => state.setIsVisible);
 	const { user: currentUser } = useSession();
 
 	const [currentFilters, setCurrentFilters] = useState<{
@@ -114,8 +116,11 @@ export default function ProfileDisplayContainer(
 	}, [currentFilters, createShareLink, userSneakers, currentUnit]);
 
 	const handleAddSneaker = useCallback(() => {
-		setModalStep('index');
-		setIsVisible(true);
+		unstable_batchedUpdates(() => {
+			useModalStore.getState().resetModalData();
+			setModalStep('index');
+			setIsVisible(true);
+		});
 	}, [setModalStep, setIsVisible]);
 
 	const memoizedProfileHeader = useMemo(() => {

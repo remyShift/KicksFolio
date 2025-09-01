@@ -26,8 +26,6 @@ interface DualViewContainerProps {
 export default function DualViewContainer({
 	userSneakers,
 	onSneakerPress,
-	refreshing,
-	onRefresh,
 	onFiltersChange,
 	isAnonymousUser = false,
 }: DualViewContainerProps) {

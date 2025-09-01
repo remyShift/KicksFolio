@@ -14,7 +14,8 @@ import { useModalFooterActions } from '../hooks/useModalFooterActions';
 
 export const ModalFooter = () => {
 	const { t } = useTranslation();
-	const { modalStep, currentSneaker } = useModalStore();
+	const modalStep = useModalStore((state) => state.modalStep);
+	const currentSneaker = useModalStore((state) => state.currentSneaker);
 	const { user } = useSession();
 
 	const {

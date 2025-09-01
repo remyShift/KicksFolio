@@ -86,7 +86,10 @@ export const useModalStore = create<ModalStore>((set) => ({
 		set({ modalStep: step });
 	},
 	setIsVisible: (isVisible) => {
-		set({ isVisible });
+		set((state) => {
+			if (state.isVisible === isVisible) return state;
+			return { ...state, isVisible };
+		});
 	},
 	setCurrentSneaker: (sneaker) => {
 		set({ currentSneaker: sneaker });
@@ -110,7 +113,8 @@ export const useModalStore = create<ModalStore>((set) => ({
 	setValidateForm: (fn) => set({ validateForm: fn }),
 	setClearFormErrors: (fn) => set({ clearFormErrors: fn }),
 	resetModalData: () => {
-		set({
+		set((state) => ({
+			...state,
 			currentSneaker: null,
 			nextSneaker: null,
 			prevSneaker: null,
@@ -123,6 +127,6 @@ export const useModalStore = create<ModalStore>((set) => ({
 			gender: null,
 			sku: null,
 			isLoading: false,
-		});
+		}));
 	},
 }));

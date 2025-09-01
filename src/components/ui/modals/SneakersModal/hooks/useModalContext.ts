@@ -11,7 +11,8 @@ interface UseModalContextProps {
 export const useModalContext = ({
 	contextSneakers,
 }: UseModalContextProps = {}) => {
-	const { setCurrentSneaker, setModalStep, setIsVisible } = useModalStore();
+	const { setCurrentSneaker, setModalStep, setIsVisible, resetModalData } =
+		useModalStore();
 
 	const openSneakerModal = useCallback(
 		(sneaker: Sneaker) => {
@@ -22,7 +23,14 @@ export const useModalContext = ({
 		[setCurrentSneaker, setModalStep, setIsVisible]
 	);
 
+	const openModalForNewSneaker = useCallback(() => {
+		resetModalData();
+		setModalStep('index');
+		setIsVisible(true);
+	}, [resetModalData, setModalStep, setIsVisible]);
+
 	return {
 		openSneakerModal,
+		openModalForNewSneaker,
 	};
 };

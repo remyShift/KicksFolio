@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
+import { InteractionManager } from 'react-native';
 import { Dimensions, Modal, Pressable, View } from 'react-native';
 import {
 	Gesture,
@@ -38,16 +39,36 @@ const ANIMATION_CONFIG = {
 };
 
 export default function SneakersModalWrapper() {
-	const { isVisible } = useModalStore();
+	const isVisible = useModalStore((state) => state.isVisible);
+	const setIsVisible = useModalStore((state) => state.setIsVisible);
+	const resetModalData = useModalStore((state) => state.resetModalData);
+
 	const translateY = useSharedValue(MODAL_HEIGHT);
-	const { setIsVisible, resetModalData } = useModalStore();
+	const isClosingRef = useRef(false);
+	const [localVisible, setLocalVisible] = useState(false);
 
 	const closeModalActions = useCallback(() => {
-		setIsVisible(false);
-		resetModalData();
-	}, [setIsVisible, resetModalData]);
+		if (isClosingRef.current) {
+			return;
+		}
+
+		isClosingRef.current = true;
+
+		setLocalVisible(false);
+
+		InteractionManager.runAfterInteractions(() => {
+			setTimeout(() => {
+				setIsVisible(false);
+				isClosingRef.current = false;
+			}, 500);
+		});
+	}, [setIsVisible]);
 
 	const handleCloseModal = useCallback(() => {
+		if (isClosingRef.current || !localVisible) {
+			return;
+		}
+
 		translateY.value = withTiming(
 			MODAL_HEIGHT,
 			ANIMATION_CONFIG.close,
@@ -57,7 +78,7 @@ export default function SneakersModalWrapper() {
 				}
 			}
 		);
-	}, [translateY, closeModalActions]);
+	}, [translateY, closeModalActions, localVisible]);
 
 	const panGesture = useMemo(() => {
 		return Gesture.Pan()
@@ -110,15 +131,23 @@ export default function SneakersModalWrapper() {
 
 	useEffect(() => {
 		if (isVisible) {
+			setLocalVisible(true);
+			isClosingRef.current = false;
 			translateY.value = withTiming(0, ANIMATION_CONFIG.open);
 		}
 	}, [isVisible, translateY]);
+
+	useEffect(() => {
+		if (!isVisible && localVisible) {
+			setLocalVisible(false);
+		}
+	}, [isVisible, localVisible]);
 
 	return (
 		<Modal
 			animationType="fade"
 			transparent={true}
-			visible={isVisible}
+			visible={localVisible}
 			onRequestClose={handleCloseModal}
 			statusBarTranslucent={true}
 		>
