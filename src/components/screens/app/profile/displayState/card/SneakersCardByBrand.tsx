@@ -7,6 +7,7 @@ import BrandTitle from '@/components/ui/text/BrandTitle';
 import { useLocalSneakerData } from '@/hooks/useLocalSneakerData';
 import { useModalStore } from '@/store/useModalStore';
 import { Sneaker } from '@/types/sneaker';
+import { groupSneakersByBrand } from '@/utils/sneakerGrouping';
 import { brandLogos } from '@/validation/utils';
 
 interface SneakersCardByBrandProps {
@@ -31,21 +32,7 @@ export default function SneakersCardByBrand({
 			return {};
 		}
 
-		const result = filteredAndSortedSneakers.reduce(
-			(acc, sneaker) => {
-				const normalizedBrand =
-					sneaker.brand?.name?.toLowerCase().trim() || 'unknown';
-
-				if (!acc[normalizedBrand]) {
-					acc[normalizedBrand] = [];
-				}
-				acc[normalizedBrand].push(sneaker);
-				return acc;
-			},
-			{} as Record<string, Sneaker[]>
-		);
-
-		return result;
+		return groupSneakersByBrand(filteredAndSortedSneakers);
 	}, [filteredAndSortedSneakers]);
 
 	return (
