@@ -5,6 +5,7 @@ import BackButton from '@/components/ui/buttons/BackButton';
 import DeleteButton from '@/components/ui/buttons/DeleteButton';
 import EditButton from '@/components/ui/buttons/EditButton';
 import NextButton from '@/components/ui/buttons/NextButton';
+import NextSneakerButton from '@/components/ui/buttons/NextSneakerButton';
 import { useModalNavigation } from '@/components/ui/modals/SneakersModal/hooks/useModalNavigation';
 import { useSession } from '@/contexts/authContext';
 import { useModalStore } from '@/store/useModalStore';
@@ -133,11 +134,7 @@ export const ModalFooter = () => {
 							)}
 					</View>
 
-					<NextButton
-						content={t('collection.actions.next')}
-						onPressAction={handleNextAction}
-						testID="next"
-					/>
+					<NextSneakerButton onPressAction={handleNextAction} />
 				</View>
 			)}
 		</View>

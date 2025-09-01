@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { Text, View } from 'react-native';
 
-import PrivacyPolicy from '../links/PrivacyPolicy';
-import TermOfUse from '../links/TermOfUse';
+import PrivacyPolicyLink from '../links/PrivacyPolicyLink';
+import TermOfUseLink from '../links/TermOfUseLink';
 
 export default function LegalData() {
 	const { t } = useTranslation();
@@ -13,11 +13,11 @@ export default function LegalData() {
 				<Text className="font-open-sans-bold text-xs text-gray-900">
 					{t('auth.data-privacy.title')}
 				</Text>
-				<TermOfUse />
+				<TermOfUseLink />
 				<Text className="text-gray-900 font-open-sans-bold text-xs">
 					{t('auth.data-privacy.and')}
 				</Text>
-				<PrivacyPolicy />
+				<PrivacyPolicyLink />
 			</View>
 		</View>
 	);
