@@ -14,7 +14,7 @@
       "backgroundColor": "#F27329"
     },
     "ios": {
-      "supportsTablet": false,
+      "supportsTablet": true,
       "bundleIdentifier": "app.kicksfolio",
       "associatedDomains": [
         "applinks:share.kicksfolio.com"
