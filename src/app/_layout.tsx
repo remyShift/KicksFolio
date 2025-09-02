@@ -5,6 +5,8 @@ import Toast from 'react-native-toast-message';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 
+import { vexo } from 'vexo-analytics';
+
 import SplashScreen from '@/components/screens/SplashScreen/SplashScreen';
 import { SessionProvider, useSession } from '@/contexts/authContext';
 import { useAppInitialization } from '@/hooks/useAppInitialization';
@@ -12,6 +14,9 @@ import '@/locales/i18n';
 import { useSplashScreenStore } from '@/store/useSplashScreenStore';
 
 import '../styles/global.css';
+
+// You may want to wrap this with `if (!__DEV__) { ... }` to only run Vexo in production.
+vexo(process.env.EXPO_PUBLIC_VEXO_API_KEY as string);
 
 const FONTS = {
 	Actonia: require('../assets/fonts/Actonia.ttf'),
