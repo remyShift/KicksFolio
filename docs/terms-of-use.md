@@ -43,8 +43,12 @@ Your username must not:
 ## 4. User Content
 
 ### Sneaker Images
-- **Permitted Content**: Only real photographs of physical sneakers
+- **Permitted Content**: Only real photographs of physical sneakers that you actually own and possess
+- **Physical Ownership Requirement**: You may only add sneakers to your collection if you physically own and possess them. This includes sneakers you have purchased, received as gifts, or acquired through legitimate means.
 - **Prohibited Content**:
+  - Sneakers you do not physically own or possess
+  - Sneakers you plan to buy but haven't acquired yet (use wishlist instead)
+  - Sneakers you've seen in stores or online but don't own
   - 3D renders, drawings, or artificially generated images
   - Images not representing sneakers
   - Obscene, violent, discriminatory, or offensive content
@@ -70,6 +74,7 @@ The "Selling" status is purely informational. KicksFolio does not facilitate any
 - Report inappropriate content
 
 ### Prohibited Behaviors
+- **False Ownership Claims**: Adding sneakers to your collection that you do not physically own or possess
 - **Harassment**: Intimidating, threatening, or harassing other users
 - **Spam**: Sending repetitive or unsolicited content
 - **Impersonation**: Pretending to be another person or entity
@@ -162,6 +167,7 @@ To report inappropriate content or abusive behavior:
 
 ### Grounds for Suspension
 Your account may be suspended or deleted for:
+- Adding sneakers to your collection that you do not physically own or possess
 - Repeated violation of these terms
 - Abusive behavior toward other users
 - Publishing inappropriate content
