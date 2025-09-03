@@ -74,7 +74,7 @@
     "react-dom": "19.0.0",
     "react-hook-form": "^7.57.0",
     "react-i18next": "^15.5.3",
-    "react-native": "0.79.6",
+    "react-native": "0.79.5",
     "react-native-gesture-handler": "~2.24.0",
     "react-native-image-crop-picker": "^0.50.1",
     "react-native-keyboard-controller": "^1.17.5",
@@ -90,7 +90,8 @@
     "unique-filename": "^4.0.0",
     "vexo-analytics": "^1.5.1",
     "zod": "^3.25.57",
-    "zustand": "^5.0.5"
+    "zustand": "^5.0.5",
+    "expo-store-review": "~8.1.5"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
