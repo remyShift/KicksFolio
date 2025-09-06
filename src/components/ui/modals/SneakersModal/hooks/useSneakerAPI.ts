@@ -7,6 +7,7 @@ import { ImageStorage } from '@/domain/ImageStorage';
 import { SneakerHandler } from '@/domain/SneakerHandler';
 import useToast from '@/hooks/ui/useToast';
 import { useNotifications } from '@/hooks/useNotifications';
+import { useStoreReview } from '@/hooks/useStoreReview';
 import { FetchedSneaker } from '@/store/useModalStore';
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';
 import { imageStorageProxy } from '@/tech/proxy/ImageProxy';
@@ -47,6 +48,8 @@ export const useSneakerAPI = () => {
 	const { t } = useTranslation();
 	const { currentUnit } = useSizeUnitStore();
 	const { sendNotificationToFollowers } = useNotifications();
+	const { shouldRequestReview, requestReview, incrementSneakerCount } =
+		useStoreReview();
 
 	const imageHandler = new ImageStorage(imageStorageProxy);
 	const sneakerHandler = new SneakerHandler(sneakerProxy);
@@ -260,6 +263,19 @@ export const useSneakerAPI = () => {
 							)}`,
 							t('collection.modal.form.success.addedDescription')
 						);
+
+						incrementSneakerCount();
+
+						if (shouldRequestReview()) {
+							setTimeout(() => {
+								requestReview().catch((error) => {
+									console.warn(
+										'Failed to request store review:',
+										error
+									);
+								});
+							}, 2000);
+						}
 
 						if (user?.id && sneakerWithAltText.id) {
 							sendNotificationToFollowers(
