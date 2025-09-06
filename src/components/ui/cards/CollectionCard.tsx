@@ -23,7 +23,7 @@ export default function CollectionCard({
 		<View style={{ position: 'relative' }}>
 			<OrangeShadow />
 			<Pressable
-				className="flex-1 bg-white rounded-md gap-2 p-4 h-fit"
+				className="flex-1 bg-white rounded-md gap-4 p-4 h-full"
 				onPress={() => {
 					if (isOwnCollection) {
 						router.push(`/(app)/(tabs)/profile`);
@@ -43,7 +43,7 @@ export default function CollectionCard({
 								}}
 								style={{
 									width: '50%',
-									height: 'auto',
+									height: 100,
 									aspectRatio: 1.5,
 									borderRadius: 3,
 								}}
@@ -73,7 +73,7 @@ export default function CollectionCard({
 								}}
 								style={{
 									width: '50%',
-									height: 120,
+									height: 100,
 									borderRadius: 3,
 								}}
 								contentFit="cover"
