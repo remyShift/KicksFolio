@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { ScrollView, View } from 'react-native';
@@ -12,11 +12,17 @@ import PageTitle from '@/components/ui/text/PageTitle';
 import Title from '@/components/ui/text/Title';
 import { useSession } from '@/contexts/authContext';
 import { useModalStore } from '@/store/useModalStore';
+import { sortUsersByLatestSneakerAddition } from '@/utils/userSorting';
 
 export default function Index() {
 	const { t } = useTranslation();
 	const { user, userSneakers, followingUsers } = useSession();
 	const { setModalStep, setIsVisible } = useModalStore();
+
+	const sortedFollowingUsers = useMemo(() => {
+		if (!followingUsers) return null;
+		return sortUsersByLatestSneakerAddition(followingUsers);
+	}, [followingUsers]);
 
 	useEffect(() => {
 		if (user && (!userSneakers || userSneakers.length === 0)) {
@@ -46,10 +52,10 @@ export default function Index() {
 						</View>
 					</View>
 
-					{followingUsers && followingUsers.length > 0 ? (
+					{sortedFollowingUsers && sortedFollowingUsers.length > 0 ? (
 						<View className="flex-1 gap-4 pb-4">
 							<View className="flex-1 gap-8">
-								{followingUsers.map((followingUser) => (
+								{sortedFollowingUsers.map((followingUser) => (
 									<View
 										className="flex-1 gap-2"
 										key={followingUser.id}

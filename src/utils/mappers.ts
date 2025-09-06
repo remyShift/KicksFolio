@@ -44,6 +44,7 @@ export const mapDbCollectionToSneaker = (
 		gender: dbSneaker.gender || '',
 		og_box: collectionData.og_box || false,
 		ds: collectionData.ds || false,
+		created_at: collectionData.created_at,
 	};
 };
 
