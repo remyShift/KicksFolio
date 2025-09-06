@@ -13,6 +13,7 @@ import { Sneaker } from '@/types/sneaker';
 import { User } from '@/types/user';
 
 const MIN_SPLASH_DURATION = 2000;
+const MAX_INITIALIZATION_TIME = 10000;
 
 export function useAppInitialization(fontsLoaded: boolean) {
 	const {
@@ -33,23 +34,44 @@ export function useAppInitialization(fontsLoaded: boolean) {
 		if (!fontsLoaded || sessionLoading || hasInitializedRef.current) return;
 
 		const initializeApp = async () => {
+			const initStartTime = Date.now();
+
+			const safetyTimeout = setTimeout(() => {
+				console.warn(
+					'[AppInit] Safety timeout triggered after 10s - forcing splash screen to hide'
+				);
+				setIsInitialized(true);
+				setIsVisible(false);
+				setIsInitializing(false);
+			}, MAX_INITIALIZATION_TIME);
+
 			try {
 				hasInitializedRef.current = true;
 				console.log('[AppInit] Starting initialization');
 
+				console.log('[AppInit] Initializing stores...');
 				await Promise.all([
 					initializeLanguage(deviceLanguage),
 					initializeUnit(),
 					initializeCurrency(),
 				]);
 
+				console.log('[AppInit] Loading stored data...');
 				const [storedUser, storedSneakers] = await Promise.all([
 					storageProvider.getItem<User>('user'),
 					storageProvider.getItem<Sneaker[]>('sneakers'),
 				]);
 
-				if (storedUser) setUser(storedUser);
-				if (storedSneakers) setUserSneakers(storedSneakers);
+				if (storedUser) {
+					console.log('[AppInit] User found in storage');
+					setUser(storedUser);
+				}
+				if (storedSneakers) {
+					console.log(
+						`[AppInit] ${storedSneakers.length} sneakers found in storage`
+					);
+					setUserSneakers(storedSneakers);
+				}
 
 				if (storedSneakers && storedSneakers.length > 0) {
 					const imageUris = storedSneakers
@@ -57,9 +79,31 @@ export function useAppInitialization(fontsLoaded: boolean) {
 						.map((sneaker) => sneaker.images[0].uri);
 
 					if (imageUris.length > 0) {
-						await Promise.all(
-							imageUris.map((uri) => Image.prefetch(uri))
+						console.log(
+							`[AppInit] Prefetching ${imageUris.length} images...`
 						);
+						try {
+							await Promise.allSettled(
+								imageUris.map(async (uri) => {
+									try {
+										await Image.prefetch(uri);
+									} catch (err) {
+										console.warn(
+											`[AppInit] Failed to prefetch image: ${uri}`,
+											err
+										);
+									}
+								})
+							);
+							console.log(
+								'[AppInit] Image prefetching completed'
+							);
+						} catch (err) {
+							console.warn(
+								'[AppInit] Image prefetching failed:',
+								err
+							);
+						}
 					}
 				}
 
@@ -76,11 +120,13 @@ export function useAppInitialization(fontsLoaded: boolean) {
 				}
 
 				console.log('[AppInit] Initialization complete');
+				clearTimeout(safetyTimeout);
 				setIsInitialized(true);
 				setIsVisible(false);
 				setIsInitializing(false);
 			} catch (error) {
 				console.error('[AppInit] Initialization failed:', error);
+				clearTimeout(safetyTimeout);
 
 				const elapsedTime = Date.now() - startTimeRef.current;
 				const remainingTime = Math.max(
