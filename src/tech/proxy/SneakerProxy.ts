@@ -95,14 +95,43 @@ class SneakerProxy implements SneakerHandlerInterface {
 
 		let sneakerId: string;
 
-		const { data: existingSneaker, error: searchError } = await supabase
-			.from('sneakers')
-			.select('id, image')
-			.eq('sku', sku || '')
-			.maybeSingle();
+		const normalizeModel = (modelName: string) =>
+			modelName.trim().toLowerCase().replace(/\s+/g, ' ');
 
-		if (searchError && searchError.code !== 'PGRST116') {
-			throw searchError;
+		let existingSneaker = null;
+
+		if (sku && sku.trim() !== '') {
+			const { data: foundBySku, error: skuSearchError } = await supabase
+				.from('sneakers')
+				.select('id, image')
+				.eq('sku', sku.trim())
+				.maybeSingle();
+
+			if (skuSearchError && skuSearchError.code !== 'PGRST116') {
+				throw skuSearchError;
+			}
+			existingSneaker = foundBySku;
+		}
+
+		if (!existingSneaker) {
+			const { data: candidateSneakers, error: modelSearchError } =
+				await supabase
+					.from('sneakers')
+					.select('id, image, model')
+					.eq('brand_id', brand_id)
+					.eq('gender', gender);
+
+			if (modelSearchError) {
+				throw modelSearchError;
+			}
+
+			if (candidateSneakers && candidateSneakers.length > 0) {
+				const normalizedInputModel = normalizeModel(model);
+				existingSneaker = candidateSneakers.find(
+					(sneaker) =>
+						normalizeModel(sneaker.model) === normalizedInputModel
+				);
+			}
 		}
 
 		if (existingSneaker) {
@@ -553,11 +582,41 @@ class SneakerProxy implements SneakerHandlerInterface {
 	}
 
 	async searchBySku(sku: string) {
+		const { data: existingSneaker, error: searchError } = await supabase
+			.from('sneakers')
+			.select('*')
+			.eq('sku', sku)
+			.maybeSingle();
+
+		if (searchError && searchError.code !== 'PGRST116') {
+			console.error('Error checking existing sneaker:', searchError);
+		}
+
+		if (existingSneaker) {
+			const sneakerBrand = sneakerBrandOptions.find(
+				(brand) => parseInt(brand.value) === existingSneaker.brand_id
+			);
+
+			return {
+				results: [
+					{
+						title: existingSneaker.model,
+						brand: sneakerBrand?.label || 'Unknown',
+						sku: existingSneaker.sku,
+						description: existingSneaker.description,
+						gender: existingSneaker.gender,
+						image: existingSneaker.image,
+						fromDatabase: true,
+					},
+				],
+			};
+		}
+
 		return supabase.functions
 			.invoke('sku-lookup', {
 				body: { sku },
 			})
-			.then(({ data, error }) => {
+			.then(async ({ data, error }) => {
 				const response = data.data;
 				if (error) {
 					console.error('Supabase function error:', error);
@@ -592,11 +651,51 @@ class SneakerProxy implements SneakerHandlerInterface {
 					.replace(sneakerBrand?.label || '', '')
 					.trim();
 
+				try {
+					const { data: newSneaker, error: insertError } =
+						await supabase
+							.from('sneakers')
+							.insert([
+								{
+									brand_id: sneakerBrand
+										? parseInt(sneakerBrand.value)
+										: 10, // 10 = Other
+									model: sneakerModelWithoutBrandName,
+									gender: result.gender || 'men',
+									sku: result.sku?.toUpperCase(),
+									description: result.description || null,
+									image: result.image
+										? JSON.stringify({ uri: result.image })
+										: null,
+								},
+							])
+							.select('*')
+							.single();
+
+					if (insertError) {
+						console.error(
+							'Error creating sneaker in DB:',
+							insertError
+						);
+					} else {
+						console.log(
+							'Sneaker created successfully in DB:',
+							newSneaker.id
+						);
+					}
+				} catch (dbError) {
+					console.error(
+						'Failed to save sneaker to database:',
+						dbError
+					);
+				}
+
 				const dataWithoutBrandName = {
 					results: [
 						{
 							...result,
 							title: sneakerModelWithoutBrandName,
+							sku: result.sku?.toUpperCase(),
 						},
 					],
 				};
