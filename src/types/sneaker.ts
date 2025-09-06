@@ -64,6 +64,7 @@ export type Sneaker = {
 	gender?: string;
 	og_box?: boolean;
 	ds?: boolean;
+	created_at?: string;
 };
 
 export const getBrandIdByName = (brandName: string): number => {
