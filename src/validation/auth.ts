@@ -10,8 +10,8 @@ export const createSignUpStep1Schema = () => {
 		.object({
 			username: z
 				.string()
-				.min(4, t('auth.form.username.error.size'))
-				.max(16, t('auth.form.username.error.size'))
+				.min(3, t('auth.form.username.error.size'))
+				.max(12, t('auth.form.username.error.size'))
 				.regex(/^\w+$/, t('auth.form.username.error.format')),
 			email: z.string().email(t('auth.form.email.error.invalid')),
 			password: z
@@ -34,12 +34,12 @@ export const createSignUpStep2Schema = () => {
 		firstName: z
 			.string()
 			.min(2, t('auth.form.firstName.error.size'))
-			.regex(/^[a-zA-Z\s]+$/, t('auth.form.firstName.error.format'))
+			.regex(/^[a-zA-Z\s-]+$/, t('auth.form.firstName.error.format'))
 			.transform((val) => val.charAt(0).toUpperCase() + val.slice(1)),
 		lastName: z
 			.string()
 			.min(2, t('auth.form.lastName.error.size'))
-			.regex(/^[a-zA-Z\s]+$/, t('auth.form.lastName.error.format'))
+			.regex(/^[a-zA-Z\s-]+$/, t('auth.form.lastName.error.format'))
 			.transform((val) => val.charAt(0).toUpperCase() + val.slice(1)),
 		size: z
 			.string()
@@ -72,17 +72,17 @@ export const createEditProfileSchema = () => {
 	return z.object({
 		username: z
 			.string()
-			.min(4, t('auth.form.username.error.size'))
-			.max(16, t('auth.form.username.error.size'))
+			.min(3, t('auth.form.username.error.size'))
+			.max(12, t('auth.form.username.error.size'))
 			.regex(/^\w+$/, t('auth.form.username.error.format')),
 		first_name: z
 			.string()
 			.min(2, t('auth.form.firstName.error.size'))
-			.regex(/^[a-zA-Z\s]+$/, t('auth.form.firstName.error.format')),
+			.regex(/^[a-zA-Z\s-]+$/, t('auth.form.firstName.error.format')),
 		last_name: z
 			.string()
 			.min(2, t('auth.form.lastName.error.size'))
-			.regex(/^[a-zA-Z\s]+$/, t('auth.form.lastName.error.format')),
+			.regex(/^[a-zA-Z\s-]+$/, t('auth.form.lastName.error.format')),
 		sneaker_size: z
 			.string()
 			.min(1, t('auth.form.sneakerSize.error.required'))
