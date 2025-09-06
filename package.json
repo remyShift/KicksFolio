@@ -90,7 +90,8 @@
     "unique-filename": "^4.0.0",
     "vexo-analytics": "^1.5.1",
     "zod": "^3.25.57",
-    "zustand": "^5.0.5"
+    "zustand": "^5.0.5",
+    "expo-store-review": "~8.1.5"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
