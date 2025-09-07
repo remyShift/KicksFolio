@@ -141,6 +141,12 @@
         "projectId": "e27c7b67-44d9-4af8-9a57-d94b81359832"
       }
     },
-    "owner": "remyshift"
+    "owner": "remyshift",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/e27c7b67-44d9-4af8-9a57-d94b81359832"
+    }
   }
 }

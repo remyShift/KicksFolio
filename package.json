@@ -28,7 +28,10 @@
     "madge:warn": "madge --warning --extensions ts,tsx,js,jsx src/",
     "madge:image": "madge --image graph.svg src/",
     "android": "expo run:android",
-    "ios": "expo run:ios"
+    "ios": "expo run:ios",
+    "update": "eas update --auto",
+    "update:dev": "eas update --branch development --message \"Dev update\"",
+    "update:master": "eas update --branch master --message \"Production update from master\""
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
@@ -91,7 +94,8 @@
     "vexo-analytics": "^1.5.1",
     "zod": "^3.25.57",
     "zustand": "^5.0.5",
-    "expo-store-review": "~8.1.5"
+    "expo-store-review": "~8.1.5",
+    "expo-updates": "~0.28.17"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
