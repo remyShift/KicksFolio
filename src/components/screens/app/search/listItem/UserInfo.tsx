@@ -10,6 +10,8 @@ interface UserInfoProps {
 export default function UserInfo({ searchUser }: UserInfoProps) {
 	const { t } = useTranslation();
 
+	console.log('searchUser', searchUser);
+
 	return (
 		<View className="flex-1">
 			<View className="flex-row items-center gap-2">
