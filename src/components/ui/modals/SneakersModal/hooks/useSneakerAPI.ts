@@ -36,9 +36,11 @@ interface SkuSearchResponse {
 		brand: string;
 		description: string;
 		gender: string;
-		gallery: string[];
-		avg_price: number;
+		gallery?: string[];
+		avg_price?: number;
 		sku: string;
+		image?: string;
+		fromDatabase?: boolean;
 	}>;
 }
 
@@ -123,6 +125,27 @@ export const useSneakerAPI = () => {
 				) {
 					const responseResult = response.results[0];
 
+					// Gérer les différents formats de réponse (DB vs API externe)
+					let imageUri = '';
+					if (
+						responseResult.gallery &&
+						responseResult.gallery.length > 0
+					) {
+						// Format API externe
+						imageUri = responseResult.gallery[0];
+					} else if (responseResult.image) {
+						// Format base de données
+						try {
+							const parsedImage = JSON.parse(
+								responseResult.image
+							);
+							imageUri = parsedImage.uri || responseResult.image;
+						} catch {
+							// Si ce n'est pas du JSON, utiliser l'image directement
+							imageUri = responseResult.image;
+						}
+					}
+
 					const transformedSneaker: FetchedSneaker = {
 						model: responseResult.title || '',
 						brand: responseResult.brand || 'Other',
@@ -131,7 +154,7 @@ export const useSneakerAPI = () => {
 						gender: responseResult.gender || '',
 						estimated_value: responseResult.avg_price || 0,
 						image: {
-							uri: responseResult.gallery[0] || '',
+							uri: imageUri,
 						},
 					};
 					callbacks.setFetchedSneaker?.(transformedSneaker);
@@ -529,6 +552,27 @@ export const useSneakerAPI = () => {
 				) {
 					const responseResult = response.results[0];
 
+					// Gérer les différents formats de réponse (DB vs API externe)
+					let imageUri = '';
+					if (
+						responseResult.gallery &&
+						responseResult.gallery.length > 0
+					) {
+						// Format API externe
+						imageUri = responseResult.gallery[0];
+					} else if (responseResult.image) {
+						// Format base de données
+						try {
+							const parsedImage = JSON.parse(
+								responseResult.image
+							);
+							imageUri = parsedImage.uri || responseResult.image;
+						} catch {
+							// Si ce n'est pas du JSON, utiliser l'image directement
+							imageUri = responseResult.image;
+						}
+					}
+
 					const transformedSneaker: FetchedSneaker = {
 						model: responseResult.title || '',
 						brand: responseResult.brand || 'Other',
@@ -537,7 +581,7 @@ export const useSneakerAPI = () => {
 						gender: responseResult.gender || '',
 						estimated_value: responseResult.avg_price || 0,
 						image: {
-							uri: responseResult.gallery[0] || '',
+							uri: imageUri,
 						},
 					};
 					callbacks.setFetchedSneaker?.(transformedSneaker);

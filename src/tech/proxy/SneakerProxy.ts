@@ -714,22 +714,18 @@ class SneakerProxy implements SneakerHandlerInterface {
 				body: { barcode },
 			})
 			.then(({ data, error }) => {
-				if (!data.data) {
-					throw new Error('No data found for this barcode');
+				if (error) {
+					console.error('❌ Supabase function error:', error);
+					throw new Error(`API Error: ${error.message || error}`);
+				}
+
+				if (!data || !data.data) {
+					throw new Error(
+						'Ce code-barres ne correspond à aucune sneaker dans notre base de données'
+					);
 				}
 
 				const response = data.data;
-
-				if (error) {
-					console.error('Supabase function error:', error);
-					console.error('Error details:', {
-						message: error.message,
-						details: error.details,
-						hint: error.hint,
-						code: error.code,
-					});
-					throw error;
-				}
 
 				if (
 					!response ||
