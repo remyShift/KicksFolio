@@ -8,6 +8,8 @@ export interface BugReportFormData {
 	actualBehavior: string;
 	deviceInfo: string;
 	priority: 'low' | 'medium' | 'high';
+	userEmail?: string;
+	username?: string;
 }
 
 interface BugReportStore {

@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
+import { useSession } from '@/contexts/authContext';
 import { GitHubIssueHandler } from '@/domain/GitHubIssueHandler';
 import useToast from '@/hooks/ui/useToast';
 import { useBugReportStore } from '@/store/useBugReportStore';
@@ -7,6 +8,7 @@ import { gitHubProxy } from '@/tech/proxy/GitHubProxy';
 
 const useBugReport = () => {
 	const { t } = useTranslation();
+	const { user } = useSession();
 	const { showSuccessToast, showErrorToast } = useToast();
 	const { setErrorMsg, setIsLoading, resetStore, formData } =
 		useBugReportStore();
@@ -38,8 +40,14 @@ const useBugReport = () => {
 		setIsLoading(true);
 		setErrorMsg('');
 
+		const bugReportData = {
+			...formData,
+			userEmail: user?.email,
+			username: user?.username,
+		};
+
 		gitHubIssueHandler
-			.create(formData)
+			.create(bugReportData)
 			.then((result) => {
 				showSuccessToast(
 					t('settings.bugReport.success.title'),

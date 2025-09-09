@@ -150,6 +150,20 @@ export class GitHubProxy implements GitHubIssueHandlerInterface {
 			`## Actual Behavior`,
 			formData.actualBehavior,
 			``,
+		];
+
+		if (formData.userEmail || formData.username) {
+			body.push(`## Reporter Contact Information`);
+			if (formData.username) {
+				body.push(`- Username: ${formData.username}`);
+			}
+			if (formData.userEmail) {
+				body.push(`- Email: ${formData.userEmail}`);
+			}
+			body.push(``);
+		}
+
+		body.push(
 			`## Device Information`,
 			deviceInfo,
 			``,
@@ -157,8 +171,8 @@ export class GitHubProxy implements GitHubIssueHandlerInterface {
 			formData.priority,
 			``,
 			`---`,
-			`*This issue was automatically created from the mobile app.*`,
-		];
+			`*This issue was automatically created from the mobile app.*`
+		);
 
 		return body.join('\n');
 	}
