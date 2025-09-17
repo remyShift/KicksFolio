@@ -14,6 +14,50 @@ import { User } from '@/types/user';
 
 const MIN_SPLASH_DURATION = 2000;
 const MAX_INITIALIZATION_TIME = 10000;
+const BATCH_SIZE = 5;
+const BATCH_DELAY = 100;
+
+async function prefetchImagesInBackground(imageUris: string[]) {
+	const batches = [];
+	for (let i = 0; i < imageUris.length; i += BATCH_SIZE) {
+		batches.push(imageUris.slice(i, i + BATCH_SIZE));
+	}
+
+	console.log(
+		`[AppInit] Prefetching ${imageUris.length} images in ${batches.length} batches`
+	);
+
+	for (let i = 0; i < batches.length; i++) {
+		const batch = batches[i];
+		try {
+			await Promise.allSettled(
+				batch.map(async (uri) => {
+					try {
+						await Image.prefetch(uri);
+					} catch (err) {
+						console.warn(
+							`[AppInit] Failed to prefetch image: ${uri}`,
+							err
+						);
+					}
+				})
+			);
+			console.log(
+				`[AppInit] Batch ${i + 1}/${batches.length} prefetched`
+			);
+
+			if (i < batches.length - 1) {
+				await new Promise((resolve) =>
+					setTimeout(resolve, BATCH_DELAY)
+				);
+			}
+		} catch (err) {
+			console.warn(`[AppInit] Batch ${i + 1} prefetching failed:`, err);
+		}
+	}
+
+	console.log('[AppInit] Background image prefetching completed');
+}
 
 export function useAppInitialization(fontsLoaded: boolean) {
 	const {
@@ -80,30 +124,9 @@ export function useAppInitialization(fontsLoaded: boolean) {
 
 					if (imageUris.length > 0) {
 						console.log(
-							`[AppInit] Prefetching ${imageUris.length} images...`
+							`[AppInit] Starting background prefetch of ${imageUris.length} images...`
 						);
-						try {
-							await Promise.allSettled(
-								imageUris.map(async (uri) => {
-									try {
-										await Image.prefetch(uri);
-									} catch (err) {
-										console.warn(
-											`[AppInit] Failed to prefetch image: ${uri}`,
-											err
-										);
-									}
-								})
-							);
-							console.log(
-								'[AppInit] Image prefetching completed'
-							);
-						} catch (err) {
-							console.warn(
-								'[AppInit] Image prefetching failed:',
-								err
-							);
-						}
+						prefetchImagesInBackground(imageUris);
 					}
 				}
 
