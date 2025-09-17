@@ -47,7 +47,7 @@ interface PushToken {
 }
 
 const EXPO_PUSH_ENDPOINT = 'https://exp.host/--/api/v2/push/send';
-const BATCHING_WINDOW_HOURS = 1;
+const BATCHING_WINDOW_MINUTES = 15;
 const MIN_SNEAKERS_FOR_BATCH = 2;
 
 serve(async (req: Request) => {
@@ -110,7 +110,9 @@ serve(async (req: Request) => {
 		}
 
 		const windowStart = new Date();
-		windowStart.setHours(windowStart.getHours() - BATCHING_WINDOW_HOURS);
+		windowStart.setMinutes(
+			windowStart.getMinutes() - BATCHING_WINDOW_MINUTES
+		);
 
 		const { data: recentCollections, error: collectionsError } =
 			await supabase
@@ -226,6 +228,10 @@ serve(async (req: Request) => {
 					.order('created_at', { ascending: false })
 					.limit(1)
 					.maybeSingle();
+
+				if (existingNotification && sneakerCount === 1) {
+					return false;
+				}
 
 				const pushPayload = {
 					to: tokenData.expo_token,

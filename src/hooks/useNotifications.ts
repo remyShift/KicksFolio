@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { NotificationHandler } from '@/domain/NotificationHandler';
 import { notificationProxy } from '@/tech/proxy/NotificationProxy';
@@ -6,10 +6,22 @@ import {
 	Notification,
 	NotificationData,
 	NotificationType,
+	SingleSneakerNotificationData,
 } from '@/types/notification';
 import { groupNotificationsByWindow } from '@/utils/notificationHelpers';
 
 const notificationHandler = new NotificationHandler(notificationProxy);
+
+const NOTIFICATION_DELAY_MS = 15 * 60 * 1000; // 15 minutes
+
+const pendingNotifications = new Map<
+	string,
+	{
+		timeout: ReturnType<typeof setTimeout>;
+		count: number;
+		lastSneakerData?: any;
+	}
+>();
 
 export const useNotifications = () => {
 	const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -147,9 +159,12 @@ export const useNotifications = () => {
 		return interval;
 	}, [fetchUnreadCount]);
 
-	const stopPolling = useCallback((interval: NodeJS.Timeout) => {
-		clearInterval(interval);
-	}, []);
+	const stopPolling = useCallback(
+		(interval: ReturnType<typeof setInterval>) => {
+			clearInterval(interval);
+		},
+		[]
+	);
 
 	const sendNotificationToFollowers = useCallback(
 		async (
@@ -158,11 +173,82 @@ export const useNotifications = () => {
 			data: NotificationData
 		) => {
 			try {
-				await notificationHandler.sendNotificationToFollowers(
-					senderId,
-					type,
-					data
-				);
+				if (type === NotificationType.SINGLE_SNEAKER_ADDED) {
+					const existing = pendingNotifications.get(senderId);
+
+					if (existing) {
+						clearTimeout(existing.timeout);
+						const newCount = existing.count + 1;
+
+						const timeout = setTimeout(async () => {
+							try {
+								if (newCount === 1) {
+									await notificationHandler.sendNotificationToFollowers(
+										senderId,
+										NotificationType.SINGLE_SNEAKER_ADDED,
+										existing.lastSneakerData || data
+									);
+								} else {
+									const userData =
+										data as SingleSneakerNotificationData;
+									await notificationHandler.sendNotificationToFollowers(
+										senderId,
+										NotificationType.MULTIPLE_SNEAKERS_ADDED,
+										{
+											type: NotificationType.MULTIPLE_SNEAKERS_ADDED,
+											sneaker_count: newCount,
+											user_id: userData.user_id,
+											username: userData.username,
+											user_avatar: userData.user_avatar,
+										}
+									);
+								}
+							} catch (error) {
+								console.warn(
+									'Failed to send delayed notifications:',
+									error
+								);
+							} finally {
+								pendingNotifications.delete(senderId);
+							}
+						}, NOTIFICATION_DELAY_MS);
+
+						pendingNotifications.set(senderId, {
+							timeout,
+							count: newCount,
+							lastSneakerData: data,
+						});
+					} else {
+						const timeout = setTimeout(async () => {
+							try {
+								await notificationHandler.sendNotificationToFollowers(
+									senderId,
+									NotificationType.SINGLE_SNEAKER_ADDED,
+									data
+								);
+							} catch (error) {
+								console.warn(
+									'Failed to send delayed notifications:',
+									error
+								);
+							} finally {
+								pendingNotifications.delete(senderId);
+							}
+						}, NOTIFICATION_DELAY_MS);
+
+						pendingNotifications.set(senderId, {
+							timeout,
+							count: 1,
+							lastSneakerData: data,
+						});
+					}
+				} else {
+					await notificationHandler.sendNotificationToFollowers(
+						senderId,
+						type,
+						data
+					);
+				}
 			} catch (error) {
 				console.warn('Failed to send notifications:', error);
 				throw error;
@@ -186,6 +272,34 @@ export const useNotifications = () => {
 		[]
 	);
 
+	const flushPendingNotifications = useCallback(async () => {
+		for (const [senderId, pending] of pendingNotifications.entries()) {
+			clearTimeout(pending.timeout);
+			try {
+				if (pending.count === 1) {
+					await notificationHandler.sendNotificationToFollowers(
+						senderId,
+						NotificationType.SINGLE_SNEAKER_ADDED,
+						pending.lastSneakerData
+					);
+				} else {
+					await notificationHandler.sendNotificationToFollowers(
+						senderId,
+						NotificationType.MULTIPLE_SNEAKERS_ADDED,
+						{
+							...pending.lastSneakerData,
+							type: NotificationType.MULTIPLE_SNEAKERS_ADDED,
+							sneaker_count: pending.count,
+						}
+					);
+				}
+			} catch (error) {
+				console.warn('Failed to flush pending notifications:', error);
+			}
+		}
+		pendingNotifications.clear();
+	}, []);
+
 	return {
 		notifications,
 		unreadCount,
@@ -201,5 +315,6 @@ export const useNotifications = () => {
 		stopPolling,
 		sendNotificationToFollowers,
 		sendFollowNotification,
+		flushPendingNotifications,
 	};
 };

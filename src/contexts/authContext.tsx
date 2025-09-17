@@ -58,13 +58,15 @@ export function SessionProvider({ children }: PropsWithChildren) {
 		startPolling,
 		stopPolling,
 		markAllAsRead,
+		flushPendingNotifications,
 	} = useNotifications();
 	const { registerForPushNotifications, setBadgeCount, hasPermission } =
 		usePushNotifications();
 
 	const [user, setUser] = useState<User | null>(null);
-	const [notificationPolling, setNotificationPolling] =
-		useState<NodeJS.Timeout | null>(null);
+	const [notificationPolling, setNotificationPolling] = useState<ReturnType<
+		typeof setInterval
+	> | null>(null);
 	const [userSneakers, setUserSneakers] = useState<Sneaker[] | null>(null);
 	const [wishlistSneakers, setWishlistSneakers] = useState<Sneaker[] | null>(
 		null
@@ -481,6 +483,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
 
 	const handleAppStateChange = async () => {
 		if (appState === 'background') {
+			await flushPendingNotifications();
 			await storageProvider.saveAppState({
 				user,
 				sneakers: userSneakers,

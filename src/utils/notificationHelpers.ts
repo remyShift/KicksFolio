@@ -17,7 +17,10 @@ export const groupNotificationsByWindow = (
 				notification.type === NotificationType.SINGLE_SNEAKER_ADDED ||
 				notification.type === NotificationType.MULTIPLE_SNEAKERS_ADDED
 			) {
-				const senderId = notification.data.user_id;
+				const senderId =
+					'user_id' in notification.data
+						? notification.data.user_id
+						: null;
 				if (!senderId) return;
 
 				const notificationTime = new Date(notification.created_at);

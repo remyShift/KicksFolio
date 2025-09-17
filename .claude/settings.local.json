@@ -9,7 +9,9 @@
       "Bash(git -C /Users/remy_mac/Desktop/KicksFolio/github-pages-share commit -m \"Initial commit: KicksFolio share pages\")",
       "Bash(git commit:*)",
       "Bash(git push:*)",
-      "Bash(npx expo install:*)"
+      "Bash(npx expo install:*)",
+      "Bash(npm run test:*)",
+      "Bash(cat:*)"
     ],
     "deny": [],
     "ask": []
