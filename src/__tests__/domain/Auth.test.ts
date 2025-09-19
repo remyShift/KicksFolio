@@ -22,6 +22,8 @@ describe('Auth', () => {
 			resetPassword: vi.fn(),
 			resetPasswordWithTokens: vi.fn(),
 			cleanupOrphanedSessions: vi.fn(),
+			signInWithApple: vi.fn(),
+			signInWithGoogle: vi.fn(),
 		};
 
 		auth = new Auth(mockAuthProvider);

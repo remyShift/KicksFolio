@@ -95,7 +95,10 @@
     "zod": "^3.25.57",
     "zustand": "^5.0.5",
     "expo-store-review": "~8.1.5",
-    "expo-updates": "~0.28.17"
+    "expo-updates": "~0.28.17",
+    "expo-apple-authentication": "~7.2.4",
+    "expo-auth-session": "~6.2.1",
+    "expo-crypto": "~14.1.5"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

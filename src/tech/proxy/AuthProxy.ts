@@ -1,5 +1,12 @@
+import { Platform } from 'react-native';
+
+import * as AppleAuthentication from 'expo-apple-authentication';
+import { AuthRequest, AuthSessionRedirectUriOptions } from 'expo-auth-session';
+import * as Crypto from 'expo-crypto';
+import * as WebBrowser from 'expo-web-browser';
+
 import { supabase } from '@/config/supabase/supabase';
-import { AuthProviderInterface } from '@/domain/Auth';
+import { AuthProviderInterface, OAuthResult } from '@/domain/Auth';
 import { UserInfo } from '@/types/user';
 
 export class AuthProxy implements AuthProviderInterface {
@@ -282,6 +289,98 @@ export class AuthProxy implements AuthProviderInterface {
 	async cleanupOrphanedSessions() {
 		const { error } = await supabase.auth.signOut();
 		if (error) throw error;
+	}
+
+	async signInWithApple(): Promise<OAuthResult> {
+		if (Platform.OS !== 'ios') {
+			throw new Error('Apple authentication is only available on iOS');
+		}
+
+		try {
+			const isAvailable = await AppleAuthentication.isAvailableAsync();
+			if (!isAvailable) {
+				throw new Error(
+					'Apple authentication is not available on this device'
+				);
+			}
+
+			const credential = await AppleAuthentication.signInAsync({
+				requestedScopes: [
+					AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+					AppleAuthentication.AppleAuthenticationScope.EMAIL,
+				],
+			});
+
+			if (!credential.identityToken) {
+				throw new Error('No identity token received from Apple');
+			}
+
+			const { data, error } = await supabase.auth.signInWithIdToken({
+				provider: 'apple',
+				token: credential.identityToken,
+			});
+
+			if (error) throw error;
+			if (!data.user || !data.session) {
+				throw new Error('Failed to authenticate with Apple');
+			}
+
+			return {
+				user: data.user,
+				session: data.session,
+			};
+		} catch (error: any) {
+			if (error.code === 'ERR_REQUEST_CANCELED') {
+				throw new Error('Authentication was canceled by user');
+			}
+			throw error;
+		}
+	}
+
+	async signInWithGoogle(): Promise<OAuthResult> {
+		try {
+			const authUrl = `${process.env.EXPO_PUBLIC_SUPABASE_URL}/auth/v1/authorize?provider=google`;
+
+			const result = await WebBrowser.openAuthSessionAsync(
+				authUrl,
+				'kicksfolio://auth'
+			);
+
+			if (result.type !== 'success') {
+				throw new Error('Authentication was canceled or failed');
+			}
+
+			const url = result.url;
+			const fragment = url.split('#')[1];
+			if (!fragment) {
+				throw new Error('No authentication data received');
+			}
+
+			const params = new URLSearchParams(fragment);
+			const accessToken = params.get('access_token');
+			const refreshToken = params.get('refresh_token');
+
+			if (!accessToken || !refreshToken) {
+				throw new Error('Failed to get authentication tokens');
+			}
+
+			const { data, error } = await supabase.auth.setSession({
+				access_token: accessToken,
+				refresh_token: refreshToken,
+			});
+
+			if (error) throw error;
+			if (!data.user || !data.session) {
+				throw new Error('Failed to create session');
+			}
+
+			return {
+				user: data.user,
+				session: data.session,
+			};
+		} catch (error) {
+			throw error;
+		}
 	}
 }
 

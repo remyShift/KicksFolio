@@ -299,6 +299,36 @@ export const useAuth = () => {
 			});
 	};
 
+	const signInWithApple = async () => {
+		return auth
+			.signInWithApple()
+			.then((result) => {
+				setUser(result.user as any);
+				return result.user;
+			})
+			.catch((error) => {
+				setErrorMsg(
+					`${t('auth.error.appleSignIn')} : ${error.message}`
+				);
+				throw error;
+			});
+	};
+
+	const signInWithGoogle = async () => {
+		return auth
+			.signInWithGoogle()
+			.then((result) => {
+				setUser(result.user as any);
+				return result.user;
+			})
+			.catch((error) => {
+				setErrorMsg(
+					`${t('auth.error.googleSignIn')} : ${error.message}`
+				);
+				throw error;
+			});
+	};
+
 	const handleNextSignupPage = async (
 		signUpProps: UserData
 	): Promise<string | null> => {
@@ -325,6 +355,8 @@ export const useAuth = () => {
 		deleteAccount,
 		getUser,
 		handleNextSignupPage,
+		signInWithApple,
+		signInWithGoogle,
 		errorMsg,
 	};
 };

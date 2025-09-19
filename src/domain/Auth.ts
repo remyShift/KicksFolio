@@ -2,6 +2,11 @@ import { Session, User, WeakPassword } from '@supabase/supabase-js';
 
 import { UserInfo } from '@/types/user';
 
+export interface OAuthResult {
+	user: User;
+	session: Session;
+}
+
 export interface AuthProviderInterface {
 	signUp: (
 		email: string,
@@ -45,6 +50,10 @@ export interface AuthProviderInterface {
 	) => Promise<boolean>;
 
 	cleanupOrphanedSessions: () => Promise<void>;
+
+	signInWithApple: () => Promise<OAuthResult>;
+
+	signInWithGoogle: () => Promise<OAuthResult>;
 }
 
 export class Auth {
@@ -178,6 +187,36 @@ export class Auth {
 			.catch((error) => {
 				console.error(
 					'❌ Auth.cleanupOrphanedSessions: Error occurred:',
+					error
+				);
+				throw error;
+			});
+	};
+
+	signInWithApple = async () => {
+		return this.authProvider
+			.signInWithApple()
+			.then((result) => {
+				return result;
+			})
+			.catch((error) => {
+				console.error(
+					'❌ Auth.signInWithApple: Error occurred:',
+					error
+				);
+				throw error;
+			});
+	};
+
+	signInWithGoogle = async () => {
+		return this.authProvider
+			.signInWithGoogle()
+			.then((result) => {
+				return result;
+			})
+			.catch((error) => {
+				console.error(
+					'❌ Auth.signInWithGoogle: Error occurred:',
 					error
 				);
 				throw error;
