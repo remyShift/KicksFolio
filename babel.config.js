@@ -13,7 +13,7 @@ export default function (api) {
 					},
 				},
 			],
-			['react-native-reanimated/plugin'],
+			['react-native-worklets/plugin'],
 		],
 	};
 }
