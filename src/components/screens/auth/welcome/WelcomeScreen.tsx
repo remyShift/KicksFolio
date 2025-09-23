@@ -43,7 +43,7 @@ export default function WelcomeScreen() {
 				<View className="flex-1 justify-center items-center gap-12 mt-20">
 					<View className="items-center gap-4">
 						<PageTitle content={t('auth.titles.welcome')} />
-						<Text className="text-gray-600 text-center text-base px-8">
+						<Text className="text-black font-open-sans-bold text-lg text-center">
 							{t('auth.welcome.subtitle')}
 						</Text>
 					</View>

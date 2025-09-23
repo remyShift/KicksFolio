@@ -38,15 +38,6 @@ export default function AuthMethodModal({
 		return '';
 	};
 
-	const getSubtitle = () => {
-		if (mode === 'login') {
-			return t('auth.modal.loginSubtitle');
-		} else if (mode === 'signup') {
-			return t('auth.modal.signupSubtitle');
-		}
-		return '';
-	};
-
 	return (
 		<Modal
 			visible={visible}
@@ -58,34 +49,15 @@ export default function AuthMethodModal({
 				<Pressable className="flex-1" onPress={onClose} />
 
 				<View className="bg-white rounded-t-3xl px-6 py-8 max-h-[80%]">
-					{/* Header avec titre et bouton fermer */}
-					<View className="flex-row justify-between items-center mb-6">
-						<View className="flex-1">
-							<Text className="text-2xl font-bold text-gray-900 mb-2">
-								{getTitle()}
-							</Text>
-							<Text className="text-gray-600 text-base">
-								{getSubtitle()}
-							</Text>
-						</View>
+					<Text className="text-2xl font-bold text-gray-900 mb-8 text-center">
+						{getTitle()}
+					</Text>
 
-						<Pressable
-							onPress={onClose}
-							className="w-8 h-8 items-center justify-center"
-						>
-							<Text className="text-gray-400 text-2xl font-light">
-								×
-							</Text>
-						</Pressable>
-					</View>
-
-					{/* Options d'authentification */}
 					<View className="gap-4 mb-6">
 						<AppleSignInButton />
 						<GoogleSignInButton />
 					</View>
 
-					{/* Séparateur */}
 					<View className="flex-row items-center gap-4 mb-6">
 						<View className="flex-1 h-px bg-gray-300" />
 						<Text className="text-gray-500 text-sm">
@@ -94,12 +66,12 @@ export default function AuthMethodModal({
 						<View className="flex-1 h-px bg-gray-300" />
 					</View>
 
-					{/* Bouton email */}
-					<MainButton
-						content={t('auth.buttons.continueWithEmail')}
-						backgroundColor="bg-gray-100"
-						onPressAction={handleEmailAuth}
-					/>
+					<Text
+						className="text-primary text-center font-open-sans-bold mb-6"
+						onPress={handleEmailAuth}
+					>
+						{t('auth.buttons.continueWithEmail')}
+					</Text>
 				</View>
 			</View>
 		</Modal>

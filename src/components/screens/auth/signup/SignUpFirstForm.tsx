@@ -196,9 +196,9 @@ export default function SignUpFirstForm() {
 							<Pressable
 								onPress={() => setIsLoginModalVisible(true)}
 							>
-								<Text className="text-gray-600 text-center">
+								<Text className="text-black font-open-sans text-center">
 									{t('auth.links.alreadyHaveAccount')}{' '}
-									<Text className="text-primary font-semibold">
+									<Text className="text-primary font-open-sans-bold">
 										{t('auth.buttons.login')}
 									</Text>
 								</Text>
