@@ -11,7 +11,7 @@ export default function AuthLayout() {
 				}}
 			>
 				<Stack.Screen
-					name="auth-method-selector"
+					name="welcome"
 					options={{
 						animationTypeForReplace: 'pop',
 					}}

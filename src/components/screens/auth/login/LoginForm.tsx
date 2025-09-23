@@ -7,7 +7,6 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { router, useLocalSearchParams } from 'expo-router';
 
-import OAuthSection from '@/components/screens/auth/oauth/OAuthSection';
 import MainButton from '@/components/ui/buttons/MainButton';
 import FormPasswordInput from '@/components/ui/inputs/FormPasswordInput';
 import FormTextInput from '@/components/ui/inputs/FormTextInput';
@@ -215,8 +214,6 @@ export default function LoginForm() {
 						}}
 						isDisabled={isSubmitDisabled}
 					/>
-
-					<OAuthSection />
 
 					<View className="flex gap-3 justify-center items-center w-full">
 						<PageLink

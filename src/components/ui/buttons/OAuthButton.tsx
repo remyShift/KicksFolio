@@ -33,7 +33,9 @@ export default function OAuthButton({
 		>
 			<View className="flex-row items-center justify-center gap-3">
 				{icon}
-				<Text className={`font-medium text-base ${textColor}`}>
+				<Text
+					className={`font-medium text-base font-open-sans-bold ${textColor}`}
+				>
 					{text}
 				</Text>
 			</View>
