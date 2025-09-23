@@ -50,7 +50,7 @@ export default function AppleSignInButton() {
 	return (
 		<OAuthButton
 			onPress={handleAppleSignIn}
-			icon={<Ionicons name="logo-apple" size={20} color="#fff" />}
+			icon={<Ionicons name="logo-apple" size={20} color="#000" />}
 			text={
 				isLoading
 					? t('auth.oauth.apple.loading')

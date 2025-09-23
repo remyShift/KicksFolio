@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { ScrollView, TextInput } from 'react-native';
+import { Pressable, ScrollView, Text, TextInput } from 'react-native';
 import { View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
-import { router, useLocalSearchParams } from 'expo-router';
+import { RelativePathString, router, useLocalSearchParams } from 'expo-router';
 
 import MainButton from '@/components/ui/buttons/MainButton';
 import FormPasswordInput from '@/components/ui/inputs/FormPasswordInput';
@@ -18,6 +18,9 @@ import { useFormController } from '@/hooks/form/useFormController';
 import useToast from '@/hooks/ui/useToast';
 import { useAuth } from '@/hooks/useAuth';
 import { createLoginSchema, LoginFormData } from '@/validation/auth';
+
+import AuthHeader from '../AuthHeader';
+import AuthMethodModal from '../welcome/AuthMethodModal';
 
 export default function LoginForm() {
 	const scrollViewRef = useRef<ScrollView>(null);
@@ -35,6 +38,7 @@ export default function LoginForm() {
 	);
 	const [paramsError, setParamsError] = useState(params.error as string);
 	const [isLoggingIn, setIsLoggingIn] = useState(false);
+	const [isSignupModalVisible, setIsSignupModalVisible] = useState(false);
 
 	const {
 		control,
@@ -150,84 +154,106 @@ export default function LoginForm() {
 	]);
 
 	return (
-		<KeyboardAwareScrollView
-			ref={scrollViewRef}
-			className="flex-1 bg-background"
-			keyboardShouldPersistTaps="handled"
-			contentContainerStyle={{
-				flexGrow: 1,
-				padding: 8,
-			}}
-			bottomOffset={15}
-		>
-			<View className="flex-1 justify-center items-center gap-12 mt-20">
-				<PageTitle content={t('auth.titles.login')} />
-				<View className="flex justify-center items-center gap-8 w-full px-12">
-					<ErrorMsg
-						content={displayedError}
-						display={displayedError !== ''}
-					/>
-
-					<FormTextInput
-						name="email"
-						control={control}
-						label={t('auth.form.email.label')}
-						placeholder={t('auth.form.email.placeholder')}
-						ref={emailInputRef}
-						nextInputRef={passwordInputRef}
-						keyboardType="email-address"
-						autoComplete="email"
-						onFocus={() => handleFieldFocus('email')}
-						onBlur={async (value) => {
-							await validateFieldOnBlur('email', value);
+		<>
+			<KeyboardAwareScrollView
+				ref={scrollViewRef}
+				className="flex-1 bg-background"
+				keyboardShouldPersistTaps="handled"
+				contentContainerStyle={{
+					flexGrow: 1,
+					padding: 8,
+				}}
+				bottomOffset={15}
+			>
+				<View className="flex-1 items-center p-4 gap-12 mt-20">
+					<AuthHeader
+						page={{
+							title: t('auth.titles.login'),
+							routerBack: '/(auth)/welcome' as RelativePathString,
 						}}
-						error={getFieldErrorWrapper('email')}
-						getFieldError={getFieldErrorWrapper}
 					/>
-
-					<FormPasswordInput
-						name="password"
-						control={control}
-						label={t('auth.form.password.label')}
-						placeholder={t('auth.form.password.placeholder')}
-						ref={passwordInputRef}
-						onFocus={() => handleFieldFocus('password')}
-						onBlur={async (value) => {
-							await validateFieldOnBlur('password', value);
-						}}
-						onSubmitEditing={handleFormSubmit}
-						error={getFieldErrorWrapper('password')}
-						getFieldError={getFieldErrorWrapper}
-					/>
-				</View>
-
-				<View className="flex gap-5 w-full justify-center items-center">
-					<MainButton
-						content={t('auth.buttons.login')}
-						backgroundColor={
-							isSubmitDisabled ? 'bg-primary/50' : 'bg-primary'
-						}
-						onPressAction={() => {
-							if (!isSubmitDisabled) {
-								handleFormSubmit();
-							}
-						}}
-						isDisabled={isSubmitDisabled}
-					/>
-
-					<View className="flex gap-3 justify-center items-center w-full">
-						<PageLink
-							href="/sign-up"
-							textBeforeLink={t('auth.links.dontHaveAccount')}
-							linkText={t('auth.buttons.signUp')}
+					<View className="flex-1 justify-center items-center gap-8 w-full px-12">
+						<ErrorMsg
+							content={displayedError}
+							display={displayedError !== ''}
 						/>
-						<PageLink
-							href="/forgot-password"
-							linkText={t('auth.links.forgotPassword')}
+
+						<FormTextInput
+							name="email"
+							control={control}
+							label={t('auth.form.email.label')}
+							placeholder={t('auth.form.email.placeholder')}
+							ref={emailInputRef}
+							nextInputRef={passwordInputRef}
+							keyboardType="email-address"
+							autoComplete="email"
+							onFocus={() => handleFieldFocus('email')}
+							onBlur={async (value) => {
+								await validateFieldOnBlur('email', value);
+							}}
+							error={getFieldErrorWrapper('email')}
+							getFieldError={getFieldErrorWrapper}
 						/>
+
+						<FormPasswordInput
+							name="password"
+							control={control}
+							label={t('auth.form.password.label')}
+							placeholder={t('auth.form.password.placeholder')}
+							ref={passwordInputRef}
+							onFocus={() => handleFieldFocus('password')}
+							onBlur={async (value) => {
+								await validateFieldOnBlur('password', value);
+							}}
+							onSubmitEditing={handleFormSubmit}
+							error={getFieldErrorWrapper('password')}
+							getFieldError={getFieldErrorWrapper}
+						/>
+
+						<View className="flex gap-5 w-full justify-center items-center">
+							<MainButton
+								content={t('auth.buttons.login')}
+								backgroundColor={
+									isSubmitDisabled
+										? 'bg-primary/50'
+										: 'bg-primary'
+								}
+								onPressAction={() => {
+									if (!isSubmitDisabled) {
+										handleFormSubmit();
+									}
+								}}
+								isDisabled={isSubmitDisabled}
+							/>
+
+							<View className="flex gap-3 justify-center items-center w-full">
+								<Pressable
+									onPress={() =>
+										setIsSignupModalVisible(true)
+									}
+								>
+									<Text className="text-gray-600 text-center">
+										{t('auth.links.dontHaveAccount')}{' '}
+										<Text className="text-primary font-semibold">
+											{t('auth.buttons.signUp')}
+										</Text>
+									</Text>
+								</Pressable>
+								<PageLink
+									href="/forgot-password"
+									linkText={t('auth.links.forgotPassword')}
+								/>
+							</View>
+						</View>
 					</View>
 				</View>
-			</View>
-		</KeyboardAwareScrollView>
+			</KeyboardAwareScrollView>
+
+			<AuthMethodModal
+				visible={isSignupModalVisible}
+				onClose={() => setIsSignupModalVisible(false)}
+				mode="signup"
+			/>
+		</>
 	);
 }

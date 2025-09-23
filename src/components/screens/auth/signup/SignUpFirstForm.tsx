@@ -1,7 +1,7 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { ScrollView, TextInput, View } from 'react-native';
+import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { RelativePathString } from 'expo-router';
@@ -20,6 +20,7 @@ import {
 } from '@/validation/auth';
 
 import AuthHeader from '../AuthHeader';
+import AuthMethodModal from '../welcome/AuthMethodModal';
 
 export default function SignUpFirstForm() {
 	const { t } = useTranslation();
@@ -32,6 +33,7 @@ export default function SignUpFirstForm() {
 	const { signUpProps, setSignUpProps } = useSignUpProps();
 	const { handleNextSignupPage } = useAuth();
 	const { checkUsernameExists, checkEmailExists } = useAuthValidation();
+	const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
 
 	const {
 		control,
@@ -75,121 +77,142 @@ export default function SignUpFirstForm() {
 	});
 
 	return (
-		<KeyboardAwareScrollView
-			ref={scrollViewRef}
-			className="flex-1 bg-background"
-			keyboardShouldPersistTaps="handled"
-			contentContainerStyle={{
-				flexGrow: 1,
-				padding: 8,
-			}}
-			bottomOffset={10}
-		>
-			<View className="flex-1 items-center p-4 gap-12 mt-20">
-				<AuthHeader
-					page={{
-						title: t('auth.titles.signup'),
-						routerBack:
-							'/(auth)/(signup)/sign-up' as RelativePathString,
-					}}
-				/>
-
-				<View className="flex justify-center items-center gap-8 w-full mt-10 px-12">
-					<View
-						className="w-full absolute"
-						style={{
-							top: -50,
+		<>
+			<KeyboardAwareScrollView
+				ref={scrollViewRef}
+				className="flex-1 bg-background"
+				keyboardShouldPersistTaps="handled"
+				contentContainerStyle={{
+					flexGrow: 1,
+					padding: 8,
+				}}
+				bottomOffset={10}
+			>
+				<View className="flex-1 items-center p-4 gap-12 mt-20">
+					<AuthHeader
+						page={{
+							title: t('auth.titles.signup'),
+							routerBack: '/(auth)/welcome' as RelativePathString,
 						}}
-					>
-						<ErrorMsg
-							content={displayedError}
-							display={displayedError !== ''}
-						/>
-					</View>
-
-					<FormTextInput
-						name="username"
-						control={control}
-						label={t('auth.form.username.label')}
-						placeholder={t('auth.form.username.placeholder')}
-						ref={usernameInputRef}
-						nextInputRef={emailInputRef}
-						autoComplete="username"
-						maxLength={16}
-						onFocus={() => handleFieldFocus('username')}
-						onBlur={async (value) => {
-							await validateFieldOnBlur('username', value);
-						}}
-						error={getFieldErrorWrapper('username')}
-						getFieldError={getFieldErrorWrapper}
 					/>
 
-					<FormTextInput
-						name="email"
-						control={control}
-						label={t('auth.form.email.label')}
-						placeholder={t('auth.form.email.placeholder')}
-						ref={emailInputRef}
-						nextInputRef={passwordInputRef}
-						keyboardType="email-address"
-						autoComplete="email"
-						onFocus={() => handleFieldFocus('email')}
-						onBlur={async (value) => {
-							await validateFieldOnBlur('email', value);
-						}}
-						error={getFieldErrorWrapper('email')}
-						getFieldError={getFieldErrorWrapper}
-					/>
-
-					<FormPasswordInput
-						name="password"
-						control={control}
-						label={t('auth.form.password.label')}
-						description={t('auth.form.password.description')}
-						placeholder={t('auth.form.password.placeholder')}
-						ref={passwordInputRef}
-						nextInputRef={confirmPasswordInputRef}
-						onFocus={() => handleFieldFocus('password')}
-						onBlur={async (value) => {
-							await validateFieldOnBlur('password', value);
-						}}
-						error={getFieldErrorWrapper('password')}
-						getFieldError={getFieldErrorWrapper}
-					/>
-
-					<FormPasswordInput
-						name="confirmPassword"
-						control={control}
-						label={t('auth.form.confirmPassword.label')}
-						placeholder={t('auth.form.password.placeholder')}
-						ref={confirmPasswordInputRef}
-						onFocus={() => handleFieldFocus('confirmPassword')}
-						onBlur={async (value) => {
-							await validateFieldOnBlur('confirmPassword', value);
-						}}
-						onSubmitEditing={handleFormSubmit}
-						error={getFieldErrorWrapper('confirmPassword')}
-						getFieldError={getFieldErrorWrapper}
-					/>
-
-					<View className="flex gap-3 w-full justify-center items-center">
-						<MainButton
-							content={t('auth.buttons.nextStep')}
-							backgroundColor={
-								isSubmitDisabled
-									? 'bg-primary/50'
-									: 'bg-primary'
-							}
-							onPressAction={() => {
-								if (!isSubmitDisabled) {
-									handleFormSubmit();
-								}
+					<View className="flex justify-center items-center gap-8 w-full mt-10 px-12">
+						<View
+							className="w-full absolute"
+							style={{
+								top: -50,
 							}}
-							isDisabled={isSubmitDisabled}
+						>
+							<ErrorMsg
+								content={displayedError}
+								display={displayedError !== ''}
+							/>
+						</View>
+
+						<FormTextInput
+							name="username"
+							control={control}
+							label={t('auth.form.username.label')}
+							placeholder={t('auth.form.username.placeholder')}
+							ref={usernameInputRef}
+							nextInputRef={emailInputRef}
+							autoComplete="username"
+							maxLength={16}
+							onFocus={() => handleFieldFocus('username')}
+							onBlur={async (value) => {
+								await validateFieldOnBlur('username', value);
+							}}
+							error={getFieldErrorWrapper('username')}
+							getFieldError={getFieldErrorWrapper}
 						/>
+
+						<FormTextInput
+							name="email"
+							control={control}
+							label={t('auth.form.email.label')}
+							placeholder={t('auth.form.email.placeholder')}
+							ref={emailInputRef}
+							nextInputRef={passwordInputRef}
+							keyboardType="email-address"
+							autoComplete="email"
+							onFocus={() => handleFieldFocus('email')}
+							onBlur={async (value) => {
+								await validateFieldOnBlur('email', value);
+							}}
+							error={getFieldErrorWrapper('email')}
+							getFieldError={getFieldErrorWrapper}
+						/>
+
+						<FormPasswordInput
+							name="password"
+							control={control}
+							label={t('auth.form.password.label')}
+							description={t('auth.form.password.description')}
+							placeholder={t('auth.form.password.placeholder')}
+							ref={passwordInputRef}
+							nextInputRef={confirmPasswordInputRef}
+							onFocus={() => handleFieldFocus('password')}
+							onBlur={async (value) => {
+								await validateFieldOnBlur('password', value);
+							}}
+							error={getFieldErrorWrapper('password')}
+							getFieldError={getFieldErrorWrapper}
+						/>
+
+						<FormPasswordInput
+							name="confirmPassword"
+							control={control}
+							label={t('auth.form.confirmPassword.label')}
+							placeholder={t('auth.form.password.placeholder')}
+							ref={confirmPasswordInputRef}
+							onFocus={() => handleFieldFocus('confirmPassword')}
+							onBlur={async (value) => {
+								await validateFieldOnBlur(
+									'confirmPassword',
+									value
+								);
+							}}
+							onSubmitEditing={handleFormSubmit}
+							error={getFieldErrorWrapper('confirmPassword')}
+							getFieldError={getFieldErrorWrapper}
+						/>
+
+						<View className="flex gap-3 w-full justify-center items-center">
+							<MainButton
+								content={t('auth.buttons.nextStep')}
+								backgroundColor={
+									isSubmitDisabled
+										? 'bg-primary/50'
+										: 'bg-primary'
+								}
+								onPressAction={() => {
+									if (!isSubmitDisabled) {
+										handleFormSubmit();
+									}
+								}}
+								isDisabled={isSubmitDisabled}
+							/>
+
+							<Pressable
+								onPress={() => setIsLoginModalVisible(true)}
+							>
+								<Text className="text-gray-600 text-center">
+									{t('auth.links.alreadyHaveAccount')}{' '}
+									<Text className="text-primary font-semibold">
+										{t('auth.buttons.login')}
+									</Text>
+								</Text>
+							</Pressable>
+						</View>
 					</View>
 				</View>
-			</View>
-		</KeyboardAwareScrollView>
+			</KeyboardAwareScrollView>
+
+			<AuthMethodModal
+				visible={isLoginModalVisible}
+				onClose={() => setIsLoginModalVisible(false)}
+				mode="login"
+			/>
+		</>
 	);
 }
