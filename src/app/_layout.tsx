@@ -55,7 +55,12 @@ function RootNavigator() {
 	return (
 		<Stack screenOptions={{ headerShown: false }}>
 			<Stack.Protected guard={!user}>
-				<Stack.Screen name="(auth)" />
+				<Stack.Screen
+					name="(auth)"
+					options={{
+						headerShown: false,
+					}}
+				/>
 			</Stack.Protected>
 
 			<Stack.Screen name="share-collection/[shareToken]" />

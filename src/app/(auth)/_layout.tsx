@@ -11,9 +11,21 @@ export default function AuthLayout() {
 				}}
 			>
 				<Stack.Screen
+					name="auth-method-selector"
+					options={{
+						animationTypeForReplace: 'pop',
+					}}
+				/>
+				<Stack.Screen
 					name="login"
 					options={{
 						animationTypeForReplace: 'pop',
+					}}
+				/>
+				<Stack.Screen
+					name="oauth-profile-completion"
+					options={{
+						animationTypeForReplace: 'push',
 					}}
 				/>
 				<Stack.Screen

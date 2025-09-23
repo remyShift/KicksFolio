@@ -127,6 +127,41 @@ export const createResetPasswordSchema = () => {
 		});
 };
 
+export const createOAuthCompletionSchema = () => {
+	const currentUnit = useSizeUnitStore.getState().currentUnit;
+
+	return z.object({
+		username: z
+			.string()
+			.min(3, t('auth.form.username.error.size'))
+			.max(12, t('auth.form.username.error.size'))
+			.regex(/^\w+$/, t('auth.form.username.error.format')),
+		first_name: z
+			.string()
+			.min(2, t('auth.form.firstName.error.size'))
+			.regex(/^[a-zA-Z\s-]+$/, t('auth.form.firstName.error.format')),
+		last_name: z
+			.string()
+			.min(2, t('auth.form.lastName.error.size'))
+			.regex(/^[a-zA-Z\s-]+$/, t('auth.form.lastName.error.format')),
+		sneaker_size: z
+			.string()
+			.min(1, t('auth.form.sneakerSize.error.required'))
+			.transform((val) => val.replace(',', '.'))
+			.refine(
+				validateSneakerSize,
+				currentUnit === 'EU'
+					? t('auth.form.sneakerSize.error.eu')
+					: t('auth.form.sneakerSize.error.us')
+			)
+			.refine((val) => {
+				const num = Number(val);
+				return (num * 2) % 1 === 0;
+			}, t('auth.form.sneakerSize.error.multiple')),
+		profile_picture: z.string().optional(),
+	});
+};
+
 export type LoginFormData = z.infer<ReturnType<typeof createLoginSchema>>;
 
 export type SignUpStep1FormData = z.infer<
@@ -147,4 +182,8 @@ export type ForgotPasswordFormData = z.infer<
 
 export type ResetPasswordFormData = z.infer<
 	ReturnType<typeof createResetPasswordSchema>
+>;
+
+export type OAuthCompletionFormData = z.infer<
+	ReturnType<typeof createOAuthCompletionSchema>
 >;

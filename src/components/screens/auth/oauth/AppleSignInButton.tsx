@@ -29,10 +29,6 @@ export default function AppleSignInButton() {
 		setIsLoading(true);
 		try {
 			await signInWithApple();
-			showSuccessToast(
-				t('auth.oauth.apple.success'),
-				t('auth.oauth.apple.successDescription')
-			);
 		} catch (error: any) {
 			console.error('Apple Sign-In error:', error);
 			if (error.message.includes('canceled')) {

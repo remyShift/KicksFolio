@@ -18,10 +18,6 @@ export default function GoogleSignInButton() {
 		setIsLoading(true);
 		try {
 			await signInWithGoogle();
-			showSuccessToast(
-				t('auth.oauth.google.success'),
-				t('auth.oauth.google.successDescription')
-			);
 		} catch (error: any) {
 			console.error('Google Sign-In error:', error);
 			if (error.message.includes('canceled')) {
