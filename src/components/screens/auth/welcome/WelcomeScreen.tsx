@@ -7,7 +7,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import MainButton from '@/components/ui/buttons/MainButton';
 import PageTitle from '@/components/ui/text/PageTitle';
 
-import AuthMethodModal from './AuthMethodModal';
+import AuthMethodModalWrapper from './AuthMethodModalWrapper';
 
 export default function WelcomeScreen() {
 	const { t } = useTranslation();
@@ -66,7 +66,7 @@ export default function WelcomeScreen() {
 				</View>
 			</KeyboardAwareScrollView>
 
-			<AuthMethodModal
+			<AuthMethodModalWrapper
 				visible={isModalVisible}
 				onClose={closeModal}
 				mode={authMode}

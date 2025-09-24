@@ -15,13 +15,11 @@ import Animated, {
 	withSpring,
 	withTiming,
 } from 'react-native-reanimated';
-import Toast from 'react-native-toast-message';
 
-import { SneakersModal } from '@/components/ui/modals/SneakersModal';
-import { useModalStore } from '@/store/useModalStore';
+import AuthMethodModal from './AuthMethodModal';
 
 const { height: screenHeight } = Dimensions.get('window');
-const MODAL_HEIGHT = screenHeight * 0.8;
+const MODAL_HEIGHT = screenHeight * 0.6;
 
 const ANIMATION_CONFIG = {
 	open: {
@@ -37,11 +35,17 @@ const ANIMATION_CONFIG = {
 	},
 };
 
-export default function SneakersModalWrapper() {
-	const isVisible = useModalStore((state) => state.isVisible);
-	const setIsVisible = useModalStore((state) => state.setIsVisible);
-	const resetModalData = useModalStore((state) => state.resetModalData);
+interface AuthMethodModalWrapperProps {
+	visible: boolean;
+	onClose: () => void;
+	mode: 'login' | 'signup' | null;
+}
 
+export default function AuthMethodModalWrapper({
+	visible,
+	onClose,
+	mode,
+}: AuthMethodModalWrapperProps) {
 	const translateY = useSharedValue(MODAL_HEIGHT);
 	const isClosingRef = useRef(false);
 	const [localVisible, setLocalVisible] = useState(false);
@@ -52,14 +56,13 @@ export default function SneakersModalWrapper() {
 		}
 
 		isClosingRef.current = true;
-
 		setLocalVisible(false);
 
 		setTimeout(() => {
-			setIsVisible(false);
+			onClose();
 			isClosingRef.current = false;
 		}, 300);
-	}, [setIsVisible]);
+	}, [onClose]);
 
 	const handleCloseModal = useCallback(() => {
 		if (isClosingRef.current || !localVisible) {
@@ -125,18 +128,20 @@ export default function SneakersModalWrapper() {
 	});
 
 	useEffect(() => {
-		if (isVisible) {
+		if (visible) {
 			setLocalVisible(true);
 			isClosingRef.current = false;
 			translateY.value = withTiming(0, ANIMATION_CONFIG.open);
 		}
-	}, [isVisible, translateY]);
+	}, [visible, translateY]);
 
 	useEffect(() => {
-		if (!isVisible && localVisible) {
-			setLocalVisible(false);
+		if (!visible && localVisible) {
+			handleCloseModal();
 		}
-	}, [isVisible, localVisible]);
+	}, [visible, localVisible, handleCloseModal]);
+
+	if (!localVisible) return null;
 
 	return (
 		<Modal
@@ -164,15 +169,14 @@ export default function SneakersModalWrapper() {
 						<View className="w-24 h-1 bg-gray-300 rounded-full" />
 					</View>
 					<GestureDetector gesture={panGesture}>
-						<Animated.View className="flex-1 bg-background rounded-t-3xl">
-							<View className="flex-1 px-4 py-3">
-								<SneakersModal />
-							</View>
+						<Animated.View className="flex-1 bg-white rounded-t-3xl">
+							<AuthMethodModal
+								onClose={handleCloseModal}
+								mode={mode}
+							/>
 						</Animated.View>
 					</GestureDetector>
 				</Animated.View>
-
-				<Toast topOffset={60} />
 			</GestureHandlerRootView>
 		</Modal>
 	);

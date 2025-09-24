@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Modal, Pressable, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { router } from 'expo-router';
 
@@ -8,13 +8,11 @@ import GoogleSignInButton from '@/components/screens/auth/oauth/GoogleSignInButt
 import MainButton from '@/components/ui/buttons/MainButton';
 
 interface AuthMethodModalProps {
-	visible: boolean;
 	onClose: () => void;
 	mode: 'login' | 'signup' | null;
 }
 
 export default function AuthMethodModal({
-	visible,
 	onClose,
 	mode,
 }: AuthMethodModalProps) {
@@ -39,41 +37,30 @@ export default function AuthMethodModal({
 	};
 
 	return (
-		<Modal
-			visible={visible}
-			transparent
-			animationType="slide"
-			onRequestClose={onClose}
-		>
-			<View className="flex-1 justify-end bg-black/50">
-				<Pressable className="flex-1" onPress={onClose} />
+		<View className="px-6 py-8 flex-1">
+			<Text className="text-2xl font-bold text-gray-900 mb-8 text-center">
+				{getTitle()}
+			</Text>
 
-				<View className="bg-white rounded-t-3xl px-6 py-8 max-h-[80%]">
-					<Text className="text-2xl font-bold text-gray-900 mb-8 text-center">
-						{getTitle()}
-					</Text>
-
-					<View className="gap-4 mb-6">
-						<AppleSignInButton />
-						<GoogleSignInButton />
-					</View>
-
-					<View className="flex-row items-center gap-4 mb-6">
-						<View className="flex-1 h-px bg-gray-300" />
-						<Text className="text-gray-500 text-sm">
-							{t('auth.oauth.orContinueWith')}
-						</Text>
-						<View className="flex-1 h-px bg-gray-300" />
-					</View>
-
-					<Text
-						className="text-primary text-center font-open-sans-bold mb-6"
-						onPress={handleEmailAuth}
-					>
-						{t('auth.buttons.continueWithEmail')}
-					</Text>
-				</View>
+			<View className="gap-4 mb-6">
+				<AppleSignInButton />
+				<GoogleSignInButton />
 			</View>
-		</Modal>
+
+			<View className="flex-row items-center gap-4 mb-6">
+				<View className="flex-1 h-px bg-gray-300" />
+				<Text className="text-gray-500 text-sm">
+					{t('auth.oauth.orContinueWith')}
+				</Text>
+				<View className="flex-1 h-px bg-gray-300" />
+			</View>
+
+			<MainButton
+				content={t('auth.buttons.continueWithEmail')}
+				backgroundColor="bg-gray-100"
+				textColor="text-gray-900"
+				onPressAction={handleEmailAuth}
+			/>
+		</View>
 	);
 }
