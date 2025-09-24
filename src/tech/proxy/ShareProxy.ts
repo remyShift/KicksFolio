@@ -86,7 +86,7 @@ class ShareProxy implements ShareHandlerInterface {
 		const { data: completeUserData, error: userError } = await supabase
 			.from('users')
 			.select(
-				'id, username, first_name, last_name, profile_picture, instagram_username, social_media_visibility'
+				'id, username, profile_picture, instagram_username, social_media_visibility'
 			)
 			.eq('id', result.user_data.id)
 			.single();
@@ -154,8 +154,6 @@ class ShareProxy implements ShareHandlerInterface {
 		const userData = {
 			id: completeUserData.id,
 			username: completeUserData.username,
-			first_name: completeUserData.first_name,
-			last_name: completeUserData.last_name,
 			profile_picture: completeUserData.profile_picture,
 			is_following: false,
 			followers_count: followersCount,

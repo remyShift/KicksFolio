@@ -166,11 +166,9 @@ export class WishlistProxy implements WishlistInterface {
 				created_at,
 				user_id,
 				users!inner (
-					id,
-					username,
-					first_name,
-					last_name,
-					profile_picture
+				id,
+				username,
+				profile_picture
 				)
 			`
 			)

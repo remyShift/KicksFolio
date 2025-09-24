@@ -225,8 +225,6 @@ describe('useAuth', () => {
 			password: 'password123',
 			confirmPassword: 'password123',
 			username: 'testuser',
-			first_name: 'Test',
-			last_name: 'User',
 			sneaker_size: 10,
 			profile_picture: 'file://local-image.jpg',
 		};
@@ -255,8 +253,6 @@ describe('useAuth', () => {
 				'password123',
 				expect.objectContaining({
 					username: 'testuser',
-					first_name: 'Test',
-					last_name: 'User',
 					sneaker_size: 10,
 				})
 			);
@@ -433,15 +429,13 @@ describe('useAuth', () => {
 
 	describe('updateUser', () => {
 		const updateData: Partial<UpdateUserData> = {
-			first_name: 'Updated',
-			last_name: 'Name',
+			username: 'UpdatedUser',
 		};
 
 		it('should update user with success', async () => {
 			mockAuthInstance.updateProfile.mockResolvedValueOnce({
 				id: 'test-user-id',
-				first_name: 'Updated',
-				last_name: 'Name',
+				username: 'UpdatedUser',
 			} as any);
 
 			const { result } = renderHook(() => useAuth());

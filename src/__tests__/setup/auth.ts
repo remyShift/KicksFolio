@@ -1,8 +1,6 @@
 export const mockUser = {
 	id: '1',
 	username: 'testuser',
-	first_name: 'John',
-	last_name: 'Doe',
 	sneaker_size: '10',
 	email: 'test@example.com',
 	profile_picture_url: '',
@@ -36,8 +34,6 @@ export const mockUseSignUpProps = {
 		email: '',
 		password: '',
 		username: '',
-		first_name: '',
-		last_name: '',
 		sneaker_size: 0,
 		profile_picture: '',
 		confirmPassword: '',

@@ -185,8 +185,6 @@ describe('useAuthValidation', () => {
 				username: 'testuser',
 				email: 'test@example.com',
 				password: 'password123',
-				first_name: 'Test',
-				last_name: 'User',
 				sneaker_size: 42,
 				confirmPassword: 'password123',
 			};
@@ -211,8 +209,6 @@ describe('useAuthValidation', () => {
 				username: 'testuser',
 				email: 'test@example.com',
 				password: 'password123',
-				first_name: 'Test',
-				last_name: 'User',
 				sneaker_size: 42,
 				confirmPassword: 'password123',
 			};
@@ -238,8 +234,6 @@ describe('useAuthValidation', () => {
 				username: 'testuser',
 				email: 'test@example.com',
 				password: 'password123',
-				first_name: 'Test',
-				last_name: 'User',
 				sneaker_size: 42,
 				confirmPassword: 'password123',
 			};
@@ -273,8 +267,6 @@ describe('useAuthValidation', () => {
 				username: 'testuser',
 				email: 'test@example.com',
 				password: 'password123',
-				first_name: 'Test',
-				last_name: 'User',
 				sneaker_size: 42,
 				confirmPassword: 'password123',
 			};

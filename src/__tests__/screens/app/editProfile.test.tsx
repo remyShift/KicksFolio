@@ -31,15 +31,11 @@ describe('Edit Profile Form', () => {
 
 	it('should render the edit profile form with user data', () => {
 		const userNameInput = screen.getByLabelText('Username*');
-		const firstNameInput = screen.getByLabelText('First Name*');
-		const lastNameInput = screen.getByLabelText('Last Name*');
 		const sizeInput = screen.getByLabelText('Sneaker Size*');
 		const pageTitle = screen.getByTestId('page-title');
 		const mainButton = screen.getByTestId('main-button');
 
 		expect(userNameInput.props.value).toBe(mockUser.username);
-		expect(firstNameInput.props.value).toBe(mockUser.first_name);
-		expect(lastNameInput.props.value).toBe(mockUser.last_name);
 		expect(sizeInput.props.value).toBe('10');
 		expect(pageTitle.props.children).toBe('Edit profile');
 		expect(mainButton.props.accessibilityState.disabled).toBe(true);
@@ -53,18 +49,6 @@ describe('Edit Profile Form', () => {
 					input: 'r',
 					error: 'Username must be between 4 and 16 characters.',
 					getInput: () => screen.getByLabelText('Username*'),
-				},
-				{
-					field: 'first name',
-					input: 'T',
-					error: 'First name must be at least 2 characters long.',
-					getInput: () => screen.getByLabelText('First Name*'),
-				},
-				{
-					field: 'last name',
-					input: 'T',
-					error: 'Last name must be at least 2 characters long.',
-					getInput: () => screen.getByLabelText('Last Name*'),
 				},
 				{
 					field: 'sneaker size',
@@ -107,14 +91,6 @@ describe('Edit Profile Form', () => {
 					label: 'Username*',
 				},
 				{
-					name: 'first name',
-					label: 'First Name*',
-				},
-				{
-					name: 'last name',
-					label: 'Last Name*',
-				},
-				{
 					name: 'sneaker size',
 					label: 'Sneaker Size*',
 				},
@@ -140,18 +116,6 @@ describe('Edit Profile Form', () => {
 					label: 'Username*',
 					newValue: 'remysnkr',
 					originalValue: mockUser.username,
-				},
-				{
-					name: 'first name',
-					label: 'First Name*',
-					newValue: 'Toto',
-					originalValue: mockUser.first_name,
-				},
-				{
-					name: 'last name',
-					label: 'Last Name*',
-					newValue: 'Toto',
-					originalValue: mockUser.last_name,
 				},
 				{
 					name: 'sneaker size',
@@ -202,8 +166,6 @@ describe('Edit Profile Form', () => {
 
 			expect(mockUseAuth.updateUser).toHaveBeenCalledWith(mockUser.id, {
 				username: newUsername,
-				first_name: mockUser.first_name,
-				last_name: mockUser.last_name,
 				sneaker_size: parseInt(mockUser.sneaker_size),
 				profile_picture: undefined,
 			});

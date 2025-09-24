@@ -165,8 +165,8 @@ describe('Auth', () => {
 	describe('updateProfile', () => {
 		it('should update the profile with success', async () => {
 			const userId = 'test-user-id';
-			const userData = { first_name: 'Updated' };
-			const expectedResult = { id: userId, first_name: 'Updated' };
+			const userData = { username: 'UpdatedUser' };
+			const expectedResult = { id: userId, username: 'UpdatedUser' };
 
 			(mockAuthProvider.updateProfile as any).mockResolvedValue(
 				expectedResult
@@ -178,7 +178,7 @@ describe('Auth', () => {
 				userId,
 				userData
 			);
-			expect(result.first_name).toBe('Updated');
+			expect(result.username).toBe('UpdatedUser');
 		});
 
 		it('should log the error and rethrow in case of failure', async () => {
@@ -186,7 +186,7 @@ describe('Auth', () => {
 			(mockAuthProvider.updateProfile as any).mockRejectedValue(error);
 
 			await expect(
-				auth.updateProfile('test-user-id', { first_name: 'Updated' })
+				auth.updateProfile('test-user-id', { username: 'UpdatedUser' })
 			).rejects.toThrow('Update failed');
 
 			expect(console.error).toHaveBeenCalledWith(

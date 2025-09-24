@@ -27,8 +27,6 @@ describe('SneakerFiltering', () => {
 			owner: {
 				id: 'user1',
 				username: 'sneakerhead',
-				first_name: 'John',
-				last_name: 'Doe',
 			},
 			wishlist_added_at: '2023-01-01',
 		},
@@ -52,8 +50,6 @@ describe('SneakerFiltering', () => {
 			owner: {
 				id: 'user2',
 				username: 'runner',
-				first_name: 'Jane',
-				last_name: 'Smith',
 			},
 			wishlist_added_at: '2023-01-02',
 		},
@@ -77,8 +73,6 @@ describe('SneakerFiltering', () => {
 			owner: {
 				id: 'user3',
 				username: 'collector',
-				first_name: 'Bob',
-				last_name: 'Wilson',
 			},
 			wishlist_added_at: '2023-01-03',
 		},

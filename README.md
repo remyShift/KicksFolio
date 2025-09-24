@@ -386,8 +386,6 @@ CREATE TABLE public.users (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   email varchar NOT NULL UNIQUE,
   username varchar NOT NULL UNIQUE,
-  first_name varchar NOT NULL,
-  last_name varchar NOT NULL,
   sneaker_size numeric NOT NULL CHECK (sneaker_size >= 7 AND sneaker_size <= 48),
   profile_picture varchar,
   instagram_username varchar,
@@ -396,7 +394,9 @@ CREATE TABLE public.users (
   reset_password_token varchar UNIQUE,
   reset_password_sent_at timestamp with time zone,
   created_at timestamp with time zone DEFAULT now(),
-  updated_at timestamp with time zone DEFAULT now()
+  updated_at timestamp with time zone DEFAULT now(),
+  following_additions_enabled boolean DEFAULT true,
+  new_followers_enabled boolean NOT NULL DEFAULT true
 );
 ```
 

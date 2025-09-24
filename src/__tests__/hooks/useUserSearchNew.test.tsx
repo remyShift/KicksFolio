@@ -100,8 +100,6 @@ describe('useUserSearch', () => {
 					{
 						id: '1',
 						username: 'testuser',
-						first_name: 'Test',
-						last_name: 'User',
 						profile_picture: null,
 						is_following: false,
 						followers_count: 10,

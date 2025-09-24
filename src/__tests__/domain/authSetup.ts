@@ -6,8 +6,6 @@ export const mockSupabaseUser: UserInfo = {
 	id: 'test-user-id',
 	email: 'test@example.com',
 	username: 'testuser',
-	first_name: 'Test',
-	last_name: 'User',
 	sneaker_size: 42,
 	profile_picture: 'test-avatar.jpg',
 	created_at: '2023-01-01T00:00:00Z',
@@ -40,8 +38,6 @@ export const mockSuccessfulResetPasswordResponse = {
 		id: '1',
 		email: 'test@example.com',
 		username: 'testuser',
-		first_name: 'John',
-		last_name: 'Doe',
 		profile_picture_url: '',
 		sneaker_size: '10',
 	},
@@ -62,7 +58,7 @@ export const createSuccessfulGetCurrentUser = () =>
 export const createSuccessfulUpdateProfile = () =>
 	vi.fn().mockResolvedValue({
 		...mockSupabaseUser,
-		first_name: 'Updated',
+		username: 'UpdatedUser',
 	});
 
 export const createSuccessfulDeleteUser = () => vi.fn().mockResolvedValue(true);

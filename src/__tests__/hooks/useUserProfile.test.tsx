@@ -98,8 +98,6 @@ describe('useUserProfile', () => {
 			const mockUserProfile: SearchUser = {
 				id: 'test-user-id',
 				username: 'testuser',
-				first_name: 'Test',
-				last_name: 'User',
 				profile_picture: null,
 				is_following: false,
 				followers_count: 10,
@@ -181,8 +179,6 @@ describe('useUserProfile', () => {
 			const mockUserProfile: SearchUser = {
 				id: 'test-user-id',
 				username: 'testuser',
-				first_name: 'Test',
-				last_name: 'User',
 				profile_picture: null,
 				is_following: false,
 				followers_count: 10,
@@ -223,8 +219,6 @@ describe('useUserProfile', () => {
 			const mockUserProfile: SearchUser = {
 				id: 'test-user-id',
 				username: 'testuser',
-				first_name: 'Test',
-				last_name: 'User',
 				profile_picture: null,
 				is_following: true,
 				followers_count: 10,
@@ -265,8 +259,6 @@ describe('useUserProfile', () => {
 			const mockUserProfile: SearchUser = {
 				id: 'test-user-id',
 				username: 'testuser',
-				first_name: 'Test',
-				last_name: 'User',
 				profile_picture: null,
 				is_following: false,
 				followers_count: 10,
@@ -322,8 +314,6 @@ describe('useUserProfile', () => {
 			const mockUserProfile: SearchUser = {
 				id: 'test-user-id',
 				username: 'testuser',
-				first_name: 'Test',
-				last_name: 'User',
 				profile_picture: null,
 				is_following: false,
 				followers_count: 10,

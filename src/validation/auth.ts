@@ -31,11 +31,6 @@ export const createSignUpStep1Schema = () => {
 
 export const createSignUpStep2Schema = () => {
 	return z.object({
-		username: z
-			.string()
-			.min(3, t('auth.form.username.error.size'))
-			.max(12, t('auth.form.username.error.size'))
-			.regex(/^\w+$/, t('auth.form.username.error.format')),
 		size: z
 			.string()
 			.min(1, t('auth.form.sneakerSize.error.required'))

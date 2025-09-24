@@ -268,8 +268,6 @@ describe('SignUpFirstPage', () => {
 				email: 'valid@email.com',
 				password: 'ValidPassword14*',
 				confirmPassword: 'ValidPassword14*',
-				first_name: '',
-				last_name: '',
 				profile_picture: '',
 				sneaker_size: 0,
 			});
