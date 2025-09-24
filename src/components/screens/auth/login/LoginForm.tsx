@@ -19,7 +19,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { createLoginSchema, LoginFormData } from '@/validation/auth';
 
 import AuthHeader from '../AuthHeader';
-import AuthMethodModal from '../welcome/AuthMethodModal';
+import AuthMethodModalWrapper from '../welcome/AuthMethodModalWrapper';
 
 export default function LoginForm() {
 	const scrollViewRef = useRef<ScrollView>(null);
@@ -231,7 +231,7 @@ export default function LoginForm() {
 										setIsSignupModalVisible(true)
 									}
 								>
-									<Text className="text-black font-open-sans text-center">
+									<Text className="text-gray-900 font-open-sans text-center">
 										{t('auth.links.dontHaveAccount')}{' '}
 										<Text className="text-primary font-open-sans-bold">
 											{t('auth.buttons.signUp')}
@@ -248,7 +248,7 @@ export default function LoginForm() {
 				</View>
 			</KeyboardAwareScrollView>
 
-			<AuthMethodModal
+			<AuthMethodModalWrapper
 				visible={isSignupModalVisible}
 				onClose={() => setIsSignupModalVisible(false)}
 				mode="signup"

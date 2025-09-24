@@ -1,5 +1,5 @@
 import { Control, Controller, FieldValues, Path } from 'react-hook-form';
-import { Alert, Pressable, View } from 'react-native';
+import { Alert, Pressable, Text, View } from 'react-native';
 
 import { Image } from 'expo-image';
 
@@ -12,6 +12,7 @@ interface FormImageInputProps<T extends FieldValues> {
 	control: Control<T>;
 	size?: number;
 	isRounded?: boolean;
+	label?: string;
 }
 
 const FormImageInput = <T extends FieldValues>({
@@ -19,6 +20,7 @@ const FormImageInput = <T extends FieldValues>({
 	control,
 	size = 128,
 	isRounded = true,
+	label,
 }: FormImageInputProps<T>) => {
 	const { showSimpleImagePicker } = useImageManager();
 
@@ -40,6 +42,9 @@ const FormImageInput = <T extends FieldValues>({
 			control={control}
 			render={({ field: { onChange, value } }) => (
 				<View className="items-center gap-4">
+					<Text className="font-open-sans-bold text-lg text-gray-900">
+						{label}
+					</Text>
 					<Pressable
 						onPress={() => handleImagePress(onChange)}
 						style={{

@@ -20,7 +20,7 @@ import {
 } from '@/validation/auth';
 
 import AuthHeader from '../AuthHeader';
-import AuthMethodModal from '../welcome/AuthMethodModal';
+import AuthMethodModalWrapper from '../welcome/AuthMethodModalWrapper';
 
 export default function SignUpFirstForm() {
 	const { t } = useTranslation();
@@ -196,7 +196,7 @@ export default function SignUpFirstForm() {
 							<Pressable
 								onPress={() => setIsLoginModalVisible(true)}
 							>
-								<Text className="text-black font-open-sans text-center">
+								<Text className="text-gray-900 font-open-sans text-center">
 									{t('auth.links.alreadyHaveAccount')}{' '}
 									<Text className="text-primary font-open-sans-bold">
 										{t('auth.buttons.login')}
@@ -208,7 +208,7 @@ export default function SignUpFirstForm() {
 				</View>
 			</KeyboardAwareScrollView>
 
-			<AuthMethodModal
+			<AuthMethodModalWrapper
 				visible={isLoginModalVisible}
 				onClose={() => setIsLoginModalVisible(false)}
 				mode="login"

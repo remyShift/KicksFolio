@@ -42,7 +42,7 @@ export default function GoogleSignInButton() {
 					: t('auth.oauth.google.signIn')
 			}
 			backgroundColor="bg-white"
-			textColor="text-black"
+			textColor="text-gray-900"
 			borderColor="border-blue-500"
 			isDisabled={isLoading}
 		/>
