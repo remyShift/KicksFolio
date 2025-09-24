@@ -51,16 +51,12 @@ export interface UpdateUserData {
 
 export interface OAuthUserData {
 	email: string;
-	first_name?: string;
-	last_name?: string;
 	profile_picture?: string;
 	provider: 'google' | 'apple';
 }
 
 export interface OAuthCompletionData {
 	username: string;
-	first_name: string;
-	last_name: string;
 	sneaker_size: number;
 	profile_picture?: string;
 }

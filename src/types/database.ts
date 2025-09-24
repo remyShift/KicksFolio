@@ -8,8 +8,6 @@ export interface DbUser {
 	email: string;
 	password_hash: string | null;
 	username: string;
-	first_name: string;
-	last_name: string;
 	sneaker_size: number;
 	profile_picture: string | null;
 	reset_password_token: string | null;

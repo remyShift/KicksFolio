@@ -75,14 +75,6 @@ export const createEditProfileSchema = () => {
 			.min(3, t('auth.form.username.error.size'))
 			.max(12, t('auth.form.username.error.size'))
 			.regex(/^\w+$/, t('auth.form.username.error.format')),
-		first_name: z
-			.string()
-			.min(2, t('auth.form.firstName.error.size'))
-			.regex(/^[a-zA-Z\s-]+$/, t('auth.form.firstName.error.format')),
-		last_name: z
-			.string()
-			.min(2, t('auth.form.lastName.error.size'))
-			.regex(/^[a-zA-Z\s-]+$/, t('auth.form.lastName.error.format')),
 		sneaker_size: z
 			.string()
 			.min(1, t('auth.form.sneakerSize.error.required'))
@@ -136,14 +128,6 @@ export const createOAuthCompletionSchema = () => {
 			.min(3, t('auth.form.username.error.size'))
 			.max(12, t('auth.form.username.error.size'))
 			.regex(/^\w+$/, t('auth.form.username.error.format')),
-		first_name: z
-			.string()
-			.min(2, t('auth.form.firstName.error.size'))
-			.regex(/^[a-zA-Z\s-]+$/, t('auth.form.firstName.error.format')),
-		last_name: z
-			.string()
-			.min(2, t('auth.form.lastName.error.size'))
-			.regex(/^[a-zA-Z\s-]+$/, t('auth.form.lastName.error.format')),
 		sneaker_size: z
 			.string()
 			.min(1, t('auth.form.sneakerSize.error.required'))

@@ -15,8 +15,9 @@ import { useFormController } from '@/hooks/form/useFormController';
 import useToast from '@/hooks/ui/useToast';
 import { useAuth } from '@/hooks/useAuth';
 import { useAuthValidation } from '@/hooks/useAuthValidation';
+import { useOAuthCleanup } from '@/hooks/useOAuthCleanup';
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';
-import { OAuthCompletionData } from '@/types/auth';
+import { isProfileComplete } from '@/utils/profileUtils';
 import {
 	createOAuthCompletionSchema,
 	OAuthCompletionFormData,
@@ -26,8 +27,6 @@ export default function OAuthProfileCompletionForm() {
 	const { t } = useTranslation();
 	const scrollViewRef = useRef<ScrollView>(null);
 	const usernameInputRef = useRef<TextInput>(null);
-	const firstNameInputRef = useRef<TextInput>(null);
-	const lastNameInputRef = useRef<TextInput>(null);
 	const sizeInputRef = useRef<TextInput>(null);
 
 	const params = useLocalSearchParams();
@@ -41,12 +40,31 @@ export default function OAuthProfileCompletionForm() {
 
 	const oauthData = {
 		email: (params.email as string) || user?.email || '',
-		first_name: (params.first_name as string) || user?.first_name || '',
-		last_name: (params.last_name as string) || user?.last_name || '',
 		profile_picture:
 			(params.profile_picture as string) || user?.profile_picture || '',
 		provider: (params.provider as 'google' | 'apple') || 'google',
 	};
+
+	const isOAuthUser =
+		oauthData.provider === 'apple' || oauthData.provider === 'google';
+
+	const { cancelCleanup } = useOAuthCleanup(isOAuthUser);
+
+	useEffect(() => {
+		const checkProfile = async () => {
+			if (user && isProfileComplete(user)) {
+				showSuccessToast(
+					t('auth.login.welcomeBack', { name: user.username }),
+					t('auth.login.gladToSeeYou')
+				);
+				router.replace('/(app)/(tabs)');
+			}
+		};
+
+		if (user) {
+			checkProfile();
+		}
+	}, [user]);
 
 	const {
 		control,
@@ -60,12 +78,10 @@ export default function OAuthProfileCompletionForm() {
 		schema: createOAuthCompletionSchema(),
 		defaultValues: {
 			username: '',
-			first_name: oauthData.first_name || '',
-			last_name: oauthData.last_name || '',
-			sneaker_size: currentUnit === 'EU' ? '42' : '9.5',
+			sneaker_size: '',
 			profile_picture: oauthData.profile_picture,
 		},
-		fieldNames: ['username', 'first_name', 'last_name', 'sneaker_size'],
+		fieldNames: ['username', 'sneaker_size'],
 		asyncValidation: {
 			username: checkUsernameExists,
 		},
@@ -77,11 +93,11 @@ export default function OAuthProfileCompletionForm() {
 			try {
 				await updateUser(user.id, {
 					username: data.username,
-					first_name: data.first_name,
-					last_name: data.last_name,
 					sneaker_size: Number(data.sneaker_size),
 					profile_picture: data.profile_picture,
 				});
+
+				cancelCleanup();
 
 				showSuccessToast(
 					t('auth.oauth.completion.success'),
@@ -134,7 +150,7 @@ export default function OAuthProfileCompletionForm() {
 						label={t('auth.form.username.label')}
 						placeholder={t('auth.form.username.placeholder')}
 						ref={usernameInputRef}
-						nextInputRef={firstNameInputRef}
+						nextInputRef={sizeInputRef}
 						autoComplete="username"
 						maxLength={16}
 						onFocus={() => handleFieldFocus('username')}
@@ -142,38 +158,6 @@ export default function OAuthProfileCompletionForm() {
 							await validateFieldOnBlur('username', value);
 						}}
 						error={getFieldErrorWrapper('username')}
-						getFieldError={getFieldErrorWrapper}
-					/>
-
-					<FormTextInput
-						name="first_name"
-						control={control}
-						label={t('auth.form.firstName.label')}
-						placeholder={t('auth.form.firstName.placeholder')}
-						ref={firstNameInputRef}
-						nextInputRef={lastNameInputRef}
-						autoComplete="name"
-						onFocus={() => handleFieldFocus('first_name')}
-						onBlur={async (value) => {
-							await validateFieldOnBlur('first_name', value);
-						}}
-						error={getFieldErrorWrapper('first_name')}
-						getFieldError={getFieldErrorWrapper}
-					/>
-
-					<FormTextInput
-						name="last_name"
-						control={control}
-						label={t('auth.form.lastName.label')}
-						placeholder={t('auth.form.lastName.placeholder')}
-						ref={lastNameInputRef}
-						nextInputRef={sizeInputRef}
-						autoComplete="name"
-						onFocus={() => handleFieldFocus('last_name')}
-						onBlur={async (value) => {
-							await validateFieldOnBlur('last_name', value);
-						}}
-						error={getFieldErrorWrapper('last_name')}
 						getFieldError={getFieldErrorWrapper}
 					/>
 

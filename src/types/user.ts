@@ -5,8 +5,6 @@ export type User = {
 	email: string;
 	password: string;
 	username: string;
-	first_name: string;
-	last_name: string;
 	sneaker_size: number;
 	created_at: string;
 	updated_at: string;
@@ -23,8 +21,6 @@ export type User = {
 export interface SearchUser {
 	id: string;
 	username: string;
-	first_name: string;
-	last_name: string;
 	profile_picture: string | null;
 	is_following: boolean;
 	followers_count: number;
@@ -44,8 +40,6 @@ export interface UserInfo {
 	id: string;
 	email: string;
 	username: string;
-	first_name: string;
-	last_name: string;
 	sneaker_size: number;
 	profile_picture?: string;
 	created_at: string;

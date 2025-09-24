@@ -4,7 +4,7 @@ import { Animated, Pressable } from 'react-native';
 
 import * as Haptics from 'expo-haptics';
 
-import AntDesign from '@expo/vector-icons/AntDesign';
+import Feather from '@expo/vector-icons/Feather';
 
 import useWishlist from '@/components/ui/modals/SneakersModal/hooks/useWishlist';
 import { Sneaker } from '@/types/sneaker';
@@ -96,9 +96,9 @@ export default function LoveButton({ sneaker }: { sneaker: Sneaker }) {
 				}}
 			>
 				{isWishlisted ? (
-					<AntDesign name="heart" size={18} color={primary} />
+					<Feather name="heart" size={18} color={primary} />
 				) : (
-					<AntDesign name="hearto" size={18} color="black" />
+					<Feather name="heart" size={18} color="black" />
 				)}
 			</Animated.View>
 		</Pressable>

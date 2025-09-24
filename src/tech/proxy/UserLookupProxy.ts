@@ -48,16 +48,12 @@ export class UserLookupProxy implements UserLookupInterface {
 				`
 				id,
 				username,
-				first_name,
-				last_name,
 				profile_picture,
 				instagram_username,
 				social_media_visibility
 			`
 			)
-			.or(
-				`username.ilike.${searchPattern},first_name.ilike.${searchPattern},last_name.ilike.${searchPattern}`
-			)
+			.or(`username.ilike.${searchPattern}`)
 			.neq('id', currentUserId)
 			.range(offset, offset + UserLookupProxy.PAGE_SIZE);
 
@@ -140,12 +136,9 @@ export class UserLookupProxy implements UserLookupInterface {
 					`
 					id,
 					username,
-					first_name,
-					last_name,
 					profile_picture,
 					social_media_visibility,
-					instagram_username,
-					social_media_visibility
+					instagram_username
 				`
 				)
 				.eq('id', userId)

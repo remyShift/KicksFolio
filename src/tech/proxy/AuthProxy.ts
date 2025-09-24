@@ -18,8 +18,6 @@ export class AuthProxy implements AuthProviderInterface {
 				emailRedirectTo: undefined,
 				data: {
 					username: userData.username,
-					first_name: userData.first_name,
-					last_name: userData.last_name,
 					sneaker_size: userData.sneaker_size,
 					profile_picture: userData.profile_picture,
 				},

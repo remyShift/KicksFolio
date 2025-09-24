@@ -27,7 +27,7 @@ export default function UserInfo({ searchUser }: UserInfoProps) {
 				)}
 			</View>
 			<Text className="font-open-sans text-sm text-gray-600">
-				{searchUser.first_name} {searchUser.last_name}
+				@{searchUser.username}
 			</Text>
 			<View className="flex-row gap-2">
 				<Text className="font-open-sans text-xs text-gray-500">

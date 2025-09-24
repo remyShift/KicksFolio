@@ -3,10 +3,7 @@ import { FollowerHandlerInterface } from '@/domain/FollowerHandler';
 import { DbUser } from '@/types/database';
 import { FollowingUser, SearchUser } from '@/types/user';
 
-type SelectedUserData = Pick<
-	DbUser,
-	'id' | 'username' | 'first_name' | 'last_name' | 'profile_picture'
->;
+type SelectedUserData = Pick<DbUser, 'id' | 'username' | 'profile_picture'>;
 
 interface FollowerData {
 	created_at: string;
@@ -82,7 +79,7 @@ export class FollowerProxy implements FollowerHandlerInterface {
 		const followingIds = followersResult.data.map((f) => f.following_id);
 		const usersResult = await supabase
 			.from('users')
-			.select('id, username, first_name, last_name, profile_picture')
+			.select('id, username, profile_picture')
 			.in('id', followingIds);
 
 		if (usersResult.error) {
@@ -126,13 +123,12 @@ export class FollowerProxy implements FollowerHandlerInterface {
 						return {
 							id: user.id,
 							username: user.username,
-							first_name: user.first_name,
-							last_name: user.last_name,
 							profile_picture: user.profile_picture,
 							is_following: true,
 							followers_count: Number(followersResult.count || 0),
 							following_count: Number(followingResult.count || 0),
 							followed_at: follow.created_at,
+							sneakers: [],
 						};
 					})
 					.catch((userError) => {
@@ -143,12 +139,11 @@ export class FollowerProxy implements FollowerHandlerInterface {
 						return {
 							id: user.id,
 							username: user.username,
-							first_name: user.first_name,
-							last_name: user.last_name,
 							profile_picture: user.profile_picture,
 							is_following: true,
 							followers_count: 0,
 							following_count: 0,
+							sneakers: [],
 							followed_at: follow.created_at,
 						};
 					});
@@ -169,8 +164,6 @@ export class FollowerProxy implements FollowerHandlerInterface {
                 users!followers_follower_id_fkey (
                     id,
                     username,
-                    first_name,
-                    last_name,
                     profile_picture
                 )
             `
@@ -221,8 +214,7 @@ export class FollowerProxy implements FollowerHandlerInterface {
 									return {
 										id: user.id,
 										username: user.username,
-										first_name: user.first_name,
-										last_name: user.last_name,
+
 										profile_picture: user.profile_picture,
 										is_following:
 											!isFollowingResult.error &&
@@ -244,8 +236,7 @@ export class FollowerProxy implements FollowerHandlerInterface {
 								return {
 									id: user.id,
 									username: user.username,
-									first_name: user.first_name,
-									last_name: user.last_name,
+
 									profile_picture: user.profile_picture,
 									is_following: false,
 									followers_count: 0,

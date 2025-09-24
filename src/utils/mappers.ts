@@ -94,8 +94,6 @@ export const mapDbUserToSearchUser = (
 	return {
 		id: dbUser.id,
 		username: dbUser.username,
-		first_name: dbUser.first_name,
-		last_name: dbUser.last_name,
 		profile_picture: dbUser.profile_picture,
 		is_following: isFollowing,
 		followers_count: followersCount,
@@ -112,8 +110,6 @@ export const mapDbUserToUser = (dbUser: DbUser): User => {
 		email: dbUser.email,
 		password: '',
 		username: dbUser.username,
-		first_name: dbUser.first_name,
-		last_name: dbUser.last_name,
 		sneaker_size: dbUser.sneaker_size,
 		created_at: dbUser.created_at,
 		updated_at: dbUser.updated_at,

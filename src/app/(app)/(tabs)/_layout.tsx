@@ -3,7 +3,6 @@ import { Alert } from 'react-native';
 
 import { Tabs } from 'expo-router';
 
-import AntDesign from '@expo/vector-icons/AntDesign';
 import Feather from '@expo/vector-icons/Feather';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
@@ -97,7 +96,7 @@ export default function TabLayout() {
 				options={{
 					title: t('navigation.navbar.wishlist'),
 					tabBarIcon: ({ color }) => (
-						<AntDesign name="hearto" size={25} color={color} />
+						<Feather name="heart" size={25} color={color} />
 					),
 				}}
 				listeners={{

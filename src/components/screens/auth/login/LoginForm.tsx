@@ -12,7 +12,6 @@ import FormPasswordInput from '@/components/ui/inputs/FormPasswordInput';
 import FormTextInput from '@/components/ui/inputs/FormTextInput';
 import PageLink from '@/components/ui/links/LoginPageLink';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
-import PageTitle from '@/components/ui/text/PageTitle';
 import { useSession } from '@/contexts/authContext';
 import { useFormController } from '@/hooks/form/useFormController';
 import useToast from '@/hooks/ui/useToast';
@@ -128,7 +127,7 @@ export default function LoginForm() {
 	useEffect(() => {
 		if (isLoggingIn && user && !isLoading) {
 			setIsLoggingIn(false);
-			const userName = user.first_name || user.username || '';
+			const userName = user.username || '';
 
 			const redirectSource = params.redirectSource as string;
 			if (redirectSource === 'share-collection') {

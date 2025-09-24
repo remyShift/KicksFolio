@@ -28,6 +28,7 @@ import { wishlistProxy } from '@/tech/proxy/WishlistProxy';
 import { AuthContextType, FollowingUserWithSneakers } from '@/types/auth';
 import { Sneaker } from '@/types/sneaker';
 import { User } from '@/types/user';
+import { extractOAuthData, isProfileComplete } from '@/utils/profileUtils';
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
@@ -159,7 +160,29 @@ export function SessionProvider({ children }: PropsWithChildren) {
 			data: { subscription },
 		} = supabase.auth.onAuthStateChange(async (event, session) => {
 			if (session?.user && !session.user.is_anonymous) {
-				await initializeUserData(session.user.id);
+				const isOAuthProvider =
+					session.user.app_metadata?.provider &&
+					['google', 'apple'].includes(
+						session.user.app_metadata.provider
+					);
+
+				if (isOAuthProvider && event === 'SIGNED_IN') {
+					const oauthData = extractOAuthData(session.user);
+					const queryParams = new URLSearchParams(
+						oauthData
+					).toString();
+
+					setTimeout(() => {
+						router.push(
+							`/(auth)/oauth-profile-completion?${queryParams}`
+						);
+					}, 100);
+
+					setIsLoading(false);
+					return;
+				} else {
+					await initializeUserData(session.user.id);
+				}
 			} else {
 				clearUserData();
 			}

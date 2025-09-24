@@ -303,20 +303,6 @@ export const useAuth = () => {
 		return auth
 			.signInWithApple()
 			.then((result) => {
-				setUser(result.user as any);
-
-				const oauthData = {
-					email: result.user.email || '',
-					first_name: result.user.user_metadata?.first_name || '',
-					last_name: result.user.user_metadata?.last_name || '',
-					profile_picture:
-						result.user.user_metadata?.avatar_url || '',
-					provider: 'apple',
-				};
-
-				const queryParams = new URLSearchParams(oauthData).toString();
-				router.push(`/oauth-profile-completion?${queryParams}`);
-
 				return result.user;
 			})
 			.catch((error) => {
@@ -331,20 +317,6 @@ export const useAuth = () => {
 		return auth
 			.signInWithGoogle()
 			.then((result) => {
-				setUser(result.user as any);
-
-				const oauthData = {
-					email: result.user.email || '',
-					first_name: result.user.user_metadata?.first_name || '',
-					last_name: result.user.user_metadata?.last_name || '',
-					profile_picture:
-						result.user.user_metadata?.avatar_url || '',
-					provider: 'google',
-				};
-
-				const queryParams = new URLSearchParams(oauthData).toString();
-				router.push(`/oauth-profile-completion?${queryParams}`);
-
 				return result.user;
 			})
 			.catch((error) => {

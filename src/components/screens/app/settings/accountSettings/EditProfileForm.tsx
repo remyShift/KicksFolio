@@ -30,14 +30,15 @@ export default function EditProfileForm() {
 	const { convertToCurrentUnit, getOriginalUnit } = useSizeConversion();
 	const scrollViewRef = useRef<ScrollView>(null);
 	const usernameInputRef = useRef<TextInput>(null);
-	const firstNameInputRef = useRef<TextInput>(null);
-	const lastNameInputRef = useRef<TextInput>(null);
 	const sizeInputRef = useRef<TextInput>(null);
 
-	const convertedSneakerSize = convertToCurrentUnit(
-		user!.sneaker_size,
-		getOriginalUnit(user!.sneaker_size)
-	);
+	const convertedSneakerSize =
+		user!.sneaker_size && user!.sneaker_size > 0
+			? convertToCurrentUnit(
+					user!.sneaker_size,
+					getOriginalUnit(user!.sneaker_size)
+				)
+			: null;
 	const { currentUnit } = useSizeUnitStore();
 
 	const {
@@ -51,11 +52,13 @@ export default function EditProfileForm() {
 	} = useFormController<EditProfileFormData>({
 		schema: createEditProfileSchema(),
 		defaultValues: {
-			username: user!.username,
-			first_name: user!.first_name,
-			last_name: user!.last_name,
-			sneaker_size: convertedSneakerSize!.toString(),
-			profile_picture: user!.profile_picture,
+			username: user!.username || '',
+			sneaker_size: convertedSneakerSize
+				? convertedSneakerSize.toString()
+				: currentUnit === 'EU'
+					? '42'
+					: '9.5',
+			profile_picture: user!.profile_picture || '',
 		},
 		isEditForm: true,
 		onSubmit: async (data) => {
@@ -122,7 +125,7 @@ export default function EditProfileForm() {
 						label={t('auth.form.username.label')}
 						placeholder={t('auth.form.username.placeholder')}
 						ref={usernameInputRef}
-						nextInputRef={firstNameInputRef}
+						nextInputRef={sizeInputRef}
 						autoComplete="username"
 						maxLength={16}
 						onFocus={() => handleFieldFocus('username')}
@@ -132,40 +135,6 @@ export default function EditProfileForm() {
 						error={getFieldErrorWrapper('username')}
 						getFieldError={getFieldErrorWrapper}
 						accessibilityLabel="Username*"
-					/>
-
-					<FormTextInput
-						name="first_name"
-						control={control}
-						label={t('auth.form.firstName.label')}
-						placeholder={t('auth.form.firstName.placeholder')}
-						ref={firstNameInputRef}
-						nextInputRef={lastNameInputRef}
-						autoComplete="name"
-						onFocus={() => handleFieldFocus('first_name')}
-						onBlur={async (value) => {
-							await validateFieldOnBlur('first_name', value);
-						}}
-						error={getFieldErrorWrapper('first_name')}
-						getFieldError={getFieldErrorWrapper}
-						accessibilityLabel="First Name*"
-					/>
-
-					<FormTextInput
-						name="last_name"
-						control={control}
-						label={t('auth.form.lastName.label')}
-						placeholder={t('auth.form.lastName.placeholder')}
-						ref={lastNameInputRef}
-						nextInputRef={sizeInputRef}
-						autoComplete="name"
-						onFocus={() => handleFieldFocus('last_name')}
-						onBlur={async (value) => {
-							await validateFieldOnBlur('last_name', value);
-						}}
-						error={getFieldErrorWrapper('last_name')}
-						getFieldError={getFieldErrorWrapper}
-						accessibilityLabel="Last Name*"
 					/>
 
 					<FormTextInput
