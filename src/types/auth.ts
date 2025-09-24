@@ -32,16 +32,12 @@ export interface UserData {
 	password: string;
 	confirmPassword: string;
 	username: string;
-	first_name: string;
-	last_name: string;
 	sneaker_size: number;
 	profile_picture?: string;
 }
 
 export interface UpdateUserData {
 	username?: string;
-	first_name?: string;
-	last_name?: string;
 	sneaker_size?: number;
 	profile_picture?: string;
 	email?: string;

@@ -31,16 +31,11 @@ export const createSignUpStep1Schema = () => {
 
 export const createSignUpStep2Schema = () => {
 	return z.object({
-		firstName: z
+		username: z
 			.string()
-			.min(2, t('auth.form.firstName.error.size'))
-			.regex(/^[a-zA-Z\s-]+$/, t('auth.form.firstName.error.format'))
-			.transform((val) => val.charAt(0).toUpperCase() + val.slice(1)),
-		lastName: z
-			.string()
-			.min(2, t('auth.form.lastName.error.size'))
-			.regex(/^[a-zA-Z\s-]+$/, t('auth.form.lastName.error.format'))
-			.transform((val) => val.charAt(0).toUpperCase() + val.slice(1)),
+			.min(3, t('auth.form.username.error.size'))
+			.max(12, t('auth.form.username.error.size'))
+			.regex(/^\w+$/, t('auth.form.username.error.format')),
 		size: z
 			.string()
 			.min(1, t('auth.form.sneakerSize.error.required'))
