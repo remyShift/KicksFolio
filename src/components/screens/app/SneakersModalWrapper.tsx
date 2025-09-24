@@ -9,13 +9,13 @@ import {
 import Animated, {
 	Extrapolation,
 	interpolate,
-	runOnJS,
 	useAnimatedStyle,
 	useSharedValue,
 	withSpring,
 	withTiming,
 } from 'react-native-reanimated';
 import Toast from 'react-native-toast-message';
+import { scheduleOnRN } from 'react-native-worklets';
 
 import { SneakersModal } from '@/components/ui/modals/SneakersModal';
 import { useModalStore } from '@/store/useModalStore';
@@ -71,7 +71,7 @@ export default function SneakersModalWrapper() {
 			ANIMATION_CONFIG.close,
 			(finished) => {
 				if (finished) {
-					runOnJS(closeModalActions)();
+					scheduleOnRN(closeModalActions);
 				}
 			}
 		);
@@ -92,7 +92,7 @@ export default function SneakersModalWrapper() {
 					ANIMATION_CONFIG.close,
 					(finished) => {
 						if (finished) {
-							runOnJS(closeModalActions)();
+							scheduleOnRN(closeModalActions);
 						}
 					}
 				);

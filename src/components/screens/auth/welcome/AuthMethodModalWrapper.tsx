@@ -9,17 +9,17 @@ import {
 import Animated, {
 	Extrapolation,
 	interpolate,
-	runOnJS,
 	useAnimatedStyle,
 	useSharedValue,
 	withSpring,
 	withTiming,
 } from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
 
 import AuthMethodModal from './AuthMethodModal';
 
 const { height: screenHeight } = Dimensions.get('window');
-const MODAL_HEIGHT = screenHeight * 0.6;
+const MODAL_HEIGHT = screenHeight * 0.4;
 
 const ANIMATION_CONFIG = {
 	open: {
@@ -74,7 +74,7 @@ export default function AuthMethodModalWrapper({
 			ANIMATION_CONFIG.close,
 			(finished) => {
 				if (finished) {
-					runOnJS(closeModalActions)();
+					scheduleOnRN(closeModalActions);
 				}
 			}
 		);
@@ -95,7 +95,7 @@ export default function AuthMethodModalWrapper({
 					ANIMATION_CONFIG.close,
 					(finished) => {
 						if (finished) {
-							runOnJS(closeModalActions)();
+							scheduleOnRN(closeModalActions);
 						}
 					}
 				);

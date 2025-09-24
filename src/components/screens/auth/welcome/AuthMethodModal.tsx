@@ -1,11 +1,10 @@
 import { useTranslation } from 'react-i18next';
-import { Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 
 import { router } from 'expo-router';
 
 import AppleSignInButton from '@/components/screens/auth/oauth/AppleSignInButton';
 import GoogleSignInButton from '@/components/screens/auth/oauth/GoogleSignInButton';
-import MainButton from '@/components/ui/buttons/MainButton';
 
 interface AuthMethodModalProps {
 	onClose: () => void;
@@ -55,12 +54,11 @@ export default function AuthMethodModal({
 				<View className="flex-1 h-px bg-gray-300" />
 			</View>
 
-			<MainButton
-				content={t('auth.buttons.continueWithEmail')}
-				backgroundColor="bg-gray-100"
-				textColor="text-gray-900"
-				onPressAction={handleEmailAuth}
-			/>
+			<Pressable className="" onPress={handleEmailAuth}>
+				<Text className="text-primary text-center font-open-sans-bold">
+					{t('auth.buttons.continueWithEmail')}
+				</Text>
+			</Pressable>
 		</View>
 	);
 }
