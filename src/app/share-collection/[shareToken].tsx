@@ -12,7 +12,7 @@ import SharedCollectionLoader from '@/components/screens/share-collection/Shared
 import { useModalNavigation } from '@/components/ui/modals/SneakersModal/hooks/useModalNavigation';
 import { useSession } from '@/contexts/authContext';
 import { shareHandler } from '@/d/Share';
-import { useAnonymousAuth } from '@/hooks/useAnonymousAuth';
+import { useAnonymousAuth } from '@/hooks/auth/useAnonymousAuth';
 import { SharedCollectionData } from '@/types/sharing';
 
 export default function SharedCollectionScreen() {

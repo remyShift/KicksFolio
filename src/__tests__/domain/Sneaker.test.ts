@@ -25,6 +25,7 @@ describe('SneakerHandler', () => {
 			delete: vi.fn(),
 			searchBySku: vi.fn(),
 			searchByBarcode: vi.fn(),
+			getReferenceImage: vi.fn(),
 		};
 
 		sneakerHandler = new SneakerHandler(mockSneakerProvider);

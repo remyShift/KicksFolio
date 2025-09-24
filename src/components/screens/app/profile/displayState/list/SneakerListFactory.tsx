@@ -167,7 +167,6 @@ function SneakerListFactory({
 				onEndReachedThreshold={0.5}
 				scrollEventThrottle={16}
 				removeClippedSubviews={true}
-				estimatedItemSize={ESTIMATED_ITEM_HEIGHT}
 				contentContainerStyle={{ paddingTop: 0, paddingBottom: 20 }}
 				showsVerticalScrollIndicator={false}
 				scrollEnabled={true}

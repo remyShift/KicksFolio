@@ -22,8 +22,6 @@ interface WishlistSneakerListProps {
 	onRefresh?: () => Promise<void>;
 }
 
-const ESTIMATED_ITEM_HEIGHT = 80;
-
 export default function WishlistSneakerList({
 	sneakers,
 	onSneakerPress,
@@ -109,7 +107,6 @@ export default function WishlistSneakerList({
 				renderItem={renderItem}
 				keyExtractor={keyExtractor}
 				ListHeaderComponent={ListHeaderComponent}
-				estimatedItemSize={ESTIMATED_ITEM_HEIGHT}
 				contentContainerStyle={{ paddingTop: 0, paddingBottom: 20 }}
 				showsVerticalScrollIndicator={false}
 				scrollEnabled={true}
