@@ -11,9 +11,9 @@ import FormPasswordInput from '@/components/ui/inputs/FormPasswordInput';
 import FormTextInput from '@/components/ui/inputs/FormTextInput';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import { useSignUpProps } from '@/contexts/signUpPropsContext';
+import { useAuth } from '@/hooks/auth/useAuth';
+import { useAuthValidation } from '@/hooks/auth/useAuthValidation';
 import { useFormController } from '@/hooks/form/useFormController';
-import { useAuth } from '@/hooks/useAuth';
-import { useAuthValidation } from '@/hooks/useAuthValidation';
 import {
 	createSignUpStep1Schema,
 	SignUpStep1FormData,

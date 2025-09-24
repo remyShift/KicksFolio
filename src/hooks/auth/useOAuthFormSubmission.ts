@@ -4,8 +4,8 @@ import { useTranslation } from 'react-i18next';
 
 import { router } from 'expo-router';
 
+import { useAuth } from '@/hooks/auth/useAuth';
 import useToast from '@/hooks/ui/useToast';
-import { useAuth } from '@/hooks/useAuth';
 import { useOAuthCleanup } from '@/hooks/useOAuthCleanup';
 import { OAuthCompletionFormData } from '@/validation/auth';
 

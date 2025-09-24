@@ -7,8 +7,8 @@ import NotificationSettings from '@/components/screens/app/settings/notification
 import SettingsHeader from '@/components/screens/app/settings/SettingsHeader';
 import SettingsMenuItem from '@/components/screens/app/settings/shared/SettingsMenuItem';
 import { useSession } from '@/contexts/authContext';
+import { useAuth } from '@/hooks/auth/useAuth';
 import useToast from '@/hooks/ui/useToast';
-import { useAuth } from '@/hooks/useAuth';
 
 export default function Settings() {
 	const { t } = useTranslation();

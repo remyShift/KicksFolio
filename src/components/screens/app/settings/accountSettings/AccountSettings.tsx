@@ -3,8 +3,8 @@ import { Alert, Linking } from 'react-native';
 
 import { router } from 'expo-router';
 
+import { useAuth } from '@/hooks/auth/useAuth';
 import useToast from '@/hooks/ui/useToast';
-import { useAuth } from '@/hooks/useAuth';
 
 import SettingsCategory from '../shared/SettingsCategory';
 import SettingsMenuItem from '../shared/SettingsMenuItem';

@@ -3,7 +3,7 @@ import { act } from 'react';
 import { renderHook } from '@testing-library/react';
 import { vi } from 'vitest';
 
-import { useAuthValidation } from '@/hooks/useAuthValidation';
+import { useAuthValidation } from '@/hooks/auth/useAuthValidation';
 import { UserData } from '@/types/auth';
 
 vi.mock('@/tech/proxy/AuthValidatorProxy', () => ({

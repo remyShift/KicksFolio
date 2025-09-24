@@ -11,9 +11,9 @@ import FormImageInput from '@/components/ui/inputs/FormImageInput';
 import FormTextInput from '@/components/ui/inputs/FormTextInput';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import { useSignUpProps } from '@/contexts/signUpPropsContext';
+import { useAuth } from '@/hooks/auth/useAuth';
 import { useFormController } from '@/hooks/form/useFormController';
 import useToast from '@/hooks/ui/useToast';
-import { useAuth } from '@/hooks/useAuth';
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';
 import {
 	createSignUpStep2Schema,

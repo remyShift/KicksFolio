@@ -13,7 +13,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 import { useSession } from '@/contexts/authContext';
 
-import { useAuth } from '../useAuth';
+import { useAuth } from '../auth/useAuth';
 
 interface FormControllerOptions<T extends FieldValues>
 	extends Omit<UseFormProps<T>, 'defaultValues'> {

@@ -5,8 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { router } from 'expo-router';
 
 import { useSession } from '@/contexts/authContext';
+import { useAuth } from '@/hooks/auth/useAuth';
 import useToast from '@/hooks/ui/useToast';
-import { useAuth } from '@/hooks/useAuth';
 import { isProfileComplete } from '@/utils/profileUtils';
 
 export const useOAuthProfileCompletion = () => {

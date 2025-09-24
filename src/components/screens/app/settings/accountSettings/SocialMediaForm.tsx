@@ -11,9 +11,9 @@ import MainButton from '@/components/ui/buttons/MainButton';
 import FormTextInput from '@/components/ui/inputs/FormTextInput';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import { useSession } from '@/contexts/authContext';
+import { useAuth } from '@/hooks/auth/useAuth';
 import { useFormController } from '@/hooks/form/useFormController';
 import useToast from '@/hooks/ui/useToast';
-import { useAuth } from '@/hooks/useAuth';
 import {
 	createSocialMediaSchema,
 	SocialMediaFormData,

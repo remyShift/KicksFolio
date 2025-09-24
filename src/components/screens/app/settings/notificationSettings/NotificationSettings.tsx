@@ -5,9 +5,9 @@ import { AppState, Linking, Platform } from 'react-native';
 
 import Constants from 'expo-constants';
 
+import { useNotificationSettings } from '@/hooks/notifications/useNotificationSettings';
+import { usePushNotifications } from '@/hooks/notifications/usePushNotifications';
 import useToast from '@/hooks/ui/useToast';
-import { useNotificationSettings } from '@/hooks/useNotificationSettings';
-import { usePushNotifications } from '@/hooks/usePushNotifications';
 
 import SettingsCategory from '../shared/SettingsCategory';
 import SettingsMenuItem from '../shared/SettingsMenuItem';

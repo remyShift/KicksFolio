@@ -10,10 +10,10 @@ import { RelativePathString } from 'expo-router';
 import MainButton from '@/components/ui/buttons/MainButton';
 import FormTextInput from '@/components/ui/inputs/FormTextInput';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
+import { useAuth } from '@/hooks/auth/useAuth';
+import { useAuthValidation } from '@/hooks/auth/useAuthValidation';
 import { useFormController } from '@/hooks/form/useFormController';
 import useToast from '@/hooks/ui/useToast';
-import { useAuth } from '@/hooks/useAuth';
-import { useAuthValidation } from '@/hooks/useAuthValidation';
 import {
 	createForgotPasswordSchema,
 	ForgotPasswordFormData,

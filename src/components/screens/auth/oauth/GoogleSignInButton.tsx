@@ -5,8 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 
 import OAuthButton from '@/components/ui/buttons/OAuthButton';
+import { useAuth } from '@/hooks/auth/useAuth';
 import useToast from '@/hooks/ui/useToast';
-import { useAuth } from '@/hooks/useAuth';
 
 export default function GoogleSignInButton() {
 	const { t } = useTranslation();

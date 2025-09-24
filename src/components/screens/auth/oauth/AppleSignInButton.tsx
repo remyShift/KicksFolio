@@ -7,8 +7,8 @@ import { Ionicons } from '@expo/vector-icons';
 
 import OAuthButton from '@/components/ui/buttons/OAuthButton';
 import { useSession } from '@/contexts/authContext';
+import { useAuth } from '@/hooks/auth/useAuth';
 import useToast from '@/hooks/ui/useToast';
-import { useAuth } from '@/hooks/useAuth';
 
 export default function AppleSignInButton() {
 	const { t } = useTranslation();
