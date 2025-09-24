@@ -168,7 +168,6 @@ export const useAuth = () => {
 		return auth
 			.signOut()
 			.then(() => {
-				router.replace('/welcome');
 				return true;
 			})
 			.catch((error) => {
@@ -279,7 +278,6 @@ export const useAuth = () => {
 			})
 			.then(() => {
 				clearUserData();
-				router.replace('/welcome');
 				return true;
 			})
 			.catch((error: unknown) => {
