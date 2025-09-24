@@ -20,6 +20,7 @@ export const useAuth = () => {
 	const { t } = useTranslation();
 
 	const auth = new Auth(authProxy);
+
 	const imageHandler = new ImageStorage(imageStorageProxy);
 
 	const login = async (email: string, password: string) => {
@@ -167,7 +168,7 @@ export const useAuth = () => {
 		return auth
 			.signOut()
 			.then(() => {
-				router.replace('/login');
+				router.replace('/welcome');
 				return true;
 			})
 			.catch((error) => {
@@ -278,7 +279,7 @@ export const useAuth = () => {
 			})
 			.then(() => {
 				clearUserData();
-				router.replace('/login');
+				router.replace('/welcome');
 				return true;
 			})
 			.catch((error: unknown) => {

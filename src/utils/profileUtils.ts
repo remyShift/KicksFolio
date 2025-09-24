@@ -3,6 +3,13 @@ import { User } from '@/types/user';
 export const isProfileComplete = (user: User | any): boolean => {
 	if (!user) return false;
 
+	const hasDefaultUsername =
+		user.username && user.username.startsWith('user_');
+
+	if (hasDefaultUsername) {
+		return false;
+	}
+
 	return !!(user.username && user.sneaker_size && user.sneaker_size > 0);
 };
 

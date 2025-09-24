@@ -167,6 +167,18 @@ export function SessionProvider({ children }: PropsWithChildren) {
 					);
 
 				if (isOAuthProvider && event === 'SIGNED_IN') {
+					try {
+						const existingUser = await auth.getCurrentUser();
+
+						if (isProfileComplete(existingUser)) {
+							await initializeUserData(session.user.id);
+							setIsLoading(false);
+							return;
+						}
+					} catch (error) {
+						console.error('Error getting current user:', error);
+					}
+
 					const oauthData = extractOAuthData(session.user);
 					const queryParams = new URLSearchParams(
 						oauthData
@@ -345,16 +357,12 @@ export function SessionProvider({ children }: PropsWithChildren) {
 							initializeNotifications(),
 						]);
 					} else if (attempt < maxRetries) {
-						console.log(
-							`User data not ready, retrying... (attempt ${attempt + 1})`
-						);
 						return new Promise((resolve) => {
 							setTimeout(() => {
 								resolve(getUserWithRetries(attempt + 1));
 							}, retryDelay);
 						});
 					} else {
-						console.warn('User not found after multiple attempts');
 						return Promise.resolve();
 					}
 				})

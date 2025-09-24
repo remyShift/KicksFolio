@@ -47,9 +47,6 @@ export class AuthProxy implements AuthProviderInterface {
 				}
 
 				if (attempt < maxRetries - 1) {
-					console.log(
-						`User not ready, retrying... (attempt ${attempt + 1})`
-					);
 					await new Promise((resolve) =>
 						setTimeout(resolve, retryDelay)
 					);
@@ -58,9 +55,6 @@ export class AuthProxy implements AuthProviderInterface {
 				}
 			} catch (error) {
 				if (attempt < maxRetries - 1) {
-					console.log(
-						`User not ready, retrying... (attempt ${attempt + 1})`
-					);
 					await new Promise((resolve) =>
 						setTimeout(resolve, retryDelay)
 					);
@@ -138,9 +132,6 @@ export class AuthProxy implements AuthProviderInterface {
 				}
 
 				if (attempt < maxRetries - 1) {
-					console.log(
-						`User data not ready, retrying... (attempt ${attempt + 1})`
-					);
 					await new Promise((resolve) =>
 						setTimeout(resolve, retryDelay)
 					);
@@ -149,9 +140,6 @@ export class AuthProxy implements AuthProviderInterface {
 				}
 			} catch (error) {
 				if (attempt < maxRetries - 1) {
-					console.log(
-						`User data not ready, retrying... (attempt ${attempt + 1})`
-					);
 					await new Promise((resolve) =>
 						setTimeout(resolve, retryDelay)
 					);
@@ -203,7 +191,10 @@ export class AuthProxy implements AuthProviderInterface {
 			.select()
 			.single();
 
-		if (error) throw error;
+		if (error) {
+			throw error;
+		}
+
 		return {
 			...data,
 			profile_picture_url: data.profile_picture,

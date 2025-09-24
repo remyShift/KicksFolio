@@ -1,22 +1,20 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { ScrollView, TextInput, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
-import { RelativePathString, router, useLocalSearchParams } from 'expo-router';
+import { RelativePathString, useLocalSearchParams } from 'expo-router';
 
 import MainButton from '@/components/ui/buttons/MainButton';
+import LoadingIndicator from '@/components/ui/indicators/LoadingIndicator';
 import FormTextInput from '@/components/ui/inputs/FormTextInput';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
-import { useSession } from '@/contexts/authContext';
 import { useFormController } from '@/hooks/form/useFormController';
-import useToast from '@/hooks/ui/useToast';
-import { useAuth } from '@/hooks/useAuth';
 import { useAuthValidation } from '@/hooks/useAuthValidation';
-import { useOAuthCleanup } from '@/hooks/useOAuthCleanup';
+import { useOAuthFormSubmission } from '@/hooks/useOAuthFormSubmission';
+import { useOAuthProfileCompletion } from '@/hooks/useOAuthProfileCompletion';
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';
-import { isProfileComplete } from '@/utils/profileUtils';
 import {
 	createOAuthCompletionSchema,
 	OAuthCompletionFormData,
@@ -31,13 +29,11 @@ export default function OAuthProfileCompletionForm() {
 	const sizeInputRef = useRef<TextInput>(null);
 
 	const params = useLocalSearchParams();
-	const { showSuccessToast, showErrorToast } = useToast();
-	const { user } = useSession();
-	const { updateUser } = useAuth();
 	const { checkUsernameExists } = useAuthValidation();
 	const { currentUnit } = useSizeUnitStore();
 
-	const [isCompleting, setIsCompleting] = useState(false);
+	// Hooks personnalisés pour séparer les responsabilités
+	const { isUserLoading, user } = useOAuthProfileCompletion();
 
 	const oauthData = {
 		email: (params.email as string) || user?.email || '',
@@ -49,23 +45,10 @@ export default function OAuthProfileCompletionForm() {
 	const isOAuthUser =
 		oauthData.provider === 'apple' || oauthData.provider === 'google';
 
-	const { cancelCleanup } = useOAuthCleanup(isOAuthUser);
-
-	useEffect(() => {
-		const checkProfile = async () => {
-			if (user && isProfileComplete(user)) {
-				showSuccessToast(
-					t('auth.login.welcomeBack', { name: user.username }),
-					t('auth.login.gladToSeeYou')
-				);
-				router.replace('/(app)/(tabs)');
-			}
-		};
-
-		if (user) {
-			checkProfile();
-		}
-	}, [user]);
+	const { isCompleting, handleSubmit } = useOAuthFormSubmission({
+		user,
+		isOAuthUser,
+	});
 
 	const {
 		control,
@@ -86,37 +69,18 @@ export default function OAuthProfileCompletionForm() {
 		asyncValidation: {
 			username: checkUsernameExists,
 		},
-		onSubmit: async (data) => {
-			if (!user?.id) return;
-
-			setIsCompleting(true);
-
-			try {
-				await updateUser(user.id, {
-					username: data.username,
-					sneaker_size: Number(data.sneaker_size),
-					profile_picture: data.profile_picture,
-				});
-
-				cancelCleanup();
-
-				showSuccessToast(
-					t('auth.oauth.completion.success'),
-					t('auth.oauth.completion.successDescription')
-				);
-
-				router.replace('/(app)/(tabs)');
-			} catch (error: any) {
-				console.error('Error completing OAuth profile:', error);
-				showErrorToast(
-					t('auth.oauth.completion.error'),
-					error.message || t('auth.oauth.completion.errorDescription')
-				);
-			} finally {
-				setIsCompleting(false);
-			}
-		},
+		onSubmit: handleSubmit,
 	});
+
+	if (isUserLoading) {
+		return (
+			<View className="flex-1 bg-background">
+				<LoadingIndicator
+					message={t('auth.oauth.completion.loading')}
+				/>
+			</View>
+		);
+	}
 
 	return (
 		<KeyboardAwareScrollView

@@ -19,7 +19,7 @@ export default function AuthLayout() {
 				<Stack.Screen
 					name="login"
 					options={{
-						animationTypeForReplace: 'pop',
+						animationTypeForReplace: 'push',
 					}}
 				/>
 				<Stack.Screen
