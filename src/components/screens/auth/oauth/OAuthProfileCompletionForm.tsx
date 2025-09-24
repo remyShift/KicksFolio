@@ -11,9 +11,9 @@ import LoadingIndicator from '@/components/ui/indicators/LoadingIndicator';
 import FormTextInput from '@/components/ui/inputs/FormTextInput';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import { useAuthValidation } from '@/hooks/auth/useAuthValidation';
+import { useOAuthFormSubmission } from '@/hooks/auth/useOAuthFormSubmission';
+import { useOAuthProfileCompletion } from '@/hooks/auth/useOAuthProfileCompletion';
 import { useFormController } from '@/hooks/form/useFormController';
-import { useOAuthFormSubmission } from '@/hooks/useOAuthFormSubmission';
-import { useOAuthProfileCompletion } from '@/hooks/useOAuthProfileCompletion';
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';
 import {
 	createOAuthCompletionSchema,

@@ -5,8 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { router } from 'expo-router';
 
 import { useAuth } from '@/hooks/auth/useAuth';
+import { useOAuthCleanup } from '@/hooks/auth/useOAuthCleanup';
 import useToast from '@/hooks/ui/useToast';
-import { useOAuthCleanup } from '@/hooks/useOAuthCleanup';
 import { OAuthCompletionFormData } from '@/validation/auth';
 
 interface UseOAuthFormSubmissionProps {
