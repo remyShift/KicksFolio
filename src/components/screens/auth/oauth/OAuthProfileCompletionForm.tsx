@@ -4,12 +4,11 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, TextInput, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
-import { router, useLocalSearchParams } from 'expo-router';
+import { RelativePathString, router, useLocalSearchParams } from 'expo-router';
 
 import MainButton from '@/components/ui/buttons/MainButton';
 import FormTextInput from '@/components/ui/inputs/FormTextInput';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
-import PageTitle from '@/components/ui/text/PageTitle';
 import { useSession } from '@/contexts/authContext';
 import { useFormController } from '@/hooks/form/useFormController';
 import useToast from '@/hooks/ui/useToast';
@@ -22,6 +21,8 @@ import {
 	createOAuthCompletionSchema,
 	OAuthCompletionFormData,
 } from '@/validation/auth';
+
+import AuthHeader from '../AuthHeader';
 
 export default function OAuthProfileCompletionForm() {
 	const { t } = useTranslation();
@@ -120,17 +121,23 @@ export default function OAuthProfileCompletionForm() {
 	return (
 		<KeyboardAwareScrollView
 			ref={scrollViewRef}
-			className="flex-1 bg-background"
+			className="flex-1 bg-background pt-20"
 			keyboardShouldPersistTaps="handled"
+			showsVerticalScrollIndicator={false}
+			scrollEnabled={false}
 			contentContainerStyle={{
 				flexGrow: 1,
 				padding: 8,
 			}}
 			bottomOffset={10}
 		>
-			<View className="flex-1 items-center p-4 gap-12 mt-20">
-				<PageTitle content={t('auth.oauth.completion.title')} />
-
+			<AuthHeader
+				page={{
+					title: t('auth.oauth.completion.title'),
+					routerBack: '/(auth)/welcome' as RelativePathString,
+				}}
+			/>
+			<View className="flex-1 items-center justify-center p-4 gap-12">
 				<View className="flex justify-center items-center gap-8 w-full mt-10 px-12">
 					<View
 						className="w-full absolute"
@@ -181,8 +188,8 @@ export default function OAuthProfileCompletionForm() {
 						<MainButton
 							content={
 								isCompleting
-									? t('auth.oauth.completion.completing')
-									: t('auth.oauth.completion.complete')
+									? t('auth.buttons.signUp')
+									: t('auth.buttons.signUp')
 							}
 							backgroundColor={
 								isSubmitDisabled || isCompleting
