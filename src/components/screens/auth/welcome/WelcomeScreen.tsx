@@ -2,9 +2,9 @@ import { useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { Text, View } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import MainButton from '@/components/ui/buttons/MainButton';
+import WelcomeImageCarousel from '@/components/ui/images/WelcomeImageCarousel';
 import PageTitle from '@/components/ui/text/PageTitle';
 
 import AuthMethodModalWrapper from './AuthMethodModalWrapper';
@@ -31,12 +31,14 @@ export default function WelcomeScreen() {
 
 	return (
 		<View className="flex-1 bg-background">
-			<View className="items-center gap-4 mt-20">
+			<View className="items-center gap-8 mt-20">
 				<PageTitle content={t('auth.titles.welcome')} />
-				<Text className="text-gray-900 font-open-sans-bold text-lg text-center">
+				<Text className="text-gray-900 font-open-sans-bold text-lg text-center px-12">
 					{t('auth.welcome.subtitle')}
 				</Text>
 			</View>
+
+			<WelcomeImageCarousel />
 
 			<View className="flex-1 justify-end items-center gap-4 pb-10">
 				<MainButton
