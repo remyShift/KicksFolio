@@ -47,8 +47,7 @@
 		"sizeUnit": "Affichage des tailles",
 		"currency": "Devise",
 		"reportBug": "Signaler un bug",
-		"notifications": "Notifications",
-		"connectedAccounts": "Comptes connectés"
+		"notifications": "Notifications"
 	},
 	"sizeUnit": {
 		"title": "Affichage des tailles modifié.",
@@ -148,34 +147,5 @@
 		"systemEnabled": "Activées",
 		"systemDisabled": "Désactivées",
 		"openAppSettings": "Ouvrir les paramètres de l'app"
-	},
-	"oauth": {
-		"apple": {
-			"link": "Lier le compte Apple",
-			"linked": "Compte Apple lié",
-			"linkedDescription": "Votre compte Apple est maintenant connecté à votre compte KicksFolio.",
-			"linkError": "Liaison Apple échouée",
-			"linkErrorDescription": "Une erreur est survenue lors de la liaison de votre compte Apple."
-		},
-		"google": {
-			"link": "Lier le compte Google",
-			"linked": "Compte Google lié",
-			"linkedDescription": "Votre compte Google est maintenant connecté à votre compte KicksFolio.",
-			"linkError": "Liaison Google échouée",
-			"linkErrorDescription": "Une erreur est survenue lors de la liaison de votre compte Google."
-		},
-		"comingSoon": {
-			"title": "Bientôt disponible",
-			"description": "La liaison de compte {{provider}} sera disponible dans une prochaine mise à jour. Restez connectés !"
-		},
-		"unlink": {
-			"title": "Délier le compte",
-			"description": "Êtes-vous sûr de vouloir délier votre compte {{provider}} ? Vous ne pourrez plus vous connecter avec {{provider}}.",
-			"confirm": "Délier"
-		},
-		"unlinked": "Compte délié",
-		"unlinkedDescription": "Votre compte {{provider}} a été délié avec succès.",
-		"unlinkError": "Déliaison échouée",
-		"unlinkErrorDescription": "Une erreur est survenue lors de la déliaison de votre compte."
 	}
 } 

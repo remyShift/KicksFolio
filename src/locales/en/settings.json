@@ -47,8 +47,7 @@
 		"sizeUnit": "Size display",
 		"currency": "Currency",
 		"reportBug": "Report a bug",
-		"notifications": "Notifications",
-		"connectedAccounts": "Connected Accounts"
+		"notifications": "Notifications"
 	},
 	"sizeUnit": {
 		"title": "Size display changed.",
@@ -147,34 +146,5 @@
 		"systemEnabled": "Enabled",
 		"systemDisabled": "Disabled",
 		"openAppSettings": "Open app settings"
-	},
-	"oauth": {
-		"apple": {
-			"link": "Link Apple Account",
-			"linked": "Apple Account Linked",
-			"linkedDescription": "Your Apple account is now connected to your KicksFolio account.",
-			"linkError": "Apple Link Failed",
-			"linkErrorDescription": "An error occurred while linking your Apple account."
-		},
-		"google": {
-			"link": "Link Google Account",
-			"linked": "Google Account Linked",
-			"linkedDescription": "Your Google account is now connected to your KicksFolio account.",
-			"linkError": "Google Link Failed",
-			"linkErrorDescription": "An error occurred while linking your Google account."
-		},
-		"comingSoon": {
-			"title": "Coming Soon",
-			"description": "{{provider}} account linking will be available in a future update. Stay tuned!"
-		},
-		"unlink": {
-			"title": "Unlink Account",
-			"description": "Are you sure you want to unlink your {{provider}} account? You will no longer be able to sign in with {{provider}}.",
-			"confirm": "Unlink"
-		},
-		"unlinked": "Account Unlinked",
-		"unlinkedDescription": "Your {{provider}} account has been unlinked successfully.",
-		"unlinkError": "Unlink Failed",
-		"unlinkErrorDescription": "An error occurred while unlinking your account."
 	}
 } 

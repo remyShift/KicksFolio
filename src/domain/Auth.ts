@@ -54,14 +54,6 @@ export interface AuthProviderInterface {
 	signInWithApple: () => Promise<OAuthResult>;
 
 	signInWithGoogle: () => Promise<OAuthResult>;
-
-	linkWithApple: () => Promise<void>;
-
-	linkWithGoogle: () => Promise<void>;
-
-	unlinkProvider: (provider: 'google' | 'apple') => Promise<void>;
-
-	getLinkedProviders: () => Promise<string[]>;
 }
 
 export class Auth {
@@ -225,57 +217,6 @@ export class Auth {
 			.catch((error) => {
 				console.error(
 					'❌ Auth.signInWithGoogle: Error occurred:',
-					error
-				);
-				throw error;
-			});
-	};
-
-	linkWithApple = async () => {
-		return this.authProvider
-			.linkWithApple()
-			.then(() => {
-				return true;
-			})
-			.catch((error) => {
-				console.error('❌ Auth.linkWithApple: Error occurred:', error);
-				throw error;
-			});
-	};
-
-	linkWithGoogle = async () => {
-		return this.authProvider
-			.linkWithGoogle()
-			.then(() => {
-				return true;
-			})
-			.catch((error) => {
-				console.error('❌ Auth.linkWithGoogle: Error occurred:', error);
-				throw error;
-			});
-	};
-
-	unlinkProvider = async (provider: 'google' | 'apple') => {
-		return this.authProvider
-			.unlinkProvider(provider)
-			.then(() => {
-				return true;
-			})
-			.catch((error) => {
-				console.error('❌ Auth.unlinkProvider: Error occurred:', error);
-				throw error;
-			});
-	};
-
-	getLinkedProviders = async () => {
-		return this.authProvider
-			.getLinkedProviders()
-			.then((providers) => {
-				return providers;
-			})
-			.catch((error) => {
-				console.error(
-					'❌ Auth.getLinkedProviders: Error occurred:',
 					error
 				);
 				throw error;
