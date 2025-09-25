@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Text, View } from 'react-native';
 
 import MainButton from '@/components/ui/buttons/MainButton';
-import WelcomeImageCarousel from '@/components/ui/images/WelcomeImageCarousel';
+import WelcomeImageCarousel from '@/components/ui/images/welcomeImageCaroussel/WelcomeImageCarousel';
 import PageTitle from '@/components/ui/text/PageTitle';
 
 import AuthMethodModalWrapper from './AuthMethodModalWrapper';

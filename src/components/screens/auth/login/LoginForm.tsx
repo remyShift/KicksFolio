@@ -158,6 +158,7 @@ export default function LoginForm() {
 				ref={scrollViewRef}
 				className="flex-1 bg-background"
 				keyboardShouldPersistTaps="handled"
+				scrollEnabled={false}
 				contentContainerStyle={{
 					flexGrow: 1,
 					padding: 8,
@@ -238,6 +239,7 @@ export default function LoginForm() {
 										</Text>
 									</Text>
 								</Pressable>
+
 								<PageLink
 									href="/forgot-password"
 									linkText={t('auth.links.forgotPassword')}

@@ -32,7 +32,6 @@ export default function OAuthProfileCompletionForm() {
 	const { checkUsernameExists } = useAuthValidation();
 	const { currentUnit } = useSizeUnitStore();
 
-	// Hooks personnalisés pour séparer les responsabilités
 	const { isUserLoading, user } = useOAuthProfileCompletion();
 
 	const oauthData = {

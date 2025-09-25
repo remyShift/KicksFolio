@@ -60,6 +60,7 @@ export default function ForgotPasswordForm() {
 			ref={scrollViewRef}
 			className="flex-1 bg-background"
 			keyboardShouldPersistTaps="handled"
+			scrollEnabled={false}
 			contentContainerStyle={{
 				flexGrow: 1,
 				padding: 8,
