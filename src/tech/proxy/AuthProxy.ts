@@ -401,21 +401,157 @@ export class AuthProxy implements AuthProviderInterface {
 	}
 
 	async linkWithApple(): Promise<void> {
-		throw new Error(
-			'Account linking will be available in a future update. Please sign in with Apple next time to link your accounts.'
-		);
+		if (Platform.OS !== 'ios') {
+			throw new Error('Apple authentication is only available on iOS');
+		}
+
+		try {
+			const isAvailable = await AppleAuthentication.isAvailableAsync();
+			if (!isAvailable) {
+				throw new Error(
+					'Apple authentication is not available on this device'
+				);
+			}
+
+			const credential = await AppleAuthentication.signInAsync({
+				requestedScopes: [
+					AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+					AppleAuthentication.AppleAuthenticationScope.EMAIL,
+				],
+			});
+
+			if (!credential.identityToken) {
+				throw new Error('No identity token received from Apple');
+			}
+
+			const response = await fetch(
+				`${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/link-oauth-account`,
+				{
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
+					},
+					body: JSON.stringify({
+						provider: 'apple',
+						token: credential.identityToken,
+					}),
+				}
+			);
+
+			if (!response.ok) {
+				const error = await response.json();
+				throw new Error(
+					error.message || 'Failed to link Apple account'
+				);
+			}
+		} catch (error: any) {
+			if (error.code === 'ERR_REQUEST_CANCELED') {
+				throw new Error('Authentication was canceled by user');
+			}
+			throw error;
+		}
 	}
 
 	async linkWithGoogle(): Promise<void> {
-		throw new Error(
-			'Account linking will be available in a future update. Please sign in with Google next time to link your accounts.'
-		);
+		try {
+			WebBrowser.maybeCompleteAuthSession();
+
+			const redirectUri = 'kicksfolio://auth';
+			const authUrl = `${process.env.EXPO_PUBLIC_SUPABASE_URL}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent(redirectUri)}`;
+
+			const result = await WebBrowser.openAuthSessionAsync(
+				authUrl,
+				redirectUri
+			);
+
+			if (result.type !== 'success') {
+				if (result.type === 'cancel') {
+					throw new Error('Authentication was canceled by user');
+				}
+				throw new Error(
+					`Authentication failed with type: ${result.type}`
+				);
+			}
+
+			const url = result.url;
+
+			let params: URLSearchParams;
+			if (url.includes('#')) {
+				const fragment = url.split('#')[1];
+				params = new URLSearchParams(fragment);
+			} else if (url.includes('?')) {
+				const query = url.split('?')[1];
+				params = new URLSearchParams(query);
+			} else {
+				throw new Error('No authentication data received');
+			}
+
+			const accessToken = params.get('access_token');
+			if (!accessToken) {
+				const error = params.get('error');
+				const errorDescription = params.get('error_description');
+
+				if (error) {
+					throw new Error(
+						`OAuth Error: ${error} - ${errorDescription || 'Unknown error'}`
+					);
+				}
+
+				throw new Error('Failed to get authentication token');
+			}
+
+			const response = await fetch(
+				`${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/link-oauth-account`,
+				{
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
+					},
+					body: JSON.stringify({
+						provider: 'google',
+						token: accessToken,
+					}),
+				}
+			);
+
+			if (!response.ok) {
+				const error = await response.json();
+				throw new Error(
+					error.message || 'Failed to link Google account'
+				);
+			}
+		} catch (error: any) {
+			if (
+				error.message?.includes('canceled') ||
+				error.code === 'UserCancel'
+			) {
+				throw new Error('Authentication was canceled by user');
+			}
+			throw error;
+		}
 	}
 
 	async unlinkProvider(provider: 'google' | 'apple'): Promise<void> {
-		throw new Error(
-			'Account unlinking will be available in a future update.'
+		const response = await fetch(
+			`${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/unlink-oauth-account`,
+			{
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
+				},
+				body: JSON.stringify({
+					provider,
+				}),
+			}
 		);
+
+		if (!response.ok) {
+			const error = await response.json();
+			throw new Error(error.message || 'Failed to unlink account');
+		}
 	}
 
 	async getLinkedProviders(): Promise<string[]> {
@@ -427,7 +563,17 @@ export class AuthProxy implements AuthProviderInterface {
 		if (error) throw error;
 		if (!user) throw new Error('No user found');
 
-		return user.app_metadata?.providers || [];
+		const { data: linkedProviders, error: fetchError } = await supabase
+			.from('user_oauth_links')
+			.select('provider')
+			.eq('user_id', user.id);
+
+		if (fetchError) {
+			console.error('Error fetching linked providers:', fetchError);
+			return [];
+		}
+
+		return linkedProviders?.map((link) => link.provider) || [];
 	}
 }
 

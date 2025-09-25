@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { Alert, Platform, Text, View } from 'react-native';
+import { Alert, Platform } from 'react-native';
 
 import { useAuth } from '@/hooks/auth/useAuth';
 import useToast from '@/hooks/ui/useToast';
@@ -12,10 +12,16 @@ import Spacer from '../shared/Spacer';
 
 export default function OAuthSettings() {
 	const { t } = useTranslation();
-	const { showErrorToast } = useToast();
-	const { getLinkedProviders } = useAuth();
+	const { showSuccessToast, showErrorToast } = useToast();
+	const {
+		linkWithApple,
+		linkWithGoogle,
+		unlinkProvider,
+		getLinkedProviders,
+	} = useAuth();
 
 	const [linkedProviders, setLinkedProviders] = useState<string[]>([]);
+	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
 		loadLinkedProviders();
@@ -30,14 +36,91 @@ export default function OAuthSettings() {
 		}
 	};
 
-	const handleShowComingSoon = (provider: string) => {
+	const handleLinkApple = async () => {
+		if (Platform.OS !== 'ios') {
+			showErrorToast(
+				t('auth.error.appleNotAvailable'),
+				t('auth.error.appleNotAvailableDescription')
+			);
+			return;
+		}
+
+		setLoading(true);
+		try {
+			await linkWithApple();
+			await loadLinkedProviders();
+			showSuccessToast(
+				t('settings.oauth.apple.linked'),
+				t('settings.oauth.apple.linkedDescription')
+			);
+		} catch (error: any) {
+			if (error.message.includes('canceled')) {
+				return;
+			}
+			showErrorToast(
+				t('settings.oauth.apple.linkError'),
+				error.message || t('settings.oauth.apple.linkErrorDescription')
+			);
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	const handleLinkGoogle = async () => {
+		setLoading(true);
+		try {
+			await linkWithGoogle();
+			await loadLinkedProviders();
+			showSuccessToast(
+				t('settings.oauth.google.linked'),
+				t('settings.oauth.google.linkedDescription')
+			);
+		} catch (error: any) {
+			if (error.message.includes('canceled')) {
+				return;
+			}
+			showErrorToast(
+				t('settings.oauth.google.linkError'),
+				error.message || t('settings.oauth.google.linkErrorDescription')
+			);
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	const handleUnlinkProvider = (provider: 'google' | 'apple') => {
 		Alert.alert(
-			t('settings.oauth.comingSoon.title'),
-			t('settings.oauth.comingSoon.description', { provider }),
+			t('settings.oauth.unlink.title'),
+			t('settings.oauth.unlink.description', { provider }),
 			[
 				{
-					text: t('alert.choices.ok'),
-					style: 'default',
+					text: t('alert.choices.cancel'),
+					style: 'cancel',
+				},
+				{
+					text: t('settings.oauth.unlink.confirm'),
+					style: 'destructive',
+					onPress: async () => {
+						setLoading(true);
+						try {
+							await unlinkProvider(provider);
+							await loadLinkedProviders();
+							showSuccessToast(
+								t('settings.oauth.unlinked'),
+								t('settings.oauth.unlinkedDescription', {
+									provider,
+								})
+							);
+						} catch (error: any) {
+							showErrorToast(
+								t('settings.oauth.unlinkError'),
+								error.message ||
+									t('settings.oauth.unlinkErrorDescription')
+							);
+						} finally {
+							setLoading(false);
+						}
+					},
 				},
 			]
 		);
@@ -57,9 +140,14 @@ export default function OAuthSettings() {
 								? t('settings.oauth.apple.linked')
 								: t('settings.oauth.apple.link')
 						}
-						onPress={() => handleShowComingSoon('Apple')}
-						color={isAppleLinked ? '#10b981' : '#9CA3AF'}
-						textColor={isAppleLinked ? '#10b981' : '#6B7280'}
+						onPress={
+							isAppleLinked
+								? () => handleUnlinkProvider('apple')
+								: handleLinkApple
+						}
+						color={isAppleLinked ? '#10b981' : '#000000'}
+						textColor={isAppleLinked ? '#10b981' : '#000000'}
+						disabled={loading}
 						testID="apple-oauth"
 					/>
 					<Spacer />
@@ -73,9 +161,14 @@ export default function OAuthSettings() {
 						? t('settings.oauth.google.linked')
 						: t('settings.oauth.google.link')
 				}
-				onPress={() => handleShowComingSoon('Google')}
-				color={isGoogleLinked ? '#10b981' : '#9CA3AF'}
-				textColor={isGoogleLinked ? '#10b981' : '#6B7280'}
+				onPress={
+					isGoogleLinked
+						? () => handleUnlinkProvider('google')
+						: handleLinkGoogle
+				}
+				color={isGoogleLinked ? '#10b981' : '#4285F4'}
+				textColor={isGoogleLinked ? '#10b981' : '#4285F4'}
+				disabled={loading}
 				testID="google-oauth"
 			/>
 		</SettingsCategory>

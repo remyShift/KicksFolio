@@ -12,6 +12,7 @@ interface SettingsMenuItemProps {
 	textColor?: string;
 	testID?: string;
 	rightElement?: ReactNode;
+	disabled?: boolean;
 }
 
 export default function SettingsMenuItem({
@@ -22,13 +23,14 @@ export default function SettingsMenuItem({
 	textColor = 'black',
 	testID,
 	rightElement,
+	disabled = false,
 }: SettingsMenuItemProps) {
 	return (
 		<TouchableOpacity
 			className="w-full p-5 bg-background/100 rounded-xl"
 			onPress={onPress}
 			testID={`drawer-button-${testID}`}
-			disabled={!onPress}
+			disabled={disabled || !onPress}
 		>
 			<View className="flex-row justify-between items-center">
 				<View className="flex-row items-center gap-4">
