@@ -1,8 +1,6 @@
 import { Platform } from 'react-native';
 
 import * as AppleAuthentication from 'expo-apple-authentication';
-import { AuthRequest, AuthSessionRedirectUriOptions } from 'expo-auth-session';
-import * as Crypto from 'expo-crypto';
 import * as WebBrowser from 'expo-web-browser';
 
 import { supabase } from '@/config/supabase/supabase';
@@ -328,28 +326,52 @@ export class AuthProxy implements AuthProviderInterface {
 
 	async signInWithGoogle(): Promise<OAuthResult> {
 		try {
-			const authUrl = `${process.env.EXPO_PUBLIC_SUPABASE_URL}/auth/v1/authorize?provider=google`;
+			WebBrowser.maybeCompleteAuthSession();
+
+			const redirectUri = 'kicksfolio://auth';
+
+			const authUrl = `${process.env.EXPO_PUBLIC_SUPABASE_URL}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent(redirectUri)}`;
 
 			const result = await WebBrowser.openAuthSessionAsync(
 				authUrl,
-				'kicksfolio://auth'
+				redirectUri
 			);
 
 			if (result.type !== 'success') {
-				throw new Error('Authentication was canceled or failed');
+				if (result.type === 'cancel') {
+					throw new Error('Authentication was canceled by user');
+				}
+				throw new Error(
+					`Authentication failed with type: ${result.type}`
+				);
 			}
 
 			const url = result.url;
-			const fragment = url.split('#')[1];
-			if (!fragment) {
+
+			let params: URLSearchParams;
+			if (url.includes('#')) {
+				const fragment = url.split('#')[1];
+				params = new URLSearchParams(fragment);
+			} else if (url.includes('?')) {
+				const query = url.split('?')[1];
+				params = new URLSearchParams(query);
+			} else {
 				throw new Error('No authentication data received');
 			}
 
-			const params = new URLSearchParams(fragment);
 			const accessToken = params.get('access_token');
 			const refreshToken = params.get('refresh_token');
 
 			if (!accessToken || !refreshToken) {
+				const error = params.get('error');
+				const errorDescription = params.get('error_description');
+
+				if (error) {
+					throw new Error(
+						`OAuth Error: ${error} - ${errorDescription || 'Unknown error'}`
+					);
+				}
+
 				throw new Error('Failed to get authentication tokens');
 			}
 
@@ -367,7 +389,13 @@ export class AuthProxy implements AuthProviderInterface {
 				user: data.user,
 				session: data.session,
 			};
-		} catch (error) {
+		} catch (error: any) {
+			if (
+				error.message?.includes('canceled') ||
+				error.code === 'UserCancel'
+			) {
+				throw new Error('Authentication was canceled by user');
+			}
 			throw error;
 		}
 	}

@@ -12,7 +12,7 @@ module.exports = {
 		extend: {
 			colors: {
 				primary: '#F27329',
-				background: '#fff6f0',
+				background: '#ffeee3',
 			},
 			fontFamily: {
 				actonia: ['Actonia', 'sans-serif'],
