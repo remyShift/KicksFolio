@@ -31,29 +31,27 @@ export default function WelcomeScreen() {
 
 	return (
 		<View className="flex-1 bg-background">
-			<View className="flex-1 justify-center items-center gap-12 mt-20">
-				<View className="items-center gap-4">
-					<PageTitle content={t('auth.titles.welcome')} />
-					<Text className="text-gray-900 font-open-sans-bold text-lg text-center">
-						{t('auth.welcome.subtitle')}
-					</Text>
-				</View>
+			<View className="items-center gap-4 mt-20">
+				<PageTitle content={t('auth.titles.welcome')} />
+				<Text className="text-gray-900 font-open-sans-bold text-lg text-center">
+					{t('auth.welcome.subtitle')}
+				</Text>
+			</View>
 
-				<View className="flex gap-4 w-full justify-center items-center px-12">
-					<MainButton
-						content={t('auth.buttons.signUp')}
-						backgroundColor="bg-primary"
-						onPressAction={handleSignUp}
-					/>
+			<View className="flex-1 justify-end items-center gap-4 pb-10">
+				<MainButton
+					content={t('auth.buttons.signUp')}
+					backgroundColor="bg-primary"
+					onPressAction={handleSignUp}
+				/>
 
-					<MainButton
-						content={t('auth.buttons.login')}
-						backgroundColor="bg-transparent"
-						borderColor="primary"
-						textColor="primary"
-						onPressAction={handleLogin}
-					/>
-				</View>
+				<MainButton
+					content={t('auth.buttons.login')}
+					backgroundColor="bg-transparent"
+					borderColor="primary"
+					textColor="primary"
+					onPressAction={handleLogin}
+				/>
 			</View>
 
 			<AuthMethodModalWrapper
