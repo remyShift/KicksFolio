@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 
 import { Animated, Image, View } from 'react-native';
 
-import { DEFAULT_CONFIG } from './WelcomeImageCarousel';
+import { DEFAULT_CONFIG } from './config';
 
 export interface ScrollingImageRowProps {
 	images: any[];

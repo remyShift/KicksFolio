@@ -1,5 +1,6 @@
 import { View } from 'react-native';
 
+import { DEFAULT_CONFIG } from './config';
 import ScrollingImageRow from './ScrollingImageRow';
 
 const welcomeImages = [
@@ -25,13 +26,6 @@ const welcomeImages = [
 	require('@/assets/images/welcome-screen/20.jpg'),
 	require('@/assets/images/welcome-screen/21.jpg'),
 ];
-
-export const DEFAULT_CONFIG = {
-	IMAGES_PER_ROW: 7,
-	SPEED: 50,
-	IMAGE_SIZE: 80,
-	IMAGE_MARGIN: 12,
-} as const;
 
 export interface WelcomeImageCarouselProps {
 	imagesPerRow?: number;

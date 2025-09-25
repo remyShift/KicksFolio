@@ -23,24 +23,38 @@ serve(async (req: Request) => {
 
 		const supabase = createClient(
 			Deno.env.get('SUPABASE_URL') ?? '',
-			Deno.env.get('SUPABASE_ANON_KEY') ?? ''
+			Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
 		);
 
-		// Set the authorization header for this request
+		// Get the authorization header to identify the user
 		const authHeader = req.headers.get('Authorization');
-		if (authHeader) {
-			supabase.auth.setAuth(authHeader.replace('Bearer ', ''));
+		if (!authHeader) {
+			console.error('No authorization header found');
+			return new Response(
+				JSON.stringify({ error: 'Authorization header required' }),
+				{
+					status: 401,
+					headers: {
+						...corsHeaders,
+						'Content-Type': 'application/json',
+					},
+				}
+			);
 		}
 
 		console.log('Processing OAuth unlink request');
 
-		// Get the session or user object
+		// Extract the JWT token from the Authorization header
+		const jwtToken = authHeader.replace('Bearer ', '');
+
+		// Get the user from the JWT token using service role
 		const {
 			data: { user },
-		} = await supabase.auth.getUser();
+			error: userError,
+		} = await supabase.auth.getUser(jwtToken);
 
-		if (!user) {
-			console.error('No authenticated user found');
+		if (userError || !user) {
+			console.error('Failed to authenticate user:', userError);
 			return new Response(JSON.stringify({ error: 'Unauthorized' }), {
 				status: 401,
 				headers: { ...corsHeaders, 'Content-Type': 'application/json' },

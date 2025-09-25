@@ -424,13 +424,20 @@ export class AuthProxy implements AuthProviderInterface {
 				throw new Error('No identity token received from Apple');
 			}
 
+			const session = await supabase.auth.getSession();
+			if (!session.data.session?.access_token) {
+				throw new Error('No valid session found');
+			}
+
+			console.log('🔗 [Apple Link] Calling Edge Function...');
+
 			const response = await fetch(
 				`${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/link-oauth-account`,
 				{
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
-						Authorization: `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
+						Authorization: `Bearer ${session.data.session.access_token}`,
 					},
 					body: JSON.stringify({
 						provider: 'apple',
@@ -439,12 +446,24 @@ export class AuthProxy implements AuthProviderInterface {
 				}
 			);
 
+			console.log('📡 [Apple Link] Response status:', response.status);
+
 			if (!response.ok) {
-				const error = await response.json();
-				throw new Error(
-					error.message || 'Failed to link Apple account'
-				);
+				const errorText = await response.text();
+				console.error('❌ [Apple Link] Error response:', errorText);
+
+				let errorMessage = 'Failed to link Apple account';
+				try {
+					const errorJson = JSON.parse(errorText);
+					errorMessage = errorJson.error || errorMessage;
+				} catch {
+					errorMessage = errorText || errorMessage;
+				}
+
+				throw new Error(errorMessage);
 			}
+
+			console.log('✅ [Apple Link] Successfully linked');
 		} catch (error: any) {
 			if (error.code === 'ERR_REQUEST_CANCELED') {
 				throw new Error('Authentication was canceled by user');
@@ -501,13 +520,20 @@ export class AuthProxy implements AuthProviderInterface {
 				throw new Error('Failed to get authentication token');
 			}
 
+			const session = await supabase.auth.getSession();
+			if (!session.data.session?.access_token) {
+				throw new Error('No valid session found');
+			}
+
+			console.log('🔗 [Google Link] Calling Edge Function...');
+
 			const response = await fetch(
 				`${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/link-oauth-account`,
 				{
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
-						Authorization: `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
+						Authorization: `Bearer ${session.data.session.access_token}`,
 					},
 					body: JSON.stringify({
 						provider: 'google',
@@ -516,12 +542,24 @@ export class AuthProxy implements AuthProviderInterface {
 				}
 			);
 
+			console.log('📡 [Google Link] Response status:', response.status);
+
 			if (!response.ok) {
-				const error = await response.json();
-				throw new Error(
-					error.message || 'Failed to link Google account'
-				);
+				const errorText = await response.text();
+				console.error('❌ [Google Link] Error response:', errorText);
+
+				let errorMessage = 'Failed to link Google account';
+				try {
+					const errorJson = JSON.parse(errorText);
+					errorMessage = errorJson.error || errorMessage;
+				} catch {
+					errorMessage = errorText || errorMessage;
+				}
+
+				throw new Error(errorMessage);
 			}
+
+			console.log('✅ [Google Link] Successfully linked');
 		} catch (error: any) {
 			if (
 				error.message?.includes('canceled') ||

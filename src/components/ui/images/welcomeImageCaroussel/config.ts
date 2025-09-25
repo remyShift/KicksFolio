@@ -1,0 +1,6 @@
+export const DEFAULT_CONFIG = {
+	IMAGES_PER_ROW: 7,
+	SPEED: 50,
+	IMAGE_SIZE: 80,
+	IMAGE_MARGIN: 12,
+} as const;
