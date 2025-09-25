@@ -26,6 +26,7 @@
 		"cancel": "Cancel",
 		"delete": "Delete",
 		"logout": "Logout",
-		"leave": "Leave"
+		"leave": "Leave",
+		"ok": "OK"
 	}
 }

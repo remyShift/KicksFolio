@@ -326,6 +326,56 @@ export const useAuth = () => {
 			});
 	};
 
+	const linkWithApple = async () => {
+		return auth
+			.linkWithApple()
+			.then(() => {
+				return true;
+			})
+			.catch((error) => {
+				setErrorMsg(`${t('auth.error.appleLink')} : ${error.message}`);
+				throw error;
+			});
+	};
+
+	const linkWithGoogle = async () => {
+		return auth
+			.linkWithGoogle()
+			.then(() => {
+				return true;
+			})
+			.catch((error) => {
+				setErrorMsg(`${t('auth.error.googleLink')} : ${error.message}`);
+				throw error;
+			});
+	};
+
+	const unlinkProvider = async (provider: 'google' | 'apple') => {
+		return auth
+			.unlinkProvider(provider)
+			.then(() => {
+				return true;
+			})
+			.catch((error) => {
+				setErrorMsg(
+					`${t('auth.error.unlinkProvider')} : ${error.message}`
+				);
+				throw error;
+			});
+	};
+
+	const getLinkedProviders = async () => {
+		return auth
+			.getLinkedProviders()
+			.then((providers) => {
+				return providers;
+			})
+			.catch((error) => {
+				console.error('Error getting linked providers:', error);
+				return [];
+			});
+	};
+
 	const handleNextSignupPage = async (
 		signUpProps: UserData
 	): Promise<string | null> => {
@@ -354,6 +404,10 @@ export const useAuth = () => {
 		handleNextSignupPage,
 		signInWithApple,
 		signInWithGoogle,
+		linkWithApple,
+		linkWithGoogle,
+		unlinkProvider,
+		getLinkedProviders,
 		errorMsg,
 	};
 };

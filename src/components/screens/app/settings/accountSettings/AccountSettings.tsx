@@ -9,6 +9,7 @@ import useToast from '@/hooks/ui/useToast';
 import SettingsCategory from '../shared/SettingsCategory';
 import SettingsMenuItem from '../shared/SettingsMenuItem';
 import Spacer from '../shared/Spacer';
+import OAuthSettings from './OAuthSettings';
 
 export default function AccountSettings() {
 	const { t } = useTranslation();
@@ -38,30 +39,34 @@ export default function AccountSettings() {
 	};
 
 	return (
-		<SettingsCategory title={t('settings.titles.account')}>
-			<SettingsMenuItem
-				icon="person-outline"
-				label={t('settings.titles.editProfile')}
-				onPress={() => router.push('/edit-profile')}
-				testID="edit-profile"
-			/>
+		<>
+			<SettingsCategory title={t('settings.titles.account')}>
+				<SettingsMenuItem
+					icon="person-outline"
+					label={t('settings.titles.editProfile')}
+					onPress={() => router.push('/edit-profile')}
+					testID="edit-profile"
+				/>
 
-			<Spacer />
+				<Spacer />
 
-			<SettingsMenuItem
-				icon="share-social-outline"
-				label={t('settings.titles.socialMedia')}
-				onPress={() => router.push('/social-media')}
-			/>
+				<SettingsMenuItem
+					icon="share-social-outline"
+					label={t('settings.titles.socialMedia')}
+					onPress={() => router.push('/social-media')}
+				/>
 
-			<Spacer />
+				<Spacer />
 
-			<SettingsMenuItem
-				icon="exit-outline"
-				label={t('settings.titles.logout')}
-				onPress={handleLogout}
-				testID="logout"
-			/>
-		</SettingsCategory>
+				<SettingsMenuItem
+					icon="exit-outline"
+					label={t('settings.titles.logout')}
+					onPress={handleLogout}
+					testID="logout"
+				/>
+			</SettingsCategory>
+
+			<OAuthSettings />
+		</>
 	);
 }

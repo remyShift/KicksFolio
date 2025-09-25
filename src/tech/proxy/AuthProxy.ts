@@ -399,6 +399,36 @@ export class AuthProxy implements AuthProviderInterface {
 			throw error;
 		}
 	}
+
+	async linkWithApple(): Promise<void> {
+		throw new Error(
+			'Account linking will be available in a future update. Please sign in with Apple next time to link your accounts.'
+		);
+	}
+
+	async linkWithGoogle(): Promise<void> {
+		throw new Error(
+			'Account linking will be available in a future update. Please sign in with Google next time to link your accounts.'
+		);
+	}
+
+	async unlinkProvider(provider: 'google' | 'apple'): Promise<void> {
+		throw new Error(
+			'Account unlinking will be available in a future update.'
+		);
+	}
+
+	async getLinkedProviders(): Promise<string[]> {
+		const {
+			data: { user },
+			error,
+		} = await supabase.auth.getUser();
+
+		if (error) throw error;
+		if (!user) throw new Error('No user found');
+
+		return user.app_metadata?.providers || [];
+	}
 }
 
 export const authProxy = new AuthProxy();
