@@ -529,7 +529,7 @@ class SneakerProxy implements SneakerHandlerInterface {
 		if (authError) throw authError;
 		if (!user) throw new Error('No user found');
 
-		const fileName = `${user.id}/${sneakerId}/${Date.now()}.jpg`;
+		const fileName = `${user.id}/${sneakerId}/${Date.now()}.png`;
 
 		const response = await fetch(imageUri);
 		const blob = await response.blob();
