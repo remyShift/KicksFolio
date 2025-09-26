@@ -39,6 +39,7 @@
 		"editProfile": "Edit profile",
 		"account": "Account Settings",
 		"socialMedia": "Link Social Media",
+		"connectedAccounts": "Connected Accounts",
 		"logout": "Logout",
 		"deleteAccount": "Delete account",
 		"settings": "Settings",
@@ -146,5 +147,27 @@
 		"systemEnabled": "Enabled",
 		"systemDisabled": "Disabled",
 		"openAppSettings": "Open app settings"
+	},
+	"oauth": {
+		"linked": "Linked",
+		"notLinked": "Not linked",
+		"unlink": "Unlink",
+		"googleLinkedLabel": "Google account linked",
+		"appleLinkedLabel": "Apple account linked",
+		"googleLinked": "🔗 Google account linked",
+		"googleLinkedDescription": "Your Google account is now connected for sign-in.",
+		"googleUnlinked": "🔓 Google account unlinked",
+		"googleUnlinkedDescription": "Your Google account has been disconnected.",
+		"appleLinked": "🔗 Apple account linked",
+		"appleLinkedDescription": "Your Apple account is now connected for sign-in.",
+		"appleUnlinked": "🔓 Apple account unlinked",
+		"appleUnlinkedDescription": "Your Apple account has been disconnected.",
+		"linkingFailed": "❌ Account linking failed",
+		"linkingFailedDescription": "An error occurred while linking your account.",
+		"unlinkingFailed": "❌ Account unlinking failed",
+		"unlinkingFailedDescription": "An error occurred while unlinking your account.",
+		"unlinkConfirmTitle": "Unlink Account",
+		"unlinkGoogleConfirmMessage": "Are you sure you want to unlink your Google account? You won't be able to sign in with Google anymore.",
+		"unlinkAppleConfirmMessage": "Are you sure you want to unlink your Apple account? You won't be able to sign in with Apple anymore."
 	}
 } 

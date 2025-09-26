@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Alert, ScrollView, View } from 'react-native';
 
 import AccountSettings from '@/components/screens/app/settings/accountSettings/AccountSettings';
+import OAuthSettings from '@/components/screens/app/settings/accountSettings/OAuthSettings';
 import AppSettings from '@/components/screens/app/settings/appSettings/AppSettings';
 import NotificationSettings from '@/components/screens/app/settings/notificationSettings/NotificationSettings';
 import SettingsHeader from '@/components/screens/app/settings/SettingsHeader';
@@ -71,6 +72,7 @@ export default function Settings() {
 			</View>
 			<View className="gap-4" testID="settings-content">
 				<AccountSettings />
+				<OAuthSettings />
 				<NotificationSettings />
 				<AppSettings />
 				<SettingsMenuItem

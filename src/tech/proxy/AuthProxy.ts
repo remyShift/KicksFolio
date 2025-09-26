@@ -103,13 +103,64 @@ export class AuthProxy implements AuthProviderInterface {
 	}
 
 	async getCurrentUser() {
-		const {
-			data: { user },
-			error,
-		} = await supabase.auth.getUser();
+		let user;
 
-		if (error) throw error;
-		if (!user) throw new Error('No user found');
+		try {
+			const {
+				data: { user: authUser },
+				error,
+			} = await supabase.auth.getUser();
+
+			if (error) {
+				// Handle session missing gracefully
+				if (
+					error.message?.includes('Auth session missing') ||
+					error.name === 'AuthSessionMissingError'
+				) {
+					throw new Error('No user found');
+				}
+				throw error;
+			}
+			if (!authUser) throw new Error('No user found');
+
+			user = authUser;
+		} catch (error: any) {
+			// Handle session missing gracefully
+			if (
+				error.message?.includes('Auth session missing') ||
+				error.name === 'AuthSessionMissingError'
+			) {
+				throw new Error('No user found');
+			}
+			throw error;
+		}
+
+		// Check if this is an OAuth user with a linked account
+		const isOAuthProvider =
+			user.app_metadata?.provider &&
+			['google', 'apple'].includes(user.app_metadata.provider);
+
+		let actualUserId = user.id;
+
+		if (isOAuthProvider) {
+			try {
+				const linkedUserId = await this.findUserByOAuthAccount(
+					user.app_metadata.provider as 'google' | 'apple',
+					user.id
+				);
+				if (linkedUserId) {
+					console.log(
+						'🔍 OAuth user has linked account, using linked user ID:',
+						linkedUserId
+					);
+					actualUserId = linkedUserId;
+				}
+			} catch (linkError) {
+				console.log(
+					'ℹ️ No linked account found for OAuth user, using OAuth user ID'
+				);
+			}
+		}
 
 		const maxRetries = 3;
 		const retryDelay = 500;
@@ -121,7 +172,7 @@ export class AuthProxy implements AuthProviderInterface {
 				const { data, error } = await supabase
 					.from('users')
 					.select('*')
-					.eq('id', user.id)
+					.eq('id', actualUserId)
 					.single();
 
 				if (!error && data) {
@@ -157,14 +208,14 @@ export class AuthProxy implements AuthProviderInterface {
 					count: 'exact',
 					head: true,
 				})
-				.eq('following_id', user.id),
+				.eq('following_id', actualUserId),
 			supabase
 				.from('followers')
 				.select('*', {
 					count: 'exact',
 					head: true,
 				})
-				.eq('follower_id', user.id),
+				.eq('follower_id', actualUserId),
 		]);
 
 		const followersCount = followersResult.error
@@ -398,6 +449,236 @@ export class AuthProxy implements AuthProviderInterface {
 			}
 			throw error;
 		}
+	}
+
+	async getLinkedOAuthAccounts(userId: string) {
+		console.log('🔍 getLinkedOAuthAccounts: Checking for user:', userId);
+
+		const {
+			data: { user: authUser },
+		} = await supabase.auth.getUser();
+		console.log('🔍 getLinkedOAuthAccounts: Current auth user:', {
+			authUserId: authUser?.id,
+			provider: authUser?.app_metadata?.provider,
+		});
+
+		const { data, error } = await supabase
+			.from('oauth_accounts')
+			.select('*')
+			.eq('user_id', userId);
+
+		console.log('📋 getLinkedOAuthAccounts: Query result:', {
+			data,
+			error,
+		});
+
+		if (error) {
+			console.error('❌ getLinkedOAuthAccounts: Query failed:', error);
+			throw error;
+		}
+
+		console.log(
+			'✅ getLinkedOAuthAccounts: Returning',
+			data?.length || 0,
+			'linked accounts'
+		);
+		return data || [];
+	}
+
+	async linkOAuthAccount(
+		userId: string,
+		provider: 'google' | 'apple',
+		providerAccountId: string
+	) {
+		const { error } = await supabase.from('oauth_accounts').insert({
+			user_id: userId,
+			provider,
+			provider_account_id: providerAccountId,
+		});
+
+		if (error) throw error;
+		return true;
+	}
+
+	async unlinkOAuthAccount(userId: string, provider: 'google' | 'apple') {
+		console.log('🔓 AuthProxy.unlinkOAuthAccount called with:', {
+			userId,
+			provider,
+		});
+
+		const {
+			data: { user: authUser },
+		} = await supabase.auth.getUser();
+		console.log('🔍 Current auth user:', {
+			authUserId: authUser?.id,
+			authUserIdType: typeof authUser?.id,
+			provider: authUser?.app_metadata?.provider,
+		});
+
+		const { data: existingRecords, error: selectError } = await supabase
+			.from('oauth_accounts')
+			.select('*')
+			.eq('user_id', userId)
+			.eq('provider', provider);
+
+		console.log('📋 Existing OAuth records to delete:', existingRecords);
+		console.log(
+			'🔍 Record details:',
+			existingRecords?.[0]
+				? {
+						provider_account_id:
+							existingRecords[0].provider_account_id,
+						provider_account_id_type:
+							typeof existingRecords[0].provider_account_id,
+						auth_uid_matches:
+							authUser?.id ===
+							existingRecords[0].provider_account_id,
+						auth_uid_matches_string:
+							authUser?.id ===
+							existingRecords[0].provider_account_id.toString(),
+						string_auth_uid_matches:
+							authUser?.id?.toString() ===
+							existingRecords[0].provider_account_id,
+					}
+				: 'No records'
+		);
+
+		if (selectError) {
+			console.error('❌ Error fetching existing records:', selectError);
+		}
+
+		if (existingRecords && existingRecords.length > 0) {
+			console.log(
+				'🎯 Attempting deletion by record ID:',
+				existingRecords[0].id
+			);
+			const { data: deletedData, error } = await supabase
+				.from('oauth_accounts')
+				.delete()
+				.eq('id', existingRecords[0].id)
+				.select();
+
+			console.log('🗑️ Deletion by ID result:', { deletedData, error });
+
+			if (error) {
+				console.error('❌ OAuth unlinking by ID failed:', error);
+				throw error;
+			}
+
+			if (!deletedData || deletedData.length === 0) {
+				console.error(
+					'❌ No records were deleted - RLS policy blocking'
+				);
+				throw new Error(
+					'OAuth account unlinking was blocked by security policy'
+				);
+			}
+
+			console.log('✅ OAuth unlinking completed successfully');
+			return true;
+		} else {
+			console.log('ℹ️ No OAuth account found to unlink');
+			return true;
+		}
+	}
+
+	async findUserByOAuthAccount(
+		provider: 'google' | 'apple',
+		providerAccountId: string
+	) {
+		const { data, error } = await supabase
+			.from('oauth_accounts')
+			.select('user_id')
+			.eq('provider', provider)
+			.eq('provider_account_id', providerAccountId)
+			.single();
+
+		if (error) {
+			if (error.code === 'PGRST116') {
+				return null;
+			}
+			throw error;
+		}
+
+		return data?.user_id || null;
+	}
+
+	async storePendingOAuthUser(
+		authUserId: string,
+		email: string,
+		provider: 'google' | 'apple',
+		providerAccountId: string,
+		profilePicture?: string
+	) {
+		const { error } = await supabase.from('oauth_pending_users').insert({
+			auth_user_id: authUserId,
+			email,
+			provider,
+			provider_account_id: providerAccountId,
+			profile_picture: profilePicture,
+		});
+
+		if (error) throw error;
+		return true;
+	}
+
+	async getPendingOAuthUser(authUserId: string) {
+		const { data, error } = await supabase
+			.from('oauth_pending_users')
+			.select('*')
+			.eq('auth_user_id', authUserId)
+			.single();
+
+		if (error) {
+			if (error.code === 'PGRST116') {
+				return null;
+			}
+			throw error;
+		}
+
+		return data;
+	}
+
+	async completePendingOAuthUser(
+		authUserId: string,
+		userData: {
+			username: string;
+			sneaker_size: number;
+			profile_picture?: string;
+		}
+	) {
+		const pendingUser = await this.getPendingOAuthUser(authUserId);
+		if (!pendingUser) {
+			throw new Error('No pending OAuth user found');
+		}
+
+		const { data: createdUser, error: userError } = await supabase
+			.from('users')
+			.insert({
+				id: authUserId,
+				email: pendingUser.email,
+				username: userData.username,
+				sneaker_size: userData.sneaker_size,
+				profile_picture:
+					userData.profile_picture || pendingUser.profile_picture,
+			})
+			.select()
+			.single();
+
+		if (userError) throw userError;
+
+		await this.linkOAuthAccount(
+			authUserId,
+			pendingUser.provider,
+			pendingUser.provider_account_id
+		);
+
+		await supabase
+			.from('oauth_pending_users')
+			.delete()
+			.eq('auth_user_id', authUserId);
+
+		return createdUser;
 	}
 }
 

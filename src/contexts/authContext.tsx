@@ -167,18 +167,222 @@ export function SessionProvider({ children }: PropsWithChildren) {
 					);
 
 				if (isOAuthProvider && event === 'SIGNED_IN') {
+					console.log('🔍 OAuth sign-in detected', {
+						provider: session.user.app_metadata?.provider,
+						userId: session.user.id,
+						event: event,
+					});
+
 					try {
 						const existingUser = await auth.getCurrentUser();
+						console.log('✅ Found existing user in database:', {
+							id: existingUser.id,
+							email: existingUser.email,
+							username: existingUser.username,
+						});
 
 						if (isProfileComplete(existingUser)) {
+							console.log(
+								'✅ Profile is complete, initializing user data'
+							);
 							await initializeUserData(session.user.id);
 							setIsLoading(false);
 							return;
+						} else {
+							console.log(
+								'⚠️ User exists but profile incomplete'
+							);
 						}
 					} catch (error) {
-						console.error('Error getting current user:', error);
+						console.log(
+							'ℹ️ No user in database, checking OAuth links and pending users:',
+							error
+						);
+
+						const provider = session.user.app_metadata?.provider;
+						const oauthUserId = session.user.id;
+
+						try {
+							console.log(
+								'🔍 Searching for existing user with OAuth account:',
+								{
+									provider,
+									oauthUserId,
+								}
+							);
+
+							const linkedUserId =
+								await authProxy.findUserByOAuthAccount(
+									provider as 'google' | 'apple',
+									oauthUserId
+								);
+
+							if (linkedUserId) {
+								console.log(
+									'✅ Found linked OAuth account for existing user:',
+									linkedUserId
+								);
+
+								console.log(
+									'🔄 Initializing data for linked user with OAuth session'
+								);
+
+								try {
+									const {
+										data: linkedUserData,
+										error: linkedUserError,
+									} = await supabase
+										.from('users')
+										.select('*')
+										.eq('id', linkedUserId)
+										.single();
+
+									if (linkedUserError || !linkedUserData) {
+										throw new Error(
+											'Linked user not found in database'
+										);
+									}
+
+									console.log('✅ Found linked user data:', {
+										id: linkedUserData.id,
+										username: linkedUserData.username,
+										email: linkedUserData.email,
+									});
+
+									const [followersResult, followingResult] =
+										await Promise.all([
+											supabase
+												.from('followers')
+												.select('*', {
+													count: 'exact',
+													head: true,
+												})
+												.eq(
+													'following_id',
+													linkedUserId
+												),
+											supabase
+												.from('followers')
+												.select('*', {
+													count: 'exact',
+													head: true,
+												})
+												.eq(
+													'follower_id',
+													linkedUserId
+												),
+										]);
+
+									const followersCount = followersResult.error
+										? 0
+										: followersResult.count || 0;
+									const followingCount = followingResult.error
+										? 0
+										: followingResult.count || 0;
+
+									const userWithCounts = {
+										...linkedUserData,
+										followers_count: followersCount,
+										following_count: followingCount,
+										profile_picture_url:
+											linkedUserData.profile_picture,
+									};
+
+									setUser(userWithCounts as User);
+									storageProvider.setUserData(
+										userWithCounts as User
+									);
+
+									await Promise.all([
+										loadUserSneakers(userWithCounts),
+										loadFollowingUsers(linkedUserId),
+										initializeNotifications(),
+									]);
+
+									setIsLoading(false);
+									return;
+								} catch (linkedUserError) {
+									console.error(
+										'❌ Error loading linked user data:',
+										linkedUserError
+									);
+								}
+							}
+						} catch (linkError) {
+							console.log(
+								'⚠️ Error checking linked accounts:',
+								linkError
+							);
+						}
+
+						try {
+							const pendingUser =
+								await authProxy.getPendingOAuthUser(
+									oauthUserId
+								);
+							if (pendingUser) {
+								console.log(
+									'✅ Found existing pending OAuth user, redirecting to completion'
+								);
+								const oauthData = extractOAuthData(
+									session.user
+								);
+								const queryParams = new URLSearchParams(
+									oauthData
+								).toString();
+
+								setTimeout(() => {
+									router.push(
+										`/(auth)/oauth-profile-completion?${queryParams}`
+									);
+								}, 100);
+
+								setIsLoading(false);
+								return;
+							}
+						} catch (pendingError) {
+							console.log(
+								'ℹ️ No pending OAuth user found:',
+								pendingError
+							);
+						}
+
+						console.log(
+							'➡️ New OAuth user, storing as pending and redirecting to completion'
+						);
+						const oauthData = extractOAuthData(session.user);
+
+						try {
+							await authProxy.storePendingOAuthUser(
+								oauthUserId,
+								session.user.email || '',
+								provider as 'google' | 'apple',
+								oauthUserId,
+								oauthData.profile_picture
+							);
+							console.log('✅ OAuth user stored as pending');
+						} catch (storeError) {
+							console.error(
+								'❌ Error storing pending OAuth user:',
+								storeError
+							);
+						}
+
+						const queryParams = new URLSearchParams(
+							oauthData
+						).toString();
+
+						setTimeout(() => {
+							router.push(
+								`/(auth)/oauth-profile-completion?${queryParams}`
+							);
+						}, 100);
+
+						setIsLoading(false);
+						return;
 					}
 
+					console.log('➡️ Redirecting to OAuth profile completion');
 					const oauthData = extractOAuthData(session.user);
 					const queryParams = new URLSearchParams(
 						oauthData

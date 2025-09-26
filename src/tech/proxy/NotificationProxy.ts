@@ -8,28 +8,83 @@ import {
 	NotificationType,
 } from '@/types/notification';
 
+import { authProxy } from './AuthProxy';
+
 export class NotificationProxy implements NotificationHandlerInterface {
+	private async getRealUserId(): Promise<string> {
+		let user;
+
+		try {
+			const {
+				data: { user: authUser },
+				error: authError,
+			} = await supabase.auth.getUser();
+
+			if (authError) {
+				if (
+					authError.message?.includes('Auth session missing') ||
+					authError.name === 'AuthSessionMissingError'
+				) {
+					throw new Error('User not authenticated');
+				}
+				throw authError;
+			}
+
+			if (!authUser) {
+				throw new Error('User not authenticated');
+			}
+
+			user = authUser;
+		} catch (error: any) {
+			if (
+				error.message?.includes('Auth session missing') ||
+				error.name === 'AuthSessionMissingError'
+			) {
+				throw new Error('User not authenticated');
+			}
+			throw error;
+		}
+
+		const isOAuthProvider =
+			user.app_metadata?.provider &&
+			['google', 'apple'].includes(user.app_metadata.provider);
+
+		if (isOAuthProvider) {
+			try {
+				const linkedUserId = await authProxy.findUserByOAuthAccount(
+					user.app_metadata.provider as 'google' | 'apple',
+					user.id
+				);
+				if (linkedUserId) {
+					console.log(
+						'🔍 Using linked user ID for notifications:',
+						linkedUserId
+					);
+					return linkedUserId;
+				}
+			} catch (linkError) {
+				console.log(
+					'ℹ️ No linked account found for OAuth user, using OAuth user ID'
+				);
+			}
+		}
+
+		return user.id;
+	}
 	async registerPushToken(
 		expoPushToken: string,
 		deviceId?: string
 	): Promise<void> {
-		const {
-			data: { user },
-			error: authError,
-		} = await supabase.auth.getUser();
-
-		if (authError || !user) {
-			throw new Error('User not authenticated');
-		}
+		const realUserId = await this.getRealUserId();
 
 		await supabase
 			.from('push_tokens')
 			.update({ is_active: false })
-			.eq('user_id', user.id);
+			.eq('user_id', realUserId);
 
 		const { error } = await supabase.from('push_tokens').insert([
 			{
-				user_id: user.id,
+				user_id: realUserId,
 				expo_token: expoPushToken,
 				device_id: deviceId,
 				is_active: true,
@@ -41,7 +96,7 @@ export class NotificationProxy implements NotificationHandlerInterface {
 				const { error: updateError } = await supabase
 					.from('push_tokens')
 					.update({
-						user_id: user.id,
+						user_id: realUserId,
 						device_id: deviceId,
 						is_active: true,
 					})
@@ -71,19 +126,12 @@ export class NotificationProxy implements NotificationHandlerInterface {
 		limit: number = 20,
 		offset: number = 0
 	): Promise<Notification[]> {
-		const {
-			data: { user },
-			error: authError,
-		} = await supabase.auth.getUser();
-
-		if (authError || !user) {
-			throw new Error('User not authenticated');
-		}
+		const realUserId = await this.getRealUserId();
 
 		const { data, error } = await supabase
 			.from('notifications')
 			.select('*')
-			.eq('recipient_id', user.id)
+			.eq('recipient_id', realUserId)
 			.order('created_at', { ascending: false })
 			.range(offset, offset + limit - 1);
 
@@ -105,20 +153,13 @@ export class NotificationProxy implements NotificationHandlerInterface {
 	}
 
 	async markAsRead(notificationIds: string[]): Promise<void> {
-		const {
-			data: { user },
-			error: authError,
-		} = await supabase.auth.getUser();
-
-		if (authError || !user) {
-			throw new Error('User not authenticated');
-		}
+		const realUserId = await this.getRealUserId();
 
 		const { error } = await supabase
 			.from('notifications')
 			.update({ is_read: true })
 			.in('id', notificationIds)
-			.eq('recipient_id', user.id);
+			.eq('recipient_id', realUserId);
 
 		if (error) {
 			throw error;
@@ -126,19 +167,12 @@ export class NotificationProxy implements NotificationHandlerInterface {
 	}
 
 	async markAllAsRead(): Promise<void> {
-		const {
-			data: { user },
-			error: authError,
-		} = await supabase.auth.getUser();
-
-		if (authError || !user) {
-			throw new Error('User not authenticated');
-		}
+		const realUserId = await this.getRealUserId();
 
 		const { error } = await supabase
 			.from('notifications')
 			.update({ is_read: true })
-			.eq('recipient_id', user.id)
+			.eq('recipient_id', realUserId)
 			.eq('is_read', false);
 
 		if (error) {
@@ -147,18 +181,11 @@ export class NotificationProxy implements NotificationHandlerInterface {
 	}
 
 	async getUnreadCount(): Promise<number> {
-		const {
-			data: { user },
-			error: authError,
-		} = await supabase.auth.getUser();
-
-		if (authError || !user) {
-			throw new Error('User not authenticated');
-		}
+		const realUserId = await this.getRealUserId();
 
 		const { data, error } = await supabase.rpc(
 			'get_unread_notification_count',
-			{ user_uuid: user.id }
+			{ user_uuid: realUserId }
 		);
 
 		if (error) {
@@ -169,20 +196,13 @@ export class NotificationProxy implements NotificationHandlerInterface {
 	}
 
 	async deleteNotification(notificationId: string): Promise<void> {
-		const {
-			data: { user },
-			error: authError,
-		} = await supabase.auth.getUser();
-
-		if (authError || !user) {
-			throw new Error('User not authenticated');
-		}
+		const realUserId = await this.getRealUserId();
 
 		const { error } = await supabase
 			.from('notifications')
 			.delete()
 			.eq('id', notificationId)
-			.eq('recipient_id', user.id);
+			.eq('recipient_id', realUserId);
 
 		if (error) {
 			throw error;
@@ -192,14 +212,7 @@ export class NotificationProxy implements NotificationHandlerInterface {
 	async updateNotificationSettings(
 		settings: Partial<NotificationSettings>
 	): Promise<void> {
-		const {
-			data: { user },
-			error: authError,
-		} = await supabase.auth.getUser();
-
-		if (authError || !user) {
-			throw new Error('User not authenticated');
-		}
+		const realUserId = await this.getRealUserId();
 
 		const updateData: Partial<{
 			following_additions_enabled: boolean;
@@ -219,7 +232,7 @@ export class NotificationProxy implements NotificationHandlerInterface {
 			const { error } = await supabase
 				.from('users')
 				.update(updateData)
-				.eq('id', user.id);
+				.eq('id', realUserId);
 
 			if (error) {
 				throw error;
@@ -228,19 +241,12 @@ export class NotificationProxy implements NotificationHandlerInterface {
 	}
 
 	async getNotificationSettings(): Promise<NotificationSettings> {
-		const {
-			data: { user },
-			error: authError,
-		} = await supabase.auth.getUser();
-
-		if (authError || !user) {
-			throw new Error('User not authenticated');
-		}
+		const realUserId = await this.getRealUserId();
 
 		const { data, error } = await supabase
 			.from('users')
 			.select('following_additions_enabled, new_followers_enabled')
-			.eq('id', user.id)
+			.eq('id', realUserId)
 			.single();
 
 		if (error) {

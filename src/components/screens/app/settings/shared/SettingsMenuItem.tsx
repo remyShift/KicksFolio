@@ -1,5 +1,3 @@
-import { ReactNode } from 'react';
-
 import { Text, TouchableOpacity, View } from 'react-native';
 
 import { Entypo, Ionicons } from '@expo/vector-icons';
@@ -11,7 +9,6 @@ interface SettingsMenuItemProps {
 	color?: string;
 	textColor?: string;
 	testID?: string;
-	rightElement?: ReactNode;
 }
 
 export default function SettingsMenuItem({
@@ -21,7 +18,6 @@ export default function SettingsMenuItem({
 	color = '#666',
 	textColor = 'black',
 	testID,
-	rightElement,
 }: SettingsMenuItemProps) {
 	return (
 		<TouchableOpacity
@@ -42,15 +38,8 @@ export default function SettingsMenuItem({
 						{label}
 					</Text>
 				</View>
-				{rightElement ? (
-					rightElement
-				) : onPress ? (
-					<Entypo
-						name="chevron-small-right"
-						size={24}
-						color="black"
-					/>
-				) : null}
+
+				<Entypo name="chevron-small-right" size={24} color="black" />
 			</View>
 		</TouchableOpacity>
 	);

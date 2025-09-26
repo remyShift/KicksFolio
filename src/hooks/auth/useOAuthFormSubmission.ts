@@ -4,9 +4,11 @@ import { useTranslation } from 'react-i18next';
 
 import { router } from 'expo-router';
 
+import { supabase } from '@/config/supabase/supabase';
 import { useAuth } from '@/hooks/auth/useAuth';
 import { useOAuthCleanup } from '@/hooks/auth/useOAuthCleanup';
 import useToast from '@/hooks/ui/useToast';
+import { authProxy } from '@/tech/proxy/AuthProxy';
 import { OAuthCompletionFormData } from '@/validation/auth';
 
 interface UseOAuthFormSubmissionProps {
@@ -29,8 +31,10 @@ export const useOAuthFormSubmission = ({
 		let currentUserId = user?.id;
 		if (!currentUserId) {
 			try {
-				const currentUser = await getUser();
-				currentUserId = currentUser?.id;
+				const {
+					data: { user: authUser },
+				} = await supabase.auth.getUser();
+				currentUserId = authUser?.id;
 			} catch (error) {
 				showErrorToast(
 					t('auth.oauth.completion.error'),
@@ -40,14 +44,40 @@ export const useOAuthFormSubmission = ({
 			}
 		}
 
+		if (!currentUserId) {
+			showErrorToast(
+				t('auth.oauth.completion.error'),
+				'Aucun utilisateur trouvé'
+			);
+			return;
+		}
+
 		setIsCompleting(true);
 
 		try {
-			await updateUser(currentUserId!, {
-				username: data.username,
-				sneaker_size: Number(data.sneaker_size),
-				profile_picture: data.profile_picture,
-			});
+			console.log('🔄 Completing OAuth profile for user:', currentUserId);
+
+			const pendingUser =
+				await authProxy.getPendingOAuthUser(currentUserId);
+
+			if (pendingUser) {
+				console.log('✅ Found pending OAuth user, completing profile');
+				await authProxy.completePendingOAuthUser(currentUserId, {
+					username: data.username,
+					sneaker_size: Number(data.sneaker_size),
+					profile_picture: data.profile_picture,
+				});
+				console.log('✅ OAuth user profile completed successfully');
+			} else {
+				console.log(
+					'⚠️ No pending OAuth user found, updating existing user'
+				);
+				await updateUser(currentUserId, {
+					username: data.username,
+					sneaker_size: Number(data.sneaker_size),
+					profile_picture: data.profile_picture,
+				});
+			}
 
 			cancelCleanup();
 
@@ -58,6 +88,7 @@ export const useOAuthFormSubmission = ({
 
 			router.replace('/(app)/(tabs)');
 		} catch (error: any) {
+			console.error('❌ Error completing OAuth profile:', error);
 			showErrorToast(
 				t('auth.oauth.completion.error'),
 				error.message || t('auth.oauth.completion.errorDescription')
