@@ -106,13 +106,14 @@ export const useOAuthLinking = () => {
 
 			setIsGoogleLinked(true);
 
-			if (currentSession?.session) {
-				console.log('🔄 Restoring original session');
-				await supabase.auth.setSession({
-					access_token: currentSession.session.access_token,
-					refresh_token: currentSession.session.refresh_token,
-				});
-			}
+			// Skip session restoration completely - it causes infinite blocking
+			console.log('🔄 Skipping session restoration (causes blocking)');
+			console.log(
+				'ℹ️ OAuth linking completed, user now authenticated with Google session'
+			);
+
+			// The user is now authenticated with the OAuth session
+			// The auth context will handle user data loading automatically
 
 			setTimeout(async () => {
 				await checkLinkedAccounts();
@@ -130,6 +131,57 @@ export const useOAuthLinking = () => {
 
 	const unlinkGoogleAccount = async () => {
 		if (!user) return;
+
+		// Check if this is the user's only authentication method
+		console.log('🔍 Checking if Google is the only auth method...');
+
+		try {
+			// Get current Supabase auth user to check authentication methods
+			const {
+				data: { user: authUser },
+			} = await supabase.auth.getUser();
+			const linkedAccounts = await authProxy.getLinkedOAuthAccounts(
+				user.id
+			);
+
+			// Check authentication methods using all identities
+			const authIdentities =
+				authUser?.identities?.map((i) => i.provider) || [];
+			const hasEmailAuth = authIdentities.includes('email');
+			const hasOtherOAuth = linkedAccounts.some(
+				(account) => account.provider !== 'google'
+			);
+
+			console.log('🔍 Auth methods check:', {
+				currentProvider: authUser?.app_metadata?.provider,
+				authIdentities,
+				hasEmailAuth,
+				hasOtherOAuth,
+				totalOAuthAccounts: linkedAccounts.length,
+				canUnlinkGoogle: hasEmailAuth || hasOtherOAuth,
+			});
+
+			// Check if Google is the only authentication method
+			if (!hasEmailAuth && !hasOtherOAuth) {
+				console.log(
+					"⚠️ Cannot unlink Google - it's the only auth method"
+				);
+				Alert.alert(
+					t('settings.oauth.cannotUnlinkTitle'),
+					t('settings.oauth.cannotUnlinkGoogleMessage'),
+					[
+						{
+							text: t('alert.choices.ok'),
+							style: 'default',
+						},
+					]
+				);
+				return;
+			}
+		} catch (error) {
+			console.error('❌ Error checking auth methods:', error);
+			// Continue with unlinking if check fails (fallback to old behavior)
+		}
 
 		Alert.alert(
 			t('settings.oauth.unlinkConfirmTitle'),
@@ -214,16 +266,14 @@ export const useOAuthLinking = () => {
 			console.log('🔄 Forcing immediate state update...');
 			setIsAppleLinked(true);
 
-			if (currentSession?.session) {
-				console.log('🔄 Restoring original session...');
-				await supabase.auth.setSession({
-					access_token: currentSession.session.access_token,
-					refresh_token: currentSession.session.refresh_token,
-				});
-				console.log('✅ Original session restored');
-			} else {
-				console.log('ℹ️ No original session to restore');
-			}
+			// Skip session restoration completely - it causes infinite blocking
+			console.log('🔄 Skipping session restoration (causes blocking)');
+			console.log(
+				'ℹ️ OAuth linking completed, user now authenticated with Apple session'
+			);
+
+			// The user is now authenticated with the OAuth session
+			// The auth context will handle user data loading automatically
 
 			console.log('🔄 Refreshing linked accounts status...');
 			setTimeout(async () => {
@@ -247,6 +297,66 @@ export const useOAuthLinking = () => {
 
 	const unlinkAppleAccount = async () => {
 		if (!user) return;
+
+		// Check if this is the user's only authentication method
+		console.log('🔍 Checking if Apple is the only auth method...');
+
+		try {
+			// Get current Supabase auth user to check authentication methods
+			const {
+				data: { user: authUser },
+			} = await supabase.auth.getUser();
+			const linkedAccounts = await authProxy.getLinkedOAuthAccounts(
+				user.id
+			);
+
+			// Check authentication methods using all identities
+			const authIdentities =
+				authUser?.identities?.map((i) => i.provider) || [];
+			const hasEmailAuth = authIdentities.includes('email');
+			const hasOtherOAuth = linkedAccounts.some(
+				(account) => account.provider !== 'apple'
+			);
+
+			console.log('🔍 Auth methods check:', {
+				currentProvider: authUser?.app_metadata?.provider,
+				authIdentities,
+				hasEmailAuth,
+				hasOtherOAuth,
+				totalOAuthAccounts: linkedAccounts.length,
+				canUnlinkApple: hasEmailAuth || hasOtherOAuth,
+			});
+
+			console.log('🔍 Full auth user debug:', {
+				id: authUser?.id,
+				email: authUser?.email,
+				app_metadata: authUser?.app_metadata,
+				user_metadata: authUser?.user_metadata,
+				identities: authUser?.identities,
+				factors: authUser?.factors,
+			});
+
+			// Check if Apple is the only authentication method
+			if (!hasEmailAuth && !hasOtherOAuth) {
+				console.log(
+					"⚠️ Cannot unlink Apple - it's the only auth method"
+				);
+				Alert.alert(
+					t('settings.oauth.cannotUnlinkTitle'),
+					t('settings.oauth.cannotUnlinkAppleMessage'),
+					[
+						{
+							text: t('alert.choices.ok'),
+							style: 'default',
+						},
+					]
+				);
+				return;
+			}
+		} catch (error) {
+			console.error('❌ Error checking auth methods:', error);
+			// Continue with unlinking if check fails (fallback to old behavior)
+		}
 
 		Alert.alert(
 			t('settings.oauth.unlinkConfirmTitle'),

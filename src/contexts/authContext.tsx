@@ -183,8 +183,64 @@ export function SessionProvider({ children }: PropsWithChildren) {
 
 						if (isProfileComplete(existingUser)) {
 							console.log(
-								'✅ Profile is complete, initializing user data'
+								'✅ Profile is complete, checking OAuth linking...'
 							);
+
+							// Check if this OAuth account is already linked
+							const provider = session.user.app_metadata
+								?.provider as 'google' | 'apple';
+							const oauthUserId = session.user.id;
+
+							try {
+								console.log(
+									'🔍 Checking if OAuth account is linked:',
+									{
+										provider,
+										oauthUserId,
+										existingUserId: existingUser.id,
+									}
+								);
+								const existingLink =
+									await authProxy.findUserByOAuthAccount(
+										provider,
+										oauthUserId
+									);
+								console.log(
+									'🔍 OAuth link check result:',
+									existingLink
+								);
+
+								if (!existingLink) {
+									console.log(
+										'🔗 OAuth account not linked, creating automatic link...'
+									);
+									console.log('🔗 Link parameters:', {
+										userId: existingUser.id,
+										provider,
+										providerAccountId: oauthUserId,
+									});
+									await authProxy.linkOAuthAccount(
+										existingUser.id,
+										provider,
+										oauthUserId
+									);
+									console.log(
+										'✅ OAuth account automatically linked to existing user'
+									);
+								} else {
+									console.log(
+										'✅ OAuth account already properly linked to user:',
+										existingLink
+									);
+								}
+							} catch (linkError) {
+								console.error(
+									'❌ Could not check/create OAuth link:',
+									linkError
+								);
+								// Continue anyway - not critical for login
+							}
+
 							await initializeUserData(session.user.id);
 							setIsLoading(false);
 							return;

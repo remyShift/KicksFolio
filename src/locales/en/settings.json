@@ -168,6 +168,9 @@
 		"unlinkingFailedDescription": "An error occurred while unlinking your account.",
 		"unlinkConfirmTitle": "Unlink Account",
 		"unlinkGoogleConfirmMessage": "Are you sure you want to unlink your Google account? You won't be able to sign in with Google anymore.",
-		"unlinkAppleConfirmMessage": "Are you sure you want to unlink your Apple account? You won't be able to sign in with Apple anymore."
+		"unlinkAppleConfirmMessage": "Are you sure you want to unlink your Apple account? You won't be able to sign in with Apple anymore.",
+		"cannotUnlinkTitle": "Cannot Unlink Account",
+		"cannotUnlinkGoogleMessage": "You cannot unlink your Google account because it's your only way to sign in. Please link another account or delete your account first.",
+		"cannotUnlinkAppleMessage": "You cannot unlink your Apple account because it's your only way to sign in. Please link another account or delete your account first."
 	}
 } 

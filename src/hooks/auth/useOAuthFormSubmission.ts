@@ -77,6 +77,45 @@ export const useOAuthFormSubmission = ({
 					sneaker_size: Number(data.sneaker_size),
 					profile_picture: data.profile_picture,
 				});
+
+				// Create OAuth link for existing user completing OAuth profile
+				console.log('🔗 Creating OAuth link for existing user...');
+				const {
+					data: { user: authUser },
+				} = await supabase.auth.getUser();
+				if (authUser && authUser.app_metadata?.provider) {
+					const provider = authUser.app_metadata.provider as
+						| 'google'
+						| 'apple';
+					const oauthUserId = authUser.id;
+
+					try {
+						console.log('🔗 Linking OAuth account:', {
+							userId: currentUserId,
+							provider,
+							oauthUserId,
+						});
+
+						await authProxy.linkOAuthAccount(
+							currentUserId,
+							provider,
+							oauthUserId
+						);
+						console.log(
+							'✅ OAuth account linked to existing user during profile completion'
+						);
+					} catch (linkError) {
+						console.error(
+							'❌ Failed to link OAuth account during profile completion:',
+							linkError
+						);
+						// Don't throw - profile completion should still succeed
+					}
+				} else {
+					console.log(
+						'⚠️ Could not determine OAuth provider for linking'
+					);
+				}
 			}
 
 			cancelCleanup();

@@ -169,6 +169,9 @@
 		"unlinkingFailedDescription": "Une erreur est survenue lors de la déliaison de votre compte.",
 		"unlinkConfirmTitle": "Délier le compte",
 		"unlinkGoogleConfirmMessage": "Êtes-vous sûr de vouloir délier votre compte Google ? Vous ne pourrez plus vous connecter avec Google.",
-		"unlinkAppleConfirmMessage": "Êtes-vous sûr de vouloir délier votre compte Apple ? Vous ne pourrez plus vous connecter avec Apple."
+		"unlinkAppleConfirmMessage": "Êtes-vous sûr de vouloir délier votre compte Apple ? Vous ne pourrez plus vous connecter avec Apple.",
+		"cannotUnlinkTitle": "Impossible de délier le compte",
+		"cannotUnlinkGoogleMessage": "Vous ne pouvez pas délier votre compte Google car c'est votre seule méthode de connexion. Veuillez d'abord un lier un autre compte ou supprimer votre compte.",
+		"cannotUnlinkAppleMessage": "Vous ne pouvez pas délier votre compte Apple car c'est votre seule méthode de connexion. Veuillez d'abord un lier un autre compte ou supprimer votre compte."
 	}
 } 

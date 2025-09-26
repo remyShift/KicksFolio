@@ -490,13 +490,40 @@ export class AuthProxy implements AuthProviderInterface {
 		provider: 'google' | 'apple',
 		providerAccountId: string
 	) {
-		const { error } = await supabase.from('oauth_accounts').insert({
-			user_id: userId,
+		console.log('🔗 linkOAuthAccount called with:', {
+			userId,
 			provider,
-			provider_account_id: providerAccountId,
+			providerAccountId,
+			userIdType: typeof userId,
+			providerAccountIdType: typeof providerAccountId,
 		});
 
-		if (error) throw error;
+		// Check current auth user for context
+		const {
+			data: { user: authUser },
+		} = await supabase.auth.getUser();
+		console.log('🔍 Current auth user during linking:', {
+			authUserId: authUser?.id,
+			provider: authUser?.app_metadata?.provider,
+		});
+
+		const { data: insertedData, error } = await supabase
+			.from('oauth_accounts')
+			.insert({
+				user_id: userId,
+				provider,
+				provider_account_id: providerAccountId,
+			})
+			.select(); // Add select to see what was inserted
+
+		console.log('📝 OAuth insert result:', { insertedData, error });
+
+		if (error) {
+			console.error('❌ OAuth linking failed:', error);
+			throw error;
+		}
+
+		console.log('✅ OAuth account linked successfully:', insertedData?.[0]);
 		return true;
 	}
 
@@ -647,11 +674,22 @@ export class AuthProxy implements AuthProviderInterface {
 			profile_picture?: string;
 		}
 	) {
+		console.log('👤 completePendingOAuthUser called with:', {
+			authUserId,
+			userData: {
+				...userData,
+				profile_picture: !!userData.profile_picture,
+			},
+		});
+
 		const pendingUser = await this.getPendingOAuthUser(authUserId);
+		console.log('📋 Found pending user:', pendingUser);
+
 		if (!pendingUser) {
 			throw new Error('No pending OAuth user found');
 		}
 
+		console.log('📝 Creating user in database...');
 		const { data: createdUser, error: userError } = await supabase
 			.from('users')
 			.insert({
@@ -665,19 +703,28 @@ export class AuthProxy implements AuthProviderInterface {
 			.select()
 			.single();
 
-		if (userError) throw userError;
+		console.log('👤 User creation result:', { createdUser, userError });
 
+		if (userError) {
+			console.error('❌ User creation failed:', userError);
+			throw userError;
+		}
+
+		console.log('🔗 Creating OAuth link...');
+		// Link the OAuth account: user_id = real user ID, provider_account_id = OAuth user ID
 		await this.linkOAuthAccount(
-			authUserId,
+			createdUser.id, // Real user ID (same as authUserId in this case, but clearer)
 			pendingUser.provider,
-			pendingUser.provider_account_id
+			authUserId // OAuth user ID (the authenticated OAuth user)
 		);
 
+		console.log('🗑️ Cleaning up pending user...');
 		await supabase
 			.from('oauth_pending_users')
 			.delete()
 			.eq('auth_user_id', authUserId);
 
+		console.log('✅ Pending OAuth user completion successful');
 		return createdUser;
 	}
 }
