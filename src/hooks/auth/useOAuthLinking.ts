@@ -12,7 +12,8 @@ import { authProxy } from '@/tech/proxy/AuthProxy';
 export const useOAuthLinking = () => {
 	const [isGoogleLinked, setIsGoogleLinked] = useState(false);
 	const [isAppleLinked, setIsAppleLinked] = useState(false);
-	const [isLoading, setIsLoading] = useState(false);
+	const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+	const [isAppleLoading, setIsAppleLoading] = useState(false);
 	const { user, setUser } = useSession();
 	const { showSuccessToast, showErrorToast } = useToast();
 	const { t } = useTranslation();
@@ -28,26 +29,22 @@ export const useOAuthLinking = () => {
 	const checkLinkedAccounts = async () => {
 		if (!user) return;
 
-		try {
-			console.log(
-				'🔍 checkLinkedAccounts: Checking linked OAuth accounts for user:',
-				user.id
+		if (user.linked_oauth_accounts) {
+			const googleLinked = user.linked_oauth_accounts.some(
+				(account) => account.provider === 'google'
 			);
-			console.log('📱 Current state before check:', {
-				isGoogleLinked,
-				isAppleLinked,
-			});
+			const appleLinked = user.linked_oauth_accounts.some(
+				(account) => account.provider === 'apple'
+			);
 
+			setIsGoogleLinked(googleLinked);
+			setIsAppleLinked(appleLinked);
+			return;
+		}
+
+		try {
 			const linkedAccounts = await authProxy.getLinkedOAuthAccounts(
 				user.id
-			);
-			console.log(
-				'📋 checkLinkedAccounts: Found linked accounts:',
-				linkedAccounts
-			);
-			console.log(
-				'📊 checkLinkedAccounts: Account count:',
-				linkedAccounts.length
 			);
 
 			const googleLinked = linkedAccounts.some(
@@ -57,31 +54,17 @@ export const useOAuthLinking = () => {
 				(account) => account.provider === 'apple'
 			);
 
-			console.log('🔗 checkLinkedAccounts: Calculated link status:', {
-				googleLinked,
-				appleLinked,
-			});
-			console.log('📱 checkLinkedAccounts: Previous state:', {
-				prevGoogleLinked: isGoogleLinked,
-				prevAppleLinked: isAppleLinked,
-			});
-
-			console.log('🔄 checkLinkedAccounts: Updating state...');
 			setIsGoogleLinked(googleLinked);
 			setIsAppleLinked(appleLinked);
-			console.log('✅ checkLinkedAccounts: State updated');
 		} catch (error) {
-			console.error(
-				'❌ checkLinkedAccounts: Error checking linked accounts:',
-				error
-			);
+			console.error('Error checking linked accounts:', error);
 		}
 	};
 
 	const linkGoogleAccount = async () => {
 		if (!user) return;
 
-		setIsLoading(true);
+		setIsGoogleLoading(true);
 		try {
 			console.log(
 				'🔗 Starting Google account linking for user:',
@@ -117,6 +100,20 @@ export const useOAuthLinking = () => {
 
 			setTimeout(async () => {
 				await checkLinkedAccounts();
+				setUser((prevUser) =>
+					prevUser
+						? {
+								...prevUser,
+								linked_oauth_accounts: [
+									...(prevUser.linked_oauth_accounts || []),
+									{
+										provider: 'google',
+										provider_account_id: result.user.id,
+									},
+								],
+							}
+						: null
+				);
 			}, 500);
 		} catch (error) {
 			console.error('❌ Error linking Google account:', error);
@@ -125,7 +122,7 @@ export const useOAuthLinking = () => {
 				t('settings.oauth.linkingFailedDescription')
 			);
 		} finally {
-			setIsLoading(false);
+			setIsGoogleLoading(false);
 		}
 	};
 
@@ -136,33 +133,25 @@ export const useOAuthLinking = () => {
 		console.log('🔍 Checking if Google is the only auth method...');
 
 		try {
-			// Get current Supabase auth user to check authentication methods
-			const {
-				data: { user: authUser },
-			} = await supabase.auth.getUser();
 			const linkedAccounts = await authProxy.getLinkedOAuthAccounts(
 				user.id
 			);
 
-			// Check authentication methods using all identities
-			const authIdentities =
-				authUser?.identities?.map((i) => i.provider) || [];
-			const hasEmailAuth = authIdentities.includes('email');
+			// Check if user has password authentication
+			const hasPasswordAuth = await authProxy.hasPasswordAuth();
 			const hasOtherOAuth = linkedAccounts.some(
 				(account) => account.provider !== 'google'
 			);
 
 			console.log('🔍 Auth methods check:', {
-				currentProvider: authUser?.app_metadata?.provider,
-				authIdentities,
-				hasEmailAuth,
+				hasPasswordAuth,
 				hasOtherOAuth,
 				totalOAuthAccounts: linkedAccounts.length,
-				canUnlinkGoogle: hasEmailAuth || hasOtherOAuth,
+				canUnlinkGoogle: hasPasswordAuth || hasOtherOAuth,
 			});
 
 			// Check if Google is the only authentication method
-			if (!hasEmailAuth && !hasOtherOAuth) {
+			if (!hasPasswordAuth && !hasOtherOAuth) {
 				console.log(
 					"⚠️ Cannot unlink Google - it's the only auth method"
 				);
@@ -195,7 +184,7 @@ export const useOAuthLinking = () => {
 					text: t('settings.oauth.unlink'),
 					style: 'destructive',
 					onPress: async () => {
-						setIsLoading(true);
+						setIsGoogleLoading(true);
 						try {
 							console.log(
 								'🔓 Unlinking Google account for user:',
@@ -210,6 +199,22 @@ export const useOAuthLinking = () => {
 							);
 
 							setIsGoogleLinked(false);
+
+							setUser((prevUser) =>
+								prevUser
+									? {
+											...prevUser,
+											linked_oauth_accounts: (
+												prevUser.linked_oauth_accounts ||
+												[]
+											).filter(
+												(account) =>
+													account.provider !==
+													'google'
+											),
+										}
+									: null
+							);
 
 							setTimeout(async () => {
 								await checkLinkedAccounts();
@@ -229,7 +234,7 @@ export const useOAuthLinking = () => {
 								t('settings.oauth.unlinkingFailedDescription')
 							);
 						} finally {
-							setIsLoading(false);
+							setIsGoogleLoading(false);
 						}
 					},
 				},
@@ -240,7 +245,7 @@ export const useOAuthLinking = () => {
 	const linkAppleAccount = async () => {
 		if (!user) return;
 
-		setIsLoading(true);
+		setIsAppleLoading(true);
 		try {
 			console.log('🍎 Starting Apple account linking for user:', user.id);
 
@@ -278,6 +283,20 @@ export const useOAuthLinking = () => {
 			console.log('🔄 Refreshing linked accounts status...');
 			setTimeout(async () => {
 				await checkLinkedAccounts();
+				setUser((prevUser) =>
+					prevUser
+						? {
+								...prevUser,
+								linked_oauth_accounts: [
+									...(prevUser.linked_oauth_accounts || []),
+									{
+										provider: 'apple',
+										provider_account_id: result.user.id,
+									},
+								],
+							}
+						: null
+				);
 				console.log('✅ Linked accounts status refreshed');
 			}, 500);
 
@@ -291,7 +310,7 @@ export const useOAuthLinking = () => {
 			);
 		} finally {
 			console.log('🔄 Setting loading state to false');
-			setIsLoading(false);
+			setIsAppleLoading(false);
 		}
 	};
 
@@ -302,42 +321,25 @@ export const useOAuthLinking = () => {
 		console.log('🔍 Checking if Apple is the only auth method...');
 
 		try {
-			// Get current Supabase auth user to check authentication methods
-			const {
-				data: { user: authUser },
-			} = await supabase.auth.getUser();
 			const linkedAccounts = await authProxy.getLinkedOAuthAccounts(
 				user.id
 			);
 
-			// Check authentication methods using all identities
-			const authIdentities =
-				authUser?.identities?.map((i) => i.provider) || [];
-			const hasEmailAuth = authIdentities.includes('email');
+			// Check if user has password authentication
+			const hasPasswordAuth = await authProxy.hasPasswordAuth();
 			const hasOtherOAuth = linkedAccounts.some(
 				(account) => account.provider !== 'apple'
 			);
 
 			console.log('🔍 Auth methods check:', {
-				currentProvider: authUser?.app_metadata?.provider,
-				authIdentities,
-				hasEmailAuth,
+				hasPasswordAuth,
 				hasOtherOAuth,
 				totalOAuthAccounts: linkedAccounts.length,
-				canUnlinkApple: hasEmailAuth || hasOtherOAuth,
-			});
-
-			console.log('🔍 Full auth user debug:', {
-				id: authUser?.id,
-				email: authUser?.email,
-				app_metadata: authUser?.app_metadata,
-				user_metadata: authUser?.user_metadata,
-				identities: authUser?.identities,
-				factors: authUser?.factors,
+				canUnlinkApple: hasPasswordAuth || hasOtherOAuth,
 			});
 
 			// Check if Apple is the only authentication method
-			if (!hasEmailAuth && !hasOtherOAuth) {
+			if (!hasPasswordAuth && !hasOtherOAuth) {
 				console.log(
 					"⚠️ Cannot unlink Apple - it's the only auth method"
 				);
@@ -370,7 +372,7 @@ export const useOAuthLinking = () => {
 					text: t('settings.oauth.unlink'),
 					style: 'destructive',
 					onPress: async () => {
-						setIsLoading(true);
+						setIsAppleLoading(true);
 						console.log(
 							'🔓 Starting Apple account unlinking process...'
 						);
@@ -399,6 +401,21 @@ export const useOAuthLinking = () => {
 								'🔄 Setting Apple linked state to false immediately'
 							);
 							setIsAppleLinked(false);
+
+							setUser((prevUser) =>
+								prevUser
+									? {
+											...prevUser,
+											linked_oauth_accounts: (
+												prevUser.linked_oauth_accounts ||
+												[]
+											).filter(
+												(account) =>
+													account.provider !== 'apple'
+											),
+										}
+									: null
+							);
 
 							console.log(
 								'⏱️ Scheduling linked accounts check in 100ms'
@@ -429,7 +446,7 @@ export const useOAuthLinking = () => {
 								t('settings.oauth.unlinkingFailedDescription')
 							);
 						} finally {
-							setIsLoading(false);
+							setIsAppleLoading(false);
 						}
 					},
 				},
@@ -444,6 +461,7 @@ export const useOAuthLinking = () => {
 		unlinkGoogleAccount,
 		linkAppleAccount,
 		unlinkAppleAccount,
-		isLoading,
+		isGoogleLoading,
+		isAppleLoading,
 	};
 };

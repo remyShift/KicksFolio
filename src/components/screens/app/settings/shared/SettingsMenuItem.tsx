@@ -1,4 +1,4 @@
-import { Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Text, TouchableOpacity, View } from 'react-native';
 
 import { Entypo, Ionicons } from '@expo/vector-icons';
 
@@ -9,6 +9,7 @@ interface SettingsMenuItemProps {
 	color?: string;
 	textColor?: string;
 	testID?: string;
+	isLoading?: boolean;
 }
 
 export default function SettingsMenuItem({
@@ -18,13 +19,14 @@ export default function SettingsMenuItem({
 	color = '#666',
 	textColor = 'black',
 	testID,
+	isLoading = false,
 }: SettingsMenuItemProps) {
 	return (
 		<TouchableOpacity
 			className="w-full p-5 bg-background/100 rounded-xl"
 			onPress={onPress}
 			testID={`drawer-button-${testID}`}
-			disabled={!onPress}
+			disabled={!onPress || isLoading}
 		>
 			<View className="flex-row justify-between items-center">
 				<View className="flex-row items-center gap-4">
@@ -39,7 +41,15 @@ export default function SettingsMenuItem({
 					</Text>
 				</View>
 
-				<Entypo name="chevron-small-right" size={24} color="black" />
+				{isLoading ? (
+					<ActivityIndicator size="small" color={color} />
+				) : (
+					<Entypo
+						name="chevron-small-right"
+						size={24}
+						color="black"
+					/>
+				)}
 			</View>
 		</TouchableOpacity>
 	);

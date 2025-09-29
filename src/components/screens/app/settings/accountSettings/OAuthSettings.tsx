@@ -15,7 +15,8 @@ export default function OAuthSettings() {
 		unlinkGoogleAccount,
 		linkAppleAccount,
 		unlinkAppleAccount,
-		isLoading,
+		isGoogleLoading,
+		isAppleLoading,
 	} = useOAuthLinking();
 
 	return (
@@ -33,6 +34,7 @@ export default function OAuthSettings() {
 				color={isGoogleLinked ? '#10b981' : '#4285f4'}
 				textColor={isGoogleLinked ? '#10b981' : '#000000'}
 				testID="google-oauth-setting"
+				isLoading={isGoogleLoading}
 			/>
 
 			<Spacer />
@@ -48,6 +50,7 @@ export default function OAuthSettings() {
 				color={isAppleLinked ? '#10b981' : '#000000'}
 				textColor={isAppleLinked ? '#10b981' : '#000000'}
 				testID="apple-oauth-setting"
+				isLoading={isAppleLoading}
 			/>
 		</SettingsCategory>
 	);

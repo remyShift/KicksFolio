@@ -16,6 +16,10 @@ export type User = {
 	followers_count?: number;
 	following_count?: number;
 	is_anonymous?: boolean;
+	linked_oauth_accounts?: Array<{
+		provider: 'google' | 'apple';
+		provider_account_id: string;
+	}>;
 };
 
 export interface SearchUser {

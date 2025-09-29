@@ -201,22 +201,27 @@ export class AuthProxy implements AuthProviderInterface {
 		if (userError) throw userError;
 		if (!userData) throw new Error('User data not found in database');
 
-		const [followersResult, followingResult] = await Promise.all([
-			supabase
-				.from('followers')
-				.select('*', {
-					count: 'exact',
-					head: true,
-				})
-				.eq('following_id', actualUserId),
-			supabase
-				.from('followers')
-				.select('*', {
-					count: 'exact',
-					head: true,
-				})
-				.eq('follower_id', actualUserId),
-		]);
+		const [followersResult, followingResult, oauthAccountsResult] =
+			await Promise.all([
+				supabase
+					.from('followers')
+					.select('*', {
+						count: 'exact',
+						head: true,
+					})
+					.eq('following_id', actualUserId),
+				supabase
+					.from('followers')
+					.select('*', {
+						count: 'exact',
+						head: true,
+					})
+					.eq('follower_id', actualUserId),
+				supabase
+					.from('oauth_accounts')
+					.select('provider, provider_account_id')
+					.eq('user_id', actualUserId),
+			]);
 
 		const followersCount = followersResult.error
 			? 0
@@ -224,11 +229,15 @@ export class AuthProxy implements AuthProviderInterface {
 		const followingCount = followingResult.error
 			? 0
 			: followingResult.count || 0;
+		const linkedOAuthAccounts = oauthAccountsResult.error
+			? []
+			: oauthAccountsResult.data || [];
 
 		return {
 			...userData,
 			followers_count: followersCount,
 			following_count: followingCount,
+			linked_oauth_accounts: linkedOAuthAccounts,
 		};
 	}
 
@@ -628,6 +637,73 @@ export class AuthProxy implements AuthProviderInterface {
 		}
 
 		return data?.user_id || null;
+	}
+
+	async hasPasswordAuth(userId?: string) {
+		try {
+			// Get the current authenticated user from Supabase auth
+			const {
+				data: { user: authUser },
+			} = await supabase.auth.getUser();
+
+			if (!authUser) {
+				return false;
+			}
+
+			// If userId is provided, check that specific user's password auth
+			// Otherwise check the currently authenticated user
+			let targetUserId = userId || authUser.id;
+
+			// If we're an OAuth user with a linked account, check the linked user's password
+			if (
+				!userId &&
+				authUser.app_metadata?.provider &&
+				['google', 'apple'].includes(authUser.app_metadata.provider)
+			) {
+				try {
+					const linkedUserId = await this.findUserByOAuthAccount(
+						authUser.app_metadata.provider as 'google' | 'apple',
+						authUser.id
+					);
+					if (linkedUserId) {
+						console.log(
+							'🔍 hasPasswordAuth: Checking linked user password auth:',
+							linkedUserId
+						);
+						targetUserId = linkedUserId;
+					}
+				} catch (error) {
+					console.log(
+						'ℹ️ No linked account found, checking OAuth user password auth'
+					);
+				}
+			}
+
+			// Check if the target user has a password set (encrypted_password is not null)
+			// We need to query auth.users directly since encrypted_password is not exposed in getUser()
+			const { data, error } = await supabase.rpc(
+				'get_user_has_password',
+				{ user_id: targetUserId }
+			);
+
+			if (error) {
+				console.error('Error checking password auth:', error);
+				// Fallback: check if provider is email in app_metadata (only for current auth user)
+				if (targetUserId === authUser.id) {
+					return authUser.app_metadata?.provider === 'email';
+				}
+				return false;
+			}
+
+			console.log('🔍 hasPasswordAuth result:', {
+				targetUserId,
+				hasPassword: data === true,
+			});
+			return data === true;
+		} catch (error) {
+			console.error('Error checking password auth:', error);
+			return false;
+		}
 	}
 
 	async storePendingOAuthUser(
