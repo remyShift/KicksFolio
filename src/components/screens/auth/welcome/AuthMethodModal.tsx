@@ -42,8 +42,8 @@ export default function AuthMethodModal({
 			</Text>
 
 			<View className="gap-4 mb-6">
-				<AppleSignInButton />
-				<GoogleSignInButton />
+				<AppleSignInButton onClose={onClose} />
+				<GoogleSignInButton onClose={onClose} />
 			</View>
 
 			<View className="flex-row items-center gap-4 mb-6">

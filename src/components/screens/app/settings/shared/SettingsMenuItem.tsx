@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 import { ActivityIndicator, Text, TouchableOpacity, View } from 'react-native';
 
 import { Entypo, Ionicons } from '@expo/vector-icons';
@@ -10,6 +12,7 @@ interface SettingsMenuItemProps {
 	textColor?: string;
 	testID?: string;
 	isLoading?: boolean;
+	rightElement?: ReactNode;
 }
 
 export default function SettingsMenuItem({
@@ -20,6 +23,7 @@ export default function SettingsMenuItem({
 	textColor = 'black',
 	testID,
 	isLoading = false,
+	rightElement,
 }: SettingsMenuItemProps) {
 	return (
 		<TouchableOpacity
@@ -41,7 +45,9 @@ export default function SettingsMenuItem({
 					</Text>
 				</View>
 
-				{isLoading ? (
+				{rightElement ? (
+					rightElement
+				) : isLoading ? (
 					<ActivityIndicator size="small" color={color} />
 				) : (
 					<Entypo

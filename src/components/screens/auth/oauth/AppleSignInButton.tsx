@@ -10,11 +10,14 @@ import { useSession } from '@/contexts/authContext';
 import { useAuth } from '@/hooks/auth/useAuth';
 import useToast from '@/hooks/ui/useToast';
 
-export default function AppleSignInButton() {
+interface AppleSignInButtonProps {
+	onClose?: () => void;
+}
+
+export default function AppleSignInButton({ onClose }: AppleSignInButtonProps) {
 	const { t } = useTranslation();
 	const { showSuccessToast, showErrorToast } = useToast();
 	const { signInWithApple } = useAuth();
-	const { user } = useSession();
 	const [isLoading, setIsLoading] = useState(false);
 
 	const handleAppleSignIn = async () => {
@@ -25,6 +28,8 @@ export default function AppleSignInButton() {
 			);
 			return;
 		}
+
+		onClose?.();
 
 		setIsLoading(true);
 		try {

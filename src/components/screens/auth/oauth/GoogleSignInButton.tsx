@@ -8,13 +8,21 @@ import OAuthButton from '@/components/ui/buttons/OAuthButton';
 import { useAuth } from '@/hooks/auth/useAuth';
 import useToast from '@/hooks/ui/useToast';
 
-export default function GoogleSignInButton() {
+interface GoogleSignInButtonProps {
+	onClose?: () => void;
+}
+
+export default function GoogleSignInButton({
+	onClose,
+}: GoogleSignInButtonProps) {
 	const { t } = useTranslation();
-	const { showSuccessToast, showErrorToast } = useToast();
+	const { showErrorToast } = useToast();
 	const { signInWithGoogle } = useAuth();
 	const [isLoading, setIsLoading] = useState(false);
 
 	const handleGoogleSignIn = async () => {
+		onClose?.();
+
 		setIsLoading(true);
 		try {
 			await signInWithGoogle();
