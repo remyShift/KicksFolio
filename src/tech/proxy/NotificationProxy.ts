@@ -56,10 +56,6 @@ export class NotificationProxy implements NotificationHandlerInterface {
 					user.id
 				);
 				if (linkedUserId) {
-					console.log(
-						'🔍 Using linked user ID for notifications:',
-						linkedUserId
-					);
 					return linkedUserId;
 				}
 			} catch (linkError) {

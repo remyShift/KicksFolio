@@ -4,11 +4,6 @@ import { isProfileComplete } from '@/utils/profileUtils';
 export class OAuthCleanupService {
 	static async cleanupIncompleteOAuthAccount(userId: string): Promise<void> {
 		try {
-			console.log(
-				'🧹 OAuthCleanupService: Nettoyage du compte incomplet:',
-				userId
-			);
-
 			const { error } = await supabase.auth.admin.deleteUser(userId);
 
 			if (error) {
@@ -18,10 +13,6 @@ export class OAuthCleanupService {
 				);
 				throw error;
 			}
-
-			console.log(
-				'✅ OAuthCleanupService: Compte OAuth incomplet nettoyé avec succès'
-			);
 		} catch (error) {
 			console.error(
 				'❌ OAuthCleanupService: Erreur lors du nettoyage:',
@@ -49,11 +40,6 @@ export class OAuthCleanupService {
 		userId: string,
 		delayMs: number = 30000
 	): NodeJS.Timeout {
-		console.log(
-			`⏰ OAuthCleanupService: Nettoyage planifié dans ${delayMs}ms pour:`,
-			userId
-		);
-
 		return setTimeout(async () => {
 			try {
 				const {
@@ -62,16 +48,10 @@ export class OAuthCleanupService {
 				} = await supabase.auth.getUser();
 
 				if (error || !user || user.id !== userId) {
-					console.log(
-						'🚫 OAuthCleanupService: Utilisateur introuvable ou différent, annulation du nettoyage'
-					);
 					return;
 				}
 
 				if (isProfileComplete(user)) {
-					console.log(
-						'✅ OAuthCleanupService: Profil maintenant complet, annulation du nettoyage'
-					);
 					return;
 				}
 
@@ -87,6 +67,5 @@ export class OAuthCleanupService {
 
 	static cancelScheduledCleanup(timeoutId: NodeJS.Timeout): void {
 		clearTimeout(timeoutId);
-		console.log('🚫 OAuthCleanupService: Nettoyage planifié annulé');
 	}
 }

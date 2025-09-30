@@ -55,31 +55,22 @@ export const useOAuthFormSubmission = ({
 		setIsCompleting(true);
 
 		try {
-			console.log('🔄 Completing OAuth profile for user:', currentUserId);
-
 			const pendingUser =
 				await authProxy.getPendingOAuthUser(currentUserId);
 
 			if (pendingUser) {
-				console.log('✅ Found pending OAuth user, completing profile');
 				await authProxy.completePendingOAuthUser(currentUserId, {
 					username: data.username,
 					sneaker_size: Number(data.sneaker_size),
 					profile_picture: data.profile_picture,
 				});
-				console.log('✅ OAuth user profile completed successfully');
 			} else {
-				console.log(
-					'⚠️ No pending OAuth user found, updating existing user'
-				);
 				await updateUser(currentUserId, {
 					username: data.username,
 					sneaker_size: Number(data.sneaker_size),
 					profile_picture: data.profile_picture,
 				});
 
-				// Create OAuth link for existing user completing OAuth profile
-				console.log('🔗 Creating OAuth link for existing user...');
 				const {
 					data: { user: authUser },
 				} = await supabase.auth.getUser();
@@ -89,31 +80,37 @@ export const useOAuthFormSubmission = ({
 						| 'apple';
 					const oauthUserId = authUser.id;
 
-					try {
-						console.log('🔗 Linking OAuth account:', {
-							userId: currentUserId,
-							provider,
-							oauthUserId,
-						});
+					let providerAccountId = oauthUserId;
+					if (authUser.identities && authUser.identities.length > 0) {
+						const identity = authUser.identities.find(
+							(id: any) => id.provider === provider
+						);
 
+						if (identity?.identity_data?.provider_id) {
+							providerAccountId =
+								identity.identity_data.provider_id;
+						} else if (identity?.identity_data?.sub) {
+							providerAccountId = identity.identity_data.sub;
+						} else if (identity?.id) {
+							providerAccountId = identity.id;
+						}
+					}
+
+					try {
 						await authProxy.linkOAuthAccount(
 							currentUserId,
 							provider,
-							oauthUserId
-						);
-						console.log(
-							'✅ OAuth account linked to existing user during profile completion'
+							providerAccountId
 						);
 					} catch (linkError) {
 						console.error(
 							'❌ Failed to link OAuth account during profile completion:',
 							linkError
 						);
-						// Don't throw - profile completion should still succeed
 					}
 				} else {
 					console.log(
-						'⚠️ Could not determine OAuth provider for linking'
+						'ℹ️ Could not determine OAuth provider for linking'
 					);
 				}
 			}

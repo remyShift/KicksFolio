@@ -149,10 +149,6 @@ export class AuthProxy implements AuthProviderInterface {
 					user.id
 				);
 				if (linkedUserId) {
-					console.log(
-						'🔍 OAuth user has linked account, using linked user ID:',
-						linkedUserId
-					);
 					actualUserId = linkedUserId;
 				}
 			} catch (linkError) {
@@ -220,7 +216,8 @@ export class AuthProxy implements AuthProviderInterface {
 				supabase
 					.from('oauth_accounts')
 					.select('provider, provider_account_id')
-					.eq('user_id', actualUserId),
+					.eq('user_id', actualUserId)
+					.eq('is_active', true),
 			]);
 
 		const followersCount = followersResult.error
@@ -384,6 +381,124 @@ export class AuthProxy implements AuthProviderInterface {
 		}
 	}
 
+	async getAppleProviderAccountId(): Promise<string> {
+		try {
+			const isAvailable = await AppleAuthentication.isAvailableAsync();
+			if (!isAvailable) {
+				throw new Error(
+					'Apple authentication is not available on this device'
+				);
+			}
+
+			const credential = await AppleAuthentication.signInAsync({
+				requestedScopes: [
+					AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+					AppleAuthentication.AppleAuthenticationScope.EMAIL,
+				],
+			});
+
+			if (!credential.user) {
+				throw new Error('No user ID received from Apple');
+			}
+
+			return credential.user;
+		} catch (error: any) {
+			if (error.code === 'ERR_REQUEST_CANCELED') {
+				throw new Error('Authentication was canceled by user');
+			}
+			throw error;
+		}
+	}
+
+	async getGoogleProviderAccountId(): Promise<string> {
+		try {
+			const { data: currentSessionData } =
+				await supabase.auth.getSession();
+			const savedSession = currentSessionData.session;
+
+			WebBrowser.maybeCompleteAuthSession();
+
+			const redirectUri = 'kicksfolio://auth';
+			const authUrl = `${process.env.EXPO_PUBLIC_SUPABASE_URL}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent(redirectUri)}`;
+
+			const result = await WebBrowser.openAuthSessionAsync(
+				authUrl,
+				redirectUri
+			);
+
+			if (result.type !== 'success') {
+				if (result.type === 'cancel') {
+					throw new Error('Authentication was canceled by user');
+				}
+				throw new Error(
+					`Authentication failed with type: ${result.type}`
+				);
+			}
+
+			const url = result.url;
+			let params: URLSearchParams;
+			if (url.includes('#')) {
+				const fragment = url.split('#')[1];
+				params = new URLSearchParams(fragment);
+			} else if (url.includes('?')) {
+				const query = url.split('?')[1];
+				params = new URLSearchParams(query);
+			} else {
+				throw new Error('No authentication data received');
+			}
+
+			const accessToken = params.get('access_token');
+			const refreshToken = params.get('refresh_token');
+
+			if (!accessToken || !refreshToken) {
+				throw new Error('Failed to get authentication tokens');
+			}
+
+			const { data, error } = await supabase.auth.setSession({
+				access_token: accessToken,
+				refresh_token: refreshToken,
+			});
+
+			if (error || !data.user) {
+				throw new Error('Failed to get user data');
+			}
+
+			let providerAccountId = data.user.id; // fallback
+			if (data.user.identities && data.user.identities.length > 0) {
+				const identity = data.user.identities.find(
+					(id: any) => id.provider === 'google'
+				);
+
+				if (identity?.identity_data?.provider_id) {
+					providerAccountId = identity.identity_data.provider_id;
+				} else if (identity?.identity_data?.sub) {
+					providerAccountId = identity.identity_data.sub;
+				} else if (identity?.id) {
+					providerAccountId = identity.id;
+				}
+			}
+
+			if (savedSession) {
+				await supabase.auth.setSession({
+					access_token: savedSession.access_token,
+					refresh_token: savedSession.refresh_token,
+				});
+			} else {
+				await supabase.auth.signOut();
+			}
+
+			return providerAccountId;
+		} catch (error: any) {
+			if (
+				error.message?.includes('canceled') ||
+				error.code === 'UserCancel'
+			) {
+				throw new Error('Authentication was canceled by user');
+			}
+			throw error;
+		}
+	}
+
 	async signInWithGoogle(): Promise<OAuthResult> {
 		try {
 			WebBrowser.maybeCompleteAuthSession();
@@ -461,36 +576,21 @@ export class AuthProxy implements AuthProviderInterface {
 	}
 
 	async getLinkedOAuthAccounts(userId: string) {
-		console.log('🔍 getLinkedOAuthAccounts: Checking for user:', userId);
-
 		const {
 			data: { user: authUser },
 		} = await supabase.auth.getUser();
-		console.log('🔍 getLinkedOAuthAccounts: Current auth user:', {
-			authUserId: authUser?.id,
-			provider: authUser?.app_metadata?.provider,
-		});
 
 		const { data, error } = await supabase
 			.from('oauth_accounts')
 			.select('*')
-			.eq('user_id', userId);
-
-		console.log('📋 getLinkedOAuthAccounts: Query result:', {
-			data,
-			error,
-		});
+			.eq('user_id', userId)
+			.eq('is_active', true);
 
 		if (error) {
 			console.error('❌ getLinkedOAuthAccounts: Query failed:', error);
 			throw error;
 		}
 
-		console.log(
-			'✅ getLinkedOAuthAccounts: Returning',
-			data?.length || 0,
-			'linked accounts'
-		);
 		return data || [];
 	}
 
@@ -499,22 +599,33 @@ export class AuthProxy implements AuthProviderInterface {
 		provider: 'google' | 'apple',
 		providerAccountId: string
 	) {
-		console.log('🔗 linkOAuthAccount called with:', {
-			userId,
-			provider,
-			providerAccountId,
-			userIdType: typeof userId,
-			providerAccountIdType: typeof providerAccountId,
-		});
-
-		// Check current auth user for context
 		const {
 			data: { user: authUser },
 		} = await supabase.auth.getUser();
-		console.log('🔍 Current auth user during linking:', {
-			authUserId: authUser?.id,
-			provider: authUser?.app_metadata?.provider,
-		});
+
+		const { data: existingAccount } = await supabase
+			.from('oauth_accounts')
+			.select('*')
+			.eq('user_id', userId)
+			.eq('provider', provider)
+			.eq('provider_account_id', providerAccountId)
+			.eq('is_active', false)
+			.single();
+
+		if (existingAccount) {
+			const { data: reactivatedData, error } = await supabase
+				.from('oauth_accounts')
+				.update({ is_active: true })
+				.eq('id', existingAccount.id)
+				.select();
+
+			if (error) {
+				console.error('❌ OAuth reactivation failed:', error);
+				throw error;
+			}
+
+			return true;
+		}
 
 		const { data: insertedData, error } = await supabase
 			.from('oauth_accounts')
@@ -522,34 +633,22 @@ export class AuthProxy implements AuthProviderInterface {
 				user_id: userId,
 				provider,
 				provider_account_id: providerAccountId,
+				is_active: true,
 			})
-			.select(); // Add select to see what was inserted
-
-		console.log('📝 OAuth insert result:', { insertedData, error });
+			.select();
 
 		if (error) {
 			console.error('❌ OAuth linking failed:', error);
 			throw error;
 		}
 
-		console.log('✅ OAuth account linked successfully:', insertedData?.[0]);
 		return true;
 	}
 
 	async unlinkOAuthAccount(userId: string, provider: 'google' | 'apple') {
-		console.log('🔓 AuthProxy.unlinkOAuthAccount called with:', {
-			userId,
-			provider,
-		});
-
 		const {
 			data: { user: authUser },
 		} = await supabase.auth.getUser();
-		console.log('🔍 Current auth user:', {
-			authUserId: authUser?.id,
-			authUserIdType: typeof authUser?.id,
-			provider: authUser?.app_metadata?.provider,
-		});
 
 		const { data: existingRecords, error: selectError } = await supabase
 			.from('oauth_accounts')
@@ -557,63 +656,33 @@ export class AuthProxy implements AuthProviderInterface {
 			.eq('user_id', userId)
 			.eq('provider', provider);
 
-		console.log('📋 Existing OAuth records to delete:', existingRecords);
-		console.log(
-			'🔍 Record details:',
-			existingRecords?.[0]
-				? {
-						provider_account_id:
-							existingRecords[0].provider_account_id,
-						provider_account_id_type:
-							typeof existingRecords[0].provider_account_id,
-						auth_uid_matches:
-							authUser?.id ===
-							existingRecords[0].provider_account_id,
-						auth_uid_matches_string:
-							authUser?.id ===
-							existingRecords[0].provider_account_id.toString(),
-						string_auth_uid_matches:
-							authUser?.id?.toString() ===
-							existingRecords[0].provider_account_id,
-					}
-				: 'No records'
-		);
-
 		if (selectError) {
 			console.error('❌ Error fetching existing records:', selectError);
 		}
 
 		if (existingRecords && existingRecords.length > 0) {
-			console.log(
-				'🎯 Attempting deletion by record ID:',
-				existingRecords[0].id
-			);
-			const { data: deletedData, error } = await supabase
+			const { data: updatedData, error } = await supabase
 				.from('oauth_accounts')
-				.delete()
+				.update({ is_active: false })
 				.eq('id', existingRecords[0].id)
 				.select();
 
-			console.log('🗑️ Deletion by ID result:', { deletedData, error });
-
 			if (error) {
-				console.error('❌ OAuth unlinking by ID failed:', error);
+				console.error('❌ OAuth unlinking failed:', error);
 				throw error;
 			}
 
-			if (!deletedData || deletedData.length === 0) {
+			if (!updatedData || updatedData.length === 0) {
 				console.error(
-					'❌ No records were deleted - RLS policy blocking'
+					'❌ No records were updated - RLS policy blocking'
 				);
 				throw new Error(
 					'OAuth account unlinking was blocked by security policy'
 				);
 			}
 
-			console.log('✅ OAuth unlinking completed successfully');
 			return true;
 		} else {
-			console.log('ℹ️ No OAuth account found to unlink');
 			return true;
 		}
 	}
@@ -627,6 +696,7 @@ export class AuthProxy implements AuthProviderInterface {
 			.select('user_id')
 			.eq('provider', provider)
 			.eq('provider_account_id', providerAccountId)
+			.eq('is_active', true)
 			.single();
 
 		if (error) {
@@ -641,7 +711,6 @@ export class AuthProxy implements AuthProviderInterface {
 
 	async hasPasswordAuth(userId?: string) {
 		try {
-			// Get the current authenticated user from Supabase auth
 			const {
 				data: { user: authUser },
 			} = await supabase.auth.getUser();
@@ -650,11 +719,8 @@ export class AuthProxy implements AuthProviderInterface {
 				return false;
 			}
 
-			// If userId is provided, check that specific user's password auth
-			// Otherwise check the currently authenticated user
 			let targetUserId = userId || authUser.id;
 
-			// If we're an OAuth user with a linked account, check the linked user's password
 			if (
 				!userId &&
 				authUser.app_metadata?.provider &&
@@ -666,10 +732,6 @@ export class AuthProxy implements AuthProviderInterface {
 						authUser.id
 					);
 					if (linkedUserId) {
-						console.log(
-							'🔍 hasPasswordAuth: Checking linked user password auth:',
-							linkedUserId
-						);
 						targetUserId = linkedUserId;
 					}
 				} catch (error) {
@@ -679,8 +741,6 @@ export class AuthProxy implements AuthProviderInterface {
 				}
 			}
 
-			// Check if the target user has a password set (encrypted_password is not null)
-			// We need to query auth.users directly since encrypted_password is not exposed in getUser()
 			const { data, error } = await supabase.rpc(
 				'get_user_has_password',
 				{ user_id: targetUserId }
@@ -688,17 +748,12 @@ export class AuthProxy implements AuthProviderInterface {
 
 			if (error) {
 				console.error('Error checking password auth:', error);
-				// Fallback: check if provider is email in app_metadata (only for current auth user)
 				if (targetUserId === authUser.id) {
 					return authUser.app_metadata?.provider === 'email';
 				}
 				return false;
 			}
 
-			console.log('🔍 hasPasswordAuth result:', {
-				targetUserId,
-				hasPassword: data === true,
-			});
 			return data === true;
 		} catch (error) {
 			console.error('Error checking password auth:', error);
@@ -750,57 +805,70 @@ export class AuthProxy implements AuthProviderInterface {
 			profile_picture?: string;
 		}
 	) {
-		console.log('👤 completePendingOAuthUser called with:', {
-			authUserId,
-			userData: {
-				...userData,
-				profile_picture: !!userData.profile_picture,
-			},
-		});
-
 		const pendingUser = await this.getPendingOAuthUser(authUserId);
-		console.log('📋 Found pending user:', pendingUser);
 
 		if (!pendingUser) {
 			throw new Error('No pending OAuth user found');
 		}
 
-		console.log('📝 Creating user in database...');
-		const { data: createdUser, error: userError } = await supabase
+		const { data: existingUser } = await supabase
 			.from('users')
-			.insert({
-				id: authUserId,
-				email: pendingUser.email,
-				username: userData.username,
-				sneaker_size: userData.sneaker_size,
-				profile_picture:
-					userData.profile_picture || pendingUser.profile_picture,
-			})
-			.select()
+			.select('id')
+			.eq('id', authUserId)
 			.single();
 
-		console.log('👤 User creation result:', { createdUser, userError });
+		let createdUser;
+		let userError;
+
+		if (existingUser) {
+			const { data, error } = await supabase
+				.from('users')
+				.update({
+					username: userData.username,
+					sneaker_size: userData.sneaker_size,
+					profile_picture:
+						userData.profile_picture || pendingUser.profile_picture,
+				})
+				.eq('id', authUserId)
+				.select()
+				.single();
+
+			createdUser = data;
+			userError = error;
+		} else {
+			const { data, error } = await supabase
+				.from('users')
+				.insert({
+					id: authUserId,
+					email: pendingUser.email,
+					username: userData.username,
+					sneaker_size: userData.sneaker_size,
+					profile_picture:
+						userData.profile_picture || pendingUser.profile_picture,
+				})
+				.select()
+				.single();
+
+			createdUser = data;
+			userError = error;
+		}
 
 		if (userError) {
 			console.error('❌ User creation failed:', userError);
 			throw userError;
 		}
 
-		console.log('🔗 Creating OAuth link...');
-		// Link the OAuth account: user_id = real user ID, provider_account_id = OAuth user ID
 		await this.linkOAuthAccount(
-			createdUser.id, // Real user ID (same as authUserId in this case, but clearer)
+			createdUser.id,
 			pendingUser.provider,
-			authUserId // OAuth user ID (the authenticated OAuth user)
+			authUserId
 		);
 
-		console.log('🗑️ Cleaning up pending user...');
 		await supabase
 			.from('oauth_pending_users')
 			.delete()
 			.eq('auth_user_id', authUserId);
 
-		console.log('✅ Pending OAuth user completion successful');
 		return createdUser;
 	}
 }

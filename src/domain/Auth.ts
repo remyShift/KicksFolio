@@ -106,7 +106,13 @@ export class Auth {
 				return user;
 			})
 			.catch((error) => {
-				console.error('❌ Auth.getCurrentUser: Error occurred:', error);
+				// Don't log error for PGRST116 (no rows) - it's expected for OAuth-only users
+				if (error?.code !== 'PGRST116') {
+					console.error(
+						'❌ Auth.getCurrentUser: Error occurred:',
+						error
+					);
+				}
 				throw error;
 			});
 	};

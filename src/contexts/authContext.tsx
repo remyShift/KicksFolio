@@ -166,79 +166,171 @@ export function SessionProvider({ children }: PropsWithChildren) {
 						session.user.app_metadata.provider
 					);
 
-				if (isOAuthProvider && event === 'SIGNED_IN') {
-					console.log('🔍 OAuth sign-in detected', {
-						provider: session.user.app_metadata?.provider,
-						userId: session.user.id,
-						event: event,
-					});
-
+				if (isOAuthProvider) {
 					try {
 						const existingUser = await auth.getCurrentUser();
-						console.log('✅ Found existing user in database:', {
-							id: existingUser.id,
-							email: existingUser.email,
-							username: existingUser.username,
-						});
+						const provider = session.user.app_metadata?.provider;
+						const isOAuthUser =
+							provider && ['google', 'apple'].includes(provider);
+
+						if (isOAuthUser) {
+							const oauthUserId = session.user.id;
+							let providerAccountId = oauthUserId;
+
+							if (
+								session.user.identities &&
+								session.user.identities.length > 0
+							) {
+								const identity = session.user.identities.find(
+									(id: any) => id.provider === provider
+								);
+
+								if (identity?.identity_data?.provider_id) {
+									providerAccountId =
+										identity.identity_data.provider_id;
+								} else if (identity?.identity_data?.sub) {
+									providerAccountId =
+										identity.identity_data.sub;
+								} else if (identity?.id) {
+									providerAccountId = identity.id;
+								}
+							}
+
+							try {
+								const linkedUserId =
+									await authProxy.findUserByOAuthAccount(
+										provider as 'google' | 'apple',
+										providerAccountId
+									);
+
+								if (
+									linkedUserId &&
+									linkedUserId !== existingUser.id
+								) {
+									const {
+										data: linkedUserData,
+										error: linkedUserError,
+									} = await supabase
+										.from('users')
+										.select('*')
+										.eq('id', linkedUserId)
+										.single();
+
+									if (!linkedUserError && linkedUserData) {
+										const [
+											followersResult,
+											followingResult,
+										] = await Promise.all([
+											supabase
+												.from('followers')
+												.select('*', {
+													count: 'exact',
+													head: true,
+												})
+												.eq(
+													'following_id',
+													linkedUserId
+												),
+											supabase
+												.from('followers')
+												.select('*', {
+													count: 'exact',
+													head: true,
+												})
+												.eq(
+													'follower_id',
+													linkedUserId
+												),
+										]);
+
+										const userWithCounts = {
+											...linkedUserData,
+											followers_count:
+												followersResult.error
+													? 0
+													: followersResult.count ||
+														0,
+											following_count:
+												followingResult.error
+													? 0
+													: followingResult.count ||
+														0,
+											profile_picture_url:
+												linkedUserData.profile_picture,
+										};
+
+										setUser(userWithCounts as User);
+										storageProvider.setUserData(
+											userWithCounts as User
+										);
+
+										await Promise.all([
+											loadUserSneakers(userWithCounts),
+											loadFollowingUsers(linkedUserId),
+											initializeNotifications(),
+										]);
+
+										setIsLoading(false);
+										return;
+									}
+								}
+							} catch (linkError) {
+								console.log(
+									'ℹ️ No linked account found for OAuth user:',
+									linkError
+								);
+							}
+						}
 
 						if (isProfileComplete(existingUser)) {
-							console.log(
-								'✅ Profile is complete, checking OAuth linking...'
-							);
-
-							// Check if this OAuth account is already linked
 							const provider = session.user.app_metadata
 								?.provider as 'google' | 'apple';
 							const oauthUserId = session.user.id;
 
-							try {
-								console.log(
-									'🔍 Checking if OAuth account is linked:',
-									{
-										provider,
-										oauthUserId,
-										existingUserId: existingUser.id,
-									}
+							let providerAccountId = oauthUserId;
+
+							if (
+								session.user.identities &&
+								session.user.identities.length > 0
+							) {
+								const identity = session.user.identities.find(
+									(id: any) => id.provider === provider
 								);
+
+								if (identity?.identity_data?.provider_id) {
+									providerAccountId =
+										identity.identity_data.provider_id;
+								} else if (identity?.identity_data?.sub) {
+									providerAccountId =
+										identity.identity_data.sub;
+								} else if (
+									session.user.user_metadata?.provider_id
+								) {
+									providerAccountId =
+										session.user.user_metadata.provider_id;
+								}
+							}
+
+							try {
 								const existingLink =
 									await authProxy.findUserByOAuthAccount(
 										provider,
-										oauthUserId
+										providerAccountId
 									);
-								console.log(
-									'🔍 OAuth link check result:',
-									existingLink
-								);
 
 								if (!existingLink) {
-									console.log(
-										'🔗 OAuth account not linked, creating automatic link...'
-									);
-									console.log('🔗 Link parameters:', {
-										userId: existingUser.id,
-										provider,
-										providerAccountId: oauthUserId,
-									});
 									await authProxy.linkOAuthAccount(
 										existingUser.id,
 										provider,
-										oauthUserId
-									);
-									console.log(
-										'✅ OAuth account automatically linked to existing user'
+										providerAccountId
 									);
 								} else {
-									console.log(
-										'✅ OAuth account already properly linked to user:',
-										existingLink
-									);
 								}
 							} catch (linkError) {
 								console.error(
 									'❌ Could not check/create OAuth link:',
 									linkError
 								);
-								// Continue anyway - not critical for login
 							}
 
 							await initializeUserData(session.user.id);
@@ -258,31 +350,37 @@ export function SessionProvider({ children }: PropsWithChildren) {
 						const provider = session.user.app_metadata?.provider;
 						const oauthUserId = session.user.id;
 
-						try {
-							console.log(
-								'🔍 Searching for existing user with OAuth account:',
-								{
-									provider,
-									oauthUserId,
-								}
+						let providerAccountId = oauthUserId;
+
+						if (
+							session.user.identities &&
+							session.user.identities.length > 0
+						) {
+							const identity = session.user.identities.find(
+								(id: any) => id.provider === provider
 							);
 
+							if (identity?.identity_data?.provider_id) {
+								providerAccountId =
+									identity.identity_data.provider_id;
+							} else if (identity?.identity_data?.sub) {
+								providerAccountId = identity.identity_data.sub;
+							} else if (
+								session.user.user_metadata?.provider_id
+							) {
+								providerAccountId =
+									session.user.user_metadata.provider_id;
+							}
+						}
+
+						try {
 							const linkedUserId =
 								await authProxy.findUserByOAuthAccount(
 									provider as 'google' | 'apple',
-									oauthUserId
+									providerAccountId
 								);
 
 							if (linkedUserId) {
-								console.log(
-									'✅ Found linked OAuth account for existing user:',
-									linkedUserId
-								);
-
-								console.log(
-									'🔄 Initializing data for linked user with OAuth session'
-								);
-
 								try {
 									const {
 										data: linkedUserData,
@@ -298,12 +396,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
 											'Linked user not found in database'
 										);
 									}
-
-									console.log('✅ Found linked user data:', {
-										id: linkedUserData.id,
-										username: linkedUserData.username,
-										email: linkedUserData.email,
-									});
 
 									const [followersResult, followingResult] =
 										await Promise.all([
@@ -377,9 +469,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
 									oauthUserId
 								);
 							if (pendingUser) {
-								console.log(
-									'✅ Found existing pending OAuth user, redirecting to completion'
-								);
 								const oauthData = extractOAuthData(
 									session.user
 								);
@@ -403,9 +492,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
 							);
 						}
 
-						console.log(
-							'➡️ New OAuth user, storing as pending and redirecting to completion'
-						);
 						const oauthData = extractOAuthData(session.user);
 
 						try {
@@ -416,7 +502,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
 								oauthUserId,
 								oauthData.profile_picture
 							);
-							console.log('✅ OAuth user stored as pending');
 						} catch (storeError) {
 							console.error(
 								'❌ Error storing pending OAuth user:',
@@ -438,7 +523,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
 						return;
 					}
 
-					console.log('➡️ Redirecting to OAuth profile completion');
 					const oauthData = extractOAuthData(session.user);
 					const queryParams = new URLSearchParams(
 						oauthData
@@ -525,9 +609,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
 				data: { user },
 			} = await supabase.auth.getUser();
 			if (!user) {
-				console.log(
-					'Skipping notification initialization: no authenticated user'
-				);
 				return;
 			}
 

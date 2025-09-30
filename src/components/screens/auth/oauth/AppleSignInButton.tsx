@@ -6,7 +6,6 @@ import { Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import OAuthButton from '@/components/ui/buttons/OAuthButton';
-import { useSession } from '@/contexts/authContext';
 import { useAuth } from '@/hooks/auth/useAuth';
 import useToast from '@/hooks/ui/useToast';
 
@@ -16,7 +15,7 @@ interface AppleSignInButtonProps {
 
 export default function AppleSignInButton({ onClose }: AppleSignInButtonProps) {
 	const { t } = useTranslation();
-	const { showSuccessToast, showErrorToast } = useToast();
+	const { showErrorToast } = useToast();
 	const { signInWithApple } = useAuth();
 	const [isLoading, setIsLoading] = useState(false);
 
