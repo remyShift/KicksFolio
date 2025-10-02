@@ -12,38 +12,78 @@ import { useSplashScreenStore } from '@/store/useSplashScreenStore';
 import { Sneaker } from '@/types/sneaker';
 import { User } from '@/types/user';
 
-const MIN_SPLASH_DURATION = 2000;
+const MIN_SPLASH_DURATION = 1500;
 const MAX_INITIALIZATION_TIME = 10000;
 const BATCH_SIZE = 5;
-const BATCH_DELAY = 100;
+const BATCH_DELAY = 50;
 
-async function prefetchImagesInBackground(imageUris: string[]) {
+async function animateProgress(
+	currentProgress: number,
+	targetProgress: number,
+	setLoadingProgress: (value: number) => void,
+	delayPerStep: number = 15
+) {
+	for (let i = currentProgress + 1; i <= targetProgress; i++) {
+		setLoadingProgress(i);
+		await new Promise((resolve) => setTimeout(resolve, delayPerStep));
+	}
+}
+
+async function prefetchImagesInBackground(
+	imageUris: string[],
+	currentProgress: number,
+	setLoadingProgress: (value: number) => void,
+	setLoadingStatus: (value: string) => void
+) {
+	const functionStart = Date.now();
 	const batches = [];
 	for (let i = 0; i < imageUris.length; i += BATCH_SIZE) {
 		batches.push(imageUris.slice(i, i + BATCH_SIZE));
 	}
 
 	console.log(
-		`[AppInit] Prefetching ${imageUris.length} images in ${batches.length} batches`
+		`[AppInit-BG] 📦 Prefetching ${imageUris.length} images in ${batches.length} batches`
 	);
+
+	const startProgress = currentProgress;
+	const endProgress = 90;
+	const progressPerBatch = (endProgress - startProgress) / batches.length;
+
+	let progressTracker = startProgress;
 
 	for (let i = 0; i < batches.length; i++) {
 		const batch = batches[i];
+		const batchStart = Date.now();
 		try {
+			setLoadingStatus(
+				`Préchargement des images (${i + 1}/${batches.length})...`
+			);
+
+			const targetProgress = Math.round(
+				startProgress + progressPerBatch * (i + 1)
+			);
+			await animateProgress(
+				progressTracker,
+				targetProgress,
+				setLoadingProgress,
+				20
+			);
+			progressTracker = targetProgress;
+
 			await Promise.allSettled(
 				batch.map(async (uri) => {
 					try {
 						await Image.prefetch(uri);
 					} catch (err) {
 						console.warn(
-							`[AppInit] Failed to prefetch image: ${uri}`,
+							`[AppInit-BG] Failed to prefetch image: ${uri}`,
 							err
 						);
 					}
 				})
 			);
 			console.log(
-				`[AppInit] Batch ${i + 1}/${batches.length} prefetched`
+				`[AppInit-BG] ✅ Batch ${i + 1}/${batches.length} prefetched in ${Date.now() - batchStart}ms`
 			);
 
 			if (i < batches.length - 1) {
@@ -52,11 +92,16 @@ async function prefetchImagesInBackground(imageUris: string[]) {
 				);
 			}
 		} catch (err) {
-			console.warn(`[AppInit] Batch ${i + 1} prefetching failed:`, err);
+			console.warn(
+				`[AppInit-BG] ❌ Batch ${i + 1} prefetching failed:`,
+				err
+			);
 		}
 	}
 
-	console.log('[AppInit] Background image prefetching completed');
+	console.log(
+		`[AppInit-BG] 🏁 Background image prefetching completed in ${Date.now() - functionStart}ms`
+	);
 }
 
 export function useAppInitialization(fontsLoaded: boolean) {
@@ -68,7 +113,12 @@ export function useAppInitialization(fontsLoaded: boolean) {
 	const { initializeLanguage } = useLanguageStore();
 	const { initializeUnit } = useSizeUnitStore();
 	const { initializeCurrency } = useCurrencyStore();
-	const { setIsVisible, setIsInitialized } = useSplashScreenStore();
+	const {
+		setIsVisible,
+		setIsInitialized,
+		setLoadingProgress,
+		setLoadingStatus,
+	} = useSplashScreenStore();
 
 	const [isInitializing, setIsInitializing] = useState(true);
 	const startTimeRef = useRef(Date.now());
@@ -91,32 +141,71 @@ export function useAppInitialization(fontsLoaded: boolean) {
 
 			try {
 				hasInitializedRef.current = true;
-				console.log('[AppInit] Starting initialization');
+				console.log('[AppInit] ===== Starting initialization =====');
+				console.log('[AppInit] Timestamp:', Date.now());
+				setLoadingProgress(0);
+				setLoadingStatus("Démarrage de l'application...");
 
-				console.log('[AppInit] Initializing stores...');
-				await Promise.all([
+				console.log('[AppInit] Initializing stores in parallel...');
+				const storesStart = Date.now();
+				setLoadingStatus('Chargement des préférences...');
+				const storesPromise = Promise.all([
 					initializeLanguage(deviceLanguage),
 					initializeUnit(),
 					initializeCurrency(),
 				]);
+				await animateProgress(0, 30, setLoadingProgress, 15);
+				await storesPromise;
+				console.log(
+					'[AppInit] ✅ Stores initialized in',
+					Date.now() - storesStart,
+					'ms (parallel)'
+				);
 
-				console.log('[AppInit] Loading stored data...');
-				const [storedUser, storedSneakers] = await Promise.all([
+				console.log('[AppInit] Loading stored data in parallel...');
+				const dataStart = Date.now();
+				setLoadingStatus('Chargement de vos données...');
+				const dataPromise = Promise.all([
 					storageProvider.getItem<User>('user'),
 					storageProvider.getItem<Sneaker[]>('sneakers'),
 				]);
+				await animateProgress(30, 50, setLoadingProgress, 12);
+				const [storedUser, storedSneakers] = await dataPromise;
+				console.log(
+					'[AppInit] ✅ Data loaded in',
+					Date.now() - dataStart,
+					'ms (parallel)'
+				);
 
 				if (storedUser) {
-					console.log('[AppInit] User found in storage');
+					console.log('[AppInit] ✅ User found in storage');
+					setLoadingStatus('Profil chargé');
 					setUser(storedUser);
-				}
-				if (storedSneakers) {
-					console.log(
-						`[AppInit] ${storedSneakers.length} sneakers found in storage`
-					);
-					setUserSneakers(storedSneakers);
+				} else {
+					console.log('[AppInit] ⚠️  No user in storage');
 				}
 
+				if (storedSneakers && storedSneakers.length > 0) {
+					console.log(
+						`[AppInit] ✅ ${storedSneakers.length} sneakers found in storage`
+					);
+					setLoadingStatus(
+						`${storedSneakers.length} sneaker${storedSneakers.length > 1 ? 's' : ''} chargée${storedSneakers.length > 1 ? 's' : ''}`
+					);
+					setUserSneakers(storedSneakers);
+				} else {
+					console.log('[AppInit] ⚠️  No sneakers in storage');
+				}
+				const animStart = Date.now();
+				await animateProgress(50, 60, setLoadingProgress, 12);
+				console.log(
+					'[AppInit] Animation 50→60 took',
+					Date.now() - animStart,
+					'ms'
+				);
+
+				// Précharger les images en arrière-plan sans bloquer
+				const prefetchStart = Date.now();
 				if (storedSneakers && storedSneakers.length > 0) {
 					const imageUris = storedSneakers
 						.filter((sneaker) => sneaker.images?.length > 0)
@@ -124,31 +213,104 @@ export function useAppInitialization(fontsLoaded: boolean) {
 
 					if (imageUris.length > 0) {
 						console.log(
-							`[AppInit] Starting background prefetch of ${imageUris.length} images...`
+							`[AppInit] 🚀 Starting background prefetch of ${imageUris.length} images (non-blocking)...`
 						);
-						prefetchImagesInBackground(imageUris);
+						setLoadingStatus('Optimisation des images...');
+						await animateProgress(60, 80, setLoadingProgress, 10);
+
+						// Lancer le prefetch en background sans attendre
+						prefetchImagesInBackground(
+							imageUris,
+							80,
+							setLoadingProgress,
+							setLoadingStatus
+						)
+							.then(() => {
+								console.log(
+									'[AppInit] ✅ Background image prefetch completed in',
+									Date.now() - prefetchStart,
+									'ms'
+								);
+							})
+							.catch((err) =>
+								console.warn(
+									'[AppInit] ❌ Background prefetch failed:',
+									err
+								)
+							);
+						console.log(
+							'[AppInit] Continuing without waiting for images...'
+						);
+					} else {
+						console.log('[AppInit] ⚠️  No images to prefetch');
+						await animateProgress(60, 80, setLoadingProgress, 10);
 					}
+				} else {
+					console.log(
+						'[AppInit] ⚠️  No sneakers, skipping image prefetch'
+					);
+					await animateProgress(60, 80, setLoadingProgress, 10);
 				}
+
+				console.log('[AppInit] Finalizing...');
+				const finalStart = Date.now();
+				setLoadingStatus('Finalisation...');
+				await animateProgress(80, 95, setLoadingProgress, 10);
+				console.log(
+					'[AppInit] Animation 80→95 took',
+					Date.now() - finalStart,
+					'ms'
+				);
 
 				const elapsedTime = Date.now() - startTimeRef.current;
 				const remainingTime = Math.max(
 					0,
 					MIN_SPLASH_DURATION - elapsedTime
 				);
+				console.log('[AppInit] Elapsed time:', elapsedTime, 'ms');
+				console.log(
+					'[AppInit] Remaining time to reach MIN_SPLASH_DURATION:',
+					remainingTime,
+					'ms'
+				);
 
 				if (remainingTime > 0) {
+					console.log(
+						'[AppInit] Waiting',
+						remainingTime,
+						'ms to reach minimum duration...'
+					);
 					await new Promise((resolve) =>
 						setTimeout(resolve, remainingTime)
 					);
 				}
 
-				console.log('[AppInit] Initialization complete');
+				console.log('[AppInit] ===== Initialization complete =====');
+				setLoadingStatus('Prêt !');
+				const completeStart = Date.now();
+				await animateProgress(95, 100, setLoadingProgress, 15);
+				await new Promise((resolve) => setTimeout(resolve, 200));
+				console.log(
+					'[AppInit] Final animation took',
+					Date.now() - completeStart,
+					'ms'
+				);
+
+				const totalTime = Date.now() - initStartTime;
+				console.log(
+					'[AppInit] 🎉 TOTAL INITIALIZATION TIME:',
+					totalTime,
+					'ms'
+				);
+				console.log('[AppInit] ===================================');
+
 				clearTimeout(safetyTimeout);
 				setIsInitialized(true);
 				setIsVisible(false);
 				setIsInitializing(false);
 			} catch (error) {
 				console.error('[AppInit] Initialization failed:', error);
+				setLoadingStatus('Erreur de chargement');
 				clearTimeout(safetyTimeout);
 
 				const elapsedTime = Date.now() - startTimeRef.current;
@@ -163,6 +325,7 @@ export function useAppInitialization(fontsLoaded: boolean) {
 					);
 				}
 
+				setLoadingProgress(100);
 				setIsInitialized(true);
 				setIsVisible(false);
 				setIsInitializing(false);

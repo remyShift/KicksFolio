@@ -156,9 +156,14 @@ export function SessionProvider({ children }: PropsWithChildren) {
 	}, []);
 
 	useEffect(() => {
+		console.log('[Auth] 🔐 Setting up auth state change listener...');
+		const authSetupStart = Date.now();
 		const {
 			data: { subscription },
 		} = supabase.auth.onAuthStateChange(async (event, session) => {
+			const authCallbackStart = Date.now();
+			console.log('[Auth] 🔔 Auth state changed:', event);
+			console.log('[Auth] Session exists:', !!session?.user);
 			if (session?.user && !session.user.is_anonymous) {
 				const isOAuthProvider =
 					session.user.app_metadata?.provider &&
@@ -167,8 +172,19 @@ export function SessionProvider({ children }: PropsWithChildren) {
 					);
 
 				if (isOAuthProvider) {
+					console.log(
+						'[Auth] 🔐 OAuth provider detected, processing...'
+					);
+					const oauthProcessStart = Date.now();
 					try {
+						console.log('[Auth] 📥 Fetching existing user...');
+						const getUserStart = Date.now();
 						const existingUser = await auth.getCurrentUser();
+						console.log(
+							'[Auth] ✅ getCurrentUser took',
+							Date.now() - getUserStart,
+							'ms'
+						);
 						const provider = session.user.app_metadata?.provider;
 						const isOAuthUser =
 							provider && ['google', 'apple'].includes(provider);
@@ -197,16 +213,28 @@ export function SessionProvider({ children }: PropsWithChildren) {
 							}
 
 							try {
+								console.log(
+									'[Auth] 🔍 Checking for linked OAuth account...'
+								);
+								const findLinkStart = Date.now();
 								const linkedUserId =
 									await authProxy.findUserByOAuthAccount(
 										provider as 'google' | 'apple',
 										providerAccountId
 									);
+								console.log(
+									'[Auth] ✅ findUserByOAuthAccount took',
+									Date.now() - findLinkStart,
+									'ms'
+								);
 
 								if (
 									linkedUserId &&
 									linkedUserId !== existingUser.id
 								) {
+									console.log(
+										'[Auth] 🔗 Linked user found, loading data...'
+									);
 									const {
 										data: linkedUserData,
 										error: linkedUserError,
@@ -264,13 +292,29 @@ export function SessionProvider({ children }: PropsWithChildren) {
 											userWithCounts as User
 										);
 
-										await Promise.all([
+										// Débloquer l'UI immédiatement
+										console.log(
+											'[Auth] ⚡ Unlocking UI (setIsLoading false)'
+										);
+										setIsLoading(false);
+
+										// Charger les données en arrière-plan
+										console.log(
+											'[Auth] 🔄 Loading user data in background...'
+										);
+										const bgLoadStart = Date.now();
+										Promise.all([
 											loadUserSneakers(userWithCounts),
 											loadFollowingUsers(linkedUserId),
 											initializeNotifications(),
-										]);
+										]).then(() => {
+											console.log(
+												'[Auth] ✅ Background loading completed in',
+												Date.now() - bgLoadStart,
+												'ms'
+											);
+										});
 
-										setIsLoading(false);
 										return;
 									}
 								}
@@ -333,8 +377,25 @@ export function SessionProvider({ children }: PropsWithChildren) {
 								);
 							}
 
-							await initializeUserData(session.user.id);
+							// Débloquer l'UI immédiatement
+							console.log(
+								'[Auth] ⚡ Unlocking UI (setIsLoading false) - Case 3'
+							);
 							setIsLoading(false);
+
+							// Charger les données en arrière-plan
+							console.log(
+								'[Auth] 🔄 Initializing user data in background...'
+							);
+							const bgInitStart = Date.now();
+							initializeUserData(session.user.id).then(() => {
+								console.log(
+									'[Auth] ✅ Background initialization completed in',
+									Date.now() - bgInitStart,
+									'ms'
+								);
+							});
+
 							return;
 						} else {
 							console.log(
@@ -441,13 +502,29 @@ export function SessionProvider({ children }: PropsWithChildren) {
 										userWithCounts as User
 									);
 
-									await Promise.all([
+									// Débloquer l'UI immédiatement
+									console.log(
+										'[Auth] ⚡ Unlocking UI (setIsLoading false) - Case 2'
+									);
+									setIsLoading(false);
+
+									// Charger les données en arrière-plan
+									console.log(
+										'[Auth] 🔄 Loading user data in background (case 2)...'
+									);
+									const bgLoadStart2 = Date.now();
+									Promise.all([
 										loadUserSneakers(userWithCounts),
 										loadFollowingUsers(linkedUserId),
 										initializeNotifications(),
-									]);
+									]).then(() => {
+										console.log(
+											'[Auth] ✅ Background loading (case 2) completed in',
+											Date.now() - bgLoadStart2,
+											'ms'
+										);
+									});
 
-									setIsLoading(false);
 									return;
 								} catch (linkedUserError) {
 									console.error(
@@ -537,31 +614,97 @@ export function SessionProvider({ children }: PropsWithChildren) {
 					setIsLoading(false);
 					return;
 				} else {
-					await initializeUserData(session.user.id);
+					// Non-OAuth user: débloquer l'UI puis charger les données
+					console.log(
+						'[Auth] ⚡ Unlocking UI (setIsLoading false) - Non-OAuth case'
+					);
+					setIsLoading(false);
+
+					console.log(
+						'[Auth] 🔄 Initializing non-OAuth user data in background...'
+					);
+					const nonOAuthStart = Date.now();
+					initializeUserData(session.user.id).then(() => {
+						console.log(
+							'[Auth] ✅ Non-OAuth user data loaded in',
+							Date.now() - nonOAuthStart,
+							'ms'
+						);
+					});
+					return;
 				}
 			} else {
 				clearUserData();
+				setIsLoading(false);
 			}
 
-			setIsLoading(false);
+			const authLoadTime = Date.now() - authCallbackStart;
+			console.log(
+				'[Auth] ✅ Auth callback completed in:',
+				authLoadTime,
+				'ms'
+			);
 		});
 
 		const checkInitialSession = async () => {
+			console.log('[Auth] 🔍 Checking initial session...');
+			const sessionCheckStart = Date.now();
 			const {
 				data: { session },
 			} = await supabase.auth.getSession();
+			console.log(
+				'[Auth] ✅ getSession() took',
+				Date.now() - sessionCheckStart,
+				'ms'
+			);
+			console.log('[Auth] Initial session exists:', !!session?.user);
+
 			if (session?.user && !session.user.is_anonymous) {
-				return auth.getCurrentUser().catch((error: any) => {
-					if (error) {
-						return supabase.auth.signOut().then(() => {
-							clearUserData();
-						});
-					}
-					throw error;
-				});
+				console.log('[Auth] 📥 Fetching current user...');
+				const getUserStart = Date.now();
+				return auth
+					.getCurrentUser()
+					.then((user) => {
+						console.log(
+							'[Auth] ✅ getCurrentUser() took',
+							Date.now() - getUserStart,
+							'ms'
+						);
+						return user;
+					})
+					.catch((error: any) => {
+						console.log(
+							'[Auth] ❌ getCurrentUser() failed after',
+							Date.now() - getUserStart,
+							'ms'
+						);
+						if (error) {
+							return supabase.auth.signOut().then(() => {
+								clearUserData();
+							});
+						}
+						throw error;
+					});
+			} else {
+				console.log(
+					'[Auth] ℹ️  No session found, user not authenticated'
+				);
 			}
 		};
-		checkInitialSession();
+
+		console.log('[Auth] 🚀 Calling checkInitialSession...');
+		const initialCheckStart = Date.now();
+		checkInitialSession()
+			.then(() => {
+				console.log(
+					'[Auth] ✅ checkInitialSession completed in',
+					Date.now() - initialCheckStart,
+					'ms'
+				);
+			})
+			.catch((err) => {
+				console.error('[Auth] ❌ checkInitialSession failed:', err);
+			});
 
 		return () => {
 			subscription?.unsubscribe();
@@ -677,6 +820,8 @@ export function SessionProvider({ children }: PropsWithChildren) {
 	};
 
 	const initializeUserData = async (userId: string) => {
+		console.log('[Auth] 🔄 initializeUserData called');
+		const initStart = Date.now();
 		const maxRetries = 3;
 		const retryDelay = 1000;
 
@@ -685,6 +830,9 @@ export function SessionProvider({ children }: PropsWithChildren) {
 				.getCurrentUser()
 				.then((userData: any) => {
 					if (userData) {
+						console.log(
+							'[Auth] ✅ User data fetched in initializeUserData'
+						);
 						const userWithUrl = {
 							...userData,
 							profile_picture_url: userData.profile_picture,
@@ -692,11 +840,22 @@ export function SessionProvider({ children }: PropsWithChildren) {
 						setUser(userWithUrl as User);
 						storageProvider.setUserData(userWithUrl as User);
 
+						console.log(
+							'[Auth] 🔄 Loading sneakers/following/notifications...'
+						);
+						const loadingStart = Date.now();
 						return Promise.all([
 							loadUserSneakers(userWithUrl),
 							loadFollowingUsers(userWithUrl.id),
 							initializeNotifications(),
-						]);
+						]).then((results) => {
+							console.log(
+								'[Auth] ✅ All data loaded in',
+								Date.now() - loadingStart,
+								'ms'
+							);
+							return results;
+						});
 					} else if (attempt < maxRetries) {
 						return new Promise((resolve) => {
 							setTimeout(() => {

@@ -28,8 +28,8 @@ class ImageStorageProxy implements ImageStorageInterface {
 
 			const timestamp = Date.now();
 			const fileName = entityId
-				? `${userId}/${entityId}/${timestamp}.png`
-				: `${userId}/${timestamp}.png`;
+				? `${userId}/${entityId}/${timestamp}.jpg`
+				: `${userId}/${timestamp}.jpg`;
 
 			const base64 = await FileSystem.readAsStringAsync(imageUri, {
 				encoding: FileSystem.EncodingType.Base64,
@@ -252,16 +252,16 @@ class ImageStorageProxy implements ImageStorageInterface {
 
 			let fileName: string;
 			if (bucket === 'sneakers-reference') {
-				fileName = `${userId}/image_${timestamp}.png`;
+				fileName = `${userId}/image_${timestamp}.jpg`;
 			} else {
 				fileName = entityId
-					? `${userId}/${entityId}/${timestamp}.png`
-					: `${userId}/${timestamp}.png`;
+					? `${userId}/${entityId}/${timestamp}.jpg`
+					: `${userId}/${timestamp}.jpg`;
 			}
 
 			const downloadResult = await FileSystem.downloadAsync(
 				sourceUrl,
-				FileSystem.documentDirectory + 'temp_image.png'
+				FileSystem.documentDirectory + 'temp_image.jpg'
 			);
 
 			if (downloadResult.status !== 200) {
