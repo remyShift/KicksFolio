@@ -30,7 +30,7 @@ export default function WelcomeScreen() {
 	};
 
 	return (
-		<View className="flex-1 bg-background">
+		<View className="flex-1 bg-background gap-12">
 			<View className="items-center gap-8 mt-20">
 				<PageTitle content={t('auth.titles.welcome')} />
 				<Text className="text-gray-900 font-open-sans-bold text-lg text-center px-12">

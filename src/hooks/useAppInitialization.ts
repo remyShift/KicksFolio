@@ -9,6 +9,7 @@ import { useCurrencyStore } from '@/store/useCurrencyStore';
 import { useLanguageStore } from '@/store/useLanguageStore';
 import { useSizeUnitStore } from '@/store/useSizeUnitStore';
 import { useSplashScreenStore } from '@/store/useSplashScreenStore';
+import { FollowingUserWithSneakers } from '@/types/auth';
 import { Sneaker } from '@/types/sneaker';
 import { User } from '@/types/user';
 
@@ -108,6 +109,7 @@ export function useAppInitialization(fontsLoaded: boolean) {
 	const {
 		setUser,
 		setUserSneakers,
+		setFollowingUsers,
 		isLoading: sessionLoading,
 	} = useSession();
 	const { initializeLanguage } = useLanguageStore();
@@ -168,9 +170,13 @@ export function useAppInitialization(fontsLoaded: boolean) {
 				const dataPromise = Promise.all([
 					storageProvider.getItem<User>('user'),
 					storageProvider.getItem<Sneaker[]>('sneakers'),
+					storageProvider.getItem<FollowingUserWithSneakers[]>(
+						'followingUsers'
+					),
 				]);
 				await animateProgress(30, 50, setLoadingProgress, 12);
-				const [storedUser, storedSneakers] = await dataPromise;
+				const [storedUser, storedSneakers, storedFollowingUsers] =
+					await dataPromise;
 				console.log(
 					'[AppInit] ✅ Data loaded in',
 					Date.now() - dataStart,
@@ -196,6 +202,16 @@ export function useAppInitialization(fontsLoaded: boolean) {
 				} else {
 					console.log('[AppInit] ⚠️  No sneakers in storage');
 				}
+
+				if (storedFollowingUsers && storedFollowingUsers.length > 0) {
+					console.log(
+						`[AppInit] ✅ ${storedFollowingUsers.length} following users found in storage`
+					);
+					setFollowingUsers(storedFollowingUsers);
+				} else {
+					console.log('[AppInit] ⚠️  No following users in storage');
+				}
+
 				const animStart = Date.now();
 				await animateProgress(50, 60, setLoadingProgress, 12);
 				console.log(
@@ -204,51 +220,64 @@ export function useAppInitialization(fontsLoaded: boolean) {
 					'ms'
 				);
 
-				// Précharger les images en arrière-plan sans bloquer
 				const prefetchStart = Date.now();
+				const allImageUris: string[] = [];
+
 				if (storedSneakers && storedSneakers.length > 0) {
-					const imageUris = storedSneakers
+					const sneakerImages = storedSneakers
 						.filter((sneaker) => sneaker.images?.length > 0)
 						.map((sneaker) => sneaker.images[0].uri);
+					allImageUris.push(...sneakerImages);
+				}
 
-					if (imageUris.length > 0) {
-						console.log(
-							`[AppInit] 🚀 Starting background prefetch of ${imageUris.length} images (non-blocking)...`
-						);
-						setLoadingStatus('Optimisation des images...');
-						await animateProgress(60, 80, setLoadingProgress, 10);
+				if (storedUser?.profile_picture) {
+					allImageUris.push(storedUser.profile_picture);
+				}
 
-						// Lancer le prefetch en background sans attendre
-						prefetchImagesInBackground(
-							imageUris,
-							80,
-							setLoadingProgress,
-							setLoadingStatus
-						)
-							.then(() => {
-								console.log(
-									'[AppInit] ✅ Background image prefetch completed in',
-									Date.now() - prefetchStart,
-									'ms'
-								);
-							})
-							.catch((err) =>
-								console.warn(
-									'[AppInit] ❌ Background prefetch failed:',
-									err
-								)
-							);
-						console.log(
-							'[AppInit] Continuing without waiting for images...'
-						);
-					} else {
-						console.log('[AppInit] ⚠️  No images to prefetch');
-						await animateProgress(60, 80, setLoadingProgress, 10);
-					}
-				} else {
+				if (storedFollowingUsers && storedFollowingUsers.length > 0) {
+					const followingProfilePics = storedFollowingUsers
+						.filter((user: any) => user.profile_picture)
+						.map((user: any) => user.profile_picture);
+					allImageUris.push(...followingProfilePics);
+
+					const followingSneakerImages = storedFollowingUsers
+						.flatMap((user: any) => user.sneakers || [])
+						.filter((sneaker: any) => sneaker.images?.length > 0)
+						.map((sneaker: any) => sneaker.images[0].uri);
+					allImageUris.push(...followingSneakerImages);
+				}
+
+				if (allImageUris.length > 0) {
 					console.log(
-						'[AppInit] ⚠️  No sneakers, skipping image prefetch'
+						`[AppInit] 🚀 Starting background prefetch of ${allImageUris.length} images (non-blocking)...`
 					);
+					setLoadingStatus('Optimisation des images...');
+					await animateProgress(60, 80, setLoadingProgress, 10);
+
+					prefetchImagesInBackground(
+						allImageUris,
+						80,
+						setLoadingProgress,
+						setLoadingStatus
+					)
+						.then(() => {
+							console.log(
+								'[AppInit] ✅ Background image prefetch completed in',
+								Date.now() - prefetchStart,
+								'ms'
+							);
+						})
+						.catch((err) =>
+							console.warn(
+								'[AppInit] ❌ Background prefetch failed:',
+								err
+							)
+						);
+					console.log(
+						'[AppInit] Continuing without waiting for images...'
+					);
+				} else {
+					console.log('[AppInit] ⚠️  No images to prefetch');
 					await animateProgress(60, 80, setLoadingProgress, 10);
 				}
 
