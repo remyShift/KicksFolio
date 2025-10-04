@@ -22,6 +22,7 @@ interface FormTextInputProps<T extends FieldValues> {
 	autoComplete?: 'email' | 'username' | 'name' | 'off';
 	maxLength?: number;
 	multiline?: boolean;
+	numberOfLines?: number;
 	scrollEnabled?: boolean;
 	textAlignVertical?: 'top' | 'center' | 'bottom';
 	accessibilityLabel?: string;
@@ -48,6 +49,7 @@ const FormTextInput = forwardRef<TextInput, FormTextInputProps<any>>(
 			autoComplete = 'off',
 			maxLength,
 			multiline = false,
+			numberOfLines,
 			scrollEnabled = false,
 			textAlignVertical = 'center',
 			accessibilityLabel,
@@ -122,6 +124,7 @@ const FormTextInput = forwardRef<TextInput, FormTextInputProps<any>>(
 									onSubmitEditing ? 'done' : 'next'
 								}
 								multiline={multiline}
+								numberOfLines={numberOfLines}
 								scrollEnabled={scrollEnabled}
 								textAlignVertical={textAlignVertical}
 								style={{

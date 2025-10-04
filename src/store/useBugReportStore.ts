@@ -3,9 +3,6 @@ import { create } from 'zustand';
 export interface BugReportFormData {
 	title: string;
 	description: string;
-	stepsToReproduce: string;
-	expectedBehavior: string;
-	actualBehavior: string;
 	deviceInfo: string;
 	priority: 'low' | 'medium' | 'high';
 	userEmail?: string;
@@ -47,9 +44,6 @@ interface BugReportStore {
 const initialFormData: BugReportFormData = {
 	title: '',
 	description: '',
-	stepsToReproduce: '',
-	expectedBehavior: '',
-	actualBehavior: '',
 	deviceInfo: '',
 	priority: 'medium',
 };

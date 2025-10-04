@@ -10,26 +10,7 @@ export const createBugReportSchema = () => {
 		description: z
 			.string()
 			.min(10, t('settings.bugReport.fields.description.error.min'))
-			.max(500, t('settings.bugReport.fields.description.error.max')),
-		stepsToReproduce: z
-			.string()
-			.min(10, t('settings.bugReport.fields.stepsToReproduce.error.min'))
-			.max(
-				500,
-				t('settings.bugReport.fields.stepsToReproduce.error.max')
-			),
-		expectedBehavior: z
-			.string()
-			.min(10, t('settings.bugReport.fields.expectedBehavior.error.min'))
-			.max(
-				300,
-				t('settings.bugReport.fields.expectedBehavior.error.max')
-			),
-		actualBehavior: z
-			.string()
-			.min(10, t('settings.bugReport.fields.actualBehavior.error.min'))
-			.max(300, t('settings.bugReport.fields.actualBehavior.error.max')),
-		priority: z.enum(['low', 'medium', 'high']),
+			.max(1000, t('settings.bugReport.fields.description.error.max')),
 	});
 };
 
