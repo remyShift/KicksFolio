@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
-import { Linking } from 'react-native';
+import { Alert, Linking } from 'react-native';
 
+import { useSession } from '@/contexts/authContext';
 import useToast from '@/hooks/ui/useToast';
 import { useBugReportStore } from '@/store/useBugReportStore';
 import { useCurrencyStore } from '@/store/useCurrencyStore';
@@ -16,10 +17,11 @@ import SizeUnitToggle from './SizeUnitToggle';
 
 export default function AppSettings() {
 	const { t } = useTranslation();
+	const { user } = useSession();
 	const { currentLanguage, setLanguage } = useLanguageStore();
 	const { currentUnit, setUnit } = useSizeUnitStore();
 	const { currentCurrency, setCurrency } = useCurrencyStore();
-	const { showSuccessToast } = useToast();
+	const { showSuccessToast, showErrorToast } = useToast();
 	const { setIsVisible } = useBugReportStore();
 
 	const handleLanguageChange = (newLanguage: 'en' | 'fr') => {
@@ -52,8 +54,40 @@ export default function AppSettings() {
 		setIsVisible(true);
 	};
 
+	const handleContactSupport = async () => {
+		const email = 'contact@kicksfolio.com';
+		const username = user?.username || 'Unknown';
+		const subject = `${username} - contact`;
+		const body = 'Bonjour,\n\n';
+
+		const mailtoUrl = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+		try {
+			const canOpen = await Linking.canOpenURL(mailtoUrl);
+			if (canOpen) {
+				await Linking.openURL(mailtoUrl);
+			} else {
+				Alert.alert(
+					t('alert.titles.error'),
+					"Impossible d'ouvrir l'application email"
+				);
+			}
+		} catch (error) {
+			showErrorToast(t('alert.titles.error'), 'Une erreur est survenue');
+		}
+	};
+
 	return (
 		<SettingsCategory title={t('settings.titles.app')}>
+			<SettingsMenuItem
+				icon="mail-outline"
+				label={t('settings.titles.contactSupport')}
+				onPress={handleContactSupport}
+				testID="contact-support"
+			/>
+
+			<Spacer />
+
 			<SettingsMenuItem
 				icon="bug-outline"
 				label={t('settings.titles.reportBug')}
