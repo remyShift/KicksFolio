@@ -158,8 +158,8 @@ export class AuthProxy implements AuthProviderInterface {
 			}
 		}
 
-		const maxRetries = 3;
-		const retryDelay = 500;
+		const maxRetries = 2;
+		const retryDelay = 300;
 		let userData = null;
 		let userError = null;
 

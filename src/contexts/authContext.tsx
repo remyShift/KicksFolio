@@ -503,11 +503,9 @@ export function SessionProvider({ children }: PropsWithChildren) {
 									oauthData
 								).toString();
 
-								setTimeout(() => {
-									router.push(
-										`/(auth)/oauth-profile-completion?${queryParams}`
-									);
-								}, 100);
+								router.push(
+									`/(auth)/oauth-profile-completion?${queryParams}`
+								);
 
 								setIsLoading(false);
 								return;
@@ -540,11 +538,9 @@ export function SessionProvider({ children }: PropsWithChildren) {
 							oauthData
 						).toString();
 
-						setTimeout(() => {
-							router.push(
-								`/(auth)/oauth-profile-completion?${queryParams}`
-							);
-						}, 100);
+						router.push(
+							`/(auth)/oauth-profile-completion?${queryParams}`
+						);
 
 						setIsLoading(false);
 						return;
@@ -555,11 +551,9 @@ export function SessionProvider({ children }: PropsWithChildren) {
 						oauthData
 					).toString();
 
-					setTimeout(() => {
-						router.push(
-							`/(auth)/oauth-profile-completion?${queryParams}`
-						);
-					}, 100);
+					router.push(
+						`/(auth)/oauth-profile-completion?${queryParams}`
+					);
 
 					setIsLoading(false);
 					return;

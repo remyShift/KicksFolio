@@ -7,7 +7,6 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { RelativePathString, useLocalSearchParams } from 'expo-router';
 
 import MainButton from '@/components/ui/buttons/MainButton';
-import LoadingIndicator from '@/components/ui/indicators/LoadingIndicator';
 import FormTextInput from '@/components/ui/inputs/FormTextInput';
 import ErrorMsg from '@/components/ui/text/ErrorMsg';
 import { useAuthValidation } from '@/hooks/auth/useAuthValidation';
@@ -32,7 +31,7 @@ export default function OAuthProfileCompletionForm() {
 	const { checkUsernameExists } = useAuthValidation();
 	const { currentUnit } = useSizeUnitStore();
 
-	const { isUserLoading, user } = useOAuthProfileCompletion();
+	const { user } = useOAuthProfileCompletion();
 
 	const oauthData = {
 		email: (params.email as string) || user?.email || '',
@@ -70,16 +69,6 @@ export default function OAuthProfileCompletionForm() {
 		},
 		onSubmit: handleSubmit,
 	});
-
-	if (isUserLoading) {
-		return (
-			<View className="flex-1 bg-background">
-				<LoadingIndicator
-					message={t('auth.oauth.completion.loading')}
-				/>
-			</View>
-		);
-	}
 
 	return (
 		<KeyboardAwareScrollView
