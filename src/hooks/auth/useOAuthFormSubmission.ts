@@ -75,8 +75,8 @@ export const useOAuthFormSubmission = ({
 			cancelCleanup();
 
 			showSuccessToast(
-				t('auth.oauth.completion.success'),
-				t('auth.oauth.completion.successDescription')
+				t('auth.signUp.success'),
+				t('auth.signUp.successDescription')
 			);
 
 			router.replace('/(app)/(tabs)');
