@@ -327,56 +327,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
 						}
 
 						if (isProfileComplete(existingUser)) {
-							const provider = session.user.app_metadata
-								?.provider as 'google' | 'apple';
-							const oauthUserId = session.user.id;
-
-							let providerAccountId = oauthUserId;
-
-							if (
-								session.user.identities &&
-								session.user.identities.length > 0
-							) {
-								const identity = session.user.identities.find(
-									(id: any) => id.provider === provider
-								);
-
-								if (identity?.identity_data?.provider_id) {
-									providerAccountId =
-										identity.identity_data.provider_id;
-								} else if (identity?.identity_data?.sub) {
-									providerAccountId =
-										identity.identity_data.sub;
-								} else if (
-									session.user.user_metadata?.provider_id
-								) {
-									providerAccountId =
-										session.user.user_metadata.provider_id;
-								}
-							}
-
-							try {
-								const existingLink =
-									await authProxy.findUserByOAuthAccount(
-										provider,
-										providerAccountId
-									);
-
-								if (!existingLink) {
-									await authProxy.linkOAuthAccount(
-										existingUser.id,
-										provider,
-										providerAccountId
-									);
-								} else {
-								}
-							} catch (linkError) {
-								console.error(
-									'❌ Could not check/create OAuth link:',
-									linkError
-								);
-							}
-
 							// Débloquer l'UI immédiatement
 							console.log(
 								'[Auth] ⚡ Unlocking UI (setIsLoading false) - Case 3'

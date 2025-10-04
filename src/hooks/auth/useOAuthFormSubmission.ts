@@ -21,7 +21,7 @@ export const useOAuthFormSubmission = ({
 	isOAuthUser,
 }: UseOAuthFormSubmissionProps) => {
 	const { t } = useTranslation();
-	const { updateUser, getUser } = useAuth();
+	const { updateUser } = useAuth();
 	const { showSuccessToast, showErrorToast } = useToast();
 	const { cancelCleanup } = useOAuthCleanup(isOAuthUser);
 
@@ -70,49 +70,6 @@ export const useOAuthFormSubmission = ({
 					sneaker_size: Number(data.sneaker_size),
 					profile_picture: data.profile_picture,
 				});
-
-				const {
-					data: { user: authUser },
-				} = await supabase.auth.getUser();
-				if (authUser && authUser.app_metadata?.provider) {
-					const provider = authUser.app_metadata.provider as
-						| 'google'
-						| 'apple';
-					const oauthUserId = authUser.id;
-
-					let providerAccountId = oauthUserId;
-					if (authUser.identities && authUser.identities.length > 0) {
-						const identity = authUser.identities.find(
-							(id: any) => id.provider === provider
-						);
-
-						if (identity?.identity_data?.provider_id) {
-							providerAccountId =
-								identity.identity_data.provider_id;
-						} else if (identity?.identity_data?.sub) {
-							providerAccountId = identity.identity_data.sub;
-						} else if (identity?.id) {
-							providerAccountId = identity.id;
-						}
-					}
-
-					try {
-						await authProxy.linkOAuthAccount(
-							currentUserId,
-							provider,
-							providerAccountId
-						);
-					} catch (linkError) {
-						console.error(
-							'❌ Failed to link OAuth account during profile completion:',
-							linkError
-						);
-					}
-				} else {
-					console.log(
-						'ℹ️ Could not determine OAuth provider for linking'
-					);
-				}
 			}
 
 			cancelCleanup();
