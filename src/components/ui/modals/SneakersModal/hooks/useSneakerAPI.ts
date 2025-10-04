@@ -134,15 +134,23 @@ export const useSneakerAPI = () => {
 						// Format API externe
 						imageUri = responseResult.gallery[0];
 					} else if (responseResult.image) {
-						// Format base de données
-						try {
-							const parsedImage = JSON.parse(
-								responseResult.image
-							);
-							imageUri = parsedImage.uri || responseResult.image;
-						} catch {
-							// Si ce n'est pas du JSON, utiliser l'image directement
-							imageUri = responseResult.image;
+						// Format base de données (JSONB object ou string pour rétro-compatibilité)
+						if (
+							typeof responseResult.image === 'object' &&
+							responseResult.image.uri
+						) {
+							imageUri = responseResult.image.uri;
+						} else if (typeof responseResult.image === 'string') {
+							try {
+								const parsedImage = JSON.parse(
+									responseResult.image
+								);
+								imageUri =
+									parsedImage.uri || responseResult.image;
+							} catch {
+								// Si ce n'est pas du JSON, utiliser l'image directement
+								imageUri = responseResult.image;
+							}
 						}
 					}
 
@@ -561,15 +569,23 @@ export const useSneakerAPI = () => {
 						// Format API externe
 						imageUri = responseResult.gallery[0];
 					} else if (responseResult.image) {
-						// Format base de données
-						try {
-							const parsedImage = JSON.parse(
-								responseResult.image
-							);
-							imageUri = parsedImage.uri || responseResult.image;
-						} catch {
-							// Si ce n'est pas du JSON, utiliser l'image directement
-							imageUri = responseResult.image;
+						// Format base de données (JSONB object ou string pour rétro-compatibilité)
+						if (
+							typeof responseResult.image === 'object' &&
+							responseResult.image.uri
+						) {
+							imageUri = responseResult.image.uri;
+						} else if (typeof responseResult.image === 'string') {
+							try {
+								const parsedImage = JSON.parse(
+									responseResult.image
+								);
+								imageUri =
+									parsedImage.uri || responseResult.image;
+							} catch {
+								// Si ce n'est pas du JSON, utiliser l'image directement
+								imageUri = responseResult.image;
+							}
 						}
 					}
 

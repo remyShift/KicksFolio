@@ -123,7 +123,7 @@ export const mapDbUserToUser = (dbUser: DbUser): User => {
 
 function parseDbImages(
 	imagesArray: string[],
-	sneakerImage?: string | null
+	sneakerImage?: { id: string; uri: string } | null
 ): { id: string; uri: string; type?: 'reference' | 'personal' }[] {
 	const images: {
 		id: string;
@@ -132,20 +132,11 @@ function parseDbImages(
 	}[] = [];
 
 	if (sneakerImage) {
-		try {
-			const parsedReferenceImage = JSON.parse(sneakerImage);
-			images.push({
-				id: parsedReferenceImage.id || 'reference-image',
-				uri: parsedReferenceImage.uri || sneakerImage,
-				type: 'reference',
-			});
-		} catch (error) {
-			images.push({
-				id: 'reference-image',
-				uri: sneakerImage,
-				type: 'reference',
-			});
-		}
+		images.push({
+			id: sneakerImage.id || 'reference-image',
+			uri: sneakerImage.uri,
+			type: 'reference',
+		});
 	}
 
 	if (imagesArray && imagesArray.length > 0) {

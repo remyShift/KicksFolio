@@ -143,12 +143,10 @@ class SneakerProxy implements SneakerHandlerInterface {
 					sneakerData.fetchedImage
 				);
 
-				const imageJson = JSON.stringify(downloadedImage);
-
 				const { data: updatedSneaker, error: updateError } =
 					await supabase
 						.from('sneakers')
-						.update({ image: imageJson })
+						.update({ image: downloadedImage })
 						.eq('id', existingSneaker.id)
 						.select('*');
 
@@ -185,12 +183,11 @@ class SneakerProxy implements SneakerHandlerInterface {
 					tempSneaker.id,
 					sneakerData.fetchedImage
 				);
-				const imageToStore = JSON.stringify(downloadedImage);
 
 				const { data: updatedSneaker, error: updateError } =
 					await supabase
 						.from('sneakers')
-						.update({ image: imageToStore })
+						.update({ image: downloadedImage })
 						.eq('id', tempSneaker.id);
 
 				if (updateError) {
@@ -480,12 +477,7 @@ class SneakerProxy implements SneakerHandlerInterface {
 			return null;
 		}
 
-		try {
-			const parsedImage = JSON.parse(existingCollection.sneakers.image);
-			return parsedImage.uri || existingCollection.sneakers.image;
-		} catch {
-			return existingCollection.sneakers.image;
-		}
+		return existingCollection.sneakers.image.uri;
 	}
 
 	async updateWishlist(collectionId: string, wishlist: boolean) {
@@ -665,7 +657,10 @@ class SneakerProxy implements SneakerHandlerInterface {
 									sku: result.sku?.toUpperCase(),
 									description: result.description || null,
 									image: result.image
-										? JSON.stringify({ uri: result.image })
+										? {
+												id: 'fetched-image',
+												uri: result.image,
+											}
 										: null,
 								},
 							])

@@ -27,7 +27,7 @@ export interface DbSneaker {
 	description: string | null;
 	created_at: string;
 	updated_at: string;
-	image: string | null;
+	image: { id: string; uri: string } | null;
 	brand_id: number | null;
 }
 

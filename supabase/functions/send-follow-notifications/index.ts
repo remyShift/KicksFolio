@@ -9,7 +9,7 @@ interface NotificationRequest {
 			id: string;
 			model: string;
 			brand_name: string;
-			image?: string;
+			image?: { id: string; uri: string };
 		};
 		sneaker_count?: number;
 		user_id: string;
@@ -34,7 +34,7 @@ interface Collection {
 	sneakers: {
 		id: string;
 		model: string;
-		image?: string;
+		image?: { id: string; uri: string };
 		brands?: {
 			name: string;
 		};
