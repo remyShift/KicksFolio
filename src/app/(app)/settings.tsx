@@ -1,5 +1,7 @@
 import { useTranslation } from 'react-i18next';
-import { Alert, ScrollView, View } from 'react-native';
+import { Alert, ScrollView, Text, View } from 'react-native';
+
+import Constants from 'expo-constants';
 
 import AccountSettings from '@/components/screens/app/settings/accountSettings/AccountSettings';
 import AppSettings from '@/components/screens/app/settings/appSettings/AppSettings';
@@ -73,6 +75,17 @@ export default function Settings() {
 				<AccountSettings />
 				<NotificationSettings />
 				<AppSettings />
+			</View>
+
+			<View className="gap-3 mt-6 mb-6">
+				<SettingsMenuItem
+					icon="log-out-outline"
+					label={t('settings.titles.logout')}
+					onPress={logout}
+					color="#6b7280"
+					textColor="#374151"
+					testID="logout-button"
+				/>
 				<SettingsMenuItem
 					icon="trash-outline"
 					label={t('settings.titles.deleteAccount')}
@@ -81,6 +94,15 @@ export default function Settings() {
 					textColor="#dc2626"
 					testID="delete-account"
 				/>
+			</View>
+
+			<View className="items-center py-4 mt-auto">
+				<Text className="text-gray-500 text-sm mb-2">
+					Version {Constants.expoConfig?.version}
+				</Text>
+				<Text className="text-gray-400 text-xs">
+					Fait avec ❤️ par remyShift
+				</Text>
 			</View>
 		</ScrollView>
 	);
