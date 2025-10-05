@@ -5,6 +5,7 @@ import { AppState, Linking, Platform } from 'react-native';
 
 import Constants from 'expo-constants';
 
+import { useSession } from '@/contexts/authContext';
 import { useNotificationSettings } from '@/hooks/notifications/useNotificationSettings';
 import { usePushNotifications } from '@/hooks/notifications/usePushNotifications';
 import useToast from '@/hooks/ui/useToast';
@@ -18,12 +19,15 @@ export default function NotificationSettings() {
 	const { t } = useTranslation();
 	const { showSuccessToast, showErrorToast } = useToast();
 	const { hasPermission, checkPermissions } = usePushNotifications();
-	const {
-		settings,
-		isLoading,
-		toggleFollowingAdditions,
-		toggleNewFollowers,
-	} = useNotificationSettings();
+	const { user } = useSession();
+	const { isLoading, toggleFollowingAdditions, toggleNewFollowers } =
+		useNotificationSettings();
+
+	const settings = user?.notification_preferences || {
+		push_notifications_enabled: true,
+		following_additions_enabled: true,
+		new_followers_enabled: true,
+	};
 
 	const handleOpenSystemSettings = async () => {
 		try {

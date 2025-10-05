@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 
+import { useSession } from '@/contexts/authContext';
 import { NotificationHandler } from '@/domain/NotificationHandler';
 import { notificationProxy } from '@/tech/proxy/NotificationProxy';
 import { NotificationSettings } from '@/types/notification';
@@ -7,31 +8,9 @@ import { NotificationSettings } from '@/types/notification';
 const notificationHandler = new NotificationHandler(notificationProxy);
 
 export const useNotificationSettings = () => {
-	const [settings, setSettings] = useState<NotificationSettings>({
-		push_notifications_enabled: true,
-		following_additions_enabled: true,
-		new_followers_enabled: true,
-	});
+	const { updateNotificationPreferences } = useSession();
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [error, setError] = useState<string | null>(null);
-
-	const fetchSettings = useCallback(async () => {
-		try {
-			setIsLoading(true);
-			setError(null);
-
-			const fetchedSettings =
-				await notificationHandler.getNotificationSettings();
-			setSettings(fetchedSettings);
-		} catch (err) {
-			console.error('Error fetching notification settings:', err);
-			setError(
-				err instanceof Error ? err.message : 'Failed to fetch settings'
-			);
-		} finally {
-			setIsLoading(false);
-		}
-	}, []);
 
 	const updateSettings = useCallback(
 		async (newSettings: Partial<NotificationSettings>) => {
@@ -43,7 +22,7 @@ export const useNotificationSettings = () => {
 					newSettings
 				);
 
-				setSettings((prev) => ({ ...prev, ...newSettings }));
+				updateNotificationPreferences(newSettings);
 			} catch (err) {
 				console.error('Error updating notification settings:', err);
 				setError(
@@ -55,7 +34,7 @@ export const useNotificationSettings = () => {
 				setIsLoading(false);
 			}
 		},
-		[]
+		[updateNotificationPreferences]
 	);
 
 	const toggleFollowingAdditions = useCallback(
@@ -72,17 +51,11 @@ export const useNotificationSettings = () => {
 		[updateSettings]
 	);
 
-	useEffect(() => {
-		fetchSettings();
-	}, [fetchSettings]);
-
 	return {
-		settings,
 		isLoading,
 		error,
 		updateSettings,
 		toggleFollowingAdditions,
 		toggleNewFollowers,
-		refreshSettings: fetchSettings,
 	};
 };

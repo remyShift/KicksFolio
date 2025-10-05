@@ -25,6 +25,13 @@ export interface AuthContextType {
 	refreshFollowingUsers: () => Promise<void>;
 	unreadNotificationCount: number;
 	refreshNotifications: () => Promise<void>;
+	updateNotificationPreferences: (
+		preferences: Partial<{
+			push_notifications_enabled: boolean;
+			following_additions_enabled: boolean;
+			new_followers_enabled: boolean;
+		}>
+	) => void;
 }
 
 export interface UserData {

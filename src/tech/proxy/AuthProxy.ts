@@ -112,7 +112,6 @@ export class AuthProxy implements AuthProviderInterface {
 			} = await supabase.auth.getUser();
 
 			if (error) {
-				// Handle session missing gracefully
 				if (
 					error.message?.includes('Auth session missing') ||
 					error.name === 'AuthSessionMissingError'
@@ -125,7 +124,6 @@ export class AuthProxy implements AuthProviderInterface {
 
 			user = authUser;
 		} catch (error: any) {
-			// Handle session missing gracefully
 			if (
 				error.message?.includes('Auth session missing') ||
 				error.name === 'AuthSessionMissingError'
@@ -135,7 +133,6 @@ export class AuthProxy implements AuthProviderInterface {
 			throw error;
 		}
 
-		// Check if this is an OAuth user with a linked account
 		const isOAuthProvider =
 			user.app_metadata?.provider &&
 			['google', 'apple'].includes(user.app_metadata.provider);
@@ -225,6 +222,12 @@ export class AuthProxy implements AuthProviderInterface {
 			...userData,
 			followers_count: followersCount,
 			following_count: followingCount,
+			notification_preferences: {
+				push_notifications_enabled: true,
+				following_additions_enabled:
+					userData.following_additions_enabled ?? true,
+				new_followers_enabled: userData.new_followers_enabled ?? true,
+			},
 		};
 	}
 

@@ -30,7 +30,24 @@ import { Sneaker } from '@/types/sneaker';
 import { User } from '@/types/user';
 import { extractOAuthData, isProfileComplete } from '@/utils/profileUtils';
 
-const AuthContext = createContext<AuthContextType>({} as AuthContextType);
+const AuthContext = createContext<AuthContextType>({
+	isLoading: false,
+	user: null,
+	setUser: () => {},
+	userSneakers: null,
+	setUserSneakers: () => {},
+	refreshUserData: async () => {},
+	refreshUserSneakers: async () => {},
+	clearUserData: () => {},
+	wishlistSneakers: null,
+	resetTokens: null,
+	followingUsers: null,
+	setFollowingUsers: () => {},
+	refreshFollowingUsers: async () => {},
+	unreadNotificationCount: 0,
+	refreshNotifications: async () => {},
+	updateNotificationPreferences: () => {},
+});
 
 export function useSession() {
 	const value = useContext(AuthContext);
@@ -292,13 +309,11 @@ export function SessionProvider({ children }: PropsWithChildren) {
 											userWithCounts as User
 										);
 
-										// Débloquer l'UI immédiatement
 										console.log(
 											'[Auth] ⚡ Unlocking UI (setIsLoading false)'
 										);
 										setIsLoading(false);
 
-										// Charger les données en arrière-plan
 										console.log(
 											'[Auth] 🔄 Loading user data in background...'
 										);
@@ -327,13 +342,11 @@ export function SessionProvider({ children }: PropsWithChildren) {
 						}
 
 						if (isProfileComplete(existingUser)) {
-							// Débloquer l'UI immédiatement
 							console.log(
 								'[Auth] ⚡ Unlocking UI (setIsLoading false) - Case 3'
 							);
 							setIsLoading(false);
 
-							// Charger les données en arrière-plan
 							console.log(
 								'[Auth] 🔄 Initializing user data in background...'
 							);
@@ -452,13 +465,11 @@ export function SessionProvider({ children }: PropsWithChildren) {
 										userWithCounts as User
 									);
 
-									// Débloquer l'UI immédiatement
 									console.log(
 										'[Auth] ⚡ Unlocking UI (setIsLoading false) - Case 2'
 									);
 									setIsLoading(false);
 
-									// Charger les données en arrière-plan
 									console.log(
 										'[Auth] 🔄 Loading user data in background (case 2)...'
 									);
@@ -558,7 +569,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
 					setIsLoading(false);
 					return;
 				} else {
-					// Non-OAuth user: débloquer l'UI puis charger les données
 					console.log(
 						'[Auth] ⚡ Unlocking UI (setIsLoading false) - Non-OAuth case'
 					);
@@ -974,6 +984,33 @@ export function SessionProvider({ children }: PropsWithChildren) {
 		}
 	};
 
+	const updateNotificationPreferences = (
+		preferences: Partial<{
+			push_notifications_enabled: boolean;
+			following_additions_enabled: boolean;
+			new_followers_enabled: boolean;
+		}>
+	) => {
+		if (!user) return;
+
+		const currentPreferences = user.notification_preferences || {
+			push_notifications_enabled: true,
+			following_additions_enabled: true,
+			new_followers_enabled: true,
+		};
+
+		const updatedUser = {
+			...user,
+			notification_preferences: {
+				...currentPreferences,
+				...preferences,
+			},
+		};
+
+		setUser(updatedUser);
+		storageProvider.setUserData(updatedUser);
+	};
+
 	return (
 		<AuthContext.Provider
 			value={{
@@ -992,6 +1029,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
 				refreshFollowingUsers,
 				unreadNotificationCount: unreadCount,
 				refreshNotifications: fetchUnreadCount,
+				updateNotificationPreferences,
 			}}
 		>
 			{children}

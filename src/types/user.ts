@@ -16,6 +16,11 @@ export type User = {
 	followers_count?: number;
 	following_count?: number;
 	is_anonymous?: boolean;
+	notification_preferences?: {
+		push_notifications_enabled: boolean;
+		following_additions_enabled: boolean;
+		new_followers_enabled: boolean;
+	};
 };
 
 export interface SearchUser {
