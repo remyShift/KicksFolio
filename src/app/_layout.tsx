@@ -9,13 +9,13 @@ import { vexo } from 'vexo-analytics';
 
 import SplashScreen from '@/components/screens/SplashScreen/SplashScreen';
 import { SessionProvider, useSession } from '@/contexts/authContext';
+import { useNotificationNavigation } from '@/hooks/notifications/useNotificationNavigation';
 import { useAppInitialization } from '@/hooks/useAppInitialization';
 import '@/locales/i18n';
 import { useSplashScreenStore } from '@/store/useSplashScreenStore';
 
 import '../styles/global.css';
 
-// You may want to wrap this with `if (!__DEV__) { ... }` to only run Vexo in production.
 if (!__DEV__) {
 	vexo(process.env.EXPO_PUBLIC_VEXO_API_KEY as string);
 }
@@ -47,6 +47,8 @@ function AppContent() {
 
 function RootNavigator() {
 	const { user, isLoading } = useSession();
+
+	useNotificationNavigation();
 
 	if (isLoading) {
 		return null;
