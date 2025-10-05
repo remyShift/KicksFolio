@@ -8,15 +8,24 @@ import AppSettings from '@/components/screens/app/settings/appSettings/AppSettin
 import NotificationSettings from '@/components/screens/app/settings/notificationSettings/NotificationSettings';
 import SettingsHeader from '@/components/screens/app/settings/SettingsHeader';
 import SettingsMenuItem from '@/components/screens/app/settings/shared/SettingsMenuItem';
+import { ChangelogModal } from '@/components/ui/modals/ChangelogModal';
 import { useSession } from '@/contexts/authContext';
 import { useAuth } from '@/hooks/auth/useAuth';
 import useToast from '@/hooks/ui/useToast';
+import { useChangelog } from '@/hooks/useChangelog';
 
 export default function Settings() {
 	const { t } = useTranslation();
 	const { user } = useSession();
 	const { showSuccessToast, showErrorToast } = useToast();
 	const { logout, deleteAccount } = useAuth();
+	const {
+		currentChangelog,
+		isVisible,
+		showChangelog,
+		hideChangelog,
+		appVersion,
+	} = useChangelog();
 
 	const handleDeleteAccount = () => {
 		Alert.alert(
@@ -71,6 +80,20 @@ export default function Settings() {
 			<View className="px-4">
 				<SettingsHeader />
 			</View>
+
+			{currentChangelog && (
+				<View className="gap-3 mb-4">
+					<SettingsMenuItem
+						icon="sparkles"
+						label="Nouveautés"
+						onPress={showChangelog}
+						color="#F27329"
+						textColor="#F27329"
+						testID="changelog-button"
+					/>
+				</View>
+			)}
+
 			<View className="gap-4" testID="settings-content">
 				<AccountSettings />
 				<NotificationSettings />
@@ -104,6 +127,15 @@ export default function Settings() {
 					Fait avec ❤️ par remyShift
 				</Text>
 			</View>
+
+			{currentChangelog && (
+				<ChangelogModal
+					visible={isVisible}
+					slides={currentChangelog.slides}
+					onClose={hideChangelog}
+					version={appVersion}
+				/>
+			)}
 		</ScrollView>
 	);
 }
