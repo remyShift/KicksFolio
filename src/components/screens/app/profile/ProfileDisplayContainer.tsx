@@ -1,7 +1,7 @@
 import { memo, useCallback, useMemo, useRef, useState } from 'react';
 
 import { unstable_batchedUpdates } from 'react-native';
-import { RefreshControl, ScrollView, Share } from 'react-native';
+import { Alert, RefreshControl, ScrollView, Share } from 'react-native';
 
 import { useSession } from '@/contexts/authContext';
 import { sneakerFilteringProvider } from '@/d/SneakerFiltering';
@@ -85,8 +85,6 @@ export default function ProfileDisplayContainer(
 					statuses: [],
 				};
 
-			const response = await createShareLink(filtersToUse);
-
 			const sneakersWithoutWishlist = userSneakers.filter(
 				(sneaker) => !sneaker.wishlist
 			);
@@ -106,14 +104,43 @@ export default function ProfileDisplayContainer(
 				? `Filtered collection (${filteredCount.length} sneakers)`
 				: `Complete collection (${filteredCount.length} sneakers)`;
 
-			await Share.share({
-				message: `Check out @${user.username}'s sneaker collection on KicksFolio! 🔥\n\n${filterDescription}\n\n${response.url}`,
-				title: `@${user.username}'s Sneaker Collection - KicksFolio`,
-			});
+			const shareCollection = async () => {
+				const response = await createShareLink(filtersToUse);
+
+				await Share.share({
+					message: `Check out @${user.username}'s sneaker collection on KicksFolio! 🔥\n\n${filterDescription}\n\n${response.url}`,
+					title: `@${user.username}'s Sneaker Collection - KicksFolio`,
+				});
+			};
+
+			if (hasFilters) {
+				Alert.alert(
+					'Filters Active',
+					`You have filters applied to your collection. Only ${filteredCount.length} sneakers matching your filters will be shared.\n\nDo you want to continue?`,
+					[
+						{
+							text: 'Cancel',
+							style: 'cancel',
+						},
+						{
+							text: 'Share',
+							onPress: shareCollection,
+						},
+					]
+				);
+			} else {
+				await shareCollection();
+			}
 		} catch (error) {
 			console.error('Error sharing collection:', error);
 		}
-	}, [currentFilters, createShareLink, userSneakers, currentUnit]);
+	}, [
+		currentFilters,
+		createShareLink,
+		userSneakers,
+		currentUnit,
+		user.username,
+	]);
 
 	const handleAddSneaker = useCallback(() => {
 		unstable_batchedUpdates(() => {
