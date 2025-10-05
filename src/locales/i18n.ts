@@ -6,6 +6,7 @@ import i18n from 'i18next';
 
 import enAlert from './en/alert.json';
 import enAuth from './en/auth.json';
+import enChangelog from './en/changelog.json';
 import enCollection from './en/collection.json';
 import enNavigation from './en/navigation.json';
 import enSearch from './en/search.json';
@@ -15,6 +16,7 @@ import enSocial from './en/social.json';
 import enUi from './en/ui.json';
 import frAlert from './fr/alert.json';
 import frAuth from './fr/auth.json';
+import frChangelog from './fr/changelog.json';
 import frCollection from './fr/collection.json';
 import frNavigation from './fr/navigation.json';
 import frSearch from './fr/search.json';
@@ -35,6 +37,7 @@ const resources = {
 			ui: enUi,
 			search: enSearch,
 			share: enShare,
+			changelog: enChangelog,
 		},
 	},
 	fr: {
@@ -48,6 +51,7 @@ const resources = {
 			ui: frUi,
 			search: frSearch,
 			share: frShare,
+			changelog: frChangelog,
 		},
 	},
 };

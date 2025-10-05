@@ -1,0 +1,26 @@
+{
+    "feature1": {
+        "title": "Backlog des Mises à Jour !",
+        "description": "À chaque mise à jour, vous pouvez retrouver ici et lors du premier lancement de l'application après une mise à jour les changements apportés."
+    },
+    "feature2": {
+        "title": "Filtres lors du partage de la collection.",
+        "description": "Vous pouvez maintenant appliquer des filtres lors du partage de la collection."
+    },
+    "feature3": {
+        "title": "Écran de chargement d'ouverture de l'application.",
+        "description": "L'écran de chargement se refait une beauté et le chargement de l'app a été optimisé."
+    },
+    "feature4": {
+        "title": "Connexion avec Apple ou Google.",
+        "description": "L'écran d'accueil a été amélioré et vous pouvez maintenant créer un compte avec Apple ou Google."
+    },
+    "feature5": {
+        "title": "Signaler un bug et nous contacter.",
+        "description": "Le formulaire pour signaler un bug a été simplifié et ajout d'un bouton pour nous contacter."
+    },
+    "feature6": {
+        "title": "App bientôt disponible sur Android.",
+        "description": "L'application sera disponible sur Android dans la semaine (6 octobre 2025)."
+    }
+}
