@@ -1,33 +1,25 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-import {
-	Dimensions,
-	FlatList,
-	Image,
-	Modal,
-	Text,
-	TouchableOpacity,
-	View,
-} from 'react-native';
+import { Dimensions, FlatList, Modal, View } from 'react-native';
 import Animated, {
-	interpolate,
-	interpolateColor,
 	useAnimatedScrollHandler,
-	useAnimatedStyle,
 	useSharedValue,
 } from 'react-native-reanimated';
 
-import { Ionicons } from '@expo/vector-icons';
+import { ChangelogSlide as ChangelogSlideType } from '@/types/changelog';
 
-import { ChangelogSlide } from '@/types/changelog';
+import { ChangelogDots } from './ChangelogDots';
+import ChangelogHeader from './ChangelogHeader';
+import { ChangelogNavigation } from './ChangelogNavigation';
+import { ChangelogSlide } from './ChangelogSlide';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const MODAL_WIDTH = SCREEN_WIDTH * 0.9;
-const MODAL_HEIGHT = SCREEN_HEIGHT * 0.7;
+const MODAL_HEIGHT = SCREEN_HEIGHT * 0.75;
 
 interface ChangelogModalProps {
 	visible: boolean;
-	slides: ChangelogSlide[];
+	slides: ChangelogSlideType[];
 	onClose: () => void;
 	version: string;
 }
@@ -94,76 +86,8 @@ export function ChangelogModal({
 		setCurrentIndex(index);
 	};
 
-	const renderSlide = ({ item }: { item: ChangelogSlide }) => (
-		<View
-			style={{ width: MODAL_WIDTH }}
-			className="flex-1 items-center justify-center px-8"
-		>
-			{/* Image (PNG, JPG, GIF, etc.) */}
-			{item.image && (
-				<Image
-					source={item.image}
-					className="w-full h-48 rounded-2xl mb-6"
-					resizeMode="cover"
-				/>
-			)}
-
-			{/* Icon (si pas d'image) */}
-			{!item.image && item.icon && (
-				<View className="mb-8 bg-primary/10 p-6 rounded-full">
-					<Ionicons name={item.icon} size={64} color="#F27329" />
-				</View>
-			)}
-
-			<Text className="text-3xl font-open-sans-bold text-center mb-4">
-				{item.title}
-			</Text>
-
-			<Text className="text-base font-open-sans text-center text-gray-600 leading-6">
-				{item.description}
-			</Text>
-		</View>
-	);
-
-	const Dot = ({ index }: { index: number }) => {
-		const animatedStyle = useAnimatedStyle(() => {
-			const inputRange = [
-				(index - 1) * MODAL_WIDTH,
-				index * MODAL_WIDTH,
-				(index + 1) * MODAL_WIDTH,
-			];
-
-			const width = interpolate(scrollX.value, inputRange, [8, 32, 8], {
-				extrapolateLeft: 'clamp',
-				extrapolateRight: 'clamp',
-			});
-
-			const backgroundColor = interpolateColor(
-				scrollX.value,
-				inputRange,
-				['#d1d5db', '#F27329', '#d1d5db']
-			);
-
-			return {
-				width,
-				backgroundColor,
-			};
-		});
-
-		return (
-			<Animated.View
-				style={animatedStyle}
-				className="h-2 rounded-full mx-1"
-			/>
-		);
-	};
-
-	const renderDots = () => (
-		<View className="flex-row justify-center items-center mb-6">
-			{slides.map((_, index) => (
-				<Dot key={index} index={index} />
-			))}
-		</View>
+	const renderSlide = ({ item }: { item: ChangelogSlideType }) => (
+		<ChangelogSlide item={item} width={MODAL_WIDTH} />
 	);
 
 	if (!visible) return null;
@@ -183,23 +107,7 @@ export function ChangelogModal({
 					}}
 					className="bg-white rounded-3xl overflow-hidden shadow-2xl"
 				>
-					<View className="px-6 pt-6 pb-4 border-b border-gray-200">
-						<View className="flex-row justify-between items-center">
-							<Text className="text-sm font-open-sans-semibold text-gray-500">
-								Version {version}
-							</Text>
-							<TouchableOpacity
-								onPress={onClose}
-								className="w-8 h-8 items-center justify-center"
-							>
-								<Ionicons
-									name="close"
-									size={24}
-									color="#9ca3af"
-								/>
-							</TouchableOpacity>
-						</View>
-					</View>
+					<ChangelogHeader version={version} onClose={onClose} />
 
 					<View className="flex-1">
 						<Animated.FlatList
@@ -220,32 +128,18 @@ export function ChangelogModal({
 					</View>
 
 					<View className="px-6 pb-6">
-						{renderDots()}
+						<ChangelogDots
+							slidesCount={slides.length}
+							scrollX={scrollX}
+							modalWidth={MODAL_WIDTH}
+						/>
 
-						<View className="flex-row gap-3">
-							{!isFirstSlide && (
-								<TouchableOpacity
-									onPress={handlePrevious}
-									className="flex-1 py-4 rounded-xl items-center border-2 border-primary"
-									activeOpacity={0.8}
-								>
-									<Text className="text-primary font-open-sans-bold text-base">
-										Précédent
-									</Text>
-								</TouchableOpacity>
-							)}
-
-							<TouchableOpacity
-								onPress={handleNext}
-								className={`py-4 rounded-xl items-center bg-primary ${!isFirstSlide ? 'flex-1' : 'flex-1'}`}
-								activeOpacity={0.8}
-								style={isFirstSlide ? { flex: 1 } : undefined}
-							>
-								<Text className="text-white font-open-sans-bold text-base">
-									{isLastSlide ? 'Commencer' : 'Suivant'}
-								</Text>
-							</TouchableOpacity>
-						</View>
+						<ChangelogNavigation
+							isFirstSlide={isFirstSlide}
+							isLastSlide={isLastSlide}
+							onPrevious={handlePrevious}
+							onNext={handleNext}
+						/>
 					</View>
 				</View>
 			</View>

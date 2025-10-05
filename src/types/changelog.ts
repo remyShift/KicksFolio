@@ -4,8 +4,7 @@ export interface ChangelogSlide {
 	id: string;
 	title: string;
 	description: string;
-	icon?: keyof typeof import('@expo/vector-icons').Ionicons.glyphMap;
-	image?: ImageSourcePropType; // Support PNG, JPG, GIF, etc.
+	image?: ImageSourcePropType;
 }
 
 export interface VersionChangelog {
