@@ -81,18 +81,16 @@ export default function Settings() {
 				<SettingsHeader />
 			</View>
 
-			{currentChangelog && (
-				<View className="gap-3 mb-4">
-					<SettingsMenuItem
-						icon="sparkles"
-						label="Nouveautés"
-						onPress={showChangelog}
-						color="#F27329"
-						textColor="#F27329"
-						testID="changelog-button"
-					/>
-				</View>
-			)}
+			<View className="gap-3 mb-4">
+				<SettingsMenuItem
+					icon="sparkles"
+					label="Nouveautés"
+					onPress={showChangelog}
+					color="#F27329"
+					textColor="#F27329"
+					testID="changelog-button"
+				/>
+			</View>
 
 			<View className="gap-4" testID="settings-content">
 				<AccountSettings />
@@ -121,10 +119,12 @@ export default function Settings() {
 
 			<View className="items-center py-4 mt-auto">
 				<Text className="text-gray-500 text-sm mb-2">
-					Version {Constants.expoConfig?.version}
+					{t('settings.version', {
+						version: Constants.expoConfig?.version,
+					})}
 				</Text>
 				<Text className="text-gray-400 text-xs">
-					Fait avec ❤️ par remyShift
+					{t('settings.madeWithLove')}
 				</Text>
 			</View>
 

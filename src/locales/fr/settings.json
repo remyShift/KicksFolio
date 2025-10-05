@@ -38,6 +38,7 @@
 	"titles": {
 		"editProfile": "Modifier le profil",
 		"account": "Paramètres du compte",
+		"contactSupport": "Nous contacter",
 		"socialMedia": "Connecter les réseaux sociaux",
 		"connectedAccounts": "Comptes Connectés",
 		"logout": "Déconnexion",
@@ -149,29 +150,6 @@
 		"systemDisabled": "Désactivées",
 		"openAppSettings": "Ouvrir les paramètres de l'app"
 	},
-	"oauth": {
-		"linked": "Lié",
-		"notLinked": "Non lié",
-		"unlink": "Délier",
-		"googleLinkedLabel": "Compte Google lié",
-		"appleLinkedLabel": "Compte Apple lié",
-		"googleLinked": "🔗 Compte Google lié",
-		"googleLinkedDescription": "Votre compte Google est maintenant connecté pour la connexion.",
-		"googleUnlinked": "🔓 Compte Google délié",
-		"googleUnlinkedDescription": "Votre compte Google a été déconnecté.",
-		"appleLinked": "🔗 Compte Apple lié",
-		"appleLinkedDescription": "Votre compte Apple est maintenant connecté pour la connexion.",
-		"appleUnlinked": "🔓 Compte Apple délié",
-		"appleUnlinkedDescription": "Votre compte Apple a été déconnecté.",
-		"linkingFailed": "❌ Échec de la liaison du compte",
-		"linkingFailedDescription": "Une erreur est survenue lors de la liaison de votre compte.",
-		"unlinkingFailed": "❌ Échec de la déliaison du compte",
-		"unlinkingFailedDescription": "Une erreur est survenue lors de la déliaison de votre compte.",
-		"unlinkConfirmTitle": "Délier le compte",
-		"unlinkGoogleConfirmMessage": "Êtes-vous sûr de vouloir délier votre compte Google ? Vous ne pourrez plus vous connecter avec Google.",
-		"unlinkAppleConfirmMessage": "Êtes-vous sûr de vouloir délier votre compte Apple ? Vous ne pourrez plus vous connecter avec Apple.",
-		"cannotUnlinkTitle": "Impossible de délier le compte",
-		"cannotUnlinkGoogleMessage": "Vous ne pouvez pas délier votre compte Google car c'est votre seule méthode de connexion. Veuillez d'abord un lier un autre compte ou supprimer votre compte.",
-		"cannotUnlinkAppleMessage": "Vous ne pouvez pas délier votre compte Apple car c'est votre seule méthode de connexion. Veuillez d'abord un lier un autre compte ou supprimer votre compte."
-	}
-} 
+	"version": "Version {{version}}",
+	"madeWithLove": "Fait avec ❤️ par remyShift"
+}
