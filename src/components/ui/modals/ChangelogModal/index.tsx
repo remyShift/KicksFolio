@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
 	Dimensions,
 	FlatList,
+	Image,
 	Modal,
 	Text,
 	TouchableOpacity,
@@ -98,7 +99,17 @@ export function ChangelogModal({
 			style={{ width: MODAL_WIDTH }}
 			className="flex-1 items-center justify-center px-8"
 		>
-			{item.icon && (
+			{/* Image (PNG, JPG, GIF, etc.) */}
+			{item.image && (
+				<Image
+					source={item.image}
+					className="w-full h-48 rounded-2xl mb-6"
+					resizeMode="cover"
+				/>
+			)}
+
+			{/* Icon (si pas d'image) */}
+			{!item.image && item.icon && (
 				<View className="mb-8 bg-primary/10 p-6 rounded-full">
 					<Ionicons name={item.icon} size={64} color="#F27329" />
 				</View>
