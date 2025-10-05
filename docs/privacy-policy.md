@@ -184,6 +184,24 @@ Your data is used exclusively to provide and improve KicksFolio's services:
 -   **Deletion**: Complete account and data deletion available in settings
 -   **Export**: Contact us for data export in standard formats
 
+### How to Delete Your Account and Data
+
+You can delete your KicksFolio account and all associated data at any time:
+
+1. Open the KicksFolio app
+2. Go to **Settings** > **Account Settings**
+3. Tap **Delete Account**
+4. Confirm your decision
+
+**What happens when you delete your account:**
+-   All personal information (email, username, profile data) is permanently deleted
+-   Your entire sneaker collection and photos are removed
+-   All social connections (followers/following) are deleted
+-   Shared collection links are immediately deactivated
+-   Push notification tokens are removed
+
+**Alternative:** If you only want to delete specific data without closing your account, contact us at contact@kicksfolio.com with your request.
+
 ### Privacy Controls
 -   **Profile visibility**: Control who can see your profile and collections
 -   **Social features**: Enable/disable following and social features
@@ -216,7 +234,7 @@ We may update this privacy policy to reflect changes in our practices or applica
 ## 9. Contact information
 
 For privacy-related questions or requests:
--   **Email**: privacy@kicksfolio.com
+-   **Email**: contact@kicksfolio.com
 -   **In-app**: Use the bug report feature for privacy concerns
 -   **Response time**: We aim to respond within 72 hours
 
