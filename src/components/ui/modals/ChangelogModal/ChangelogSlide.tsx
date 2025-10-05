@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Image, Text, View } from 'react-native';
 
 import { ChangelogSlide as ChangelogSlideType } from '@/types/changelog';
@@ -8,6 +9,8 @@ interface ChangelogSlideProps {
 }
 
 export function ChangelogSlide({ item, width }: ChangelogSlideProps) {
+	const { t } = useTranslation();
+
 	return (
 		<View
 			style={{ width }}
@@ -15,11 +18,11 @@ export function ChangelogSlide({ item, width }: ChangelogSlideProps) {
 		>
 			<View className="gap-4">
 				<Text className="text-xl font-open-sans-bold text-center">
-					{item.title}
+					{t(item.titleKey)}
 				</Text>
 
 				<Text className="text-base font-open-sans text-center text-gray-600 leading-6">
-					{item.description}
+					{t(item.descriptionKey)}
 				</Text>
 			</View>
 

@@ -2,8 +2,8 @@ import { ImageSourcePropType } from 'react-native';
 
 export interface ChangelogSlide {
 	id: string;
-	title: string;
-	description: string;
+	titleKey: string;
+	descriptionKey: string;
 	image?: ImageSourcePropType;
 }
 
