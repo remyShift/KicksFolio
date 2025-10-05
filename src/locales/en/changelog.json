@@ -1,26 +1,28 @@
 {
-    "feature1": {
-        "title": "Backlog of updates!",
-        "description": "At each update, you can find here and when the application is launched after an update the changes made."
-    },
-    "feature2": {
-        "title": "Filters when sharing the collection.",
-        "description": "You can now apply filters when sharing the collection."
-    },
-    "feature3": {
-        "title": "Opening screen of the application.",
-        "description": "The loading screen is made a beauty and the loading of the app has been optimized."
-    },
-    "feature4": {
-        "title": "Connection with Apple or Google.",
-        "description": "The home screen has been improved and you can now create an account with Apple or Google."
-    },
-    "feature5": {
-        "title": "Report a bug and contact us.",
-        "description": "The form to report a bug has been simplified and added a button to contact us."
-    },
-    "feature6": {
-        "title": "App soon available on Android.",
-        "description": "The application will be available on Android in the week (6 October 2025)."
+    "105": {    
+        "feature1": {
+            "title": "Backlog of updates!",
+            "description": "At each update, you can find here and when the application is launched after an update the changes made."
+        },
+        "feature2": {
+            "title": "Filters when sharing the collection.",
+            "description": "You can now apply filters when sharing the collection."
+        },
+        "feature3": {
+            "title": "Opening screen of the application.",
+            "description": "The loading screen is made a beauty and the loading of the app has been optimized."
+        },
+        "feature4": {
+            "title": "Connection with Apple or Google.",
+            "description": "The home screen has been improved and you can now create an account with Apple or Google."
+        },
+        "feature5": {
+            "title": "Report a bug and contact us.",
+            "description": "The form to report a bug has been simplified and added a button to contact us."
+        },
+        "feature6": {
+            "title": "App soon available on Android.",
+            "description": "The application will be available on Android in the week (6 October 2025)."
+        }
     }
 }
