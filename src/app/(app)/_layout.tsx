@@ -6,7 +6,7 @@ import { ChangelogModal } from '@/components/ui/modals/ChangelogModal';
 import { useChangelog } from '@/hooks/useChangelog';
 
 export default function AppLayout() {
-	const { currentChangelog, isVisible, hideChangelog, appVersion } =
+	const { currentChangelog, isAutoVisible, hideAutoChangelog, appVersion } =
 		useChangelog();
 
 	return (
@@ -41,9 +41,9 @@ export default function AppLayout() {
 			<BugReportModal />
 			{currentChangelog && (
 				<ChangelogModal
-					visible={isVisible}
+					visible={isAutoVisible}
 					slides={currentChangelog.slides}
-					onClose={hideChangelog}
+					onClose={hideAutoChangelog}
 					version={appVersion}
 				/>
 			)}

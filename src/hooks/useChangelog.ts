@@ -12,9 +12,11 @@ const CHANGELOG_STORAGE_KEY = 'lastSeenChangelogVersion';
 interface UseChangelogReturn {
 	currentChangelog: VersionChangelog | undefined;
 	shouldShowChangelog: boolean;
-	isVisible: boolean;
+	isAutoVisible: boolean;
+	isManualVisible: boolean;
 	showChangelog: () => void;
-	hideChangelog: () => void;
+	hideAutoChangelog: () => void;
+	hideManualChangelog: () => void;
 	appVersion: string;
 }
 
@@ -24,7 +26,8 @@ export function useChangelog(): UseChangelogReturn {
 		CHANGELOG_STORAGE_KEY
 	);
 
-	const [isVisible, setIsVisible] = useState(false);
+	const [isAutoVisible, setIsAutoVisible] = useState(false);
+	const [isManualVisible, setIsManualVisible] = useState(false);
 
 	const currentChangelog = getCurrentVersionChangelog(appVersion);
 	const shouldShowChangelog =
@@ -32,25 +35,31 @@ export function useChangelog(): UseChangelogReturn {
 
 	useEffect(() => {
 		if (shouldShowChangelog) {
-			setIsVisible(true);
+			setIsAutoVisible(true);
 		}
 	}, [shouldShowChangelog]);
 
 	const showChangelog = useCallback(() => {
-		setIsVisible(true);
+		setIsManualVisible(true);
 	}, []);
 
-	const hideChangelog = useCallback(() => {
-		setIsVisible(false);
+	const hideAutoChangelog = useCallback(() => {
+		setIsAutoVisible(false);
 		setLastSeenVersion(appVersion);
 	}, [appVersion, setLastSeenVersion]);
+
+	const hideManualChangelog = useCallback(() => {
+		setIsManualVisible(false);
+	}, []);
 
 	return {
 		currentChangelog,
 		shouldShowChangelog,
-		isVisible,
+		isAutoVisible,
+		isManualVisible,
 		showChangelog,
-		hideChangelog,
+		hideAutoChangelog,
+		hideManualChangelog,
 		appVersion,
 	};
 }

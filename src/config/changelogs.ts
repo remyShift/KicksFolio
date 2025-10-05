@@ -2,7 +2,7 @@ import { VersionChangelog } from '@/types/changelog';
 
 export const CHANGELOGS: VersionChangelog[] = [
 	{
-		version: '1.0.0',
+		version: '1.0.2',
 		slides: [
 			{
 				id: 'welcome',

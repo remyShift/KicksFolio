@@ -21,9 +21,9 @@ export default function Settings() {
 	const { logout, deleteAccount } = useAuth();
 	const {
 		currentChangelog,
-		isVisible,
+		isManualVisible,
 		showChangelog,
-		hideChangelog,
+		hideManualChangelog,
 		appVersion,
 	} = useChangelog();
 
@@ -130,9 +130,9 @@ export default function Settings() {
 
 			{currentChangelog && (
 				<ChangelogModal
-					visible={isVisible}
+					visible={isManualVisible}
 					slides={currentChangelog.slides}
-					onClose={hideChangelog}
+					onClose={hideManualChangelog}
 					version={appVersion}
 				/>
 			)}
