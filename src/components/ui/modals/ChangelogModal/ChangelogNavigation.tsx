@@ -20,7 +20,7 @@ export function ChangelogNavigation({
 			{!isFirstSlide && (
 				<TouchableOpacity
 					onPress={onPrevious}
-					className="flex-1 py-4 rounded-xl items-center border-2 border-primary"
+					className="flex-1 p-2 rounded-md items-center border-2 border-primary"
 					activeOpacity={0.8}
 				>
 					<Text className="text-primary font-open-sans-bold text-base">
@@ -31,7 +31,7 @@ export function ChangelogNavigation({
 
 			<TouchableOpacity
 				onPress={onNext}
-				className={`py-4 rounded-xl items-center bg-primary ${!isFirstSlide ? 'flex-1' : 'flex-1'}`}
+				className={`p-2 rounded-md items-center bg-primary ${!isFirstSlide ? 'flex-1' : 'flex-1'}`}
 				activeOpacity={0.8}
 				style={isFirstSlide ? { flex: 1 } : undefined}
 			>
