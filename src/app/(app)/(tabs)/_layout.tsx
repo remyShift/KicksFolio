@@ -34,9 +34,9 @@ export default function TabLayout() {
 				tabBarActiveTintColor: '#F27329',
 				tabBarShowLabel: true,
 				tabBarStyle: {
-					height: 85 + insets.bottom,
+					height: 85,
 					paddingTop: 5,
-					paddingBottom: insets.bottom,
+					paddingBottom: insets.bottom || 10,
 					paddingHorizontal: 15,
 				},
 				sceneStyle: {

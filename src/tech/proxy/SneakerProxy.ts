@@ -658,7 +658,9 @@ class SneakerProxy implements SneakerHandlerInterface {
 									description: result.description || null,
 									image: result.image
 										? {
-												id: 'fetched-image',
+												id:
+													result.sku?.toUpperCase() ||
+													`${sneakerModelWithoutBrandName.toLowerCase().replace(/\s+/g, '-')}`,
 												uri: result.image,
 											}
 										: null,
