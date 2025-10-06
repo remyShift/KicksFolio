@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Alert } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Tabs } from 'expo-router';
 
@@ -14,6 +15,7 @@ export default function TabLayout() {
 	const { t } = useTranslation();
 	const { setIsVisible, setModalStep } = useModalStore();
 	const { user: currentUser } = useSession();
+	const insets = useSafeAreaInsets();
 
 	const handleAddPress = () => {
 		if (!currentUser) {
@@ -32,8 +34,9 @@ export default function TabLayout() {
 				tabBarActiveTintColor: '#F27329',
 				tabBarShowLabel: true,
 				tabBarStyle: {
-					height: 85,
+					height: 85 + insets.bottom,
 					paddingTop: 5,
+					paddingBottom: insets.bottom,
 					paddingHorizontal: 15,
 				},
 				sceneStyle: {
