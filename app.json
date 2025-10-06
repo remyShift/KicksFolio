@@ -3,7 +3,7 @@
     "name": "KicksFolio",
     "slug": "KicksFolio-Frontend",
     "version": "1.0.5",
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./src/assets/images/icon.png",
     "scheme": "kicksfolio",
     "userInterfaceStyle": "automatic",
@@ -84,6 +84,12 @@
       "expo-secure-store",
       "expo-apple-authentication",
       [
+        "expo-screen-orientation",
+        {
+          "initialOrientation": "DEFAULT"
+        }
+      ],
+      [
         "expo-image-picker",
         {
           "photosPermission": "KicksFolio need to access your photos to select existing sneakers photos and add them to your personal collection.",
@@ -103,7 +109,12 @@
             "compileSdkVersion": 35,
             "targetSdkVersion": 35,
             "minSdkVersion": 26,
-            "buildToolsVersion": "35.0.0"
+            "buildToolsVersion": "35.0.0",
+            "packagingOptions": {
+              "jniLibs": {
+                "useLegacyPackaging": false
+              }
+            }
           },
           "ios": {
             "deploymentTarget": "15.1"
