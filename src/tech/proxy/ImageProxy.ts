@@ -1,4 +1,4 @@
-import * as FileSystem from 'expo-file-system';
+import { File, Paths } from 'expo-file-system';
 
 import { supabase } from '@/config/supabase/supabase';
 import { ImageStorageInterface } from '@/domain/ImageStorage';
@@ -31,9 +31,8 @@ class ImageStorageProxy implements ImageStorageInterface {
 				? `${userId}/${entityId}/${timestamp}.jpg`
 				: `${userId}/${timestamp}.jpg`;
 
-			const base64 = await FileSystem.readAsStringAsync(imageUri, {
-				encoding: FileSystem.EncodingType.Base64,
-			});
+			const file = new File(imageUri);
+			const base64 = await file.base64();
 
 			const binaryString = atob(base64);
 			const bytes = new Uint8Array(binaryString.length);
@@ -205,40 +204,48 @@ class ImageStorageProxy implements ImageStorageInterface {
 	}
 
 	async validateUri(imageUri: string): Promise<ImageValidationResult> {
-		const imageInfo = await FileSystem.getInfoAsync(imageUri);
+		try {
+			const file = new File(imageUri);
+			const imageInfo = await file.info();
 
-		if (!imageInfo.exists) {
+			if (!imageInfo.exists) {
+				return {
+					isValid: false,
+					error: 'Image file does not exist',
+				};
+			}
+
+			const maxSize = 10 * 1024 * 1024;
+			const fileSize = imageInfo.size;
+
+			if (fileSize && fileSize > maxSize) {
+				return {
+					isValid: false,
+					error: `Image file too large: ${Math.round(
+						fileSize / 1024 / 1024
+					)}MB (max: 10MB)`,
+				};
+			}
+
+			return {
+				isValid: true,
+				size: fileSize,
+			};
+		} catch (error) {
 			return {
 				isValid: false,
-				error: 'Image file does not exist',
+				error: 'Failed to access image file',
 			};
 		}
-
-		const maxSize = 10 * 1024 * 1024;
-		const fileSize = 'size' in imageInfo ? imageInfo.size : undefined;
-
-		if (fileSize && fileSize > maxSize) {
-			return {
-				isValid: false,
-				error: `Image file too large: ${Math.round(
-					fileSize / 1024 / 1024
-				)}MB (max: 10MB)`,
-			};
-		}
-
-		return {
-			isValid: true,
-			size: fileSize,
-		};
 	}
 
 	async getInfo(imageUri: string): Promise<ImageInfo> {
-		const info = await FileSystem.getInfoAsync(imageUri);
-		const fileSize = 'size' in info ? info.size : undefined;
+		const file = new File(imageUri);
+		const info = await file.info();
 
 		return {
 			exists: info.exists,
-			size: fileSize,
+			size: info.size,
 		};
 	}
 
@@ -259,24 +266,13 @@ class ImageStorageProxy implements ImageStorageInterface {
 					: `${userId}/${timestamp}.jpg`;
 			}
 
-			const downloadResult = await FileSystem.downloadAsync(
+			const tempFile = new File(Paths.document, 'temp_image.jpg');
+			const downloadedFile = await File.downloadFileAsync(
 				sourceUrl,
-				FileSystem.documentDirectory + 'temp_image.jpg'
+				tempFile
 			);
 
-			if (downloadResult.status !== 200) {
-				return {
-					success: false,
-					error: `Failed to download image: ${downloadResult.status}`,
-				};
-			}
-
-			const base64 = await FileSystem.readAsStringAsync(
-				downloadResult.uri,
-				{
-					encoding: FileSystem.EncodingType.Base64,
-				}
-			);
+			const base64 = await downloadedFile.base64();
 
 			const binaryString = atob(base64);
 			const bytes = new Uint8Array(binaryString.length);
@@ -291,9 +287,7 @@ class ImageStorageProxy implements ImageStorageInterface {
 					upsert: false,
 				});
 
-			await FileSystem.deleteAsync(downloadResult.uri, {
-				idempotent: true,
-			});
+			await downloadedFile.delete();
 
 			if (error) {
 				return {

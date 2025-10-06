@@ -137,20 +137,7 @@ export class GitHubProxy implements GitHubIssueHandlerInterface {
 		formData: BugReportFormData,
 		deviceInfo: string
 	): string {
-		const body = [
-			`## Description`,
-			formData.description,
-			``,
-			`## Steps to Reproduce`,
-			formData.stepsToReproduce,
-			``,
-			`## Expected Behavior`,
-			formData.expectedBehavior,
-			``,
-			`## Actual Behavior`,
-			formData.actualBehavior,
-			``,
-		];
+		const body = [`## Description`, formData.description];
 
 		if (formData.userEmail || formData.username) {
 			body.push(`## Reporter Contact Information`);

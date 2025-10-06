@@ -26,11 +26,6 @@ const useBugReport = () => {
 			return false;
 		}
 
-		if (!formData.stepsToReproduce.trim()) {
-			setErrorMsg(t('settings.bugReport.validation.stepsRequired'));
-			return false;
-		}
-
 		return true;
 	};
 

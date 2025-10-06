@@ -39,7 +39,7 @@ interface SkuSearchResponse {
 		gallery?: string[];
 		avg_price?: number;
 		sku: string;
-		image?: string;
+		image?: string | { id: string; uri: string };
 		fromDatabase?: boolean;
 	}>;
 }
@@ -125,16 +125,13 @@ export const useSneakerAPI = () => {
 				) {
 					const responseResult = response.results[0];
 
-					// Gérer les différents formats de réponse (DB vs API externe)
 					let imageUri = '';
 					if (
 						responseResult.gallery &&
 						responseResult.gallery.length > 0
 					) {
-						// Format API externe
 						imageUri = responseResult.gallery[0];
 					} else if (responseResult.image) {
-						// Format base de données (JSONB object ou string pour rétro-compatibilité)
 						if (
 							typeof responseResult.image === 'object' &&
 							responseResult.image.uri
@@ -148,7 +145,6 @@ export const useSneakerAPI = () => {
 								imageUri =
 									parsedImage.uri || responseResult.image;
 							} catch {
-								// Si ce n'est pas du JSON, utiliser l'image directement
 								imageUri = responseResult.image;
 							}
 						}
@@ -560,16 +556,13 @@ export const useSneakerAPI = () => {
 				) {
 					const responseResult = response.results[0];
 
-					// Gérer les différents formats de réponse (DB vs API externe)
 					let imageUri = '';
 					if (
 						responseResult.gallery &&
 						responseResult.gallery.length > 0
 					) {
-						// Format API externe
 						imageUri = responseResult.gallery[0];
 					} else if (responseResult.image) {
-						// Format base de données (JSONB object ou string pour rétro-compatibilité)
 						if (
 							typeof responseResult.image === 'object' &&
 							responseResult.image.uri
@@ -583,7 +576,6 @@ export const useSneakerAPI = () => {
 								imageUri =
 									parsedImage.uri || responseResult.image;
 							} catch {
-								// Si ce n'est pas du JSON, utiliser l'image directement
 								imageUri = responseResult.image;
 							}
 						}

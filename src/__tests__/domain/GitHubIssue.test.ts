@@ -33,9 +33,6 @@ describe('GitHubIssueHandler', () => {
 	const mockFormData: BugReportFormData = {
 		title: 'Test Bug',
 		description: 'Test description',
-		stepsToReproduce: 'Test steps',
-		expectedBehavior: 'Expected behavior',
-		actualBehavior: 'Actual behavior',
 		priority: 'medium' as 'low' | 'medium' | 'high',
 		deviceInfo: 'Test device info',
 	};
