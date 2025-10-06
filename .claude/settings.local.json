@@ -4,7 +4,8 @@
       "Bash(npx tsc:*)",
       "Bash(npm run typecheck:*)",
       "Bash(grep:*)",
-      "Bash(npm run test:*)"
+      "Bash(npm run test:*)",
+      "Bash(npx expo install:*)"
     ],
     "deny": [],
     "ask": []
